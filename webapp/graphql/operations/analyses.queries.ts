@@ -1242,8 +1242,8 @@ export const DOWNLOAD_IMPRESS_SAMPLES = gql`
 `;
 
 export const DOWNLOAD_IMPRESS = gql`
-    query impressReport($sampleId: String!) {
-        impressReportDownload(sampleId: $sampleId)
+    query impressReport($impressUid: String!) {
+        impressReportDownload(uid: $impressUid)
     }
 `;
 

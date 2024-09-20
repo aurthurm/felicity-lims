@@ -37,7 +37,7 @@ const loadMeta = () => {
 loadMeta()
 
 const { downloadImpress } = useSampleComposable();
-const impressDownloader = async (report_id) => await downloadImpress(report_id);
+const impressDownloader = async (report_uid) => await downloadImpress(report_uid);
 </script>
 
 <template>
@@ -64,7 +64,7 @@ const impressDownloader = async (report_id) => await downloadImpress(report_id);
             </div>
             <span
               class="flex justify-center items-center animate-bounce h-8 w-8 rounded-full bg-white border border-gray-200 drop-shadow-sm"
-              @click="impressDownloader(report.sample?.sampleId)">
+              @click="impressDownloader(report.uid)">
               <FontAwesomeIcon class="text-blue-500" icon="fa-download" />
             </span>
           </div>

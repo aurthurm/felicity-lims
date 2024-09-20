@@ -9,7 +9,7 @@ from barcode.writer import ImageWriter
 from fpdf import FPDF
 
 from felicity.core.config import get_settings
-from felicity.core.dtz import get_time_now
+from felicity.core.dtz import get_time_now, format_datetime
 from felicity.utils.helpers import get_from_nested, strtobool
 
 settings = get_settings()
@@ -149,9 +149,9 @@ class FelicityImpress:
         # Customer Column
         patient = get_from_nested(sample, "analysis_request.patient")
         full_name = (
-            get_from_nested(patient, "first_name")
-            + " "
-            + get_from_nested(patient, "last_name")
+                get_from_nested(patient, "first_name")
+                + " "
+                + get_from_nested(patient, "last_name")
         )
         self.pdf.set_font("helvetica", "B", 10.0)
         self.pdf.set_xy(20, 42)
@@ -236,7 +236,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            txt=get_from_nested(sample, "date_collected"),
+            txt=format_datetime(get_from_nested(sample, "date_collected")),
             border=0,
         )
         # ---
@@ -250,7 +250,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            txt=get_from_nested(sample, "date_received"),
+            txt=format_datetime(get_from_nested(sample, "date_received")),
             border=0,
         )
         # ---
@@ -264,7 +264,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            txt=get_from_nested(sample, "created_at"),
+            txt=format_datetime(get_from_nested(sample, "created_at")),
             border=0,
         )  # ---
         self.pdf.set_font("helvetica", "B", 8.0)
@@ -277,7 +277,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            txt=get_from_nested(sample, "date_published"),
+            txt=format_datetime(get_from_nested(sample, "date_published")),
             border=0,
         )
 

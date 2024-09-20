@@ -1,16 +1,16 @@
 """upgrade-1
 
-Revision ID: 6abbbaa72a2d
+Revision ID: 9cc091c6738e
 Revises: 6f377b641bc8
-Create Date: 2024-09-20 14:35:07.214320
+Create Date: 2024-09-20 17:17:07.021482
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '6abbbaa72a2d'
+revision = '9cc091c6738e'
 down_revision = '6f377b641bc8'
 branch_labels = None
 depends_on = None
@@ -25,8 +25,8 @@ def upgrade():
     op.create_foreign_key(None, 'audit_log', 'user', ['updated_by_uid'], ['uid'])
     op.create_foreign_key(None, 'audit_log', 'user', ['created_by_uid'], ['uid'])
     op.alter_column('client_contact', 'email',
-               existing_type=sa.VARCHAR(),
-               nullable=False)
+                    existing_type=sa.VARCHAR(),
+                    nullable=False)
     op.drop_index('ix_client_contact_email', table_name='client_contact')
     op.create_index(op.f('ix_client_contact_email'), 'client_contact', ['email'], unique=True)
     op.add_column('group', sa.Column('created_at', sa.DateTime(), nullable=True))
@@ -39,8 +39,8 @@ def upgrade():
     op.add_column('id_sequence', sa.Column('created_by_uid', sa.String(), nullable=True))
     op.add_column('id_sequence', sa.Column('updated_at', sa.DateTime(), nullable=True))
     op.add_column('id_sequence', sa.Column('updated_by_uid', sa.String(), nullable=True))
-    op.create_foreign_key(None, 'id_sequence', 'user', ['updated_by_uid'], ['uid'])
     op.create_foreign_key(None, 'id_sequence', 'user', ['created_by_uid'], ['uid'])
+    op.create_foreign_key(None, 'id_sequence', 'user', ['updated_by_uid'], ['uid'])
     op.add_column('job', sa.Column('created_at', sa.DateTime(), nullable=True))
     op.add_column('job', sa.Column('created_by_uid', sa.String(), nullable=True))
     op.add_column('job', sa.Column('updated_at', sa.DateTime(), nullable=True))
@@ -51,8 +51,8 @@ def upgrade():
     op.add_column('permission', sa.Column('created_by_uid', sa.String(), nullable=True))
     op.add_column('permission', sa.Column('updated_at', sa.DateTime(), nullable=True))
     op.add_column('permission', sa.Column('updated_by_uid', sa.String(), nullable=True))
-    op.create_foreign_key(None, 'permission', 'user', ['updated_by_uid'], ['uid'])
     op.create_foreign_key(None, 'permission', 'user', ['created_by_uid'], ['uid'])
+    op.create_foreign_key(None, 'permission', 'user', ['updated_by_uid'], ['uid'])
     op.add_column('reflex_brain_addition', sa.Column('created_at', sa.DateTime(), nullable=True))
     op.add_column('reflex_brain_addition', sa.Column('created_by_uid', sa.String(), nullable=True))
     op.add_column('reflex_brain_addition', sa.Column('updated_at', sa.DateTime(), nullable=True))
@@ -82,8 +82,8 @@ def upgrade():
     op.add_column('user_preference', sa.Column('created_by_uid', sa.String(), nullable=True))
     op.add_column('user_preference', sa.Column('updated_at', sa.DateTime(), nullable=True))
     op.add_column('user_preference', sa.Column('updated_by_uid', sa.String(), nullable=True))
-    op.create_foreign_key(None, 'user_preference', 'user', ['created_by_uid'], ['uid'])
     op.create_foreign_key(None, 'user_preference', 'user', ['updated_by_uid'], ['uid'])
+    op.create_foreign_key(None, 'user_preference', 'user', ['created_by_uid'], ['uid'])
     # ### end Alembic commands ###
 
 
@@ -101,7 +101,8 @@ def downgrade():
     op.drop_column('shipped_sample', 'updated_at')
     op.drop_column('shipped_sample', 'created_by_uid')
     op.drop_column('shipped_sample', 'created_at')
-    op.add_column('report_impress', sa.Column('date_generated', postgresql.TIMESTAMP(), autoincrement=False, nullable=True))
+    op.add_column('report_impress',
+                  sa.Column('date_generated', postgresql.TIMESTAMP(), autoincrement=False, nullable=True))
     op.drop_constraint(None, 'reflex_brain_final', type_='foreignkey')
     op.drop_constraint(None, 'reflex_brain_final', type_='foreignkey')
     op.drop_column('reflex_brain_final', 'updated_by_uid')
@@ -147,8 +148,8 @@ def downgrade():
     op.drop_index(op.f('ix_client_contact_email'), table_name='client_contact')
     op.create_index('ix_client_contact_email', 'client_contact', ['email'], unique=False)
     op.alter_column('client_contact', 'email',
-               existing_type=sa.VARCHAR(),
-               nullable=True)
+                    existing_type=sa.VARCHAR(),
+                    nullable=True)
     op.drop_constraint(None, 'audit_log', type_='foreignkey')
     op.drop_constraint(None, 'audit_log', type_='foreignkey')
     op.drop_column('audit_log', 'updated_by_uid')

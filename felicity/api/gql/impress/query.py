@@ -58,12 +58,12 @@ class ReportImpressQuery:
                 return None
 
             def _sorter(to_sort: list) -> list:
-                return sorted(to_sort, key=lambda r: r.date_generated, reverse=True)
+                return sorted(to_sort, key=lambda r: r.created_at, reverse=True)
 
             reports = []
             for sid in sample_ids:
                 _report = _first_of(
-                    _sorter(list(filter(lambda x: x.sample_id == sid, items)))
+                    _sorter(list(filter(lambda x: x.sample.sample_id == sid, items)))
                 )
                 if _report:
                     reports.append(_report)
@@ -83,16 +83,20 @@ class ReportImpressQuery:
         return out_stream
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def impress_report_download(self, info, sample_id: str) -> BytesScalar | None:
+    async def impress_report_download(self, info, uid: str) -> BytesScalar | None:
+        """Download a specific impress report by impress uid"""
+        report = await ReportImpressService().get(uid=uid)
+        if not report:
+            return None
+
         if settings.OBJECT_STORAGE:
-            report = MinioClient().get_object(MinioBucket.DIAGNOSTIC_REPORT, [sample_id])
+            sample = await SampleService().get(uid=report.sample_uid)
+            report = MinioClient().get_object(MinioBucket.DIAGNOSTIC_REPORT, [sample.sample_id])
             if not report:
                 return None
+            # TODO: Filter returned report to get the one whose metadata matched impress uid
             return report[0]
         else:
-            report = await ReportImpressService().get(sample___sample_id=sample_id)
-            if not report:
-                return None
             return report.pdf_content
 
     @strawberry.field(permission_classes=[IsAuthenticated])

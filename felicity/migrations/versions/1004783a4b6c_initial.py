@@ -25,8 +25,8 @@ def upgrade():
         sa.Column("target_type", sa.String(length=100), nullable=False),
         sa.Column("target_uid", sa.String(), nullable=True),
         sa.Column("action", sa.Integer(), nullable=True),
-        sa.Column("state_before", sa.UnicodeText(), nullable=True),
-        sa.Column("state_after", sa.UnicodeText(), nullable=True),
+        sa.Column("state_before", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column("state_after", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column("uid", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("uid"),
     )

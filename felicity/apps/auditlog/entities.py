@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, UnicodeText
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import JSONB
 
 from felicity.apps.abstract.entity import BaseEntity
 
@@ -15,13 +16,13 @@ class AuditLog(BaseEntity):
     target_uid = Column(String, doc="The UID of the altered object")
     action = Column(Integer, doc="Create (1), update (2), or delete (3)")
     state_before = Column(
-        UnicodeText,
-        doc="Stores a JSON string representation of a dict containing the altered "
+        JSONB,
+        doc="Stores a JSON representation of a dict containing the altered "
             "column names and original values",
     )
     state_after = Column(
-        UnicodeText,
-        doc="Stores a JSON string representation of a dict containing the altered "
+        JSONB,
+        doc="Stores a JSON representation of a dict containing the altered "
             "column names and new values",
     )
 
