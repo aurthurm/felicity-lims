@@ -7,7 +7,6 @@ class SampleState(StrEnum):
     RECEIVED = auto()  # received in the laboratory and ready for processing
     AWAITING = auto()  # pending approval
     APPROVED = auto()  # authorised for release
-    PUBLISHING = auto()  # printed samples, ready for dispatch
     PUBLISHED = auto()  # printed samples, ready for dispatch
     INVALIDATED = auto()  # approval condemnation
     CANCELLED = auto()  # no longer required <in other words deleted>
@@ -19,13 +18,9 @@ class SampleState(StrEnum):
 
 class ResultState(StrEnum):
     PENDING = auto()  # analytes that are pending results
-    SUBMITTING = auto()
-    RESULTED = (
-        auto()
-    )  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
+    RESULTED = auto()  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
     RETRACTED = auto()  # analytes with erroneous results for correction
     CANCELLED = auto()  # analytes that are no longer required <in other words deleted>
-    APPROVING = auto()
     APPROVED = auto()  # analytes that are authorised/approved
     REFERRED = auto()  # analytes that are referred
 

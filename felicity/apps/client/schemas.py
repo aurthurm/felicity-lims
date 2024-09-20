@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
+
 #
 # Client Schemas
 #
@@ -76,6 +77,7 @@ class ClientContactBaseInDB(ClientContactBase):
 class ClientContactCreate(ClientContactBase):
     client_uid: str
     email: str
+    user_name: str
 
 
 # Properties to receive via API on update

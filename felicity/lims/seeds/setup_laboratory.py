@@ -9,7 +9,6 @@ from felicity.apps.setup.services import (CountryService, DepartmentService,
                                           LaboratorySettingService,
                                           ProvinceService)
 from felicity.core.config import get_settings
-
 from .data import get_seeds
 
 settings = get_settings()
@@ -93,7 +92,11 @@ async def seed_clients() -> None:
         contacts = await client_contact_Service.get(client_uid=client.uid)
         if not contacts:
             cc_in = client_schemas.ClientContactCreate(
-                first_name="Sr", last_name="in Charge", client_uid=client.uid, email=f"{uuid4().hex}@dummy.inc"
+                first_name="Sr",
+                last_name="in Charge",
+                client_uid=client.uid,
+                email=f"{uuid4().hex}@dummy.inc",
+                user_name=uuid4().hex
             )
             await client_contact_Service.create(cc_in)
 

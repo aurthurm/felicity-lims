@@ -2,11 +2,11 @@
 
 import asyncio
 import subprocess
-
 import typer
 from uvicorn import Config, Server
 
 from felicity.almigrator import FelicityMigrator
+from felicity.logcong import LOGGING_CONFIG
 
 alembic_service = FelicityMigrator()
 app = typer.Typer()
@@ -22,8 +22,8 @@ def runserver(host: str = "0.0.0.0", port: int = 8000, workers: int = 1, reload:
         port=port,
         workers=workers,
         reload=reload,
-        log_level="info",
-        use_colors=colors
+        use_colors=colors,
+        log_config=LOGGING_CONFIG
     )
     Server(config).run()
 

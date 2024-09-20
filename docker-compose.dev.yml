@@ -47,7 +47,7 @@ services:
       - MINIO_ACCESS=felicity
       - MINIO_SECRET=felicity
     volumes:
-      - ./felicity/:/app/felicity
+      - ./felicity:/app/felicity
     ports:
       - 8000:8000
     depends_on:

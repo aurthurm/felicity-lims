@@ -44,7 +44,6 @@ async def impress_samples(sample_meta: List[any], user):
             SampleState.PAIRED,
             SampleState.AWAITING,
             SampleState.APPROVED,
-            SampleState.PUBLISHING,
             SampleState.PUBLISHED,
         ]:
             impress_meta = marshaller(sample, exclude=exclude, depth=3)

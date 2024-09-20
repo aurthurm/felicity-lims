@@ -1,4 +1,3 @@
-import felicity.api.gql.analysis.types
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.services.analysis import SampleService
@@ -18,9 +17,9 @@ class SampleWorkFlow:
     async def revert(self, uid: str, by_uid: str) -> None:
         to_status = ResultState.PENDING
         results = await self.sample_service.get_analysis_results(uid)
-        awaiting_satatuses = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED, ResultState.CANCELLED]
+        awaiting_satatuses = [ResultState.RESULTED, ResultState.RETRACTED, ResultState.CANCELLED]
         approved_satatuses = [ResultState.APPROVED, ResultState.RETRACTED, ResultState.CANCELLED]
-       
+
         if any([result.status in ResultState.PENDING for result in results]):
             to_status = SampleState.RECEIVED
         elif all([result.status == ResultState.CANCELLED for result in results]):
@@ -30,7 +29,7 @@ class SampleWorkFlow:
         elif all([result.status in approved_satatuses for result in results]):
             to_status = SampleState.APPROVED
         await self.sample_service.change_status(uid, to_status, by_uid)
-    
+
     async def receive(self, uid, received_by):
         sample = await self.sample_service.get(uid=uid)
         await self._guard_receive(sample)
@@ -177,7 +176,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_publish(sample):
-        allow = sample.status in [SampleState.APPROVED, SampleState.PUBLISHING]
+        allow = sample.status in [SampleState.APPROVED]
         if not allow:
             raise SampleWorkFlowException(f"Cannot publish this Sample")
         return True
@@ -234,7 +233,7 @@ class SampleWorkFlow:
         # Are there are results in referred state or some are in pending state
         analysis, referred = await self.sample_service.get_referred_analyses(sample.uid)
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [ResultState.PENDING], analysis)
+                filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             allow = False
 

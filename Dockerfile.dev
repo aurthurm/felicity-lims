@@ -18,5 +18,6 @@ RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 WORKDIR /app
-COPY ./felicity /app/felicity
+COPY . /app
+RUN pip install -e .
 ENV PYTHONPATH=/app

@@ -7,6 +7,14 @@ from .client import create_redis_pool
 
 
 class ProcessingTracker:
+    """Track background processing
+    This will help notify the frontend to lock and prevent user taking action
+    on these objects
+
+    Note: Easiest implementation is by using Job service.
+    Reason is that all bg tasks go through job - samples, worksheets :)
+    However for minute objects like Result actions we might action on the specific implementations :)
+    """
 
     def __init__(self):
         self._store = {}
@@ -52,8 +60,11 @@ class ProcessingTracker:
             pool.release(redis)
         else:
             exists = uid in self._store
-            
+
         await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
             "uid": uid, "object_type": object_type, "status": "processing"
         }))
         return exists
+
+
+process_tracker = ProcessingTracker

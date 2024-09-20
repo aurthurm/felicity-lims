@@ -2,6 +2,8 @@ import logging
 from typing import NoReturn
 
 from felicity.apps.analysis import utils
+from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import NotificationService
@@ -31,6 +33,8 @@ async def submit_results(job_uid: str) -> NoReturn:
     try:
         await utils.results_submitter(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
+        for res in job.data:
+            await process_tracker.release(uid=res['uid'], object_type=TrackableObject.RESULT)
         await notification_service.notify(
             f"Your results were successfully submitted", user
         )
@@ -63,6 +67,8 @@ async def verify_results(job_uid: str) -> NoReturn:
     try:
         await utils.verify_from_result_uids(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
+        for res in job.data:
+            await process_tracker.release(uid=res['uid'], object_type=TrackableObject.RESULT)
         await notification_service.notify(
             "Your results were successfully verified", user
         )

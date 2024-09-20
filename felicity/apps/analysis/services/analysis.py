@@ -291,9 +291,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
     async def get_incomplete_analysis_results(self, uid: str):
         pending_states = [
-            ResultState.SUBMITTING,
             ResultState.PENDING,
-            ResultState.APPROVING,
             ResultState.REFERRED,
         ]
         analysis = await self.get_analysis_results(uid)

@@ -29,6 +29,8 @@ from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFl
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
+from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
                                     JobState)
@@ -461,13 +463,6 @@ async def publish_samples(
     # set status of these samples to PUBLISHING for those whose action is "publish" !important
     final_publish = list(filter(lambda p: p.action == "publish", samples))
     not_final = list(filter(lambda p: p.action != "publish", samples))
-    if final_publish:
-        await SampleService().bulk_update_with_mappings(
-            [
-                {"uid": sample.uid, "status": SampleState.PUBLISHING}
-                for sample in final_publish
-            ]
-        )
 
     data = [{"uid": s.uid, "action": s.action} for s in samples]  # noqa
     job_schema = job_schemas.JobCreate(
@@ -481,7 +476,11 @@ async def publish_samples(
     )
 
     await JobService().create(job_schema)
+    if final_publish:
+        for sample in final_publish:
+            await process_tracker.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
 
+    # TODO: clean up below - probably no longer necessary - needs checking
     # !important for frontend
     # unfreeze frontend and return sample to original state since it is a non final publish
     if not_final:

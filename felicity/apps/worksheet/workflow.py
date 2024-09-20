@@ -21,7 +21,7 @@ class WorkSheetWorkFlow:
         results = _results + qc_results
         print("arrrrrrrrrrrrrr: ", results)
 
-        awaiting_states = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED]
+        awaiting_states = [ResultState.RESULTED, ResultState.RETRACTED]
         if all([(ar.status in awaiting_states) for ar in results]):
             to_status = WorkSheetState.AWAITING
         await self.worksheet_service.change_state(uid, to_status, by_uid)
@@ -43,12 +43,12 @@ class WorkSheetWorkFlow:
             worksheet.uid
         )
         if (
-            len(
-                list(
-                    filter(lambda ar: ar.status in result_states, results + qc_results)
+                len(
+                    list(
+                        filter(lambda ar: ar.status in result_states, results + qc_results)
+                    )
                 )
-            )
-            > 0
+                > 0
         ):
             raise WorksheetWorkFlowException(
                 f"Cannot submit a Worksheet with pending results"
@@ -61,7 +61,7 @@ class WorkSheetWorkFlow:
         await self.worksheet_service.verify(worksheet.uid, approved_by)
 
     async def _guard_approve(self, worksheet: WorkSheet) -> bool:
-        if worksheet.state not in [WorkSheetState.AWAITING, WorkSheetState.APPROVING]:
+        if worksheet.state not in [WorkSheetState.AWAITING]:
             raise WorksheetWorkFlowException(
                 f"Cannot approve a {worksheet.state} WorkSheet"
             )

@@ -1,6 +1,5 @@
-from typing import List, Optional, Self
-
 import strawberry  # noqa
+from typing import List, Optional, Self
 
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
@@ -12,6 +11,13 @@ class PermissionType:
     action: str | None = None
     target: str | None = None
     active: bool | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: Self | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Self | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -23,6 +29,13 @@ class GroupType:
     permissions: Optional[List[PermissionType]] = None
     active: bool | None = None
     pages: str | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: Self | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Self | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -89,3 +102,10 @@ class UserPreferenceType:
     expanded_menu: bool | None = None
     departments: list[DepartmentType] | None = None
     theme: str | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: Self | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Self | None = None
+    updated_at: str | None = None

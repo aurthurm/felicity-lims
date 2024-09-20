@@ -9,7 +9,6 @@ class ShipmentState(StrEnum):
     """
 
     DUE = auto()  # shipment recived from external labs
-    RECEIVING = auto()
     EMPTY = auto()  # shipment without samples
     PREPERATION = auto()  # shipment containing at least a single sample
     READY = auto()  # shipment finalised

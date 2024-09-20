@@ -1,5 +1,4 @@
 import logging
-import re
 from typing import TYPE_CHECKING
 
 from felicity.apps.analysis.entities.results import AnalysisResult
@@ -22,7 +21,7 @@ class AnalysisResultWorkFlow:
     Defines a set of guards that allow or prevent actions taken on AnalysisResult
     """
 
-    def __init__(self): 
+    def __init__(self):
         self.analysis_result_service = AnalysisResultService()
 
     async def revert(self, uid: str, by_uid: str) -> None:
@@ -54,8 +53,8 @@ class AnalysisResultWorkFlow:
     async def _guard_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
         if (
-            analysis_result.status == ResultState.PENDING
-            and analysis_result.assigned is False
+                analysis_result.status == ResultState.PENDING
+                and analysis_result.assigned is False
         ):
             allow = True
 
@@ -72,8 +71,8 @@ class AnalysisResultWorkFlow:
     async def _guard_un_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
         if (
-            analysis_result.status == ResultState.PENDING
-            and analysis_result.assigned is True
+                analysis_result.status == ResultState.PENDING
+                and analysis_result.assigned is True
         ):
             allow = True
 
@@ -121,7 +120,7 @@ class AnalysisResultWorkFlow:
         if not allow:
             raise AnalysisResultWorkFlowException(f"Cannot re-instate this Result")
         return True
-    
+
     async def submit(self, data: list[dict], submitter) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
         _skipped = []
         _submitted = []
@@ -136,34 +135,35 @@ class AnalysisResultWorkFlow:
         return _skipped, _submitted
 
     async def _guard_submit(self, result: AnalysisResult) -> bool:
-        if result.status not in [ResultState.PENDING, ResultState.SUBMITTING]:
+        if result.status not in [ResultState.PENDING]:
             return False
         return True
 
     async def approve(self, result_uids: list[str], approved_by) -> list[AnalysisResult]:
-        results = await self.analysis_result_service.get_all(uid__in=result_uids) # get_related(related=["analysis"], uid__in=result_uids)
+        results = await self.analysis_result_service.get_all(
+            uid__in=result_uids)  # get_related(related=["analysis"], uid__in=result_uids)
         await self._guard_approve(results, approved_by.uid)
         return [(await self.analysis_result_service.verify(r.uid, approved_by)) for r in results]
 
     async def _guard_approve(
-        self, analysis_results: list[AnalysisResult], approved_by_uid
+            self, analysis_results: list[AnalysisResult], approved_by_uid
     ) -> bool:
         laboratory = await LaboratoryService().get_by_setup_name("felicity")
         settings = await LaboratorySettingService().get(
             laboratory_uid=laboratory.uid
         )
-        states = [ResultState.RESULTED, ResultState.APPROVING]
+        states = [ResultState.RESULTED]
 
         for result in analysis_results:
             # Self Verification check
             if (
-                settings.allow_self_verification is False
-                and result.analysis.self_verification is False
+                    settings.allow_self_verification is False
+                    and result.analysis.self_verification is False
             ):
                 # First time verifier must not be the submitter
                 if (
-                    len(result.verified_by) == 0
-                    and result.submitted_by_uid == approved_by_uid
+                        len(result.verified_by) == 0
+                        and result.submitted_by_uid == approved_by_uid
                 ):
                     raise AnalysisResultWorkFlowException(
                         "Cannot approve a result your own work"
