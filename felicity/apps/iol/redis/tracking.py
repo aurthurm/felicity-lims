@@ -67,4 +67,4 @@ class ProcessingTracker:
         return exists
 
 
-process_tracker = ProcessingTracker
+process_tracker = ProcessingTracker()

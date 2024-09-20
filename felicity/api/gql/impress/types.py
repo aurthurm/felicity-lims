@@ -6,6 +6,7 @@ import strawberry  # noqa
 from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.types import JSONScalar
 from felicity.api.gql.user.types import UserType
+from felicity.core.config import settings
 from felicity.database.mongo import MongoService, MongoCollection
 
 
@@ -31,4 +32,7 @@ class ReportImpressType:
 
     @strawberry.field
     async def json_content(self) -> Optional[JSONScalar]:
-        return await MongoService().retrieve(MongoCollection.DIAGNOSTIC_REPORT, self.uid)
+        if settings.OBJECT_STORAGE:
+            return await MongoService().retrieve(MongoCollection.DIAGNOSTIC_REPORT, self.uid)
+        else:
+            return self.json_content

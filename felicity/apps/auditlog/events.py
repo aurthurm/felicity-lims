@@ -10,10 +10,16 @@ logger = logging.getLogger(__name__)
 
 
 async def auditlog_tracker(action: str, table_name: str, metadata):
-    logger.info(f"Event fired: {action}:{table_name}")
     if action != "after-update" and not metadata:
         return
 
+    if not ("state_after" in metadata and "state_before" in metadata):
+        return
+
+    if metadata["state_after"] == metadata["state_before"]:
+        return
+
+    logger.info(f"Event fired: {action}:{table_name}")
     update = {
         **metadata,
         "user_uid": metadata["state_after"].get("updated_by_uid", None),
@@ -24,6 +30,7 @@ async def auditlog_tracker(action: str, table_name: str, metadata):
     if settings.DOCUMENT_STORAGE:
         await MongoService().create(MongoCollection.AUDIT_LOG, update)
     else:
+        del update["uid"]
         await AuditLogService().create(update)
 
 

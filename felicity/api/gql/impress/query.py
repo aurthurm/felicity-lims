@@ -50,7 +50,7 @@ class ReportImpressQuery:
                 bytes_stream.seek(0)
                 out_stream = bytes_stream.getbuffer().tobytes()
         else:
-            items = await ReportImpressService().get_all(sample__sample_id__in=sample_ids)
+            items = await ReportImpressService().get_all(sample___sample_id__in=sample_ids)
 
             def _first_of(things: list):
                 if len(things) > 0:
@@ -90,7 +90,7 @@ class ReportImpressQuery:
                 return None
             return report[0]
         else:
-            report = await ReportImpressService().get(sample__sample_id=sample_id)
+            report = await ReportImpressService().get(sample___sample_id=sample_id)
             if not report:
                 return None
             return report.pdf_content
