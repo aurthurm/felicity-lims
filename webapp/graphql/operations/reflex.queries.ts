@@ -32,6 +32,7 @@ export const GET_EFLEX_RULE_BY_UID = gql`
                     name
                 }
                 brains {
+                    uid
                     description
                     analysesValues {
                         analysisUid

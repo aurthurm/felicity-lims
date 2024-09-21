@@ -73,7 +73,7 @@ async def verify_results(job_uid: str) -> NoReturn:
             "Your results were successfully verified", user
         )
     except Exception as e:
-        logger.debug(f"Exception ....... {e}")
+        logger.info(f"Exception ....... {e}")
         await job_service.change_status(job.uid, new_status=JobState.FAILED, change_reason=str(e))
         await notification_service.notify(
             f"Failed to verify results in job with uid: {job.uid} with error: {str(e)}",
@@ -105,7 +105,7 @@ async def setup_billing(job_uid: str) -> NoReturn:
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)  # noqa
         await notification_service.notify("Billing setup was successfully setup", user)
     except Exception as e:
-        logger.debug(f"Exception ....... {e}")
+        logger.info(f"Exception ....... {e}")
         await job_service.change_status(job.uid, new_status=JobState.FAILED)
         await notification_service.notify(
             f"Failed to setup billing in job with uid: {job.uid} with error: {str(e)}",

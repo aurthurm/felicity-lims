@@ -16,9 +16,11 @@ import {
   EDIT_REFLEX_ACTION,
   ADD_REFLEX_BRAIN,
   EDIT_REFLEX_BRAIN,
+  DELETE_REFLEX_BRAIN,
 } from "@/graphql/operations/reflex.mutations";
 import { stringifyNumber } from "@/utils/helpers";
 import { IAnalysisService, IResultOption } from "@/models/analysis";
+import Swal from "sweetalert2";
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
@@ -39,14 +41,14 @@ let actionForm = reactive({}) as IReflexAction;
 const formAction = ref<boolean>(true);
 
 let showBrainModal = ref<boolean>(false);
-let brainForm = reactive({
+let brainForm = reactive<IReflexBrain>({
   addNew: [],
   analysesValues: [],
   finalise: [],
-}) as IReflexBrain;
+});
 
 onMounted(async () => {
-  reflexStore.fetchReflexRuleByUid(route.params?.uid);
+  reflexStore.fetchReflexRuleByUid(route.params?.uid as string);
 });
 
 const stringToNum = (num: number) => {
@@ -170,7 +172,7 @@ function setFinalResultOptions(event: any, anal: IReflexBrainFinal) {
   finalResultOptions.value = analysis?.resultOptions || [];
 }
 
-function reflexBrainFormManager(create: boolean, obj: IReflexBrain = {}): void {
+function reflexBrainFormManager(create: boolean, obj: IReflexAction = {}): void {
   formAction.value = create;
   showBrainModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX BRAIN";
@@ -191,7 +193,27 @@ function saveBrainForm(): void {
   showBrainModal.value = false;
 }
 
+function deleteReflexBrain(actionUid: string, uid: string): void {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(result => {
+    if (result.isConfirmed) {
+      withClientMutation(DELETE_REFLEX_BRAIN, { uid }, "deleteReflexBrain").then(_ =>
+        reflexStore.deleteReflexBrain(actionUid, uid)
+      );
+    }
+  })
+}
+
+
 function addComplexCondition() {
+
   if (!brainForm.complexConditions) {
     brainForm.complexConditions = [];
   }
@@ -256,9 +278,14 @@ function removeComplexCondition(index: number) {
               <h2 class="my-2 text-l text-gray-600 font-bold">
                 {{ stringToNum(index + 1) }} Brain
               </h2>
-              <span class="p-2" @click="reflexBrainFormManager(false, brain)"
+              <div>
+                <span class="p-2" @click="reflexBrainFormManager(false, brain)"
                 ><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1"
               /></span>
+              <span class="p-2" @click="deleteReflexBrain(action.uid!, brain.uid!)"
+                ><font-awesome-icon icon="trash" class="text-md text-red-400 mr-1"
+              /></span>
+              </div>
             </div>
             <h3>{{ brain?.description }}</h3>
             <hr class="my-2" />
@@ -321,7 +348,7 @@ function removeComplexCondition(index: number) {
                 </div>
               </div>
 
-              <section id="complex-conditions">
+              <!-- <section id="complex-conditions">
                 <hr />
                 <div class="flex justify-between items-center py-2">
                   <h5>Complex Conditions</h5>
@@ -341,9 +368,9 @@ function removeComplexCondition(index: number) {
                     @remove="removeComplexCondition(index)"
                   />
                 </div>
-              </section>
+              </section> -->
 
-              <section id="custom-logic">
+              <!-- <section id="custom-logic">
                 <hr />
                 <div class="flex justify-between items-center py-2">
                   <h5>Custom Logic</h5>
@@ -359,7 +386,7 @@ function removeComplexCondition(index: number) {
                     placeholder="Enter custom logic expression..."
                   />
                 </label>
-              </section>
+              </section> -->
 
             </div>
           </div>

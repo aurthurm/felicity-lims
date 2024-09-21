@@ -68,5 +68,15 @@ export const useReflexStore = defineStore('reflex', {
                 if (index > -1) action!.brains![index] = brain;
             }
         },
+        deleteReflexBrain(actionUid: string, brainUid: string) {
+            const action = this.reflexRule?.reflexActions?.find(act => act.uid == actionUid);
+            if (action && action.brains) {
+                const index = action.brains.findIndex(brain => brain.uid === brainUid);
+                if (index > -1) {
+                    action.brains.splice(index, 1);
+                }
+            }
+        },
     },
 });
+

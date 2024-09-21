@@ -248,7 +248,7 @@ async def shipment_receive(job_uid: str):
         created = await analysis_result_service.bulk_create(result_schemas)
 
         # initialise reflex action if exist
-        logger.debug("ReflexUtil .... set_reflex_actions ...")
+        logger.info("ReflexUtil .... set_reflex_actions ...")
         await ReflexEngineService(created, None).set_reflex_actions(created)
 
         # ! paramount !

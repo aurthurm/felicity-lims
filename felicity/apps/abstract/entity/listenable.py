@@ -29,29 +29,29 @@ class EventListenable:
 
     @classmethod
     def __declare_last__(cls: Type['EventListenable']) -> None:
-        logger.debug(f"Setting up event listeners for {cls.__name__}")
+        logger.info(f"Setting up event listeners for {cls.__name__}")
         event.listens_for(cls, "after_insert", cls.handle_insert)
         event.listen(cls, "after_update", cls.handle_update)
         event.listen(cls, "after_delete", cls.handle_delete)
 
     @staticmethod
     def handle_insert(mapper: Any, connection: Any, target: 'EventListenable') -> None:
-        logger.debug(f"Handling insert for {target.__class__.__name__}")
+        logger.info(f"Handling insert for {target.__class__.__name__}")
         target.put_out("after-insert", target.__tablename__, marshaller(target))
 
     @staticmethod
     def handle_delete(mapper: Any, connection: Any, target: 'EventListenable') -> None:
-        logger.debug(f"Handling delete for {target.__class__.__name__}")
+        logger.info(f"Handling delete for {target.__class__.__name__}")
         target.put_out("after-delete", target.__tablename__, marshaller(target))
 
     @staticmethod
     def handle_update(mapper: Any, connection: Any, target: 'EventListenable') -> None:
-        logger.debug(f"Handling update for {target.__class__.__name__}")
+        logger.info(f"Handling update for {target.__class__.__name__}")
         target.put_out("after-update", target.__tablename__, target.get_changes(target))
 
     @staticmethod
     def get_changes(target: 'EventListenable') -> Dict[str, Any]:
-        logger.debug(f"Getting changes for {target.__class__.__name__}")
+        logger.info(f"Getting changes for {target.__class__.__name__}")
         state_before: Dict[str, Any] = {}
         state_after: Dict[str, Any] = {}
         inspector = inspect(target)
@@ -81,7 +81,7 @@ class EventListenable:
                 del state_before[_key]
 
         if len(state_after) == 1 and "updated_at" in state_after:
-            logger.debug("Only updated_at changed, returning empty dict")
+            logger.info("Only updated_at changed, returning empty dict")
             return {}
 
         logger.info(f"Changes detected for {target.__class__.__name__}: {len(state_after)} fields changed")

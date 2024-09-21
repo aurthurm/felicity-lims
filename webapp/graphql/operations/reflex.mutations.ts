@@ -171,3 +171,14 @@ export const EDIT_REFLEX_BRAIN = gql`
         }
     }
 `;
+
+export const DELETE_REFLEX_BRAIN = gql`
+    mutation deleteReflexBrain($uid: String!) {
+        deleteReflexBrain(uid: $uid) {
+            __typename
+            ... on DeletedItem {
+                uid
+            }
+        }
+    }
+`;

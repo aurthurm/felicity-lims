@@ -18,7 +18,7 @@ LOGGING_CONFIG: dict[str, Any] = {
             "()": "uvicorn.logging.AccessFormatter",
             "fmt": '%(asctime)s - %(name)s - %(levelprefix)s  %(client_addr)s - "%(request_line)s" %(status_code)s',
             # noqa: E501
-            "use_colors": False,
+            "use_colors": True,
         },
     },
     "handlers": {

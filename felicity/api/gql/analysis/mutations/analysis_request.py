@@ -257,7 +257,7 @@ async def create_analysis_request(
         created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
 
         # initialise reflex action if exist
-        logger.debug(f"ReflexUtil .... set_reflex_actions ...")
+        logger.info(f"ReflexUtil .... set_reflex_actions ...")
         await ReflexEngineService(created[0], felicity_user).set_reflex_actions(created)
 
     # ! paramount !
