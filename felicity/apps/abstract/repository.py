@@ -47,13 +47,27 @@ def apply_nested_loader_options(stmt, model, path):
 
 
 class BaseRepository(Generic[M]):
+    """Base repository class for database operations."""
+
     async_session = async_session
     model: M = None
 
     def __init__(self, model: M) -> None:
+        """
+        Initialize the repository with a model.
+
+        :param model: The model class to use for this repository.
+        """
         self.model = model
 
     async def save(self, m: M) -> M:
+        """
+        Save a model instance to the database.
+
+        :param m: The model instance to save.
+        :return: The saved model instance.
+        :raises ValueError: If no model is provided.
+        """
         if not m:
             raise ValueError("No model provided to save")  # noqa
 
@@ -72,6 +86,13 @@ class BaseRepository(Generic[M]):
         return m
 
     async def save_all(self, items):
+        """
+        Save multiple model instances to the database.
+
+        :param items: A list of model instances to save.
+        :return: The list of saved model instances.
+        :raises ValueError: If no items are provided.
+        """
         if not items:
             raise ValueError("No items provided to save")
 
@@ -86,6 +107,13 @@ class BaseRepository(Generic[M]):
         return items
 
     async def create(self, **kwargs) -> M:
+        """
+        Create a new model instance with the given data.
+
+        :param kwargs: The data to create the new model instance.
+        :return: The newly created model instance.
+        :raises ValueError: If no data is provided.
+        """
         if not kwargs:
             raise ValueError("No data provided to create a new model")
 
@@ -93,6 +121,13 @@ class BaseRepository(Generic[M]):
         return await self.save(filled)
 
     async def bulk_create(self, bulk: list[dict]) -> list[M]:
+        """
+        Create multiple new model instances with the given data.
+
+        :param bulk: A list of dictionaries containing data for new model instances.
+        :return: A list of newly created model instances.
+        :raises ValueError: If no data is provided.
+        """
         if not bulk:
             raise ValueError("No data provided to create a new models")
 
@@ -103,6 +138,14 @@ class BaseRepository(Generic[M]):
         return await self.save_all(to_save)
 
     async def update(self, uid: str, **data) -> M:
+        """
+        Update an existing model instance.
+
+        :param uid: The unique identifier of the model to update.
+        :param data: The data to update the model with.
+        :return: The updated model instance.
+        :raises ValueError: If uid or data is not provided.
+        """
         if not uid or not data:
             raise ValueError("Both uid and data are required to update model")
 
@@ -112,9 +155,12 @@ class BaseRepository(Generic[M]):
 
     async def bulk_update_where(self, update_data: list[dict], filters: dict):
         """
-        @param update_data a List of dictionary update values.
-        @param filters is a dict of filter values.
-        e.g [{'uid': 34, update_values}, ...]
+        Update multiple model instances that match the given filters.
+
+        :param update_data: A list of dictionaries containing update values.
+        :param filters: A dictionary of filter conditions.
+        :return: The updated model instances.
+        :raises ValueError: If update_data or filters are not provided.
         """
         if not update_data or not filters:
             raise ValueError("Both update_data and filters are required to update model")
@@ -128,10 +174,10 @@ class BaseRepository(Generic[M]):
 
     async def bulk_update_with_mappings(self, mappings: list) -> None:
         """
-        @param mappings a List of dictionary update values with pks.
-        e.g [{'uid': 34, update_values}, ...]
-        ?? there must be zero many-to-many relations
-        NB: Function does not return anything
+        Update multiple model instances using a list of mappings.
+
+        :param mappings: A list of dictionaries containing update values with primary keys.
+        :raises ValueError: If no mappings are provided.
         """
         if not mappings:
             raise ValueError("No mappings provided to update")
@@ -158,9 +204,10 @@ class BaseRepository(Generic[M]):
 
     async def table_insert(self, table: Any, mappings: list[dict]) -> None:
         """
-        @param table is a sqlalchemy table model
-        @param mappings a dictionary update values.
-        e.g {'name': 34, 'day': "fff"}
+        Insert multiple rows into a specified table.
+
+        :param table: The SQLAlchemy table model.
+        :param mappings: A list of dictionaries containing the data to insert.
         """
         async with self.async_session() as session:
             stmt = table.insert()
@@ -169,6 +216,15 @@ class BaseRepository(Generic[M]):
             await session.flush()
 
     async def query_table(self, table: Table, columns: list[str], **kwargs):
+        """
+        Query a specific table with optional column selection and filters.
+
+        :param table: The SQLAlchemy table to query.
+        :param columns: A list of column names to select.
+        :param kwargs: Additional filter conditions.
+        :return: The query results.
+        :raises ValueError: If table or filters are not provided.
+        """
         if table is None or not kwargs:
             raise ValueError("Both table and filters are required to query")
 
@@ -184,6 +240,13 @@ class BaseRepository(Generic[M]):
         return results.unique().scalars().all()  # , results.keys()
 
     async def get(self, **kwargs) -> M:
+        """
+        Get a single model instance based on the given filters.
+
+        :param kwargs: Filter conditions.
+        :return: The model instance if found, otherwise None.
+        :raises ValueError: If no arguments are provided.
+        """
         if not kwargs:
             raise ValueError("No arguments provided to get model")
         stmt = self.model.where(**kwargs)
@@ -193,6 +256,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def get_all(self, **kwargs) -> list[M]:
+        """
+        Get all model instances that match the given filters.
+
+        :param kwargs: Filter conditions.
+        :return: A list of model instances.
+        :raises ValueError: If no arguments are provided.
+        """
         if not kwargs:
             raise ValueError("No arguments provided to get all")
         stmt = self.model.where(**kwargs)
@@ -202,11 +272,24 @@ class BaseRepository(Generic[M]):
         return found
 
     async def all(self) -> list[M]:
+        """
+        Get all instances of the model.
+
+        :return: A list of all model instances.
+        """
         async with self.async_session() as session:
             results = await session.execute(select(self.model))
         return results.scalars().all()
 
     async def all_by_page(self, page: int = 1, limit: int = 20, **kwargs) -> dict:
+        """
+        Get a paginated list of model instances.
+
+        :param page: The page number (default: 1).
+        :param limit: The number of items per page (default: 20).
+        :param kwargs: Additional filter conditions.
+        :return: A dictionary containing the paginated results.
+        """
         start = (page - 1) * limit
 
         stmt = self.model.where(**kwargs).limit(limit).offset(start)
@@ -216,6 +299,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def get_by_uids(self, uids: List[str]) -> list[M]:
+        """
+        Get model instances based on a list of unique identifiers.
+
+        :param uids: A list of unique identifiers.
+        :return: A list of model instances.
+        :raises ValueError: If no uids are provided.
+        """
         if not uids:
             raise ValueError("No uids provided to get by uids")
         stmt = select(self.model).where(self.model.uid.in_(uids))  # type: ignore
@@ -226,7 +316,15 @@ class BaseRepository(Generic[M]):
     async def get_related(
             self, related: Optional[list[str]], many: bool = False, **kwargs
     ):
-        """Return the first value in database based on given args."""
+        """
+        Get related model instances based on the given filters.
+
+        :param related: A list of related fields to load.
+        :param many: Whether to return multiple instances (default: False).
+        :param kwargs: Filter conditions.
+        :return: The related model instances.
+        :raises ValueError: If no related fields are provided.
+        """
         if not related:
             raise ValueError("No related fields provided to get related")
 
@@ -245,7 +343,12 @@ class BaseRepository(Generic[M]):
         return found
 
     async def stream_by_uids(self, uids: List[Any]) -> AsyncIterator[M]:
+        """
+        Stream model instances based on a list of unique identifiers.
 
+        :param uids: A list of unique identifiers.
+        :return: An asynchronous iterator yielding model instances.
+        """
         stmt = select(self.model).where(self.model.in_(uids))  # type: ignore
 
         async with self.async_session() as session:
@@ -254,6 +357,11 @@ class BaseRepository(Generic[M]):
             yield row
 
     async def stream_all(self) -> AsyncIterator[Any]:
+        """
+        Stream all model instances.
+
+        :return: An asynchronous iterator yielding model instances.
+        """
         stmt = select(self.model)
         async with self.async_session() as session:
             stream = await session.stream(stmt.order_by(self.model.uid))
@@ -261,7 +369,13 @@ class BaseRepository(Generic[M]):
             yield row
 
     async def full_text_search(self, search_string, field):
-        """Full-text Search with PostgreSQL"""
+        """
+        Perform a full-text search on the model.
+
+        :param search_string: The search string.
+        :param field: The field to search on.
+        :return: A list of model instances that match the search string.
+        """
         stmt = select(self.model).filter(
             func.to_tsvector("english", getattr(self.model, field)).match(
                 search_string, postgresql_regconfig="english"
@@ -273,6 +387,12 @@ class BaseRepository(Generic[M]):
         return search
 
     async def delete(self, uid: str) -> None:
+        """
+        Delete a model instance based on its unique identifier.
+
+        :param uid: The unique identifier of the model to delete.
+        :raises ValueError: If no uid is provided.
+        """
         if not uid:
             raise ValueError("No uid provided to delete")
         obj = await self.get(uid=uid)
@@ -283,8 +403,10 @@ class BaseRepository(Generic[M]):
 
     async def count_where(self, filters: dict) -> int:
         """
-        :param filters:
-        :return: int
+        Count the number of model instances that match the given filters.
+
+        :param filters: A dictionary of filter conditions.
+        :return: The number of matching model instances.
         """
         filter_stmt = self.model.smart_query(filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
@@ -293,11 +415,18 @@ class BaseRepository(Generic[M]):
         return res.scalars().one()
 
     async def search(self, **kwargs) -> list[M]:
+        """
+        Perform a search on the model based on the given conditions.
+
+        :param kwargs: Search conditions.
+        :return: A list of model instances that match the search conditions.
+        :raises ValueError: If no search arguments are provided.
+        """
         if not kwargs:
             raise ValueError("No search arguments provided")
         filters = []
         combined = set()
-        for k, v in kwargs:
+        for k, v in kwargs.items():
             filter_string = f"{k}__ilike"
             filters.append(filter_string)
 
@@ -316,6 +445,15 @@ class BaseRepository(Generic[M]):
             limit: int | None = None,
             either: bool = False,
     ) -> list[M]:
+        """
+        Filter model instances based on the given conditions.
+
+        :param filters: A list of filter conditions.
+        :param sort_attrs: A list of attributes to sort by (default: None).
+        :param limit: The maximum number of instances to return (default: None).
+        :param either: Whether to use logical OR for multiple filters (default: False).
+        :return: A list of filtered model instances.
+        """
         if either:
             filters = {sa_or_: filters}
 
@@ -336,6 +474,17 @@ class BaseRepository(Generic[M]):
             sort_by: list[str] | None,
             **kwargs,
     ) -> PageCursor:
+        """
+        Paginate model instances based on the given conditions.
+
+        :param page_size: The number of instances per page (default: None).
+        :param after_cursor: The cursor for paginating after a specific instance (default: None).
+        :param before_cursor: The cursor for paginating before a specific instance (default: None).
+        :param filters: A dictionary or list of dictionaries of filter conditions.
+        :param sort_by: A list of attributes to sort by (default: None).
+        :param kwargs: Additional keyword arguments.
+        :return: A PageCursor object containing the paginated results.
+        """
         if not filters:
             filters = {}
 
@@ -400,11 +549,23 @@ class BaseRepository(Generic[M]):
         )
 
     def build_edges(self, items: List[Any]) -> List[EdgeNode]:
+        """
+        Build a list of EdgeNode objects from a list of model instances.
+
+        :param items: A list of model instances.
+        :return: A list of EdgeNode objects.
+        """
         if not items:
             return []
         return [self.build_node(item) for item in items]
 
     def build_node(self, item: Any) -> EdgeNode:
+        """
+        Build an EdgeNode object from a model instance.
+
+        :param item: A model instance.
+        :return: An EdgeNode object.
+        """
         return EdgeNode(**{"cursor": self.encode_cursor(item.uid), "node": item})
 
     @staticmethod
@@ -414,6 +575,15 @@ class BaseRepository(Generic[M]):
             has_next_page: bool = False,
             has_previous_page: bool = False,
     ) -> PageInfo:
+        """
+        Build a PageInfo object with the given parameters.
+
+        :param start_cursor: The cursor for the first instance in the page (default: None).
+        :param end_cursor: The cursor for the last instance in the page (default: None).
+        :param has_next_page: Whether there is a next page (default: False).
+        :param has_previous_page: Whether there is a previous page (default: False).
+        :return: A PageInfo object.
+        """
         return PageInfo(
             **{
                 "start_cursor": start_cursor,
@@ -425,8 +595,20 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def decode_cursor(cursor):
+        """
+        Decode a cursor value.
+
+        :param cursor: The cursor value to decode.
+        :return: The decoded cursor value.
+        """
         return cursor
 
     @staticmethod
     def encode_cursor(identifier: Any):
+        """
+        Encode a cursor value.
+
+        :param identifier: The value to encode.
+        :return: The encoded cursor value.
+        """
         return identifier
