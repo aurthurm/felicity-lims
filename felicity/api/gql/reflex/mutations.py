@@ -7,7 +7,7 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
                                            ReflexRuleType)
-from felicity.api.gql.types import OperationError
+from felicity.api.gql.types import OperationError, DeletedItem
 from felicity.apps.analysis.services.analysis import AnalysisService
 from felicity.apps.reflex import schemas
 from felicity.apps.reflex.entities import (ReflexBrainAddition,
@@ -16,7 +16,8 @@ from felicity.apps.reflex.entities import (ReflexBrainAddition,
                                            reflex_action_analysis)
 from felicity.apps.reflex.services import (ReflexActionService,
                                            ReflexBrainService,
-                                           ReflexRuleService)
+                                           ReflexRuleService, ReflexBrainCriteriaService, ReflexBrainAdditionService,
+                                           ReflexBrainFinalService, ComplexConditionService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -146,10 +147,10 @@ class ReflexRuleMutations:
 
         if (
                 not len(payload.analyses) > 0
-                or not payload.level
+                or not isinstance(payload.level, int)
                 or not payload.description
         ):
-            return OperationError(error="Anaysis, Level and description are required")
+            return OperationError(error="Analysis, Level (as an integer) and description are required")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -233,7 +234,7 @@ class ReflexRuleMutations:
         }
         obj_in = schemas.ReflexBrainCreate(**incoming)
 
-        brain = await ReflexBrainService().create(obj_in)
+        brain = await ReflexBrainService().create(obj_in, related=["analyses_values", "finalise", "add_new"])
 
         analyses_values = []
         for criteria in payload.analyses_values:
@@ -266,6 +267,7 @@ class ReflexRuleMutations:
             add_new.append(assoc)
         brain.add_new = add_new
 
+        # TODO: complex conditions and custom logic
         await ReflexBrainService().save(brain)
         brain = await ReflexBrainService().get_related(
             related=["add_new.analysis", "analyses_values.analysis"], uid=brain.uid
@@ -332,3 +334,22 @@ class ReflexRuleMutations:
         obj_in = schemas.ReflexBrainUpdate(**reflex_brain.to_dict())
         reflex_brain = await ReflexBrainService().update(reflex_brain.uid, obj_in)
         return ReflexBrainType(**reflex_brain.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def delete_reflex_brain(
+            self, info, uid: str
+    ) -> DeletedItem:
+        await ReflexBrainService().delete(uid)
+        analyses_values = await ReflexBrainCriteriaService().get_all(reflex_brain_uid=uid)
+        additions = await ReflexBrainAdditionService().get_all(reflex_brain_uid=uid)
+        finals = await ReflexBrainFinalService().get_all(reflex_brain_uid=uid)
+        complex_conditions = await ComplexConditionService().get_all(reflex_brain_uid=uid)
+        for av in analyses_values:
+            await ReflexBrainCriteriaService().delete(av.uid)
+        for ad in additions:
+            await ReflexBrainAdditionService().delete(ad.uid)
+        for fin in finals:
+            await ReflexBrainFinalService().delete(fin.uid)
+        for cc in complex_conditions:
+            await ComplexConditionService().delete(cc.uid)
+        return DeletedItem(uid=uid)

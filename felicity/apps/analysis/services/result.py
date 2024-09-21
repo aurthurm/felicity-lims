@@ -37,11 +37,11 @@ class AnalysisResultService(
         return verifications[:-1]
 
     async def retest_result(self, uid: str, retested_by, next_action="verify") -> (
-        tuple[
-            Annotated[AnalysisResult, "Newly Created AnalysisResult"] | None,
-            Annotated[AnalysisResult, "Retested AnalysisResult"],
-        ]
-        | None
+            tuple[
+                Annotated[AnalysisResult, "Newly Created AnalysisResult"] | None,
+                Annotated[AnalysisResult, "Retested AnalysisResult"],
+            ]
+            | None
     ):
         analysis_result = await self.get(uid=uid)
         retest = None
@@ -55,7 +55,7 @@ class AnalysisResultService(
             "retest": True,
         }
         a_result_schema = AnalysisResultCreate(**a_result_in)
-        retest = await self.create(a_result_schema)
+        retest = await self.create(a_result_schema, related=["sample"])
 
         await self.hide_report(uid)
         if next_action == "verify":
@@ -64,6 +64,7 @@ class AnalysisResultService(
             final = await self.retract(uid, retracted_by=retested_by)
         else:
             final = analysis_result
+        final = await self.get_related(uid=final.uid, related=["sample"])
         return retest, final
 
     async def assign(self, uid: str, ws_uid, position, laboratory_instrument_uid):
@@ -83,13 +84,15 @@ class AnalysisResultService(
         analysis_result.worksheet_position = None
         analysis_result.laboratory_instrument_uid = None
         return await super().save(analysis_result)
-    
+
     async def submit(self, uid: str, data: dict, submitter) -> AnalysisResult:
         analysis_result = await self.get(uid=uid)
         analysis_result.result = data.get("result")
         analysis_result.updated_by_uid = submitter.uid  # noqa
         analysis_result.submitted_by_uid = submitter.uid  # noqa
         analysis_result.status = ResultState.RESULTED
+        analysis_result.method_uid = data.get("method_uid")
+        analysis_result.laboratory_instrument_uid = data.get("laboratory_instrument_uid")
         analysis_result.date_submitted = datetime.now()
         final = await super().save(analysis_result)
         await self.streamer_service.stream(final, submitter, "submitted", "result")
@@ -154,11 +157,11 @@ class AnalysisResultService(
         return await super().update(uid, {"reportable": False})
 
     async def filter_for_worksheet(
-        self,
-        analyses_status: str,
-        analysis_uid: str,
-        sample_type_uid: list[str],
-        limit: int,
+            self,
+            analyses_status: str,
+            analysis_uid: str,
+            sample_type_uid: list[str],
+            limit: int,
     ) -> list[AnalysisResult]:
         filters = {
             "status__exact": analyses_status,

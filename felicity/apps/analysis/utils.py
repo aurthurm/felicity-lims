@@ -125,7 +125,6 @@ async def retest_from_result_uids(
 async def results_submitter(
         analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
-    analysis_result_service = AnalysisResultService()
     sample_wf = SampleWorkFlow()
     worksheet_wf = WorkSheetWorkFlow()
     analysis_result_wf = AnalysisResultWorkFlow()

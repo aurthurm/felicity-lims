@@ -116,7 +116,6 @@ class BaseRepository(Generic[M]):
         """
         if not kwargs:
             raise ValueError("No data provided to create a new model")
-
         filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled)
 

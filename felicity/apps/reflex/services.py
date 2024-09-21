@@ -1,7 +1,7 @@
 import logging
-import json
 from datetime import datetime
 from typing import List, Optional, Dict, Any
+
 from cachetools import TTLCache, cached
 
 from felicity.apps.abstract.service import BaseService
@@ -12,6 +12,8 @@ from felicity.apps.analysis.schemas import (AnalysisResultCreate,
                                             AnalysisResultUpdate)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.reflex.entities import ReflexRule, ReflexBrainAddition, ReflexBrainFinal, ReflexBrainCriteria, \
+    ComplexCondition, ReflexBrain, ReflexAction
 from felicity.apps.reflex.repository import (ReflexActionRepository,
                                              ReflexBrainAdditionRepository,
                                              ReflexBrainCriteriaRepository,
@@ -19,21 +21,18 @@ from felicity.apps.reflex.repository import (ReflexActionRepository,
                                              ReflexBrainRepository,
                                              ReflexRuleRepository,
                                              ComplexConditionRepository)
-from felicity.apps.reflex.schemas import (ReflexAction, ReflexActionCreate,
-                                          ReflexActionUpdate, ReflexBrain,
-                                          ReflexBrainAddition,
+from felicity.apps.reflex.schemas import (ReflexActionCreate,
+                                          ReflexActionUpdate,
                                           ReflexBrainAdditionCreate,
                                           ReflexBrainAdditionUpdate,
                                           ReflexBrainCreate,
-                                          ReflexBrainCriteria,
                                           ReflexBrainCriteriaCreate,
                                           ReflexBrainCriteriaUpdate,
-                                          ReflexBrainFinal,
                                           ReflexBrainFinalCreate,
                                           ReflexBrainFinalUpdate,
-                                          ReflexBrainUpdate, ReflexRule,
-                                          ReflexRuleCreate, ReflexRuleUpdate,
-                                          ComplexCondition,
+                                          ReflexBrainUpdate,
+                                          ReflexRuleCreate,
+                                          ReflexRuleUpdate,
                                           ComplexConditionCreate,
                                           ComplexConditionUpdate)
 
@@ -43,6 +42,7 @@ logger = logging.getLogger(__name__)
 # Cache for storing reflex actions
 reflex_action_cache = TTLCache(maxsize=1000, ttl=3600)  # 1 hour TTL
 
+
 class ReflexRuleService(BaseService[ReflexRule, ReflexRuleCreate, ReflexRuleUpdate]):
     def __init__(self):
         super().__init__(ReflexRuleRepository)
@@ -50,6 +50,7 @@ class ReflexRuleService(BaseService[ReflexRule, ReflexRuleCreate, ReflexRuleUpda
     async def get_active_rules(self):
         """Retrieve all active reflex rules"""
         return await self.repository.get_active_rules()
+
 
 class ReflexBrainAdditionService(
     BaseService[
@@ -63,6 +64,7 @@ class ReflexBrainAdditionService(
         """Retrieve additions based on specific conditions"""
         return await self.repository.get_by_conditions(conditions)
 
+
 class ReflexBrainFinalService(
     BaseService[ReflexBrainFinal, ReflexBrainFinalCreate, ReflexBrainFinalUpdate]
 ):
@@ -72,6 +74,7 @@ class ReflexBrainFinalService(
     async def get_by_conditions(self, conditions: Dict[str, Any]):
         """Retrieve final results based on specific conditions"""
         return await self.repository.get_by_conditions(conditions)
+
 
 class ReflexBrainCriteriaService(
     BaseService[
@@ -85,6 +88,7 @@ class ReflexBrainCriteriaService(
         """Retrieve criteria based on custom logic"""
         return await self.repository.get_by_custom_logic(custom_logic)
 
+
 class ComplexConditionService(
     BaseService[ComplexCondition, ComplexConditionCreate, ComplexConditionUpdate]
 ):
@@ -95,31 +99,17 @@ class ComplexConditionService(
         """Retrieve complex conditions by condition type"""
         return await self.repository.get_by_condition_type(condition_type)
 
+
 class ReflexBrainService(
     BaseService[ReflexBrain, ReflexBrainCreate, ReflexBrainUpdate]
 ):
     def __init__(self):
         super().__init__(ReflexBrainRepository)
 
-    
-    async def create(self, obj_in: ReflexBrainCreate) -> ReflexBrain:
-        # Handle complex conditions and custom logic
-        obj_dict = obj_in.dict()
-        obj_dict['complex_conditions'] = json.dumps(obj_dict.get('complex_conditions', []))
-        obj_dict['custom_logic'] = obj_dict.get('custom_logic', '')
-        db_obj = self.model(**obj_dict)
-        return await super().create(db_obj)
-
-    async def update(self, uid: str, obj_in: ReflexBrainUpdate) -> ReflexBrain:
-        # Handle complex conditions and custom logic
-        obj_dict = obj_in.dict(exclude_unset=True)
-        if 'complex_conditions' in obj_dict:
-            obj_dict['complex_conditions'] = json.dumps(obj_dict['complex_conditions'])
-        return await super().update(uid, obj_dict)
-
     async def get_with_complex_conditions(self):
         """Retrieve reflex brains with their associated complex conditions"""
         return await self.repository.get_with_complex_conditions()
+
 
 class ReflexActionService(
     BaseService[ReflexAction, ReflexActionCreate, ReflexActionUpdate]
@@ -134,6 +124,7 @@ class ReflexActionService(
     async def get_with_custom_logic(self):
         """Retrieve reflex actions with custom logic"""
         return await self.repository.get_with_custom_logic()
+
 
 class ReflexEngineService:
     """
@@ -197,7 +188,7 @@ class ReflexEngineService:
         if not action:
             logger.info(f"No reflex action found for analysis: {self.analysis.name}")
             return
-        
+
         self._reflex_action = action
         logger.info(f"Reflex action found for analysis: {self.analysis.name}")
         logger.info(f"Reflex action description: {action.description}")
@@ -263,7 +254,8 @@ class ReflexEngineService:
         logger.info(f"Evaluating custom logic: {custom_logic}")
         return True
 
-    async def evaluate_complex_conditions(self, complex_conditions: List[ComplexCondition], results_pool: List[AnalysisResult]) -> bool:
+    async def evaluate_complex_conditions(self, complex_conditions: List[ComplexCondition],
+                                          results_pool: List[AnalysisResult]) -> bool:
         """
         Evaluate complex conditions for decision making.
 
@@ -284,13 +276,13 @@ class ReflexEngineService:
         :param results_pool: List of analysis results that matched the criteria
         """
         logger.info("Perfect match found. Executing actions.")
-        
+
         # Add new Analyses
         logger.info(f"Adding new analyses: {brain.add_new}")
         for assoc in brain.add_new:
             for _ in range(assoc.count):
                 await self.create_analyte_for(assoc.analysis_uid)
-        
+
         # Finalise Analyses
         logger.info(f"Finalizing analyses: {brain.finalise}")
         for final in brain.finalise:
@@ -321,7 +313,7 @@ class ReflexEngineService:
             self._results_pool = [
                 result for result in results
                 if result.analysis_uid in criteria_anals
-                and result.uid != self.analysis_result.uid
+                   and result.uid != self.analysis_result.uid
             ]
 
         logger.info(f"Entire results pool: {[r.result for r in self._results_pool]}")
@@ -377,9 +369,6 @@ class ReflexEngineService:
         final = await self.analysis_result_service.update(retest.uid, res_in)
         return final
 
-
-
-
 # def evaluate_complex_conditions(conditions, results):
 #     def evaluate_condition(condition):
 #         if condition['type'] == 'AND':
@@ -401,7 +390,7 @@ class ReflexEngineService:
 #         'or': lambda x, y: x or y,
 #         'not': lambda x: not x,
 #     }
-    
+
 #     # Add result values to the safe dictionary
 #     for result in results:
 #         safe_dict[result.analysis_uid] = result.result
@@ -413,14 +402,13 @@ class ReflexEngineService:
 #         return False
 
 
-
 # class ReflexEngineService:
 #     async def execute_reflex_rules(self, sample):
 #         active_rules = await self.reflex_rule_repository.get_active_rules()
-        
+
 #         for rule in active_rules:
 #             actions = await self.reflex_action_service.get_ordered_actions(rule.id)
-            
+
 #             for action in actions:
 #                 if action.custom_logic:
 #                     if not evaluate_custom_logic(action.custom_logic, sample.results):
@@ -430,7 +418,7 @@ class ReflexEngineService:
 #                     if brain.complex_conditions:
 #                         if not evaluate_complex_conditions(brain.complex_conditions, sample.results):
 #                             continue
-                    
+
 #                     if brain.custom_logic:
 #                         if not evaluate_custom_logic(brain.custom_logic, sample.results):
 #                             continue
@@ -521,11 +509,11 @@ class ReflexEngineService:
 # async def evaluate_custom_logic(self, custom_logic: str, results_pool: List[AnalysisResult]) -> bool:
 #     # Create a dictionary of analysis results for easy access
 #     results_dict = {result.analysis_uid: result.result for result in results_pool}
-    
+
 #     # Replace analysis UIDs with their actual values in the custom logic string
 #     for analysis_uid, result in results_dict.items():
 #         custom_logic = custom_logic.replace(analysis_uid, f"'{result}'")
-    
+
 #     # Evaluate the custom logic
 #     try:
 #         return eval(custom_logic)
@@ -566,14 +554,14 @@ class ReflexEngineService:
 # # In the ReflexEngineService
 # async def execute_matching_actions(self, brain: ReflexBrain, results_pool: List[AnalysisResult]) -> None:
 #     logger.info("Perfect match found. Executing actions.")
-    
+
 #     # Add new Analyses
 #     logger.info(f"Adding new analyses: {brain.add_new}")
 #     for assoc in brain.add_new:
 #         if self._evaluate_conditions(assoc.conditions, results_pool):
 #             for _ in range(assoc.count):
 #                 await self.create_analyte_for(assoc.analysis_uid)
-    
+
 #     # Finalise Analyses
 #     logger.info(f"Finalizing analyses: {brain.finalise}")
 #     for final in brain.finalise:
@@ -591,13 +579,8 @@ class ReflexEngineService:
 #     return self.evaluate_complex_conditions([ComplexCondition(**conditions)], results_pool)
 
 
-
-
 # These examples demonstrate how the new fields and structures can be used to create more sophisticated and flexible reflex testing rules. The complex conditions allow for nested logical operations, while custom logic provides a way to write arbitrary logical expressions. The conditional additions and finalizations allow for more granular control over when new analyses are added or when final results are created.
 # Remember to implement proper security measures when using eval() for custom logic, as it can be a security risk if not properly sanitized and restricted.
-
-
-
 
 
 # Certainly! I'll provide guidance on how users can input custom logic and complex conditions, along with examples for each.
@@ -642,9 +625,6 @@ class ReflexEngineService:
 
 # const customLogic = ref('');
 # </script>
-
-
-
 
 
 # Complex Conditions:
@@ -755,9 +735,7 @@ class ReflexEngineService:
 # </script>
 
 
-
 # This component allows users to build complex nested conditions interactively. You would use this component in your main form like this:
-
 
 
 # <template>
@@ -778,41 +756,4 @@ class ReflexEngineService:
 # </script>
 
 
-
-
 # Remember to provide clear instructions and examples to your users on how to use these features. You might want to include a help section or tooltips explaining the syntax for custom logic and how to build complex conditions.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
