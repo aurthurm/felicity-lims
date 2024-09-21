@@ -320,46 +320,72 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.status = SampleState.RECEIVED
         sample.received_by_uid = received_by.uid
         sample.date_received = datetime.now()
-        sample.updated_by_uid = received_by.uid  # noqa
-        return await super().save(sample)
+        sample.updated_by_uid = received_by.uid 
+
+        saved_sample = await super().save(sample)
+        await self.streamer_service.stream(saved_sample, received_by, "received", "sample")
+        return saved_sample
 
     async def cancel(self, uid: str, cancelled_by):
         sample = await self.get(uid=uid)
         analysis_results = await self.get_analysis_results(uid)
-        for result in analysis_results:
-            await self.analysis_result_service.cancel(
-                result.uid, cancelled_by=cancelled_by
-            )
+        
+        # Update sample attributes
         sample.status = SampleState.CANCELLED
         sample.cancelled_by_uid = cancelled_by.uid
         sample.date_cancelled = datetime.now()
-        sample.updated_by_uid = cancelled_by.uid  # noqa
-        return await super().save(sample)
+        sample.updated_by_uid = cancelled_by.uid
+        
+        # Save sample first
+        sample = await super().save(sample)
+        
+        # Cancel analysis results sequentially
+        for result in analysis_results:
+            await self.analysis_result_service.cancel(result.uid, cancelled_by=cancelled_by)
+        
+        # Log the cancellation action
+        await self.streamer_service.stream(sample, cancelled_by, "cancelled", "sample")
+        
+        return sample
 
     async def re_instate(self, uid: str, re_instated_by):
         sample = await self.get(uid=uid)
-        analysis_results = await self.get_analysis_results(uid)
+        
+        # Update sample attributes
         sample.status = SampleState.RECEIVED
         sample.cancelled_by_uid = None
         sample.date_cancelled = None
-        sample.updated_by_uid = re_instated_by.uid  # noqa
+        sample.updated_by_uid = re_instated_by.uid
+        sample.date_reinstated = datetime.now()
+        
+        # Save sample first
         sample = await super().save(sample)
+        
+        # Re-instate analysis results sequentially
+        analysis_results = await self.get_analysis_results(uid)
         for result in analysis_results:
-            await self.analysis_result_service.re_instate(
-                result.uid, re_instated_by=re_instated_by
-            )
+            await self.analysis_result_service.re_instate(result.uid, re_instated_by=re_instated_by)
+        
+        # Log the re-instatement action
+        await self.streamer_service.stream(sample, re_instated_by, "reinstated", "sample")
+        
         return sample
 
     async def submit(self, uid: str, submitted_by):
         sample = await self.get(uid=uid)
+        
+        # Update sample attributes
         sample.status = SampleState.AWAITING
         sample.submitted_by_uid = submitted_by.uid
         sample.date_submitted = datetime.now()
-        sample.updated_by_uid = submitted_by.uid  # noqa
+        sample.updated_by_uid = submitted_by.uid
+        
+        # Save sample
         saved = await super().save(sample)
-        await self.streamer_service.stream(
-            saved, submitted_by, "submitted", "sample"
-        )
+        
+        # Log the submission action
+        await self.streamer_service.stream(saved, submitted_by, "submitted", "sample")
+        
         return saved
 
     async def un_submit(self, uid: str):
@@ -403,14 +429,22 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
     async def verify(self, uid: str, verified_by) -> tuple[bool, Sample]:
         sample = await self.get(uid=uid)
         is_verifiable = await self.is_verifiable(uid)
+        
         if is_verifiable:
+            # Update sample attributes
             sample.status = SampleState.APPROVED
             sample.verified_by_uid = verified_by.uid
             sample.date_verified = datetime.now()
-            sample.updated_by_uid = verified_by.uid  # noqa
+            sample.updated_by_uid = verified_by.uid
+            
+            # Save sample
             saved = await super().save(sample)
+            
+            # Log the verification action
             await self.streamer_service.stream(saved, verified_by, "approved", "sample")
+            
             return True, saved
+        
         return False, sample
 
     async def publish(self, uid: str, published_by):
@@ -419,7 +453,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.published_by_uid = published_by.uid
         sample.date_published = datetime.now()
         sample.updated_by_uid = published_by.uid  # noqa
-        return await super().save(sample)
+        published = await super().save(sample)
+        await self.streamer_service.stream(
+            published, published_by, "published", "sample"
+        )
+        return published
 
     async def print(self, uid: str, printed_by):
         sample = await self.get(uid=uid)
@@ -427,7 +465,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.printed_by_uid = printed_by.uid
         sample.date_printed = datetime.now()
         sample.updated_by_uid = printed_by.uid  # noqa
-        return await super().save(sample)
+        printed = await super().save(sample)
+        await self.streamer_service.stream(
+            printed, printed_by, "printed", "sample"
+        )
+        return printed
 
     async def invalidate(self, uid: str, invalidated_by) -> tuple[Sample, Sample]:
         sample = await self.get(uid=uid)
