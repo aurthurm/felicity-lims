@@ -5,6 +5,7 @@ from pydantic import ConfigDict
 from felicity.apps.analysis.schemas import Analysis, SampleType
 from felicity.apps.common.schemas import BaseAuditModel
 
+
 #
 #  ReflexRule Schema
 #
@@ -21,9 +22,7 @@ class ReflexRuleBase(BaseAuditModel):
 # Additional properties to return via API
 class ReflexRule(ReflexRuleBase):
     uid: str
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -53,9 +52,7 @@ class ReflexBrainAdditionBase(BaseAuditModel):
 # Additional properties to return via API
 class ReflexBrainAddition(ReflexBrainAdditionBase):
     uid: str
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -85,9 +82,7 @@ class ReflexBrainFinalBase(BaseAuditModel):
 # Additional properties to return via API
 class ReflexBrainFinal(ReflexBrainFinalBase):
     uid: str
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -117,9 +112,7 @@ class ReflexBrainCriteriaBase(BaseAuditModel):
 # Additional properties to return via API
 class ReflexBrainCriteria(ReflexBrainCriteriaBase):
     uid: str
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -150,7 +143,6 @@ class ReflexBrainBase(BaseAuditModel):
 # Additional properties to return via API
 class ReflexBrain(ReflexBrainBase):
     uid: str | None = None
-
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -184,7 +176,6 @@ class ReflexActionBase(BaseAuditModel):
 # Additional properties to return via API
 class ReflexAction(ReflexActionBase):
     uid: str | None = None
-
     model_config = ConfigDict(from_attributes=True)
 
 

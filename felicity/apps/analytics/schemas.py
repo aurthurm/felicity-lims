@@ -27,8 +27,7 @@ class ReportMeta(ReportMetaBase):
     uid: str | None = None
     location: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ReportMetaCreate(ReportMetaBase):

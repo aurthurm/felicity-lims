@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import ManufacturerInDB, SupplierInDB
 
+
 #
 # InstrumentType Schemas
 #
@@ -164,9 +165,7 @@ class InstrumentCalibrationUpdate(InstrumentCalibrationBase):
 
 class InstrumentCalibrationInDBBase(InstrumentCalibrationBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API

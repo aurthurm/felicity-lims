@@ -6,6 +6,7 @@ from pydantic import ConfigDict
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.setup.schemas import Department, Unit
 
+
 #
 # Coding standard Schemas
 #
@@ -101,9 +102,7 @@ class SampleTypeCodingBase(BaseAuditModel):
 
 class SampleTypeCodingBaseInDB(SampleTypeCodingBase):
     uid: str | None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

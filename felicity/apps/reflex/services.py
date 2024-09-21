@@ -186,7 +186,7 @@ class ReflexEngineService:
             # clean up
             for r in results_pool:
                 if r.reportable:
-                    await r.hide_report()
+                    await self.analysis_result_service.hide_report(r.uid)
         else:
             logger.info("No matches found :)")
 
