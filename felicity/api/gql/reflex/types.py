@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import (AnalysisType,
                                                       SampleTypeTyp)
-from felicity.api.gql.types import PageInfo
+from felicity.api.gql.types import PageInfo, JSONScalar
 from felicity.api.gql.user.types import UserType
 
 
@@ -14,6 +14,8 @@ class ReflexRuleType:
     name: str
     description: str
     reflex_actions: Optional[List["ReflexActionType"]] = None
+    is_active: bool
+    priority: int
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -45,6 +47,7 @@ class ReflexBrainAdditionType:
     reflex_brain_uid: str
     reflex_brain: Optional["ReflexBrainType"] = None
     count: int
+    conditions: JSONScalar
 
 
 @strawberry.type
@@ -55,6 +58,7 @@ class ReflexBrainCriteriaType:
     reflex_brain: Optional["ReflexBrainType"] = None
     operator: str
     value: str
+    custom_logic: str | None = None
 
 
 @strawberry.type
@@ -67,6 +71,21 @@ class ReflexBrainFinalType:
 
 
 @strawberry.type
+class ComplexConditionType:
+    uid: str
+    reflex_brain_uid: str
+    condition_type: str
+    subconditions: JSONScalar
+    #
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+
+
+@strawberry.type
 class ReflexBrainType:
     reflex_action_uid: str
     reflex_action: Optional["ReflexBrainType"] = None
@@ -75,6 +94,8 @@ class ReflexBrainType:
     analyses_values: Optional[List[ReflexBrainCriteriaType]] = None
     add_new: Optional[List[ReflexBrainAdditionType]] = None
     finalise: Optional[List[ReflexBrainFinalType]] = None
+    complex_conditions: Optional[List["ComplexConditionType"]] = None
+    custom_logic: Optional[str] = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -95,6 +116,8 @@ class ReflexActionType:
     reflex_rule_uid: str
     reflex_rule: Optional[ReflexRuleType] = None
     brains: Optional[List[ReflexBrainType]] = None
+    custom_logic: Optional[str] = None
+    execution_order: int
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

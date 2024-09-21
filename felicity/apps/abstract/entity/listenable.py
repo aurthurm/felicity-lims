@@ -4,7 +4,6 @@ from typing import Any, Dict, Type
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history
-from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.core.events import post_event
@@ -70,7 +69,7 @@ class EventListenable:
                     state_after[attr.key] = getattr(target, attr.key)
                     try:
                         state_before[attr.key] = get_history(target, attr.key)[2].pop()
-                    except IndexError:
+                    except Exception:
                         logger.warning(f"No history for {attr.key}, using current value")
                         state_before[attr.key] = getattr(target, attr.key)
 

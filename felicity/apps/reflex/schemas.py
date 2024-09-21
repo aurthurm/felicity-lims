@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field
 
 from felicity.apps.analysis.schemas import Analysis, SampleType
 from felicity.apps.common.schemas import BaseAuditModel
@@ -16,6 +16,8 @@ from felicity.apps.common.schemas import BaseAuditModel
 class ReflexRuleBase(BaseAuditModel):
     name: str
     description: str
+    is_active: bool = True
+    priority: int = 0
     sample_types: Optional[List[SampleType]] = []
 
 
@@ -47,6 +49,7 @@ class ReflexBrainAdditionBase(BaseAuditModel):
     reflex_brain_uid: str
     reflex_brain: Optional["ReflexBrain"] = None
     count: int
+    conditions: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
 
 # Additional properties to return via API
@@ -77,6 +80,7 @@ class ReflexBrainFinalBase(BaseAuditModel):
     reflex_brain_uid: str
     reflex_brain: Optional["ReflexBrain"] = None
     value: str
+    conditions: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
 
 # Additional properties to return via API
@@ -106,7 +110,9 @@ class ReflexBrainCriteriaBase(BaseAuditModel):
     analysis: Optional[Analysis] = None
     reflex_brain_uid: str
     reflex_brain: Optional["ReflexBrain"] = None
+    operator: str
     value: str
+    custom_logic: Optional[str] = None
 
 
 # Additional properties to return via API
@@ -125,6 +131,27 @@ class ReflexBrainCriteriaUpdate(ReflexBrainCriteriaBase):
     pass
 
 
+# ComplexCondition Schema
+
+class ComplexConditionBase(BaseAuditModel):
+    reflex_brain_uid: str
+    condition_type: str
+    subconditions: Dict[str, Any]
+
+
+class ComplexCondition(ComplexConditionBase):
+    uid: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ComplexConditionCreate(ComplexConditionBase):
+    pass
+
+
+class ComplexConditionUpdate(ComplexConditionBase):
+    pass
+
+
 #
 #  ReflexBrain Schema
 #
@@ -134,15 +161,17 @@ class ReflexBrainCriteriaUpdate(ReflexBrainCriteriaBase):
 class ReflexBrainBase(BaseAuditModel):
     reflex_action_uid: str
     reflex_action: Optional["ReflexAction"] = None
-    description: str | None
+    description: Optional[str] = None
     analyses_values: Optional[List[ReflexBrainCriteria]] = None
     add_new: Optional[List[ReflexBrainAddition]] = None
     finalise: Optional[List[ReflexBrainFinal]] = None
+    complex_conditions: Optional[List["ComplexCondition"]] = None
+    custom_logic: Optional[str] = None
 
 
 # Additional properties to return via API
 class ReflexBrain(ReflexBrainBase):
-    uid: str | None = None
+    uid: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -157,25 +186,27 @@ class ReflexBrainUpdate(ReflexBrainBase):
 
 
 #
-#  ReflexBrain Schema
+#  ReflexAction Schema
 #
 
 
 # Shared properties
 class ReflexActionBase(BaseAuditModel):
     level: int
-    description: str | None
+    description: Optional[str] = None
     reflex_rule_uid: str
     reflex_rule: Optional[ReflexRule] = None
     brains: Optional[List[ReflexBrain]] = None
     analyses: Optional[List[Analysis]] = []
-    sample_type_uid: str | None
+    sample_type_uid: Optional[str] = None
     sample_type: Optional[SampleType] = None
+    custom_logic: Optional[str] = None
+    execution_order: int = 0
 
 
 # Additional properties to return via API
 class ReflexAction(ReflexActionBase):
-    uid: str | None = None
+    uid: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 

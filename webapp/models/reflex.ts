@@ -45,6 +45,8 @@ export interface IReflexBrain {
     analysesValues?: IReflexBrainCriteria[];
     addNew?: IReflexBrainAddition[];
     finalise?: IReflexBrainFinal[];
+    complexConditions?: IComplexCondition[];
+    customLogic?: string;
     createdByUid?: string;
     createdBy?: IUser;
     createdAt?: string;
@@ -65,3 +67,15 @@ export interface IReflexAction {
     createdBy?: IUser;
     createdAt?: string;
 }
+
+
+export interface IComplexCondition {
+    conditionType: 'AND' | 'OR';
+    subconditions: ISubcondition[];
+  }
+  
+  export interface ISubcondition {
+    analysisUid: string;
+    operator: 'eq' | 'neq' | 'gt' | 'lt';
+    value: string;
+  }

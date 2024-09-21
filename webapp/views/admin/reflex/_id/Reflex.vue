@@ -8,6 +8,7 @@ import {
   IReflexBrainCriteria,
   IReflexBrainAddition,
 } from "@/models/reflex";
+import ComplexConditionEditor from '@/components/reflex/ComplexConditionEditor.vue';
 import { useApiUtil } from "@/composables";
 import { useReflexStore, useAnalysisStore } from "@/stores";
 import {
@@ -189,6 +190,20 @@ function saveBrainForm(): void {
   if (formAction.value === false) editReflexBrain();
   showBrainModal.value = false;
 }
+
+function addComplexCondition() {
+  if (!brainForm.complexConditions) {
+    brainForm.complexConditions = [];
+  }
+  brainForm.complexConditions.push({
+    conditionType: 'AND',
+    subconditions: [],
+  });
+}
+
+function removeComplexCondition(index: number) {
+  brainForm.complexConditions?.splice(index, 1);
+}
 </script>
 
 <template>
@@ -305,6 +320,47 @@ function saveBrainForm(): void {
                   </div>
                 </div>
               </div>
+
+              <section id="complex-conditions">
+                <hr />
+                <div class="flex justify-between items-center py-2">
+                  <h5>Complex Conditions</h5>
+                  <button
+                    @click.prevent="addComplexCondition()"
+                    class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                  >
+                    Add Complex Condition
+                  </button>
+                </div>
+                <hr class="mb-4" />
+
+                <div v-for="(condition, index) in brainForm.complexConditions" :key="index">
+                  <ComplexConditionEditor
+                    :condition="condition"
+                    :analyses-services="analysesServices"
+                    @remove="removeComplexCondition(index)"
+                  />
+                </div>
+              </section>
+
+              <section id="custom-logic">
+                <hr />
+                <div class="flex justify-between items-center py-2">
+                  <h5>Custom Logic</h5>
+                </div>
+                <hr class="mb-4" />
+
+                <label class="block col-span-3 mb-2">
+                  <span class="text-gray-700">Custom Logic Expression</span>
+                  <textarea
+                    cols="2"
+                    class="form-input mt-1 block w-full"
+                    v-model="brainForm.customLogic"
+                    placeholder="Enter custom logic expression..."
+                  />
+                </label>
+              </section>
+
             </div>
           </div>
         </div>

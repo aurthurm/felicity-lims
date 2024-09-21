@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, Boolean, JSON
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
@@ -9,6 +9,8 @@ class ReflexRule(BaseEntity):
 
     name = Column(String, index=True, unique=True, nullable=False)
     description = Column(String, nullable=False)
+    is_active = Column(Boolean, default=True)  # New field to enable/disable rules
+    priority = Column(Integer, default=0)  # New field to set rule priority
     reflex_actions = relationship(
         "ReflexAction", back_populates="reflex_rule", lazy="selectin"
     )
@@ -25,6 +27,7 @@ class ReflexBrainAddition(BaseEntity):
     analysis = relationship("Analysis", lazy="selectin")
     reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), primary_key=True)
     count = Column(Integer, default=1)
+    conditions = Column(JSON)  # New field for conditional additions
 
 
 class ReflexBrainFinal(BaseEntity):
@@ -38,6 +41,7 @@ class ReflexBrainFinal(BaseEntity):
     analysis = relationship("Analysis", lazy="selectin")
     reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), primary_key=True)
     value = Column(String)
+    conditions = Column(JSON)  # New field for conditional finalization
 
 
 class ReflexBrainCriteria(BaseEntity):
@@ -53,6 +57,15 @@ class ReflexBrainCriteria(BaseEntity):
     reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), primary_key=True)
     operator = Column(String, nullable=False)
     value = Column(String)
+    custom_logic = Column(String)  # New field for custom logic expressions
+
+
+class ComplexCondition(BaseEntity):
+    __tablename__ = "complex_condition"
+
+    reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), nullable=False)
+    condition_type = Column(String, nullable=False)  # e.g., 'AND', 'OR', 'NOT'
+    subconditions = Column(JSON)  # Store nested conditions as JSON
 
 
 class ReflexBrain(BaseEntity):
@@ -68,6 +81,8 @@ class ReflexBrain(BaseEntity):
     analyses_values = relationship(ReflexBrainCriteria, lazy="selectin")
     add_new = relationship(ReflexBrainAddition, lazy="selectin")
     finalise = relationship(ReflexBrainFinal, lazy="selectin")
+    complex_conditions = relationship(ComplexCondition, lazy="selectin")
+    custom_logic = Column(String)  # New field for custom logic at the brain level
 
 
 """
@@ -99,3 +114,5 @@ class ReflexAction(BaseEntity):
     )
     # --
     brains = relationship(ReflexBrain, back_populates="reflex_action", lazy="selectin")
+    custom_logic = Column(String)  # New field for custom logic at the action level
+    execution_order = Column(Integer, default=0)  # New field to control execution order
