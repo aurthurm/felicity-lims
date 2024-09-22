@@ -50,9 +50,8 @@ async def impress_results(job_uid: str):
 
 async def prepare_for_impress():
     samples: List[Sample] = await SampleService().get_all(status__in=[SampleState.APPROVED])
-    sample_uids = [sample.uid for sample in samples]
+    data = [{"uid": s.uid, "action": "publish"} for s in samples]
     system_daemon: User = await UserService().get(email=settings.SYSTEM_DAEMON_EMAIL)
-
     job_schema = job_schemas.JobCreate(
         action=JobAction.IMPRESS_REPORT,
         category=JobCategory.IMPRESS,
@@ -60,9 +59,16 @@ async def prepare_for_impress():
         job_id="0",
         status=JobState.PENDING,
         creator_uid=system_daemon.uid,
-        data=sample_uids,
+        data=data,
     )
 
     await JobService().create(job_schema)
-    for uid in sample_uids:
-        await process_tracker.process(uid=uid, object_type=TrackableObject.SAMPLE)
+    for sample in samples:
+        await process_tracker.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
+
+
+async def cleanup_jobs():
+    """Cleanup jobs that were successfully executed"""
+    jobs = await JobService().get_all(status=JobState.FINISHED)
+    for job in jobs:
+        await JobService().delete(job.uid)

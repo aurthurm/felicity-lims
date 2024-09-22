@@ -4,7 +4,7 @@ from sqlalchemy import inspect, or_ as sa_or_, Table
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
-from sqlalchemy.sql.expression import bindparam
+from sqlalchemy.sql.expression import bindparam, delete
 
 from felicity.apps.abstract.entity import BaseEntity
 from felicity.database.paging import EdgeNode, PageCursor, PageInfo
@@ -52,7 +52,7 @@ class BaseRepository(Generic[M]):
     async_session = async_session
     model: M = None
 
-    def __init__(self, model: M) -> None:
+    def __init__(self, model) -> None:
         """
         Initialize the repository with a model.
 
@@ -237,6 +237,25 @@ class BaseRepository(Generic[M]):
         async with self.async_session() as session:
             results = await session.execute(stmt)
         return results.unique().scalars().all()  # , results.keys()
+
+    async def delete_table(self, table, **kwargs):
+        """
+        Delete rows from a specified table based on the given filters.
+
+        :param table: The SQLAlchemy table to delete from.
+        :param kwargs: Additional filter conditions.
+        """
+        if table is None or not kwargs:
+            raise ValueError("Both table and filters are required to delete")
+
+        stmt = delete(table)
+        for k, v in kwargs.items():
+            stmt = stmt.where(table.c[k] == v)
+            
+        async with self.async_session() as session:
+            await session.execute(stmt)
+            await session.commit()
+            await session.flush()
 
     async def get(self, **kwargs) -> M:
         """
@@ -439,7 +458,7 @@ class BaseRepository(Generic[M]):
 
     async def filter(
             self,
-            filters: list[dict],
+            filters: dict,
             sort_attrs: list[str] | None = None,
             limit: int | None = None,
             either: bool = False,

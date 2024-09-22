@@ -3,13 +3,12 @@ from typing import TypeVar
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.schemas.dummy import Dummy
+from felicity.apps.idsequencer.conf import SEQUENCE_CUTOFF, PADDING_LENGTH
 from felicity.apps.idsequencer.exception import IncompleDataError
 from felicity.apps.idsequencer.repository import IdSequenceRepository
 from felicity.apps.idsequencer.utils import sequence_alpha, sequencer
 
 IdSequence = TypeVar("IdSequence")
-SEQUENCE_BEGIN = 5
-SEQUENCE_CUTOFF = 10
 
 
 class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
@@ -17,7 +16,7 @@ class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
         super().__init__(IdSequenceRepository)
 
     async def get_next_number(
-        self, prefix: str = None, generic=False
+            self, prefix: str = None, generic=False
     ) -> tuple[int, str]:
         if not prefix:
             raise IncompleDataError("A prefix is required")
@@ -48,4 +47,4 @@ class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
 
         next_number = await self.repository.next_number(prefix)
 
-        return next_number, f"{prefix}-{sequencer(next_number, SEQUENCE_BEGIN)}"
+        return next_number, f"{prefix}-{sequencer(next_number, PADDING_LENGTH)}"

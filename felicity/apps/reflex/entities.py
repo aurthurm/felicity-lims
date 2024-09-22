@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, Boolean, JSON
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, Boolean
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
@@ -9,8 +9,8 @@ class ReflexRule(BaseEntity):
 
     name = Column(String, index=True, unique=True, nullable=False)
     description = Column(String, nullable=False)
-    is_active = Column(Boolean, default=True)  # New field to enable/disable rules
-    priority = Column(Integer, default=0)  # New field to set rule priority
+    is_active = Column(Boolean, default=True)
+    priority = Column(Integer, default=0)
     reflex_actions = relationship(
         "ReflexAction", back_populates="reflex_rule", lazy="selectin"
     )
@@ -25,9 +25,8 @@ class ReflexBrainAddition(BaseEntity):
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), primary_key=True)
+    reflex_brain_action_uid = Column(String, ForeignKey("reflex_brain_action.uid"), primary_key=True)
     count = Column(Integer, default=1)
-    conditions = Column(JSON)  # New field for conditional additions
 
 
 class ReflexBrainFinal(BaseEntity):
@@ -39,33 +38,24 @@ class ReflexBrainFinal(BaseEntity):
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), primary_key=True)
+    reflex_brain_action_uid = Column(String, ForeignKey("reflex_brain_action.uid"), primary_key=True)
     value = Column(String)
-    conditions = Column(JSON)  # New field for conditional finalization
 
 
-class ReflexBrainCriteria(BaseEntity):
-    """Many to Many Link between ReflexBrain and Analysis
-    with extra data for criteria/decision making
+class ReflexBrainConditionCriteria(BaseEntity):
+    """Many to Many Link between ReflexCondition and Analysis
+    with extra data for criteria/decision-making
     operators: =, !=, >, >=, <, <=
     """
 
-    __tablename__ = "reflex_brain_criteria"
+    __tablename__ = "reflex_brain_condition_criteria"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), primary_key=True)
+    reflex_brain_condition_uid = Column(String, ForeignKey("reflex_brain_condition.uid"), primary_key=True)
     operator = Column(String, nullable=False)
     value = Column(String)
-    custom_logic = Column(String)  # New field for custom logic expressions
-
-
-class ComplexCondition(BaseEntity):
-    __tablename__ = "complex_condition"
-
-    reflex_brain_uid = Column(String, ForeignKey("reflex_brain.uid"), nullable=False)
-    condition_type = Column(String, nullable=False)  # e.g., 'AND', 'OR', 'NOT'
-    subconditions = Column(JSON)  # Store nested conditions as JSON
+    priority = Column(Integer, default=0)
 
 
 class ReflexBrain(BaseEntity):
@@ -77,12 +67,42 @@ class ReflexBrain(BaseEntity):
     reflex_action = relationship(
         "ReflexAction", back_populates="brains", lazy="selectin"
     )
+    conditions = relationship("ReflexBrainCondition", back_populates="reflex_brain", lazy="selectin")
+    actions = relationship("ReflexBrainAction", back_populates="reflex_brain", lazy="selectin")
     description = Column(String, nullable=True)
-    analyses_values = relationship(ReflexBrainCriteria, lazy="selectin")
+    priority = Column(Integer, default=0)
+
+
+class ReflexBrainCondition(BaseEntity):
+    """OR Logic"""
+    __tablename__ = "reflex_brain_condition"
+
+    reflex_brain_uid = Column(
+        String, ForeignKey("reflex_brain.uid"), nullable=False, default=1
+    )
+    reflex_brain = relationship(
+        "ReflexBrain", lazy="selectin"
+    )
+    description = Column(String, nullable=True)
+    # AND logic
+    criteria = relationship(ReflexBrainConditionCriteria, lazy="selectin")
+    priority = Column(Integer, default=0)
+
+
+class ReflexBrainAction(BaseEntity):
+    __tablename__ = "reflex_brain_action"
+
+    reflex_brain_uid = Column(
+        String, ForeignKey("reflex_brain.uid"), nullable=False, default=1
+    )
+    # uselist=False == one-to-one
+    reflex_brain = relationship(
+        "ReflexBrain", back_populates="actions", lazy="selectin", uselist=False
+    )
+    description = Column(String, nullable=True)
     add_new = relationship(ReflexBrainAddition, lazy="selectin")
     finalise = relationship(ReflexBrainFinal, lazy="selectin")
-    complex_conditions = relationship(ComplexCondition, lazy="selectin")
-    custom_logic = Column(String)  # New field for custom logic at the brain level
+    priority = Column(Integer, default=0)
 
 
 """
@@ -114,5 +134,3 @@ class ReflexAction(BaseEntity):
     )
     # --
     brains = relationship(ReflexBrain, back_populates="reflex_action", lazy="selectin")
-    custom_logic = Column(String)  # New field for custom logic at the action level
-    execution_order = Column(Integer, default=0)  # New field to control execution order

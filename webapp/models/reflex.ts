@@ -12,11 +12,20 @@ export interface IReflexRule {
     createdAt?: string;
 }
 
-export interface IReflexBrainCriteria {
-    analysisUid?: string;
-    analysis?: IAnalysisService;
+export interface IReflexBrainCondition {
+    uid?: string;
     reflexBrainUid?: string;
     reflexBrain?: IReflexBrain;
+    description?: string;
+    criteria?: IReflexBrainConditionCriteria[];
+    priority?: number;
+}
+
+export interface IReflexBrainConditionCriteria {
+    analysisUid?: string;
+    analysis?: IAnalysisService;
+    reflexBrainConditionUid?: string;
+    reflexBrainCondition?: IReflexBrainCondition;
     operator?: string;
     value?: number;
 }
@@ -24,16 +33,16 @@ export interface IReflexBrainCriteria {
 export interface IReflexBrainAddition {
     analysisUid?: string;
     analysis?: IAnalysisService;
-    reflexBrainUid?: string;
-    reflexBrain?: IReflexBrain;
+    reflexBrainActionUid?: string;
+    reflexBrainAction?: IReflexBrainAction;
     count?: number;
 }
 
 export interface IReflexBrainFinal {
     analysisUid?: string;
     analysis?: IAnalysisService;
-    reflexBrainUid?: string;
-    reflexBrain?: IReflexBrain;
+    reflexBrainActionUid?: string;
+    reflexBrainAction?: IReflexBrainAction;
     value?: string;
 }
 
@@ -41,15 +50,23 @@ export interface IReflexBrain {
     uid?: string;
     reflexActionUid?: string;
     reflexAction?: IReflexBrain;
+    conditions?: IReflexBrainCondition[];
+    actions?: IReflexBrainAction[];
     description?: string;
-    analysesValues?: IReflexBrainCriteria[];
-    addNew?: IReflexBrainAddition[];
-    finalise?: IReflexBrainFinal[];
-    complexConditions?: IComplexCondition[];
-    customLogic?: string;
+    priority?: number;
     createdByUid?: string;
     createdBy?: IUser;
     createdAt?: string;
+}
+
+export interface IReflexBrainAction {
+    uid?: string;
+    reflexBrainUid?: string;
+    reflexBrain?: IReflexBrain;
+    description?: string;
+    addNew?: IReflexBrainAddition[];
+    finalise?: IReflexBrainFinal[];
+    priority?: number;
 }
 
 export interface IReflexAction {
@@ -67,15 +84,3 @@ export interface IReflexAction {
     createdBy?: IUser;
     createdAt?: string;
 }
-
-
-export interface IComplexCondition {
-    conditionType: 'AND' | 'OR';
-    subconditions: ISubcondition[];
-  }
-  
-  export interface ISubcondition {
-    analysisUid: string;
-    operator: 'eq' | 'neq' | 'gt' | 'lt';
-    value: string;
-  }

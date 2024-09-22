@@ -94,33 +94,60 @@ export const ADD_REFLEX_BRAIN = gql`
             __typename
             ... on ReflexBrainType {
                 uid
-                reflexActionUid
                 description
-                analysesValues {
+                conditions {
+                description
+                priority
+                criteria {
                     analysisUid
                     analysis {
-                        uid
-                        name
+                    uid
+                    name
+                    resultOptions {
+                        optionKey
+                        value
+                        __typename
+                    }
+                    __typename
                     }
                     operator
                     value
+                    __typename
                 }
+                }
+                actions {
                 addNew {
                     analysisUid
                     analysis {
-                        uid
-                        name
+                    uid
+                    name
+                    resultOptions {
+                        optionKey
+                        value
+                        __typename
+                    }
+                    __typename
                     }
                     count
+                    __typename
                 }
                 finalise {
                     analysisUid
                     analysis {
-                        uid
-                        name
+                    name
+                    resultOptions {
+                        optionKey
+                        value
+                        __typename
+                    }
+                    __typename
                     }
                     value
+                    __typename
                 }
+                __typename
+                }
+                __typename
             }
             ... on OperationError {
                 error
@@ -136,33 +163,60 @@ export const EDIT_REFLEX_BRAIN = gql`
             __typename
             ... on ReflexBrainType {
                 uid
-                reflexActionUid
                 description
-                analysesValues {
+                conditions {
+                description
+                priority
+                criteria {
                     analysisUid
                     analysis {
-                        uid
-                        name
+                    uid
+                    name
+                    resultOptions {
+                        optionKey
+                        value
+                        __typename
+                    }
+                    __typename
                     }
                     operator
                     value
+                    __typename
                 }
+                }
+                actions {
                 addNew {
                     analysisUid
                     analysis {
-                        uid
-                        name
+                    uid
+                    name
+                    resultOptions {
+                        optionKey
+                        value
+                        __typename
+                    }
+                    __typename
                     }
                     count
+                    __typename
                 }
                 finalise {
                     analysisUid
                     analysis {
-                        uid
-                        name
+                    name
+                    resultOptions {
+                        optionKey
+                        value
+                        __typename
+                    }
+                    __typename
                     }
                     value
+                    __typename
                 }
+                __typename
+                }
+                __typename
             }
             ... on OperationError {
                 error

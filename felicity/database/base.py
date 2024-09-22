@@ -60,8 +60,10 @@ from felicity.apps.patient.entities import Identification  # noqa
 from felicity.apps.patient.entities import Patient  # noqa
 from felicity.apps.reflex.entities import ReflexAction  # noqa
 from felicity.apps.reflex.entities import ReflexBrain  # noqa
+from felicity.apps.reflex.entities import ReflexBrainAction  # noqa
 from felicity.apps.reflex.entities import ReflexBrainAddition  # noqa
-from felicity.apps.reflex.entities import ReflexBrainCriteria  # noqa
+from felicity.apps.reflex.entities import ReflexBrainCondition  # noqa
+from felicity.apps.reflex.entities import ReflexBrainConditionCriteria  # noqa
 from felicity.apps.reflex.entities import ReflexBrainFinal  # noqa
 from felicity.apps.reflex.entities import ReflexRule  # noqa
 from felicity.apps.setup.entities import Country  # noqa

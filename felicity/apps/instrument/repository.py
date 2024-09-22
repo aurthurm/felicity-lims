@@ -6,9 +6,6 @@ from felicity.apps.instrument.entities import (CalibrationCertificate,
                                                InstrumentType,
                                                LaboratoryInstrument, Method)
 
-SEQUENCE_BEGIN = 5
-SEQUENCE_CUTOFF = 10
-
 
 class MethodRepository(BaseRepository[Method]):
     def __init__(self) -> None:
@@ -24,7 +21,7 @@ class LaboratoryInstrumentRepository(
     BaseRepository[LaboratoryInstrument],
 ):
     def __init__(
-        self,
+            self,
     ):
         super().__init__(LaboratoryInstrument)
 
@@ -48,6 +45,6 @@ class InstrumentCompetenceRepository(
     BaseRepository[InstrumentCompetence],
 ):
     def __init__(
-        self,
+            self,
     ):
         super().__init__(InstrumentCompetence)

@@ -17,7 +17,10 @@ import {
     faThList,
     faTh,
     faTrash,
-    faAsterisk
+    faAsterisk,
+    faArrowUpWideShort,
+    faArrowDown,
+    faArrowDownWideShort
 } from '@fortawesome/free-solid-svg-icons';
 import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
@@ -41,7 +44,7 @@ const icons = [
     faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
-    faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk
+    faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort
 ]
 library.add(...icons);
 

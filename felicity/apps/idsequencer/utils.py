@@ -1,6 +1,6 @@
-def sequencer(value, count):
+def sequencer(value, padding):
     """Generates a sequence with a specifies set count length"""
-    return f"{'0' * (count - len(str(value)))}{value}"
+    return f"{'0' * (padding - len(str(value)))}{value}"
 
 
 def sequence_alpha(value: str):

@@ -1,13 +1,9 @@
-from datetime import datetime
-
 from sqlalchemy.dialects.postgresql import insert
 
 from felicity.apps.abstract import BaseRepository
 from felicity.apps.idsequencer.entities import IdSequence
 from felicity.apps.idsequencer.exception import SequenceGenerateError
-
-SEQUENCE_BEGIN = 5
-SEQUENCE_CUTOFF = 10
+from felicity.core.dtz import get_time_now
 
 
 class IdSequenceRepository(BaseRepository[IdSequence]):
@@ -24,7 +20,7 @@ class IdSequenceRepository(BaseRepository[IdSequence]):
                 set_=dict(
                     prefix=prefix,
                     number=self.model.number + 1,
-                    updated=datetime.utcnow(),
+                    updated=get_time_now(str_format=False),
                 ),
             )
             .returning(self.model.number)

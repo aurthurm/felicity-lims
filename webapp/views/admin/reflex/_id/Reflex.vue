@@ -5,10 +5,10 @@ import {
   IReflexAction,
   IReflexBrain,
   IReflexBrainFinal,
-  IReflexBrainCriteria,
   IReflexBrainAddition,
+  IReflexBrainCondition,
+  IReflexBrainConditionCriteria,
 } from "@/models/reflex";
-import ComplexConditionEditor from '@/components/reflex/ComplexConditionEditor.vue';
 import { useApiUtil } from "@/composables";
 import { useReflexStore, useAnalysisStore } from "@/stores";
 import {
@@ -42,9 +42,10 @@ const formAction = ref<boolean>(true);
 
 let showBrainModal = ref<boolean>(false);
 let brainForm = reactive<IReflexBrain>({
-  addNew: [],
-  analysesValues: [],
-  finalise: [],
+  description: "",
+  priority: 0,
+  conditions: [],
+  actions: [],
 });
 
 onMounted(async () => {
@@ -120,8 +121,28 @@ function addReflexBrain(): void {
 
 function editReflexBrain(): void {
   const payload = {
-    ...brainForm,
     reflexActionUid: forAction.value,
+    priority: brainForm.priority,
+    description: brainForm.description,
+    conditions: brainForm.conditions?.map((cond) => ({
+      description: cond.description,
+      priority: cond.priority,
+      criteria: cond.criteria?.map((crit) => ({
+        analysisUid: crit.analysisUid,
+        operator: crit.operator,
+        value: crit.value,
+      })),
+    })),
+    actions: brainForm.actions?.map((act) => ({
+      addNew: act.addNew?.map((add) => ({
+        analysisUid: add.analysisUid,
+        count: add.count,
+      })),
+      finalise: act.finalise?.map((fin) => ({
+        analysisUid: fin.analysisUid,
+        value: fin.value,
+      })),
+    })),
   };
   withClientMutation(
     EDIT_REFLEX_BRAIN,
@@ -130,16 +151,28 @@ function editReflexBrain(): void {
   ).then((payload) => reflexStore.updateReflexBrain(payload));
 }
 
-function addCriteria(): void {
-  brainForm.analysesValues?.push({ operator: "eq" } as IReflexBrainCriteria);
+function addCondition(): void {
+  brainForm.conditions?.push({ description: "", priority: 0, criteria: [] });
 }
 
-function removeCriteria(index: number): void {
-  brainForm.analysesValues?.splice(index, 1);
+function removeCondition(index: number): void {
+  brainForm.conditions?.splice(index, 1);
+}
+
+function addAction(): void {
+  brainForm.actions?.push({ addNew: [], finalise: [] });
+}
+
+function addCriteria(condIndex: number): void {
+  brainForm.conditions![condIndex].criteria?.push({ operator: "eq" })
+}
+
+function removeCriteria(condIndex: number, index: number): void {
+  brainForm.conditions![condIndex].criteria?.splice(index, 1)
 }
 
 let criteriaResultOptions = ref<IResultOption[]>([]);
-function setCriteriaResultOptions(event: any, anal: IReflexBrainCriteria) {
+function setCriteriaResultOptions(event: any, anal: IReflexBrainConditionCriteria) {
   const analysis = analysesServices?.find(
     (s: IAnalysisService) => s.uid === anal.analysisUid
   );
@@ -147,20 +180,20 @@ function setCriteriaResultOptions(event: any, anal: IReflexBrainCriteria) {
   criteriaResultOptions.value = analysis?.resultOptions || [];
 }
 
-function addNew(): void {
-  brainForm.addNew?.push({} as IReflexBrainAddition);
+function addNew(index: number): void {
+  brainForm.actions![index]?.addNew?.push({} as IReflexBrainAddition);
 }
 
 function removeNew(index: number): void {
-  brainForm.addNew?.splice(index, 1);
+  brainForm.actions![0]?.addNew?.splice(index, 1);
 }
 
-function addFinal(): void {
-  brainForm.finalise?.push({} as IReflexBrainFinal);
+function addFinal(index: number): void {
+  brainForm.actions![0]?.finalise?.push({} as IReflexBrainFinal);
 }
 
 function removeFinal(index: number): void {
-  brainForm.finalise?.splice(index, 1);
+  brainForm.actions![index]?.finalise?.splice(index, 1);
 }
 
 let finalResultOptions = ref<IResultOption[]>([]);
@@ -172,17 +205,24 @@ function setFinalResultOptions(event: any, anal: IReflexBrainFinal) {
   finalResultOptions.value = analysis?.resultOptions || [];
 }
 
-function reflexBrainFormManager(create: boolean, obj: IReflexAction = {}): void {
+function reflexBrainFormManager(create: boolean, actionUid?: string, obj: IReflexBrain = {}): void {
   formAction.value = create;
   showBrainModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX BRAIN";
-  forAction.value = obj.uid;
+  forAction.value = actionUid;
   if (create) {
-    Object.assign(brainForm, {} as IReflexBrain);
+    Object.assign(brainForm, {
+      priority: 0,
+      description: "",
+      conditions: [],
+      actions: [],
+    });
+    addCondition();
+    addCriteria(0);
+    addAction();
+    addNew(0);
+    addFinal(0);
   } else {
-    let crit: IReflexBrainCriteria[] = [];
-    let addN: IReflexBrainAddition[] = [];
-    let finl: IReflexBrainFinal[] = [];
     Object.assign(brainForm, { ...obj });
   }
 }
@@ -211,21 +251,6 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
   })
 }
 
-
-function addComplexCondition() {
-
-  if (!brainForm.complexConditions) {
-    brainForm.complexConditions = [];
-  }
-  brainForm.complexConditions.push({
-    conditionType: 'AND',
-    subconditions: [],
-  });
-}
-
-function removeComplexCondition(index: number) {
-  brainForm.complexConditions?.splice(index, 1);
-}
 </script>
 
 <template>
@@ -262,7 +287,7 @@ function removeComplexCondition(index: number) {
         <div class="flex justify-start items-center mb-2">
           <h4 class="text-l leading-4 italic">Reflex Action Brains</h4>
           <button
-            @click="reflexBrainFormManager(true, action)"
+            @click="reflexBrainFormManager(true, action?.uid!, {})"
             class="ml-4 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
           >
             Add Brain
@@ -279,7 +304,7 @@ function removeComplexCondition(index: number) {
                 {{ stringToNum(index + 1) }} Brain
               </h2>
               <div>
-                <span class="p-2" @click="reflexBrainFormManager(false, brain)"
+                <span class="p-2" @click="reflexBrainFormManager(false, action.uid!, brain)"
                 ><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1"
               /></span>
               <span class="p-2" @click="deleteReflexBrain(action.uid!, brain.uid!)"
@@ -287,108 +312,7 @@ function removeComplexCondition(index: number) {
               /></span>
               </div>
             </div>
-            <h3>{{ brain?.description }}</h3>
-            <hr class="my-2" />
-            <div>
-              <h4 class="my-2 text-md text-gray-500 font-semibold">Analyses Criteria</h4>
-              <div v-for="(criteria, index) in brain?.analysesValues" :key="index">
-                <div class="flex justify-start items-baseline flex-wrap">
-                  <div class="flex">
-                    <button
-                      class="px-2 py-1 border border-gray-500 bg-gray-500 text-white transition duration-300 focus:outline-none"
-                    >
-                      {{ criteria?.analysis?.name }}
-                    </button>
-                    <button
-                      class="px-2 py-1 border-gray-500 border text-gray-500 transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none"
-                    >
-                      {{ criteria?.value }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <h4 class="my-2 text-md text-gray-500 font-semibold">Add New Analyses</h4>
-              <div v-for="(addition, index) in brain?.addNew" :key="index">
-                <div class="flex justify-start items-baseline flex-wrap">
-                  <div class="flex">
-                    <button
-                      class="px-2 py-1 border-gray-500 border text-gray-500 transition duration-300 focus:outline-none"
-                    >
-                      {{ addition?.count }}
-                      <font-awesome-icon
-                        icon="asterisk"
-                        class="text-l text-gray-600 mx-1"
-                      />
-                    </button>
-                    <button
-                      class="px-2 py-1 border border-gray-500 bg-gray-500 text-white transition duration-300 focus:outline-none"
-                    >
-                      {{ addition?.analysis?.name }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <h4 class="my-2 text-md text-gray-500 font-semibold">Finalise</h4>
-              <div v-for="(final, index) in brain?.finalise" :key="index">
-                <div class="flex justify-start items-baseline flex-wrap">
-                  <div class="flex">
-                    <button
-                      class="px-2 py-1 border border-gray-500 bg-gray-500 text-white transition duration-300 focus:outline-none"
-                    >
-                      {{ final?.analysis?.name }}
-                    </button>
-                    <button
-                      class="px-2 py-1 border-gray-500 border text-gray-500 transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none"
-                    >
-                      {{ final?.value }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- <section id="complex-conditions">
-                <hr />
-                <div class="flex justify-between items-center py-2">
-                  <h5>Complex Conditions</h5>
-                  <button
-                    @click.prevent="addComplexCondition()"
-                    class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                  >
-                    Add Complex Condition
-                  </button>
-                </div>
-                <hr class="mb-4" />
-
-                <div v-for="(condition, index) in brainForm.complexConditions" :key="index">
-                  <ComplexConditionEditor
-                    :condition="condition"
-                    :analyses-services="analysesServices"
-                    @remove="removeComplexCondition(index)"
-                  />
-                </div>
-              </section> -->
-
-              <!-- <section id="custom-logic">
-                <hr />
-                <div class="flex justify-between items-center py-2">
-                  <h5>Custom Logic</h5>
-                </div>
-                <hr class="mb-4" />
-
-                <label class="block col-span-3 mb-2">
-                  <span class="text-gray-700">Custom Logic Expression</span>
-                  <textarea
-                    cols="2"
-                    class="form-input mt-1 block w-full"
-                    v-model="brainForm.customLogic"
-                    placeholder="Enter custom logic expression..."
-                  />
-                </label>
-              </section> -->
-
-            </div>
+            <p class="text-gray-500 text-sm">{{ brain?.description }}</p>
           </div>
         </div>
       </template>
@@ -410,6 +334,7 @@ function removeComplexCondition(index: number) {
               class="form-input mt-1 block w-full"
               v-model="actionForm.level"
               type="number"
+              min=1
               placeholder="Name ..."
             />
           </label>
@@ -462,32 +387,50 @@ function removeComplexCondition(index: number) {
 
     <template v-slot:body>
       <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-3 mb-2">
-            <span class="text-gray-700">Description</span>
-            <textarea
-              cols="2"
-              class="form-input mt-1 block w-full"
-              v-model="brainForm.description"
-              placeholder="Description ..."
-            />
-          </label>
+        <label class="mb-2">
+          <span class="text-gray-700">Description</span>
+          <textarea
+            cols="2"
+            class="form-input mt-1 block w-full"
+            v-model="brainForm.description"
+            placeholder="Description ..."
+          />
+        </label>
 
-          <section id="criteria">
+        <h3 class="flex items-center justify-start my-4 font-bold text-l text-gray-600">
+          <span>Conditions (OR)</span>
+          <button
+            @click.prevent="addCondition()"
+            class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+          >
+            Add
+          </button>
+        </h3>
+        <p class="italic text-sm text-gray-400">Criteria under a condition are evaluated as AND whilst conditions are evaluated as OR</p>
+        <div class="grid grid-cols-2 gap-4 my-4">
+          <section class="bg-slate-100 px-1" id="criteria" v-for="(condition, conIdx) in brainForm.conditions" :key="conIdx">
             <hr />
-            <div class="flex justify-between items-center py-2">
-              <h5>Criteria</h5>
-              <span class="text-orange-600"></span>
+            <div class="flex justify-between items-center">
+              <div class="flex justify-start items-center py-2">
+                <h5>Criteria (AND)</h5>
+                <button
+                  @click.prevent="addCriteria(conIdx)"
+                  class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                >
+                  + criteria
+                </button>
+              </div>
+              
               <button
-                @click.prevent="addCriteria()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                @click.prevent="removeCondition(conIdx)"
+                class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
               >
-                Add Criteria
+                - condition
               </button>
             </div>
             <hr class="mb-4" />
 
-            <div v-for="(anVal, index) in brainForm.analysesValues" :key="index">
+            <div v-for="(anVal, index) in condition.criteria" :key="index">
               <div class="flex items-center justify-between">
                 <div class="flex items-bottom gap-x-2">
                   <label class="flex flex-col whitespace-nowrap mb-2">
@@ -552,91 +495,91 @@ function removeComplexCondition(index: number) {
                 </div>
                 <div class="">
                   <button
-                    @click.prevent="removeCriteria(index)"
+                    @click.prevent="removeCriteria(conIdx, index)"
                     class="px-2 py-1 mt-5 ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
                   >
-                    Remove
+                    - criteria
                   </button>
                 </div>
               </div>
               <hr />
             </div>
           </section>
+        </div>
 
-          <section id="add-new">
-            <hr />
-            <div class="flex justify-between items-center py-2">
-              <h5>Add New</h5>
+        <h3 class="mt-4 font-bold text-l text-gray-600">Actions</h3>
+
+        <p class="italic text-sm text-gray-400">If conditions are met, auto create new analyses  and or set final results</p>
+        <section class="grid grid-cols-2 gap-x-4 my-4" v-for="(action, actIdx) in brainForm.actions" :key="actIdx">
+          <!-- Add New -->
+          <div class=" bg-green-50 px-1" v-for="(addNu, adIn) in action.addNew" :key="adIn">
+            <div class="flex justify-start items-center py-2">
+              <h5>Create Analyses</h5>
               <span class="text-orange-600"></span>
               <button
-                @click.prevent="addNew()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                @click.prevent="addNew(adIn)"
+                class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
               >
-                Add New
+                Add
               </button>
             </div>
-            <hr class="mb-4" />
-
-            <div v-for="(addNu, index) in brainForm.addNew" :key="index">
-              <div class="flex items-center justify-between">
-                <div class="flex items-top gap-x-4">
-                  <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-gray-700">Analysis</span>
-                    <select
-                      name="analysisService"
-                      id="analysisService"
-                      v-model="addNu.analysisUid"
-                      class="form-input mt-1"
-                    >
-                      <option value=""></option>
-                      <option
-                        v-for="service in analysesServices"
-                        :key="service.uid"
-                        :value="service.uid"
-                      >
-                        {{ service.name }}
-                      </option>
-                    </select>
-                  </label>
-                  <label class="block col-span-1 mb-2">
-                    <span class="text-gray-700">Count</span>
-                    <input
-                      class="form-input mt-1 block w-full"
-                      v-model="addNu.count"
-                      type="number"
-                      placeholder="How Many ..."
-                      default="1"
-                    />
-                  </label>
-                </div>
-                <div class="">
-                  <button
-                    @click.prevent="removeNew(index)"
-                    class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+            <hr>
+            <div class="flex items-center justify-between">
+              <div class="flex items-top gap-x-4">
+                <label class="flex flex-col whitespace-nowrap mb-2">
+                  <span class="text-gray-700">Analysis</span>
+                  <select
+                    name="analysisService"
+                    id="analysisService"
+                    v-model="addNu.analysisUid"
+                    class="form-input mt-1"
                   >
-                    Remove
-                  </button>
-                </div>
+                    <option value=""></option>
+                    <option
+                      v-for="service in analysesServices"
+                      :key="service.uid"
+                      :value="service.uid"
+                    >
+                      {{ service.name }}
+                    </option>
+                  </select>
+                </label>
+                <label class="block col-span-1 mb-2">
+                  <span class="text-gray-700">Count</span>
+                  <input
+                    class="form-input mt-1 block w-full"
+                    v-model="addNu.count"
+                    type="number"
+                    placeholder="How Many ..."
+                    default="1"
+                  />
+                </label>
               </div>
-              <hr />
+              <div class="">
+                <button
+                  @click.prevent="removeNew(adIn)"
+                  class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
-          </section>
+          </div>
 
-          <section id="criteria">
-            <hr />
-            <div class="flex justify-between items-center py-2">
-              <h5>Finalize</h5>
-              <span class="text-orange-600"></span>
-              <button
-                @click.prevent="addFinal()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-              >
-                Add Final
-              </button>
-            </div>
-            <hr class="mb-4" />
-
-            <div v-for="(final, index) in brainForm.finalise" :key="index">
+          <!-- Finalise -->
+          <div v-for="(action, actIdx) in brainForm.actions" :key="actIdx">
+            <div class=" bg-orange-50 px-1" v-for="(final, fiIn) in action.finalise" :key="fiIn">
+              <div class="flex justify-start items-center py-2">
+                <h5>Set Final Analyses</h5>
+                <span class="text-orange-600"></span>
+                <button
+                  @click.prevent="addFinal(fiIn)"
+                  class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                >
+                  Add
+                </button>
+              </div>
+              <hr>
               <div class="flex items-center justify-between">
                 <div class="flex items-top gap-x-4">
                   <label class="flex flex-col whitespace-nowrap mb-2">
@@ -687,24 +630,25 @@ function removeComplexCondition(index: number) {
                 </div>
                 <div class="">
                   <button
-                    @click.prevent="removeFinal(index)"
+                    @click.prevent="removeFinal(fiIn)"
                     class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
                   >
                     Remove
                   </button>
-                </div>
               </div>
-              <hr />
+              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
+
+
         <hr />
         <button
           type="button"
           @click.prevent="saveBrainForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
-          Save Form
+          Save
         </button>
       </form>
     </template>

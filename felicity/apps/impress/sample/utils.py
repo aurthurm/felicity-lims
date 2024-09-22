@@ -36,6 +36,7 @@ async def impress_samples(sample_meta: List[any], user):
     to_return = []
 
     for s_meta in sample_meta:
+        logger.info(f"sample s_meta {s_meta}")
         sample = await SampleService().get(uid=s_meta.get("uid"))
         logger.info(f"sample {sample} {sample.status}")
 

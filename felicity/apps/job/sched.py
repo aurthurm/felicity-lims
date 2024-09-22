@@ -6,7 +6,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from felicity.apps.analysis.tasks import submit_results, verify_results
 from felicity.apps.analytics.tasks import generate_report
 from felicity.apps.impress.sample.tasks import (impress_results,
-                                                prepare_for_impress)
+                                                prepare_for_impress, cleanup_jobs)
 from felicity.apps.job.enum import JobAction, JobCategory
 from felicity.apps.job.services import JobService
 from felicity.apps.shipment.tasks import (dispatch_shipment,
@@ -80,5 +80,10 @@ def felicity_workforce_init():
         func=prepare_for_impress,
         trigger=IntervalTrigger(seconds=60 * 60),
         id="felicity_impress",
+    )
+    scheduler.add_job(
+        func=cleanup_jobs,
+        trigger=IntervalTrigger(seconds=60 * 60 * 24),
+        id="felicity_jobs_clean",
     )
     scheduler.start()

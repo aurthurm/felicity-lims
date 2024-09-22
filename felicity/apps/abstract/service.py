@@ -113,18 +113,19 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get_all(**kwargs)
 
-    async def get_related(self, related: list[str], **kwargs) -> E:
+    async def get_related(self, related: list[str], many: bool = False, **kwargs) -> E | list[E]:
         """
         Get an entity with its related entities.
 
         Args:
+            many: Return many or first
             related: List of related entity names to fetch
-            **kwargs: Criteria for fetching the main entity
+            **kwargs: Criteria for fetching the entity
 
         Returns:
             Entity with related entities loaded
         """
-        return await self.repository.get_related(related=related, **kwargs)
+        return await self.repository.get_related(related=related, many=many, **kwargs)
 
     async def create(self, c: C | dict, related: list[str] = None) -> E:
         """

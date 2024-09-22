@@ -44,7 +44,6 @@ class AnalysisResultService(
             | None
     ):
         analysis_result = await self.get(uid=uid)
-        retest = None
         a_result_in = {
             "sample_uid": analysis_result.sample_uid,
             "analysis_uid": analysis_result.analysis_uid,
@@ -111,7 +110,7 @@ class AnalysisResultService(
     async def _verify(self, uid: str, verifier_uid) -> None:
         await self.repository.table_insert(
             table=result_verification,
-            mappings={"result_uid": uid, "user_uid": verifier_uid},
+            mappings=[{"result_uid": uid, "user_uid": verifier_uid}],
         )
 
     async def retract(self, uid: str, retracted_by) -> AnalysisResult:

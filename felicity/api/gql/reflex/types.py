@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import (AnalysisType,
                                                       SampleTypeTyp)
-from felicity.api.gql.types import PageInfo, JSONScalar
+from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 
 
@@ -44,38 +44,49 @@ class ReflexRuleCursorPage:
 class ReflexBrainAdditionType:
     analysis_uid: str
     analysis: AnalysisType | None = None
-    reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"] = None
+    reflex_brain_action_uid: str
+    reflex_brain_action: Optional["ReflexBrainActionType"] = None
     count: int
-    conditions: JSONScalar
 
 
 @strawberry.type
-class ReflexBrainCriteriaType:
+class ReflexBrainConditionCriteriaType:
     analysis_uid: str
     analysis: AnalysisType | None = None
-    reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"] = None
+    reflex_brain_condition_uid: str
+    reflex_brain_condition: Optional["ReflexBrainConditionType"] = None
     operator: str
     value: str
-    custom_logic: str | None = None
 
 
 @strawberry.type
 class ReflexBrainFinalType:
     analysis_uid: str
     analysis: AnalysisType | None = None
-    reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"] = None
+    reflex_brain_action_uid: str
+    reflex_brain_action: Optional["ReflexBrainActionType"] = None
     value: str
 
 
 @strawberry.type
-class ComplexConditionType:
+class ReflexBrainConditionType:
     uid: str
     reflex_brain_uid: str
-    condition_type: str
-    subconditions: JSONScalar
+    reflex_brain: "ReflexBrainType"
+    description: str | None
+    criteria: list["ReflexBrainConditionCriteriaType"] | None
+    priority: int
+
+
+@strawberry.type
+class ReflexBrainType:
+    reflex_action_uid: str
+    reflex_action: Optional["ReflexBrainType"] = None
+    actions: list["ReflexBrainActionType"]
+    conditions: list["ReflexBrainConditionType"]
+    uid: str
+    description: str
+    priority: int
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -86,16 +97,14 @@ class ComplexConditionType:
 
 
 @strawberry.type
-class ReflexBrainType:
-    reflex_action_uid: str
-    reflex_action: Optional["ReflexBrainType"] = None
+class ReflexBrainActionType:
+    reflex_brain_uid: str
+    reflex_brain: Optional["ReflexBrainType"] = None
     uid: str
     description: str
-    analyses_values: Optional[List[ReflexBrainCriteriaType]] = None
     add_new: Optional[List[ReflexBrainAdditionType]] = None
     finalise: Optional[List[ReflexBrainFinalType]] = None
-    complex_conditions: Optional[List["ComplexConditionType"]] = None
-    custom_logic: Optional[str] = None
+    priority: int
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -116,8 +125,6 @@ class ReflexActionType:
     reflex_rule_uid: str
     reflex_rule: Optional[ReflexRuleType] = None
     brains: Optional[List[ReflexBrainType]] = None
-    custom_logic: Optional[str] = None
-    execution_order: int
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
