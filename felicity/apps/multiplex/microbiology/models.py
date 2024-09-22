@@ -1,5 +1,5 @@
 """Micro Organism Category
-   Gram Reaction and Morpholoy
+Gram Reaction and Morpholoy
 """
 
 """Micro Organism"""

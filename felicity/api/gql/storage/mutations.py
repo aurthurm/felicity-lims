@@ -11,16 +11,20 @@ from felicity.api.gql.types import OperationError
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.storage import schemas
-from felicity.apps.storage.services import (StorageContainerService,
-                                            StorageLocationService,
-                                            StorageSectionService,
-                                            StoreRoomService)
+from felicity.apps.storage.services import (
+    StorageContainerService,
+    StorageLocationService,
+    StorageSectionService,
+    StoreRoomService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 StoreRoomResponse = strawberry.union(
-    "StoreRoomResponse", (types.StoreRoomType, OperationError), description=""  # noqa
+    "StoreRoomResponse",
+    (types.StoreRoomType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -83,7 +87,9 @@ class StoredSamplesType:
 
 
 StoreSampleResponse = strawberry.union(
-    "StoreSampleResponse", (StoredSamplesType, OperationError), description=""  # noqa
+    "StoreSampleResponse",
+    (StoredSamplesType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -122,7 +128,6 @@ class StorageMutations:
     async def update_store_room(
         self, info, uid: str, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -156,9 +161,7 @@ class StorageMutations:
 
         exists = await StorageLocationService().get(name=payload.name)
         if exists:
-            return OperationError(
-                error="StorageLocation with this name already exists"
-            )
+            return OperationError(error="StorageLocation with this name already exists")
 
         store_room = await StoreRoomService().get(uid=payload.store_room_uid)
         if not store_room:
@@ -181,7 +184,6 @@ class StorageMutations:
     async def update_storage_location(
         self, info, uid: str, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -242,7 +244,6 @@ class StorageMutations:
     async def update_storage_section(
         self, info, uid: str, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -304,7 +305,6 @@ class StorageMutations:
     async def update_storage_container(
         self, info, uid: str, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:

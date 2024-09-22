@@ -7,7 +7,10 @@ from felicity.api.gql.setup.types import SupplierType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.inventory.services import StockItemVariantService, StockProductInventoryService
+from felicity.apps.inventory.services import (
+    StockItemVariantService,
+    StockProductInventoryService,
+)
 
 
 @strawberry.type

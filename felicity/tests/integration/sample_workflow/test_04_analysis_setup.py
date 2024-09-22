@@ -128,6 +128,7 @@ async def test_add_lab_instrument_instrument(app_gql, auth_data, instruments):
     assert _data["serialNumber"] == serialNumber
     assert _data["instrumentUid"] == instruments[0]["uid"]
 
+
 @pytest.mark.asyncio
 @pytest.mark.order(43)
 async def test_add_method(app_gql, auth_data, instruments):

@@ -3,17 +3,22 @@ from datetime import datetime
 
 from felicity.apps.analysis import utils
 from felicity.apps.analysis.entities.analysis import analysis_profile
-from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
-                                            AnalysisCreate, ProfileCreate,
-                                            QCLevelCreate,
-                                            RejectionReasonCreate,
-                                            SampleTypeCreate)
-from felicity.apps.analysis.services.analysis import (AnalysisCategoryService,
-                                                      AnalysisService,
-                                                      CodingStandardService,
-                                                      ProfileService,
-                                                      RejectionReasonService,
-                                                      SampleTypeService)
+from felicity.apps.analysis.schemas import (
+    AnalysisCategoryCreate,
+    AnalysisCreate,
+    ProfileCreate,
+    QCLevelCreate,
+    RejectionReasonCreate,
+    SampleTypeCreate,
+)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisCategoryService,
+    AnalysisService,
+    CodingStandardService,
+    ProfileService,
+    RejectionReasonService,
+    SampleTypeService,
+)
 from felicity.apps.analysis.services.quality_control import QCLevelService
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.setup.schemas import UnitCreate

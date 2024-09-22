@@ -18,7 +18,7 @@ class MinioClient:
             endpoint=settings.MINIO_SERVER,
             access_key=settings.MINIO_ACCESS,
             secret_key=settings.MINIO_SECRET,
-            secure=False
+            secure=False,
         )
 
     def bucket_exists(self, bucket: MinioBucket):
@@ -29,7 +29,14 @@ class MinioClient:
         if not self.bucket_exists(bucket):
             self.client.make_bucket(bucket)
 
-    def put_object(self, bucket: MinioBucket, object_name: str, data, metadata, content_type="application/pdf"):
+    def put_object(
+        self,
+        bucket: MinioBucket,
+        object_name: str,
+        data,
+        metadata,
+        content_type="application/pdf",
+    ):
         logger.info(f"minio -- put {bucket} object --")
         self.make_bucket(bucket)
 
@@ -43,7 +50,7 @@ class MinioClient:
                 data=data,
                 length=len(data.getvalue()),
                 content_type=content_type,
-                metadata=metadata
+                metadata=metadata,
             )
         except S3Error as e:
             raise Exception(f"Failed to upload file: {str(e)}")

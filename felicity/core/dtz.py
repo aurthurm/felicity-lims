@@ -33,7 +33,7 @@ def datetime_math(date_val: str | datetime, days: int, addition=True) -> datetim
 
 
 def format_datetime(
-        dat_value: str | datetime, human_format=False, with_time=True
+    dat_value: str | datetime, human_format=False, with_time=True
 ) -> str:
     if not dat_value:
         return ""

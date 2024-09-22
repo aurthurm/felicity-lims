@@ -1,10 +1,14 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.reflex.entities import (ReflexAction, ReflexBrain,
-                                           ReflexBrainAddition,
-                                           ReflexBrainCondition,
-                                           ReflexBrainFinal, ReflexRule, ReflexBrainConditionCriteria,
-                                           ReflexBrainAction,
-                                           )
+from felicity.apps.reflex.entities import (
+    ReflexAction,
+    ReflexBrain,
+    ReflexBrainAddition,
+    ReflexBrainCondition,
+    ReflexBrainFinal,
+    ReflexRule,
+    ReflexBrainConditionCriteria,
+    ReflexBrainAction,
+)
 
 
 class ReflexRuleRepository(BaseRepository[ReflexRule]):
@@ -32,7 +36,9 @@ class ReflexBrainConditionRepository(BaseRepository[ReflexBrainCondition]):
         super().__init__(ReflexBrainCondition)
 
 
-class ReflexBrainConditionCriteriaRepository(BaseRepository[ReflexBrainConditionCriteria]):
+class ReflexBrainConditionCriteriaRepository(
+    BaseRepository[ReflexBrainConditionCriteria]
+):
     def __init__(self) -> None:
         super().__init__(ReflexBrainConditionCriteria)
 

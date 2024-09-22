@@ -1,10 +1,13 @@
 from felicity.apps.abstract import BaseRepository
-from felicity.apps.instrument.entities import (CalibrationCertificate,
-                                               Instrument,
-                                               InstrumentCalibration,
-                                               InstrumentCompetence,
-                                               InstrumentType,
-                                               LaboratoryInstrument, Method)
+from felicity.apps.instrument.entities import (
+    CalibrationCertificate,
+    Instrument,
+    InstrumentCalibration,
+    InstrumentCompetence,
+    InstrumentType,
+    LaboratoryInstrument,
+    Method,
+)
 
 
 class MethodRepository(BaseRepository[Method]):
@@ -21,7 +24,7 @@ class LaboratoryInstrumentRepository(
     BaseRepository[LaboratoryInstrument],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(LaboratoryInstrument)
 
@@ -45,6 +48,6 @@ class InstrumentCompetenceRepository(
     BaseRepository[InstrumentCompetence],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentCompetence)

@@ -11,7 +11,6 @@ class IdSequenceRepository(BaseRepository[IdSequence]):
         super().__init__(IdSequence)
 
     async def next_number(self, prefix: str) -> int:
-
         insert_stmt = (
             insert(self.model)
             .values(prefix=prefix, number=1)

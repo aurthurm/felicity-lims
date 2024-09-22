@@ -1,7 +1,6 @@
 from felicity.core.config import get_settings
 from felicity.core.events import subscribe
-from felicity.utils.email.email import (send_new_account_email,
-                                        send_reset_password_email)
+from felicity.utils.email.email import send_new_account_email, send_reset_password_email
 
 settings = get_settings()
 

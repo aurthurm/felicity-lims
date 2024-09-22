@@ -29,17 +29,19 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-            self, info, uids: List[str]
+        self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpressService().get_all(sample_uid__in=uids)  # noqa
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-            self, info, sample_ids: List[str]
+        self, info, sample_ids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         if settings.OBJECT_STORAGE:
-            reports = MinioClient().get_object(MinioBucket.DIAGNOSTIC_REPORT, sample_ids)
+            reports = MinioClient().get_object(
+                MinioBucket.DIAGNOSTIC_REPORT, sample_ids
+            )
 
             merger = PdfWriter()
             for report in reports:
@@ -50,7 +52,9 @@ class ReportImpressQuery:
                 bytes_stream.seek(0)
                 out_stream = bytes_stream.getbuffer().tobytes()
         else:
-            items = await ReportImpressService().get_all(sample___sample_id__in=sample_ids)
+            items = await ReportImpressService().get_all(
+                sample___sample_id__in=sample_ids
+            )
 
             def _first_of(things: list):
                 if len(things) > 0:
@@ -91,7 +95,9 @@ class ReportImpressQuery:
 
         if settings.OBJECT_STORAGE:
             sample = await SampleService().get(uid=report.sample_uid)
-            report = MinioClient().get_object(MinioBucket.DIAGNOSTIC_REPORT, [sample.sample_id])
+            report = MinioClient().get_object(
+                MinioBucket.DIAGNOSTIC_REPORT, [sample.sample_id]
+            )
             if not report:
                 return None
             # TODO: Filter returned report to get the one whose metadata matched impress uid
@@ -101,7 +107,7 @@ class ReportImpressQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def barcode_samples(
-            self, info, sample_uids: list[str]
+        self, info, sample_uids: list[str]
     ) -> list[BytesScalar] | None:
         samples = await SampleService().get_all(uid__in=sample_uids)
 

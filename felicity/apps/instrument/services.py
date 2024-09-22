@@ -1,28 +1,39 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.idsequencer.service import IdSequenceService
-from felicity.apps.instrument.entities import (CalibrationCertificate,
-                                               Instrument,
-                                               InstrumentCalibration,
-                                               InstrumentCompetence,
-                                               InstrumentType,
-                                               LaboratoryInstrument, Method)
+from felicity.apps.instrument.entities import (
+    CalibrationCertificate,
+    Instrument,
+    InstrumentCalibration,
+    InstrumentCompetence,
+    InstrumentType,
+    LaboratoryInstrument,
+    Method,
+)
 from felicity.apps.instrument.repository import (
-    CalibrationCertificateRepository, InstrumentCalibrationRepository,
-    InstrumentCompetenceRepository, InstrumentRepository,
-    InstrumentTypeRepository, LaboratoryInstrumentRepository, MethodRepository)
-from felicity.apps.instrument.schemas import (CalibrationCertificateCreate,
-                                              CalibrationCertificateUpdate,
-                                              InstrumentCalibrationCreate,
-                                              InstrumentCalibrationUpdate,
-                                              InstrumentCompetenceCreate,
-                                              InstrumentCompetenceUpdate,
-                                              InstrumentCreate,
-                                              InstrumentTypeCreate,
-                                              InstrumentTypeUpdate,
-                                              InstrumentUpdate,
-                                              LaboratoryInstrumentCreate,
-                                              LaboratoryInstrumentUpdate,
-                                              MethodCreate, MethodUpdate)
+    CalibrationCertificateRepository,
+    InstrumentCalibrationRepository,
+    InstrumentCompetenceRepository,
+    InstrumentRepository,
+    InstrumentTypeRepository,
+    LaboratoryInstrumentRepository,
+    MethodRepository,
+)
+from felicity.apps.instrument.schemas import (
+    CalibrationCertificateCreate,
+    CalibrationCertificateUpdate,
+    InstrumentCalibrationCreate,
+    InstrumentCalibrationUpdate,
+    InstrumentCompetenceCreate,
+    InstrumentCompetenceUpdate,
+    InstrumentCreate,
+    InstrumentTypeCreate,
+    InstrumentTypeUpdate,
+    InstrumentUpdate,
+    LaboratoryInstrumentCreate,
+    LaboratoryInstrumentUpdate,
+    MethodCreate,
+    MethodUpdate,
+)
 
 
 class MethodService(
@@ -68,11 +79,9 @@ class InstrumentCalibrationService(
         InstrumentCalibration, InstrumentCalibrationCreate, InstrumentCalibrationUpdate
     ],
 ):
-    
-
     def __init__(
         self,
-    ):  
+    ):
         self.id_service = IdSequenceService()
         super().__init__(InstrumentCalibrationRepository)
 

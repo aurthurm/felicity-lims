@@ -1,36 +1,56 @@
 import sqlalchemy as sa
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.inventory.entities import (Hazard, StockAdjustment,
-                                              StockCategory, StockItem,
-                                              StockItemVariant, StockLot,
-                                              StockOrder, StockOrderProduct,
-                                              StockProductInventory,
-                                              StockReceipt, StockUnit)
+from felicity.apps.inventory.entities import (
+    Hazard,
+    StockAdjustment,
+    StockCategory,
+    StockItem,
+    StockItemVariant,
+    StockLot,
+    StockOrder,
+    StockOrderProduct,
+    StockProductInventory,
+    StockReceipt,
+    StockUnit,
+)
 from felicity.apps.inventory.repository import (
-    HazardRepository, StockAdjustmentRepository, StockCategoryRepository,
-    StockItemRepository, StockItemVariantRepository, StockLotRepository,
-    StockOrderProductRepository, StockOrderRepository,
-    StockProductInventoryRepository, StockReceiptRepository,
-    StockUnitRepository)
-from felicity.apps.inventory.schemas import (HazardCreate, HazardUpdate,
-                                             StockAdjustmentCreate,
-                                             StockAdjustmentUpdate,
-                                             StockCategoryCreate,
-                                             StockCategoryUpdate,
-                                             StockItemCreate, StockItemUpdate,
-                                             StockItemVariantCreate,
-                                             StockItemVariantUpdate,
-                                             StockLotCreate, StockLotUpdate,
-                                             StockOrderCreate,
-                                             StockOrderProductCreate,
-                                             StockOrderProductUpdate,
-                                             StockOrderUpdate,
-                                             StockProductInventoryCreate,
-                                             StockProductInventoryUpdate,
-                                             StockReceiptCreate,
-                                             StockReceiptUpdate,
-                                             StockUnitCreate, StockUnitUpdate)
+    HazardRepository,
+    StockAdjustmentRepository,
+    StockCategoryRepository,
+    StockItemRepository,
+    StockItemVariantRepository,
+    StockLotRepository,
+    StockOrderProductRepository,
+    StockOrderRepository,
+    StockProductInventoryRepository,
+    StockReceiptRepository,
+    StockUnitRepository,
+)
+from felicity.apps.inventory.schemas import (
+    HazardCreate,
+    HazardUpdate,
+    StockAdjustmentCreate,
+    StockAdjustmentUpdate,
+    StockCategoryCreate,
+    StockCategoryUpdate,
+    StockItemCreate,
+    StockItemUpdate,
+    StockItemVariantCreate,
+    StockItemVariantUpdate,
+    StockLotCreate,
+    StockLotUpdate,
+    StockOrderCreate,
+    StockOrderProductCreate,
+    StockOrderProductUpdate,
+    StockOrderUpdate,
+    StockProductInventoryCreate,
+    StockProductInventoryUpdate,
+    StockReceiptCreate,
+    StockReceiptUpdate,
+    StockUnitCreate,
+    StockUnitUpdate,
+)
 from felicity.database.paging import PageCursor
 
 
@@ -46,7 +66,6 @@ class StockItemService(BaseService[StockItem, StockItemCreate, StockItemUpdate])
         text: str | None = None,
         sort_by: list[str] | None = None,
     ) -> PageCursor:
-
         _or_ = dict()
 
         if text:
@@ -116,7 +135,6 @@ class StockOrderService(BaseService[StockOrder, StockOrderCreate, StockOrderUpda
         status: None = None,
         sort_by: list[str] | None = None,
     ) -> PageCursor:
-
         filters = []
 
         _or_ = dict()
@@ -167,7 +185,6 @@ class StockAdjustmentService(
         text: str | None = None,
         sort_by: list[str] | None = None,
     ) -> PageCursor:
-
         _or_ = dict()
 
         if text:

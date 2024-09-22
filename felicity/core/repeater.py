@@ -47,7 +47,7 @@ def repeat_every(
     """
 
     def decorator(
-        func: Union[NoArgsNoReturnAsyncFuncT, NoArgsNoReturnFuncT]
+        func: Union[NoArgsNoReturnAsyncFuncT, NoArgsNoReturnFuncT],
     ) -> NoArgsNoReturnAsyncFuncT:
         """
         Converts the decorated function into a repeated, periodically-called version of itself.

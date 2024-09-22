@@ -5,8 +5,7 @@ from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.shipment.enum import ShipmentState
-from felicity.apps.shipment.services import (ShipmentService,
-                                             ShippedSampleService)
+from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
 from felicity.apps.user.services import UserService
 
 

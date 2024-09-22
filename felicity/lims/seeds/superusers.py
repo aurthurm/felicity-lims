@@ -1,8 +1,7 @@
 import logging
 
 from felicity.apps.user import schemas
-from felicity.apps.user.services import (GroupService, UserPreferenceService,
-                                         UserService)
+from felicity.apps.user.services import GroupService, UserPreferenceService, UserService
 from felicity.core.config import get_settings
 
 from .groups_perms import FGroup
@@ -19,7 +18,9 @@ async def seed_daemon_user() -> None:
     group_service = GroupService()
     preference_service = UserPreferenceService()
 
-    system_daemon = await user_service.get_related(related=["groups"], email=settings.SYSTEM_DAEMON_EMAIL)
+    system_daemon = await user_service.get_related(
+        related=["groups"], email=settings.SYSTEM_DAEMON_EMAIL
+    )
     if not system_daemon:
         su_in = schemas.UserCreate(
             first_name="System",
@@ -55,7 +56,9 @@ async def seed_super_user() -> None:
     group_service = GroupService()
     preference_service = UserPreferenceService()
 
-    super_user = await user_service.get_related(related=["groups"], email=settings.FIRST_SUPERUSER_EMAIL)
+    super_user = await user_service.get_related(
+        related=["groups"], email=settings.FIRST_SUPERUSER_EMAIL
+    )
     if not super_user:
         su_in = schemas.UserCreate(
             first_name="System",

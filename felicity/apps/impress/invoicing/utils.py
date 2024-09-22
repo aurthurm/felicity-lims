@@ -1,8 +1,13 @@
 from felicity.apps.analysis.services.analysis import AnalysisRequestService
-from felicity.apps.billing.entities import (TestBill, test_bill_item)
+from felicity.apps.billing.entities import TestBill, test_bill_item
 from felicity.apps.billing.schemas import TestBillInvoiceCreate
-from felicity.apps.billing.services import TestBillInvoiceService, TestBillTransactionService, AnalysisPriceService, \
-    ProfilePriceService, TestBillService
+from felicity.apps.billing.services import (
+    TestBillInvoiceService,
+    TestBillTransactionService,
+    AnalysisPriceService,
+    ProfilePriceService,
+    TestBillService,
+)
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.invoicing.engine import FelicityInvoice
 from felicity.apps.iol.minio import MinioClient
@@ -63,7 +68,9 @@ async def impress_invoice(test_bill: TestBill):
         impress_meta["orders"].append(_order)
 
     # transactions
-    transactions = await TestBillTransactionService().get_all(test_bill_uid=test_bill.uid)
+    transactions = await TestBillTransactionService().get_all(
+        test_bill_uid=test_bill.uid
+    )
     impress_meta["transactions"] = [marshaller(t, depth=1) for t in transactions]
     pdf = await FelicityInvoice().generate(impress_meta)
 
@@ -88,15 +95,13 @@ async def impress_invoice(test_bill: TestBill):
             data=pdf,
             metadata={
                 "test_bill_uid": test_bill.uid,
-            }
+            },
         )
 
     # Save the json to mongodb
     if settings.DOCUMENT_STORAGE:
         await MongoService().upsert(
-            collection=MongoCollection.INVOICE,
-            uid=test_bill.uid,
-            data=impress_meta
+            collection=MongoCollection.INVOICE, uid=test_bill.uid, data=impress_meta
         )
 
     return pdf

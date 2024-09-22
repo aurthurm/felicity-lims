@@ -1,7 +1,6 @@
 import logging
 
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
-                        Table)
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity

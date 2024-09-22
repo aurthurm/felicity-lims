@@ -1,11 +1,18 @@
 import logging
 
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
-                        Table, Text)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import (BaseEntity,
-                                    BaseMPTT)
+from felicity.apps.abstract import BaseEntity, BaseMPTT
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

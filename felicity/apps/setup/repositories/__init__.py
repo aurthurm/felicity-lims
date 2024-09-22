@@ -1,7 +1,12 @@
 from .location import CountryRepository, DistrictRepository, ProvinceRepository
-from .setup import (DepartmentRepository, LaboratoryRepository,
-                    LaboratorySettingRepository, ManufacturerRepository,
-                    SupplierRepository, UnitRepository)
+from .setup import (
+    DepartmentRepository,
+    LaboratoryRepository,
+    LaboratorySettingRepository,
+    ManufacturerRepository,
+    SupplierRepository,
+    UnitRepository,
+)
 
 __all__ = [
     "DistrictRepository",

@@ -9,21 +9,27 @@ from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import CanVerifySample, IsAuthenticated
-from felicity.api.gql.types import (OperationError, OperationSuccess,
-                                    SuccessErrorResponse)
+from felicity.api.gql.types import (
+    OperationError,
+    OperationSuccess,
+    SuccessErrorResponse,
+)
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.entities.analysis import (sample_analysis,
-                                                      sample_profile,
-                                                      sample_rejection_reason)
-from felicity.apps.analysis.enum import (ResultState, SamplePriority,
-                                         SampleState)
-from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
-                                                      AnalysisService,
-                                                      AnalysisTemplateService,
-                                                      ProfileService,
-                                                      RejectionReasonService,
-                                                      SampleService,
-                                                      SampleTypeService)
+from felicity.apps.analysis.entities.analysis import (
+    sample_analysis,
+    sample_profile,
+    sample_rejection_reason,
+)
+from felicity.apps.analysis.enum import ResultState, SamplePriority, SampleState
+from felicity.apps.analysis.services.analysis import (
+    AnalysisRequestService,
+    AnalysisService,
+    AnalysisTemplateService,
+    ProfileService,
+    RejectionReasonService,
+    SampleService,
+    SampleTypeService,
+)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
@@ -32,8 +38,7 @@ from felicity.apps.client.services import ClientService
 from felicity.apps.iol.redis import process_tracker
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
@@ -115,7 +120,7 @@ class ManageAnalysisInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-        info, payload: AnalysisRequestInputType
+    info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -254,7 +259,9 @@ async def create_analysis_request(
                     }
                 )
             )
-        created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
+        created = await AnalysisResultService().bulk_create(
+            result_schemas, related=["sample", "analysis"]
+        )
 
         # initialise reflex action if exist
         logger.info("ReflexUtil .... set_reflex_actions ...")
@@ -307,12 +314,15 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                     "status": ResultState.PENDING,
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                created = await AnalysisResultService().create(a_result_schema, related=["sample", "analysis"])
+                created = await AnalysisResultService().create(
+                    a_result_schema, related=["sample", "analysis"]
+                )
                 await ReflexEngineService(created, felicity_user).set_reflex_actions(
                     [created]
                 )
     clones = [
-        (await SampleService().get_related(related=["sample_type"], uid=clone.uid)) for clone in clones
+        (await SampleService().get_related(related=["sample_type"], uid=clone.uid))
+        for clone in clones
     ]
     return SampleListingType(samples=clones)
 
@@ -402,7 +412,9 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        _, sample = await SampleWorkFlow().approve(sample.uid, approved_by=felicity_user)
+        _, sample = await SampleWorkFlow().approve(
+            sample.uid, approved_by=felicity_user
+        )
         if sample:
             return_samples.append(sample)
 
@@ -411,7 +423,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-        info, samples: List[SampleRejectInputType]
+    info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -433,7 +445,9 @@ async def reject_samples(
                 )
 
             # TODO: Transactions
-            sample = await SampleWorkFlow().reject(sample.uid, rejected_by=felicity_user)
+            sample = await SampleWorkFlow().reject(
+                sample.uid, rejected_by=felicity_user
+            )
             await SampleService().repository.table_insert(
                 sample_rejection_reason,
                 {"sample_uid": sample.uid, "rejection_reason_uid": reason.uid},
@@ -453,7 +467,7 @@ async def reject_samples(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-        info, samples: List[SamplePublishInputType]
+    info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     felicity_user = await auth_from_info(info)
 
@@ -478,7 +492,9 @@ async def publish_samples(
     await JobService().create(job_schema)
     if final_publish:
         for sample in final_publish:
-            await process_tracker.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
+            await process_tracker.process(
+                uid=sample.uid, object_type=TrackableObject.SAMPLE
+            )
 
     # TODO: clean up below - probably no longer necessary - needs checking
     # !important for frontend
@@ -568,7 +584,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def samples_apply_template(
-        info, uid: str, analysis_template_uid: str
+    info, uid: str, analysis_template_uid: str
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -630,7 +646,7 @@ async def samples_apply_template(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def manage_analyses(
-        info, sample_uid: str, payload: ManageAnalysisInputType
+    info, sample_uid: str, payload: ManageAnalysisInputType
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 

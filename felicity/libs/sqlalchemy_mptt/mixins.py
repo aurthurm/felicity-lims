@@ -10,6 +10,7 @@
 """
 SQLAlchemy nested sets mixin
 """
+
 # SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, asc, desc
 from sqlalchemy.ext.declarative import declared_attr

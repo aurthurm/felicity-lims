@@ -10,23 +10,27 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.inventory import schemas
 from felicity.apps.inventory.enum import AdjustType, OrderState
-from felicity.apps.inventory.services import (HazardService,
-                                              StockAdjustmentService,
-                                              StockCategoryService,
-                                              StockItemService,
-                                              StockItemVariantService,
-                                              StockLotService,
-                                              StockOrderProductService,
-                                              StockOrderService,
-                                              StockProductInventoryService,
-                                              StockReceiptService,
-                                              StockUnitService)
+from felicity.apps.inventory.services import (
+    HazardService,
+    StockAdjustmentService,
+    StockCategoryService,
+    StockItemService,
+    StockItemVariantService,
+    StockLotService,
+    StockOrderProductService,
+    StockOrderService,
+    StockProductInventoryService,
+    StockReceiptService,
+    StockUnitService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 StockItemResponse = strawberry.union(
-    "StockItemResponse", (types.StockItemType, OperationError), description=""  # noqa
+    "StockItemResponse",
+    (types.StockItemType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -69,7 +73,9 @@ class StockCategoryInputType:
 
 
 HazardResponse = strawberry.union(
-    "HazardResponse", (types.HazardType, OperationError), description=""  # noqa
+    "HazardResponse",
+    (types.HazardType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -80,7 +86,9 @@ class HazardInputType:
 
 
 StockUnitResponse = strawberry.union(
-    "StockUnitResponse", (types.StockUnitType, OperationError), description=""  # noqa
+    "StockUnitResponse",
+    (types.StockUnitType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -216,7 +224,6 @@ class InventoryMutations:
     async def update_stock_item(
         self, info, uid: str, payload: StockItemInputType
     ) -> StockItemResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -270,7 +277,6 @@ class InventoryMutations:
     async def update_stock_item_variant(
         self, info, uid: str, payload: StockItemVariantInputType
     ) -> StockItemVariantResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -323,7 +329,6 @@ class InventoryMutations:
     async def update_stock_category(
         self, info, uid: str, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -374,7 +379,6 @@ class InventoryMutations:
     async def update_hazard(
         self, info, uid: str, payload: HazardInputType
     ) -> HazardResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -425,7 +429,6 @@ class InventoryMutations:
     async def update_stock_unit(
         self, info, uid: str, payload: StockUnitInputType
     ) -> StockUnitResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:

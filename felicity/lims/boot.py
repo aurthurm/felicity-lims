@@ -11,8 +11,7 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
-from strawberry.subscriptions import (GRAPHQL_TRANSPORT_WS_PROTOCOL,
-                                      GRAPHQL_WS_PROTOCOL)
+from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 
 from felicity.api.deps import get_gql_context
 from felicity.api.gql.schema import schema

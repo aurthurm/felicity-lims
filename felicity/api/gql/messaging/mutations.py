@@ -9,8 +9,7 @@ from felicity.api.gql.messaging.types import MessageType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
 from felicity.apps.messaging import schemas
-from felicity.apps.messaging.services import (MessageService,
-                                              MessageThreadService)
+from felicity.apps.messaging.services import MessageService, MessageThreadService
 from felicity.apps.user.services import UserService
 from felicity.utils import get_passed_args
 
@@ -18,7 +17,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 MessageResponse = strawberry.union(
-    "MessageResponse", (MessageType, OperationError), description=""  # noqa
+    "MessageResponse",
+    (MessageType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -28,7 +29,6 @@ class MessageMutations:
     async def send_message(
         self, info, recipients: List[str], body: str
     ) -> MessageResponse:
-
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
 
@@ -72,7 +72,6 @@ class MessageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def reply_message(self, info, thread_uid: str, body: str) -> MessageResponse:
-
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
 
@@ -106,7 +105,6 @@ class MessageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_message(self, info, uid: str) -> MessageResponse:
-
         felicity_user = await auth_from_info(info)
 
         message = await MessageService().get(uid=uid)
@@ -118,7 +116,6 @@ class MessageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_message(self, info, uid: str) -> DeleteResponse:
-
         felicity_user = await auth_from_info(info)
 
         message = await MessageService().get(uid=uid)
@@ -130,7 +127,6 @@ class MessageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_thread(self, info, uid: str) -> DeleteResponse:
-
         felicity_user = await auth_from_info(info)
 
         thread = await MessageThreadService().get(uid=uid)

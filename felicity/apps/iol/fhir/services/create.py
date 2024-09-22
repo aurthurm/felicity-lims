@@ -1,17 +1,18 @@
 from requests import Request
 
-from felicity.apps.iol.fhir.schema import (BundleResource,
-                                           DiagnosticReportResource,
-                                           PatientResource, Reference,
-                                           ServiceRequestResource)
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.iol.fhir.schema import (
+    BundleResource,
+    DiagnosticReportResource,
+    PatientResource,
+    Reference,
+    ServiceRequestResource,
+)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.schemas import JobCreate
 from felicity.apps.job.services import JobService
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.schemas import ShipmentCreate
-from felicity.apps.shipment.services import (ReferralLaboratoryService,
-                                             ShipmentService)
+from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
 from felicity.apps.user.entities import User
 
 

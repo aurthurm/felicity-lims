@@ -37,9 +37,12 @@ class ProcessingTracker:
         else:
             self._store[uid] = {"status": "processing"}
 
-        await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
-            "uid": uid, "object_type": object_type, "status": "processing"
-        }))
+        await broadcast.publish(
+            NotificationChannel.PROCESSING,
+            json.dumps(
+                {"uid": uid, "object_type": object_type, "status": "processing"}
+            ),
+        )
 
     async def release(self, uid: str, object_type: str):
         if self._has_redis:
@@ -49,9 +52,10 @@ class ProcessingTracker:
         else:
             self._store.pop(uid, None)
 
-        await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
-            "uid": uid, "object_type": object_type, "status": "released"
-        }))
+        await broadcast.publish(
+            NotificationChannel.PROCESSING,
+            json.dumps({"uid": uid, "object_type": object_type, "status": "released"}),
+        )
 
     async def is_processing(self, uid: str, object_type: str):
         if self._has_redis:
@@ -61,9 +65,12 @@ class ProcessingTracker:
         else:
             exists = uid in self._store
 
-        await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
-            "uid": uid, "object_type": object_type, "status": "processing"
-        }))
+        await broadcast.publish(
+            NotificationChannel.PROCESSING,
+            json.dumps(
+                {"uid": uid, "object_type": object_type, "status": "processing"}
+            ),
+        )
         return exists
 
 

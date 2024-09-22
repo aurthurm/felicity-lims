@@ -34,7 +34,9 @@ async def app_root() -> AsyncGenerator[AsyncClient, Any, None]:
 
 @pytest_asyncio.fixture(scope="function")
 async def app_api() -> AsyncGenerator[AsyncClient, Any, None]:
-    async with AsyncClient(app=felicity, base_url="http://localhost:8080/api/v1") as clt:
+    async with AsyncClient(
+        app=felicity, base_url="http://localhost:8080/api/v1"
+    ) as clt:
         yield clt
 
 

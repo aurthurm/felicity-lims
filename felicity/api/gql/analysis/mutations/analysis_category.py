@@ -31,7 +31,6 @@ class AnalysisCategoryInputType:
 async def create_analysis_category(
     info, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:
-
     felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.description:
@@ -63,7 +62,6 @@ async def create_analysis_category(
 async def update_analysis_category(
     self, info, uid: str, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:  # noqa
-
     felicity_user = await auth_from_info(info)
 
     analysis_category = await AnalysisCategoryService().get(uid=uid)

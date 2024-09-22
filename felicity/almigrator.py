@@ -31,7 +31,9 @@ class FelicityMigrator:
     async def get_current_db_revision(self):
         engine = create_async_engine(self.database_url)
         async with engine.connect() as connection:
-            result = await connection.execute(text("SELECT version_num FROM alembic_version"))
+            result = await connection.execute(
+                text("SELECT version_num FROM alembic_version")
+            )
         return result.scalar()
 
     async def get_latest_revision(self):

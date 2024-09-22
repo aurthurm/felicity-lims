@@ -14,15 +14,21 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 ClientResponse = strawberry.union(
-    "ClientResponse", (ClientType, OperationError), description=""  # noqa
+    "ClientResponse",
+    (ClientType, OperationError),
+    description="",  # noqa
 )
 
 ClientContactResponse = strawberry.union(
-    "ClientContactResponse", (ClientContactType, OperationError), description=""  # noqa
+    "ClientContactResponse",
+    (ClientContactType, OperationError),
+    description="",  # noqa
 )
 
 DeleteContactResponse = strawberry.union(
-    "DeleteContactResponse", (DeletedItem, OperationError), description=""  # noqa
+    "DeleteContactResponse",
+    (DeletedItem, OperationError),
+    description="",  # noqa
 )
 
 
@@ -59,7 +65,6 @@ class ClientMutations:
     async def create_client(
         self, info: Info, payload: ClientInputType
     ) -> ClientResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.code or not payload.name:
@@ -102,7 +107,6 @@ class ClientMutations:
     async def update_client(
         self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -129,7 +133,6 @@ class ClientMutations:
     async def create_client_contact(
         self, info, payload: ClientContactInputType
     ) -> ClientContactResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.client_uid or not payload.first_name:
@@ -167,7 +170,6 @@ class ClientMutations:
     async def update_client_contact(
         self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:

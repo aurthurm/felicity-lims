@@ -13,12 +13,16 @@ from felicity.apps.analysis import schemas
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.entities.qc import QCSet
 from felicity.apps.analysis.enum import ResultState, SampleState
-from felicity.apps.analysis.services.analysis import (AnalysisService,
-                                                      ProfileService,
-                                                      SampleService)
-from felicity.apps.analysis.services.quality_control import (QCLevelService,
-                                                             QCSetService,
-                                                             QCTemplateService)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisService,
+    ProfileService,
+    SampleService,
+)
+from felicity.apps.analysis.services.quality_control import (
+    QCLevelService,
+    QCSetService,
+    QCTemplateService,
+)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.setup.services import DepartmentService
@@ -50,11 +54,15 @@ class QCTemplateInputType:
 
 
 QCSetResponse = strawberry.union(
-    "QCSetResponse", (CreateQCSetData, OperationError), description=""  # noqa
+    "QCSetResponse",
+    (CreateQCSetData, OperationError),
+    description="",  # noqa
 )
 
 QCLevelResponse = strawberry.union(
-    "QCLevelResponse", (a_types.QCLevelType, OperationError), description=""  # noqa
+    "QCLevelResponse",
+    (a_types.QCLevelType, OperationError),
+    description="",  # noqa
 )
 
 QCTemplateResponse = strawberry.union(
@@ -199,7 +207,9 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
             incoming[k] = v
 
     obj_in = schemas.QCTemplateCreate(**incoming)
-    qc_template = await QCTemplateService().create(obj_in, related=["qc_levels", "departments"])
+    qc_template = await QCTemplateService().create(
+        obj_in, related=["qc_levels", "departments"]
+    )
 
     qc_template.qc_levels.clear()
     qc_template = await QCTemplateService().save(qc_template)
@@ -222,7 +232,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-        info, uid: str, payload: QCTemplateInputType
+    info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
     felicity_user = await auth_from_info(info)
 

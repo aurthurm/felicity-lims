@@ -6,12 +6,13 @@ import strawberry  # noqa
 
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.api.gql.worksheet.types import (WorkSheetCursorPage,
-                                              WorkSheetEdge,
-                                              WorkSheetTemplateType,
-                                              WorkSheetType)
-from felicity.apps.worksheet.services import (WorkSheetService,
-                                              WorkSheetTemplateService)
+from felicity.api.gql.worksheet.types import (
+    WorkSheetCursorPage,
+    WorkSheetEdge,
+    WorkSheetTemplateType,
+    WorkSheetType,
+)
+from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +32,6 @@ class WorkSheetQuery:
         status: str | None = None,
         sort_by: list[str] | None = None,
     ) -> WorkSheetCursorPage:
-
         filters = []
 
         _or_text_ = {}

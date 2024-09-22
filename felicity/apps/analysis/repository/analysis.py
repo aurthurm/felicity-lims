@@ -1,22 +1,26 @@
 from sqlalchemy import or_
 
 from felicity.apps.abstract import BaseRepository
-from felicity.apps.analysis.entities.analysis import (Analysis,
-                                                      AnalysisCategory,
-                                                      AnalysisCoding,
-                                                      AnalysisCorrectionFactor,
-                                                      AnalysisDetectionLimit,
-                                                      AnalysisInterim,
-                                                      AnalysisRequest,
-                                                      AnalysisSpecification,
-                                                      AnalysisTemplate,
-                                                      AnalysisUncertainty,
-                                                      CodingStandard, Profile,
-                                                      ProfileCoding,
-                                                      RejectionReason,
-                                                      ResultOption, Sample,
-                                                      SampleType,
-                                                      SampleTypeCoding)
+from felicity.apps.analysis.entities.analysis import (
+    Analysis,
+    AnalysisCategory,
+    AnalysisCoding,
+    AnalysisCorrectionFactor,
+    AnalysisDetectionLimit,
+    AnalysisInterim,
+    AnalysisRequest,
+    AnalysisSpecification,
+    AnalysisTemplate,
+    AnalysisUncertainty,
+    CodingStandard,
+    Profile,
+    ProfileCoding,
+    RejectionReason,
+    ResultOption,
+    Sample,
+    SampleType,
+    SampleTypeCoding,
+)
 
 
 class CodingStandardRepository(BaseRepository[CodingStandard]):

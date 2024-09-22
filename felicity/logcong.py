@@ -30,7 +30,6 @@ LOGGING_CONFIG: dict[str, Any] = {
             "maxBytes": 10 * 1024 * 1024,
             "backupCount": 0,
         },
-
         "default": {
             "formatter": "default",
             "class": "logging.StreamHandler",
@@ -45,6 +44,10 @@ LOGGING_CONFIG: dict[str, Any] = {
     "loggers": {
         "uvicorn": {"handlers": ["default"], "level": "INFO", "propagate": False},
         "uvicorn.error": {"level": "INFO"},
-        "uvicorn.access": {"handlers": ["access", "file_handler"], "level": "INFO", "propagate": False},
+        "uvicorn.access": {
+            "handlers": ["access", "file_handler"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }

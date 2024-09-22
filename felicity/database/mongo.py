@@ -32,10 +32,14 @@ class MongoService:
         created = await collection.insert_one(data)
         return await collection.find_one({"_id": created.inserted_id})
 
-    async def upsert(self, collection: MongoCollection, uid: str, data: dict) -> Optional[dict]:
+    async def upsert(
+        self, collection: MongoCollection, uid: str, data: dict
+    ) -> Optional[dict]:
         logger.info(f"mongodb -- upsert:{collection} --")
         collection = self.db.get_collection(collection)
-        result = await collection.update_one({'_id': self.oid(uid)}, {'$set': data}, upsert=True)
+        result = await collection.update_one(
+            {"_id": self.oid(uid)}, {"$set": data}, upsert=True
+        )
         return await collection.find_one({"_id": result.upserted_id})
 
     async def retrieve(self, collection: MongoCollection, uid: str):
@@ -43,12 +47,15 @@ class MongoService:
         collection = self.db.get_collection(collection)
         item = await collection.find_one({"_id": self.oid(uid)})
         if item:
-            item['_id'] = self.flake_id_from_hex(str(item['_id']))
+            item["_id"] = self.flake_id_from_hex(str(item["_id"]))
         return item
 
     async def search(
-            self, collection: MongoCollection, filters: dict[str, Any], projection: dict[str, int] = None,
-            limit: int = 100
+        self,
+        collection: MongoCollection,
+        filters: dict[str, Any],
+        projection: dict[str, int] = None,
+        limit: int = 100,
     ) -> list[dict[str, Any]]:
         """
         Search documents in MongoDB based on user-defined filters.
@@ -66,7 +73,9 @@ class MongoService:
             results.append(document)
         return results
 
-    async def update(self, collection: MongoCollection, uid: str, data: dict) -> Optional[bool]:
+    async def update(
+        self, collection: MongoCollection, uid: str, data: dict
+    ) -> Optional[bool]:
         logger.info(f"mongodb -- update:{collection} --")
         collection = self.db.get_collection(collection)
         if len(data) < 1:

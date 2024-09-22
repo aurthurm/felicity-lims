@@ -2,11 +2,16 @@ import logging
 import time
 
 from felicity.apps.analysis.enum import ResultState, SampleState
-from felicity.apps.analysis.schemas import (AnalysisResultCreate, QCSetCreate,
-                                            SampleCreate)
+from felicity.apps.analysis.schemas import (
+    AnalysisResultCreate,
+    QCSetCreate,
+    SampleCreate,
+)
 from felicity.apps.analysis.services.analysis import SampleService
-from felicity.apps.analysis.services.quality_control import (QCSetService,
-                                                             QCTemplateService)
+from felicity.apps.analysis.services.quality_control import (
+    QCSetService,
+    QCTemplateService,
+)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
@@ -68,7 +73,7 @@ async def populate_worksheet_plate(job_uid: str):
             job.uid,
             new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
-                          f"processed sample",
+            f"processed sample",
         )
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
@@ -79,7 +84,7 @@ async def populate_worksheet_plate(job_uid: str):
             job.uid,
             new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} already has "
-                          f"{ws.assigned_count} assigned samples",
+            f"{ws.assigned_count} assigned samples",
         )
         logger.warning(
             f"WorkSheet {ws_uid} already has {ws.assigned_count} assigned samples"
@@ -109,12 +114,10 @@ async def populate_worksheet_plate(job_uid: str):
     reserved = [int(r) for r in list(ws.reserved.keys())]
 
     if ws.assigned_count == 0:
-
         position = 1
         for key, sample in enumerate(
-                sorted(samples, key=lambda s: s.uid, reverse=True)
+            sorted(samples, key=lambda s: s.uid, reverse=True)
         ):
-
             while position in reserved:
                 # skip reserved ?qc positions
                 position += 1
@@ -352,7 +355,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
             job.uid,
             new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
-                          f"processed sample",
+            f"processed sample",
         )
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
@@ -373,12 +376,10 @@ async def populate_worksheet_plate_manually(job_uid: str):
             reserved = list(range(1, len(qc_template.qc_levels) + 1))
 
     if ws.assigned_count == 0:
-
         position = 1
         for key, sample in enumerate(
-                sorted(samples, key=lambda s: s.uid, reverse=True)
+            sorted(samples, key=lambda s: s.uid, reverse=True)
         ):
-
             while position in reserved:
                 # skip reserved ?qc positions
                 position += 1
@@ -431,7 +432,6 @@ async def populate_worksheet_plate_manually(job_uid: str):
             )
 
     if True:  # ?? maybe allow user to choose whether to add qc samples or not
-
         await setup_ws_quality_control_manually(ws, data["qc_template_uid"])
 
     await job_service.change_status(job.uid, new_status=JobState.FINISHED)

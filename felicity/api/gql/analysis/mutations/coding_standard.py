@@ -30,7 +30,6 @@ CodingStandardResponse = strawberry.union(
 async def create_coding_standard(
     info, payload: CodingStandardInputType
 ) -> CodingStandardResponse:
-
     felicity_user = await auth_from_info(info)
 
     if not payload.name:
@@ -56,7 +55,6 @@ async def create_coding_standard(
 async def update_coding_standard(
     info, uid: str, payload: CodingStandardInputType
 ) -> CodingStandardResponse:
-
     felicity_user = await auth_from_info(info)
 
     coding_standard = await CodingStandardService().get(uid=uid)

@@ -4,8 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.client.types import ClientType
-from felicity.api.gql.setup.types import (CountryType, DistrictType,
-                                          ProvinceType)
+from felicity.api.gql.setup.types import CountryType, DistrictType, ProvinceType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 

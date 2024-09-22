@@ -9,12 +9,16 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
-from felicity.apps.analysis.entities.analysis import (analysis_method,
-                                                      analysis_sample_type)
-from felicity.apps.analysis.services.analysis import (AnalysisCodingService,
-                                                      AnalysisService,
-                                                      ProfileService,
-                                                      SampleTypeService)
+from felicity.apps.analysis.entities.analysis import (
+    analysis_method,
+    analysis_sample_type,
+)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisCodingService,
+    AnalysisService,
+    ProfileService,
+    SampleTypeService,
+)
 from felicity.apps.instrument.services import MethodService
 
 logging.basicConfig(level=logging.INFO)

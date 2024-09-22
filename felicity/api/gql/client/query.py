@@ -5,8 +5,12 @@ import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api.deps import Info
-from felicity.api.gql.client.types import (ClientContactType, ClientCursorPage,
-                                           ClientEdge, ClientType)
+from felicity.api.gql.client.types import (
+    ClientContactType,
+    ClientCursorPage,
+    ClientEdge,
+    ClientType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
 from felicity.apps.client.services import ClientContactService, ClientService

@@ -1,8 +1,7 @@
 import unittest
 from unittest import mock
 
-from felicity.apps.exceptions import (AlreadyExistsError,
-                                      ValidationError)
+from felicity.apps.exceptions import AlreadyExistsError, ValidationError
 from felicity.apps.user.repository import UserRepository
 from felicity.apps.user.schemas import User, UserCreate
 from felicity.apps.user.services import UserService
@@ -35,7 +34,9 @@ class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):
             return_value=User(**{"uid": uid, **self.user_data})
         )
         result = await self.user_service.create(UserCreate(**self.user_data))
-        self.repository.get.assert_called_once_with(user_name=self.user_data["user_name"])
+        self.repository.get.assert_called_once_with(
+            user_name=self.user_data["user_name"]
+        )
         self.repository.create.assert_called_once()
         self.assertIsNotNone(result.return_value.uid)
         self.assertEqual(result.return_value.uid, uid)
@@ -50,11 +51,11 @@ class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):
         self.repository.get.return_value = None
         with self.assertRaises(ValidationError):
             await self.user_service.create(
-                UserCreate(**{
-                    **self.user_data,
-                    "password": "12345",
-                    "passwordc": "12345",
-                })
+                UserCreate(
+                    **{
+                        **self.user_data,
+                        "password": "12345",
+                        "passwordc": "12345",
+                    }
+                )
             )
-
-

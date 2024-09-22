@@ -9,8 +9,7 @@ from felicity.apps.analytics import schemas as an_schema
 from felicity.apps.analytics.enum import ReportState
 from felicity.apps.analytics.services import ReportMetaService
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.user.schemas import User
 from felicity.utils.dirs import delete_file, resolve_media_dirs_for

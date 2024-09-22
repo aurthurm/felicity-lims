@@ -1,6 +1,5 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.shipment.entities import (ReferralLaboratory, Shipment,
-                                             ShippedSample)
+from felicity.apps.shipment.entities import ReferralLaboratory, Shipment, ShippedSample
 
 
 class ReferralLaboratoryRepository(BaseRepository[ReferralLaboratory]):

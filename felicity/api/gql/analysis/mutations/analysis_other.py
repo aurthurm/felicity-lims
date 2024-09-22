@@ -8,9 +8,12 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.services.analysis import (
-    AnalysisCorrectionFactorService, AnalysisDetectionLimitService,
-    AnalysisInterimService, AnalysisSpecificationService,
-    AnalysisUncertaintyService)
+    AnalysisCorrectionFactorService,
+    AnalysisDetectionLimitService,
+    AnalysisInterimService,
+    AnalysisSpecificationService,
+    AnalysisUncertaintyService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -100,7 +103,6 @@ AnalysisSpecificationResponse = strawberry.union(
 async def create_analysis_interim(
     info, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
-
     felicity_user = await auth_from_info(info)
 
     incoming = {
@@ -119,7 +121,6 @@ async def create_analysis_interim(
 async def update_analysis_interim(
     info, uid: str, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
-
     felicity_user = await auth_from_info(info)
 
     interim = await AnalysisInterimService().get(uid=uid)
@@ -145,7 +146,6 @@ async def update_analysis_interim(
 async def create_analysis_correction_factor(
     info, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
-
     felicity_user = await auth_from_info(info)
 
     incoming = {
@@ -164,7 +164,6 @@ async def create_analysis_correction_factor(
 async def update_analysis_correction_factor(
     info, uid: str, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
-
     felicity_user = await auth_from_info(info)
 
     correction_factor = await AnalysisCorrectionFactorService().get(uid=uid)
@@ -194,7 +193,6 @@ async def update_analysis_correction_factor(
 async def create_analysis_detection_limit(
     info, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
-
     felicity_user = await auth_from_info(info)
 
     incoming = {
@@ -213,7 +211,6 @@ async def create_analysis_detection_limit(
 async def update_analysis_detection_limit(
     info, uid: str, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
-
     felicity_user = await auth_from_info(info)
 
     detection_limit = await AnalysisDetectionLimitService().get(uid=uid)
@@ -243,7 +240,6 @@ async def update_analysis_detection_limit(
 async def create_analysis_uncertainty(
     info, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
-
     felicity_user = await auth_from_info(info)
 
     incoming = {
@@ -262,7 +258,6 @@ async def create_analysis_uncertainty(
 async def update_analysis_uncertainty(
     info, uid: str, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
-
     felicity_user = await auth_from_info(info)
 
     uncertainty = await AnalysisUncertaintyService().get(uid=uid)
@@ -290,7 +285,6 @@ async def update_analysis_uncertainty(
 async def create_analysis_specification(
     info, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
-
     felicity_user = await auth_from_info(info)
 
     if not payload.min and not payload.warn_values:
@@ -315,7 +309,6 @@ async def create_analysis_specification(
 async def update_analysis_specification(
     info, uid: str, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
-
     felicity_user = await auth_from_info(info)
 
     specification = await AnalysisSpecificationService().get(uid=uid)

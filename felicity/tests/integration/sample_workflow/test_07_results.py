@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(80)
-async def test_submit_results(app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods):
+async def test_submit_results(
+    app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
+):
     add_gql = """
      mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: String!) {
         submitAnalysisResults(analysisResults: $analysisResults, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
@@ -36,11 +38,36 @@ async def test_submit_results(app_gql, app_api, auth_data, samples, worksheets, 
             "query": add_gql,
             "variables": {
                 "analysisResults": [
-                    {"uid": results[0]["uid"], "result": "Target Not Detected", "laboratoryInstrumentUid": laboratory_instruments[0]["uid"], "methodUid": methods[0]["uid"]},
-                    {"uid": results[1]["uid"], "result": "Target Not Detected", "laboratoryInstrumentUid": laboratory_instruments[0]["uid"], "methodUid": methods[0]["uid"]},
-                    {"uid": results[2]["uid"], "result": "Target Not Detected", "laboratoryInstrumentUid": laboratory_instruments[0]["uid"], "methodUid": methods[0]["uid"]},
-                    {"uid": results[3]["uid"], "result": "Target Not Detected", "laboratoryInstrumentUid": laboratory_instruments[0]["uid"], "methodUid": methods[0]["uid"]},
-                    {"uid": results[4]["uid"], "result": "Target Not Detected", "laboratoryInstrumentUid": laboratory_instruments[0]["uid"], "methodUid": methods[0]["uid"]},
+                    {
+                        "uid": results[0]["uid"],
+                        "result": "Target Not Detected",
+                        "laboratoryInstrumentUid": laboratory_instruments[0]["uid"],
+                        "methodUid": methods[0]["uid"],
+                    },
+                    {
+                        "uid": results[1]["uid"],
+                        "result": "Target Not Detected",
+                        "laboratoryInstrumentUid": laboratory_instruments[0]["uid"],
+                        "methodUid": methods[0]["uid"],
+                    },
+                    {
+                        "uid": results[2]["uid"],
+                        "result": "Target Not Detected",
+                        "laboratoryInstrumentUid": laboratory_instruments[0]["uid"],
+                        "methodUid": methods[0]["uid"],
+                    },
+                    {
+                        "uid": results[3]["uid"],
+                        "result": "Target Not Detected",
+                        "laboratoryInstrumentUid": laboratory_instruments[0]["uid"],
+                        "methodUid": methods[0]["uid"],
+                    },
+                    {
+                        "uid": results[4]["uid"],
+                        "result": "Target Not Detected",
+                        "laboratoryInstrumentUid": laboratory_instruments[0]["uid"],
+                        "methodUid": methods[0]["uid"],
+                    },
                 ],
                 "sourceObject": "worksheet",
                 "sourceObjectUid": worksheets[0]["uid"],
@@ -60,7 +87,7 @@ async def test_submit_results(app_gql, app_api, auth_data, samples, worksheets, 
     logger.info(f"job response:  {job_response.json()}")
     jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
     for job in jobs:
-      await submit_results(job["uid"])
+        await submit_results(job["uid"])
 
 
 @pytest.mark.asyncio
@@ -317,7 +344,7 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
     logger.info(f"job response:  {job_response.json()}")
     jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
     for job in jobs:
-      await verify_results(job["uid"])
+        await verify_results(job["uid"])
 
 
 @pytest.mark.asyncio

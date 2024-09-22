@@ -1,11 +1,18 @@
 import logging
 
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String, Table)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import (BaseEntity,
-                                    BaseMPTT)
+from felicity.apps.abstract import BaseEntity, BaseMPTT
 from felicity.apps.analysis.entities.qc import QCLevel, QCSet
 from felicity.apps.analysis.enum import ResultType
 from felicity.apps.client import entities as ct_entities
@@ -507,6 +514,7 @@ class Sample(BaseEntity, BaseMPTT):
     )
     storage_slot = Column(String, nullable=True)
     storage_slot_index = Column(Integer, nullable=True)
+
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_entities(mapper, connection, target): # noqa

@@ -9,8 +9,10 @@ from felicity.apps.analytics.enum import ReportState
 from felicity.apps.analytics.services import ReportMetaService
 from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
-from felicity.apps.notification.services import (ActivityStreamService,
-                                                 NotificationService)
+from felicity.apps.notification.services import (
+    ActivityStreamService,
+    NotificationService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

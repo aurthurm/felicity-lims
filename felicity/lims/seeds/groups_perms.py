@@ -255,6 +255,6 @@ async def seed_group_permissions_defaults() -> None:
 
 
 async def seed_groups_perms() -> None:
-    await seed_groups() 
+    await seed_groups()
     await seed_permissions()
     await seed_group_permissions_defaults()

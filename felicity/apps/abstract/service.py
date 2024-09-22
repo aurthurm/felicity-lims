@@ -30,13 +30,13 @@ class BaseService(Generic[E, C, U]):
         self.repository: BaseRepository = repository()
 
     async def paging_filter(
-            self,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            filters: list[dict] | dict = None,
-            sort_by: list[str] | None = None,
-            **kwargs
+        self,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        filters: list[dict] | dict = None,
+        sort_by: list[str] | None = None,
+        **kwargs,
     ):
         """
         Perform paginated filtering of entities.
@@ -113,7 +113,9 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get_all(**kwargs)
 
-    async def get_related(self, related: list[str], many: bool = False, **kwargs) -> E | list[E]:
+    async def get_related(
+        self, related: list[str], many: bool = False, **kwargs
+    ) -> E | list[E]:
         """
         Get an entity with its related entities.
 
@@ -144,7 +146,9 @@ class BaseService(Generic[E, C, U]):
             return created
         return await self.get_related(related=related, uid=created.uid)
 
-    async def bulk_create(self, bulk: list[dict | C], related: list[str] = None) -> list[E]:
+    async def bulk_create(
+        self, bulk: list[dict | C], related: list[str] = None
+    ) -> list[E]:
         """
         Create multiple entities in bulk.
 

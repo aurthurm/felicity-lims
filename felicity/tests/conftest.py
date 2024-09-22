@@ -22,6 +22,7 @@ def event_loop():
     yield loop
     loop.close()
 
+
 @pytest_asyncio.fixture(scope="session")
 async def setup():
     logger.info("pytest_configure integration tests...")

@@ -6,28 +6,34 @@ from sqlalchemy import or_
 
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.entities.analysis import SampleType
-from felicity.apps.analysis.entities.results import (AnalysisResult,
-                                                     result_verification)
+from felicity.apps.analysis.entities.results import AnalysisResult, result_verification
 from felicity.apps.analysis.enum import SampleState
-from felicity.apps.analysis.services.analysis import (AnalysisService,
-                                                      ProfileService,
-                                                      SampleService,
-                                                      SampleTypeService)
-from felicity.apps.analysis.services.result import (AnalysisResultService,
-                                                    ResultMutationService)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisService,
+    ProfileService,
+    SampleService,
+    SampleTypeService,
+)
+from felicity.apps.analysis.services.result import (
+    AnalysisResultService,
+    ResultMutationService,
+)
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.enum import DiscountType, DiscountValueType
-from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
-                                           AnalysisPriceCreate,
-                                           ProfileDiscountCreate,
-                                           ProfilePriceCreate)
-from felicity.apps.billing.services import (AnalysisDiscountService,
-                                            AnalysisPriceService,
-                                            ProfileDiscountService,
-                                            ProfilePriceService)
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.billing.schemas import (
+    AnalysisDiscountCreate,
+    AnalysisPriceCreate,
+    ProfileDiscountCreate,
+    ProfilePriceCreate,
+)
+from felicity.apps.billing.services import (
+    AnalysisDiscountService,
+    AnalysisPriceService,
+    ProfileDiscountService,
+    ProfilePriceService,
+)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.schemas import JobCreate
 from felicity.apps.job.services import JobService
 from felicity.apps.reflex.services import ReflexEngineService
@@ -66,7 +72,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
 
 
 async def sample_search(
-        model, status: str, text: str, client_uid: str
+    model, status: str, text: str, client_uid: str
 ) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
@@ -99,7 +105,7 @@ async def sample_search(
 
 
 async def retest_from_result_uids(
-        uids: list[str], user: User
+    uids: list[str], user: User
 ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
     analysis_result_wf = AnalysisResultWorkFlow()
@@ -113,8 +119,7 @@ async def retest_from_result_uids(
             raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
         _retest, a_result = await analysis_result_wf.retest(
-            a_result.uid,
-            retested_by=user, action="verify"
+            a_result.uid, retested_by=user, action="verify"
         )
         if _retest:
             retests.append(_retest)
@@ -123,7 +128,7 @@ async def retest_from_result_uids(
 
 
 async def results_submitter(
-        analysis_results: List[dict], submitter: User
+    analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
     sample_wf = SampleWorkFlow()
     worksheet_wf = WorkSheetWorkFlow()
@@ -131,9 +136,7 @@ async def results_submitter(
 
     return_results: list[AnalysisResult] = []
 
-    _skipped, _submitted = await analysis_result_wf.submit(
-        analysis_results, submitter
-    )
+    _skipped, _submitted = await analysis_result_wf.submit(analysis_results, submitter)
     return_results.extend(_skipped)
 
     for a_result in _submitted:
@@ -178,7 +181,9 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         # try to verify associated sample
         sample_verified = False
         try:
-            sample_verified, _ = await sample_wf.approve(a_result.sample_uid, approved_by=user)
+            sample_verified, _ = await sample_wf.approve(
+                a_result.sample_uid, approved_by=user
+            )
         except Exception as e:
             await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
             logger.warning(e)
@@ -246,8 +251,8 @@ async def result_mutator(result: AnalysisResult) -> None:
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.instrument_uid == result.laboratory_instrument_uid
-                    and cf.method_uid == result.method_uid
+                cf.instrument_uid == result.laboratory_instrument_uid
+                and cf.method_uid == result.method_uid
             ):
                 await result_mutation_service.create(
                     c={

@@ -149,9 +149,9 @@ class FelicityImpress:
         # Customer Column
         patient = get_from_nested(sample, "analysis_request.patient")
         full_name = (
-                get_from_nested(patient, "first_name")
-                + " "
-                + get_from_nested(patient, "last_name")
+            get_from_nested(patient, "first_name")
+            + " "
+            + get_from_nested(patient, "last_name")
         )
         self.pdf.set_font("helvetica", "B", 10.0)
         self.pdf.set_xy(20, 42)

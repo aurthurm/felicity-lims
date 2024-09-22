@@ -2,23 +2,40 @@ import logging
 from datetime import datetime
 
 from felicity.apps.analysis.entities import analysis as a_entities
-from felicity.apps.billing.entities import (TestBill, Voucher, VoucherCode,
-                                            test_bill_item)
-from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
-                                        TransactionKind)
+from felicity.apps.billing.entities import (
+    TestBill,
+    Voucher,
+    VoucherCode,
+    test_bill_item,
+)
+from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
 from felicity.apps.billing.exceptions import (
-    CustomerAlreadyUsedVoucherException, InactiveTestBillException,
-    InactiveVoucherCodeException, InvalidVoucherCodeException,
-    VoucherCodeLimitExceededException, VoucherLimitExceededException)
-from felicity.apps.billing.schemas import (TestBillCreate,
-                                           TestBillTransactionCreate,
-                                           TestBillTransactionUpdate,
-                                           TestBillUpdate)
+    CustomerAlreadyUsedVoucherException,
+    InactiveTestBillException,
+    InactiveVoucherCodeException,
+    InvalidVoucherCodeException,
+    VoucherCodeLimitExceededException,
+    VoucherLimitExceededException,
+)
+from felicity.apps.billing.schemas import (
+    TestBillCreate,
+    TestBillTransactionCreate,
+    TestBillTransactionUpdate,
+    TestBillUpdate,
+)
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
-from felicity.apps.billing.services import (AnalysisDiscountService, AnalysisPriceService,
-    ProfileDiscountService, ProfilePriceService, TestBillService, TestBillTransactionService,
-    VoucherCodeService, VoucherCustomerService, VoucherService)
+from felicity.apps.billing.services import (
+    AnalysisDiscountService,
+    AnalysisPriceService,
+    ProfileDiscountService,
+    ProfilePriceService,
+    TestBillService,
+    TestBillTransactionService,
+    VoucherCodeService,
+    VoucherCustomerService,
+    VoucherService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,7 +68,9 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
             analysis_uids.append(_an.uid)
 
     profiles_prices = await ProfilePriceService().get_all(profile_uid__in=profile_uids)
-    analysis_prices = await AnalysisPriceService().get_all(analysis_uid__in=analysis_uids)
+    analysis_prices = await AnalysisPriceService().get_all(
+        analysis_uid__in=analysis_uids
+    )
 
     pricing_lines = {
         "profiles": {},

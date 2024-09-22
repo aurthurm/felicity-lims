@@ -1,5 +1,9 @@
-from .types import (ActivityFeedType, ActivityStreamType, NotificationType,
-                    UnknownObjectType)
+from .types import (
+    ActivityFeedType,
+    ActivityStreamType,
+    NotificationType,
+    UnknownObjectType,
+)
 
 notification_types = [
     UnknownObjectType,

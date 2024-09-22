@@ -1,10 +1,17 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.inventory.entities import (Hazard, StockAdjustment,
-                                              StockCategory, StockItem,
-                                              StockItemVariant, StockLot,
-                                              StockOrder, StockOrderProduct,
-                                              StockProductInventory,
-                                              StockReceipt, StockUnit)
+from felicity.apps.inventory.entities import (
+    Hazard,
+    StockAdjustment,
+    StockCategory,
+    StockItem,
+    StockItemVariant,
+    StockLot,
+    StockOrder,
+    StockOrderProduct,
+    StockProductInventory,
+    StockReceipt,
+    StockUnit,
+)
 
 
 class StockItemRepository(BaseRepository[StockItem]):

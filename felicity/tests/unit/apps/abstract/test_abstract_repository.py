@@ -7,6 +7,7 @@ from felicity.database.session import async_engine
 from felicity.database.base import BaseEntity
 from sqlalchemy.orm import relationship
 
+
 class SomeTestModel(BaseEntity):
     __tablename__ = "test_model"
     name = Column(String)
@@ -27,9 +28,15 @@ class TrialModel(BaseEntity):
 async def async_session():
     async with async_engine.begin() as conn:
         # drop
-        await conn.run_sync(BaseEntity.metadata.drop_all, tables=[SomeTestModel.__table__, TrialModel.__table__])
+        await conn.run_sync(
+            BaseEntity.metadata.drop_all,
+            tables=[SomeTestModel.__table__, TrialModel.__table__],
+        )
         # create
-        await conn.run_sync(BaseEntity.metadata.create_all, tables=[SomeTestModel.__table__, TrialModel.__table__])
+        await conn.run_sync(
+            BaseEntity.metadata.create_all,
+            tables=[SomeTestModel.__table__, TrialModel.__table__],
+        )
 
     connection = async_engine.connect()
     yield connection
@@ -44,14 +51,18 @@ def some_test_repo(async_session):
     class TestRepository(BaseRepository[SomeTestModel]):
         def __init__(self):
             super().__init__(SomeTestModel)
+
     return TestRepository()
+
 
 @pytest_asyncio.fixture
 def trial_repo(async_session):
     class TrialRepository(BaseRepository[TrialModel]):
         def __init__(self):
             super().__init__(TrialModel)
+
     return TrialRepository()
+
 
 # Test cases
 @pytest.mark.asyncio
@@ -60,12 +71,14 @@ async def test_save(some_test_repo):
     saved_model = await some_test_repo.save(model)
     assert saved_model.uid is not None
 
+
 @pytest.mark.asyncio
 async def test_create(some_test_repo):
     model_data = {"name": "test_create"}
     created_model = await some_test_repo.create(**model_data)
     assert created_model.uid is not None
     assert created_model.name == model_data["name"]
+
 
 @pytest.mark.asyncio
 async def test_get(some_test_repo):
@@ -76,6 +89,7 @@ async def test_get(some_test_repo):
     assert fetched_model.uid == model.uid
     assert fetched_model.name == model.name
 
+
 @pytest.mark.asyncio
 async def test_all(some_test_repo):
     model1 = SomeTestModel(name="test_all_1")
@@ -85,10 +99,12 @@ async def test_all(some_test_repo):
     all_models = await some_test_repo.all()
     assert len(all_models) == 2
 
+
 @pytest.mark.asyncio
 async def test_all_empty(some_test_repo):
     all_models = await some_test_repo.all()
     assert len(all_models) == 0
+
 
 @pytest.mark.asyncio
 async def test_delete(some_test_repo):
@@ -98,6 +114,7 @@ async def test_delete(some_test_repo):
     deleted_model = await some_test_repo.get(uid=saved_model.uid)
     assert deleted_model is None
 
+
 @pytest.mark.asyncio
 async def test_save_all(some_test_repo):
     models = [SomeTestModel(name=f"test_save_all_{i}") for i in range(3)]
@@ -105,6 +122,7 @@ async def test_save_all(some_test_repo):
     assert len(saved_models) == 3
     for model in saved_models:
         assert model.uid is not None
+
 
 @pytest.mark.asyncio
 async def test_bulk_create(some_test_repo):
@@ -114,6 +132,7 @@ async def test_bulk_create(some_test_repo):
     for model in created_models:
         assert model.uid is not None
 
+
 @pytest.mark.asyncio
 async def test_update(some_test_repo):
     model = SomeTestModel(name="initial_name")
@@ -121,25 +140,34 @@ async def test_update(some_test_repo):
     updated_model = await some_test_repo.update(saved_model.uid, name="updated_name")
     assert updated_model.name == "updated_name"
 
+
 @pytest.mark.asyncio
 async def test_get_nonexistent(some_test_repo):
     fetched_model = await some_test_repo.get(uid="nonexistent_uid")
     assert fetched_model is None
+
 
 @pytest.mark.asyncio
 async def test_delete_nonexistent(some_test_repo):
     with pytest.raises(Exception):
         await some_test_repo.delete("nonexistent_uid")
 
+
 @pytest.mark.asyncio
 async def test_bulk_update_with_mappings(some_test_repo):
     models = [SomeTestModel(name=f"bulk_update_{i}") for i in range(3)]
     saved_models = await some_test_repo.save_all(models)
-    mappings = [{"uid": model.uid, "name": f"bulk_updated_{i}"} for i, model in enumerate(saved_models)]
+    mappings = [
+        {"uid": model.uid, "name": f"bulk_updated_{i}"}
+        for i, model in enumerate(saved_models)
+    ]
     await some_test_repo.bulk_update_with_mappings(mappings)
-    updated_models = await some_test_repo.get_all(uid__in=[model.uid for model in saved_models])
+    updated_models = await some_test_repo.get_all(
+        uid__in=[model.uid for model in saved_models]
+    )
     for i, model in enumerate(updated_models):
         assert model.name == f"bulk_updated_{i}"
+
 
 @pytest.mark.asyncio
 async def test_full_text_search(some_test_repo):
@@ -150,11 +178,14 @@ async def test_full_text_search(some_test_repo):
     assert len(search_results) == 1
     assert search_results[0].name == "unique_test_search"
 
+
 @pytest.mark.asyncio
 async def test_paginate(some_test_repo):
     models = [SomeTestModel(name=f"paginate_{i}") for i in range(5)]
     await some_test_repo.save_all(models)
-    page_cursor = await some_test_repo.paginate(page_size=2, after_cursor=None, before_cursor=None, filters={}, sort_by=["uid"])
+    page_cursor = await some_test_repo.paginate(
+        page_size=2, after_cursor=None, before_cursor=None, filters={}, sort_by=["uid"]
+    )
     assert len(page_cursor.items) == 2
     assert page_cursor.page_info.has_next_page is True
     assert page_cursor.page_info.has_previous_page is False
@@ -169,6 +200,7 @@ async def test_filter(some_test_repo):
     assert len(filtered_models) == 1
     assert filtered_models[0].name == "filter_test_1"
 
+
 @pytest.mark.asyncio
 async def test_sort(some_test_repo):
     model1 = SomeTestModel(name="sort_test_20", age=20)
@@ -176,12 +208,12 @@ async def test_sort(some_test_repo):
     model3 = SomeTestModel(name="sort_test_30", age=30)
     await some_test_repo.save_all([model1, model2, model3])
     sorted_models = await some_test_repo.filter(
-        filters=[{"name__ilike": "sort_test%"}],
-        sort_attrs=["age"]
+        filters=[{"name__ilike": "sort_test%"}], sort_attrs=["age"]
     )
     assert sorted_models[0].age == 20
     assert sorted_models[1].age == 30
     assert sorted_models[2].age == 40
+
 
 @pytest.mark.asyncio
 async def test_related(some_test_repo, trial_repo):
@@ -190,7 +222,9 @@ async def test_related(some_test_repo, trial_repo):
     trial = TrialModel(content="Relation trial", test_model_uid=saved_model.uid)
     trial_saved = await trial_repo.save(trial)
 
-    fetched_model = await some_test_repo.get_related(uid=saved_model.uid, related=["trials"])
+    fetched_model = await some_test_repo.get_related(
+        uid=saved_model.uid, related=["trials"]
+    )
     assert len(fetched_model.trials) == 1
     assert fetched_model.trials[0].uid == trial_saved.uid
 

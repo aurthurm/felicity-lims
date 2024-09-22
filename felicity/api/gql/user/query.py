@@ -6,10 +6,14 @@ import strawberry  # noqa
 from felicity.api import deps
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.api.gql.user.types import (GroupType, PermissionType,
-                                         UserCursorPage, UserEdge, UserType)
-from felicity.apps.user.services import (GroupService, PermissionService,
-                                         UserService)
+from felicity.api.gql.user.types import (
+    GroupType,
+    PermissionType,
+    UserCursorPage,
+    UserEdge,
+    UserType,
+)
+from felicity.apps.user.services import GroupService, PermissionService, UserService
 
 
 @strawberry.type

@@ -1,15 +1,23 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.idsequencer.service import IdSequenceService
-from felicity.apps.patient.entities import (Identification, Patient,
-                                            PatientIdentification)
-from felicity.apps.patient.repository import (IdentificationRepository,
-                                              PatientIdentificationRepository,
-                                              PatientRepository)
-from felicity.apps.patient.schemas import (IdentificationCreate,
-                                           IdentificationUpdate, PatientCreate,
-                                           PatientIdentificationCreate,
-                                           PatientIdentificationUpdate,
-                                           PatientUpdate)
+from felicity.apps.patient.entities import (
+    Identification,
+    Patient,
+    PatientIdentification,
+)
+from felicity.apps.patient.repository import (
+    IdentificationRepository,
+    PatientIdentificationRepository,
+    PatientRepository,
+)
+from felicity.apps.patient.schemas import (
+    IdentificationCreate,
+    IdentificationUpdate,
+    PatientCreate,
+    PatientIdentificationCreate,
+    PatientIdentificationUpdate,
+    PatientUpdate,
+)
 
 
 class IdentificationService(
@@ -29,7 +37,6 @@ class PatientIdentificationService(
 
 
 class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
-
     def __init__(self):
         self.id_sequence_service = IdSequenceService()
         super().__init__(PatientRepository)
@@ -46,7 +53,9 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         }
         return await super().search(**filters)
 
-    async def create(self, obj_in: dict | PatientCreate, related: list[str] = None) -> Patient:
+    async def create(
+        self, obj_in: dict | PatientCreate, related: list[str] = None
+    ) -> Patient:
         data = self._import(obj_in)
         data["patient_id"] = (
             await self.id_sequence_service.get_next_number(prefix="P", generic=True)

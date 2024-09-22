@@ -5,27 +5,33 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.instrument.types import (CalibrationCertificateType,
-                                               InstrumentCalibrationType,
-                                               InstrumentCompetenceType,
-                                               InstrumentType,
-                                               InstrumentTypeType,
-                                               LaboratoryInstrumentType,
-                                               MethodType)
+from felicity.api.gql.instrument.types import (
+    CalibrationCertificateType,
+    InstrumentCalibrationType,
+    InstrumentCompetenceType,
+    InstrumentType,
+    InstrumentTypeType,
+    LaboratoryInstrumentType,
+    MethodType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.analysis.entities.analysis import (analysis_instrument,
-                                                      analysis_method)
+from felicity.apps.analysis.entities.analysis import (
+    analysis_instrument,
+    analysis_method,
+)
 from felicity.apps.analysis.services.analysis import AnalysisService
 from felicity.apps.instrument import schemas
 from felicity.apps.instrument.entities import method_instrument
-from felicity.apps.instrument.services import (CalibrationCertificateService,
-                                               InstrumentCalibrationService,
-                                               InstrumentCompetenceService,
-                                               InstrumentService,
-                                               InstrumentTypeService,
-                                               LaboratoryInstrumentService,
-                                               MethodService)
+from felicity.apps.instrument.services import (
+    CalibrationCertificateService,
+    InstrumentCalibrationService,
+    InstrumentCompetenceService,
+    InstrumentService,
+    InstrumentTypeService,
+    LaboratoryInstrumentService,
+    MethodService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,7 +42,9 @@ InstrumentTypeResponse = strawberry.union(
     description="",  # noqa
 )
 InstrumentResponse = strawberry.union(
-    "InstrumentResponse", (InstrumentType, OperationError), description=""  # noqa
+    "InstrumentResponse",
+    (InstrumentType, OperationError),
+    description="",  # noqa
 )
 LaboratoryInstrumentResponse = strawberry.union(
     "LaboratoryInstrumentResponse",
@@ -49,7 +57,9 @@ InstrumentCompetenceResponse = strawberry.union(
     description="",  # noqa
 )
 MethodResponse = strawberry.union(
-    "MethodResponse", (MethodType, OperationError), description=""  # noqa
+    "MethodResponse",
+    (MethodType, OperationError),
+    description="",  # noqa
 )
 
 InstrumentCalibrationResponse = strawberry.union(
@@ -143,7 +153,6 @@ class InstrumentMutations:
     async def create_instrument_type(
         self, info, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
-
         if not payload.name:
             return OperationError(error="Please a name for your instrument type")
 
@@ -165,7 +174,6 @@ class InstrumentMutations:
     async def update_instrument_type(
         self, info, uid: str, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
 
@@ -191,7 +199,6 @@ class InstrumentMutations:
     async def create_instrument(
         self, info, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
-
         if not payload.name or not payload.keyword:
             return OperationError(
                 error="Provide a name and a unique keyword for your instrument"
@@ -221,7 +228,6 @@ class InstrumentMutations:
     async def update_instrument(
         self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
 
@@ -254,7 +260,6 @@ class InstrumentMutations:
     async def create_instrument_competence(
         self, info, payload: InstrumentCompetenceInput
     ) -> InstrumentCompetenceResponse:  # noqa
-
         instrument = await InstrumentService().get(keyword=payload.instrument_uid)
         if not instrument:
             return OperationError(error="Provided instrument does not exist")
@@ -271,7 +276,6 @@ class InstrumentMutations:
     async def update_instrument_competence(
         self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCompetenceResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identify instrument")
 
@@ -315,7 +319,6 @@ class InstrumentMutations:
     async def update_laboratory_instrument(
         self, info, uid: str, payload: LaboratoryInstrumentInputType
     ) -> LaboratoryInstrumentResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
 
@@ -347,7 +350,6 @@ class InstrumentMutations:
     async def create_instrument_caliberation(
         self, info, payload: InstrumentCalibrationInput
     ) -> InstrumentCalibrationResponse:  # noqa
-
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
@@ -360,7 +362,6 @@ class InstrumentMutations:
     async def update_instrument_caliberation(
         self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCalibrationResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
@@ -388,7 +389,6 @@ class InstrumentMutations:
     async def create_caliberation_certificate(
         self, info, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
-
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
@@ -401,7 +401,6 @@ class InstrumentMutations:
     async def update_caliberation_certificate(
         self, info, uid: str, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
@@ -426,10 +425,7 @@ class InstrumentMutations:
         return CalibrationCertificateType(**certificate.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_method(
-        self, info, payload: MethodInputType
-    ) -> MethodResponse:  # noqa
-
+    async def create_method(self, info, payload: MethodInputType) -> MethodResponse:  # noqa
         if not payload.name:
             return OperationError(error="Provide a name for your method")
 
@@ -496,7 +492,6 @@ class InstrumentMutations:
     async def update_method(
         self, info, uid: str, payload: MethodInputType
     ) -> MethodResponse:  # noqa
-
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 

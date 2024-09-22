@@ -1,8 +1,16 @@
-from .types import (CalibrationCertificateType, InstrumentCalibrationType,
-                    InstrumentCursorPage, InstrumentEdge, InstrumentType,
-                    InstrumentTypeCursorPage, InstrumentTypeEdge,
-                    InstrumentTypeType, MethodCursorPage, MethodEdge,
-                    MethodType)
+from .types import (
+    CalibrationCertificateType,
+    InstrumentCalibrationType,
+    InstrumentCursorPage,
+    InstrumentEdge,
+    InstrumentType,
+    InstrumentTypeCursorPage,
+    InstrumentTypeEdge,
+    InstrumentTypeType,
+    MethodCursorPage,
+    MethodEdge,
+    MethodType,
+)
 
 instrument_types = [
     InstrumentTypeType,

@@ -33,6 +33,8 @@ class ReportImpressType:
     @strawberry.field
     async def json_content(self) -> Optional[JSONScalar]:
         if settings.OBJECT_STORAGE:
-            return await MongoService().retrieve(MongoCollection.DIAGNOSTIC_REPORT, self.uid)
+            return await MongoService().retrieve(
+                MongoCollection.DIAGNOSTIC_REPORT, self.uid
+            )
         else:
             return self.json_content

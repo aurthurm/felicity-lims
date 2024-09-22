@@ -5,37 +5,46 @@ import strawberry  # noqa
 from strawberry.types import Info  # noqa
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.billing.types import (AnalysisDiscountType,
-                                            AnalysisPriceType,
-                                            ProfileDiscountType,
-                                            ProfilePriceType,
-                                            TestBillTransactionType,
-                                            TestBillType, VoucherCodeType,
-                                            VoucherType)
+from felicity.api.gql.billing.types import (
+    AnalysisDiscountType,
+    AnalysisPriceType,
+    ProfileDiscountType,
+    ProfilePriceType,
+    TestBillTransactionType,
+    TestBillType,
+    VoucherCodeType,
+    VoucherType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.billing import schemas, utils
 from felicity.apps.billing.enum import DiscountType, TransactionKind
-from felicity.apps.billing.schemas import (TestBillTransactionUpdate,
-                                           TestBillUpdate)
-from felicity.apps.billing.services import (AnalysisDiscountService,
-                                            AnalysisPriceService,
-                                            ProfileDiscountService,
-                                            ProfilePriceService,
-                                            TestBillService,
-                                            TestBillTransactionService,
-                                            VoucherCodeService, VoucherService)
+from felicity.apps.billing.schemas import TestBillTransactionUpdate, TestBillUpdate
+from felicity.apps.billing.services import (
+    AnalysisDiscountService,
+    AnalysisPriceService,
+    ProfileDiscountService,
+    ProfilePriceService,
+    TestBillService,
+    TestBillTransactionService,
+    VoucherCodeService,
+    VoucherService,
+)
 from felicity.apps.impress.invoicing import utils as invoice_utils
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 ProfilePriceResponse = strawberry.union(
-    "ProfilePriceResponse", (ProfilePriceType, OperationError), description=""  # noqa
+    "ProfilePriceResponse",
+    (ProfilePriceType, OperationError),
+    description="",  # noqa
 )
 
 AnalysisPriceResponse = strawberry.union(
-    "AnalysisPriceResponse", (AnalysisPriceType, OperationError), description=""  #
+    "AnalysisPriceResponse",
+    (AnalysisPriceType, OperationError),
+    description="",  #
 )
 
 ProfileDiscountResponse = strawberry.union(
@@ -51,11 +60,15 @@ AnalysisDiscountResponse = strawberry.union(
 )
 
 VoucherResponse = strawberry.union(
-    "VoucherResponse", (VoucherType, OperationError), description=""  #
+    "VoucherResponse",
+    (VoucherType, OperationError),
+    description="",  #
 )
 
 VoucherCodeResponse = strawberry.union(
-    "VoucherCodeResponse", (VoucherCodeType, OperationError), description=""  #
+    "VoucherCodeResponse",
+    (VoucherCodeType, OperationError),
+    description="",  #
 )
 
 TestBillTransactionResponse = strawberry.union(
@@ -65,7 +78,9 @@ TestBillTransactionResponse = strawberry.union(
 )
 
 TestBillResponse = strawberry.union(
-    "TestBillResponse", (TestBillType, OperationError), description=""  #
+    "TestBillResponse",
+    (TestBillType, OperationError),
+    description="",  #
 )
 
 
@@ -124,7 +139,7 @@ class ApplyVoucherInput:
 class BillingMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_profile_price(
-            self, info: Info, uid: str, payload: PriceInput
+        self, info: Info, uid: str, payload: PriceInput
     ) -> ProfilePriceResponse:
         felicity_user = await auth_from_info(info)
 
@@ -141,7 +156,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_analysis_price(
-            self, info: Info, uid: str, payload: PriceInput
+        self, info: Info, uid: str, payload: PriceInput
     ) -> AnalysisPriceResponse:
         felicity_user = await auth_from_info(info)
 
@@ -158,7 +173,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_profile_discount(
-            self, info, uid: str, payload: PriceDiscountInput
+        self, info, uid: str, payload: PriceDiscountInput
     ) -> ProfileDiscountResponse:
         felicity_user = await auth_from_info(info)
 
@@ -200,7 +215,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_analysis_discount(
-            self, info, uid: str, payload: PriceDiscountInput
+        self, info, uid: str, payload: PriceDiscountInput
     ) -> AnalysisDiscountResponse:
         felicity_user = await auth_from_info(info)
 
@@ -235,9 +250,8 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_voucher(
-            self, info: Info, payload: VoucherInput
+        self, info: Info, payload: VoucherInput
     ) -> VoucherResponse:
-
         felicity_user = await auth_from_info(info)
 
         exists = await VoucherService().get(name=payload.name)
@@ -257,9 +271,8 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_voucher(
-            self, info, uid: str, payload: VoucherInput
+        self, info, uid: str, payload: VoucherInput
     ) -> VoucherResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -284,9 +297,8 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_voucher_code(
-            self, info: Info, payload: VoucherCodeInput
+        self, info: Info, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
-
         felicity_user = await auth_from_info(info)
 
         exists = await VoucherCodeService().get(code=payload.code)
@@ -306,9 +318,8 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_voucher_code(
-            self, info, uid: str, payload: VoucherCodeInput
+        self, info, uid: str, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -333,9 +344,8 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_test_bill_transaction(
-            self, info, payload: BillTransactionInput
+        self, info, payload: BillTransactionInput
     ) -> TestBillTransactionResponse:
-
         felicity_user = await auth_from_info(info)
         if payload.amount <= 0:
             return OperationError(
@@ -384,9 +394,8 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def apply_voucher(
-            self, info, payload: ApplyVoucherInput
+        self, info, payload: ApplyVoucherInput
     ) -> TestBillTransactionResponse:
-
         felicity_user = await auth_from_info(info)
         bill = await utils.apply_voucher(
             payload.voucher_code, payload.test_bill_uid, payload.customer_uid

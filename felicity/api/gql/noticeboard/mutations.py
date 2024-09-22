@@ -36,7 +36,6 @@ class NoticeInputType:
 class NoticeMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_notice(self, info, payload: NoticeInputType) -> NoticeResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.title or not payload.body or not payload.expiry:
@@ -81,7 +80,6 @@ class NoticeMutations:
     async def update_notice(
         self, info, uid: str, payload: NoticeInputType
     ) -> NoticeResponse:
-
         felicity_user = await auth_from_info(info)
 
         notice = await NoticeService().get(uid=uid)
@@ -123,7 +121,6 @@ class NoticeMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_notice(self, info, uid: str, viewer: str) -> NoticeType:
-
         felicity_user = await auth_from_info(info)
 
         notice = await NoticeService().get(uid=uid)
@@ -139,7 +136,6 @@ class NoticeMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_notice(self, info, uid: str) -> DeleteResponse:
-
         felicity_user = await auth_from_info(info)
 
         notice = await NoticeService().get(uid=uid)

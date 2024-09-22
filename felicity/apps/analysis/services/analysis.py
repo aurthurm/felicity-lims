@@ -2,54 +2,85 @@ from datetime import datetime, timedelta
 from typing import Any, List, Union
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.analysis.entities.analysis import Analysis, AnalysisCategory, AnalysisCoding, \
-    AnalysisCorrectionFactor, AnalysisDetectionLimit, AnalysisInterim, AnalysisRequest, AnalysisSpecification, \
-    AnalysisTemplate, AnalysisUncertainty, CodingStandard, Profile, ProfileCoding, RejectionReason, ResultOption, \
-    Sample, SampleType, SampleTypeCoding
+from felicity.apps.analysis.entities.analysis import (
+    Analysis,
+    AnalysisCategory,
+    AnalysisCoding,
+    AnalysisCorrectionFactor,
+    AnalysisDetectionLimit,
+    AnalysisInterim,
+    AnalysisRequest,
+    AnalysisSpecification,
+    AnalysisTemplate,
+    AnalysisUncertainty,
+    CodingStandard,
+    Profile,
+    ProfileCoding,
+    RejectionReason,
+    ResultOption,
+    Sample,
+    SampleType,
+    SampleTypeCoding,
+)
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.analysis import (
-    AnalysisCategoryRepository, AnalysisCodingRepository,
-    AnalysisCorrectionFactorRepository, AnalysisDetectionLimitRepository,
-    AnalysisInterimRepository, AnalysisRepository, AnalysisRequestRepository,
-    AnalysisSpecificationRepository, AnalysisTemplateRepository,
-    AnalysisUncertaintyRepository, CodingStandardRepository,
-    ProfileCodingRepository, ProfileRepository, RejectionReasonRepository,
-    ResultOptionRepository, SampleRepository, SampleTypeCodingRepository,
-    SampleTypeRepository)
-from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
-                                            AnalysisCategoryUpdate,
-                                            AnalysisCodingCreate,
-                                            AnalysisCodingUpdate,
-                                            AnalysisCorrectionFactorCreate,
-                                            AnalysisCorrectionFactorUpdate,
-                                            AnalysisCreate,
-                                            AnalysisDetectionLimitCreate,
-                                            AnalysisDetectionLimitUpdate,
-                                            AnalysisInterimCreate,
-                                            AnalysisInterimUpdate,
-                                            AnalysisRequestCreate,
-                                            AnalysisRequestUpdate,
-                                            AnalysisSpecificationCreate,
-                                            AnalysisSpecificationUpdate,
-                                            AnalysisTemplateCreate,
-                                            AnalysisTemplateUpdate,
-                                            AnalysisUncertaintyCreate,
-                                            AnalysisUncertaintyUpdate,
-                                            AnalysisUpdate,
-                                            CodingStandardCreate,
-                                            CodingStandardUpdate,
-                                            ProfileCodingCreate,
-                                            ProfileCodingUpdate, ProfileCreate,
-                                            ProfileUpdate,
-                                            RejectionReasonCreate,
-                                            RejectionReasonUpdate,
-                                            ResultOptionCreate,
-                                            ResultOptionUpdate,
-                                            SampleCreate,
-                                            SampleTypeCodingCreate,
-                                            SampleTypeCodingUpdate,
-                                            SampleTypeCreate, SampleTypeUpdate,
-                                            SampleUpdate)
+    AnalysisCategoryRepository,
+    AnalysisCodingRepository,
+    AnalysisCorrectionFactorRepository,
+    AnalysisDetectionLimitRepository,
+    AnalysisInterimRepository,
+    AnalysisRepository,
+    AnalysisRequestRepository,
+    AnalysisSpecificationRepository,
+    AnalysisTemplateRepository,
+    AnalysisUncertaintyRepository,
+    CodingStandardRepository,
+    ProfileCodingRepository,
+    ProfileRepository,
+    RejectionReasonRepository,
+    ResultOptionRepository,
+    SampleRepository,
+    SampleTypeCodingRepository,
+    SampleTypeRepository,
+)
+from felicity.apps.analysis.schemas import (
+    AnalysisCategoryCreate,
+    AnalysisCategoryUpdate,
+    AnalysisCodingCreate,
+    AnalysisCodingUpdate,
+    AnalysisCorrectionFactorCreate,
+    AnalysisCorrectionFactorUpdate,
+    AnalysisCreate,
+    AnalysisDetectionLimitCreate,
+    AnalysisDetectionLimitUpdate,
+    AnalysisInterimCreate,
+    AnalysisInterimUpdate,
+    AnalysisRequestCreate,
+    AnalysisRequestUpdate,
+    AnalysisSpecificationCreate,
+    AnalysisSpecificationUpdate,
+    AnalysisTemplateCreate,
+    AnalysisTemplateUpdate,
+    AnalysisUncertaintyCreate,
+    AnalysisUncertaintyUpdate,
+    AnalysisUpdate,
+    CodingStandardCreate,
+    CodingStandardUpdate,
+    ProfileCodingCreate,
+    ProfileCodingUpdate,
+    ProfileCreate,
+    ProfileUpdate,
+    RejectionReasonCreate,
+    RejectionReasonUpdate,
+    ResultOptionCreate,
+    ResultOptionUpdate,
+    SampleCreate,
+    SampleTypeCodingCreate,
+    SampleTypeCodingUpdate,
+    SampleTypeCreate,
+    SampleTypeUpdate,
+    SampleUpdate,
+)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
@@ -117,7 +148,9 @@ class AnalysisTemplateService(
         super().__init__(AnalysisTemplateRepository)
 
 
-class ProfileCodingService(BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]):
+class ProfileCodingService(
+    BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]
+):
     def __init__(self):
         super().__init__(ProfileCodingRepository)
 
@@ -191,12 +224,13 @@ class ResultOptionService(
 class AnalysisRequestService(
     BaseService[AnalysisRequest, AnalysisRequestCreate, AnalysisRequestUpdate]
 ):
-
     def __init__(self):
         self.id_sequence_service = IdSequenceService()
         super().__init__(AnalysisRequestRepository)
 
-    async def create(self, obj_in: dict | AnalysisRequestCreate, related: list[str] = None):
+    async def create(
+        self, obj_in: dict | AnalysisRequestCreate, related: list[str] = None
+    ):
         data = self._import(obj_in)
         data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
         return await super().create(data, related)
@@ -320,72 +354,80 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.status = SampleState.RECEIVED
         sample.received_by_uid = received_by.uid
         sample.date_received = datetime.now()
-        sample.updated_by_uid = received_by.uid 
+        sample.updated_by_uid = received_by.uid
 
         saved_sample = await super().save(sample)
-        await self.streamer_service.stream(saved_sample, received_by, "received", "sample")
+        await self.streamer_service.stream(
+            saved_sample, received_by, "received", "sample"
+        )
         return saved_sample
 
     async def cancel(self, uid: str, cancelled_by):
         sample = await self.get(uid=uid)
         analysis_results = await self.get_analysis_results(uid)
-        
+
         # Update sample attributes
         sample.status = SampleState.CANCELLED
         sample.cancelled_by_uid = cancelled_by.uid
         sample.date_cancelled = datetime.now()
         sample.updated_by_uid = cancelled_by.uid
-        
+
         # Save sample first
         sample = await super().save(sample)
-        
+
         # Cancel analysis results sequentially
         for result in analysis_results:
-            await self.analysis_result_service.cancel(result.uid, cancelled_by=cancelled_by)
-        
+            await self.analysis_result_service.cancel(
+                result.uid, cancelled_by=cancelled_by
+            )
+
         # Log the cancellation action
         await self.streamer_service.stream(sample, cancelled_by, "cancelled", "sample")
-        
+
         return sample
 
     async def re_instate(self, uid: str, re_instated_by):
         sample = await self.get(uid=uid)
-        
+
         # Update sample attributes
         sample.status = SampleState.RECEIVED
         sample.cancelled_by_uid = None
         sample.date_cancelled = None
         sample.updated_by_uid = re_instated_by.uid
         sample.date_reinstated = datetime.now()
-        
+
         # Save sample first
         sample = await super().save(sample)
-        
+
         # Re-instate analysis results sequentially
         analysis_results = await self.get_analysis_results(uid)
         for result in analysis_results:
-            await self.analysis_result_service.re_instate(result.uid, re_instated_by=re_instated_by)
-        
+            await self.analysis_result_service.re_instate(
+                result.uid, re_instated_by=re_instated_by
+            )
+
         # Log the re-instatement action
-        await self.streamer_service.stream(sample, re_instated_by, "reinstated", "sample")
-        
+        await self.streamer_service.stream(
+            sample, re_instated_by, "reinstated", "sample"
+        )
+
         return sample
 
     async def submit(self, uid: str, submitted_by):
         sample = await self.get(uid=uid)
-        
+
         # Update sample attributes
         sample.status = SampleState.AWAITING
         sample.submitted_by_uid = submitted_by.uid
         sample.date_submitted = datetime.now()
         sample.updated_by_uid = submitted_by.uid
-        
+
         # Save sample
         saved = await super().save(sample)
-        
+
         # Log the submission action
         await self.streamer_service.stream(saved, submitted_by, "submitted", "sample")
-        
+
         return saved
 
     async def un_submit(self, uid: str):
@@ -421,7 +463,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-                filter(lambda an: an.status in [ResultState.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
@@ -429,22 +471,22 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
     async def verify(self, uid: str, verified_by) -> tuple[bool, Sample]:
         sample = await self.get(uid=uid)
         is_verifiable = await self.is_verifiable(uid)
-        
+
         if is_verifiable:
             # Update sample attributes
             sample.status = SampleState.APPROVED
             sample.verified_by_uid = verified_by.uid
             sample.date_verified = datetime.now()
             sample.updated_by_uid = verified_by.uid
-            
+
             # Save sample
             saved = await super().save(sample)
-            
+
             # Log the verification action
             await self.streamer_service.stream(saved, verified_by, "approved", "sample")
-            
+
             return True, saved
-        
+
         return False, sample
 
     async def publish(self, uid: str, published_by):
@@ -466,9 +508,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.date_printed = datetime.now()
         sample.updated_by_uid = printed_by.uid  # noqa
         printed = await super().save(sample)
-        await self.streamer_service.stream(
-            printed, printed_by, "printed", "sample"
-        )
+        await self.streamer_service.stream(printed, printed_by, "printed", "sample")
         return printed
 
     async def invalidate(self, uid: str, invalidated_by) -> tuple[Sample, Sample]:
@@ -488,9 +528,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.received_by_uid = rejected_by.uid
         sample.updated_by_uid = rejected_by.uid  # noqa
         rejected = await super().save(sample)
-        await self.streamer_service.stream(
-            rejected, rejected_by, "rejected", "sample"
-        )
+        await self.streamer_service.stream(rejected, rejected_by, "rejected", "sample")
         return rejected
 
     async def store(self, uid: str, stored_by):

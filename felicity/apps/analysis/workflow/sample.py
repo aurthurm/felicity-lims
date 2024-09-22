@@ -17,8 +17,16 @@ class SampleWorkFlow:
     async def revert(self, uid: str, by_uid: str) -> None:
         to_status = ResultState.PENDING
         results = await self.sample_service.get_analysis_results(uid)
-        awaiting_satatuses = [ResultState.RESULTED, ResultState.RETRACTED, ResultState.CANCELLED]
-        approved_satatuses = [ResultState.APPROVED, ResultState.RETRACTED, ResultState.CANCELLED]
+        awaiting_satatuses = [
+            ResultState.RESULTED,
+            ResultState.RETRACTED,
+            ResultState.CANCELLED,
+        ]
+        approved_satatuses = [
+            ResultState.APPROVED,
+            ResultState.RETRACTED,
+            ResultState.CANCELLED,
+        ]
 
         if any([result.status in ResultState.PENDING for result in results]):
             to_status = SampleState.RECEIVED
@@ -214,7 +222,10 @@ class SampleWorkFlow:
         samples = await self.sample_service.get_all(uid__in=sample_uids)
         for sample in samples:
             await self._guard_approve(sample)
-        return [(await self.sample_service.verify(sample.uid, verified_by=approved_by)) for sample in samples]
+        return [
+            (await self.sample_service.verify(sample.uid, verified_by=approved_by))
+            for sample in samples
+        ]
 
     async def _guard_approve(self, sample: Sample) -> bool:
         allow = False
@@ -233,7 +244,7 @@ class SampleWorkFlow:
         # Are there are results in referred state or some are in pending state
         analysis, referred = await self.sample_service.get_referred_analyses(sample.uid)
         if not referred and list(  # and has pending results then :)
-                filter(lambda an: an.status in [ResultState.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             allow = False
 

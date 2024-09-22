@@ -1,7 +1,12 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.setup.entities import (Department, Laboratory,
-                                          LaboratorySetting, Manufacturer,
-                                          Supplier, Unit)
+from felicity.apps.setup.entities import (
+    Department,
+    Laboratory,
+    LaboratorySetting,
+    Manufacturer,
+    Supplier,
+    Unit,
+)
 
 
 class DepartmentRepository(BaseRepository[Department]):

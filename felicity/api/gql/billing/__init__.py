@@ -1,8 +1,17 @@
-from .types import (AnalysisDiscountType, AnalysisPriceType,
-                    ProfileDiscountType, ProfilePriceType, TestBillCursorPage,
-                    TestBillEdge, TestBillInvoiceType, TestBillTransactionType,
-                    TestBillType, VoucherCodeType, VoucherCustomerType,
-                    VoucherType)
+from .types import (
+    AnalysisDiscountType,
+    AnalysisPriceType,
+    ProfileDiscountType,
+    ProfilePriceType,
+    TestBillCursorPage,
+    TestBillEdge,
+    TestBillInvoiceType,
+    TestBillTransactionType,
+    TestBillType,
+    VoucherCodeType,
+    VoucherCustomerType,
+    VoucherType,
+)
 
 billing_types = [
     AnalysisPriceType,

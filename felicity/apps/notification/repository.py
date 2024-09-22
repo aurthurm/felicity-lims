@@ -1,6 +1,9 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.notification.entities import (ActivityFeed, ActivityStream,
-                                                 Notification)
+from felicity.apps.notification.entities import (
+    ActivityFeed,
+    ActivityStream,
+    Notification,
+)
 
 
 class ActivityFeedRepository(BaseRepository[ActivityFeed]):

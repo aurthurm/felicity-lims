@@ -16,7 +16,9 @@ sync_lock = Lock()  # Synchronous lock
 async_lock = ALock()  # Asynchronous lock
 
 
-def partition_functions(functions: List[Callable[..., Any]]) -> (List[Callable[..., Any]], List[Callable[..., Any]]):
+def partition_functions(
+    functions: List[Callable[..., Any]],
+) -> (List[Callable[..., Any]], List[Callable[..., Any]]):
     async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]
     sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]
     return async_funcs, sync_funcs
@@ -44,7 +46,8 @@ def unsubscribe(event_type: str, fn: Callable[..., Any]) -> None:
                 subscribers[event_type].remove(fn)
             except ValueError:
                 logger.error(
-                    f"Function not found in subscribers for event type: {event_type}\n{traceback.format_exc()}")
+                    f"Function not found in subscribers for event type: {event_type}\n{traceback.format_exc()}"
+                )
 
 
 def post_event(event_type: str, **kwargs: Any) -> None:
@@ -70,14 +73,18 @@ def post_event(event_type: str, **kwargs: Any) -> None:
             try:
                 future.result()  # Re-raise any exception from the executed function
             except Exception as e:
-                logger.error(f"Error executing event handler: {e}\n{traceback.format_exc()}")
+                logger.error(
+                    f"Error executing event handler: {e}\n{traceback.format_exc()}"
+                )
 
 
 def safe_execute(fn: Callable[..., Any], **kwargs: Any) -> None:
     try:
         fn(**kwargs)
     except Exception as e:
-        logger.error(f"Error in event subscriber {fn.__name__}: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in event subscriber {fn.__name__}: {e}\n{traceback.format_exc()}"
+        )
 
 
 # Asynchronous Event System
@@ -93,7 +100,8 @@ async def aunsubscribe(event_type: str, fn: Callable[..., Any]) -> None:
                 subscribers[event_type].remove(fn)
             except ValueError:
                 logger.error(
-                    f"Function not found in subscribers for event type: {event_type}\n{traceback.format_exc()}")
+                    f"Function not found in subscribers for event type: {event_type}\n{traceback.format_exc()}"
+                )
 
 
 async def apost_event(event_type: str, **kwargs: Any) -> None:
@@ -111,4 +119,6 @@ async def asafe_execute(fn: Callable[..., Any], **kwargs: Any) -> None:
         else:
             fn(**kwargs)
     except Exception as e:
-        logger.error(f"Error in event subscriber {fn.__name__}: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in event subscriber {fn.__name__}: {e}\n{traceback.format_exc()}"
+        )

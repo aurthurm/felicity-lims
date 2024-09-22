@@ -34,12 +34,16 @@ async def submit_results(job_uid: str) -> NoReturn:
         await utils.results_submitter(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
         for res in job.data:
-            await process_tracker.release(uid=res['uid'], object_type=TrackableObject.RESULT)
+            await process_tracker.release(
+                uid=res["uid"], object_type=TrackableObject.RESULT
+            )
         await notification_service.notify(
             "Your results were successfully submitted", user
         )
     except Exception as e:
-        await job_service.change_status(job.uid, new_status=JobState.FAILED, change_reason=str(e))
+        await job_service.change_status(
+            job.uid, new_status=JobState.FAILED, change_reason=str(e)
+        )
         await notification_service.notify(
             f"Failed to submit results in job with uid: {job.uid} with error: {str(e)}",
             user,
@@ -74,7 +78,9 @@ async def verify_results(job_uid: str) -> NoReturn:
         )
     except Exception as e:
         logger.info(f"Exception ....... {e}")
-        await job_service.change_status(job.uid, new_status=JobState.FAILED, change_reason=str(e))
+        await job_service.change_status(
+            job.uid, new_status=JobState.FAILED, change_reason=str(e)
+        )
         await notification_service.notify(
             f"Failed to verify results in job with uid: {job.uid} with error: {str(e)}",
             user,

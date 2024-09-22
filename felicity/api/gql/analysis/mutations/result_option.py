@@ -9,9 +9,11 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.services.analysis import (AnalysisService,
-                                                      ResultOptionService,
-                                                      SampleTypeService)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisService,
+    ResultOptionService,
+    SampleTypeService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -5,20 +5,34 @@ import strawberry  # noqa
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
-                                           ReflexRuleType)
+from felicity.api.gql.reflex.types import (
+    ReflexActionType,
+    ReflexBrainType,
+    ReflexRuleType,
+)
 from felicity.api.gql.types import OperationError, DeletedItem
 from felicity.apps.analysis.services.analysis import AnalysisService
 from felicity.apps.reflex import schemas
-from felicity.apps.reflex.entities import (ReflexBrainAddition,
-                                           ReflexBrainFinal,
-                                           reflex_action_analysis, ReflexBrainConditionCriteria)
-from felicity.apps.reflex.schemas import ReflexBrainConditionCreate, ReflexBrainActionCreate
-from felicity.apps.reflex.services import (ReflexActionService,
-                                           ReflexBrainService,
-                                           ReflexRuleService, ReflexBrainAdditionService,
-                                           ReflexBrainFinalService, ReflexBrainConditionCriteriaService,
-                                           ReflexBrainActionService, ReflexBrainConditionService)
+from felicity.apps.reflex.entities import (
+    ReflexBrainAddition,
+    ReflexBrainFinal,
+    reflex_action_analysis,
+    ReflexBrainConditionCriteria,
+)
+from felicity.apps.reflex.schemas import (
+    ReflexBrainConditionCreate,
+    ReflexBrainActionCreate,
+)
+from felicity.apps.reflex.services import (
+    ReflexActionService,
+    ReflexBrainService,
+    ReflexRuleService,
+    ReflexBrainAdditionService,
+    ReflexBrainFinalService,
+    ReflexBrainConditionCriteriaService,
+    ReflexBrainActionService,
+    ReflexBrainConditionService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +45,9 @@ class ReflexRuleInput:
 
 
 ReflexRuleResponse = strawberry.union(
-    "ReflexRuleResponse", (ReflexRuleType, OperationError), description=""  # noqa
+    "ReflexRuleResponse",
+    (ReflexRuleType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -45,7 +61,9 @@ class ReflexActionInput:
 
 
 ReflexActionResponse = strawberry.union(
-    "ReflexActionResponse", (ReflexActionType, OperationError), description=""  # noqa
+    "ReflexActionResponse",
+    (ReflexActionType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -91,7 +109,9 @@ class ReflexBrainInput:
 
 
 ReflexBrainResponse = strawberry.union(
-    "ReflexBrainResponse", (ReflexBrainType, OperationError), description=""  # noqa
+    "ReflexBrainResponse",
+    (ReflexBrainType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -99,9 +119,8 @@ ReflexBrainResponse = strawberry.union(
 class ReflexRuleMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_rule(
-            self, info, payload: ReflexRuleInput
+        self, info, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.name or not payload.description:
@@ -124,9 +143,8 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_rule(
-            self, info, uid: str, payload: ReflexRuleInput
+        self, info, uid: str, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -154,17 +172,18 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_action(
-            self, info, payload: ReflexActionInput
+        self, info, payload: ReflexActionInput
     ) -> ReflexActionResponse:
-
         felicity_user = await auth_from_info(info)
 
         if (
-                not len(payload.analyses) > 0
-                or not isinstance(payload.level, int)
-                or not payload.description
+            not len(payload.analyses) > 0
+            or not isinstance(payload.level, int)
+            or not payload.description
         ):
-            return OperationError(error="Analysis, Level (as an integer) and description are required")
+            return OperationError(
+                error="Analysis, Level (as an integer) and description are required"
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -186,25 +205,28 @@ class ReflexRuleMutations:
         for anal in analyses:
             await ReflexActionService().repository.table_insert(
                 table=reflex_action_analysis,
-                mappings=[{
-                    "analysis_uid": anal.uid,
-                    "reflex_action_uid": action.uid,
-                }],
+                mappings=[
+                    {
+                        "analysis_uid": anal.uid,
+                        "reflex_action_uid": action.uid,
+                    }
+                ],
             )
 
         return ReflexActionType(**action.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_action(
-            self, info, uid: str, payload: ReflexActionInput
+        self, info, uid: str, payload: ReflexActionInput
     ) -> ReflexActionResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        reflex_action = await ReflexActionService().get_related(uid=uid, related=["analyses"])
+        reflex_action = await ReflexActionService().get_related(
+            uid=uid, related=["analyses"]
+        )
         if not reflex_action:
             return OperationError(
                 error=f"reflex_action with uid {uid} not found. Cannot update obj ..."
@@ -212,12 +234,18 @@ class ReflexRuleMutations:
 
         # Update simple fields where present in payload
         obj_data = reflex_action.to_dict()
-        updated_fields = {field: payload.__dict__[field] for field in obj_data if field in payload.__dict__}
+        updated_fields = {
+            field: payload.__dict__[field]
+            for field in obj_data
+            if field in payload.__dict__
+        }
         for field, value in updated_fields.items():
             try:
                 setattr(reflex_action, field, value)
             except Exception as e:
-                print(f"Error setting attribute {field}: {e}")  # Replace with proper logging
+                print(
+                    f"Error setting attribute {field}: {e}"
+                )  # Replace with proper logging
 
         setattr(reflex_action, "updated_by_uid", felicity_user.uid)
         obj_in = schemas.ReflexActionUpdate(**reflex_action.to_dict())
@@ -241,9 +269,8 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_brain(
-            self, info, payload: ReflexBrainInput
+        self, info, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
-
         felicity_user = await auth_from_info(info)
 
         incoming: dict = {
@@ -267,7 +294,9 @@ class ReflexRuleMutations:
                 created_by_uid=felicity_user.uid,
                 updated_by_uid=felicity_user.uid,
             )
-            condition = await ReflexBrainConditionService().create(con_in, related=["criteria"])
+            condition = await ReflexBrainConditionService().create(
+                con_in, related=["criteria"]
+            )
 
             criteria = []
             for _crit in _condition.criteria:
@@ -287,9 +316,11 @@ class ReflexRuleMutations:
                 description="",
                 priority=0,
                 created_by_uid=felicity_user.uid,
-                updated_by_uid=felicity_user.uid
+                updated_by_uid=felicity_user.uid,
             )
-            action = await ReflexBrainActionService().create(act_in, related=["add_new", "finalise"])
+            action = await ReflexBrainActionService().create(
+                act_in, related=["add_new", "finalise"]
+            )
 
             # add final action
             finalise = []
@@ -313,13 +344,14 @@ class ReflexRuleMutations:
             await ReflexBrainActionService().save(action)
 
         brain = await ReflexBrainService().get_related(
-            related=["conditions.criteria", "actions.add_new", "actions.finalise"], uid=brain.uid
+            related=["conditions.criteria", "actions.add_new", "actions.finalise"],
+            uid=brain.uid,
         )
         return ReflexBrainType(**brain.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_brain(
-            self, info, uid: str, payload: ReflexBrainInput
+        self, info, uid: str, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
         felicity_user = await auth_from_info(info)
 
@@ -327,7 +359,9 @@ class ReflexRuleMutations:
         # delete conditions
         conditions = await ReflexBrainConditionService().get_all(reflex_brain_uid=uid)
         for brain_cond in conditions:
-            criteria = await ReflexBrainConditionCriteriaService().get_all(reflex_brain_condition_uid=brain_cond.uid)
+            criteria = await ReflexBrainConditionCriteriaService().get_all(
+                reflex_brain_condition_uid=brain_cond.uid
+            )
             for cond_crit in criteria:
                 await ReflexBrainConditionCriteriaService().delete(cond_crit.uid)
             await ReflexBrainConditionService().delete(brain_cond.uid)
@@ -335,8 +369,12 @@ class ReflexRuleMutations:
         # delete actions
         brain_actions = await ReflexBrainActionService().get_all(reflex_brain_uid=uid)
         for rb_action in brain_actions:
-            additions = await ReflexBrainAdditionService().get_all(reflex_brain_action_uid=rb_action.uid)
-            finals = await ReflexBrainFinalService().get_all(reflex_brain_action_uid=rb_action.uid)
+            additions = await ReflexBrainAdditionService().get_all(
+                reflex_brain_action_uid=rb_action.uid
+            )
+            finals = await ReflexBrainFinalService().get_all(
+                reflex_brain_action_uid=rb_action.uid
+            )
             for ad in additions:
                 await ReflexBrainAdditionService().delete(ad.uid)
             for fin in finals:
@@ -364,7 +402,9 @@ class ReflexRuleMutations:
                 created_by_uid=felicity_user.uid,
                 updated_by_uid=felicity_user.uid,
             )
-            condition = await ReflexBrainConditionService().create(con_in, related=["criteria"])
+            condition = await ReflexBrainConditionService().create(
+                con_in, related=["criteria"]
+            )
 
             criteria = []
             for _crit in _condition.criteria:
@@ -387,9 +427,11 @@ class ReflexRuleMutations:
                 description="",
                 priority=0,
                 created_by_uid=felicity_user.uid,
-                updated_by_uid=felicity_user.uid
+                updated_by_uid=felicity_user.uid,
             )
-            action = await ReflexBrainActionService().create(act_in, related=["add_new", "finalise"])
+            action = await ReflexBrainActionService().create(
+                act_in, related=["add_new", "finalise"]
+            )
 
             # add final action
             finalise = []
@@ -421,18 +463,18 @@ class ReflexRuleMutations:
         brain = await ReflexBrainService().update(
             uid=brain.uid,
             update=brain_in,
-            related=["conditions.criteria", "actions.add_new", "actions.finalise"]
+            related=["conditions.criteria", "actions.add_new", "actions.finalise"],
         )
         return ReflexBrainType(**brain.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_reflex_brain(
-            self, info, uid: str
-    ) -> DeletedItem:
+    async def delete_reflex_brain(self, info, uid: str) -> DeletedItem:
         # delete conditions
         conditions = await ReflexBrainConditionService().get_all(reflex_brain_uid=uid)
         for brain_cond in conditions:
-            criteria = await ReflexBrainConditionCriteriaService().get_all(reflex_brain_condition_uid=brain_cond.uid)
+            criteria = await ReflexBrainConditionCriteriaService().get_all(
+                reflex_brain_condition_uid=brain_cond.uid
+            )
             for cond_crit in criteria:
                 await ReflexBrainConditionCriteriaService().delete(cond_crit.uid)
             await ReflexBrainConditionService().delete(brain_cond.uid)
@@ -440,8 +482,12 @@ class ReflexRuleMutations:
         # delete actions
         brain_actions = await ReflexBrainActionService().get_all(reflex_brain_uid=uid)
         for rb_action in brain_actions:
-            additions = await ReflexBrainAdditionService().get_all(reflex_brain_action_uid=rb_action.uid)
-            finals = await ReflexBrainFinalService().get_all(reflex_brain_action_uid=rb_action.uid)
+            additions = await ReflexBrainAdditionService().get_all(
+                reflex_brain_action_uid=rb_action.uid
+            )
+            finals = await ReflexBrainFinalService().get_all(
+                reflex_brain_action_uid=rb_action.uid
+            )
             for ad in additions:
                 await ReflexBrainAdditionService().delete(ad.uid)
             for fin in finals:

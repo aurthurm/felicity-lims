@@ -58,7 +58,7 @@ class ActivityStreamType:
 
     @strawberry.field
     async def action_object(
-            self, info
+        self, info
     ) -> Union[
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:
@@ -76,7 +76,9 @@ class ActivityStreamType:
             return WorkSheetType(**ws.marshal_simple())
 
         if self.action_object_type == "result":
-            result = await AnalysisResultService().get_related(related=["sample"], uid=self.action_object_uid)
+            result = await AnalysisResultService().get_related(
+                related=["sample"], uid=self.action_object_uid
+            )
             return AnalysisResultType(
                 **result.marshal_simple(
                     exclude=[

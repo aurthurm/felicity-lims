@@ -4,19 +4,33 @@ import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.setup.types import (CountryType, DistrictCursorPage,
-                                          DistrictEdge, DistrictType,
-                                          LaboratorySettingType,
-                                          LaboratoryType, ManufacturerType,
-                                          ProvinceCursorPage, ProvinceEdge,
-                                          ProvinceType, SupplierType, UnitType)
+from felicity.api.gql.setup.types import (
+    CountryType,
+    DistrictCursorPage,
+    DistrictEdge,
+    DistrictType,
+    LaboratorySettingType,
+    LaboratoryType,
+    ManufacturerType,
+    ProvinceCursorPage,
+    ProvinceEdge,
+    ProvinceType,
+    SupplierType,
+    UnitType,
+)
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
-from felicity.apps.setup.services import (CountryService, DepartmentService,
-                                          DistrictService, LaboratoryService,
-                                          LaboratorySettingService,
-                                          ManufacturerService, ProvinceService,
-                                          SupplierService, UnitService)
+from felicity.apps.setup.services import (
+    CountryService,
+    DepartmentService,
+    DistrictService,
+    LaboratoryService,
+    LaboratorySettingService,
+    ManufacturerService,
+    ProvinceService,
+    SupplierService,
+    UnitService,
+)
 from felicity.utils import has_value_or_is_truthy
 
 

@@ -1,7 +1,6 @@
 import pytest
 
-from felicity.apps.exceptions import (AlreadyExistsError,
-                                      ValidationError)
+from felicity.apps.exceptions import AlreadyExistsError, ValidationError
 from felicity.apps.user.repository import UserRepository
 from felicity.apps.user.schemas import User, UserCreate
 from felicity.apps.user.services import UserService
@@ -44,7 +43,9 @@ async def test_add_user(user_service, mocker, user_data):
 
     result = await user_service.create(UserCreate(**user_data))
 
-    user_service.repository.get.assert_called_once_with(user_name=user_data["user_name"])
+    user_service.repository.get.assert_called_once_with(
+        user_name=user_data["user_name"]
+    )
     user_service.repository.create.assert_called_once()
 
     assert result.return_value.uid is not None
@@ -74,11 +75,13 @@ async def test_add_user_password_policy_weak(user_service, mocker, user_data):
 
     with pytest.raises(ValidationError):
         await user_service.create(
-            UserCreate(**{
-                **user_data,
-                "password": "12345",
-                "passwordc": "12345",
-            })
+            UserCreate(
+                **{
+                    **user_data,
+                    "password": "12345",
+                    "passwordc": "12345",
+                }
+            )
         )
 
 

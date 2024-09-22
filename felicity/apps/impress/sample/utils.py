@@ -90,8 +90,8 @@ async def impress_samples(sample_meta: List[any], user):
                     metadata={
                         "state": report_state,
                         "sample_uid": sample.uid,
-                        "impress_meta_uid": report_impress.uid
-                    }
+                        "impress_meta_uid": report_impress.uid,
+                    },
                 )
 
             # Save the json to mongodb
@@ -99,7 +99,7 @@ async def impress_samples(sample_meta: List[any], user):
                 await MongoService().upsert(
                     collection=MongoCollection.DIAGNOSTIC_REPORT,
                     uid=report_impress.uid,
-                    data=impress_meta
+                    data=impress_meta,
                 )
 
             if action != "pre-publish":

@@ -1,7 +1,17 @@
-from .types import (GroupCount, GroupData, GroupedCounts, GroupedData,
-                    LaggardCounts, LaggardData, LaggardStatistics, Nothing,
-                    ProcessCounts, ProcessData, ProcessStatistics,
-                    ReportMetaType)
+from .types import (
+    GroupCount,
+    GroupData,
+    GroupedCounts,
+    GroupedData,
+    LaggardCounts,
+    LaggardData,
+    LaggardStatistics,
+    Nothing,
+    ProcessCounts,
+    ProcessData,
+    ProcessStatistics,
+    ReportMetaType,
+)
 
 analytics_types = [
     Nothing,

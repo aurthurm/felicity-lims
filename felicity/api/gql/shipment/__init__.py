@@ -1,5 +1,10 @@
-from .types import (ReferralLaboratoryType, ShipmentCursorPage, ShipmentEdge,
-                    ShipmentType, ShippedSampleType)
+from .types import (
+    ReferralLaboratoryType,
+    ShipmentCursorPage,
+    ShipmentEdge,
+    ShipmentType,
+    ShippedSampleType,
+)
 
 shipment_types = [
     ReferralLaboratoryType,

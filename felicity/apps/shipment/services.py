@@ -1,17 +1,21 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.notification.services import ActivityStreamService
-from felicity.apps.shipment.entities import (ReferralLaboratory, Shipment,
-                                             ShippedSample)
+from felicity.apps.shipment.entities import ReferralLaboratory, Shipment, ShippedSample
 from felicity.apps.shipment.enum import ShipmentState
-from felicity.apps.shipment.repository import (ReferralLaboratoryRepository,
-                                               ShipmentRepository,
-                                               ShippedSampleRepository)
-from felicity.apps.shipment.schemas import (ReferralLaboratoryCreate,
-                                            ReferralLaboratoryUpdate,
-                                            ShipmentCreate, ShipmentUpdate,
-                                            ShippedSampleCreate,
-                                            ShippedSampleUpdate)
+from felicity.apps.shipment.repository import (
+    ReferralLaboratoryRepository,
+    ShipmentRepository,
+    ShippedSampleRepository,
+)
+from felicity.apps.shipment.schemas import (
+    ReferralLaboratoryCreate,
+    ReferralLaboratoryUpdate,
+    ShipmentCreate,
+    ShipmentUpdate,
+    ShippedSampleCreate,
+    ShippedSampleUpdate,
+)
 
 
 class ReferralLaboratoryService(
@@ -29,7 +33,6 @@ class ShippedSampleService(
 
 
 class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
-
     def __init__(self):
         self.id_sequence_service = IdSequenceService()
         self.shipped_sample_service = ShipmentRepository()
@@ -77,7 +80,9 @@ class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
             return saved
         return self
 
-    async def create(self, obj_in: dict | ShipmentCreate, related: list[str] = None) -> Shipment:
+    async def create(
+        self, obj_in: dict | ShipmentCreate, related: list[str] = None
+    ) -> Shipment:
         data = self._import(obj_in)
         data["shipment_id"] = (await self.id_sequence_service.get_next_number("SHIP"))[
             1

@@ -1,9 +1,16 @@
 from felicity.apps.abstract import BaseRepository
-from felicity.apps.billing.entities import (AnalysisDiscount, AnalysisPrice,
-                                            ProfileDiscount, ProfilePrice,
-                                            TestBill, TestBillInvoice,
-                                            TestBillTransaction, Voucher,
-                                            VoucherCode, VoucherCustomer)
+from felicity.apps.billing.entities import (
+    AnalysisDiscount,
+    AnalysisPrice,
+    ProfileDiscount,
+    ProfilePrice,
+    TestBill,
+    TestBillInvoice,
+    TestBillTransaction,
+    Voucher,
+    VoucherCode,
+    VoucherCustomer,
+)
 
 
 class AnalysisPriceRepository(BaseRepository[AnalysisPrice]):

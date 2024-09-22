@@ -11,15 +11,19 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.client.services import ClientService
 from felicity.apps.patient import schemas
-from felicity.apps.patient.services import (IdentificationService,
-                                            PatientIdentificationService,
-                                            PatientService)
+from felicity.apps.patient.services import (
+    IdentificationService,
+    PatientIdentificationService,
+    PatientService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 PatientResponse = strawberry.union(
-    "PatientResponse", (PatientType, OperationError), description=""  # noqa
+    "PatientResponse",
+    (PatientType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -63,7 +67,6 @@ IdentificationResponse = strawberry.union(
 class PatientMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_identification(info, name: str) -> IdentificationResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not name:
@@ -87,7 +90,7 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_identification(
-            info, uid: str, name: str
+        info, uid: str, name: str
     ) -> IdentificationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -106,14 +109,13 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
-
         felicity_user = await auth_from_info(info)
 
         if (
-                not payload.client_patient_id
-                or not payload.first_name
-                or not payload.last_name
-                or not payload.client_uid
+            not payload.client_patient_id
+            or not payload.first_name
+            or not payload.last_name
+            or not payload.client_uid
         ):
             return OperationError(
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
@@ -152,9 +154,8 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_patient(
-            self, info, uid: str, payload: PatientInputType
+        self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not uid:

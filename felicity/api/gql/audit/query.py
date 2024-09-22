@@ -13,13 +13,12 @@ from felicity.database.mongo import MongoService, MongoCollection
 class AuditLogQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def audit_logs_filter(
-            self, info, target_type: str, target_uid: str
+        self, info, target_type: str, target_uid: str
     ) -> List[AuditLogType] | None:
         filters = {"target_type": target_type, "target_uid": target_uid}
         if settings.DOCUMENT_STORAGE:
             documents = await MongoService().search(
-                MongoCollection.AUDIT_LOG,
-                filters=filters
+                MongoCollection.AUDIT_LOG, filters=filters
             )
 
             def _log(doc: dict) -> AuditLogType:

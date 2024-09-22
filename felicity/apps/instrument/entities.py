@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
-                        String, Table)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
@@ -182,6 +181,7 @@ class InstrumentCompetence(BaseEntity):
     @property
     async def is_valid(self):
         return datetime.now() < self.expiry_date
+
 
 # class MeasurementUncertainty(BaseEntity):
 #     __tablename__ = "measurement_uncertainty"

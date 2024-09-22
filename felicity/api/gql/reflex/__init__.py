@@ -1,7 +1,15 @@
-from .types import (ReflexActionType, ReflexBrainAdditionType, ReflexBrainConditionType,
-                    ReflexBrainConditionCriteriaType, ReflexBrainFinalType,
-                    ReflexBrainType, ReflexRuleCursorPage, ReflexRuleEdge,
-                    ReflexRuleType, ReflexBrainActionType)
+from .types import (
+    ReflexActionType,
+    ReflexBrainAdditionType,
+    ReflexBrainConditionType,
+    ReflexBrainConditionCriteriaType,
+    ReflexBrainFinalType,
+    ReflexBrainType,
+    ReflexRuleCursorPage,
+    ReflexRuleEdge,
+    ReflexRuleType,
+    ReflexBrainActionType,
+)
 
 reflex_types = [
     ReflexRuleType,
@@ -13,5 +21,5 @@ reflex_types = [
     ReflexBrainFinalType,
     ReflexBrainType,
     ReflexActionType,
-    ReflexBrainActionType
+    ReflexBrainActionType,
 ]

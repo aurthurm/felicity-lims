@@ -1,19 +1,25 @@
-
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.exceptions import AlreadyExistsError, ValidationError
 from felicity.apps.user.entities import Group, Permission, User, UserPreference
-from felicity.apps.user.repository import (GroupRepository,
-                                           PermissionRepository,
-                                           UserPreferenceRepository,
-                                           UserRepository)
-from felicity.apps.user.schemas import (GroupCreate, GroupUpdate,
-                                        PermissionCreate, PermissionUpdate,
-                                        UserCreate, UserPreferenceCreate,
-                                        UserPreferenceUpdate, UserUpdate)
-from felicity.core.security import (get_password_hash, password_check,
-                                    verify_password)
+from felicity.apps.user.repository import (
+    GroupRepository,
+    PermissionRepository,
+    UserPreferenceRepository,
+    UserRepository,
+)
+from felicity.apps.user.schemas import (
+    GroupCreate,
+    GroupUpdate,
+    PermissionCreate,
+    PermissionUpdate,
+    UserCreate,
+    UserPreferenceCreate,
+    UserPreferenceUpdate,
+    UserUpdate,
+)
+from felicity.core.security import get_password_hash, password_check, verify_password
 
 
 class UserService(BaseService[User, UserCreate, UserUpdate]):
@@ -24,7 +30,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
             raise AlreadyExistsError("Username already exist")
-        
+
         policy = password_check(user_in.password, user_in.user_name)
         if not policy["password_ok"]:
             raise ValidationError(policy["message"])

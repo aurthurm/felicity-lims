@@ -3,13 +3,15 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 
-from felicity.api.gql.patient.types import (IdentificationType,
-                                            PatientCursorPage, PatientEdge,
-                                            PatientType)
+from felicity.api.gql.patient.types import (
+    IdentificationType,
+    PatientCursorPage,
+    PatientEdge,
+    PatientType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.patient.services import (IdentificationService,
-                                            PatientService)
+from felicity.apps.patient.services import IdentificationService, PatientService
 from felicity.utils import has_value_or_is_truthy
 
 

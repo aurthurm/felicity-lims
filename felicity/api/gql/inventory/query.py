@@ -6,17 +6,19 @@ import strawberry  # noqa
 from felicity.api.gql.inventory import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.inventory.services import (HazardService,
-                                              StockAdjustmentService,
-                                              StockCategoryService,
-                                              StockItemService,
-                                              StockItemVariantService,
-                                              StockLotService,
-                                              StockOrderProductService,
-                                              StockOrderService,
-                                              StockProductInventoryService,
-                                              StockReceiptService,
-                                              StockUnitService)
+from felicity.apps.inventory.services import (
+    HazardService,
+    StockAdjustmentService,
+    StockCategoryService,
+    StockItemService,
+    StockItemVariantService,
+    StockLotService,
+    StockOrderProductService,
+    StockOrderService,
+    StockProductInventoryService,
+    StockReceiptService,
+    StockUnitService,
+)
 from felicity.utils import has_value_or_is_truthy
 
 

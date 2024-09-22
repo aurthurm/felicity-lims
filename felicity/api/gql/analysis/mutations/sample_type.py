@@ -7,8 +7,10 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.services.analysis import (SampleTypeCodingService,
-                                                      SampleTypeService)
+from felicity.apps.analysis.services.analysis import (
+    SampleTypeCodingService,
+    SampleTypeService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -48,7 +50,6 @@ class SampleTypeMappingInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:
-
     felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.abbr:
@@ -74,7 +75,6 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
 async def update_sample_type(
     info, uid: str, payload: SampleTypeInputType
 ) -> SampleTypeResponse:
-
     felicity_user = await auth_from_info(info)
 
     sample_type = await SampleTypeService().get(uid=uid)
@@ -98,7 +98,6 @@ async def update_sample_type(
 async def create_sample_type_mapping(
     info, payload: SampleTypeMappingInputType
 ) -> SampleTypeMappingResponse:
-
     felicity_user = await auth_from_info(info)
 
     exists = await SampleTypeCodingService().get(code=payload.code)
@@ -121,7 +120,6 @@ async def create_sample_type_mapping(
 async def update_sample_type_mapping(
     info, uid: str, payload: SampleTypeMappingInputType
 ) -> SampleTypeMappingResponse:
-
     felicity_user = await auth_from_info(info)
 
     sample_type_mapping = await SampleTypeCodingService().get(uid=uid)

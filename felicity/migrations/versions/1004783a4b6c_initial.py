@@ -1,7 +1,7 @@
 """init
 
 Revision ID: 6f377b641bc8
-Revises: 
+Revises:
 Create Date: 2024-07-23 12:57:13.081794
 
 """
@@ -25,8 +25,12 @@ def upgrade():
         sa.Column("target_type", sa.String(length=100), nullable=False),
         sa.Column("target_uid", sa.String(), nullable=True),
         sa.Column("action", sa.Integer(), nullable=True),
-        sa.Column("state_before", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-        sa.Column("state_after", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column(
+            "state_before", postgresql.JSONB(astext_type=sa.Text()), nullable=True
+        ),
+        sa.Column(
+            "state_after", postgresql.JSONB(astext_type=sa.Text()), nullable=True
+        ),
         sa.Column("uid", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("uid"),
     )

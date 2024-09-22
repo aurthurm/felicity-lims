@@ -162,7 +162,9 @@ class BaseRepository(Generic[M]):
         :raises ValueError: If update_data or filters are not provided.
         """
         if not update_data or not filters:
-            raise ValueError("Both update_data and filters are required to update model")
+            raise ValueError(
+                "Both update_data and filters are required to update model"
+            )
         query = self.model.smart_query(query=update(self.model), filters=filters)
         stmt = query.values(update_data).execution_options(synchronize_session="fetch")
 
@@ -251,7 +253,7 @@ class BaseRepository(Generic[M]):
         stmt = delete(table)
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
-            
+
         async with self.async_session() as session:
             await session.execute(stmt)
             await session.commit()
@@ -332,7 +334,7 @@ class BaseRepository(Generic[M]):
         return results.scalars().all()
 
     async def get_related(
-            self, related: Optional[list[str]], many: bool = False, **kwargs
+        self, related: Optional[list[str]], many: bool = False, **kwargs
     ):
         """
         Get related model instances based on the given filters.
@@ -457,11 +459,11 @@ class BaseRepository(Generic[M]):
         return list(combined)
 
     async def filter(
-            self,
-            filters: dict,
-            sort_attrs: list[str] | None = None,
-            limit: int | None = None,
-            either: bool = False,
+        self,
+        filters: dict,
+        sort_attrs: list[str] | None = None,
+        limit: int | None = None,
+        either: bool = False,
     ) -> list[M]:
         """
         Filter model instances based on the given conditions.
@@ -484,13 +486,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def paginate(
-            self,
-            page_size: int | None,
-            after_cursor: str | None,
-            before_cursor: str | None,
-            filters: dict | list[dict] | None,
-            sort_by: list[str] | None,
-            **kwargs,
+        self,
+        page_size: int | None,
+        after_cursor: str | None,
+        before_cursor: str | None,
+        filters: dict | list[dict] | None,
+        sort_by: list[str] | None,
+        **kwargs,
     ) -> PageCursor:
         """
         Paginate model instances based on the given conditions.
@@ -588,10 +590,10 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def build_page_info(
-            start_cursor: str = None,
-            end_cursor: str = None,
-            has_next_page: bool = False,
-            has_previous_page: bool = False,
+        start_cursor: str = None,
+        end_cursor: str = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
     ) -> PageInfo:
         """
         Build a PageInfo object with the given parameters.

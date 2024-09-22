@@ -1,19 +1,28 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.services.analysis import SampleService
-from felicity.apps.storage.entities import (StorageContainer, StorageLocation,
-                                            StorageSection, StoreRoom)
-from felicity.apps.storage.repository import (StorageContainerRepository,
-                                              StorageLocationRepository,
-                                              StorageSectionRepository,
-                                              StoreRoomRepository)
-from felicity.apps.storage.schemas import (StorageContainerCreate,
-                                           StorageContainerUpdate,
-                                           StorageLocationCreate,
-                                           StorageLocationUpdate,
-                                           StorageSectionCreate,
-                                           StorageSectionUpdate,
-                                           StoreRoomCreate, StoreRoomUpdate)
+from felicity.apps.storage.entities import (
+    StorageContainer,
+    StorageLocation,
+    StorageSection,
+    StoreRoom,
+)
+from felicity.apps.storage.repository import (
+    StorageContainerRepository,
+    StorageLocationRepository,
+    StorageSectionRepository,
+    StoreRoomRepository,
+)
+from felicity.apps.storage.schemas import (
+    StorageContainerCreate,
+    StorageContainerUpdate,
+    StorageLocationCreate,
+    StorageLocationUpdate,
+    StorageSectionCreate,
+    StorageSectionUpdate,
+    StoreRoomCreate,
+    StoreRoomUpdate,
+)
 
 
 class StoreRoomService(BaseService[StoreRoom, StoreRoomCreate, StoreRoomUpdate]):

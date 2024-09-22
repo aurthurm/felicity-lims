@@ -11,12 +11,17 @@ from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
 from felicity.apps.analysis.entities import analysis as analysis_entities
 from felicity.apps.analysis.entities.analysis import (
-    analysis_analysis_template, analysis_profile, profile_sample_type)
-from felicity.apps.analysis.services.analysis import (AnalysisService,
-                                                      AnalysisTemplateService,
-                                                      ProfileCodingService,
-                                                      ProfileService,
-                                                      SampleTypeService)
+    analysis_analysis_template,
+    analysis_profile,
+    profile_sample_type,
+)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisService,
+    AnalysisTemplateService,
+    ProfileCodingService,
+    ProfileService,
+    SampleTypeService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

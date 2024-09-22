@@ -12,10 +12,7 @@ def change_tracker(action: str, table_name: str, metadata):
         return
 
     if action == "after-update":
-        metadata = {
-            "uid": metadata["uid"],
-            **metadata.get("state_after")
-        }
+        metadata = {"uid": metadata["uid"], **metadata.get("state_after")}
 
     # Hook thinks like meilisearch here etc
     # SomeHandler().on_event(action, table_name, metadata)

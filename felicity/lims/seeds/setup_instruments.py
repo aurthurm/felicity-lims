@@ -1,10 +1,12 @@
 import logging
 
 from felicity.apps.instrument import schemas
-from felicity.apps.instrument.services import (InstrumentService,
-                                               InstrumentTypeService,
-                                               LaboratoryInstrumentService,
-                                               MethodService)
+from felicity.apps.instrument.services import (
+    InstrumentService,
+    InstrumentTypeService,
+    LaboratoryInstrumentService,
+    MethodService,
+)
 from felicity.core.config import get_settings
 
 from .data import get_seeds

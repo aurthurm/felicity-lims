@@ -14,9 +14,14 @@ app = typer.Typer()
 
 
 @app.command()
-def runserver(host: str = "0.0.0.0", port: int = 8000, workers: int = 1, reload: bool = False, colors: bool = True):
-    """Felicity LIMS Server
-    """
+def runserver(
+    host: str = "0.0.0.0",
+    port: int = 8000,
+    workers: int = 1,
+    reload: bool = False,
+    colors: bool = True,
+):
+    """Felicity LIMS Server"""
     config = Config(
         app="felicity.main:felicity",
         host=host,
@@ -24,21 +29,20 @@ def runserver(host: str = "0.0.0.0", port: int = 8000, workers: int = 1, reload:
         workers=workers,
         reload=reload,
         use_colors=colors,
-        log_config=LOGGING_CONFIG
+        log_config=LOGGING_CONFIG,
     )
     Server(config).run()
 
 
 @app.command()
 def gunicorn(
-        host: str = "0.0.0.0",
-        port: int = 8000,
-        workers: int = 1,
-        reload: bool = False,
-        colors: bool = True
+    host: str = "0.0.0.0",
+    port: int = 8000,
+    workers: int = 1,
+    reload: bool = False,
+    colors: bool = True,
 ):
-    """Felicity LIMS Server
-    """
+    """Felicity LIMS Server"""
     # Build the command to run gunicorn with uvicorn workers
     command = [
         "gunicorn",
@@ -48,7 +52,7 @@ def gunicorn(
         "--log-level=info",
         "--access-logfile=-" if colors else "",
         "felicity.main:felicity",
-        "--worker-class=uvicorn.workers.UvicornWorker"
+        "--worker-class=uvicorn.workers.UvicornWorker",
     ]
 
     # Join the command list into a single string and print it for debugging
@@ -67,7 +71,9 @@ def upgrade(revision: str = typer.Option("head", help="Target revision to upgrad
 
 
 @app.command()
-def downgrade(revision: str = typer.Argument(..., help="Target revision to downgrade to")):
+def downgrade(
+    revision: str = typer.Argument(..., help="Target revision to downgrade to"),
+):
     """Downgrade to a specified revision."""
     alembic_service.downgrade(revision)
     typer.echo(f"Downgraded to revision: {revision}")
@@ -99,4 +105,5 @@ def updates():
     asyncio.run(alembic_service.check_for_updates())
 
 
-def main(): app()
+def main():
+    app()

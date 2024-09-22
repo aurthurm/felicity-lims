@@ -38,7 +38,9 @@ async def impress_results(job_uid: str):
     try:
         await JobService().change_status(job.uid, new_status=JobState.FINISHED)
         await process_tracker.release(uid=job.uid, object_type=TrackableObject.SAMPLE)
-        await NotificationService().notify("Your results were successfully published", user)
+        await NotificationService().notify(
+            "Your results were successfully published", user
+        )
     except Exception as e:
         await JobService().change_status(job.uid, new_status=JobState.FAILED)
         logger.info(f"Failed impress job {job_uid} with errr: {str(e)}")
@@ -49,7 +51,9 @@ async def impress_results(job_uid: str):
 
 
 async def prepare_for_impress():
-    samples: List[Sample] = await SampleService().get_all(status__in=[SampleState.APPROVED])
+    samples: List[Sample] = await SampleService().get_all(
+        status__in=[SampleState.APPROVED]
+    )
     data = [{"uid": s.uid, "action": "publish"} for s in samples]
     system_daemon: User = await UserService().get(email=settings.SYSTEM_DAEMON_EMAIL)
     job_schema = job_schemas.JobCreate(
@@ -64,7 +68,9 @@ async def prepare_for_impress():
 
     await JobService().create(job_schema)
     for sample in samples:
-        await process_tracker.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
+        await process_tracker.process(
+            uid=sample.uid, object_type=TrackableObject.SAMPLE
+        )
 
 
 async def cleanup_jobs():

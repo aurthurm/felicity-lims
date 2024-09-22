@@ -16,7 +16,7 @@ class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
         super().__init__(IdSequenceRepository)
 
     async def get_next_number(
-            self, prefix: str = None, generic=False
+        self, prefix: str = None, generic=False
     ) -> tuple[int, str]:
         if not prefix:
             raise IncompleDataError("A prefix is required")
@@ -41,7 +41,6 @@ class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
             if prefix_year not in prefix:
                 prefix = f"{prefix}{prefix_year}{alpha}"
         else:
-
             if prefix_year not in prefix:
                 prefix = f"{prefix}{prefix_year}"
 

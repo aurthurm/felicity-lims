@@ -1,8 +1,18 @@
 from .department import DepartmentType
-from .setup import (CountryType, DistrictCursorPage, DistrictEdge,
-                    DistrictType, LaboratorySettingType, LaboratoryType,
-                    ManufacturerType, ProvinceCursorPage, ProvinceEdge,
-                    ProvinceType, SupplierType, UnitType)
+from .setup import (
+    CountryType,
+    DistrictCursorPage,
+    DistrictEdge,
+    DistrictType,
+    LaboratorySettingType,
+    LaboratoryType,
+    ManufacturerType,
+    ProvinceCursorPage,
+    ProvinceEdge,
+    ProvinceType,
+    SupplierType,
+    UnitType,
+)
 
 setup_types = [
     LaboratoryType,

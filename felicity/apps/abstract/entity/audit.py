@@ -7,9 +7,10 @@ from sqlalchemy.orm import relationship
 
 class Auditable:
     """Track simple action events by user
-    
-        Note: A table called User is required
+
+    Note: A table called User is required
     """
+
     __abstract__ = True
 
     # Track Creation Audits

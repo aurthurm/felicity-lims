@@ -3,22 +3,28 @@ from typing import List
 import sqlalchemy as sa
 import strawberry  # noqa
 
-from felicity.api.gql.instrument.types import (InstrumentCursorPage,
-                                               InstrumentEdge, InstrumentType,
-                                               InstrumentTypeCursorPage,
-                                               InstrumentTypeEdge,
-                                               InstrumentTypeType,
-                                               LaboratoryInstrumentCursorPage,
-                                               LaboratoryInstrumentEdge,
-                                               LaboratoryInstrumentType,
-                                               MethodCursorPage, MethodEdge,
-                                               MethodType)
+from felicity.api.gql.instrument.types import (
+    InstrumentCursorPage,
+    InstrumentEdge,
+    InstrumentType,
+    InstrumentTypeCursorPage,
+    InstrumentTypeEdge,
+    InstrumentTypeType,
+    LaboratoryInstrumentCursorPage,
+    LaboratoryInstrumentEdge,
+    LaboratoryInstrumentType,
+    MethodCursorPage,
+    MethodEdge,
+    MethodType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.instrument.services import (InstrumentService,
-                                               InstrumentTypeService,
-                                               LaboratoryInstrumentService,
-                                               MethodService)
+from felicity.apps.instrument.services import (
+    InstrumentService,
+    InstrumentTypeService,
+    LaboratoryInstrumentService,
+    MethodService,
+)
 from felicity.utils import has_value_or_is_truthy
 
 

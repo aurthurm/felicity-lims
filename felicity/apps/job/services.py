@@ -58,7 +58,6 @@ class JobWorkerService:
         self.job_service = JobService()
 
     async def run_jobs_if_exists(self):
-
         jobs = await self.job_service.fetch_sorted()
 
         # logging.info(f"There are {len(jobs)} Jobs pending running.")

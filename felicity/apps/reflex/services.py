@@ -9,40 +9,57 @@ from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.analysis import Analysis, Sample
 from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analysis.enum import ResultState
-from felicity.apps.analysis.schemas import (AnalysisResultCreate,
-                                            AnalysisResultUpdate)
+from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.reflex.entities import ReflexRule, ReflexBrainAddition, ReflexBrainFinal, \
-    ReflexBrain, ReflexAction, ReflexBrainCondition, ReflexBrainConditionCriteria, ReflexBrainAction
-from felicity.apps.reflex.repository import (ReflexActionRepository,
-                                             ReflexBrainAdditionRepository,
-                                             ReflexBrainFinalRepository,
-                                             ReflexBrainRepository,
-                                             ReflexRuleRepository, ReflexBrainConditionRepository,
-                                             ReflexBrainActionRepository, ReflexBrainConditionCriteriaRepository)
-from felicity.apps.reflex.schemas import (ReflexActionCreate,
-                                          ReflexActionUpdate,
-                                          ReflexBrainAdditionCreate,
-                                          ReflexBrainAdditionUpdate,
-                                          ReflexBrainCreate,
-                                          ReflexBrainFinalCreate,
-                                          ReflexBrainFinalUpdate,
-                                          ReflexBrainUpdate,
-                                          ReflexRuleCreate,
-                                          ReflexRuleUpdate, ReflexBrainConditionCreate, ReflexBrainConditionUpdate,
-                                          ReflexBrainConditionCriteriaCreate, ReflexBrainConditionCriteriaUpdate,
-                                          ReflexBrainActionCreate, ReflexBrainActionUpdate)
+from felicity.apps.reflex.entities import (
+    ReflexRule,
+    ReflexBrainAddition,
+    ReflexBrainFinal,
+    ReflexBrain,
+    ReflexAction,
+    ReflexBrainCondition,
+    ReflexBrainConditionCriteria,
+    ReflexBrainAction,
+)
+from felicity.apps.reflex.repository import (
+    ReflexActionRepository,
+    ReflexBrainAdditionRepository,
+    ReflexBrainFinalRepository,
+    ReflexBrainRepository,
+    ReflexRuleRepository,
+    ReflexBrainConditionRepository,
+    ReflexBrainActionRepository,
+    ReflexBrainConditionCriteriaRepository,
+)
+from felicity.apps.reflex.schemas import (
+    ReflexActionCreate,
+    ReflexActionUpdate,
+    ReflexBrainAdditionCreate,
+    ReflexBrainAdditionUpdate,
+    ReflexBrainCreate,
+    ReflexBrainFinalCreate,
+    ReflexBrainFinalUpdate,
+    ReflexBrainUpdate,
+    ReflexRuleCreate,
+    ReflexRuleUpdate,
+    ReflexBrainConditionCreate,
+    ReflexBrainConditionUpdate,
+    ReflexBrainConditionCriteriaCreate,
+    ReflexBrainConditionCriteriaUpdate,
+    ReflexBrainActionCreate,
+    ReflexBrainActionUpdate,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 OPERAND_FUNCTIONS = {
-    'eq': eq,
-    'gt': gt,
-    'lt': lt,
-    'gte': ge,
-    'lte': le,
-    'neq': ne,
+    "eq": eq,
+    "gt": gt,
+    "lt": lt,
+    "gte": ge,
+    "lte": le,
+    "neq": ne,
 }
 
 # Cache for storing reflex actions
@@ -96,7 +113,11 @@ class ReflexBrainConditionService(
 
 
 class ReflexBrainConditionCriteriaService(
-    BaseService[ReflexBrainConditionCriteria, ReflexBrainConditionCriteriaCreate, ReflexBrainConditionCriteriaUpdate]
+    BaseService[
+        ReflexBrainConditionCriteria,
+        ReflexBrainConditionCriteriaCreate,
+        ReflexBrainConditionCriteriaUpdate,
+    ]
 ):
     def __init__(self):
         super().__init__(ReflexBrainConditionCriteriaRepository)
@@ -119,7 +140,7 @@ class ReflexActionService(
 class ReflexEngineService:
     """
     Service class for handling reflex testing logic in a clinical laboratory setting.
-    
+
     This class manages the process of applying reflex rules to analysis results,
     determining when additional tests are needed, and executing those tests.
     """
@@ -133,7 +154,9 @@ class ReflexEngineService:
         self.reflex_action_service = ReflexActionService()
         self._results_pool: Optional[List[AnalysisResult]] = None
         self._reflex_action: Optional[ReflexAction] = None
-        logger.info(f"ReflexEngineService initialized for analysis result: {analysis_result.uid}")
+        logger.info(
+            f"ReflexEngineService initialized for analysis result: {analysis_result.uid}"
+        )
 
     async def set_reflex_actions(self, analysis_results: List[AnalysisResult]) -> None:
         """
@@ -150,7 +173,9 @@ class ReflexEngineService:
                 logger.info(f"Reflex actions set for {result}")
 
     @cached(cache=reflex_action_cache)
-    async def get_reflex_action(self, analysis_uid: str, level: int) -> Optional[ReflexAction]:
+    async def get_reflex_action(
+        self, analysis_uid: str, level: int
+    ) -> Optional[ReflexAction]:
         """
         Get reflex action with caching to improve performance.
 
@@ -169,13 +194,18 @@ class ReflexEngineService:
         Execute the reflex testing process for the current analysis result.
         """
         if not isinstance(self.analysis_result.reflex_level, int):
-            logger.info(f"No reflex level set for analysis result: {self.analysis_result.uid}. Skipping reflex.")
+            logger.info(
+                f"No reflex level set for analysis result: {self.analysis_result.uid}. Skipping reflex."
+            )
             return
 
         logger.info(
-            f"Starting reflex for level: {self.analysis_result.reflex_level} on SampleId {self.sample.sample_id}")
+            f"Starting reflex for level: {self.analysis_result.reflex_level} on SampleId {self.sample.sample_id}"
+        )
 
-        action = await self.get_reflex_action(self.analysis.uid, self.analysis_result.reflex_level)
+        action = await self.get_reflex_action(
+            self.analysis.uid, self.analysis_result.reflex_level
+        )
         if not action:
             logger.info(f"No reflex action found for analysis: {self.analysis.name}")
             return
@@ -186,7 +216,9 @@ class ReflexEngineService:
 
         logger.info(f"Processing {len(self._reflex_action.brains)} Reflex Brains")
         for index, brain in enumerate(self._reflex_action.brains, 1):
-            logger.info(f"Processing Reflex Brain {index}/{len(self._reflex_action.brains)}")
+            logger.info(
+                f"Processing Reflex Brain {index}/{len(self._reflex_action.brains)}"
+            )
             await self.decide(brain)
 
     @staticmethod
@@ -197,7 +229,9 @@ class ReflexEngineService:
         :param results_pool: List of analysis results to check
         :return: True if all results are approved, False otherwise
         """
-        return bool(results_pool) and all(r.status == ResultState.APPROVED for r in results_pool)
+        return bool(results_pool) and all(
+            r.status == ResultState.APPROVED for r in results_pool
+        )
 
     async def decide(self, brain: ReflexBrain) -> None:
         """
@@ -218,21 +252,28 @@ class ReflexEngineService:
 
         results_pool = await self.get_results_pool(brain.conditions)
         if not self.can_decide(results_pool):
-            logger.info(f"Decision cannot be made. Aborting reflex: {[r.status for r in results_pool]}")
+            logger.info(
+                f"Decision cannot be made. Aborting reflex: {[r.status for r in results_pool]}"
+            )
             return
 
         # 1. Evaluate conditions
-        can_action = await self.evaluate(conditions=brain.conditions, results_pool=results_pool)
+        can_action = await self.evaluate(
+            conditions=brain.conditions, results_pool=results_pool
+        )
         if not can_action:
-            logger.info("Evaluations do not meet the criteria for brain: Cannot execute actions")
+            logger.info(
+                "Evaluations do not meet the criteria for brain: Cannot execute actions"
+            )
             return
 
         # 2. If brain criteria expectations are met then take action
         logger.info("Brain criteria met. Executing matching actions.")
         await self.apply_actions(brain.actions, results_pool)
 
-    async def evaluate(self, conditions: list[ReflexBrainCondition],
-                       results_pool: List[AnalysisResult]) -> bool:
+    async def evaluate(
+        self, conditions: list[ReflexBrainCondition], results_pool: List[AnalysisResult]
+    ) -> bool:
         """
         Evaluate conditions for decision-making.
 
@@ -244,15 +285,15 @@ class ReflexEngineService:
         evaluations = []
         # 1st evaluate AND: All criteria within a condition
         for condition in conditions:
-            evaluations.append(
-                await self._eval_condition(condition, results_pool)
-            )
+            evaluations.append(await self._eval_condition(condition, results_pool))
 
         # 2nd evaluate OR: at least one condition must be met :: any()
         return any(evaluations)
 
     @staticmethod
-    async def _eval_condition(condition: ReflexBrainCondition, results_pool: List[AnalysisResult]) -> bool:
+    async def _eval_condition(
+        condition: ReflexBrainCondition, results_pool: List[AnalysisResult]
+    ) -> bool:
         """
         Evaluate a single condition against the results pool.
 
@@ -265,7 +306,11 @@ class ReflexEngineService:
 
         # limit results to those relevant to conditions under evaluation
         _condition_analyses = [criteria.analysis_uid for criteria in condition.criteria]
-        relevant_pool = [result for result in results_pool if result.analysis_uid in _condition_analyses]
+        relevant_pool = [
+            result
+            for result in results_pool
+            if result.analysis_uid in _condition_analyses
+        ]
 
         if not relevant_pool:
             logger.info("No relevant results pool was found for this condition.")
@@ -276,10 +321,14 @@ class ReflexEngineService:
         for criteria in condition.criteria:
             # find all matching analyses results
             matches = [
-                result for result in relevant_pool if result.analysis_uid == criteria.analysis_uid
+                result
+                for result in relevant_pool
+                if result.analysis_uid == criteria.analysis_uid
             ]
             if not matches:
-                logger.info(f"Criteria analyses not found in relevant result pool: {criteria.analysis_uid}")
+                logger.info(
+                    f"Criteria analyses not found in relevant result pool: {criteria.analysis_uid}"
+                )
                 return False
 
             # Get the comparison function based on the operator
@@ -301,7 +350,8 @@ class ReflexEngineService:
                 # any(all_numbers): Checks if at least one of the values is a number.
                 if not all(all_numbers) and any(all_numbers):
                     logger.warning(
-                        f"Cannot compare number and string: {match_value} {criteria.operator}, {criteria_value}")
+                        f"Cannot compare number and string: {match_value} {criteria.operator}, {criteria_value}"
+                    )
                     continue
                     # return False
 
@@ -313,7 +363,9 @@ class ReflexEngineService:
                 else:
                     # Compare as strings: check that the operator is =
                     if not (criteria.operator == "="):
-                        logger.error(f"Incorrect operator for string matching: {criteria.operator}")
+                        logger.error(
+                            f"Incorrect operator for string matching: {criteria.operator}"
+                        )
                         continue
 
                 try:
@@ -331,7 +383,9 @@ class ReflexEngineService:
                 return False
 
             if successful_hits > 1:
-                logger.warning(f"More than one successful match for criteria: {criteria.analysis_uid}")
+                logger.warning(
+                    f"More than one successful match for criteria: {criteria.analysis_uid}"
+                )
 
         if not evaluations:
             logger.info("No evaluations matches were found during evaluation")
@@ -340,7 +394,9 @@ class ReflexEngineService:
         # AND: all criteria must be met
         return all(evaluations)
 
-    async def apply_actions(self, actions: list[ReflexBrainAction], results_pool: List[AnalysisResult]) -> None:
+    async def apply_actions(
+        self, actions: list[ReflexBrainAction], results_pool: List[AnalysisResult]
+    ) -> None:
         """
         Execute actions for a matching reflex brain.
 
@@ -352,14 +408,18 @@ class ReflexEngineService:
         for action in actions:
             # Add new Analyses
             for addition in action.add_new:
-                logger.info(f"Adding {addition.count} instance(s) of analysis: {addition.analysis_uid}")
+                logger.info(
+                    f"Adding {addition.count} instance(s) of analysis: {addition.analysis_uid}"
+                )
                 for _ in range(addition.count):
                     await self.create_analyte_for(addition.analysis_uid)
 
             # Finalise Analyses
             logger.info(f"Finalizing {len(action.finalise)} analyses")
             for final in action.finalise:
-                logger.info(f"Finalizing analysis {final.analysis.uid} with value: {final.value}")
+                logger.info(
+                    f"Finalizing analysis {final.analysis.uid} with value: {final.value}"
+                )
                 await self.create_final_for(final.analysis.uid, final.value)
 
         # Clean up: hide reports for results that were used in this decision
@@ -369,7 +429,9 @@ class ReflexEngineService:
                 logger.info(f"Hiding report for result: {r.uid}")
                 await self.analysis_result_service.hide_report(r.uid)
 
-    async def get_results_pool(self, conditions: list[ReflexBrainCondition]) -> List[AnalysisResult]:
+    async def get_results_pool(
+        self, conditions: list[ReflexBrainCondition]
+    ) -> List[AnalysisResult]:
         """
         Get a pool of relevant analysis results for the given conditions.
 
@@ -386,16 +448,19 @@ class ReflexEngineService:
 
         if self._results_pool is None:
             # Fetch all results for the sample if not already cached
-            results: List[AnalysisResult] = await self.analysis_result_service.get_related(
-                sample_uid=self.sample.uid, many=True, related=['analysis']
+            results: List[
+                AnalysisResult
+            ] = await self.analysis_result_service.get_related(
+                sample_uid=self.sample.uid, many=True, related=["analysis"]
             )
             # Filter results based on criteria -- limits to relevant analysis results
             self._results_pool = [
-                result for result in results
-                if result.analysis_uid in criteria_anals
+                result for result in results if result.analysis_uid in criteria_anals
             ]
 
-        logger.info(f"Entire (relevant) results pool: {[(r.analysis.name, r.result) for r in self._results_pool]}")
+        logger.info(
+            f"Entire (relevant) results pool: {[(r.analysis.name, r.result) for r in self._results_pool]}"
+        )
         # Sort results by creation date (newest first) and return the required number
         self._results_pool.sort(key=lambda x: x.created_at, reverse=True)
         return self._results_pool[:total_criteria]

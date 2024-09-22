@@ -1,7 +1,14 @@
 import logging
 
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
-                        LargeBinary, String)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    LargeBinary,
+    String,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 

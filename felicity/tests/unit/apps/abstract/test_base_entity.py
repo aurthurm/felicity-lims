@@ -3,23 +3,31 @@ from datetime import datetime
 import pytest_asyncio
 from sqlalchemy import Column, String
 from felicity.database.session import (
-    async_engine, async_session as async_session_factory
+    async_engine,
+    async_session as async_session_factory,
 )
 from felicity.core.dtz import format_datetime
 from felicity.apps.abstract.entity import BaseEntity
 
 
 class TestEntity(BaseEntity):
-    __tablename__ = 'test_entity'
+    __tablename__ = "test_entity"
     name = Column(String)
-    created_at = Column(String, default=lambda: format_datetime(datetime.utcnow(), human_format=False, with_time=True))
+    created_at = Column(
+        String,
+        default=lambda: format_datetime(
+            datetime.utcnow(), human_format=False, with_time=True
+        ),
+    )
 
 
 @pytest_asyncio.fixture(scope="function")
 async def async_session():
     async with async_engine.begin() as conn:
         await conn.run_sync(BaseEntity.metadata.drop_all, tables=[TestEntity.__table__])
-        await conn.run_sync(BaseEntity.metadata.create_all, tables=[TestEntity.__table__])
+        await conn.run_sync(
+            BaseEntity.metadata.create_all, tables=[TestEntity.__table__]
+        )
 
     async with async_session_factory() as session:
         yield session

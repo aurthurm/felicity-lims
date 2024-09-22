@@ -1,36 +1,50 @@
 from felicity.apps.abstract import BaseService
-from felicity.apps.billing.entities import (AnalysisDiscount, AnalysisPrice,
-                                            ProfileDiscount, ProfilePrice,
-                                            TestBill, TestBillInvoice,
-                                            TestBillTransaction, Voucher,
-                                            VoucherCode, VoucherCustomer)
-from felicity.apps.billing.repositories import (AnalysisDiscountRepository,
-                                                AnalysisPriceRepository,
-                                                ProfileDiscountRepository,
-                                                ProfilePriceRepository,
-                                                TestBillInvoiceRepository,
-                                                TestBillRepository,
-                                                TestBillTransactionRepository,
-                                                VoucherCodeRepository,
-                                                VoucherCustomerRepository,
-                                                VoucherRepository)
-from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
-                                           AnalysisDiscountUpdate,
-                                           AnalysisPriceCreate,
-                                           AnalysisPriceUpdate,
-                                           ProfileDiscountCreate,
-                                           ProfileDiscountUpdate,
-                                           ProfilePriceCreate,
-                                           ProfilePriceUpdate, TestBillCreate,
-                                           TestBillInvoiceCreate,
-                                           TestBillInvoiceUpdate,
-                                           TestBillTransactionCreate,
-                                           TestBillTransactionUpdate,
-                                           TestBillUpdate, VoucherCodeCreate,
-                                           VoucherCodeUpdate, VoucherCreate,
-                                           VoucherCustomerCreate,
-                                           VoucherCustomerUpdate,
-                                           VoucherUpdate)
+from felicity.apps.billing.entities import (
+    AnalysisDiscount,
+    AnalysisPrice,
+    ProfileDiscount,
+    ProfilePrice,
+    TestBill,
+    TestBillInvoice,
+    TestBillTransaction,
+    Voucher,
+    VoucherCode,
+    VoucherCustomer,
+)
+from felicity.apps.billing.repositories import (
+    AnalysisDiscountRepository,
+    AnalysisPriceRepository,
+    ProfileDiscountRepository,
+    ProfilePriceRepository,
+    TestBillInvoiceRepository,
+    TestBillRepository,
+    TestBillTransactionRepository,
+    VoucherCodeRepository,
+    VoucherCustomerRepository,
+    VoucherRepository,
+)
+from felicity.apps.billing.schemas import (
+    AnalysisDiscountCreate,
+    AnalysisDiscountUpdate,
+    AnalysisPriceCreate,
+    AnalysisPriceUpdate,
+    ProfileDiscountCreate,
+    ProfileDiscountUpdate,
+    ProfilePriceCreate,
+    ProfilePriceUpdate,
+    TestBillCreate,
+    TestBillInvoiceCreate,
+    TestBillInvoiceUpdate,
+    TestBillTransactionCreate,
+    TestBillTransactionUpdate,
+    TestBillUpdate,
+    VoucherCodeCreate,
+    VoucherCodeUpdate,
+    VoucherCreate,
+    VoucherCustomerCreate,
+    VoucherCustomerUpdate,
+    VoucherUpdate,
+)
 from felicity.apps.idsequencer.service import IdSequenceService
 
 
@@ -86,7 +100,9 @@ class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
         self.id_sequence_servce = IdSequenceService()
         super().__init__(TestBillRepository)
 
-    async def create(self, obj_in: dict | TestBillCreate, related: list[str] = None) -> "TestBill":
+    async def create(
+        self, obj_in: dict | TestBillCreate, related: list[str] = None
+    ) -> "TestBill":
         data = self._import(obj_in)
         data["bill_id"] = (
             await self.id_sequence_servce.get_next_number(prefix="X", generic=True)

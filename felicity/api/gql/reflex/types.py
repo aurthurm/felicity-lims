@@ -2,8 +2,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types.analysis import (AnalysisType,
-                                                      SampleTypeTyp)
+from felicity.api.gql.analysis.types.analysis import AnalysisType, SampleTypeTyp
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 

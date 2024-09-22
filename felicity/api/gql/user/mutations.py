@@ -5,19 +5,28 @@ import strawberry  # noqa
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import (MessageResponse, MessagesType,
-                                    OperationError)
+from felicity.api.gql.types import MessageResponse, MessagesType, OperationError
 from felicity.api.gql.types.generic import StrawberryMapper
-from felicity.api.gql.user.types import (AuthenticatedData, GroupType,
-                                         UpdatedGroupPerms, UserType)
+from felicity.api.gql.user.types import (
+    AuthenticatedData,
+    GroupType,
+    UpdatedGroupPerms,
+    UserType,
+)
 from felicity.apps.user import schemas as user_schemas
-from felicity.apps.user.services import (GroupService, PermissionService,
-                                         UserPreferenceService, UserService)
+from felicity.apps.user.services import (
+    GroupService,
+    PermissionService,
+    UserPreferenceService,
+    UserService,
+)
 from felicity.core import security
 from felicity.core.config import get_settings
 from felicity.core.events import post_event
-from felicity.core.security import (generate_password_reset_token,
-                                    verify_password_reset_token)
+from felicity.core.security import (
+    generate_password_reset_token,
+    verify_password_reset_token,
+)
 
 settings = get_settings()
 
@@ -25,7 +34,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 UserResponse = strawberry.union(
-    "UserResponse", (UserType, OperationError), description=""  # noqa
+    "UserResponse",
+    (UserType, OperationError),
+    description="",  # noqa
 )
 
 AuthenticatedDataResponse = strawberry.union(
@@ -41,7 +52,9 @@ UpdatedGroupPermsResponse = strawberry.union(
 )
 
 GroupResponse = strawberry.union(
-    "GroupResponse", (GroupType, OperationError), description=""  # noqa
+    "GroupResponse",
+    (GroupType, OperationError),
+    description="",  # noqa
 )
 
 

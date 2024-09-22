@@ -8,11 +8,16 @@ from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.worksheet.enum import WorkSheetState
-from felicity.apps.worksheet.repository import WorkSheetRepository, WorkSheetTemplateRepository
-from felicity.apps.worksheet.schemas import (WorkSheetCreate,
-                                             WorkSheetUpdate,
-                                             WSTemplateCreate,
-                                             WSTemplateUpdate)
+from felicity.apps.worksheet.repository import (
+    WorkSheetRepository,
+    WorkSheetTemplateRepository,
+)
+from felicity.apps.worksheet.schemas import (
+    WorkSheetCreate,
+    WorkSheetUpdate,
+    WSTemplateCreate,
+    WSTemplateUpdate,
+)
 from felicity.apps.worksheet.entities import WorkSheet, WorkSheetTemplate
 
 logging.basicConfig(level=logging.INFO)
@@ -97,7 +102,9 @@ class WorkSheetService(BaseService[WorkSheet, WorkSheetCreate, WorkSheetUpdate])
         )
         return worksheet
 
-    async def create(self, obj_in: dict | WorkSheetCreate, related: list[str] = None) -> WorkSheet:
+    async def create(
+        self, obj_in: dict | WorkSheetCreate, related: list[str] = None
+    ) -> WorkSheet:
         data = self._import(obj_in)
         data["worksheet_id"] = (await self.id_sequence_service.get_next_number("WS"))[1]
         return await super().create(data, related)

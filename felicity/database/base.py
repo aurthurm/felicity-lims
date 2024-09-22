@@ -32,6 +32,7 @@ from felicity.apps.client.entities import Client  # noqa
 from felicity.apps.client.entities import ClientContact  # noqa
 from felicity.apps.idsequencer.entities import IdSequence  # noqa
 from felicity.apps.impress.entities import ReportImpress  # noqa
+
 # from felicity.apps.setup.entities import MethodValidation  # noqa
 # from felicity.apps.setup.entities import InstrumentCompetence  # noqa
 from felicity.apps.instrument.entities import CalibrationCertificate  # noqa

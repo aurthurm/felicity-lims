@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class StreamSubscription:
     @strawberry.subscription()  # permission_classes=[IsAuthenticated]
     async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
-        async with broadcast.subscribe(channel=NotificationChannel.ACTIVITIES) as subscriber:
+        async with broadcast.subscribe(
+            channel=NotificationChannel.ACTIVITIES
+        ) as subscriber:
             logger.info("Subscribed to activities")
             try:
                 async for event in subscriber:
@@ -34,7 +36,9 @@ class StreamSubscription:
 
     @strawberry.subscription()  # permission_classes=[IsAuthenticated]
     async def stream_processes(self) -> AsyncGenerator[ActivityProcessType, None]:  # noqa
-        async with broadcast.subscribe(channel=NotificationChannel.PROCESSING) as subscriber:
+        async with broadcast.subscribe(
+            channel=NotificationChannel.PROCESSING
+        ) as subscriber:
             logger.info("Subscribed to processes")
             try:
                 async for event in subscriber:

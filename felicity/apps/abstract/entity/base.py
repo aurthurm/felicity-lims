@@ -17,14 +17,12 @@ def new_query(cls):
 
 
 # Remove session-related methods
-delattr(SessionMixin, 'set_session')
-delattr(SessionMixin, 'session')
+delattr(SessionMixin, "set_session")
+delattr(SessionMixin, "session")
 SessionMixin.query = classproperty(new_query)
 
 
-class Base(
-    DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs
-):
+class Base(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):
     __repr__ = ReprMixin.__repr__
     __name__: str
     __mapper_args__ = {"eager_defaults": True}

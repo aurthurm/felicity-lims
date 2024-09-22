@@ -6,14 +6,17 @@ import strawberry  # noqa
 from felicity.api.gql.billing import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar, PageInfo
-from felicity.apps.billing.services import (AnalysisDiscountService,
-                                            AnalysisPriceService,
-                                            ProfileDiscountService,
-                                            ProfilePriceService,
-                                            TestBillInvoiceService,
-                                            TestBillService,
-                                            TestBillTransactionService,
-                                            VoucherCodeService, VoucherService)
+from felicity.apps.billing.services import (
+    AnalysisDiscountService,
+    AnalysisPriceService,
+    ProfileDiscountService,
+    ProfilePriceService,
+    TestBillInvoiceService,
+    TestBillService,
+    TestBillTransactionService,
+    VoucherCodeService,
+    VoucherService,
+)
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.utils import has_value_or_is_truthy
 

@@ -18,13 +18,17 @@ class AuditLog(BaseEntity):
     state_before = Column(
         JSONB,
         doc="Stores a JSON representation of a dict containing the altered "
-            "column names and original values",
+        "column names and original values",
     )
     state_after = Column(
         JSONB,
         doc="Stores a JSON representation of a dict containing the altered "
-            "column names and new values",
+        "column names and new values",
     )
 
     def __repr__(self):
-        return "<AuditLog %r: %r -> %r>" % (self.user_uid, self.target_type, self.action)
+        return "<AuditLog %r: %r -> %r>" % (
+            self.user_uid,
+            self.target_type,
+            self.action,
+        )

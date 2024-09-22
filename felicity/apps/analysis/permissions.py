@@ -39,12 +39,8 @@ async def check_sample_verification(
         else:
             pending.append(sample)
 
-    restricted = list(
-        filter(lambda s: s.submitted_by_uid == verifier.uid, pending)
-    )
-    allowed = list(
-        filter(lambda s: s.submitted_by_uid != verifier.uid, pending)
-    )
+    restricted = list(filter(lambda s: s.submitted_by_uid == verifier.uid, pending))
+    allowed = list(filter(lambda s: s.submitted_by_uid != verifier.uid, pending))
 
     _sample_ids = [r.sample_id for r in restricted] if restricted else []
     if _sample_ids:
@@ -74,9 +70,7 @@ async def check_result_verification(
     restricted = []
 
     laboratory = await LaboratoryService().get_by_setup_name("felicity")
-    settings = await LaboratorySettingService().get(
-        laboratory_uid=laboratory.uid
-    )
+    settings = await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
 
     if isinstance(results[0], str):
         results = await AnalysisResultService().get_all(uid__in=results)

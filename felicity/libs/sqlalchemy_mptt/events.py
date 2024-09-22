@@ -9,6 +9,7 @@
 """
 SQLAlchemy events extension
 """
+
 # standard library
 import weakref
 

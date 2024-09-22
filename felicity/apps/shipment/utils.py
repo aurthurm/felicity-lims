@@ -6,12 +6,17 @@ from datetime import datetime, timedelta
 
 from felicity.apps.analysis.entities.analysis import Sample, sample_analysis
 from felicity.apps.analysis.enum import ResultState, SampleState
-from felicity.apps.analysis.schemas import (AnalysisRequestCreate,
-                                            AnalysisResultCreate, SampleCreate)
-from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
-                                                      AnalysisService,
-                                                      SampleService,
-                                                      SampleTypeService)
+from felicity.apps.analysis.schemas import (
+    AnalysisRequestCreate,
+    AnalysisResultCreate,
+    SampleCreate,
+)
+from felicity.apps.analysis.services.analysis import (
+    AnalysisRequestService,
+    AnalysisService,
+    SampleService,
+    SampleTypeService,
+)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.client.services import ClientService
 from felicity.apps.common.utils.serializer import marshaller
@@ -21,15 +26,13 @@ from felicity.apps.iol.redis import process_tracker
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.iol.relay import post_data
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.patient.schemas import PatientCreate
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.shipment.enum import ShipmentState
-from felicity.apps.shipment.services import (ShipmentService,
-                                             ShippedSampleService)
+from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
 from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
@@ -406,7 +409,9 @@ async def add_sh_receive_task(shipment_uid: str, actor_uid):
         data=None,
     )
     await job_service.create(job_schema)
-    await process_tracker.process(uid=shipment.uid, object_type=TrackableObject.SHIPMENT)
+    await process_tracker.process(
+        uid=shipment.uid, object_type=TrackableObject.SHIPMENT
+    )
     return shipment
 
 

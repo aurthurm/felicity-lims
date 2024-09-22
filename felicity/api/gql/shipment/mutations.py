@@ -11,15 +11,16 @@ from felicity.api.gql.shipment.types import ShipmentType
 from felicity.api.gql.types import OperationError
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.shipment import schemas
 from felicity.apps.shipment.enum import ShipmentState
-from felicity.apps.shipment.services import (ReferralLaboratoryService,
-                                             ShipmentService)
-from felicity.apps.shipment.utils import (action_shipment, shipment_recall,
-                                          shipment_recover)
+from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
+from felicity.apps.shipment.utils import (
+    action_shipment,
+    shipment_recall,
+    shipment_recover,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,11 +77,15 @@ ReferralLaboratoryResponse = strawberry.union(
 )
 
 ShipmentsResponse = strawberry.union(
-    "ShipmentsResponse", (ShipmentListingType, OperationError), description=""  # noqa
+    "ShipmentsResponse",
+    (ShipmentListingType, OperationError),
+    description="",  # noqa
 )
 
 ShipmentResponse = strawberry.union(
-    "ShipmentResponse", (ShipmentType, OperationError), description=""  # noqa
+    "ShipmentResponse",
+    (ShipmentType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -90,7 +95,6 @@ class ShipmentMutations:
     async def create_shipment(
         self, info, payload: ShipmentInputType
     ) -> ShipmentsResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.courier:
@@ -130,7 +134,6 @@ class ShipmentMutations:
     async def update_shipment(
         self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
-
         felicity_user = await auth_from_info(info)
 
         if not uid:
@@ -160,10 +163,7 @@ class ShipmentMutations:
         return ShipmentType(**shipment.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def action_shipment(
-        self, info, uid: str, action: str
-    ) -> ShipmentResponse:  # noqa
-
+    async def action_shipment(self, info, uid: str, action: str) -> ShipmentResponse:  # noqa
         felicity_user = await auth_from_info(info)
 
         if not uid or not action:
@@ -201,7 +201,6 @@ class ShipmentMutations:
     async def shipment_manage_samples(
         self, info, uid: str, payload: ShipmentManageSamplesInput
     ) -> ShipmentResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not len(payload.samples) > 0:
@@ -241,7 +240,6 @@ class ShipmentMutations:
     async def create_referral_laboratory(
         info, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.name or not payload.code:
@@ -271,7 +269,6 @@ class ShipmentMutations:
     async def update_referral_laboratory(
         info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
-
         felicity_user = await auth_from_info(info)
 
         referral_laboratory = await ReferralLaboratoryService().get(uid=uid)

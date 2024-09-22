@@ -1,13 +1,21 @@
 from datetime import datetime
 
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        LargeBinary, String, Table)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    LargeBinary,
+    String,
+    Table,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
-from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
-                                        TransactionKind)
+from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
 
 
 class AnalysisPrice(BaseEntity):

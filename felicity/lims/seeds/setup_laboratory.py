@@ -4,10 +4,14 @@ from uuid import uuid4
 from felicity.apps.client import schemas as client_schemas
 from felicity.apps.client.services import ClientContactService, ClientService
 from felicity.apps.setup import schemas
-from felicity.apps.setup.services import (CountryService, DepartmentService,
-                                          DistrictService, LaboratoryService,
-                                          LaboratorySettingService,
-                                          ProvinceService)
+from felicity.apps.setup.services import (
+    CountryService,
+    DepartmentService,
+    DistrictService,
+    LaboratoryService,
+    LaboratorySettingService,
+    ProvinceService,
+)
 from felicity.core.config import get_settings
 from .data import get_seeds
 
@@ -96,7 +100,7 @@ async def seed_clients() -> None:
                 last_name="in Charge",
                 client_uid=client.uid,
                 email=f"{uuid4().hex}@dummy.inc",
-                user_name=uuid4().hex
+                user_name=uuid4().hex,
             )
             await client_contact_Service.create(cc_in)
 

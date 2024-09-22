@@ -1,8 +1,11 @@
 import logging
 
 import pytest
-from felicity.tests.integration.utils.user import (add_user_mutation,
-                                          make_password, make_username)
+from felicity.tests.integration.utils.user import (
+    add_user_mutation,
+    make_password,
+    make_username,
+)
 
 from felicity.core.config import settings
 
@@ -53,7 +56,7 @@ async def test_user_login(app_gql):
 @pytest.mark.order(14)
 async def test_register_users(app_gql, users, auth_data):
     for user in users:
-        user ={
+        user = {
             **user,
             "userName": make_username(user["firstName"]),
             "password": make_password(user["firstName"]),
@@ -73,4 +76,3 @@ async def test_register_users(app_gql, users, auth_data):
         assert _user["firstName"] == user["firstName"]
         assert _user["lastName"] == user["lastName"]
         assert _user["uid"] is not True
-       

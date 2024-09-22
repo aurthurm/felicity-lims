@@ -6,7 +6,7 @@ from enum import Enum
 
 
 def marshaller(
-        obj, path=None, memoize=None, exclude: list[str] = None, depth=2
+    obj, path=None, memoize=None, exclude: list[str] = None, depth=2
 ) -> dict | str:
     """
     Custom marshaller function to convert objects to dictionaries or strings with proper handling for
@@ -29,7 +29,9 @@ def marshaller(
         if obj is None:
             return ""
         elif isinstance(obj, datetime):
-            return obj.isoformat()  # format_datetime(obj, human_format=False, with_time=True)
+            return (
+                obj.isoformat()
+            )  # format_datetime(obj, human_format=False, with_time=True)
         elif hasattr(obj, "__str__"):
             return obj.__str__()  # Convert other objects to their string representation
         else:
@@ -52,7 +54,8 @@ def marshaller(
         # Process lists and other values
         if isinstance(val, list):
             result[key] = [
-                marshaller(item, path + [key], memoize, exclude, depth - 1) for item in val
+                marshaller(item, path + [key], memoize, exclude, depth - 1)
+                for item in val
             ]
         else:
             result[key] = marshaller(val, path + [key], memoize, exclude, depth - 1)

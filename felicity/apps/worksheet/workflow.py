@@ -43,12 +43,12 @@ class WorkSheetWorkFlow:
             worksheet.uid
         )
         if (
-                len(
-                    list(
-                        filter(lambda ar: ar.status in result_states, results + qc_results)
-                    )
+            len(
+                list(
+                    filter(lambda ar: ar.status in result_states, results + qc_results)
                 )
-                > 0
+            )
+            > 0
         ):
             raise WorksheetWorkFlowException(
                 "Cannot submit a Worksheet with pending results"

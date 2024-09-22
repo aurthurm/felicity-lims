@@ -1,6 +1,5 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.analysis.entities.qc import (QCLevel, QCReference, QCSet,
-                                                QCTemplate)
+from felicity.apps.analysis.entities.qc import QCLevel, QCReference, QCSet, QCTemplate
 
 
 class QCSetRepository(BaseRepository[QCSet]):

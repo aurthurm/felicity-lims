@@ -2,14 +2,17 @@ from datetime import datetime
 from typing import Annotated
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.analysis.entities.results import (AnalysisResult,
-                                                     ResultMutation,
-                                                     result_verification)
+from felicity.apps.analysis.entities.results import (
+    AnalysisResult,
+    ResultMutation,
+    result_verification,
+)
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.results import (
-    AnalysisResultRepository, ResultMutationRepository)
-from felicity.apps.analysis.schemas import (AnalysisResultCreate,
-                                            AnalysisResultUpdate)
+    AnalysisResultRepository,
+    ResultMutationRepository,
+)
+from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
 from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.notification.services import ActivityStreamService
 
@@ -21,7 +24,9 @@ class AnalysisResultService(
         self.streamer_service = ActivityStreamService()
         super().__init__(AnalysisResultRepository)
 
-    async def verifications(self, uid: str) -> tuple[
+    async def verifications(
+        self, uid: str
+    ) -> tuple[
         Annotated[int, "Total number required verifications"],
         Annotated[int, "current number of verifications"],
     ]:
@@ -36,12 +41,14 @@ class AnalysisResultService(
             return None
         return verifications[:-1]
 
-    async def retest_result(self, uid: str, retested_by, next_action="verify") -> (
-            tuple[
-                Annotated[AnalysisResult, "Newly Created AnalysisResult"] | None,
-                Annotated[AnalysisResult, "Retested AnalysisResult"],
-            ]
-            | None
+    async def retest_result(
+        self, uid: str, retested_by, next_action="verify"
+    ) -> (
+        tuple[
+            Annotated[AnalysisResult, "Newly Created AnalysisResult"] | None,
+            Annotated[AnalysisResult, "Retested AnalysisResult"],
+        ]
+        | None
     ):
         analysis_result = await self.get(uid=uid)
         a_result_in = {
@@ -91,7 +98,9 @@ class AnalysisResultService(
         analysis_result.submitted_by_uid = submitter.uid  # noqa
         analysis_result.status = ResultState.RESULTED
         analysis_result.method_uid = data.get("method_uid")
-        analysis_result.laboratory_instrument_uid = data.get("laboratory_instrument_uid")
+        analysis_result.laboratory_instrument_uid = data.get(
+            "laboratory_instrument_uid"
+        )
         analysis_result.date_submitted = datetime.now()
         final = await super().save(analysis_result)
         await self.streamer_service.stream(final, submitter, "submitted", "result")
@@ -119,9 +128,7 @@ class AnalysisResultService(
         analysis_result.date_verified = datetime.now()
         analysis_result.updated_by_uid = retracted_by.uid  # noqa
         final = await super().save(analysis_result)
-        await self.streamer_service.stream(
-            final, retracted_by, "retracted", "result"
-        )
+        await self.streamer_service.stream(final, retracted_by, "retracted", "result")
         await self._verify(uid, verifier_uid=retracted_by.uid)
         return final
 
@@ -132,9 +139,7 @@ class AnalysisResultService(
         analysis_result.date_cancelled = datetime.now()
         analysis_result.updated_by_uid = cancelled_by.uid  # noqa
         final = await super().save(analysis_result)
-        await self.streamer_service.stream(
-            final, cancelled_by, "cancelled", "result"
-        )
+        await self.streamer_service.stream(final, cancelled_by, "cancelled", "result")
         return final
 
     async def re_instate(self, uid: str, re_instated_by) -> AnalysisResult:
@@ -156,11 +161,11 @@ class AnalysisResultService(
         return await super().update(uid, {"reportable": False})
 
     async def filter_for_worksheet(
-            self,
-            analyses_status: str,
-            analysis_uid: str,
-            sample_type_uid: list[str],
-            limit: int,
+        self,
+        analyses_status: str,
+        analysis_uid: str,
+        sample_type_uid: list[str],
+        limit: int,
     ) -> list[AnalysisResult]:
         filters = {
             "status__exact": analyses_status,

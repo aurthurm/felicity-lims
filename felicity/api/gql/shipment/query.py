@@ -5,12 +5,14 @@ import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.shipment.types import (ReferralLaboratoryType,
-                                             ShipmentCursorPage, ShipmentEdge,
-                                             ShipmentType)
+from felicity.api.gql.shipment.types import (
+    ReferralLaboratoryType,
+    ShipmentCursorPage,
+    ShipmentEdge,
+    ShipmentType,
+)
 from felicity.api.gql.types import BytesScalar, PageInfo
-from felicity.apps.shipment.services import (ReferralLaboratoryService,
-                                             ShipmentService)
+from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +33,6 @@ class ShipmentQuery:
         status: str | None = None,
         sort_by: list[str] | None = None,
     ) -> ShipmentCursorPage:
-
         filters = [{"incoming": incoming}]
 
         _or_text_ = {}

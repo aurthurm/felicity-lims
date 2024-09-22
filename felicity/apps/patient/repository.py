@@ -1,6 +1,9 @@
 from felicity.apps.abstract.repository import BaseRepository
-from felicity.apps.patient.entities import (Identification, Patient,
-                                            PatientIdentification)
+from felicity.apps.patient.entities import (
+    Identification,
+    Patient,
+    PatientIdentification,
+)
 
 
 class PatientRepository(BaseRepository[Patient]):

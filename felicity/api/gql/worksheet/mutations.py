@@ -6,25 +6,23 @@ import strawberry  # noqa
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.api.gql.worksheet.types import (WorkSheetTemplateType,
-                                              WorkSheetType)
+from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.apps.analysis.services.analysis import SampleTypeService
-from felicity.apps.analysis.services.quality_control import (QCLevelService,
-                                                             QCTemplateService)
+from felicity.apps.analysis.services.quality_control import (
+    QCLevelService,
+    QCTemplateService,
+)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.idsequencer.service import IdSequenceService
-from felicity.apps.instrument.services import (LaboratoryInstrumentService,
-                                               MethodService)
+from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
-                                    JobState)
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.user.services import UserService
 from felicity.apps.worksheet import schemas
 from felicity.apps.worksheet.entities import worksheet_template_qc_level
 from felicity.apps.worksheet.enum import WorkSheetState
-from felicity.apps.worksheet.services import (WorkSheetService,
-                                              WorkSheetTemplateService)
+from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -67,11 +65,15 @@ class WorksheetListingType:
 
 
 WorkSheetsResponse = strawberry.union(
-    "WorkSheetsResponse", (WorksheetListingType, OperationError), description=""  # noqa
+    "WorkSheetsResponse",
+    (WorksheetListingType, OperationError),
+    description="",  # noqa
 )
 
 WorkSheetResponse = strawberry.union(
-    "WorkSheetResponse", (WorkSheetType, OperationError), description=""  # noqa
+    "WorkSheetResponse",
+    (WorkSheetType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -81,7 +83,6 @@ class WorkSheetMutations:
     async def create_worksheet_template(
         self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not payload.name or not payload.sample_type_uid or not payload.analysis_uid:
@@ -149,7 +150,6 @@ class WorkSheetMutations:
     async def update_worksheet_template(
         self, uid: str, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
-
         if not uid:
             return OperationError(error="Worksheet Template uid is required")
 
@@ -196,7 +196,6 @@ class WorkSheetMutations:
         analyst_uid: str,
         count: int | None = 1,
     ) -> WorkSheetsResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not template_uid or not analyst_uid:
@@ -276,7 +275,6 @@ class WorkSheetMutations:
         action: str | None = None,
         samples: Optional[List[str]] = None,
     ) -> WorkSheetResponse:  # noqa
-
         felicity_user = await auth_from_info(info)
 
         if not worksheet_uid:
@@ -341,7 +339,6 @@ class WorkSheetMutations:
     async def update_worksheet_apply_template(
         self, info, template_uid: str, worksheet_uid: str
     ) -> WorkSheetResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not template_uid or not worksheet_uid:
@@ -403,7 +400,6 @@ class WorkSheetMutations:
         analyses_uids: List[str],
         qc_template_uid: str | None = None,
     ) -> WorkSheetResponse:
-
         felicity_user = await auth_from_info(info)
 
         if not len(analyses_uids) > 0:

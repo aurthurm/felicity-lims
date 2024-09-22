@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from faker import Faker
+
 fake_engine = Faker()
 
 logging.basicConfig(level=logging.INFO)
@@ -76,31 +77,41 @@ async def test_add_analysis_request(
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
-                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
+                "dateCollected": fake_engine.date_time_between(
+                    start_date="-2d", end_date="now"
+                ).strftime("%Y-%m-%d %H:%M:%S"),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
-                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
+                "dateCollected": fake_engine.date_time_between(
+                    start_date="-2d", end_date="now"
+                ).strftime("%Y-%m-%d %H:%M:%S"),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
-                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
+                "dateCollected": fake_engine.date_time_between(
+                    start_date="-2d", end_date="now"
+                ).strftime("%Y-%m-%d %H:%M:%S"),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
-                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
+                "dateCollected": fake_engine.date_time_between(
+                    start_date="-2d", end_date="now"
+                ).strftime("%Y-%m-%d %H:%M:%S"),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
-                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
+                "dateCollected": fake_engine.date_time_between(
+                    start_date="-2d", end_date="now"
+                ).strftime("%Y-%m-%d %H:%M:%S"),
                 "analyses": [],
             },
         ],
