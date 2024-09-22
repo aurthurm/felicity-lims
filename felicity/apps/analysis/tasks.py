@@ -36,7 +36,7 @@ async def submit_results(job_uid: str) -> NoReturn:
         for res in job.data:
             await process_tracker.release(uid=res['uid'], object_type=TrackableObject.RESULT)
         await notification_service.notify(
-            f"Your results were successfully submitted", user
+            "Your results were successfully submitted", user
         )
     except Exception as e:
         await job_service.change_status(job.uid, new_status=JobState.FAILED, change_reason=str(e))

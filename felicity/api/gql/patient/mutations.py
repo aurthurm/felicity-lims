@@ -121,7 +121,7 @@ class PatientMutations:
 
         exists = await PatientService().get(client_patient_id=payload.client_patient_id)
         if exists:
-            return OperationError(error=f"Client Patient Id already in use")
+            return OperationError(error="Client Patient Id already in use")
 
         client = await ClientService().get(uid=payload.client_uid)
         if not client:
@@ -190,7 +190,7 @@ class PatientMutations:
 
         for identification in identifications:
             # deleted
-            if not identification.uid in update_identification_uids:
+            if identification.uid not in update_identification_uids:
                 await PatientIdentificationService().delete(identification.uid)
             else:  # update
                 update_identification = list(
@@ -208,7 +208,7 @@ class PatientMutations:
 
         # new
         for _pid in payload.identifications:
-            if not _pid.identification_uid in identifications_uids:
+            if _pid.identification_uid not in identifications_uids:
                 pid_in = schemas.PatientIdentificationCreate(
                     patient_uid=patient.uid,
                     identification_uid=_pid.identification_uid,

@@ -51,7 +51,7 @@ class WorkSheetWorkFlow:
                 > 0
         ):
             raise WorksheetWorkFlowException(
-                f"Cannot submit a Worksheet with pending results"
+                "Cannot submit a Worksheet with pending results"
             )
         return True
 
@@ -76,6 +76,6 @@ class WorkSheetWorkFlow:
             worksheet.uid
         )
         if not all([ar.status in result_states for ar in results + qc_results]):
-            raise WorksheetWorkFlowException(f"Cannot approve this Worksheet")
+            raise WorksheetWorkFlowException("Cannot approve this Worksheet")
 
         return True

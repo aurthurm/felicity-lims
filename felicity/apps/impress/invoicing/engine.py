@@ -97,7 +97,7 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=bill_created, border=0)
         # ---
         terms_days = int(get_from_nested(laboratory_settings, "payment_terms_days"))
-        days = f"Immediate"
+        days = "Immediate"
         due_date = bill_created
         if terms_days > 0:
             days = f"{terms_days} days"

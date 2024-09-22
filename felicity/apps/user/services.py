@@ -1,4 +1,3 @@
-import sqlalchemy as sa
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email

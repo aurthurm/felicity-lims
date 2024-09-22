@@ -34,20 +34,20 @@ async def _get_user(token: str):
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         token_data = core_schemas.TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError) as e:
+    except (jwt.JWTError, ValidationError):
         return None
 
     return await user_service.get(uid=token_data.sub)
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)]
+        token: Annotated[str, Depends(oauth2_scheme)]
 ) -> User | None:
     return await _get_user(token)
 
 
 async def get_current_active_user(
-    token: Annotated[str, Depends(oauth2_scheme)]
+        token: Annotated[str, Depends(oauth2_scheme)]
 ) -> User | None:
     current_user = await _get_user(token)
     if not current_user or not current_user.is_active:

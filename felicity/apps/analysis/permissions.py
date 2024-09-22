@@ -2,7 +2,6 @@ import logging
 from typing import TYPE_CHECKING, List, Union
 
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
 
 from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
 from felicity.apps.analysis.services.analysis import SampleService

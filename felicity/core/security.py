@@ -50,7 +50,7 @@ def create_access_token_from_refresh(refresh: str) -> str | None:
         payload = jwt.decode(
             refresh, settings.REFRESH_SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-    except jwt.JWTError as e:
+    except jwt.JWTError:
         return None
 
     return create_access_token(payload["sub"])

@@ -257,7 +257,7 @@ class InstrumentMutations:
 
         instrument = await InstrumentService().get(keyword=payload.instrument_uid)
         if not instrument:
-            return OperationError(error=f"Provided instrument does not exist")
+            return OperationError(error="Provided instrument does not exist")
 
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
@@ -322,7 +322,7 @@ class InstrumentMutations:
         taken = await LaboratoryInstrumentService().get(lab_name=payload.lab_name)
         if taken and taken.uid != uid:
             return OperationError(
-                error=f"Provided lab_name already assigned to another instrument"
+                error="Provided lab_name already assigned to another instrument"
             )
 
         instrument = await LaboratoryInstrumentService().get(uid=uid)

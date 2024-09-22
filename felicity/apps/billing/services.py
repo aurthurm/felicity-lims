@@ -31,7 +31,6 @@ from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
                                            VoucherCustomerCreate,
                                            VoucherCustomerUpdate,
                                            VoucherUpdate)
-from felicity.apps.idsequencer.entities import IdSequence
 from felicity.apps.idsequencer.service import IdSequenceService
 
 

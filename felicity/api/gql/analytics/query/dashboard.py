@@ -9,7 +9,6 @@ from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analytics import EntityAnalyticsInit
 from felicity.apps.instrument.services import LaboratoryInstrumentService
-from felicity.apps.user.entities import User
 from felicity.apps.worksheet.entities import WorkSheet
 from felicity.apps.worksheet.enum import WorkSheetState
 from felicity.utils import has_value_or_is_truthy

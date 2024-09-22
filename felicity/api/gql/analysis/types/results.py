@@ -9,7 +9,6 @@ from felicity.api.gql.instrument.types import (LaboratoryInstrumentType,
                                                MethodType)
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.worksheet.entities import WorkSheet
 from felicity.apps.worksheet.services import WorkSheetService
 
 

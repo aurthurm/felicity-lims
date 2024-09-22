@@ -105,7 +105,7 @@ class StorageMutations:
 
         exists = await StoreRoomService().get(name=payload.name)
         if exists:
-            return OperationError(error=f"StoreRoom with this name already exists")
+            return OperationError(error="StoreRoom with this name already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -157,7 +157,7 @@ class StorageMutations:
         exists = await StorageLocationService().get(name=payload.name)
         if exists:
             return OperationError(
-                error=f"StorageLocation with this name already exists"
+                error="StorageLocation with this name already exists"
             )
 
         store_room = await StoreRoomService().get(uid=payload.store_room_uid)
@@ -217,7 +217,7 @@ class StorageMutations:
 
         exists = await StorageSectionService().get(name=payload.name)
         if exists:
-            return OperationError(error=f"StorageSection with this name already exists")
+            return OperationError(error="StorageSection with this name already exists")
 
         storage_location = await StorageLocationService().get(
             uid=payload.storage_location_uid
@@ -279,7 +279,7 @@ class StorageMutations:
         exists = await StorageContainerService().get(name=payload.name)
         if exists:
             return OperationError(
-                error=f"StorageContainer with this name already exists"
+                error="StorageContainer with this name already exists"
             )
 
         incoming: dict = {
@@ -341,7 +341,7 @@ class StorageMutations:
         felicity_user = await auth_from_info(info)
 
         if len(payload) == 0:
-            return OperationError(error=f"No Samples to store are provided!")
+            return OperationError(error="No Samples to store are provided!")
 
         # group by container
         container_uids = set()
@@ -388,7 +388,7 @@ class StorageMutations:
         felicity_user = await auth_from_info(info)
 
         if len(sample_uids) == 0:
-            return OperationError(error=f"No Samples to recover are provided!")
+            return OperationError(error="No Samples to recover are provided!")
 
         samples = await SampleService().get_by_uids(uids=sample_uids)
 

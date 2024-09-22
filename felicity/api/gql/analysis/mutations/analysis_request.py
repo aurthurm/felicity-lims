@@ -126,7 +126,7 @@ async def create_analysis_request(
         _valid = [len(_s.profiles) > 0, len(_s.analyses) > 0]
         if not any(_valid):
             return OperationError(
-                error=f"Samples must have either analysis or profiles or both"
+                error="Samples must have either analysis or profiles or both"
             )
 
     patient = await PatientService().get(uid=payload.patient_uid)
@@ -138,7 +138,7 @@ async def create_analysis_request(
         return OperationError(error=f"Client with uid {payload.client_uid} Not found")
 
     if len(payload.samples) == 0:
-        return OperationError(error=f"Samples are required")
+        return OperationError(error="Samples are required")
 
     # create the ar
     incoming = {
@@ -257,7 +257,7 @@ async def create_analysis_request(
         created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
 
         # initialise reflex action if exist
-        logger.info(f"ReflexUtil .... set_reflex_actions ...")
+        logger.info("ReflexUtil .... set_reflex_actions ...")
         await ReflexEngineService(created[0], felicity_user).set_reflex_actions(created)
 
     # ! paramount !
@@ -278,7 +278,7 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to clone are provided!")
+        return OperationError(error="No Samples to clone are provided!")
 
     clones = []
     to_clone = await SampleService().get_by_uids(uids=samples)
@@ -323,7 +323,7 @@ async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionRespon
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to cancel are provided!")
+        return OperationError(error="No Samples to cancel are provided!")
 
     for _sa_uid in samples:
         sample = await SampleService().get(uid=_sa_uid)
@@ -351,7 +351,7 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to re instate are provided!")
+        return OperationError(error="No Samples to re instate are provided!")
 
     for _sa_uid in samples:
         sample = await SampleService().get(uid=_sa_uid)
@@ -374,7 +374,7 @@ async def receive_samples(info, samples: List[str]) -> ResultedSampleActionRespo
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to receive are provided!")
+        return OperationError(error="No Samples to receive are provided!")
 
     for _sa_uid in samples:
         sample = await SampleService().get(uid=_sa_uid)
@@ -395,7 +395,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to verify are provided!")
+        return OperationError(error="No Samples to verify are provided!")
 
     for _sa_uid in samples:
         sample = await SampleService().get(uid=_sa_uid)
@@ -418,7 +418,7 @@ async def reject_samples(
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to verify are provided!")
+        return OperationError(error="No Samples to verify are provided!")
 
     for _sam in samples:
         sample = await SampleService().get(uid=_sam.uid)
@@ -458,7 +458,7 @@ async def publish_samples(
     felicity_user = await auth_from_info(info)
 
     if len(samples) == 0:
-        return OperationError(error=f"No samples to impress are provided!")
+        return OperationError(error="No samples to impress are provided!")
 
     # set status of these samples to PUBLISHING for those whose action is "publish" !important
     final_publish = list(filter(lambda p: p.action == "publish", samples))
@@ -502,7 +502,7 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to print are provided!")
+        return OperationError(error="No Samples to print are provided!")
 
     for _sa_uid in samples:
         sample = await SampleService().get(uid=_sa_uid)
@@ -523,7 +523,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to invalidate are provided!")
+        return OperationError(error="No Samples to invalidate are provided!")
 
     for _sa_uid in samples:
         sample = await SampleService().get(uid=_sa_uid)

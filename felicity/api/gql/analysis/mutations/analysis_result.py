@@ -61,7 +61,7 @@ async def submit_analysis_results(
     felicity_user = await auth_from_info(info)
 
     if len(analysis_results) == 0:
-        return OperationError(error=f"No Results to update are provided!")
+        return OperationError(error="No Results to update are provided!")
 
     an_results = [result.__dict__ for result in analysis_results]
 
@@ -97,7 +97,7 @@ async def verify_analysis_results(
     felicity_user = await auth_from_info(info)
 
     if len(analyses) == 0:
-        return OperationError(error=f"No analyses to verify are provided!")
+        return OperationError(error="No analyses to verify are provided!")
 
     job_schema = job_schemas.JobCreate(  # noqa
         action=JobAction.RESULT_VERIFY,
@@ -129,7 +129,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
     felicity_user = await auth_from_info(info)
 
     if len(analyses) == 0:
-        return OperationError(error=f"No analyses to retract are provided!")
+        return OperationError(error="No analyses to retract are provided!")
 
     return_results = []
     for _ar_uid in analyses:
@@ -168,7 +168,7 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     felicity_user = await auth_from_info(info)
 
     if len(analyses) == 0:
-        return OperationError(error=f"No analyses to Retest are provided!")
+        return OperationError(error="No analyses to Retest are provided!")
 
     retests, originals = await retest_from_result_uids(analyses, felicity_user)
 
@@ -192,7 +192,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     return_results = []
 
     if len(analyses) == 0:
-        return OperationError(error=f"No analyses to Retest are provided!")
+        return OperationError(error="No analyses to Retest are provided!")
 
     for _ar_uid in analyses:
         a_result = await AnalysisResultService().get(uid=_ar_uid)
@@ -225,7 +225,7 @@ async def re_instate_analysis_results(
     return_results = []
 
     if len(analyses) == 0:
-        return OperationError(error=f"No analyses to Reinstate are provided!")
+        return OperationError(error="No analyses to Reinstate are provided!")
 
     for _ar_uid in analyses:
         a_result = await AnalysisResultService().get(uid=_ar_uid)

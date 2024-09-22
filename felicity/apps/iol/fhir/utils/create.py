@@ -44,7 +44,7 @@ async def create_resource(
 async def create_bundle(
     resource_data: BundleResource, request: Request, current_user: User
 ):
-    logger.info(f"Bundle data:...")
+    logger.info("Bundle data:...")
     if resource_data.extension[0].valueString == "shipment":
         await create_inbound_shipment(resource_data, request, current_user)
 
@@ -57,7 +57,7 @@ async def create_inbound_shipment(
     """Create inbound shipment from bundle"""
     shipment_service = ShipmentService()
 
-    logger.info(f"Incoming Inbound shipment...")
+    logger.info("Incoming Inbound shipment...")
 
     data = payload.model_dump(exclude_none=True)
 

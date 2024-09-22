@@ -41,7 +41,7 @@ class AnalysisResultWorkFlow:
             allow = True
 
         if not allow:
-            raise AnalysisResultWorkFlowException(f"Cannot retest this Result")
+            raise AnalysisResultWorkFlowException("Cannot retest this Result")
         return True
 
     async def assign(self, uid, ws_uid, position, laboratory_instrument_uid):
@@ -59,7 +59,7 @@ class AnalysisResultWorkFlow:
             allow = True
 
         if not allow:
-            raise AnalysisResultWorkFlowException(f"Cannot assign this Result")
+            raise AnalysisResultWorkFlowException("Cannot assign this Result")
         return True
 
     async def un_assign(self, uid):
@@ -77,7 +77,7 @@ class AnalysisResultWorkFlow:
             allow = True
 
         if not allow:
-            raise AnalysisResultWorkFlowException(f"Cannot un-assign this Result")
+            raise AnalysisResultWorkFlowException("Cannot un-assign this Result")
         return True
 
     async def retract(self, uid, retracted_by):
@@ -89,7 +89,7 @@ class AnalysisResultWorkFlow:
     async def _guard_retract(analysis_result: AnalysisResult) -> bool:
         allow = analysis_result.status == ResultState.RESULTED
         if not allow:
-            raise AnalysisResultWorkFlowException(f"Cannot retract this Result")
+            raise AnalysisResultWorkFlowException("Cannot retract this Result")
         return True
 
     async def cancel(self, uid, cancelled_by):
@@ -101,7 +101,7 @@ class AnalysisResultWorkFlow:
     async def _guard_cancel(analysis_result: AnalysisResult) -> bool:
         allow = analysis_result.status == ResultState.PENDING
         if not allow:
-            raise AnalysisResultWorkFlowException(f"Cannot cancel this Result")
+            raise AnalysisResultWorkFlowException("Cannot cancel this Result")
         return True
 
     async def re_instate(self, uid, re_instated_by):
@@ -118,7 +118,7 @@ class AnalysisResultWorkFlow:
 
         allow = analysis_result.status == ResultState.CANCELLED
         if not allow:
-            raise AnalysisResultWorkFlowException(f"Cannot re-instate this Result")
+            raise AnalysisResultWorkFlowException("Cannot re-instate this Result")
         return True
 
     async def submit(self, data: list[dict], submitter) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
@@ -184,7 +184,7 @@ class AnalysisResultWorkFlow:
             # TODO: Needs checking
             if required < current:
                 raise AnalysisResultWorkFlowException(
-                    f"Required approvals have been met"
+                    "Required approvals have been met"
                 )
 
         return True

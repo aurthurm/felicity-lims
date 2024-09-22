@@ -1,11 +1,10 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api.deps import Info
-from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.client.types import (ClientContactType, ClientCursorPage,
                                            ClientEdge, ClientType)
 from felicity.api.gql.permissions import IsAuthenticated

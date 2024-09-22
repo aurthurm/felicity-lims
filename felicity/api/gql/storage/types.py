@@ -3,8 +3,6 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.user.types import UserType
-from felicity.apps.storage.entities import (StorageContainer, StorageLocation,
-                                            StorageSection)
 from felicity.apps.storage.services import (StorageContainerService, StorageLocationService,
     StorageSectionService)
 

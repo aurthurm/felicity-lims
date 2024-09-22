@@ -2,11 +2,8 @@ import logging
 from datetime import datetime
 
 from felicity.apps.analysis.entities import analysis as a_entities
-from felicity.apps.billing.entities import (AnalysisDiscount, AnalysisPrice,
-                                            ProfileDiscount, ProfilePrice,
-                                            TestBill, TestBillTransaction,
-                                            Voucher, VoucherCode,
-                                            VoucherCustomer, test_bill_item)
+from felicity.apps.billing.entities import (TestBill, Voucher, VoucherCode,
+                                            test_bill_item)
 from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
                                         TransactionKind)
 from felicity.apps.billing.exceptions import (
@@ -178,7 +175,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
         )
         await TestBillTransactionService().update(transaction.uid, tra_update_in)
 
-    logger.info(f"invoicing...")
+    logger.info("invoicing...")
     await impress_invoice(bill)
 
 

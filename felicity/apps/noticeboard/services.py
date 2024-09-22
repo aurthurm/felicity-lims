@@ -1,5 +1,4 @@
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.noticeboard.entities import Notice
 from felicity.apps.noticeboard.repository import NoticeRepository
 from felicity.apps.noticeboard.schemas import NoticeCreate, NoticeUpdate

@@ -262,7 +262,7 @@ class UserMutations:
 
         user = await user_service.get(uid=user_uid)
         if password != passwordc:
-            return OperationError(error=f"Passwords do not match")
+            return OperationError(error="Passwords do not match")
 
         auth_in = user_schemas.UserUpdate(password=password)
         await user_service.update(user.uid, auth_in)

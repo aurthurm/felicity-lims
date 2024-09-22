@@ -194,10 +194,10 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
 
         if not all([start_column, start_date, end_column, end_date]):
             logger.warning(
-                f"start and end process parameters are required and must be complete tuples"
+                "start and end process parameters are required and must be complete tuples"
             )
             raise Exception(
-                f"start and end process parameters are required and must be complete tuples"
+                "start and end process parameters are required and must be complete tuples"
             )
 
         if not hasattr(self.model, start_column):
@@ -210,10 +210,10 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
 
         if self.table != "sample":
             logger.warning(
-                f"analysis_process_performance must have sample as root table"
+                "analysis_process_performance must have sample as root table"
             )
             raise Exception(
-                f"analysis_process_performance must have sample as root table"
+                "analysis_process_performance must have sample as root table"
             )
 
         raw_sql = f"""
@@ -266,10 +266,10 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
 
         if not all([start_column, start_date, end_column, end_date]):
             logger.warning(
-                f"start and end process parameters are required and must be complete tuples"
+                "start and end process parameters are required and must be complete tuples"
             )
             raise Exception(
-                f"start and end process parameters are required and must be complete tuples"
+                "start and end process parameters are required and must be complete tuples"
             )
 
         if not hasattr(self.model, start_column):
@@ -282,10 +282,10 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
 
         if self.table != "sample":
             logger.warning(
-                f"analysis_process_performance must have sample as root table"
+                "analysis_process_performance must have sample as root table"
             )
             raise Exception(
-                f"analysis_process_performance must have sample as root table"
+                "analysis_process_performance must have sample as root table"
             )
 
         raw_sql = f"""

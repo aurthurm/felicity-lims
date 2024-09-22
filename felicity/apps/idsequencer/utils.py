@@ -13,7 +13,7 @@ def sequence_alpha(value: str):
     while index > -1:
         alpha = alphas[index]
 
-        if not alpha is alphabet[-1]:
+        if alpha is not alphabet[-1]:
             alphas[index] = alphabet[alphabet.index(alpha) + 1]
 
             reset = index + 1

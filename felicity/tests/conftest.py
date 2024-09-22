@@ -3,7 +3,6 @@ import asyncio
 
 import pytest_asyncio
 from faker import Faker
-from sqlalchemy import text
 
 from felicity.apps.abstract.entity import BaseEntity
 from felicity.database.session import async_engine

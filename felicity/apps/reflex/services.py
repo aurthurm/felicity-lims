@@ -327,14 +327,14 @@ class ReflexEngineService:
             if successful_hits == 0:
                 # All matched results had some issues during comparison
                 # No need to proceed further since a criteria has already failed
-                logger.info(f"No evaluations matches were found during evaluation")
+                logger.info("No evaluations matches were found during evaluation")
                 return False
 
             if successful_hits > 1:
                 logger.warning(f"More than one successful match for criteria: {criteria.analysis_uid}")
 
         if not evaluations:
-            logger.info(f"No evaluations matches were found during evaluation")
+            logger.info("No evaluations matches were found during evaluation")
             return False
 
         # AND: all criteria must be met

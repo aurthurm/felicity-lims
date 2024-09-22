@@ -3,7 +3,7 @@ from typing import NoReturn
 try:
     from typing import Self
 except ImportError:
-    from typing_extensions import Self
+    pass
 
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship

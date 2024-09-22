@@ -44,9 +44,9 @@ def gunicorn(
         "gunicorn",
         f"--bind={host}:{port}",
         f"--workers={workers}",
-        f"--reload" if reload else "",
-        f"--log-level=info",
-        f"--access-logfile=-" if colors else "",
+        "--reload" if reload else "",
+        "--log-level=info",
+        "--access-logfile=-" if colors else "",
         "felicity.main:felicity",
         "--worker-class=uvicorn.workers.UvicornWorker"
     ]

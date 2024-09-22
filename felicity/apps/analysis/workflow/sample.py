@@ -42,7 +42,7 @@ class SampleWorkFlow:
             allow = True
 
         if not allow:
-            raise SampleWorkFlowException(f"Cannot receive this Sample")
+            raise SampleWorkFlowException("Cannot receive this Sample")
         return True
 
     async def cancel(self, uid, cancelled_by):
@@ -54,7 +54,7 @@ class SampleWorkFlow:
     async def _guard_cancel(sample: Sample) -> bool:
         allow = sample.status in [SampleState.RECEIVED, SampleState.EXPECTED]
         if not allow:
-            raise SampleWorkFlowException(f"Cannot cancel this Sample")
+            raise SampleWorkFlowException("Cannot cancel this Sample")
         return True
 
     async def re_instate(self, uid, re_instated_by):
@@ -66,7 +66,7 @@ class SampleWorkFlow:
     async def _guard_re_instate(sample: Sample) -> bool:
         allow = sample.status == SampleState.CANCELLED
         if not allow:
-            raise SampleWorkFlowException(f"Cannot re-instate this Sample")
+            raise SampleWorkFlowException("Cannot re-instate this Sample")
         return True
 
     async def submit(self, uid, submitted_by):
@@ -88,7 +88,7 @@ class SampleWorkFlow:
             allow = True
 
         if not allow:
-            raise SampleWorkFlowException(f"Cannot submit this Sample")
+            raise SampleWorkFlowException("Cannot submit this Sample")
         return True
 
     async def un_submit(self, uid):
@@ -100,7 +100,7 @@ class SampleWorkFlow:
     async def _guard_un_submit(sample: Sample) -> bool:
         allow = sample.status == SampleState.AWAITING
         if not allow:
-            raise SampleWorkFlowException(f"Cannot un-submit this Sample")
+            raise SampleWorkFlowException("Cannot un-submit this Sample")
         return True
 
     async def reject(self, uid, rejected_by):
@@ -112,7 +112,7 @@ class SampleWorkFlow:
     async def _guard_reject(sample: Sample) -> bool:
         allow = sample.status in [SampleState.RECEIVED, SampleState.EXPECTED]
         if not allow:
-            raise SampleWorkFlowException(f"Cannot reject this Sample")
+            raise SampleWorkFlowException("Cannot reject this Sample")
         return True
 
     async def store(self, uid, stored_by):
@@ -127,7 +127,7 @@ class SampleWorkFlow:
             allow = True
 
         if not allow:
-            raise SampleWorkFlowException(f"Cannot store this Sample")
+            raise SampleWorkFlowException("Cannot store this Sample")
         return True
 
     async def recover(self, uid):
@@ -142,7 +142,7 @@ class SampleWorkFlow:
             allow = True
 
         if not allow:
-            raise SampleWorkFlowException(f"Cannot recover this Sample")
+            raise SampleWorkFlowException("Cannot recover this Sample")
         return True
 
     async def print(self, uid, printed_by):
@@ -154,7 +154,7 @@ class SampleWorkFlow:
     async def _guard_print(sample: Sample) -> bool:
         allow = sample.status == SampleState.PUBLISHED
         if not allow:
-            raise SampleWorkFlowException(f"Cannot print this Sample")
+            raise SampleWorkFlowException("Cannot print this Sample")
         return True
 
     async def invalidate(self, uid, invalidated_by):
@@ -166,7 +166,7 @@ class SampleWorkFlow:
     async def _guard_invalidate(sample: Sample):
         allow = sample.status in [SampleState.APPROVED, SampleState.PUBLISHED]
         if not allow:
-            raise SampleWorkFlowException(f"Cannot invalidate this Sample")
+            raise SampleWorkFlowException("Cannot invalidate this Sample")
         return True
 
     async def publish(self, uid, published_by):
@@ -178,7 +178,7 @@ class SampleWorkFlow:
     async def _guard_publish(sample):
         allow = sample.status in [SampleState.APPROVED]
         if not allow:
-            raise SampleWorkFlowException(f"Cannot publish this Sample")
+            raise SampleWorkFlowException("Cannot publish this Sample")
         return True
 
     async def assign(self, uid):
@@ -190,7 +190,7 @@ class SampleWorkFlow:
     async def _guard_assign(sample):
         allow = sample.status in [SampleState.RECEIVED, SampleState.PAIRED]
         if not allow:
-            raise SampleWorkFlowException(f"Cannot assign this Sample")
+            raise SampleWorkFlowException("Cannot assign this Sample")
         return True
 
     async def un_assign(self, uid):
@@ -202,7 +202,7 @@ class SampleWorkFlow:
     async def _guard_un_assign(sample):
         allow = sample.status == SampleState.RECEIVED
         if not allow:
-            raise SampleWorkFlowException(f"Cannot publish this Sample")
+            raise SampleWorkFlowException("Cannot publish this Sample")
         return True
 
     async def approve(self, uid: str, approved_by):
@@ -238,6 +238,6 @@ class SampleWorkFlow:
             allow = False
 
         if not allow:
-            raise SampleWorkFlowException(f"Cannot approve this Sample")
+            raise SampleWorkFlowException("Cannot approve this Sample")
 
         return True

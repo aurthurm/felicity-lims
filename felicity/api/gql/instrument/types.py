@@ -7,7 +7,6 @@ import strawberry  # noqa
 from felicity.api.gql.setup.types import ManufacturerType, SupplierType
 from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.instrument.entities import Method
 from felicity.apps.instrument.services import MethodService
 
 

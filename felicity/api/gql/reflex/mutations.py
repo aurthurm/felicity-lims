@@ -109,7 +109,7 @@ class ReflexRuleMutations:
 
         exists = await ReflexRuleService().get(name=payload.name)
         if exists:
-            return OperationError(error=f"Reflex Rule name must be unique")
+            return OperationError(error="Reflex Rule name must be unique")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,

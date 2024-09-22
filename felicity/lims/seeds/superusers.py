@@ -4,7 +4,6 @@ from felicity.apps.user import schemas
 from felicity.apps.user.services import (GroupService, UserPreferenceService,
                                          UserService)
 from felicity.core.config import get_settings
-from .groups_perms import seed_groups, seed_permissions, seed_group_permissions_defaults
 
 from .groups_perms import FGroup
 
@@ -47,7 +46,7 @@ async def seed_daemon_user() -> None:
         )
         await user_service.link_preference(system_daemon.uid, preference.uid)
 
-    logger.info(f"Done Setting up system daemon")
+    logger.info("Done Setting up system daemon")
 
 
 async def seed_super_user() -> None:
@@ -81,4 +80,4 @@ async def seed_super_user() -> None:
         preference = await preference_service.create(pref_in)
         await user_service.link_preference(super_user.uid, preference.uid)
 
-    logger.info(f"Done Setting up system admin")
+    logger.info("Done Setting up system admin")

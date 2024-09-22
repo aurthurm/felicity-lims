@@ -1,4 +1,4 @@
-from enum import IntEnum, StrEnum, auto
+from enum import StrEnum, auto
 
 
 class Role(StrEnum):

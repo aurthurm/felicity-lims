@@ -295,7 +295,7 @@ async def create_analysis_specification(
 
     if not payload.min and not payload.warn_values:
         return OperationError(
-            error=f"Specification can not be empty",
+            error="Specification can not be empty",
             suggestion="Provide values for either numeric or texual specification based on expected result type",
         )
 

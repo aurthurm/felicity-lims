@@ -7,7 +7,6 @@ from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history
 
 from felicity.apps.auditlog.entities import AuditLog
-from felicity.apps.common.hooks import enum
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

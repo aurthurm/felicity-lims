@@ -171,9 +171,9 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
 
     for a_result in approved:
         # Do Reflex Testing
-        logger.info(f"ReflexUtil .... running")
+        logger.info("ReflexUtil .... running")
         await ReflexEngineService(analysis_result=a_result, user=user).do_reflex()
-        logger.info(f"ReflexUtil .... done")
+        logger.info("ReflexUtil .... done")
 
         # try to verify associated sample
         sample_verified = False

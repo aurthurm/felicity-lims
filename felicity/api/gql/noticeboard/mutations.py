@@ -49,7 +49,7 @@ class NoticeMutations:
         if exists:
             return OperationError(
                 error="Notice title Duplication not Allowed",
-                suggestion=f"Change the notice title",
+                suggestion="Change the notice title",
             )
 
         incoming = {
@@ -88,7 +88,7 @@ class NoticeMutations:
         if not notice:
             raise OperationError(
                 error=f"notice with uid {uid} does not exist",
-                suggestion=f"Refresh page",
+                suggestion="Refresh page",
             )
 
         notice_data = notice.to_dict()
