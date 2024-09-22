@@ -2,5 +2,4 @@
 
 set -x
 
-ruff check ./felicity
-
+mypy ./felicity

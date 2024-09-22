@@ -36,7 +36,7 @@ ResultOptionResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_result_option(
-    info, payload: ResultOptionInputType
+        info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -78,19 +78,19 @@ async def create_result_option(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_result_option(
-    info, uid: str, payload: ResultOptionInputType
+        info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     result_option = await ResultOptionService().get(uid=uid)
     if not result_option:
         return OperationError(error=f"ResultOption with uid {uid} does not exist")
 
     ro_data = result_option.to_dict()
-    for field in ro_data:
-        if field in payload.__dict__:
+    for _field in ro_data:
+        if _field in payload.__dict__:
             try:
-                setattr(result_option, field, payload.__dict__[field])
+                setattr(result_option, _field, payload.__dict__[_field])
             except Exception as e:
                 logger.warning(e)
 

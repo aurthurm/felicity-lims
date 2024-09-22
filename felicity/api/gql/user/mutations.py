@@ -315,7 +315,7 @@ class UserMutations:
     ) -> GroupResponse:
         group_service = GroupService()
 
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         group = await group_service.get(uid=uid)
         if not group:

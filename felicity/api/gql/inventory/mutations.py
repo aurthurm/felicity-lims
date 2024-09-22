@@ -624,7 +624,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def submit_stock_order(self, info, uid: str) -> StockOrderResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         stock_order = await StockOrderService().get(uid=uid)
         if stock_order.status not in [OrderState.PREPARATION]:
@@ -641,7 +641,7 @@ class InventoryMutations:
     async def approve_stock_order(
         self, info, uid: str, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         stock_order = await StockOrderService().get(uid=uid)
         if stock_order.status not in [OrderState.SUBMITTED]:
@@ -747,7 +747,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_stock_order(self, info, uid: str) -> StockOrderResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         stock_order = await StockOrderService().get(uid=uid)
         if stock_order.status != OrderState.PREPARATION:

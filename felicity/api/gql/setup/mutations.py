@@ -202,7 +202,7 @@ class SetupMutations:
     async def update_laboratory_setting(
         self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")

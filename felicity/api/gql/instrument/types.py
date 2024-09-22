@@ -59,8 +59,6 @@ class InstrumentType:
     updated_by: Optional["UserType"] = None
     updated_at: str | None = None
 
-    methods: Optional[List["MethodType"]] = field(default_factory=list)
-
     @strawberry.field
     async def methods(self, info) -> Optional[List["MethodType"]]:
         m = await MethodService().get(instruments___uid=self.uid)

@@ -47,7 +47,7 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
 async def update_rejection_reason(
     info, uid: str, reason: str
 ) -> RejectionReasonResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     rejection_reason = await RejectionReasonService().get(uid=uid)
     if not rejection_reason:

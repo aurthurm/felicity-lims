@@ -95,13 +95,6 @@ class Snowflake:
             yield b_timestamp | b_process | b_instance | b_sequence
 
     @property
-    def timestamp(self):
-        """
-        Get the timestamp of the current snowflake.
-        """
-        return float((int(self) >> 22) + self.initial_epoch) / 1000
-
-    @property
     def to_date(self, format="%d-%m-%Y | %H:%M:%S"):
         """
         Get the date of the current snowflake.
@@ -121,7 +114,6 @@ class Snowflake:
         Converts the current snowflake to hexdecimal of 16 chars wide.
         """
         return "%16x" % int(self)
-
 
 # Usage
 # sf = Snowflake()

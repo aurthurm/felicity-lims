@@ -80,7 +80,7 @@ def register_tracer(app: FastAPI):
         )
         resource = Resource.create({"service.name": settings.PROJECT_NAME})
         trace.set_tracer_provider(TracerProvider(resource=resource))
-        tracer = trace.get_tracer(__name__)
+        # tracer = trace.get_tracer(__name__)
         span_processor = SimpleSpanProcessor(otlp_exporter)
         trace.get_tracer_provider().add_span_processor(span_processor)
         #

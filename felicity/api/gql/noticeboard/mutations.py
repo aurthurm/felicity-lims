@@ -121,7 +121,7 @@ class NoticeMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_notice(self, info, uid: str, viewer: str) -> NoticeType:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         notice = await NoticeService().get(uid=uid)
         if not notice:
@@ -136,7 +136,7 @@ class NoticeMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_notice(self, info, uid: str) -> DeleteResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         notice = await NoticeService().get(uid=uid)
         if not notice:

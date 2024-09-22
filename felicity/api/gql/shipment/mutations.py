@@ -134,7 +134,7 @@ class ShipmentMutations:
     async def update_shipment(
         self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         if not uid:
             return OperationError(
@@ -269,7 +269,7 @@ class ShipmentMutations:
     async def update_referral_laboratory(
         info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         referral_laboratory = await ReferralLaboratoryService().get(uid=uid)
         if not referral_laboratory:

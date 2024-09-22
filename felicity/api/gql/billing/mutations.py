@@ -273,7 +273,7 @@ class BillingMutations:
     async def update_voucher(
         self, info, uid: str, payload: VoucherInput
     ) -> VoucherResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -320,7 +320,7 @@ class BillingMutations:
     async def update_voucher_code(
         self, info, uid: str, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -396,7 +396,7 @@ class BillingMutations:
     async def apply_voucher(
         self, info, payload: ApplyVoucherInput
     ) -> TestBillTransactionResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
         bill = await utils.apply_voucher(
             payload.voucher_code, payload.test_bill_uid, payload.customer_uid
         )

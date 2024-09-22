@@ -13,10 +13,15 @@ from .generic import (
 
 generic_types = [
     BytesScalar,
-    JSONScalar,
-    PageInfo,
     DeletedItem,
+    DeleteResponse,
+    JSONScalar,
+    MessageResponse,
     MessagesType,
     OperationError,
     OperationSuccess,
+    PageInfo,
+    SuccessErrorResponse,
 ]
+
+__all__ = ['generic_types']

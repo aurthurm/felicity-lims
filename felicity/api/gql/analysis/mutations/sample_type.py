@@ -75,7 +75,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
 async def update_sample_type(
     info, uid: str, payload: SampleTypeInputType
 ) -> SampleTypeResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     sample_type = await SampleTypeService().get(uid=uid)
     if not sample_type:
@@ -120,7 +120,7 @@ async def create_sample_type_mapping(
 async def update_sample_type_mapping(
     info, uid: str, payload: SampleTypeMappingInputType
 ) -> SampleTypeMappingResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     sample_type_mapping = await SampleTypeCodingService().get(uid=uid)
     if not sample_type_mapping:

@@ -120,7 +120,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 async def update_analysis(
     info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     analysis = await AnalysisService().get(uid=uid)
     if not analysis:
@@ -191,7 +191,7 @@ async def create_analysis_mapping(
 async def update_analysis_mapping(
     info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     analysis_mapping = await AnalysisCodingService().get(uid=uid)
     if not analysis_mapping:

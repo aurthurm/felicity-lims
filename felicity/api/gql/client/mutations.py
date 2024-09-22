@@ -107,7 +107,7 @@ class ClientMutations:
     async def update_client(
         self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -170,7 +170,7 @@ class ClientMutations:
     async def update_client_contact(
         self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -196,7 +196,7 @@ class ClientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
         client_contact = await ClientContactService().get(uid=uid)
         if not client_contact:
             return OperationError(

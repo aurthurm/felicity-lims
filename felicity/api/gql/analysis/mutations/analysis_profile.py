@@ -127,7 +127,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 async def update_profile(
     info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     profile = await ProfileService().get(uid=uid)
     if not profile:
@@ -221,7 +221,7 @@ async def create_analysis_template(
 async def update_analysis_template(
     info, uid: str, payload: AnalysisTemplateInputType
 ) -> AnalysisTemplateResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     template = await AnalysisTemplateService().get(uid=uid)
     if not template:
@@ -284,7 +284,7 @@ async def create_profile_mapping(
 async def update_profile_mapping(
     info, uid: str, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
-    felicity_user = await auth_from_info(info)
+    await auth_from_info(info)
 
     profile_mapping = await ProfileCodingService().get(uid=uid)
     if not profile_mapping:

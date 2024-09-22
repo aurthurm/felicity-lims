@@ -34,8 +34,6 @@ class ShipmentType:
     courier: str | None = None
     assigned_count: int | None = None
     data: JSONScalar | None = None
-    samples: list[SampleType] | None = None
-    shipped_samples: list["ShippedSampleType"] | None = None
     state: str | None = None
     incoming: bool = False
     laboratory_uid: str | None = None
@@ -63,7 +61,6 @@ class ShipmentType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
-    samples: list["SampleType"] | None = None
 
     @strawberry.field
     async def samples(self, info) -> list["SampleType"] | None:

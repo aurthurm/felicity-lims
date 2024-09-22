@@ -1,15 +1,9 @@
 from typing import NoReturn
 
-try:
-    from typing import Self
-except ImportError:
-    pass
-
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
-
 from . import enum
 
 """

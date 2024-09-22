@@ -90,9 +90,9 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_identification(
-        info, uid: str, name: str
+            info, uid: str, name: str
     ) -> IdentificationResponse:
-        felicity_user = await auth_from_info(info)
+        await auth_from_info(info)
 
         identification = await IdentificationService().get(uid=uid)
         if not identification:
@@ -112,10 +112,10 @@ class PatientMutations:
         felicity_user = await auth_from_info(info)
 
         if (
-            not payload.client_patient_id
-            or not payload.first_name
-            or not payload.last_name
-            or not payload.client_uid
+                not payload.client_patient_id
+                or not payload.first_name
+                or not payload.last_name
+                or not payload.client_uid
         ):
             return OperationError(
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
@@ -154,7 +154,7 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_patient(
-        self, info, uid: str, payload: PatientInputType
+            self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
         felicity_user = await auth_from_info(info)
 
@@ -168,10 +168,10 @@ class PatientMutations:
             )
 
         obj_data = patient.to_dict()
-        for field in obj_data:
-            if field in payload.__dict__:
+        for _field in obj_data:
+            if _field in payload.__dict__:
                 try:
-                    setattr(patient, field, payload.__dict__[field])
+                    setattr(patient, _field, payload.__dict__[_field])
                 except Exception as e:  # noqa
                     pass
 

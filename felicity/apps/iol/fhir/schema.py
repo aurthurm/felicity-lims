@@ -41,7 +41,7 @@ class Period(BaseModel):
 Reference = ForwardRef("Identifier")
 
 
-class Reference(BaseModel):
+class Reference(BaseModel):  # noqa F811
     # C? Literal reference, Relative, internal or absolute URL
     reference: str | None = None
     # Type the reference refers to (e.g. "Patient")
