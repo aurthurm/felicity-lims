@@ -45,26 +45,26 @@ async def test_password_hash_mismatch(trial_data):
 
 @pytest.mark.asyncio
 async def test_access_token(trial_data):
-    token = create_access_token(trial_data["username"], timedelta(5))
+    token = create_access_token(trial_data["username"], timedelta(minutes=5))
     assert type(token) is str
 
 
 @pytest.mark.asyncio
 async def test_access_token_timedelta(trial_data):
     with pytest.raises(TypeError):
-        create_access_token(trial_data["username"], 5)
+        create_access_token(trial_data["username"], timedelta(minutes=5))
 
 
 @pytest.mark.asyncio
 async def test_access_token_verify(trial_data):
-    token = create_access_token(trial_data["username"], timedelta(5))
+    token = create_access_token(trial_data["username"], timedelta(minutes=5))
     sub = verify_password_reset_token(token)
     assert trial_data["username"] == sub
 
 
 @pytest.mark.asyncio
 async def test_access_token_verify_incorrect(trial_data):
-    token = create_access_token(trial_data["username"], timedelta(5))
+    token = create_access_token(trial_data["username"], timedelta(minutes=5))
     sub = verify_password_reset_token(token)
     assert "marryndoe" != sub
 

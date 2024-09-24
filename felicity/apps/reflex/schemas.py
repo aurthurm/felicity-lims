@@ -1,3 +1,4 @@
+from dataclasses import field
 from typing import List, Optional
 
 from pydantic import ConfigDict
@@ -18,7 +19,7 @@ class ReflexRuleBase(BaseAuditModel):
     description: str
     is_active: bool = True
     priority: int = 0
-    sample_types: Optional[List[SampleType]] = []
+    sample_types: Optional[List[SampleType]] = field(default_factory=list)
 
 
 # Additional properties to return via API

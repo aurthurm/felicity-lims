@@ -49,8 +49,8 @@ class CreateQCSetData:
 class QCTemplateInputType:
     name: str
     description: str = ""
-    departments: Optional[List[str]] = None
-    levels: List[str] = None
+    departments: list[str] | None = None
+    levels: list[str] | None = None
 
 
 QCSetResponse = strawberry.union(

@@ -91,9 +91,9 @@ class LaboratorySetting(LaboratorySettingBase):
 
 # Shared properties
 class DepartmentBase(BaseModel):
-    name: str = None
-    description: str = None
-    code: str = None
+    name: str | None = None
+    description: str | None = None
+    code: str | None = None
 
 
 # Properties to receive via API on creation
@@ -107,7 +107,7 @@ class DepartmentUpdate(DepartmentBase):
 
 
 class DepartmentInDBBase(DepartmentBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -128,7 +128,7 @@ class DepartmentInDB(DepartmentInDBBase):
 
 # Shared properties
 class UnitBase(BaseModel):
-    name: str = None
+    name: str | None = None
     description: str | None = None
 
 
@@ -143,7 +143,7 @@ class UnitUpdate(UnitBase):
 
 
 class UnitInDBBase(UnitBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -164,9 +164,9 @@ class UnitInDB(UnitInDBBase):
 
 # Shared properties
 class SupplierBase(BaseModel):
-    name: str = None
-    description: str = None
-    keyword: str = None
+    name: str | None = None
+    description: str | None = None
+    keyword: str | None = None
 
 
 # Properties to receive via API on creation
@@ -180,7 +180,7 @@ class SupplierUpdate(SupplierBase):
 
 
 class SupplierInDBBase(SupplierBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -201,9 +201,9 @@ class SupplierInDB(SupplierInDBBase):
 
 # Shared properties
 class ManufacturerBase(BaseModel):
-    name: str = None
-    description: str = None
-    keyword: str = None
+    name: str | None = None
+    description: str | None = None
+    keyword: str | None = None
 
 
 # Properties to receive via API on creation
@@ -217,7 +217,7 @@ class ManufacturerUpdate(ManufacturerBase):
 
 
 class ManufacturerInDBBase(ManufacturerBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

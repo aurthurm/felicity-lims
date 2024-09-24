@@ -8,8 +8,8 @@ from felicity.apps.common.utils.serializer import marshaller
 
 class AuditLogService(BaseService[AuditLog, Dummy, Dummy]):
     def __init__(self) -> None:
-        super().__init__(AuditLogRepository)
+        super().__init__(AuditLogRepository())
 
-    async def create(self, c) -> E:
+    async def create(self, c, related: list[str] | None = None) -> E:
         c = marshaller(c)
-        return await super().create(c)
+        return await super().create(c=c, related=related)

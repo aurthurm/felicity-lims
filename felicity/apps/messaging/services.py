@@ -20,7 +20,8 @@ class MessageThreadService(
 ):
     def __init__(self):
         self.message_service = MessageService()
-        super().__init__(MessageThreadRepository)
+        self.repository: MessageThreadRepository = MessageThreadRepository()
+        super().__init__(self.repository)
 
     async def get_last_message(self, uid: str):
         thread = await self.get(uid=uid)
@@ -52,20 +53,19 @@ class MessageThreadService(
         # first delete all messages for user
         for message in thread.messages:
             if user not in message.deleted_by:
-                await self.message_service.add_deletion(message.uid, thread, user)
+                await self.message_service.add_deletion(uid=message.uid, user=user)
         # delete thread for user
         await self.add_deletion(thread.uid, user)
 
         # if all thread  recipients have deleted the thread
-        if self.all_have_deleted(thread.uid):
+        if self.all_have_deleted(uid=thread.uid):
             # permanently delete all messages in thread
             for message in thread.messages:
-                await self.message_service.delete(message.uid)
+                await self.message_service.delete(uid=message.uid)
             # then finally delete the thread permanently
-            await super().delete(uid)
+            await super().delete(uid=uid)
         return uid
 
-    @staticmethod
     async def all_have_deleted(self, uid: str) -> bool:
         thread = await self.get(uid=uid)
         deletions = 0
@@ -80,10 +80,11 @@ class MessageThreadService(
 
 
 class MessageService(BaseService[Message, MessageCreate, MessageUpdate]):
-    def __int__(self):
+    def __init__(self):
         self.thread_service = MessageThreadService()
         self.user_service = UserService()
-        super().__init__(MessageRepository)
+        self.repository: MessageRepository = MessageRepository()
+        super().__init__(self.repository)
 
     async def send_message(
         self, recipients: list[str], body: str, user: User

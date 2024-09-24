@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 from typing import List
 
 from sqlalchemy import or_
@@ -41,6 +40,7 @@ from felicity.apps.shipment.services import ShippedSampleService
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
 from felicity.apps.worksheet.workflow import WorkSheetWorkFlow
+from felicity.core.dtz import timenow_dt
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -72,7 +72,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: str
+    status: str | None = None, text: str | None = None, client_uid: str | None = None
 ) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
@@ -101,7 +101,7 @@ async def sample_search(
 
     filters.append({"internal_use__ne": True})
 
-    return await sample_service.filter(filters=filters, sort_attrs=["uid"])
+    return await sample_service.repository.filter(filters=filters, sort_attrs=["uid"])
 
 
 async def retest_from_result_uids(
@@ -175,7 +175,7 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
     for a_result in approved:
         # Do Reflex Testing
         logger.info("ReflexUtil .... running")
-        await ReflexEngineService(analysis_result=a_result, user=user).do_reflex()
+        await ReflexEngineService().do_reflex(analysis_result=a_result, user=user)
         logger.info("ReflexUtil .... done")
 
         # try to verify associated sample
@@ -260,7 +260,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                         "before": result.result,
                         "after": result.result * cf.factor,
                         "mutation": f"Multiplied the result {result.result} with a correction factor of {cf.factor}",
-                        "date": datetime.now(),
+                        "date": timenow_dt(),
                     }
                 )
                 result.result = result.result * cf.factor
@@ -275,7 +275,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                         "before": result.result,
                         "after": spec.min_report,
                         "mutation": f"Result was less than the minimun warning specification {spec.min_warn} and must be reported as {spec.min_report}",
-                        "date": datetime.now(),
+                        "date": timenow_dt(),
                     }
                 )
                 result.result = spec.min_report
@@ -291,7 +291,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                         "before": result.result,
                         "after": spec.max_report,
                         "mutation": f"Result was greater than the maximun warning specification {spec.max_warn} and must be reported as {spec.max_report}",
-                        "date": datetime.now(),
+                        "date": timenow_dt(),
                     }
                 )
                 result.result = spec.max_report
@@ -308,7 +308,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                         "before": result.result,
                         "after": f"< {dlim.lower_limit}",
                         "mutation": f"Result fell below the Lower Detection Limit {dlim.lower_limit} and must be reported as < {dlim.lower_limit}",
-                        "date": datetime.now(),
+                        "date": timenow_dt(),
                     }
                 )
                 result.result = f"< {dlim.lower_limit}"
@@ -320,7 +320,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                         "before": result.result,
                         "after": f"> {dlim.upper_limit}",
                         "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {dlim.upper_limit}",
-                        "date": datetime.now(),
+                        "date": timenow_dt(),
                     }
                 )
                 result.result = f"> {dlim.upper_limit}"
@@ -335,7 +335,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                             "before": result.result,
                             "after": f"{result.result} +/- {uncert.value}",
                             "mutation": f"Result fell inside the range [{uncert.min},{uncert.max}]  with an un uncertainty of +/- {uncert.value}",
-                            "date": datetime.now(),
+                            "date": timenow_dt(),
                         }
                     )
                     result.result = f"{result.result} +/- {uncert.value}"
@@ -349,7 +349,7 @@ async def result_mutator(result: AnalysisResult) -> None:
                         "before": result.result,
                         "after": spec.warn_report,
                         "mutation": f"Result with specification (result ::equals:: {result.result}) must be reported as {spec.warn_report}",
-                        "date": datetime.now(),
+                        "date": timenow_dt(),
                     }
                 )
                 result.result = spec.warn_report
@@ -358,7 +358,7 @@ async def result_mutator(result: AnalysisResult) -> None:
         result = await analysis_result_service.save(result)
 
 
-async def billing_setup_profiles(profile_uids: list[str] = None) -> None:
+async def billing_setup_profiles(profile_uids: list[str] | None = None) -> None:
     profile_service = ProfileService()
     profile_price_service = ProfilePriceService()
     profile_discount_service = ProfileDiscountService()
@@ -394,7 +394,7 @@ async def billing_setup_profiles(profile_uids: list[str] = None) -> None:
             )
 
 
-async def billing_setup_analysis(analysis_uids: list[str] = None) -> None:
+async def billing_setup_analysis(analysis_uids: list[str] | None = None) -> None:
     analysis_service = AnalysisService()
     analysis_price_service = AnalysisPriceService()
     analysis_discount_service = AnalysisDiscountService()

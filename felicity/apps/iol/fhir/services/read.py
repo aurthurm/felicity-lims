@@ -52,13 +52,13 @@ class FhirReadService:
         if not ar or not sample:
             return None
 
-        analyses = await self.sample_service.get_analysis_results(sample)
+        analyses = await self.sample_service.get_analysis_results(sample.uid)
         if obs_uids:
             analyses = list(filter(lambda res: res.uid in obs_uids, analyses))
 
         observations = []
         for anal in analyses:
-            last_verificator = await self.analysis_result_service.get_last_verificator(
+            last_verificator = await self.analysis_result_service.last_verificator(
                 anal.uid
             )
 

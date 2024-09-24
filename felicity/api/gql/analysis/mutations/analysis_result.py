@@ -141,7 +141,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
 
     return_results = []
     for _ar_uid in analyses:
-        a_result = await AnalysisResultService().get_related(
+        a_result = await AnalysisResultService().get(
             uid=_ar_uid, related=["sample"]
         )
         if not a_result:
@@ -189,7 +189,7 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
             sample, felicity_user, sample.status, "sample"
         )
     _all = [
-        (await AnalysisResultService().get_related(related=["sample"], uid=res.uid))
+        (await AnalysisResultService().get(related=["sample"], uid=res.uid))
         for res in (retests + originals)
     ]
     return ResultListingType(results=_all)
@@ -220,7 +220,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
         if a_result:
             return_results.append(a_result)
     _all = [
-        (await AnalysisResultService().get_related(related=["sample"], uid=res.uid))
+        (await AnalysisResultService().get(related=["sample"], uid=res.uid))
         for res in return_results
     ]
     return ResultListingType(results=_all)
@@ -249,7 +249,7 @@ async def re_instate_analysis_results(
             return_results.append(a_result)
 
     _all = [
-        (await AnalysisResultService().get_related(related=["sample"], uid=res.uid))
+        (await AnalysisResultService().get(related=["sample"], uid=res.uid))
         for res in return_results
     ]
     return ResultListingType(results=_all)

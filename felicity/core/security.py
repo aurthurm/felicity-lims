@@ -1,13 +1,14 @@
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import timedelta
 from difflib import SequenceMatcher
 from typing import Any, Union
 
-from jose import jwt
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from felicity.core.config import get_settings
+from felicity.core.dtz import timenow_dt
 
 settings = get_settings()
 
@@ -28,12 +29,12 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-    subject: Union[str, Any], expires_delta: timedelta = None
+    subject: Union[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = timenow_dt() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(
+        expire = timenow_dt() + timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
 
@@ -50,19 +51,19 @@ def create_access_token_from_refresh(refresh: str) -> str | None:
         payload = jwt.decode(
             refresh, settings.REFRESH_SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-    except jwt.JWTError:
+    except JWTError:
         return None
 
     return create_access_token(payload["sub"])
 
 
 def create_refresh_token(
-    subject: Union[str, Any], expires_delta: timedelta = None
+    subject: Union[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     if expires_delta:
-        expires_delta = datetime.utcnow() + expires_delta
+        expires_delta = timenow_dt() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(
+        expires_delta = timenow_dt() + timedelta(
             minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
         )
 
@@ -75,7 +76,7 @@ def create_refresh_token(
 
 def generate_password_reset_token(email: str) -> str:
     delta = timedelta(hours=settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS)
-    now = datetime.utcnow()
+    now = timenow_dt()
     expires = now + delta
     exp = expires.timestamp()
     encoded_jwt = jwt.encode(
@@ -92,7 +93,7 @@ def verify_password_reset_token(token: str) -> str | None:
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         return decoded_token["sub"]
-    except jwt.JWTError:
+    except JWTError:
         return None
 
 

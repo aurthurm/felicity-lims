@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any, List, Union
 
 from felicity.apps.abstract.service import BaseService
@@ -85,37 +85,39 @@ from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
 from felicity.apps.notification.services import ActivityStreamService
+from felicity.core.dtz import timenow_dt
 
 
 class CodingStandardService(
     BaseService[CodingStandard, CodingStandardCreate, CodingStandardUpdate]
 ):
     def __init__(self):
-        super().__init__(CodingStandardRepository)
+        self.repository: CodingStandardRepository = CodingStandardRepository()
+        super().__init__(self.repository)
 
 
 class SampleTypeService(BaseService[SampleType, SampleTypeCreate, SampleTypeUpdate]):
     def __init__(self):
-        super().__init__(SampleTypeRepository)
+        super().__init__(SampleTypeRepository())
 
 
 class SampleTypeCodingService(
     BaseService[SampleTypeCoding, SampleTypeCodingCreate, SampleTypeCodingUpdate]
 ):
     def __init__(self):
-        super().__init__(SampleTypeCodingRepository)
+        super().__init__(SampleTypeCodingRepository())
 
 
 class AnalysisCategoryService(
     BaseService[AnalysisCategory, AnalysisCategoryCreate, AnalysisCategoryUpdate]
 ):
     def __init__(self):
-        super().__init__(AnalysisCategoryRepository)
+        super().__init__(AnalysisCategoryRepository())
 
 
 class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
     def __init__(self):
-        super().__init__(ProfileRepository)
+        super().__init__(ProfileRepository())
 
     async def update_tat(self, profile: Profile) -> Profile:
         tats = []
@@ -137,7 +139,7 @@ class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
         #     **{"profile_uid": uid},
         # )
         return (
-            await self.repository.get_related(related=["analyses"], uid=uid)
+            await self.repository.get(related=["analyses"], uid=uid)
         ).analyses
 
 
@@ -145,33 +147,33 @@ class AnalysisTemplateService(
     BaseService[AnalysisTemplate, AnalysisTemplateCreate, AnalysisTemplateUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(AnalysisTemplateRepository)
+        super().__init__(AnalysisTemplateRepository())
 
 
 class ProfileCodingService(
     BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]
 ):
     def __init__(self):
-        super().__init__(ProfileCodingRepository)
+        super().__init__(ProfileCodingRepository())
 
 
 class AnalysisService(BaseService[Analysis, AnalysisCreate, AnalysisUpdate]):
     def __init__(self):
-        super().__init__(AnalysisRepository)
+        super().__init__(AnalysisRepository())
 
 
 class AnalysisCodingService(
     BaseService[AnalysisCoding, AnalysisCodingCreate, AnalysisCodingUpdate]
 ):
     def __init__(self):
-        super().__init__(AnalysisCodingRepository)
+        super().__init__(AnalysisCodingRepository())
 
 
 class AnalysisInterimService(
     BaseService[AnalysisInterim, AnalysisInterimCreate, AnalysisInterimUpdate]
 ):
     def __init__(self):
-        super().__init__(AnalysisInterimRepository)
+        super().__init__(AnalysisInterimRepository())
 
 
 class AnalysisCorrectionFactorService(
@@ -182,7 +184,7 @@ class AnalysisCorrectionFactorService(
     ]
 ):
     def __init__(self):
-        super().__init__(AnalysisCorrectionFactorRepository)
+        super().__init__(AnalysisCorrectionFactorRepository())
 
 
 class AnalysisDetectionLimitService(
@@ -193,7 +195,7 @@ class AnalysisDetectionLimitService(
     ]
 ):
     def __init__(self):
-        super().__init__(AnalysisDetectionLimitRepository)
+        super().__init__(AnalysisDetectionLimitRepository())
 
 
 class AnalysisUncertaintyService(
@@ -202,7 +204,7 @@ class AnalysisUncertaintyService(
     ]
 ):
     def __init__(self):
-        super().__init__(AnalysisUncertaintyRepository)
+        super().__init__(AnalysisUncertaintyRepository())
 
 
 class AnalysisSpecificationService(
@@ -211,14 +213,14 @@ class AnalysisSpecificationService(
     ]
 ):
     def __init__(self):
-        super().__init__(AnalysisSpecificationRepository)
+        super().__init__(AnalysisSpecificationRepository())
 
 
 class ResultOptionService(
     BaseService[ResultOption, ResultOptionCreate, ResultOptionUpdate]
 ):
     def __init__(self):
-        super().__init__(ResultOptionRepository)
+        super().__init__(ResultOptionRepository())
 
 
 class AnalysisRequestService(
@@ -226,10 +228,10 @@ class AnalysisRequestService(
 ):
     def __init__(self):
         self.id_sequence_service = IdSequenceService()
-        super().__init__(AnalysisRequestRepository)
+        super().__init__(AnalysisRequestRepository())
 
     async def create(
-        self, obj_in: dict | AnalysisRequestCreate, related: list[str] = None
+            self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None
     ):
         data = self._import(obj_in)
         data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
@@ -240,7 +242,7 @@ class RejectionReasonService(
     BaseService[RejectionReason, RejectionReasonCreate, RejectionReasonUpdate]
 ):
     def __init__(self):
-        super().__init__(RejectionReasonRepository)
+        super().__init__(RejectionReasonRepository())
 
 
 class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
@@ -248,7 +250,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         self.analysis_result_service = AnalysisResultService()
         self.streamer_service = ActivityStreamService()
         self.id_sequencer_service = IdSequenceService()
-        super().__init__(SampleRepository)
+        super().__init__(SampleRepository())
 
     @staticmethod
     def copy_include_keys() -> list[str]:
@@ -281,11 +283,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             length = sorted(tats, reverse=False)[0]
 
         if reset:
-            start = datetime.now()
+            start = timenow_dt()
         else:
             start = sample.created_at
             if not start:
-                start = datetime.now()
+                start = timenow_dt()
 
         if length:
             return await super().update(
@@ -353,7 +355,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample = await self.get(uid=uid)
         sample.status = SampleState.RECEIVED
         sample.received_by_uid = received_by.uid
-        sample.date_received = datetime.now()
+        sample.date_received = timenow_dt()
         sample.updated_by_uid = received_by.uid
 
         saved_sample = await super().save(sample)
@@ -369,7 +371,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # Update sample attributes
         sample.status = SampleState.CANCELLED
         sample.cancelled_by_uid = cancelled_by.uid
-        sample.date_cancelled = datetime.now()
+        sample.date_cancelled = timenow_dt()
         sample.updated_by_uid = cancelled_by.uid
 
         # Save sample first
@@ -394,7 +396,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.cancelled_by_uid = None
         sample.date_cancelled = None
         sample.updated_by_uid = re_instated_by.uid
-        sample.date_reinstated = datetime.now()
+        sample.date_reinstated = timenow_dt()
 
         # Save sample first
         sample = await super().save(sample)
@@ -419,7 +421,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # Update sample attributes
         sample.status = SampleState.AWAITING
         sample.submitted_by_uid = submitted_by.uid
-        sample.date_submitted = datetime.now()
+        sample.date_submitted = timenow_dt()
         sample.updated_by_uid = submitted_by.uid
 
         # Save sample
@@ -463,7 +465,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [ResultState.PENDING], analysis)
+                filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
@@ -476,7 +478,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             # Update sample attributes
             sample.status = SampleState.APPROVED
             sample.verified_by_uid = verified_by.uid
-            sample.date_verified = datetime.now()
+            sample.date_verified = timenow_dt()
             sample.updated_by_uid = verified_by.uid
 
             # Save sample
@@ -493,7 +495,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample = await self.get(uid=uid)
         sample.status = SampleState.PUBLISHED
         sample.published_by_uid = published_by.uid
-        sample.date_published = datetime.now()
+        sample.date_published = timenow_dt()
         sample.updated_by_uid = published_by.uid  # noqa
         published = await super().save(sample)
         await self.streamer_service.stream(
@@ -505,7 +507,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample = await self.get(uid=uid)
         sample.printed = True
         sample.printed_by_uid = printed_by.uid
-        sample.date_printed = datetime.now()
+        sample.date_printed = timenow_dt()
         sample.updated_by_uid = printed_by.uid  # noqa
         printed = await super().save(sample)
         await self.streamer_service.stream(printed, printed_by, "printed", "sample")
@@ -513,7 +515,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
     async def invalidate(self, uid: str, invalidated_by) -> tuple[Sample, Sample]:
         sample = await self.get(uid=uid)
-        copy = await self.duplicate_unique(invalidated_by)
+        copy = await self.duplicate_unique(uid, invalidated_by)
         sample.status = SampleState.INVALIDATED
         sample.invalidated_by_uid = invalidated_by.uid
         invalidated = await super().save(sample)
@@ -546,11 +548,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.storage_container_uid = None
         sample.storage_slot = None
         sample.storage_slot_index = None
-        sample.date_retrieved_from_storage = datetime.now()
+        sample.date_retrieved_from_storage = timenow_dt()
         recovered = await super().save(sample)
         return recovered
 
-    async def create(self, obj_in: dict | SampleCreate, related: list[str] = None):
+    async def create(self, obj_in: dict | SampleCreate, related: list[str] | None = None):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
         # data["sample_id"] = (await self.id_sequencer_service.get_next_number(sample_type.abbr))[1]
@@ -560,7 +562,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().create(data, related)
 
     async def duplicate_unique(self, uid: str, duplicator):
-        sample = await self.get_related(related=["profiles", "analyses"], uid=uid)
+        sample = await self.get(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique(sample)
         for key, _ in list(data.items()):
@@ -574,7 +576,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().create(data)
 
     async def clone_afresh(self, uid: str, cloner):
-        sample = await self.get_related(related=["profiles", "analyses"], uid=uid)
+        sample = await self.get(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():

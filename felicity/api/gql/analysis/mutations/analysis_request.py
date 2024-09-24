@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import List
 
 import strawberry  # noqa
@@ -43,6 +43,7 @@ from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
+from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -114,8 +115,8 @@ class AnalysisRequestInputType:
 
 @strawberry.input
 class ManageAnalysisInputType:
-    cancel: List[str] = None
-    add: List[str] = None
+    cancel: list[str] | None = None
+    add: list[str] | None = None
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -186,7 +187,7 @@ async def create_analysis_request(
         _profiles_analyses = set()
 
         for p_uid in s.profiles:
-            profile = await ProfileService().get_related(
+            profile = await ProfileService().get(
                 related=["analyses"], uid=p_uid
             )
             profiles.append(profile)
@@ -208,7 +209,9 @@ async def create_analysis_request(
                 tat_lengths.append(anal.tat_length_minutes)
         if tat_lengths:
             minutes = max(tat_lengths)
-            sample_in["due_date"] = datetime.now() + timedelta(minutes=minutes)
+            sample_in["due_date"] = timenow_dt() + timedelta(
+                minutes=minutes
+            )
 
         #
         sample_schema = schemas.SampleCreate(**sample_in)
@@ -222,14 +225,14 @@ async def create_analysis_request(
         for _prof in profiles:
             await SampleService().repository.table_insert(
                 table=sample_profile,
-                mappings={"sample_uid": sample.uid, "profile_uid": _prof.uid},
+                mappings=[{"sample_uid": sample.uid, "profile_uid": _prof.uid}],
             )
 
         # link sample to provided services
         for _anal in analyses:
             await SampleService().repository.table_insert(
                 table=sample_analysis,
-                mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid},
+                mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
             )
 
         # create and attach result objects for each Analyses
@@ -251,7 +254,7 @@ async def create_analysis_request(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": (
-                            datetime.now()
+                            timenow_dt()
                             + timedelta(minutes=_service.tat_length_minutes)
                             if _service.tat_length_minutes
                             else None
@@ -265,12 +268,12 @@ async def create_analysis_request(
 
         # initialise reflex action if exist
         logger.info("ReflexUtil .... set_reflex_actions ...")
-        await ReflexEngineService(created[0], felicity_user).set_reflex_actions(created)
+        await ReflexEngineService().set_reflex_actions(created)
 
     # ! paramount !
     await asyncio.sleep(1)
 
-    analysis_request = await AnalysisRequestService().get_related(
+    analysis_request = await AnalysisRequestService().get(
         related=["samples"], uid=analysis_request.uid
     )
 
@@ -317,11 +320,9 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                 created = await AnalysisResultService().create(
                     a_result_schema, related=["sample", "analysis"]
                 )
-                await ReflexEngineService(created, felicity_user).set_reflex_actions(
-                    [created]
-                )
+                await ReflexEngineService().set_reflex_actions([created])
     clones = [
-        (await SampleService().get_related(related=["sample_type"], uid=clone.uid))
+        (await SampleService().get(related=["sample_type"], uid=clone.uid))
         for clone in clones
     ]
     return SampleListingType(samples=clones)
@@ -450,7 +451,7 @@ async def reject_samples(
             )
             await SampleService().repository.table_insert(
                 sample_rejection_reason,
-                {"sample_uid": sample.uid, "rejection_reason_uid": reason.uid},
+                [{"sample_uid": sample.uid, "rejection_reason_uid": reason.uid}],
             )
 
             if sample:  # noqa
@@ -625,7 +626,7 @@ async def samples_apply_template(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": (
-                            datetime.now()
+                            timenow_dt()
                             + timedelta(minutes=_service.tat_length_minutes)
                             if _service.tat_length_minutes
                             else None
@@ -685,7 +686,8 @@ async def manage_analyses(
                 update={
                     "analysis_uid": service.uid,
                     "due_date": (
-                        datetime.now() + timedelta(minutes=service.tat_length_minutes)
+                        timenow_dt()
+                        + timedelta(minutes=service.tat_length_minutes)
                         if service.tat_length_minutes
                         else None
                     ),

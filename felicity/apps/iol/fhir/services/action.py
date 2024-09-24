@@ -25,7 +25,11 @@ class IOLService:
 
         resource = await self.fhir_read_service.get_shipment_bundle_resource(
             shipment.uid
-        )  # TODO -> get from iol_service
+        )  
+        # TODO -> get from iol_service
+        if not resource:
+            raise Exception("Failed to get shipment bundle resource")
+        
         success = await post_data(
             f"{shipment.laboratory.url}Bundle",
             resource.model_dump(exclude_none=True),
@@ -60,6 +64,9 @@ class IOLService:
         resource = await self.fhir_read_service.get_shipment_bundle_resource(
             shipment_uid
         )
+        if not resource:
+            raise Exception("Failed to get shipment bundle resource")
+        
         success = await post_data(
             f"{shipment.laboratory.url}Bundle",
             resource.model_dump(exclude_none=True),
@@ -130,6 +137,9 @@ class IOLService:
         resource = await self.fhir_read_service.get_diagnostic_report_resource(
             shipped.sample.analysis_request_uid, result_uids, True
         )
+        if not resource:
+            raise Exception("Failed to get Diagnostic report")
+        
         success = await post_data(
             f"{shipment.laboratory.url}DiagnosticReport",
             resource.model_dump(exclude_none=True),

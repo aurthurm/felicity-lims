@@ -27,8 +27,15 @@ async def seed_geographies() -> None:
     district_service = DistrictService()
 
     data = get_seeds("country")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     country_data = data.get("country")
+    if not country_data:
+        logger.error("Failed to load country_data seed data")
+        return 
+    
     c_name = country_data.get("name")
     c_code = country_data.get("code")
 
@@ -75,9 +82,12 @@ async def seed_clients() -> None:
     client_Service = ClientService()
     client_contact_Service = ClientContactService()
 
-    clients = get_seeds("clients")
+    data = get_seeds("clients")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
-    for _cl in clients:
+    for _cl in data.get("clients", []):
         client = None
         district = await district_service.get(name=_cl.get("district"))
         if district:
@@ -112,6 +122,9 @@ async def seed_laboratory(name: str) -> None:
     department_service = DepartmentService()
 
     data = get_seeds("laboratory")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     if not name:
         name = data.get("laboratory_name", "Felicity Labs")

@@ -1,3 +1,4 @@
+from dataclasses import field
 from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -68,8 +69,8 @@ class WSTemplateBase(BaseModel):
     sample_type_uid: str | None = None
     analysis_uid: str | None = None
     analysis: Optional[AnalysisBaseInDB] = None
-    qc_analyses: Optional[List[AnalysisBaseInDB]] = []
-    qc_levels: Optional[List[QCLevelInDB]] = []
+    qc_analyses: Optional[List[AnalysisBaseInDB]] = field(default_factory=list)
+    qc_levels: Optional[List[QCLevelInDB]] = field(default_factory=list)
     reserved: Optional[dict] = None
     number_of_samples: int | None = None
     worksheet_type: str | None = "flat"

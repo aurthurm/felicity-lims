@@ -27,14 +27,14 @@ from felicity.apps.storage.schemas import (
 
 class StoreRoomService(BaseService[StoreRoom, StoreRoomCreate, StoreRoomUpdate]):
     def __init__(self):
-        super().__init__(StoreRoomRepository)
+        super().__init__(StoreRoomRepository())
 
 
 class StorageLocationService(
     BaseService[StorageLocation, StorageLocationCreate, StorageLocationUpdate]
 ):
     def __init__(self):
-        super().__init__(StorageLocationRepository)
+        super().__init__(StorageLocationRepository())
 
 
 class StorageSectionService(
@@ -42,7 +42,7 @@ class StorageSectionService(
 ):
     def __init__(self):
         self.sample_service = SampleService()
-        super().__init__(StorageSectionRepository)
+        super().__init__(StorageSectionRepository())
 
 
 class StorageContainerService(
@@ -50,7 +50,7 @@ class StorageContainerService(
 ):
     def __init__(self):
         self.sample_service = SampleService()
-        super().__init__(StorageContainerRepository)
+        super().__init__(StorageContainerRepository())
 
     async def get_samples(self, storage_container_uid: str) -> list[Sample]:
         return await self.sample_service.get_all(

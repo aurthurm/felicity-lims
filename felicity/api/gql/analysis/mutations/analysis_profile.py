@@ -38,8 +38,8 @@ class ProfileInputType:
     name: str
     description: str = ""
     department_uid: str | None = None
-    sample_types: Optional[List[str]] = field(default_factory=list)
-    services: Optional[List[str]] = field(default_factory=list)
+    sample_types: list[str] | None = field(default_factory=list)
+    services: list[str] | None = field(default_factory=list)
     keyword: str | None = None
     active: bool | None = True
 
@@ -56,7 +56,7 @@ class AnalysisTemplateInputType:
     name: str
     description: str = ""
     department_uid: str | None = None
-    services: Optional[List[str]] = field(default_factory=list)
+    services: list[str] | None = field(default_factory=list)
 
 
 ProfileMappingResponse = strawberry.union(
@@ -107,14 +107,14 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
         for _st_uid in payload.sample_types:
             await ProfileService().repository.table_insert(
                 table=profile_sample_type,
-                mappings={"sample_type_uid": _st_uid, "profile_uid": profile.uid},
+                mappings=[{"sample_type_uid": _st_uid, "profile_uid": profile.uid}],
             )
 
     if payload.services:
         for service_uid in payload.services:
             await AnalysisService().repository.table_insert(
                 table=analysis_profile,
-                mappings={"analysis_uid": service_uid, "profile_uid": profile.uid},
+                mappings=[{"analysis_uid": service_uid, "profile_uid": profile.uid}],
             )
 
     await utils.billing_setup_profiles([profile.uid])
@@ -155,7 +155,7 @@ async def update_profile(
             anal = await AnalysisService().get(uid=_uid)
             await AnalysisService().repository.table_insert(
                 table=analysis_entities.analysis_profile,
-                mappings={"analysis_uid": anal.uid, "profile_uid": profile.uid},
+                mappings=[{"analysis_uid": anal.uid, "profile_uid": profile.uid}],
             )
 
     # Sample Type management
@@ -167,7 +167,7 @@ async def update_profile(
             profile.sample_types.append(st)
             await SampleTypeService().repository.table_insert(
                 table=profile_sample_type,
-                mappings={"sample_type_uid": st.uid, "profile_uid": profile.uid},
+                mappings=[{"sample_type_uid": st.uid, "profile_uid": profile.uid}],
             )
 
     return a_types.ProfileType(**profile.marshal_simple())
@@ -207,10 +207,10 @@ async def create_analysis_template(
         for service_uid in payload.services:
             await AnalysisService().repository.table_insert(
                 table=analysis_analysis_template,
-                mappings={
+                mappings=[{
                     "analysis_uid": service_uid,
                     "analysis_template_uid": template.uid,
-                },
+                }],
             )
 
     template = await AnalysisTemplateService().get(uid=template.uid)
@@ -249,10 +249,10 @@ async def update_analysis_template(
             anal = await AnalysisService().get(uid=_uid)
             await AnalysisService().repository.table_insert(
                 table=analysis_analysis_template,
-                mappings={
+                mappings=[{
                     "analysis_uid": anal.uid,
                     "analysis_template_uid": template.uid,
-                },
+                }],
             )
 
     return a_types.AnalysisTemplateType(**template.marshal_simple())

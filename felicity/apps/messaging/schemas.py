@@ -1,3 +1,4 @@
+from dataclasses import field
 from typing import List, Optional
 
 from pydantic import ConfigDict
@@ -13,8 +14,8 @@ class MessageBase(BaseAuditModel):
     thread_uid: str
     thread: Optional["MessageThread"] = None
     body: str | None = ""
-    viewers: Optional[List[User]] = []
-    deleted_by: Optional[List[User]] = []
+    viewers: Optional[List[User]] = field(default_factory=list)
+    deleted_by: Optional[List[User]] = field(default_factory=list)
     parent_id: str | None = None
 
 
@@ -37,9 +38,9 @@ class MessageUpdate(MessageBase):
 #
 class MessageThreadBase(BaseAuditModel):
     broadcast: bool | None = False
-    recipients: Optional[List[User]] = []
-    messages: Optional[List[Message]] = []
-    recipients: Optional[List[User]] = []
+    recipients: Optional[List[User]] = field(default_factory=list)
+    messages: Optional[List[Message]] = field(default_factory=list)
+    recipients: Optional[List[User]] = field(default_factory=list)
 
 
 class MessageThread(MessageThreadBase):

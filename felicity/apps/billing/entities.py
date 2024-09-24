@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import (
     Boolean,
     Column,
@@ -16,6 +14,7 @@ from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
 from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
+from felicity.core.dtz import timenow_dt
 
 
 class AnalysisPrice(BaseEntity):
@@ -44,8 +43,10 @@ class AnalysisDiscount(BaseEntity):
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
-    start_date = Column(DateTime, nullable=False, default=datetime.now())
-    end_date = Column(DateTime, nullable=False, default=datetime.now())
+    start_date = Column(
+        DateTime, nullable=False, default=timenow_dt()
+    )
+    end_date = Column(DateTime, nullable=False, default=timenow_dt())
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
     value_percent = Column(Float, nullable=True)
@@ -61,8 +62,10 @@ class ProfileDiscount(BaseEntity):
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
-    start_date = Column(DateTime, nullable=False, default=datetime.now())
-    end_date = Column(DateTime, nullable=False, default=datetime.now())
+    start_date = Column(
+        DateTime, nullable=False, default=timenow_dt()
+    )
+    end_date = Column(DateTime, nullable=False, default=timenow_dt())
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
     value_percent = Column(Float, nullable=True)

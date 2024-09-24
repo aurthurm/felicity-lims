@@ -1,6 +1,7 @@
-from datetime import datetime
-from distutils import dir_util
+import os
 from pathlib import Path
+
+from felicity.core.dtz import timenow_dt
 
 
 def delete_file(file_name: str) -> bool:
@@ -16,10 +17,16 @@ def resolve_media_dirs_for(target: str) -> str:
     """
     Creates directories if not exist
     """
-    str_path = "media/" + target + "/" + datetime.now().strftime("%Y/%m/%d") + "/"
+    str_path = (
+        "media/"
+        + target
+        + "/"
+        + timenow_dt().strftime("%Y/%m/%d")
+        + "/"
+    )
     path = Path(str_path)
     if not path.is_dir():
-        dir_util.mkpath(str_path)
+        os.makedirs(str_path, exist_ok=True)
 
     return str_path
 
@@ -27,7 +34,7 @@ def resolve_media_dirs_for(target: str) -> str:
 def create_dir(dir_name: str):
     path = Path(dir_name)
     if not path.is_dir():
-        dir_util.mkpath(dir_name)
+        os.makedirs(dir_name, exist_ok=True)
 
 
 def resolve_root_dirs():

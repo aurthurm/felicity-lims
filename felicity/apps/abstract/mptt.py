@@ -1,4 +1,4 @@
-from felicity.libs.sqlalchemy_mptt import BaseNestedSets
+from sqlalchemy_mptt import BaseNestedSets
 
 
 class BaseMPTT(BaseNestedSets):

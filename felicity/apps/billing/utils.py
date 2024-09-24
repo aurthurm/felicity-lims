@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 from felicity.apps.analysis.entities import analysis as a_entities
 from felicity.apps.billing.entities import (
@@ -23,8 +22,6 @@ from felicity.apps.billing.schemas import (
     TestBillTransactionUpdate,
     TestBillUpdate,
 )
-from felicity.apps.impress.invoicing.utils import impress_invoice
-from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
 from felicity.apps.billing.services import (
     AnalysisDiscountService,
     AnalysisPriceService,
@@ -36,6 +33,9 @@ from felicity.apps.billing.services import (
     VoucherCustomerService,
     VoucherService,
 )
+from felicity.apps.impress.invoicing.utils import impress_invoice
+from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
+from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,7 +76,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
         "profiles": {},
         "analyses": {},
     }
-    today = datetime.now()
+    today = timenow_dt()
     in_transactions = []
     for p_price in profiles_prices:
         total_charged += p_price.amount
@@ -171,7 +171,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
     # attach related orders to bill
     await TestBillService().repository.table_insert(
         test_bill_item,
-        {"test_bill_uid": bill.uid, "analysis_request_uid": analysis_request.uid},
+        [{"test_bill_uid": bill.uid, "analysis_request_uid": analysis_request.uid}],
     )
 
     # apply discounts
@@ -201,7 +201,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
 async def apply_voucher(
     voucher_code: str, test_bill_uid: str, customer_uid: str
 ) -> TestBill:
-    today = datetime.now()
+    today = timenow_dt()
     bill = await TestBillService().get(uid=test_bill_uid)
     if not bill.is_active:
         raise InactiveTestBillException()

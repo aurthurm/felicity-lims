@@ -13,7 +13,8 @@ class NoticeService(BaseService[Notice, NoticeCreate, NoticeUpdate]):
         self.group_service = GroupService()
         self.department_service = DepartmentService()
         self.user_service = UserService()
-        super().__init__(NoticeRepository)
+        self.repository: NoticeRepository = NoticeRepository()
+        super().__init__(self.repository)
 
     async def filter(
         self,
@@ -28,7 +29,9 @@ class NoticeService(BaseService[Notice, NoticeCreate, NoticeUpdate]):
         if department_uid:
             filters["departments__uid__in"] = [department_uid]
 
-        return await super().filter(filters, ["-created_at"])
+        return await super().repository.filter(
+            filters=filters, sort_attrs=["-created_at"]
+        )
 
     async def view(self, uid: str, viewer_uid: str) -> Notice:
         notice = await self.get(uid=uid)

@@ -9,7 +9,7 @@ from felicity.apps.user.services import UserService
 
 class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.repository = mock.create_autospec(UserRepository)
+        self.repository = mock.create_autospec(UserRepository())
         self.group_service = mock.AsyncMock()
         self.permission_service = mock.AsyncMock()
         self.user_preference_service = mock.AsyncMock()

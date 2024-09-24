@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 
 from pydantic import BaseModel
 
@@ -27,14 +27,14 @@ class BaseService(Generic[E, C, U]):
         Args:
             repository: A callable that returns a BaseRepository instance
         """
-        self.repository: BaseRepository = repository()
+        self.repository: BaseRepository = repository
 
     async def paging_filter(
         self,
         page_size: int | None = None,
         after_cursor: str | None = None,
         before_cursor: str | None = None,
-        filters: list[dict] | dict = None,
+        filters: list[dict] | dict | None = None,
         sort_by: list[str] | None = None,
         **kwargs,
     ):
@@ -77,7 +77,7 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.all()
 
-    async def get(self, **kwargs) -> E:
+    async def get(self, related: list[str] | None = None, **kwargs) -> E:
         """
         Get a single entity based on given criteria.
 
@@ -87,7 +87,7 @@ class BaseService(Generic[E, C, U]):
         Returns:
             A single entity
         """
-        return await self.repository.get(**kwargs)
+        return await self.repository.get(related=related, **kwargs)
 
     async def get_by_uids(self, uids: list[str]) -> list[E]:
         """
@@ -101,7 +101,7 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get_by_uids(uids)
 
-    async def get_all(self, **kwargs) -> list[E]:
+    async def get_all(self, related: list[str] | None = None, **kwargs) -> list[E]:
         """
         Get all entities matching the given criteria.
 
@@ -111,25 +111,10 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of matching entities
         """
-        return await self.repository.get_all(**kwargs)
+        return await self.repository.get_all(related=related, **kwargs)
 
-    async def get_related(
-        self, related: list[str], many: bool = False, **kwargs
-    ) -> E | list[E]:
-        """
-        Get an entity with its related entities.
 
-        Args:
-            many: Return many or first
-            related: List of related entity names to fetch
-            **kwargs: Criteria for fetching the entity
-
-        Returns:
-            Entity with related entities loaded
-        """
-        return await self.repository.get_related(related=related, many=many, **kwargs)
-
-    async def create(self, c: C | dict, related: list[str] = None) -> E:
+    async def create(self, c: C | dict, related: list[str] | None = None) -> E:
         """
         Create a new entity.
 
@@ -144,10 +129,10 @@ class BaseService(Generic[E, C, U]):
         created = await self.repository.create(**data)
         if not related:
             return created
-        return await self.get_related(related=related, uid=created.uid)
+        return await self.get(related=related, uid=created.uid)
 
     async def bulk_create(
-        self, bulk: list[dict | C], related: list[str] = None
+        self, bulk: list[dict | C], related: list[str] | None = None
     ) -> list[E]:
         """
         Create multiple entities in bulk.
@@ -162,9 +147,9 @@ class BaseService(Generic[E, C, U]):
         created = await self.repository.bulk_create([self._import(b) for b in bulk])
         if not related:
             return created
-        return [(await self.get_related(related=related, uid=x.uid)) for x in created]
+        return [(await self.get(related=related, uid=x.uid)) for x in created]
 
-    async def update(self, uid: str, update: U | dict, related: list[str] = None) -> E:
+    async def update(self, uid: str, update: U | dict, related: list[str] | None = None) -> E:
         """
         Update an existing entity.
 
@@ -181,9 +166,9 @@ class BaseService(Generic[E, C, U]):
         updated = await self.repository.update(uid, **self._import(update))
         if not related:
             return updated
-        return await self.get_related(related=related, uid=updated.uid)
+        return await self.get(related=related, uid=updated.uid)
 
-    async def save(self, entity: E, related: list[str] = None) -> E:
+    async def save(self, entity: E, related: list[str] | None = None) -> E:
         """
         Save an entity (create if not exists, update if exists).
 
@@ -197,7 +182,7 @@ class BaseService(Generic[E, C, U]):
         saved = await self.repository.save(entity)
         if not related:
             return saved
-        return await self.get_related(related=related, uid=saved.uid)
+        return await self.get(related=related, uid=saved.uid)
 
     async def bulk_update_with_mappings(self, mappings: list[dict]) -> None:
         """

@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 from felicity.apps.abstract import BaseRepository
 from felicity.apps.idsequencer.entities import IdSequence
 from felicity.apps.idsequencer.exception import SequenceGenerateError
-from felicity.core.dtz import get_time_now
+from felicity.core.dtz import timenow_dt
 
 
 class IdSequenceRepository(BaseRepository[IdSequence]):
@@ -19,7 +19,7 @@ class IdSequenceRepository(BaseRepository[IdSequence]):
                 set_=dict(
                     prefix=prefix,
                     number=self.model.number + 1,
-                    updated=get_time_now(str_format=False),
+                    updated=timenow_dt(),
                 ),
             )
             .returning(self.model.number)

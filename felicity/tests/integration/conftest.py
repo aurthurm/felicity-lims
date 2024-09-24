@@ -27,13 +27,13 @@ async def initialise(setup):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def app_root() -> AsyncGenerator[AsyncClient, Any, None]:
+async def app_root() -> AsyncGenerator[AsyncClient, Any]:
     async with AsyncClient(app=felicity, base_url="http://localhost:8080") as clt:
         yield clt
 
 
 @pytest_asyncio.fixture(scope="function")
-async def app_api() -> AsyncGenerator[AsyncClient, Any, None]:
+async def app_api() -> AsyncGenerator[AsyncClient, Any]:
     async with AsyncClient(
         app=felicity, base_url="http://localhost:8080/api/v1"
     ) as clt:
@@ -41,7 +41,7 @@ async def app_api() -> AsyncGenerator[AsyncClient, Any, None]:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def app_gql() -> AsyncGenerator[AsyncClient, Any, None]:
+async def app_gql() -> AsyncGenerator[AsyncClient, Any]:
     async with AsyncClient(app=felicity, base_url="http://localhost:8080") as clt:
         yield clt
 

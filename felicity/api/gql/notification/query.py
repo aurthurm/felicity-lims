@@ -28,14 +28,9 @@ class StreamNotificationQuery:
         if user_uid:
             filters["users__uid__in"] = [user_uid]
 
-        notif_stmt = NotificationService().smart_query(
+        return await NotificationService().repository.filter(
             filters=filters, sort_attrs=["-created_at"]
         )
-
-        notifications = (
-            (await NotificationService().session.execute(notif_stmt)).scalars().all()
-        )
-        return list(notifications)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notification_by_uid(self, info, uid: str) -> Optional[NotificationType]:

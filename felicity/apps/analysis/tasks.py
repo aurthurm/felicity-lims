@@ -1,5 +1,4 @@
 import logging
-from typing import NoReturn
 
 from felicity.apps.analysis import utils
 from felicity.apps.iol.redis import process_tracker
@@ -13,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def submit_results(job_uid: str) -> NoReturn:
+async def submit_results(job_uid: str) -> None:
     job_service = JobService()
     user_service = UserService()
     notification_service = NotificationService()
@@ -51,7 +50,7 @@ async def submit_results(job_uid: str) -> NoReturn:
         raise
 
 
-async def verify_results(job_uid: str) -> NoReturn:
+async def verify_results(job_uid: str) -> None:
     logger.info(f"starting job result verification {job_uid} ....")
     job_service = JobService()
     user_service = UserService()
@@ -88,7 +87,7 @@ async def verify_results(job_uid: str) -> NoReturn:
         raise
 
 
-async def setup_billing(job_uid: str) -> NoReturn:
+async def setup_billing(job_uid: str) -> None:
     logger.info(f"starting job setup billing {job_uid} ....")
     job_service = JobService()
     user_service = UserService()

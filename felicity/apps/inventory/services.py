@@ -56,7 +56,7 @@ from felicity.database.paging import PageCursor
 
 class StockItemService(BaseService[StockItem, StockItemCreate, StockItemUpdate]):
     def __init__(self) -> None:
-        super().__init__(StockItemRepository)
+        super().__init__(StockItemRepository())
 
     async def paginate_with_cursors(
         self,
@@ -75,7 +75,7 @@ class StockItemService(BaseService[StockItem, StockItemCreate, StockItemUpdate])
 
         filters = {sa.or_: _or_}
 
-        return super().paginate_with_cursors(
+        return await super().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -88,29 +88,29 @@ class StockItemVariantService(
     BaseService[StockItemVariant, StockItemVariantCreate, StockItemVariantUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(StockItemVariantRepository)
+        super().__init__(StockItemVariantRepository())
 
 
 class StockCategoryService(
     BaseService[StockCategory, StockCategoryCreate, StockCategoryUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(StockCategoryRepository)
+        super().__init__(StockCategoryRepository())
 
 
 class HazardService(BaseService[Hazard, HazardCreate, HazardUpdate]):
     def __init__(self) -> None:
-        super().__init__(HazardRepository)
+        super().__init__(HazardRepository())
 
 
 class StockUnitService(BaseService[StockUnit, StockUnitCreate, StockUnitUpdate]):
     def __init__(self) -> None:
-        super().__init__(StockUnitRepository)
+        super().__init__(StockUnitRepository())
 
 
 class StockLotService(BaseService[StockLot, StockLotCreate, StockLotUpdate]):
     def __init__(self) -> None:
-        super().__init__(StockLotRepository)
+        super().__init__(StockLotRepository())
 
 
 class StockProductInventoryService(
@@ -119,12 +119,12 @@ class StockProductInventoryService(
     ]
 ):
     def __init__(self) -> None:
-        super().__init__(StockProductInventoryRepository)
+        super().__init__(StockProductInventoryRepository())
 
 
 class StockOrderService(BaseService[StockOrder, StockOrderCreate, StockOrderUpdate]):
     def __init__(self) -> None:
-        super().__init__(StockOrderRepository)
+        super().__init__(StockOrderRepository())
 
     async def paginate_with_cursors(
         self,
@@ -148,7 +148,7 @@ class StockOrderService(BaseService[StockOrder, StockOrderCreate, StockOrderUpda
         if status:
             filters.append({"status__exact": status})
 
-        return super().paginate_with_cursors(
+        return await super().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -161,21 +161,21 @@ class StockOrderProductService(
     BaseService[StockOrderProduct, StockOrderProductCreate, StockOrderProductUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(StockOrderProductRepository)
+        super().__init__(StockOrderProductRepository())
 
 
 class StockReceiptService(
     BaseService[StockReceipt, StockReceiptCreate, StockReceiptUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(StockReceiptRepository)
+        super().__init__(StockReceiptRepository())
 
 
 class StockAdjustmentService(
     BaseService[StockAdjustment, StockAdjustmentCreate, StockAdjustmentUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(StockAdjustmentRepository)
+        super().__init__(StockAdjustmentRepository())
 
     async def paginate_with_cursors(
         self,
@@ -199,7 +199,7 @@ class StockAdjustmentService(
 
         filters = {sa.or_: _or_}
 
-        return super().paginate_with_cursors(
+        return await super().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

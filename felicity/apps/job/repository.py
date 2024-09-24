@@ -7,7 +7,7 @@ class JobRepository(BaseRepository[Job]):
         super().__init__(Job)
 
     async def fetch_sorted(self, filters: dict, sort: str):
-        stmt = self.queryset.smart_query(
+        stmt = (getattr(self, "queryset")).smart_query(
             filters=filters,
             sort_attrs=sort,
         )

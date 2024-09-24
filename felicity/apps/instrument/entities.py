@@ -1,10 +1,9 @@
-from datetime import datetime
-
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
 from felicity.apps.user.entities import User
+from felicity.core.dtz import timenow_dt
 
 """
  Many to Many Link between Method and Instruments
@@ -127,7 +126,7 @@ class CalibrationCertificate(BaseEntity):
 
     @property
     async def is_valid(self):
-        return datetime.now() < self.valid_to_date
+        return timenow_dt() < self.valid_to_date
 
 
 # class MethodValidation(BaseEntity):
@@ -180,7 +179,7 @@ class InstrumentCompetence(BaseEntity):
 
     @property
     async def is_valid(self):
-        return datetime.now() < self.expiry_date
+        return timenow_dt() < self.expiry_date
 
 
 # class MeasurementUncertainty(BaseEntity):

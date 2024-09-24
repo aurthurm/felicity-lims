@@ -222,7 +222,7 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def country_by_uid(self, info, uid: str) -> CountryType:
-        country = await CountryService().get(uid)
+        country = await CountryService().get(uid=uid)
         return country
 
     unit_all: List[UnitType] = strawberry.field(
@@ -231,5 +231,5 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def unit_by_uid(self, info, uid: str) -> UnitType:
-        unit = await UnitService().get(uid)
+        unit = await UnitService().get(uid=uid)
         return unit

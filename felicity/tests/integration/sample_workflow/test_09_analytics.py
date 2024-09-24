@@ -13,7 +13,7 @@
 # @pytest.mark.asyncio
 # @pytest.mark.order(100)
 # async def test_generate_report(app_gql, auth_data):
-#     time_now = datetime.now()
+#     time_now = timenow_dt()
 #     period_start = (time_now - timedelta(minutes=5)).isoformat()
 #     period_end = time_now.isoformat()
 #     response = await app_gql.post(

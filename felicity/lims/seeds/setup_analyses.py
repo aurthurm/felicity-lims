@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 from felicity.apps.analysis import utils
 from felicity.apps.analysis.entities.analysis import analysis_profile
@@ -24,8 +23,8 @@ from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.setup.schemas import UnitCreate
 from felicity.apps.setup.services import DepartmentService, UnitService
 from felicity.core.config import get_settings
-
 from .data import get_seeds
+from ...core.dtz import timenow_dt
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
@@ -56,6 +55,9 @@ async def seed_categories():
     analysis_category_service = AnalysisCategoryService()
 
     data = get_seeds("analyses")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     categories = data.get("categories", [])
 
@@ -71,6 +73,9 @@ async def seed_qc_levels() -> None:
     qc_level_service = QCLevelService()
 
     data = get_seeds("analyses")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     qc_levels = data.get("qc_levels", [])
 
@@ -86,6 +91,9 @@ async def seed_id_sequence() -> None:
     iq_sequence_service = IdSequenceService()
 
     data = get_seeds("analyses")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     sample_types = data.get("sample_types", [])
 
@@ -96,7 +104,7 @@ async def seed_id_sequence() -> None:
         if st_abbr not in prefix_keys:
             prefix_keys.append(st_abbr)
 
-    prefix_year = str(datetime.now().year)[2:]
+    prefix_year = str(timenow_dt().year)[2:]
     id_prefixes = [f"{prefix_key}{prefix_year}" for prefix_key in prefix_keys]
 
     for prefix in id_prefixes:
@@ -128,6 +136,9 @@ async def seed_sample_types() -> None:
     sample_type_service = SampleTypeService()
 
     data = get_seeds("analyses")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     sample_types = data.get("sample_types", [])
 
@@ -155,6 +166,9 @@ async def seed_analyses_services_and_profiles() -> None:
     profile_servide = ProfileService()
 
     data = get_seeds("analyses")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     analyses = data.get("analyses", [])
 
@@ -195,7 +209,7 @@ async def seed_analyses_services_and_profiles() -> None:
             if anal and anal.uid not in [a.uid for a in p_analyses]:
                 await profile_servide.repository.table_insert(
                     analysis_profile,
-                    mappings={"analysis_uid": anal.uid, "profile_uid": a_profile.uid},
+                    mappings=[{"analysis_uid": anal.uid, "profile_uid": a_profile.uid}],
                 )
 
         await utils.billing_setup_profiles([a_profile.uid])
@@ -206,6 +220,9 @@ async def seed_rejection_reasons() -> None:
     rejection_reason_service = RejectionReasonService()
 
     data = get_seeds("analyses")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     rejection_reasons = data.get("rejection_reasons", [])
 

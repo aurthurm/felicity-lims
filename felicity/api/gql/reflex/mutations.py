@@ -224,7 +224,7 @@ class ReflexRuleMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        reflex_action = await ReflexActionService().get_related(
+        reflex_action = await ReflexActionService().get(
             uid=uid, related=["analyses"]
         )
         if not reflex_action:
@@ -343,7 +343,7 @@ class ReflexRuleMutations:
 
             await ReflexBrainActionService().save(action)
 
-        brain = await ReflexBrainService().get_related(
+        brain = await ReflexBrainService().get(
             related=["conditions.criteria", "actions.add_new", "actions.finalise"],
             uid=brain.uid,
         )

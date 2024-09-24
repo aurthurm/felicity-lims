@@ -17,14 +17,14 @@ from felicity.apps.analysis.schemas import (
 
 class QCSetService(BaseService[QCSet, QCSetCreate, QCSetUpdate]):
     def __init__(self):
-        super().__init__(QCSetRepository)
+        super().__init__(QCSetRepository())
 
 
 class QCLevelService(BaseService[QCLevel, QCLevelCreate, QCLevelUpdate]):
     def __init__(self):
-        super().__init__(QCLevelRepository)
+        super().__init__(QCLevelRepository())
 
 
 class QCTemplateService(BaseService[QCTemplate, QCTemplateCreate, QCTemplateUpdate]):
     def __init__(self):
-        super().__init__(QCTemplateRepository)
+        super().__init__(QCTemplateRepository())

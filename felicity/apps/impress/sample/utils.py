@@ -31,7 +31,8 @@ exclude = [
 ]
 
 
-async def impress_samples(sample_meta: List[any], user):
+#TODO: Use pydantic to handle expected or structured inputs
+async def impress_samples(sample_meta: list[dict], user):
     laboratory = await get_laboratory()
     to_return = []
 

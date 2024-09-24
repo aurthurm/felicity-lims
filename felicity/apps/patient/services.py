@@ -24,7 +24,7 @@ class IdentificationService(
     BaseService[Identification, IdentificationCreate, IdentificationUpdate]
 ):
     def __init__(self):
-        super().__init__(IdentificationRepository)
+        super().__init__(IdentificationRepository())
 
 
 class PatientIdentificationService(
@@ -33,15 +33,15 @@ class PatientIdentificationService(
     ]
 ):
     def __init__(self):
-        super().__init__(PatientIdentificationRepository)
+        super().__init__(PatientIdentificationRepository())
 
 
 class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
     def __init__(self):
         self.id_sequence_service = IdSequenceService()
-        super().__init__(PatientRepository)
+        super().__init__(PatientRepository())
 
-    async def search(self, query_string: str) -> list[Patient]:
+    async def search(self, query_string: str | None = None) -> list[Patient]:
         filters = {
             "first_name": query_string,
             "middle_name": query_string,
@@ -54,7 +54,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return await super().search(**filters)
 
     async def create(
-        self, obj_in: dict | PatientCreate, related: list[str] = None
+        self, obj_in: dict | PatientCreate, related: list[str] | None = None
     ) -> Patient:
         data = self._import(obj_in)
         data["patient_id"] = (

@@ -42,7 +42,7 @@ class MethodService(
     def __init__(
         self,
     ):
-        super().__init__(MethodRepository)
+        super().__init__(MethodRepository())
 
 
 class InstrumentTypeService(
@@ -51,7 +51,7 @@ class InstrumentTypeService(
     def __init__(
         self,
     ):
-        super().__init__(InstrumentTypeRepository)
+        super().__init__(InstrumentTypeRepository())
 
 
 class InstrumentService(
@@ -60,7 +60,7 @@ class InstrumentService(
     def __init__(
         self,
     ):
-        super().__init__(InstrumentRepository)
+        super().__init__(InstrumentRepository())
 
 
 class LaboratoryInstrumentService(
@@ -71,7 +71,7 @@ class LaboratoryInstrumentService(
     def __init__(
         self,
     ):
-        super().__init__(LaboratoryInstrumentRepository)
+        super().__init__(LaboratoryInstrumentRepository())
 
 
 class InstrumentCalibrationService(
@@ -83,7 +83,7 @@ class InstrumentCalibrationService(
         self,
     ):
         self.id_service = IdSequenceService()
-        super().__init__(InstrumentCalibrationRepository)
+        super().__init__(InstrumentCalibrationRepository())
 
     async def create(
         self, obj_in: dict | InstrumentCalibrationCreate
@@ -103,7 +103,7 @@ class CalibrationCertificateService(
     def __init__(
         self,
     ):
-        super().__init__(CalibrationCertificateRepository)
+        super().__init__(CalibrationCertificateRepository())
 
 
 class InstrumentCompetenceService(
@@ -114,4 +114,4 @@ class InstrumentCompetenceService(
     def __init__(
         self,
     ):
-        super().__init__(InstrumentCompetenceRepository)
+        super().__init__(InstrumentCompetenceRepository())

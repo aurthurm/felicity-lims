@@ -115,6 +115,7 @@ class Snowflake:
         """
         return "%16x" % int(self)
 
+
 # Usage
 # sf = Snowflake()
 # flake = next(sf)

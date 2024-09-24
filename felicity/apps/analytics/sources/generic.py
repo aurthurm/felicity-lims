@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from typing import Any, Generic, List, Optional, Tuple, Type, TypeVar
 
@@ -23,8 +24,8 @@ class EntityAnalyticsInit(Generic[ModelType]):
 
     async def get_line_listing(
         self,
-        period_start: str,
-        period_end: str,
+        period_start: str | datetime,
+        period_end: str | datetime,
         sample_states: list[str],
         date_column: str,
         analysis_uids: List[str],
@@ -113,8 +114,8 @@ class EntityAnalyticsInit(Generic[ModelType]):
     async def get_counts_group_by(
         self,
         group_by: str,
-        start: Optional[Tuple[str, str]],
-        end: Optional[Tuple[str, str]],
+        start: Optional[Tuple[str, str]] = None,
+        end: Optional[Tuple[str, str]] = None,
         group_in: list[str] | None = None,
     ):  # noqa
         if not hasattr(self.model, group_by):

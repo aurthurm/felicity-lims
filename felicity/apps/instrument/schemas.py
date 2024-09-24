@@ -1,3 +1,4 @@
+from dataclasses import field
 from datetime import datetime
 from typing import List, Optional
 
@@ -164,7 +165,7 @@ class InstrumentCalibrationUpdate(InstrumentCalibrationBase):
 
 
 class InstrumentCalibrationInDBBase(InstrumentCalibrationBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -209,7 +210,7 @@ class CalibrationCertificateUpdate(CalibrationCertificateBase):
 
 
 class CalibrationCertificateInDBBase(CalibrationCertificateBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -251,7 +252,7 @@ class InstrumentCompetenceUpdate(InstrumentCompetenceBase):
 
 
 class InstrumentCompetenceInDBBase(InstrumentCompetenceBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -272,10 +273,10 @@ class InstrumentCompetenceInDB(InstrumentCompetenceInDBBase):
 
 # Shared properties
 class MethodBase(BaseModel):
-    name: str = None
-    description: str = None
-    keyword: str = None
-    instruments: Optional[List[Instrument]] = []
+    name: str | None = None
+    description: str | None = None
+    keyword: str | None = None
+    instruments: Optional[List[Instrument]] = field(default_factory=list)
 
 
 # Properties to receive via API on creation
@@ -289,7 +290,7 @@ class MethodUpdate(MethodBase):
 
 
 class MethodInDBBase(MethodBase):
-    uid: str = None
+    uid: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

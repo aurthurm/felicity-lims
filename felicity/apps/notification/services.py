@@ -31,7 +31,7 @@ class ActivityFeedService(
     BaseService[ActivityFeed, ActivityFeedCreate, ActivityFeedUpdate]
 ):
     def __init__(self):
-        super().__init__(ActivityFeedRepository)
+        super().__init__(ActivityFeedRepository())
 
     async def reset_subscribers(self, activity_feed: ActivityFeed) -> ActivityFeed:
         activity_feed.subscribers.clear()
@@ -56,7 +56,7 @@ class ActivityStreamService(
     BaseService[ActivityStream, ActivityStreamCreate, ActivityStreamUpdate]
 ):
     def __init__(self):
-        super().__init__(ActivityStreamRepository)
+        super().__init__(ActivityStreamRepository())
 
     async def stream(
         self,
@@ -64,7 +64,7 @@ class ActivityStreamService(
         actor: User,
         verb: str,
         object_type: str,
-        feeds: List[ActivityFeed] = None,
+        feeds: List[ActivityFeed] | None = None,
     ):
         if feeds is None:
             feeds = []
@@ -131,7 +131,7 @@ class NotificationService(
     BaseService[Notification, NotificationCreate, NotificationUpdate]
 ):
     def __init__(self):
-        super().__init__(NotificationRepository)
+        super().__init__(NotificationRepository())
 
     async def notify(self, message: str, users, departments=None, groups=None) -> None:
         n_in = NotificationCreate(message=message)
@@ -180,7 +180,7 @@ class NotificationService(
     async def add_viewer(self, notification: Notification, user: User) -> Notification:
         if user not in notification.viewers:
             notification.viewers.append(user)
-            return await super().save(notification)
+            notification = await super().save(notification)
         return notification
 
     async def reset_departments(self, notification: Notification) -> Notification:
@@ -196,9 +196,9 @@ class NotificationService(
     async def add_department(
         self, notification: Notification, department: Department
     ) -> Notification:
-        if department not in self.departments:
+        if department not in notification.departments:
             notification.departments.append(department)
-            return await super().save(notification)
+            notification = await super().save(notification)
         return notification
 
     async def reset_groups(self, notification: Notification) -> Notification:
@@ -214,8 +214,8 @@ class NotificationService(
     async def add_group(self, notification: Notification, group: Group) -> Notification:
         if group not in notification.groups:
             notification.groups.append(group)
-            return await super().save(notification)
-        return self
+            notification = await super().save(notification)
+        return notification
 
     async def reset_users(self, notification: Notification) -> Notification:
         notification.users.clear()
@@ -229,6 +229,6 @@ class NotificationService(
 
     async def add_user(self, notification: Notification, user: Group) -> Notification:
         if user not in notification.users:
-            self.users.append(user)
-            return await super().save(notification)
+            notification.users.append(user)
+            notification = await super().save(notification)
         return notification

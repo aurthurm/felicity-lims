@@ -76,7 +76,7 @@ class ActivityStreamType:
             return WorkSheetType(**ws.marshal_simple())
 
         if self.action_object_type == "result":
-            result = await AnalysisResultService().get_related(
+            result = await AnalysisResultService().get(
                 related=["sample"], uid=self.action_object_uid
             )
             return AnalysisResultType(

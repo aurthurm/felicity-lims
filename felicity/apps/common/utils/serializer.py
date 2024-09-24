@@ -2,24 +2,18 @@ from datetime import datetime
 from enum import Enum
 
 
-# from felicity.core.dtz import format_datetime
 
-
-def marshaller(
-    obj, path=None, memoize=None, exclude: list[str] = None, depth=2
+def _marshall_object(
+    obj, path: list[str] | None = None, memoize: dict | None=None, exclude: list[str] | None = None, depth: int = 2
 ) -> dict | str:
     """
     Custom marshaller function to convert objects to dictionaries or strings with proper handling for
     StrEnum, datetime, and other custom objects.
     """
-    if memoize is None:
-        memoize = {}
-
-    if path is None:
-        path = []
-
-    if exclude is None:
-        exclude = []
+    
+    path = path or []
+    memoize = memoize or {}
+    exclude = exclude or []
 
     if id(obj) in memoize:
         return memoize[id(obj)]
@@ -62,3 +56,18 @@ def marshaller(
 
     memoize[id(obj)] = result
     return result
+
+
+def marshaller(
+    obj, path: list[str] | None = None, memoize: dict | None=None, exclude: list[str] | None = None, depth: int = 2
+) -> dict:
+    
+    if isinstance(obj, str):
+        raise TypeError("Unsupported object of type 'str'")
+    
+    output =_marshall_object(obj, path, memoize, exclude, depth)
+
+    if isinstance(output, str):
+        raise TypeError("Unexpected return type 'str' while marshalling")
+
+    return output

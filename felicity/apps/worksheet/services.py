@@ -28,7 +28,7 @@ class WorkSheetTemplateService(
     BaseService[WorkSheetTemplate, WSTemplateCreate, WSTemplateUpdate]
 ):
     def __init__(self):
-        super().__init__(WorkSheetTemplateRepository)
+        super().__init__(WorkSheetTemplateRepository())
 
 
 class WorkSheetService(BaseService[WorkSheet, WorkSheetCreate, WorkSheetUpdate]):
@@ -37,7 +37,7 @@ class WorkSheetService(BaseService[WorkSheet, WorkSheetCreate, WorkSheetUpdate])
     def __init__(self):
         self.analysis_result_service = AnalysisResultService()
         self.activity_streamer = ActivityStreamService()
-        super().__init__(WorkSheetRepository)
+        super().__init__(WorkSheetRepository())
 
     async def get_analysis_results(self, uid: str):
         results: List[AnalysisResult] = []
@@ -103,7 +103,7 @@ class WorkSheetService(BaseService[WorkSheet, WorkSheetCreate, WorkSheetUpdate])
         return worksheet
 
     async def create(
-        self, obj_in: dict | WorkSheetCreate, related: list[str] = None
+        self, obj_in: dict | WorkSheetCreate, related: list[str] | None = None
     ) -> WorkSheet:
         data = self._import(obj_in)
         data["worksheet_id"] = (await self.id_sequence_service.get_next_number("WS"))[1]

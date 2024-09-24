@@ -1,5 +1,6 @@
 from requests import Request
 
+from felicity.apps.impress.shipment.utils import gen_pdf_manifest
 from felicity.apps.iol.fhir.schema import (
     BundleResource,
     DiagnosticReportResource,
@@ -78,7 +79,7 @@ class FhirCreateService:
         shipment = await self.shipment_service.create(s_in)
 
         try:
-            await self.shipment_service.gen_pdf_manifest(
+            await gen_pdf_manifest(
                 payload.extension[3].data.get("data", None), shipment
             )
         except Exception:

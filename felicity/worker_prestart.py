@@ -1,6 +1,6 @@
 import logging
 
-from lims import check_db_conn_status
+from felicity.lims.checks import check_db_conn_status
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

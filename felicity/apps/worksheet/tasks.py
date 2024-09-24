@@ -160,7 +160,7 @@ async def populate_worksheet_plate(job_uid: str):
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")
 
 
-def get_sample_position(reserved, level_uid) -> int:
+def get_sample_position(reserved: dict, level_uid: str) -> int:
     if not reserved:
         return 0
 
@@ -314,7 +314,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
     worksheet_service = WorkSheetService()
     analysis_result_service = AnalysisResultService()
     qc_template_service = QCTemplateService()
-    sample_service = SampleService()
+    analysis_result_wf = AnalysisResultWorkFlow()
 
     job = await job_service.get(uid=job_uid)
     if not job:
@@ -384,7 +384,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
                 # skip reserved ?qc positions
                 position += 1
 
-            await sample_service.assign(sample.uid, ws.uid, position, None)
+            await analysis_result_wf.assign(sample.uid, ws.uid, position, None)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
@@ -418,7 +418,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
         samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
-            await sample_service.assign(
+            await analysis_result_wf.assign(
                 samples[key].uid, ws.uid, empty_positions[key], None
             )
 

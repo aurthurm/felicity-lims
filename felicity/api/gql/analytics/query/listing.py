@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.analytics import types
 from felicity.apps.analysis.entities.analysis import Sample
-from felicity.apps.analytics import SampleAnalyticsInit
+from felicity.apps.analytics import EntityAnalyticsInit
 from felicity.apps.instrument.services import InstrumentService
 from felicity.apps.user.services import UserService
 from felicity.utils import has_value_or_is_truthy
@@ -35,7 +35,7 @@ async def get_instrument(val):
 
 @strawberry.field
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
-    analytics = SampleAnalyticsInit(Sample)
+    analytics = EntityAnalyticsInit(Sample)
     results = await analytics.get_counts_group_by("status")
 
     stats = []

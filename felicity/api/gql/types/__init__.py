@@ -24,4 +24,4 @@ generic_types = [
     SuccessErrorResponse,
 ]
 
-__all__ = ['generic_types']
+__all__ = ["generic_types"]

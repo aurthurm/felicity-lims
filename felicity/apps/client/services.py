@@ -11,9 +11,9 @@ from felicity.apps.client.schemas import (
 
 class ClientService(BaseService[Client, ClientCreate, ClientUpdate]):
     def __init__(self):
-        super().__init__(ClientRepository)
+        super().__init__(ClientRepository())
 
-    async def search(self, query: str) -> list[Client]:
+    async def search(self, query: str | None = None) -> list[Client]:
         return await super().search(name=query, code=query)
 
 
@@ -21,4 +21,4 @@ class ClientContactService(
     BaseService[ClientContact, ClientContactCreate, ClientContactUpdate]
 ):
     def __init__(self):
-        super().__init__(ClientContactRepository)
+        super().__init__(ClientContactRepository())

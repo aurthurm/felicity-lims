@@ -1,4 +1,5 @@
-from typing import Any, ForwardRef, List, Optional
+from __future__ import annotations
+from typing import Any, List, Optional
 
 from pydantic import BaseModel, field_validator
 
@@ -37,8 +38,6 @@ class Period(BaseModel):
     # C? End time with inclusive boundary, if not ongoing
     end: str | None = None
 
-
-Reference = ForwardRef("Identifier")
 
 
 class Reference(BaseModel):  # noqa F811

@@ -1,20 +1,22 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.job.entities import Job
 from felicity.apps.job.enum import JobPriority, JobState
 from felicity.apps.job.repository import JobRepository
 from felicity.apps.job.schemas import JobCreate, JobUpdate
+from felicity.core.dtz import timenow_dt
 
 
 class JobService(BaseService[Job, JobCreate, JobUpdate]):
     def __init__(self):
-        super().__init__(JobRepository)
+        self.repository: JobRepository = JobRepository()
+        super().__init__(self.repository)
 
     async def backoff(self, uid: str, minutes: int = 5, max_retries: int = 5):
         job = await self.get(uid=uid)
         bck = minutes * job.retries
-        job.next_try = datetime.now() + timedelta(minutes=bck)
+        job.next_try = timenow_dt() + timedelta(minutes=bck)
 
         if job.retries >= max_retries + 1:
             job.status = JobState.FAILED
@@ -31,7 +33,7 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
                 JobState.RUNNING,
             ]
         }
-        sort_attrs = ("-priority",)
+        sort_attrs = ["-priority",]
         return await self.repository.filter(filters=filters, sort_attrs=sort_attrs)
 
     async def change_status(self, uid: str, new_status, change_reason=""):

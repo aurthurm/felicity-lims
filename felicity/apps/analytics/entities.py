@@ -1,10 +1,8 @@
-from typing import NoReturn
-
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
-from . import enum
+from felicity.apps.analytics.enum import ReportState
 
 """
 Many to Many Link between ReportMeta and Analysis
@@ -32,8 +30,8 @@ class ReportMeta(BaseEntity):
     status = Column(String)
     sample_states = Column(String)
 
-    async def set_final(self, status: str, location: str | None = None) -> NoReturn:
-        if self.status != enum.report_states.READY:
+    async def set_final(self, status: str, location: str | None = None) -> None:
+        if self.status != ReportState.READY:
             self.location = location
             self.status = status
             self.temp = None

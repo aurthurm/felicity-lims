@@ -52,56 +52,56 @@ class AnalysisPriceService(
     BaseService[AnalysisPrice, AnalysisPriceCreate, AnalysisPriceUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(AnalysisPriceRepository)
+        super().__init__(AnalysisPriceRepository())
 
 
 class ProfilePriceService(
     BaseService[ProfilePrice, ProfilePriceCreate, ProfilePriceUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(ProfilePriceRepository)
+        super().__init__(ProfilePriceRepository())
 
 
 class AnalysisDiscountService(
     BaseService[AnalysisDiscount, AnalysisDiscountCreate, AnalysisDiscountUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(AnalysisDiscountRepository)
+        super().__init__(AnalysisDiscountRepository())
 
 
 class ProfileDiscountService(
     BaseService[ProfileDiscount, ProfileDiscountCreate, ProfileDiscountUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(ProfileDiscountRepository)
+        super().__init__(ProfileDiscountRepository())
 
 
 class VoucherService(BaseService[Voucher, VoucherCreate, VoucherUpdate]):
     def __init__(self) -> None:
-        super().__init__(VoucherRepository)
+        super().__init__(VoucherRepository())
 
 
 class VoucherCodeService(
     BaseService[VoucherCode, VoucherCodeCreate, VoucherCodeUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(VoucherCodeRepository)
+        super().__init__(VoucherCodeRepository())
 
 
 class VoucherCustomerService(
     BaseService[VoucherCustomer, VoucherCustomerCreate, VoucherCustomerUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(VoucherCustomerRepository)
+        super().__init__(VoucherCustomerRepository())
 
 
 class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
     def __init__(self) -> None:
         self.id_sequence_servce = IdSequenceService()
-        super().__init__(TestBillRepository)
+        super().__init__(TestBillRepository())
 
     async def create(
-        self, obj_in: dict | TestBillCreate, related: list[str] = None
+        self, obj_in: dict | TestBillCreate, related: list[str] | None = None
     ) -> "TestBill":
         data = self._import(obj_in)
         data["bill_id"] = (
@@ -116,11 +116,11 @@ class TestBillTransactionService(
     ]
 ):
     def __init__(self) -> None:
-        super().__init__(TestBillTransactionRepository)
+        super().__init__(TestBillTransactionRepository())
 
 
 class TestBillInvoiceService(
     BaseService[TestBillInvoice, TestBillInvoiceCreate, TestBillInvoiceUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(TestBillInvoiceRepository)
+        super().__init__(TestBillInvoiceRepository())

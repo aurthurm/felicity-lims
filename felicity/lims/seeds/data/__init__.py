@@ -6,7 +6,7 @@ from felicity.utils.loader import json_from_file
 
 
 @lru_cache
-def load_seed_files() -> dict[str, dict | list]:
+def load_seed_files() -> dict:
     data = dict()
     for _f in [
         "analyses",
@@ -21,5 +21,5 @@ def load_seed_files() -> dict[str, dict | list]:
     return data
 
 
-def get_seeds(name: str) -> dict[str, Any] | list:
-    return load_seed_files().get(name, None)
+def get_seeds(name: str) -> dict | None:
+    return load_seed_files().get(name)

@@ -245,10 +245,9 @@ class ShipmentMutations:
         if not payload.name or not payload.code:
             return OperationError(error="Name and Code are mandatory")
 
-        stmt = ReferralLaboratoryService().smart_query(
-            filters={or_: {"name__exact": payload.name, "code__exact": payload.code}}
+        exists = await ReferralLaboratoryService().repository.filter(
+            filters=[{or_: {"name__exact": payload.name, "code__exact": payload.code}}]
         )
-        exists = await ReferralLaboratoryService().from_smart_query(stmt)
         if exists:
             return OperationError(
                 error=f"ReferralLaboratory: {payload.name}, {payload.code} already exists"

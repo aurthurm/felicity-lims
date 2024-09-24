@@ -102,8 +102,8 @@ class LaboratoryInstrumentInputType:
 @strawberry.input
 class MethodInputType:
     name: str
-    instruments: Optional[List[str]] = field(default_factory=list)
-    analyses: Optional[List[str]] = field(default_factory=list)
+    instruments: list[str] | None = field(default_factory=list)
+    analyses: list[str] | None = field(default_factory=list)
     keyword: str | None = None
     description: str | None = ""
 
@@ -151,7 +151,7 @@ class InstrumentCompetenceInput:
 class InstrumentMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_type(
-            self, info, payload: InstrumentTypeInputType
+        self, info, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please a name for your instrument type")
@@ -172,7 +172,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_type(
-            self, info, uid: str, payload: InstrumentTypeInputType
+        self, info, uid: str, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
@@ -197,7 +197,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument(
-            self, info, payload: InstrumentInputType
+        self, info, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
         if not payload.name or not payload.keyword:
             return OperationError(
@@ -226,7 +226,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
@@ -258,7 +258,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_competence(
-            self, info, payload: InstrumentCompetenceInput
+        self, info, payload: InstrumentCompetenceInput
     ) -> InstrumentCompetenceResponse:  # noqa
         instrument = await InstrumentService().get(keyword=payload.instrument_uid)
         if not instrument:
@@ -274,7 +274,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_competence(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCompetenceResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identify instrument")
@@ -299,7 +299,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_laboratory_instrument(
-            self, info, payload: LaboratoryInstrumentInputType
+        self, info, payload: LaboratoryInstrumentInputType
     ) -> LaboratoryInstrumentResponse:  # noqa
         instrument = await InstrumentService().get(uid=payload.instrument_uid)
         if not instrument:
@@ -317,7 +317,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_instrument(
-            self, info, uid: str, payload: LaboratoryInstrumentInputType
+        self, info, uid: str, payload: LaboratoryInstrumentInputType
     ) -> LaboratoryInstrumentResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
@@ -348,7 +348,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_caliberation(
-            self, info, payload: InstrumentCalibrationInput
+        self, info, payload: InstrumentCalibrationInput
     ) -> InstrumentCalibrationResponse:  # noqa
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
@@ -360,7 +360,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_caliberation(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCalibrationResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -387,7 +387,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_caliberation_certificate(
-            self, info, payload: CalibrationCertificateInput
+        self, info, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
@@ -399,7 +399,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_caliberation_certificate(
-            self, info, uid: str, payload: CalibrationCertificateInput
+        self, info, uid: str, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -459,10 +459,10 @@ class InstrumentMutations:
                 _instruments.add(instrument)
                 await MethodService().repository.table_insert(
                     table=method_instrument,
-                    mappings={
+                    mappings=[{
                         "method_uid": method.uid,
                         "instrument_uid": instrument.uid,
-                    },
+                    }],
                 )
 
         for a_uid in payload.analyses:
@@ -471,7 +471,7 @@ class InstrumentMutations:
             if method.uid not in meth_uids:
                 await AnalysisService().repository.table_insert(
                     table=analysis_method,
-                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
+                    mappings=[{"method_uid": method.uid, "analysis_uid": analysis.uid}],
                 )
 
             for inst in method.instruments:
@@ -480,17 +480,17 @@ class InstrumentMutations:
                     analysis.instruments.append(inst)
                     await AnalysisService().repository.table_insert(
                         table=analysis_instrument,
-                        mappings={
+                        mappings=[{
                             "instrument_uid": inst.uid,
                             "analysis_uid": analysis.uid,
-                        },
+                        }],
                     )
 
         return MethodType(**method.marshal_simple(exclude=["instruments", "analyses"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_method(
-            self, info, uid: str, payload: MethodInputType
+        self, info, uid: str, payload: MethodInputType
     ) -> MethodResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -555,7 +555,7 @@ class InstrumentMutations:
                 analysis = await AnalysisService().get(uid=_anal)
                 await AnalysisService().repository.table_insert(
                     table=analysis_method,
-                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
+                    mappings=[{"method_uid": method.uid, "analysis_uid": analysis.uid}],
                 )
 
         return MethodType(**method.marshal_simple())

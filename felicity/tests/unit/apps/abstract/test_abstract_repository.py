@@ -222,7 +222,7 @@ async def test_related(some_test_repo, trial_repo):
     trial = TrialModel(content="Relation trial", test_model_uid=saved_model.uid)
     trial_saved = await trial_repo.save(trial)
 
-    fetched_model = await some_test_repo.get_related(
+    fetched_model = await some_test_repo.get(
         uid=saved_model.uid, related=["trials"]
     )
     assert len(fetched_model.trials) == 1

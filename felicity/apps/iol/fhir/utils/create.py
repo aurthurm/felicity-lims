@@ -15,6 +15,7 @@ from felicity.apps.job.services import JobService
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.schemas import ShipmentCreate
 from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
+from felicity.apps.impress.shipment.utils import gen_pdf_manifest
 from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
@@ -76,8 +77,6 @@ async def create_inbound_shipment(
     shipment = await shipment_service.create(s_in)
 
     try:
-        from felicity.apps.impress.shipment.utils import gen_pdf_manifest
-
         await gen_pdf_manifest(payload.extension[3].data.get("data", None), shipment)
     except Exception:
         pass

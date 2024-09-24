@@ -1,15 +1,17 @@
-[
-  {
-    "name": "Eastern Hills",
-    "code": "XX78555",
-    "district": "Bikita",
-    "province": "Masvingo"
-  },
-  {
-    "name": "Klinger Coastline Med",
-    "code": "KCS7866",
-    "district": "Chimanimani",
-    "province": "Manicaland"
-  }
-
-]
+{
+  "clients": [
+    {
+      "name": "Eastern Hills",
+      "code": "XX78555",
+      "district": "Bikita",
+      "province": "Masvingo"
+    },
+    {
+      "name": "Klinger Coastline Med",
+      "code": "KCS7866",
+      "district": "Chimanimani",
+      "province": "Manicaland"
+    }
+  
+  ]
+}

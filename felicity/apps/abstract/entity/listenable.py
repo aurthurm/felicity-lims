@@ -20,7 +20,7 @@ class EventListenable:
     @staticmethod
     def put_out(action: str, table_name: str, metadata: Dict[str, Any]) -> None:
         """Handle an event that something has happened"""
-        logger.info(f"Putting out event: {action} for table {table_name}")
+        logger.debug(f"Putting out event: {action} for table {table_name}")
         post_event(
             event_type="entity-tracker",
             action=action,
@@ -30,33 +30,33 @@ class EventListenable:
 
     @classmethod
     def __declare_last__(cls: Type["EventListenable"]) -> None:
-        logger.info(f"Setting up event listeners for {cls.__name__}")
+        logger.debug(f"Setting up event listeners for {cls.__name__}")
         event.listens_for(cls, "after_insert", cls.handle_insert)
         event.listen(cls, "after_update", cls.handle_update)
         event.listen(cls, "after_delete", cls.handle_delete)
 
     @staticmethod
     def handle_insert(mapper: Any, connection: Any, target: "EventListenable") -> None:
-        logger.info(f"Handling insert for {target.__class__.__name__}")
-        target.put_out("after-insert", target.__tablename__, marshaller(target))
+        logger.debug(f"Handling insert for {getattr(target, "__class__").__name__}")
+        target.put_out("after-insert", getattr(target, "__tablename__"), marshaller(target))
 
     @staticmethod
     def handle_delete(mapper: Any, connection: Any, target: "EventListenable") -> None:
-        logger.info(f"Handling delete for {target.__class__.__name__}")
-        target.put_out("after-delete", target.__tablename__, marshaller(target))
+        logger.debug(f"Handling delete for {getattr(target, "__class__").__name__}")
+        target.put_out("after-delete", getattr(target, "__tablename__"), marshaller(target))
 
     @staticmethod
     def handle_update(mapper: Any, connection: Any, target: "EventListenable") -> None:
-        logger.info(f"Handling update for {target.__class__.__name__}")
-        target.put_out("after-update", target.__tablename__, target.get_changes(target))
+        logger.debug(f"Handling update for {getattr(target, "__class__").__name__}")
+        target.put_out("after-update", getattr(target, "__tablename__"), target.get_changes(target))
 
     @staticmethod
     def get_changes(target: "EventListenable") -> Dict[str, Any]:
-        logger.info(f"Getting changes for {target.__class__.__name__}")
+        logger.info(f"Getting changes for {getattr(target, "__class__").__name__}")
         state_before: Dict[str, Any] = {}
         state_after: Dict[str, Any] = {}
         inspector = inspect(target)
-        attrs = class_mapper(target.__class__).column_attrs
+        attrs = class_mapper(getattr(target, "__class__")).column_attrs
 
         for attr in attrs:
             hist = getattr(inspector.attrs, attr.key).history
@@ -71,7 +71,7 @@ class EventListenable:
                     try:
                         state_before[attr.key] = get_history(target, attr.key)[2].pop()
                     except Exception:
-                        logger.warning(
+                        logger.debug(
                             f"No history for {attr.key}, using current value"
                         )
                         state_before[attr.key] = getattr(target, attr.key)
@@ -91,11 +91,8 @@ class EventListenable:
             logger.info("Only updated_at changed, returning empty dict")
             return {}
 
-        logger.info(
-            f"Changes detected for {target.__class__.__name__}: {len(state_after)} fields changed"
-        )
         return {
-            "uid": target.uid,
+            "uid": getattr(target, "uid"),
             "state_before": state_before,
             "state_after": state_after,
         }

@@ -32,8 +32,8 @@ class AnalysisInputType:
     sort_key: int
     description: str = ""
     department_uid: str | None = None
-    sample_types: Optional[List[str]] = field(default_factory=list)
-    methods: Optional[List[str]] = field(default_factory=list)
+    sample_types: list[str] | None = field(default_factory=list)
+    methods: list[str] | None = field(default_factory=list)
     category_uid: str | None = None
     unit_uid: str | None = None
     internal_use: bool | None = False
@@ -96,14 +96,14 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
         for st_uid in payload.sample_types:
             await AnalysisService().repository.table_insert(
                 table=analysis_sample_type,
-                mappings={"sample_type_uid": st_uid, "analysis_uid": analysis.uid},
+                mappings=[{"sample_type_uid": st_uid, "analysis_uid": analysis.uid}],
             )
 
     if payload.methods:
         for m_uid in payload.methods:
             await AnalysisService().repository.table_insert(
                 table=analysis_method,
-                mappings={"method_uid": m_uid, "analysis_uid": analysis.uid},
+                mappings=[{"method_uid": m_uid, "analysis_uid": analysis.uid}],
             )
 
     analysis = await AnalysisService().get(uid=analysis.uid)
@@ -154,7 +154,7 @@ async def update_analysis(
             meth = await MethodService().get(uid=_uid)
             await MethodService().repository.table_insert(
                 table=analysis_method,
-                mappings={"method_uid": meth.uid, "analysis_uid": analysis.uid},
+                mappings=[{"method_uid": meth.uid, "analysis_uid": analysis.uid}],
             )
         analysis = await AnalysisService().get(uid=analysis.uid)
 

@@ -110,7 +110,7 @@ def strtobool(val):
         raise ValueError("invalid truth value %r" % (val,))
 
 
-def clean_paths(obj: dict) -> dict:
+def clean_paths(obj: dict) -> dict | None:
     paths = [
         "profiles.analyses.profiles",
         "analyses.profiles.analyses",

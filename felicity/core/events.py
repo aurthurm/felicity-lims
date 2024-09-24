@@ -5,7 +5,7 @@ import traceback
 from asyncio import create_task, gather, Lock as ALock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
-from typing import Callable, List, Dict, Any
+from typing import Callable, List, Dict, Any, Tuple
 
 # Initialize logger
 logging.basicConfig(level=logging.INFO)
@@ -18,7 +18,7 @@ async_lock = ALock()  # Asynchronous lock
 
 def partition_functions(
     functions: List[Callable[..., Any]],
-) -> (List[Callable[..., Any]], List[Callable[..., Any]]):
+) -> Tuple[List[Callable[..., Any]], List[Callable[..., Any]]]:
     async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]
     sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]
     return async_funcs, sync_funcs

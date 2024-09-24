@@ -22,14 +22,14 @@ class ReferralLaboratoryService(
     BaseService[ReferralLaboratory, ReferralLaboratoryCreate, ReferralLaboratoryUpdate]
 ):
     def __init__(self):
-        super().__init__(ReferralLaboratoryRepository)
+        super().__init__(ReferralLaboratoryRepository())
 
 
 class ShippedSampleService(
     BaseService[ShippedSample, ShippedSampleCreate, ShippedSampleUpdate]
 ):
     def __init__(self):
-        super().__init__(ShippedSampleRepository)
+        super().__init__(ShippedSampleRepository())
 
 
 class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
@@ -37,7 +37,7 @@ class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
         self.id_sequence_service = IdSequenceService()
         self.shipped_sample_service = ShipmentRepository()
         self.activity_service = ActivityStreamService()
-        super().__init__(ShipmentRepository)
+        super().__init__(ShipmentRepository())
 
     async def set_flow(self, uid: str, flow: bool = False):
         """Set whether the flow is incoming or outgoing"""
@@ -57,31 +57,30 @@ class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
         )
 
     async def finalise(self, uid: str, finaliser):
-        if self.state == ShipmentState.PREPERATION:
-            saved = await super().update(
+        shipment = await self.get(uid=uid)
+        if shipment.state == ShipmentState.PREPERATION:
+            shipment = await super().update(
                 uid, {"state": ShipmentState.READY, "updated_by_uid": finaliser.uid}
             )
             await self.activity_service.stream(
-                saved, finaliser, "finalised", "shipment"
+                shipment, finaliser, "finalised", "shipment"
             )
-            return saved
-        return self
+        return shipment
 
     async def dispatch(self, uid: str, dispatcher):
-        if self.state == ShipmentState.READY:
-            self.state = ShipmentState.AWAITING
+        shipment = await self.get(uid=uid)
+        if shipment.state == ShipmentState.READY:
             self.dispatched_by_uid = dispatcher.uid  # noqa
-            saved = await super().update(
+            shipment = await super().update(
                 uid, {"state": ShipmentState.READY, "dispatched_by_uid": dispatcher.uid}
             )
             await self.activity_service.stream(
-                saved, dispatcher, "dispatched", "shipment"
+                shipment, dispatcher, "dispatched", "shipment"
             )
-            return saved
-        return self
+        return shipment
 
     async def create(
-        self, obj_in: dict | ShipmentCreate, related: list[str] = None
+        self, obj_in: dict | ShipmentCreate, related: list[str] | None = None
     ) -> Shipment:
         data = self._import(obj_in)
         data["shipment_id"] = (await self.id_sequence_service.get_next_number("SHIP"))[

@@ -91,6 +91,9 @@ async def dispatch_shipment(job_uid: str, by_uid=None):
         return None
 
     resource = await get_shipment_bundle_resource(shipment_uid)
+    if not resource:
+        raise Exception("Failed to get Shipment bundle resource")
+    
     success = await post_data(
         f"{shipment.laboratory.url}/Bundle",
         resource.model_dump(exclude_none=True),
@@ -136,7 +139,7 @@ async def receive_shipment(job_uid: str):
         logger.warning(f"Failed to acquire Shipment {shipment_uid}")
         return
 
-    await shipment_receive(shipment.uid, job.data, job.creator_uid)
+    await shipment_receive(shipment.uid)
 
     await job_service.change_status(job.uid, new_status=JobState.FINISHED)
     await process_tracker.release(uid=job.uid, object_type=TrackableObject.SHIPMENT)
@@ -187,6 +190,9 @@ async def return_shipped_report(job_uid: str):
     resource = await get_diagnostic_report_resource(
         shipped.sample.analysis_request_uid, result_uids, True
     )
+    if not resource:
+        raise Exception("Failed to get the diagnostic report resource")
+    
     success = await post_data(
         f"{shipment.laboratory.url}DiagnosticReport",
         resource.model_dump(exclude_none=True),

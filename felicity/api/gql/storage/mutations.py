@@ -105,7 +105,7 @@ class StoreSamplesInputType:
 class StorageMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_store_room(
-            self, info, payload: StoreRoomInputType
+        self, info, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
         felicity_user = await auth_from_info(info)
 
@@ -126,7 +126,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_store_room(
-            self, info, uid: str, payload: StoreRoomInputType
+        self, info, uid: str, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
         felicity_user = await auth_from_info(info)
 
@@ -155,7 +155,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_storage_location(
-            self, info, payload: StorageLocationInputType
+        self, info, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -182,7 +182,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_storage_location(
-            self, info, uid: str, payload: StorageLocationInputType
+        self, info, uid: str, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -213,7 +213,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_storage_section(
-            self, info, payload: StorageSectionInputType
+        self, info, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -242,7 +242,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_storage_section(
-            self, info, uid: str, payload: StorageSectionInputType
+        self, info, uid: str, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -273,7 +273,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_storage_container(
-            self, info, payload: StorageContainerInputType
+        self, info, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
         felicity_user = await auth_from_info(info)
 
@@ -303,7 +303,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_storage_container(
-            self, info, uid: str, payload: StorageContainerInputType
+        self, info, uid: str, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
         felicity_user = await auth_from_info(info)
 
@@ -336,7 +336,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def store_samples(
-            info, payload: List[StoreSamplesInputType]
+        info, payload: List[StoreSamplesInputType]
     ) -> StoreSampleResponse:
         felicity_user = await auth_from_info(info)
 
@@ -373,7 +373,7 @@ class StorageMutations:
                     "status": SampleState.STORED,
                     "stored_by_uid": felicity_user.uid,
                 }
-                await SampleService.update(_sample.uid, obj_in=storage_object)
+                await SampleService().update(uid=_sample.uid, update=storage_object)
 
             await StorageContainerService().reset_stored_count(container.uid)
 

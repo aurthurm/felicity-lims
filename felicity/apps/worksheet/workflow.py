@@ -29,7 +29,7 @@ class WorkSheetWorkFlow:
     async def submit(self, uid, submitter):
         worksheet = await self.worksheet_service.get(uid=uid)
         await self._guard_submit(worksheet)
-        return self.worksheet_service.submit(submitter)
+        return self.worksheet_service.submit(worksheet.uid, submitter)
 
     async def _guard_submit(self, worksheet: WorkSheet) -> bool:
         if worksheet.state not in [WorkSheetState.PENDING, WorkSheetState.SUBMITTING]:

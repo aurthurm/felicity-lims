@@ -36,7 +36,7 @@ class MockRepository(BaseRepository[MockEntity]):
 # Define a custom service for testing
 class MockService(BaseService[MockEntity, CreateModel, UpdateModel]):
     def __init__(self):
-        super().__init__(MockRepository)
+        super().__init__(MockRepository())
 
 
 # Define the test fixtures
@@ -104,7 +104,7 @@ async def test_get_by_uids(test_service):
 async def test_get_related(test_service):
     mock_entity = MockEntity(uid="1", name="test", bio="test bio")
     test_service.repository.get_related = AsyncMock(return_value=mock_entity)
-    result = await test_service.get_related(related=["related1"], uid="1")
+    result = await test_service.get(related=["related1"], uid="1")
     assert result == mock_entity
     test_service.repository.get_related.assert_awaited_once_with(
         related=["related1"], uid="1"

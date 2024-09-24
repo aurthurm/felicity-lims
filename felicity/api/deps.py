@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from graphql import GraphQLError
-from jose import jwt
+from jose import jwt, JWTError
 from pydantic import ValidationError
 from strawberry.fastapi import BaseContext
 from strawberry.types.info import Info as StrawberryInfo
@@ -34,7 +34,7 @@ async def _get_user(token: str):
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         token_data = core_schemas.TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
+    except (JWTError, ValidationError):
         return None
 
     return await user_service.get(uid=token_data.sub)

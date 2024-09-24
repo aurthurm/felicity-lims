@@ -1,3 +1,4 @@
+from dataclasses import field
 from datetime import datetime
 from typing import List, Optional
 
@@ -683,8 +684,8 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 class SampleBase(BaseAuditModel):
     analysis_request_uid: str | None = None
     sample_type_uid: str | None = None
-    profiles: Optional[List[Profile]] = []
-    analyses: Optional[List[Analysis]] = []
+    profiles: Optional[List[Profile]] = field(default_factory=list)
+    analyses: Optional[List[Analysis]] = field(default_factory=list)
     sample_id: str | None = None
     priority: int | None = 0
     invalidated_by_uid: str | None = None
@@ -892,8 +893,8 @@ class QCLevelInDB(QCLevelBaseInDB):
 class QCTemplateBase(BaseAuditModel):
     name: str | None = None
     description: str | None = None
-    departments: Optional[List[Department]] = []
-    qc_levels: Optional[List[QCLevel]] = []
+    departments: Optional[List[Department]] = field(default_factory=list)
+    qc_levels: Optional[List[QCLevel]] = field(default_factory=list)
 
 
 class QCTemplateBaseInDB(QCTemplateBase):

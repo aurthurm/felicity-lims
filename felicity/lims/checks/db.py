@@ -2,7 +2,7 @@ import logging
 
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-from felicity.database.session import async_session_factory
+from felicity.database.session import async_session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ wait_seconds = 1
 async def check_db_conn_status() -> None:
     logger.info("Checking database status ...")
     try:
-        session = async_session_factory()
+        session = async_session()
         # Try to create session to check if DB is awake
         await session.execute("SELECT 1")
         await session.close()

@@ -25,12 +25,12 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         super().__init__(Sample)
 
     async def get_line_listing(
-            self,
-            period_start: str,
-            period_end: str,
-            sample_states: list[str],
-            date_column: str,
-            analysis_uids: list[str],
+        self,
+        period_start: str,
+        period_end: str,
+        sample_states: list[str],
+        date_column: str,
+        analysis_uids: list[str],
     ):
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
@@ -49,7 +49,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
                 statuses.append(sample_states[0])
             statuses = tuple(statuses)
         else:
-            statuses = ("", "")  # noqa
+            statuses = ("", "")
 
         stmt = text(
             f"""
@@ -102,12 +102,12 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         return result.keys(), result.all()
 
     async def get_counts_group_by(
-            self,
-            group_by: str,
-            start: tuple[str, str] | None,
-            end: tuple[str, str] | None,
-            group_in: list[str] | None = None,
-    ):  # noqa
+        self,
+        group_by: str,
+        start: tuple[str, str] | None,
+        end: tuple[str, str] | None,
+        group_in: list[str] | None = None,
+    ):
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
             raise AttributeError(f"Model has no attr {group_by}")
@@ -115,7 +115,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
 
         stmt = select(group_by, func.count(self.model.uid).label("total")).filter(
             group_by is not None
-        )  # noqa
+        )
 
         if start[1]:
             start_column = start[0]
@@ -146,10 +146,12 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         return result.all()
 
     async def count_analyses_retests(
-            self, start: tuple[str, str], end: tuple[str, str]
+        self, start: tuple[str, str], end: tuple[str, str]
     ):
         retest = getattr(self.model, "retest")
-        stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)  # noqa E712
+        stmt = select(func.count(self.model.uid).label("total")).filter(
+            retest.is_(True)
+        )  # filter_by(retest=True)
 
         if start[1]:
             start_column = start[0]
@@ -175,7 +177,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         return result.all()
 
     async def get_sample_process_performance(
-            self, start: tuple[str, str], end: tuple[str, str]
+        self, start: tuple[str, str], end: tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -239,7 +241,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
               ) as diff
         """
 
-        stmt = text(raw_sql)  # noqa:
+        stmt = text(raw_sql)  # noqa SQL200
 
         async with self.async_session() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
@@ -247,7 +249,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         return result.all()
 
     async def get_analysis_process_performance(
-            self, start: tuple[str, str], end: tuple[str, str]
+        self, start: tuple[str, str], end: tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -317,7 +319,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
               diff.name
         """
 
-        stmt = text(raw_sql)  # noqa:
+        stmt = text(raw_sql)  # noqa SQL200
 
         async with self.async_session() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
@@ -370,8 +372,8 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
               completed_delayed
         """
 
-        stmt_for_incomplete = text(raw_sql_for_incomplete)  # noqa:
-        stmt_for_complete = text(raw_sql_for_complete)  # noqa:
+        stmt_for_incomplete = text(raw_sql_for_incomplete)  # noqa SQL200
+        stmt_for_complete = text(raw_sql_for_complete)  # noqa SQL200
 
         async with self.async_session() as session:
             result_for_incomplete = await session.execute(stmt_for_incomplete)

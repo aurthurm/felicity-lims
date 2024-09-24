@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class EdgeNode:
-    def __init__(self, cursor: str = None, node: dict = None):
+    def __init__(self, cursor: str | None = None, node: dict | None= None):
         self.cursor = cursor
         self.node = node
 
@@ -14,8 +14,8 @@ class EdgeNode:
 class PageInfo:
     def __init__(
         self,
-        start_cursor: str = None,
-        end_cursor: str = None,
+        start_cursor: str | None = None,
+        end_cursor: str | None = None,
         has_next_page: bool = False,
         has_previous_page: bool = False,
     ):
@@ -29,9 +29,9 @@ class PageCursor:
     def __init__(
         self,
         total_count: int = 0,
-        edges: List[EdgeNode] = None,
-        items: List[dict] = None,
-        page_info: PageInfo = None,
+        edges: List[EdgeNode] | None= None,
+        items: List[dict] | None = None,
+        page_info: PageInfo | None = None,
     ):
         self.total_count = total_count
         self.edges = edges

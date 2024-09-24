@@ -1,13 +1,13 @@
 import pytest
-from datetime import datetime
 import pytest_asyncio
 from sqlalchemy import Column, String
+
+from felicity.apps.abstract.entity import BaseEntity
+from felicity.core.dtz import format_datetime, timenow_dt
 from felicity.database.session import (
     async_engine,
     async_session as async_session_factory,
 )
-from felicity.core.dtz import format_datetime
-from felicity.apps.abstract.entity import BaseEntity
 
 
 class TestEntity(BaseEntity):
@@ -16,7 +16,7 @@ class TestEntity(BaseEntity):
     created_at = Column(
         String,
         default=lambda: format_datetime(
-            datetime.utcnow(), human_format=False, with_time=True
+            timenow_dt(), human_format=False, with_time=True
         ),
     )
 

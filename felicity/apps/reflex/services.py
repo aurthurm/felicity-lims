@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 from operator import gt, lt, eq, ge, le, ne
 from typing import List, Optional
 
@@ -49,6 +48,7 @@ from felicity.apps.reflex.schemas import (
     ReflexBrainActionCreate,
     ReflexBrainActionUpdate,
 )
+from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,7 +77,7 @@ def is_number(value) -> bool:
 
 class ReflexRuleService(BaseService[ReflexRule, ReflexRuleCreate, ReflexRuleUpdate]):
     def __init__(self):
-        super().__init__(ReflexRuleRepository)
+        super().__init__(ReflexRuleRepository())
 
 
 class ReflexBrainAdditionService(
@@ -86,21 +86,21 @@ class ReflexBrainAdditionService(
     ]
 ):
     def __init__(self):
-        super().__init__(ReflexBrainAdditionRepository)
+        super().__init__(ReflexBrainAdditionRepository())
 
 
 class ReflexBrainFinalService(
     BaseService[ReflexBrainFinal, ReflexBrainFinalCreate, ReflexBrainFinalUpdate]
 ):
     def __init__(self):
-        super().__init__(ReflexBrainFinalRepository)
+        super().__init__(ReflexBrainFinalRepository())
 
 
 class ReflexBrainActionService(
     BaseService[ReflexBrainAction, ReflexBrainActionCreate, ReflexBrainActionUpdate]
 ):
     def __init__(self):
-        super().__init__(ReflexBrainActionRepository)
+        super().__init__(ReflexBrainActionRepository())
 
 
 class ReflexBrainConditionService(
@@ -109,7 +109,7 @@ class ReflexBrainConditionService(
     ]
 ):
     def __init__(self):
-        super().__init__(ReflexBrainConditionRepository)
+        super().__init__(ReflexBrainConditionRepository())
 
 
 class ReflexBrainConditionCriteriaService(
@@ -120,21 +120,21 @@ class ReflexBrainConditionCriteriaService(
     ]
 ):
     def __init__(self):
-        super().__init__(ReflexBrainConditionCriteriaRepository)
+        super().__init__(ReflexBrainConditionCriteriaRepository())
 
 
 class ReflexBrainService(
     BaseService[ReflexBrain, ReflexBrainCreate, ReflexBrainUpdate]
 ):
     def __init__(self):
-        super().__init__(ReflexBrainRepository)
+        super().__init__(ReflexBrainRepository())
 
 
 class ReflexActionService(
     BaseService[ReflexAction, ReflexActionCreate, ReflexActionUpdate]
 ):
     def __init__(self):
-        super().__init__(ReflexActionRepository)
+        super().__init__(ReflexActionRepository())
 
 
 class ReflexEngineService:
@@ -145,20 +145,18 @@ class ReflexEngineService:
     determining when additional tests are needed, and executing those tests.
     """
 
-    def __init__(self, analysis_result: AnalysisResult, user):
-        self.analysis_result = analysis_result
-        self.sample: Sample = analysis_result.sample
-        self.analysis: Analysis = analysis_result.analysis
-        self.user = user
+    def __init__(self):
         self.analysis_result_service = AnalysisResultService()
         self.reflex_action_service = ReflexActionService()
-        self._results_pool: Optional[List[AnalysisResult]] = None
-        self._reflex_action: Optional[ReflexAction] = None
-        logger.info(
-            f"ReflexEngineService initialized for analysis result: {analysis_result.uid}"
-        )
+        self._results_pool: list[AnalysisResult] | None = None
+        self._reflex_action: ReflexAction | None = None
+        self.user = None
+        self.analysis_result: AnalysisResult | None =  None
+        self.sample: Sample | None = None
+        self.analysis: Analysis | None = None
 
-    async def set_reflex_actions(self, analysis_results: List[AnalysisResult]) -> None:
+    @classmethod
+    async def set_reflex_actions(cls, analysis_results: List[AnalysisResult]) -> None:
         """
         Prepare analysis results for reflex testing by setting initial reflex level to 1.
 
@@ -166,15 +164,16 @@ class ReflexEngineService:
         """
         for result in analysis_results:
             logger.info(f"Setting reflex actions for: {result} with level 1")
-            action = await self.get_reflex_action(result.analysis_uid, 1)
+            action = await cls.get_reflex_action(analysis_uid=result.analysis_uid, level=1)
             if action:
                 result.reflex_level = 1
-                await self.analysis_result_service.save(result)
+                await AnalysisResultService().save(result)
                 logger.info(f"Reflex actions set for {result}")
-
+                
+    @staticmethod
     @cached(cache=reflex_action_cache)
     async def get_reflex_action(
-        self, analysis_uid: str, level: int
+        analysis_uid: str, level: int
     ) -> Optional[ReflexAction]:
         """
         Get reflex action with caching to improve performance.
@@ -185,14 +184,19 @@ class ReflexEngineService:
         """
         filters = {"analyses___uid": analysis_uid, "level": level}
         logger.info(f"Reflex actions searching with: {filters}")
-        return await self.reflex_action_service.get_related(
+        return await ReflexActionService().get(
             **filters, related=["brains.conditions.criteria", "brains.actions"]
         )
 
-    async def do_reflex(self) -> None:
+    async def do_reflex(self, analysis_result: AnalysisResult, user) -> None:
         """
         Execute the reflex testing process for the current analysis result.
         """
+        self.user = user
+        self.analysis_result = analysis_result
+        self.sample: Sample = analysis_result.sample
+        self.analysis: Analysis = analysis_result.analysis
+
         if not isinstance(self.analysis_result.reflex_level, int):
             logger.info(
                 f"No reflex level set for analysis result: {self.analysis_result.uid}. Skipping reflex."
@@ -450,8 +454,8 @@ class ReflexEngineService:
             # Fetch all results for the sample if not already cached
             results: List[
                 AnalysisResult
-            ] = await self.analysis_result_service.get_related(
-                sample_uid=self.sample.uid, many=True, related=["analysis"]
+            ] = await self.analysis_result_service.get_all(
+                sample_uid=self.sample.uid, related=["analysis"]
             )
             # Filter results based on criteria -- limits to relevant analysis results
             self._results_pool = [
@@ -502,7 +506,7 @@ class ReflexEngineService:
         res_in = AnalysisResultUpdate(
             result=value,
             submitted_by_uid=self.user.uid,
-            date_submitted=datetime.now(),
+            date_submitted=timenow_dt(),
             status=ResultState.RESULTED,
             retest=False,
             reportable=True,

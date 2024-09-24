@@ -1,4 +1,4 @@
-from typing import Any, AsyncIterator, Generic, List, Optional, TypeVar
+from typing import Any, AsyncIterator, Generic, List, TypeVar
 
 from sqlalchemy import inspect, or_ as sa_or_, Table
 from sqlalchemy import select, update
@@ -216,7 +216,7 @@ class BaseRepository(Generic[M]):
             await session.commit()
             await session.flush()
 
-    async def query_table(self, table: Table, columns: list[str], **kwargs):
+    async def query_table(self, table: Table, columns: list[str] | None = None, **kwargs):
         """
         Query a specific table with optional column selection and filters.
 
@@ -259,10 +259,11 @@ class BaseRepository(Generic[M]):
             await session.commit()
             await session.flush()
 
-    async def get(self, **kwargs) -> M:
+    async def get(self, related: list[str] | None = None, **kwargs) -> M:
         """
         Get a single model instance based on the given filters.
 
+        :param related: A list of related fields to load.
         :param kwargs: Filter conditions.
         :return: The model instance if found, otherwise None.
         :raises ValueError: If no arguments are provided.
@@ -270,15 +271,21 @@ class BaseRepository(Generic[M]):
         if not kwargs:
             raise ValueError("No arguments provided to get model")
         stmt = self.model.where(**kwargs)
+
+        if related:
+            for key in related:
+                stmt = apply_nested_loader_options(stmt, self.model, key)
+
         async with self.async_session() as session:
             results = await session.execute(stmt)
             found = results.scalars().first()
         return found
 
-    async def get_all(self, **kwargs) -> list[M]:
+    async def get_all(self, related: list[str] | None = None, **kwargs) -> list[M]:
         """
         Get all model instances that match the given filters.
 
+        :param related: A list of related fields to load.
         :param kwargs: Filter conditions.
         :return: A list of model instances.
         :raises ValueError: If no arguments are provided.
@@ -286,6 +293,11 @@ class BaseRepository(Generic[M]):
         if not kwargs:
             raise ValueError("No arguments provided to get all")
         stmt = self.model.where(**kwargs)
+
+        if related:
+            for key in related:
+                stmt = apply_nested_loader_options(stmt, self.model, key)
+
         async with self.async_session() as session:
             results = await session.execute(stmt)
             found = results.scalars().all()
@@ -333,34 +345,6 @@ class BaseRepository(Generic[M]):
             results = await session.execute(stmt.order_by(self.model.uid))
         return results.scalars().all()
 
-    async def get_related(
-        self, related: Optional[list[str]], many: bool = False, **kwargs
-    ):
-        """
-        Get related model instances based on the given filters.
-
-        :param related: A list of related fields to load.
-        :param many: Whether to return multiple instances (default: False).
-        :param kwargs: Filter conditions.
-        :return: The related model instances.
-        :raises ValueError: If no related fields are provided.
-        """
-        if not related:
-            raise ValueError("No related fields provided to get related")
-
-        stmt = self.model.where(**kwargs)
-        for key in related:
-            stmt = apply_nested_loader_options(stmt, self.model, key)
-
-        async with self.async_session() as session:
-            results = await session.execute(stmt)
-
-        if not many:
-            found = results.scalars().first()
-        else:
-            found = results.scalars().all()
-
-        return found
 
     async def stream_by_uids(self, uids: List[Any]) -> AsyncIterator[M]:
         """
@@ -460,7 +444,7 @@ class BaseRepository(Generic[M]):
 
     async def filter(
         self,
-        filters: dict,
+        filters: dict | list[dict],
         sort_attrs: list[str] | None = None,
         limit: int | None = None,
         either: bool = False,
@@ -590,8 +574,8 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def build_page_info(
-        start_cursor: str = None,
-        end_cursor: str = None,
+        start_cursor: str | None = None,
+        end_cursor: str | None = None,
         has_next_page: bool = False,
         has_previous_page: bool = False,
     ) -> PageInfo:

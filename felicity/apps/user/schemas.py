@@ -1,3 +1,4 @@
+from dataclasses import field
 from typing import List, Optional
 
 from pydantic import ConfigDict, EmailStr
@@ -126,7 +127,7 @@ class UserBase(BaseAuditModel):
     avatar: str | None = None
     bio: str | None = None
     default_route: str | None = None
-    groups: Optional[Group] = []
+    groups: Optional[List[Group]] = field(default_factory=list)
     login_retry: int | None = 0
     is_blocked: bool | None = False
     is_active: bool | None = True

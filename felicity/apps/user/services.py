@@ -24,9 +24,9 @@ from felicity.core.security import get_password_hash, password_check, verify_pas
 
 class UserService(BaseService[User, UserCreate, UserUpdate]):
     def __init__(self) -> None:
-        super().__init__(UserRepository)
+        super().__init__(UserRepository())
 
-    async def create(self, user_in: UserCreate, related: list[str] = None) -> User:
+    async def create(self, user_in: UserCreate, related: list[str] | None = None) -> User:
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
             raise AlreadyExistsError("Username already exist")
@@ -94,25 +94,25 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         return await self.get(user_name=username)
 
     async def give_super_powers(self, user_uid: str):
-        user = self.get(user_uid)
+        user = self.get(uid=user_uid)
         user_obj = marshaller(user)
         user_in = UserUpdate(**{**user_obj, "is_superuser": True})
         await self.update(user_uid, user_in)
 
     async def strip_super_powers(self, user_uid: str):
-        user = self.get(user_uid)
+        user = self.get(uid=user_uid)
         user_obj = marshaller(user)
         user_in = UserUpdate(**{**user_obj, "is_superuser": False})
         await self.update(user_uid, user_in)
 
     async def activate(self, user_uid: str):
-        user = self.get(user_uid)
+        user = self.get(uid=user_uid)
         user_obj = marshaller(user)
         user_in = UserUpdate(**{**user_obj, "is_active": True})
         await super().update(user_uid, user_in)
 
     async def deactivate(self, user_uid: str):
-        user = self.get(user_uid)
+        user = self.get(uid=user_uid)
         user_obj = marshaller(user)
         user_in = UserUpdate(**{**user_obj, "is_active": False})
         await super().update(user_uid, user_in)
@@ -125,16 +125,16 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
 
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
     def __init__(self):
-        super().__init__(GroupRepository)
+        super().__init__(GroupRepository())
 
 
 class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):
     def __init__(self):
-        super().__init__(PermissionRepository)
+        super().__init__(PermissionRepository())
 
 
 class UserPreferenceService(
     BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]
 ):
     def __init__(self) -> None:
-        super().__init__(UserPreferenceRepository)
+        super().__init__(UserPreferenceRepository())

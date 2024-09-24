@@ -50,9 +50,9 @@ class FelicityBarCoder:
 
             # Barcode txt
             y_next_txt = self.barcode_bottom + 1
-            self.pdf.set_font("helvetica", "", 6.0)
+            self.pdf.set_font("helvetica", "", 6)
             self.pdf.set_xy(self.txt_left, y_next_txt)
-            self.pdf.cell(w=1, h=1, txt=_meta.barcode, border=0)
+            self.pdf.cell(w=1, h=1, text=_meta.barcode, border=0)
 
             # Extra Metadata
             x = 0
@@ -60,13 +60,13 @@ class FelicityBarCoder:
                 y_next_txt += self.metadata_spacer if x == 0 else self.metadata_shift
                 x += 1
                 # Label Name
-                self.pdf.set_font("helvetica", "B", 4.0)
+                self.pdf.set_font("helvetica", "B", 4)
                 self.pdf.set_xy(self.txt_left, y_next_txt)
-                self.pdf.cell(w=1, h=1, align="L", txt=f"{_xtra.label}: ", border=0)
+                self.pdf.cell(w=1, h=1, align="L", text=f"{_xtra.label}: ", border=0)
                 # Label Value
-                self.pdf.set_font("helvetica", "", 4.0)
+                self.pdf.set_font("helvetica", "", 4)
                 self.pdf.set_xy(self.pdf.w - self.margin_left, y_next_txt)
-                self.pdf.cell(w=1, h=1, align="R", txt=str(_xtra.value), border=0)
+                self.pdf.cell(w=1, h=1, align="R", text=str(_xtra.value), border=0)
 
         return self.pdf
 

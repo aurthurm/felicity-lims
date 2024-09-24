@@ -25,6 +25,9 @@ async def seed_instrument_categories() -> None:
     laboratory_instrument_service = LaboratoryInstrumentService()
 
     data = get_seeds("instrument")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     for inst_type in data.get("categories"):
         instrument_type = await instrument_type_service.get(name=inst_type)

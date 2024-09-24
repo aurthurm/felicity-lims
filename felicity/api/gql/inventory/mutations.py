@@ -23,6 +23,7 @@ from felicity.apps.inventory.services import (
     StockReceiptService,
     StockUnitService,
 )
+from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -522,7 +523,7 @@ class InventoryMutations:
                 "lot_number": payload.lot_number,
                 "adjustment_type": payload.receipt_type,
                 "adjust": quantity_received,
-                "adjustment_date": datetime.now(),
+                "adjustment_date": timenow_dt(),
                 "remarks": "",
                 "adjustment_by_uid": felicity_user.uid,
             }
@@ -668,7 +669,7 @@ class InventoryMutations:
         for order_p in payload:
             adjust_in = {
                 "adjustment_type": AdjustType.ISSUE,
-                "adjustment_date": datetime.now(),
+                "adjustment_date": timenow_dt(),
                 "product_uid": order_p.product_uid,
                 "department_uid": stock_order.department_uid,
                 "adjustment_by_uid": felicity_user.uid,
@@ -781,7 +782,7 @@ class InventoryMutations:
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
             "adjustment_by_uid": felicity_user.uid,
-            "adjustment_date": datetime.now(),
+            "adjustment_date": timenow_dt(),
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v

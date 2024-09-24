@@ -8,7 +8,7 @@ from felicity.apps.user.services import UserService
 
 @pytest.fixture
 def user_service(mocker):
-    repository = mocker.create_autospec(UserRepository)
+    repository = mocker.create_autospec(UserRepository())
     # group_service = mocker.AsyncMock()
     # permission_service = mocker.AsyncMock()
     # user_preference_service = mocker.AsyncMock()

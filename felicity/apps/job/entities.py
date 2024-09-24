@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 
 from felicity.apps.abstract import BaseEntity
+from felicity.core.dtz import timenow_dt
 
 
 class Job(BaseEntity):
@@ -22,5 +21,5 @@ class Job(BaseEntity):
 
     @property
     def is_ready_for_execution(self):
-        current_time = datetime.now()
+        current_time = timenow_dt()
         return self.next_try <= current_time if self.next_try else True

@@ -7,16 +7,19 @@ from felicity.core.config import get_settings
 settings = get_settings()
 
 
-def get_time_now(str_format=True) -> str | datetime:
+def __timenow() -> datetime:
     if settings.TIMEZONE_AWARE:
         now = datetime.now(settings.TIMEZONE)
     else:
         now = datetime.now()
-    str_time = now.strftime(settings.DATETIME_STR_FORMAT)
-    if str_format:
-        return str_time
-    return datetime.strptime(str_time, settings.DATETIME_STR_FORMAT)
+    return now
 
+
+def timenow_str() -> str:
+    return __timenow().strftime(format=settings.DATETIME_STR_FORMAT)
+
+def timenow_dt() -> datetime:
+    return datetime.strptime(timenow_str(), settings.DATETIME_STR_FORMAT)
 
 def to_datetime(date_value: str) -> datetime:
     return parser.parse(date_value)

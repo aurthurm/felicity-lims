@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from felicity.core.dtz import timenow_dt
+
 
 class AnalysisPriceBase(BaseModel):
     is_active: bool
@@ -53,8 +55,8 @@ class AnalysisDiscountBase(BaseModel):
     name: str
     discount_type: str
     value_type: str
-    start_date: datetime = datetime.now()
-    end_date: datetime = datetime.now()
+    start_date: datetime = timenow_dt()
+    end_date: datetime = timenow_dt()
     voucher_uid: str | None = None
     value_percent: float | None = None
     value_amount: float | None = None
@@ -83,8 +85,8 @@ class ProfileDiscountBase(BaseModel):
     name: str
     discount_type: str | None = None
     value_type: str | None = None
-    start_date: datetime = datetime.now()
-    end_date: datetime = datetime.now()
+    start_date: datetime = timenow_dt()
+    end_date: datetime = timenow_dt()
     voucher_uid: str | None = None
     value_percent: float | None = None
     value_amount: float | None = None

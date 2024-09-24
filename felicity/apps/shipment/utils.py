@@ -2,7 +2,7 @@ import asyncio
 import logging
 import random
 import string
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from felicity.apps.analysis.entities.analysis import Sample, sample_analysis
 from felicity.apps.analysis.enum import ResultState, SampleState
@@ -34,6 +34,7 @@ from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
 from felicity.apps.user.entities import User
+from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -205,7 +206,9 @@ async def shipment_receive(job_uid: str):
                 tat_lengths.append(anal.tat_length_minutes)
         if tat_lengths:
             minutes = max(tat_lengths)
-            sam_in["due_date"] = datetime.now() + timedelta(minutes=minutes)
+            sam_in["due_date"] = timenow_dt() + timedelta(
+                minutes=minutes
+            )
 
         sa_sch = SampleCreate(**sam_in)
         sample = await sample_service.create(sa_sch)
@@ -217,7 +220,7 @@ async def shipment_receive(job_uid: str):
         for _anal in analyses:
             await sample_service.repository.table_insert(
                 table=sample_analysis,
-                mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid},
+                mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
             )
 
         # create and attach result objects for each Analyses
@@ -240,7 +243,7 @@ async def shipment_receive(job_uid: str):
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": (
-                            datetime.now()
+                            timenow_dt()
                             + timedelta(minutes=_service.tat_length_minutes)
                             if _service.tat_length_minutes
                             else None
@@ -252,7 +255,7 @@ async def shipment_receive(job_uid: str):
 
         # initialise reflex action if exist
         logger.info("ReflexUtil .... set_reflex_actions ...")
-        await ReflexEngineService(created, None).set_reflex_actions(created)
+        await ReflexEngineService().set_reflex_actions(created)
 
         # ! paramount !
         await asyncio.sleep(1)
@@ -486,6 +489,9 @@ async def shipment_send(uid: str, by_uid=None):
 
     shipment = await shipment_service.get(uid=uid)
     resource = await get_shipment_bundle_resource(uid)
+    if not resource:
+        raise Exception("Failed to get shipment bundle resource") 
+    
     success = await post_data(
         f"{shipment.laboratory.url}Bundle",
         resource.model_dump(exclude_none=True),

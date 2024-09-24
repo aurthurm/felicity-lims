@@ -14,4 +14,4 @@ class ReportImpressService(
     BaseService[ReportImpress, ReportImpressCreate, ReportImpressUpdate]
 ):
     def __init__(self):
-        super().__init__(ReportImpressRepository)
+        super().__init__(ReportImpressRepository())

@@ -17,7 +17,7 @@ def lower_16bit_private_ip() -> int:
     Returns the lower 16 bits of the private IP address.
     you can also use uui.getnode() to get machine_id
     """
-    ip: ipaddress.IPv4Address = ipaddress.ip_address(gethostbyname(gethostname()))
+    ip: ipaddress.IPv4Address | ipaddress.IPv6Address = ipaddress.ip_address(gethostbyname(gethostname()))
     ip_bytes = ip.packed
     return (ip_bytes[2] << 8) + ip_bytes[3]
 
@@ -31,10 +31,10 @@ class SonyFlake:
     _machine_id: int
 
     def __new__(
-        cls,
-        start_time: datetime.datetime | None = None,
-        machine_id: Callable[[], int] | None = None,
-        check_machine_id: Callable[[int], bool] | None = None,
+            cls,
+            start_time: datetime.datetime | None = None,
+            machine_id: Callable[[], int] | None = None,
+            check_machine_id: Callable[[int], bool] | None = None,
     ):
         if start_time and datetime.datetime.now(UTC) < start_time:
             return None
@@ -49,10 +49,10 @@ class SonyFlake:
         return instance
 
     def __init__(
-        self,
-        start_time: datetime.datetime | None = None,
-        machine_id: Callable[[], int] | None = None,
-        check_machine_id: Callable[[int], bool] | None = None,
+            self,
+            start_time: datetime.datetime | None = None,
+            machine_id: Callable[[], int] | None = None,
+            check_machine_id: Callable[[int], bool] | None = None,
     ) -> None:
         """
         Create a new instance of `SonyFlake` unique ID generator.
@@ -166,7 +166,7 @@ class SonyFlake:
         Calculate the time remaining until generation of new ID.
         """
         return (
-            duration * 10 - (datetime.datetime.now(UTC).timestamp() * 100) % 1
+                duration * 10 - (datetime.datetime.now(UTC).timestamp() * 100) % 1
         ) / 100
 
     @staticmethod
@@ -187,7 +187,6 @@ class SonyFlake:
             "sequence": sequence,
             "machine_id": machine_id,
         }
-
 
 # Usage example
 # sf = SonyFlake()

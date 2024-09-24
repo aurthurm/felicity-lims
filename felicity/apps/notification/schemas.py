@@ -1,3 +1,4 @@
+from dataclasses import field
 from typing import List, Optional
 
 from pydantic import ConfigDict
@@ -12,7 +13,7 @@ from felicity.apps.user.schemas import Group, User
 #
 class ActivityFeedBase(BaseAuditModel):
     name: str | None = ""
-    subscribers: Optional[List[User]] = []
+    subscribers: Optional[List[User]] = field(default_factory=list)
 
 
 class ActivityFeed(ActivityFeedBase):
@@ -33,7 +34,7 @@ class ActivityFeedUpdate(ActivityFeedBase):
 # ActivityStream Schemas
 #
 class ActivityStreamBase(BaseAuditModel):
-    feeds: Optional[List[ActivityFeed]] = []
+    feeds: Optional[List[ActivityFeed]] = field(default_factory=list)
     actor_uid: str | None = None
     actor: Optional[User] = None
     verb: str | None = None
@@ -42,7 +43,7 @@ class ActivityStreamBase(BaseAuditModel):
     action_object: str | None = None
     target_uid: str | None = None
     target: str | None = None
-    viewers: Optional[List[User]] = []
+    viewers: Optional[List[User]] = field(default_factory=list)
 
 
 class ActivityStream(ActivityStreamBase):
@@ -63,11 +64,11 @@ class ActivityStreamUpdate(ActivityStreamBase):
 # Notification Schemas
 #
 class NotificationBase(BaseAuditModel):
-    departments: Optional[List[Department]] = []
-    groups: Optional[List[Group]] = []
-    users: Optional[List[User]] = []
+    departments: Optional[List[Department]] = field(default_factory=list)
+    groups: Optional[List[Group]] = field(default_factory=list)
+    users: Optional[List[User]] = field(default_factory=list)
     message: str | None = ""
-    viewers: Optional[List[User]] = []
+    viewers: Optional[List[User]] = field(default_factory=list)
 
 
 class Notification(NotificationBase):

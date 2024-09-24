@@ -20,6 +20,9 @@ async def seed_stock_units():
     stock_unit_service = StockUnitService()
 
     data = get_seeds("inventory")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     stock_units = data.get("units", [])
 
@@ -39,6 +42,9 @@ async def seed_stock_categories():
     stock_category_service = StockCategoryService()
 
     data = get_seeds("inventory")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     stock_categories = data.get("categories", [])
 
@@ -57,6 +63,9 @@ async def seed_stock_hazards():
     hazard_service = HazardService()
 
     data = get_seeds("inventory")
+    if not data:
+        logger.error("Failed to load person seed data")
+        return 
 
     hazards = data.get("hazards", [])
 

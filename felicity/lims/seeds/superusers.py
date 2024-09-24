@@ -18,7 +18,7 @@ async def seed_daemon_user() -> None:
     group_service = GroupService()
     preference_service = UserPreferenceService()
 
-    system_daemon = await user_service.get_related(
+    system_daemon = await user_service.get(
         related=["groups"], email=settings.SYSTEM_DAEMON_EMAIL
     )
     if not system_daemon:
@@ -56,7 +56,7 @@ async def seed_super_user() -> None:
     group_service = GroupService()
     preference_service = UserPreferenceService()
 
-    super_user = await user_service.get_related(
+    super_user = await user_service.get(
         related=["groups"], email=settings.FIRST_SUPERUSER_EMAIL
     )
     if not super_user:

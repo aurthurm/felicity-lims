@@ -28,8 +28,8 @@ class NoticeInputType:
     title: str
     body: str
     expiry: str
-    groups: Optional[List[str]]
-    departments: Optional[List[str]]
+    groups: list[str] | None
+    departments: list[str] | None
 
 
 @strawberry.type

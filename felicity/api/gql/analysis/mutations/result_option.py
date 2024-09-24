@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 @strawberry.input
 class ResultOptionInputType:
     analysis_uid: str
-    sample_types: Optional[List[str]] = field(default_factory=list)
+    sample_types: list[str] | None = field(default_factory=list)
     option_key: int
     value: str
 
@@ -36,7 +36,7 @@ ResultOptionResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_result_option(
-        info, payload: ResultOptionInputType
+    info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -69,7 +69,7 @@ async def create_result_option(
             result_option.sample_types.append(st)
             # await ResultOptionService().table_insert(
             #     table=analysis_entities.result_option_sample_type,
-            #     mappings={"sample_type_uid": _st_uid, "result_option_uid": result_option.uid},
+            #     mappings=[{"sample_type_uid": _st_uid, "result_option_uid": result_option.uid}],
             # )
             await ResultOptionService().save(result_option)
 
@@ -78,7 +78,7 @@ async def create_result_option(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_result_option(
-        info, uid: str, payload: ResultOptionInputType
+    info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     await auth_from_info(info)
 
@@ -107,7 +107,7 @@ async def update_result_option(
             result_option.sample_types.append(st)
             # await ResultOptionService().table_insert(
             #     table=analysis_entities.result_option_sample_type,
-            #     mappings={"sample_type_uid": st, "result_option_uid": result_option.uid},
+            #     mappings=[{"sample_type_uid": st, "result_option_uid": result_option.uid}],
             # )
             await ResultOptionService().save(result_option)
 
