@@ -16,7 +16,7 @@ async def seed_person() -> None:
     data = get_seeds("person")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     identification_service = IdentificationService()
 

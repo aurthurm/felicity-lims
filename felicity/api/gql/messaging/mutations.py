@@ -10,7 +10,6 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
 from felicity.apps.messaging import schemas
 from felicity.apps.messaging.services import MessageService, MessageThreadService
-from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
 from felicity.utils import get_passed_args
 
@@ -65,7 +64,7 @@ class MessageMutations:
         for user_uid in recipients:
             _rec = UserService().get(uid=user_uid)
             if _rec:
-                incoming["recipients"].append(_rec) # type: ignore
+                incoming["recipients"].append(_rec)  # type: ignore
 
         obj_in = schemas.MessageCreate(**incoming)
         message = await MessageService().create(obj_in)

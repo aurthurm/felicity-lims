@@ -1,4 +1,4 @@
-from typing import Generic, Optional, TypeVar
+from typing import Generic, TypeVar
 
 from pydantic import BaseModel
 
@@ -113,7 +113,6 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get_all(related=related, **kwargs)
 
-
     async def create(self, c: C | dict, related: list[str] | None = None) -> E:
         """
         Create a new entity.
@@ -149,7 +148,9 @@ class BaseService(Generic[E, C, U]):
             return created
         return [(await self.get(related=related, uid=x.uid)) for x in created]
 
-    async def update(self, uid: str, update: U | dict, related: list[str] | None = None) -> E:
+    async def update(
+        self, uid: str, update: U | dict, related: list[str] | None = None
+    ) -> E:
         """
         Update an existing entity.
 

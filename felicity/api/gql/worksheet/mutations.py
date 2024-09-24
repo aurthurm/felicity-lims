@@ -138,10 +138,12 @@ class WorkSheetMutations:
         for l_uid in lvl_uids:
             await QCLevelService().repository.table_insert(
                 table=worksheet_template_qc_level,
-                mappings=[{
-                    "qc_level_uid": l_uid,
-                    "ws_template_uid": wst.uid,
-                }],
+                mappings=[
+                    {
+                        "qc_level_uid": l_uid,
+                        "ws_template_uid": wst.uid,
+                    }
+                ],
             )
         wst = await WorkSheetTemplateService().get(uid=wst.uid)
         return WorkSheetTemplateType(**wst.marshal_simple())

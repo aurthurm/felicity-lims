@@ -1,5 +1,3 @@
-from typing import TypeVar
-
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.idsequencer.conf import SEQUENCE_CUTOFF, PADDING_LENGTH

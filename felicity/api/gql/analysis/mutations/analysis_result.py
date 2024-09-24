@@ -141,9 +141,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
 
     return_results = []
     for _ar_uid in analyses:
-        a_result = await AnalysisResultService().get(
-            uid=_ar_uid, related=["sample"]
-        )
+        a_result = await AnalysisResultService().get(uid=_ar_uid, related=["sample"])
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 

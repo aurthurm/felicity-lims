@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.analysis.services.analysis import SampleService
@@ -31,7 +30,7 @@ exclude = [
 ]
 
 
-#TODO: Use pydantic to handle expected or structured inputs
+# TODO: Use pydantic to handle expected or structured inputs
 async def impress_samples(sample_meta: list[dict], user):
     laboratory = await get_laboratory()
     to_return = []

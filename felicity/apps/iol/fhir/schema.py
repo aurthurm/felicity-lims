@@ -39,7 +39,6 @@ class Period(BaseModel):
     end: str | None = None
 
 
-
 class Reference(BaseModel):  # noqa F811
     # C? Literal reference, Relative, internal or absolute URL
     reference: str | None = None

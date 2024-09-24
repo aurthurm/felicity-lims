@@ -29,13 +29,13 @@ async def seed_geographies() -> None:
     data = get_seeds("country")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     country_data = data.get("country")
     if not country_data:
         logger.error("Failed to load country_data seed data")
-        return 
-    
+        return
+
     c_name = country_data.get("name")
     c_code = country_data.get("code")
 
@@ -85,7 +85,7 @@ async def seed_clients() -> None:
     data = get_seeds("clients")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     for _cl in data.get("clients", []):
         client = None
@@ -124,7 +124,7 @@ async def seed_laboratory(name: str) -> None:
     data = get_seeds("laboratory")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     if not name:
         name = data.get("laboratory_name", "Felicity Labs")

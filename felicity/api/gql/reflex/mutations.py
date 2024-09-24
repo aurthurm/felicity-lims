@@ -224,9 +224,7 @@ class ReflexRuleMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        reflex_action = await ReflexActionService().get(
-            uid=uid, related=["analyses"]
-        )
+        reflex_action = await ReflexActionService().get(uid=uid, related=["analyses"])
         if not reflex_action:
             return OperationError(
                 error=f"reflex_action with uid {uid} not found. Cannot update obj ..."

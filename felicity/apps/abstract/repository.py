@@ -216,7 +216,9 @@ class BaseRepository(Generic[M]):
             await session.commit()
             await session.flush()
 
-    async def query_table(self, table: Table, columns: list[str] | None = None, **kwargs):
+    async def query_table(
+        self, table: Table, columns: list[str] | None = None, **kwargs
+    ):
         """
         Query a specific table with optional column selection and filters.
 
@@ -344,7 +346,6 @@ class BaseRepository(Generic[M]):
         async with self.async_session() as session:
             results = await session.execute(stmt.order_by(self.model.uid))
         return results.scalars().all()
-
 
     async def stream_by_uids(self, uids: List[Any]) -> AsyncIterator[M]:
         """

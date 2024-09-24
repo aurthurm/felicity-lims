@@ -54,7 +54,7 @@ class MongoService:
         self,
         collection: MongoCollection,
         filters: dict[str, Any],
-        projection: dict[str, int] | None= None,
+        projection: dict[str, int] | None = None,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
         """

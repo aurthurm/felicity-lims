@@ -138,9 +138,7 @@ class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
         #     analysis_profile,
         #     **{"profile_uid": uid},
         # )
-        return (
-            await self.repository.get(related=["analyses"], uid=uid)
-        ).analyses
+        return (await self.repository.get(related=["analyses"], uid=uid)).analyses
 
 
 class AnalysisTemplateService(
@@ -231,7 +229,7 @@ class AnalysisRequestService(
         super().__init__(AnalysisRequestRepository())
 
     async def create(
-            self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None
+        self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None
     ):
         data = self._import(obj_in)
         data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
@@ -465,7 +463,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-                filter(lambda an: an.status in [ResultState.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
@@ -552,7 +550,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         recovered = await super().save(sample)
         return recovered
 
-    async def create(self, obj_in: dict | SampleCreate, related: list[str] | None = None):
+    async def create(
+        self, obj_in: dict | SampleCreate, related: list[str] | None = None
+    ):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
         # data["sample_id"] = (await self.id_sequencer_service.get_next_number(sample_type.abbr))[1]

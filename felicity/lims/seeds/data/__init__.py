@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import Any
 
 from felicity.core.config import settings
 from felicity.utils.loader import json_from_file

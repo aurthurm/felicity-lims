@@ -1,6 +1,5 @@
 import logging
 from dataclasses import field
-from typing import List, Optional
 
 import strawberry  # noqa
 
@@ -207,10 +206,12 @@ async def create_analysis_template(
         for service_uid in payload.services:
             await AnalysisService().repository.table_insert(
                 table=analysis_analysis_template,
-                mappings=[{
-                    "analysis_uid": service_uid,
-                    "analysis_template_uid": template.uid,
-                }],
+                mappings=[
+                    {
+                        "analysis_uid": service_uid,
+                        "analysis_template_uid": template.uid,
+                    }
+                ],
             )
 
     template = await AnalysisTemplateService().get(uid=template.uid)
@@ -249,10 +250,12 @@ async def update_analysis_template(
             anal = await AnalysisService().get(uid=_uid)
             await AnalysisService().repository.table_insert(
                 table=analysis_analysis_template,
-                mappings=[{
-                    "analysis_uid": anal.uid,
-                    "analysis_template_uid": template.uid,
-                }],
+                mappings=[
+                    {
+                        "analysis_uid": anal.uid,
+                        "analysis_template_uid": template.uid,
+                    }
+                ],
             )
 
     return a_types.AnalysisTemplateType(**template.marshal_simple())

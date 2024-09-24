@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import List, Optional
+from typing import List
 
 import strawberry  # noqa
 

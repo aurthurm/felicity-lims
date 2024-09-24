@@ -151,7 +151,7 @@ class ReflexEngineService:
         self._results_pool: list[AnalysisResult] | None = None
         self._reflex_action: ReflexAction | None = None
         self.user = None
-        self.analysis_result: AnalysisResult | None =  None
+        self.analysis_result: AnalysisResult | None = None
         self.sample: Sample | None = None
         self.analysis: Analysis | None = None
 
@@ -164,12 +164,14 @@ class ReflexEngineService:
         """
         for result in analysis_results:
             logger.info(f"Setting reflex actions for: {result} with level 1")
-            action = await cls.get_reflex_action(analysis_uid=result.analysis_uid, level=1)
+            action = await cls.get_reflex_action(
+                analysis_uid=result.analysis_uid, level=1
+            )
             if action:
                 result.reflex_level = 1
                 await AnalysisResultService().save(result)
                 logger.info(f"Reflex actions set for {result}")
-                
+
     @staticmethod
     @cached(cache=reflex_action_cache)
     async def get_reflex_action(
@@ -452,9 +454,7 @@ class ReflexEngineService:
 
         if self._results_pool is None:
             # Fetch all results for the sample if not already cached
-            results: List[
-                AnalysisResult
-            ] = await self.analysis_result_service.get_all(
+            results: List[AnalysisResult] = await self.analysis_result_service.get_all(
                 sample_uid=self.sample.uid, related=["analysis"]
             )
             # Filter results based on criteria -- limits to relevant analysis results

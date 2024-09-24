@@ -38,17 +38,23 @@ class EventListenable:
     @staticmethod
     def handle_insert(mapper: Any, connection: Any, target: "EventListenable") -> None:
         logger.debug(f"Handling insert for {getattr(target, "__class__").__name__}")
-        target.put_out("after-insert", getattr(target, "__tablename__"), marshaller(target))
+        target.put_out(
+            "after-insert", getattr(target, "__tablename__"), marshaller(target)
+        )
 
     @staticmethod
     def handle_delete(mapper: Any, connection: Any, target: "EventListenable") -> None:
         logger.debug(f"Handling delete for {getattr(target, "__class__").__name__}")
-        target.put_out("after-delete", getattr(target, "__tablename__"), marshaller(target))
+        target.put_out(
+            "after-delete", getattr(target, "__tablename__"), marshaller(target)
+        )
 
     @staticmethod
     def handle_update(mapper: Any, connection: Any, target: "EventListenable") -> None:
         logger.debug(f"Handling update for {getattr(target, "__class__").__name__}")
-        target.put_out("after-update", getattr(target, "__tablename__"), target.get_changes(target))
+        target.put_out(
+            "after-update", getattr(target, "__tablename__"), target.get_changes(target)
+        )
 
     @staticmethod
     def get_changes(target: "EventListenable") -> Dict[str, Any]:
@@ -71,9 +77,7 @@ class EventListenable:
                     try:
                         state_before[attr.key] = get_history(target, attr.key)[2].pop()
                     except Exception:
-                        logger.debug(
-                            f"No history for {attr.key}, using current value"
-                        )
+                        logger.debug(f"No history for {attr.key}, using current value")
                         state_before[attr.key] = getattr(target, attr.key)
 
         if state_after:

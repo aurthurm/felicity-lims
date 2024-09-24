@@ -26,7 +26,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
     def __init__(self) -> None:
         super().__init__(UserRepository())
 
-    async def create(self, user_in: UserCreate, related: list[str] | None = None) -> User:
+    async def create(
+        self, user_in: UserCreate, related: list[str] | None = None
+    ) -> User:
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
             raise AlreadyExistsError("Username already exist")

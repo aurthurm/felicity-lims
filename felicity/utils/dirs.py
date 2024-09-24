@@ -17,13 +17,7 @@ def resolve_media_dirs_for(target: str) -> str:
     """
     Creates directories if not exist
     """
-    str_path = (
-        "media/"
-        + target
-        + "/"
-        + timenow_dt().strftime("%Y/%m/%d")
-        + "/"
-    )
+    str_path = "media/" + target + "/" + timenow_dt().strftime("%Y/%m/%d") + "/"
     path = Path(str_path)
     if not path.is_dir():
         os.makedirs(str_path, exist_ok=True)

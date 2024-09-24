@@ -33,7 +33,9 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
                 JobState.RUNNING,
             ]
         }
-        sort_attrs = ["-priority",]
+        sort_attrs = [
+            "-priority",
+        ]
         return await self.repository.filter(filters=filters, sort_attrs=sort_attrs)
 
     async def change_status(self, uid: str, new_status, change_reason=""):

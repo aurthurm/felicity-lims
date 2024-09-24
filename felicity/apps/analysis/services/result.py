@@ -26,7 +26,7 @@ class AnalysisResultService(
         super().__init__(AnalysisResultRepository())
 
     async def verifications(
-            self, uid: str
+        self, uid: str
     ) -> tuple[
         Annotated[int, "Total number required verifications"],
         Annotated[list[User], "Current verifiers"],
@@ -42,13 +42,11 @@ class AnalysisResultService(
         return None
 
     async def retest_result(
-            self, uid: str, retested_by, next_action="verify"
-    ) -> (
-            tuple[
-                Annotated[AnalysisResult, "Newly Created AnalysisResult"],
-                Annotated[AnalysisResult, "Retested AnalysisResult"],
-            ]
-    ):
+        self, uid: str, retested_by, next_action="verify"
+    ) -> tuple[
+        Annotated[AnalysisResult, "Newly Created AnalysisResult"],
+        Annotated[AnalysisResult, "Retested AnalysisResult"],
+    ]:
         analysis_result = await self.get(uid=uid)
         a_result_in = {
             "sample_uid": analysis_result.sample_uid,
@@ -160,11 +158,11 @@ class AnalysisResultService(
         return await super().update(uid, {"reportable": False})
 
     async def filter_for_worksheet(
-            self,
-            analyses_status: str,
-            analysis_uid: str,
-            sample_type_uid: list[str],
-            limit: int,
+        self,
+        analyses_status: str,
+        analysis_uid: str,
+        sample_type_uid: list[str],
+        limit: int,
     ) -> list[AnalysisResult]:
         filters = {
             "status__exact": analyses_status,

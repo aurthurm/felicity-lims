@@ -1,7 +1,6 @@
 import logging
 from dataclasses import field
 from datetime import datetime
-from typing import List, Optional
 
 import strawberry  # noqa
 
@@ -459,10 +458,12 @@ class InstrumentMutations:
                 _instruments.add(instrument)
                 await MethodService().repository.table_insert(
                     table=method_instrument,
-                    mappings=[{
-                        "method_uid": method.uid,
-                        "instrument_uid": instrument.uid,
-                    }],
+                    mappings=[
+                        {
+                            "method_uid": method.uid,
+                            "instrument_uid": instrument.uid,
+                        }
+                    ],
                 )
 
         for a_uid in payload.analyses:
@@ -480,10 +481,12 @@ class InstrumentMutations:
                     analysis.instruments.append(inst)
                     await AnalysisService().repository.table_insert(
                         table=analysis_instrument,
-                        mappings=[{
-                            "instrument_uid": inst.uid,
-                            "analysis_uid": analysis.uid,
-                        }],
+                        mappings=[
+                            {
+                                "instrument_uid": inst.uid,
+                                "analysis_uid": analysis.uid,
+                            }
+                        ],
                     )
 
         return MethodType(**method.marshal_simple(exclude=["instruments", "analyses"]))

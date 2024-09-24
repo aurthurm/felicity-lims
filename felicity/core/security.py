@@ -34,9 +34,7 @@ def create_access_token(
     if expires_delta:
         expire = timenow_dt() + expires_delta
     else:
-        expire = timenow_dt() + timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        expire = timenow_dt() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     expire = expire.timestamp() * 1000  # convert to milliseconds
     to_encode = {"exp": expire, "sub": str(subject)}

@@ -187,9 +187,7 @@ async def create_analysis_request(
         _profiles_analyses = set()
 
         for p_uid in s.profiles:
-            profile = await ProfileService().get(
-                related=["analyses"], uid=p_uid
-            )
+            profile = await ProfileService().get(related=["analyses"], uid=p_uid)
             profiles.append(profile)
             analyses_ = profile.analyses
             for _an in analyses_:
@@ -209,9 +207,7 @@ async def create_analysis_request(
                 tat_lengths.append(anal.tat_length_minutes)
         if tat_lengths:
             minutes = max(tat_lengths)
-            sample_in["due_date"] = timenow_dt() + timedelta(
-                minutes=minutes
-            )
+            sample_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
 
         #
         sample_schema = schemas.SampleCreate(**sample_in)
@@ -686,8 +682,7 @@ async def manage_analyses(
                 update={
                     "analysis_uid": service.uid,
                     "due_date": (
-                        timenow_dt()
-                        + timedelta(minutes=service.tat_length_minutes)
+                        timenow_dt() + timedelta(minutes=service.tat_length_minutes)
                         if service.tat_length_minutes
                         else None
                     ),

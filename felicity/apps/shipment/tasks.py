@@ -93,7 +93,7 @@ async def dispatch_shipment(job_uid: str, by_uid=None):
     resource = await get_shipment_bundle_resource(shipment_uid)
     if not resource:
         raise Exception("Failed to get Shipment bundle resource")
-    
+
     success = await post_data(
         f"{shipment.laboratory.url}/Bundle",
         resource.model_dump(exclude_none=True),
@@ -192,7 +192,7 @@ async def return_shipped_report(job_uid: str):
     )
     if not resource:
         raise Exception("Failed to get the diagnostic report resource")
-    
+
     success = await post_data(
         f"{shipment.laboratory.url}DiagnosticReport",
         resource.model_dump(exclude_none=True),

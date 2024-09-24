@@ -112,7 +112,12 @@ class SampleRepository(BaseRepository[Sample]):
     def __init__(self) -> None:
         super().__init__(Sample)
 
-    async def search(self, status: str | None = None, text: str | None = None, client_uid: str | None = None) -> list[Sample]:
+    async def search(
+        self,
+        status: str | None = None,
+        text: str | None = None,
+        client_uid: str | None = None,
+    ) -> list[Sample]:
         """No pagination"""
         filters = []
         _or_text_ = {}
@@ -138,5 +143,7 @@ class SampleRepository(BaseRepository[Sample]):
 
         filters.append({"internal_use__ne": True})
 
-        stmt = (getattr(self, "queryset")).smart_query(filters=filters, sort_attrs=["uid"])
+        stmt = (getattr(self, "queryset")).smart_query(
+            filters=filters, sort_attrs=["uid"]
+        )
         return (await self.async_session().execute(stmt)).scalars().all()

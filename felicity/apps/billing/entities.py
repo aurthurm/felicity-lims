@@ -43,9 +43,7 @@ class AnalysisDiscount(BaseEntity):
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
-    start_date = Column(
-        DateTime, nullable=False, default=timenow_dt()
-    )
+    start_date = Column(DateTime, nullable=False, default=timenow_dt())
     end_date = Column(DateTime, nullable=False, default=timenow_dt())
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
@@ -62,9 +60,7 @@ class ProfileDiscount(BaseEntity):
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
-    start_date = Column(
-        DateTime, nullable=False, default=timenow_dt()
-    )
+    start_date = Column(DateTime, nullable=False, default=timenow_dt())
     end_date = Column(DateTime, nullable=False, default=timenow_dt())
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")

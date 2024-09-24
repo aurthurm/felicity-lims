@@ -206,9 +206,7 @@ async def shipment_receive(job_uid: str):
                 tat_lengths.append(anal.tat_length_minutes)
         if tat_lengths:
             minutes = max(tat_lengths)
-            sam_in["due_date"] = timenow_dt() + timedelta(
-                minutes=minutes
-            )
+            sam_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
 
         sa_sch = SampleCreate(**sam_in)
         sample = await sample_service.create(sa_sch)
@@ -490,8 +488,8 @@ async def shipment_send(uid: str, by_uid=None):
     shipment = await shipment_service.get(uid=uid)
     resource = await get_shipment_bundle_resource(uid)
     if not resource:
-        raise Exception("Failed to get shipment bundle resource") 
-    
+        raise Exception("Failed to get shipment bundle resource")
+
     success = await post_data(
         f"{shipment.laboratory.url}Bundle",
         resource.model_dump(exclude_none=True),

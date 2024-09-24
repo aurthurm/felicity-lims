@@ -18,8 +18,10 @@ def __timenow() -> datetime:
 def timenow_str() -> str:
     return __timenow().strftime(format=settings.DATETIME_STR_FORMAT)
 
+
 def timenow_dt() -> datetime:
     return datetime.strptime(timenow_str(), settings.DATETIME_STR_FORMAT)
+
 
 def to_datetime(date_value: str) -> datetime:
     return parser.parse(date_value)

@@ -57,7 +57,7 @@ async def seed_categories():
     data = get_seeds("analyses")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     categories = data.get("categories", [])
 
@@ -75,7 +75,7 @@ async def seed_qc_levels() -> None:
     data = get_seeds("analyses")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     qc_levels = data.get("qc_levels", [])
 
@@ -93,7 +93,7 @@ async def seed_id_sequence() -> None:
     data = get_seeds("analyses")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     sample_types = data.get("sample_types", [])
 
@@ -138,7 +138,7 @@ async def seed_sample_types() -> None:
     data = get_seeds("analyses")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     sample_types = data.get("sample_types", [])
 
@@ -168,7 +168,7 @@ async def seed_analyses_services_and_profiles() -> None:
     data = get_seeds("analyses")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     analyses = data.get("analyses", [])
 
@@ -222,7 +222,7 @@ async def seed_rejection_reasons() -> None:
     data = get_seeds("analyses")
     if not data:
         logger.error("Failed to load person seed data")
-        return 
+        return
 
     rejection_reasons = data.get("rejection_reasons", [])
 
