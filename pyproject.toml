@@ -1,0 +1,35 @@
+[tool.mypy]
+plugins = ["pydantic.mypy", "sqlalchemy.ext.mypy.plugin"]
+disable_error_code = ['import-untyped']
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+strict_concatenate = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+no_implicit_reexport = true
+allow_redefinition = false
+# tricky
+disallow_any_generics = false
+disallow_untyped_calls = false
+warn_return_any = false
+strict_optional = false
+
+[[tool.mypy.overrides]]
+module = [
+    "felicity.api.*", "felicity.apps.*", "felicity.tests.*", 
+    "felicity.migrations.*", "felicity.core.uid_gen.*"
+]
+ignore_errors = true
+
+
+
+
+
+
+
+

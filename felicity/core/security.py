@@ -36,8 +36,8 @@ def create_access_token(
     else:
         expire = timenow_dt() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-    expire = expire.timestamp() * 1000  # convert to milliseconds
-    to_encode = {"exp": expire, "sub": str(subject)}
+    expires = expire.timestamp() * 1000  # convert to milliseconds
+    to_encode = {"exp": expires, "sub": str(subject)}
     encoded_jwt = jwt.encode(
         to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
     )
@@ -59,13 +59,13 @@ def create_refresh_token(
     subject: Union[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     if expires_delta:
-        expires_delta = timenow_dt() + expires_delta
+        expires = timenow_dt() + expires_delta
     else:
-        expires_delta = timenow_dt() + timedelta(
+        expires = timenow_dt() + timedelta(
             minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
         )
 
-    to_encode = {"exp": expires_delta.timestamp() * 1000, "sub": str(subject)}
+    to_encode = {"exp": expires.timestamp() * 1000, "sub": str(subject)}
     encoded_jwt = jwt.encode(
         to_encode, settings.REFRESH_SECRET_KEY, algorithm=settings.ALGORITHM
     )
@@ -95,7 +95,7 @@ def verify_password_reset_token(token: str) -> str | None:
         return None
 
 
-def password_similarity(username: str, password: str, max_similarity=0.7):
+def password_similarity(username: str, password: str, max_similarity: float=0.7) -> tuple[bool, float]:
     """
     check is the similarity between the password and username
     ratio > max_similarity is similar
@@ -105,13 +105,11 @@ def password_similarity(username: str, password: str, max_similarity=0.7):
     return True if ratio > max_similarity else False, ratio
 
 
-def format_password_message(old: str, new: str):
-    if not old:
-        return new
-    return f"{old}, {new}"
+def format_password_message(old: str, new: str) -> str:
+    return new if not old else f"{old}, {new}"
 
 
-def password_check(password, username):
+def password_check(password: str, username: str) -> dict:
     """
     Verify the strength of 'password'
     Returns a dict indicating the wrong criteria

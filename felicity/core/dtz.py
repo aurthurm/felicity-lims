@@ -27,18 +27,20 @@ def to_datetime(date_value: str) -> datetime:
     return parser.parse(date_value)
 
 
-def datetime_math(date_val: str | datetime, days: int, addition=True) -> datetime:
+def datetime_math(date_val: str | datetime, days: int, addition: bool=True) -> datetime:
     if isinstance(date_val, str):
-        date_val: datetime = to_datetime(date_val)
+        date_dt: datetime = to_datetime(date_val)
+    else:
+        date_dt = date_val
 
     if addition:
-        return date_val + timedelta(days=days)  # noqa
+        return date_dt + timedelta(days=days)  # noqa
     else:
-        return date_val - timedelta(days=days)  # noqa
+        return date_dt - timedelta(days=days)  # noqa
 
 
 def format_datetime(
-    dat_value: str | datetime, human_format=False, with_time=True
+    dat_value: str | datetime, human_format: bool=False, with_time: bool=True
 ) -> str:
     if not dat_value:
         return ""
@@ -60,7 +62,7 @@ def format_datetime(
     return to_datetime(dat_value).strftime(_format)
 
 
-def make_tz_aware(unaware: str | datetime):
+def make_tz_aware(unaware: str | datetime) -> datetime:
     if isinstance(unaware, datetime):
         return unaware.replace(tzinfo=settings.TIMEZONE)
     return datetime.strptime(unaware, settings.DATETIME_STR_FORMAT).replace(

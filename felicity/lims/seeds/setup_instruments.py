@@ -29,7 +29,7 @@ async def seed_instrument_categories() -> None:
         logger.error("Failed to load person seed data")
         return
 
-    for inst_type in data.get("categories"):
+    for inst_type in data.get("categories", []):
         instrument_type = await instrument_type_service.get(name=inst_type)
         if not instrument_type:
             inst_type_in = schemas.InstrumentTypeCreate(
@@ -37,12 +37,12 @@ async def seed_instrument_categories() -> None:
             )
             await instrument_type_service.create(inst_type_in)
 
-    for _meth in data.get("methods"):
+    for _meth in data.get("methods", []):
         if not (await method_service.get(name=_meth)):
             method_in = schemas.MethodCreate(name=_meth, description="", keyword="")
             await method_service.create(method_in)
 
-    for _inst in data.get("instruments"):
+    for _inst in data.get("instruments", []):
         if not (await instrument_service.get(name=_inst)):
             inst_in = schemas.InstrumentCreate(name=_inst, description="", keyword="")
             instrument = await instrument_service.create(inst_in)

@@ -10,7 +10,7 @@ settings = get_settings()
 
 
 def send_email(
-    email_to: str, subject_template: str = "", html_template: str = "", environment=None
+    email_to: str, subject_template: str = "", html_template: str = "", environment: dict=None
 ) -> None:
     if environment is None:
         environment = {}

@@ -10,7 +10,7 @@ from felicity.core.config import settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-client = AsyncIOMotorClient(
+client: AsyncIOMotorClient = AsyncIOMotorClient(
     f"mongodb://{settings.MONGODB_USER}:{settings.MONGODB_PASS}@{settings.MONGODB_SERVER}"
 )
 
@@ -23,28 +23,28 @@ class MongoCollection(StrEnum):
 
 
 class MongoService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db = client.felicity
 
-    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:
-        logger.info(f"mongodb -- create:{collection} --")
-        collection = self.db.get_collection(collection)
+    async def create(self, collection_name: MongoCollection, data: dict) -> Optional[dict]:
+        logger.info(f"mongodb -- create:{collection_name} --")
+        collection = self.db.get_collection(collection_name)
         created = await collection.insert_one(data)
         return await collection.find_one({"_id": created.inserted_id})
 
     async def upsert(
-        self, collection: MongoCollection, uid: str, data: dict
+        self, collection_name: MongoCollection, uid: str, data: dict
     ) -> Optional[dict]:
-        logger.info(f"mongodb -- upsert:{collection} --")
-        collection = self.db.get_collection(collection)
+        logger.info(f"mongodb -- upsert:{collection_name} --")
+        collection = self.db.get_collection(collection_name)
         result = await collection.update_one(
             {"_id": self.oid(uid)}, {"$set": data}, upsert=True
         )
         return await collection.find_one({"_id": result.upserted_id})
 
-    async def retrieve(self, collection: MongoCollection, uid: str):
-        logger.info(f"mongodb -- retrieve:{collection} --")
-        collection = self.db.get_collection(collection)
+    async def retrieve(self, collection_name: MongoCollection, uid: str) -> dict | None:
+        logger.info(f"mongodb -- retrieve:{collection_name} --")
+        collection = self.db.get_collection(collection_name)
         item = await collection.find_one({"_id": self.oid(uid)})
         if item:
             item["_id"] = self.flake_id_from_hex(str(item["_id"]))
@@ -52,7 +52,7 @@ class MongoService:
 
     async def search(
         self,
-        collection: MongoCollection,
+        collection_name: MongoCollection,
         filters: dict[str, Any],
         projection: dict[str, int] | None = None,
         limit: int = 100,
@@ -65,8 +65,8 @@ class MongoService:
         :param limit: Maximum number of documents to return.
         :return: A list of documents matching the filters.
         """
-        logger.info(f"mongodb -- search:{collection} --")
-        collection = self.db.get_collection(collection)
+        logger.info(f"mongodb -- search:{collection_name} --")
+        collection = self.db.get_collection(collection_name)
         cursor = collection.find(filters, projection).limit(limit)
         results = []
         async for document in cursor:
@@ -74,10 +74,10 @@ class MongoService:
         return results
 
     async def update(
-        self, collection: MongoCollection, uid: str, data: dict
+        self, collection_name: MongoCollection, uid: str, data: dict
     ) -> Optional[bool]:
-        logger.info(f"mongodb -- update:{collection} --")
-        collection = self.db.get_collection(collection)
+        logger.info(f"mongodb -- update:{collection_name} --")
+        collection = self.db.get_collection(collection_name)
         if len(data) < 1:
             return None
         item = await collection.find_one({"_id": self.oid(uid)})
@@ -88,9 +88,9 @@ class MongoService:
             return updated.matched_count > 0
         return False
 
-    async def delete(self, collection: MongoCollection, uid: str) -> bool:
-        logger.info(f"mongodb -- delete:{collection} --")
-        collection = self.db.get_collection(collection)
+    async def delete(self, collection_name: MongoCollection, uid: str) -> bool:
+        logger.info(f"mongodb -- delete:{collection_name} --")
+        collection = self.db.get_collection(collection_name)
         item = await collection.find_one({"_id": self.oid(uid)})
         if item:
             await collection.delete_one({"_id": self.oid(uid)})

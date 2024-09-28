@@ -20,6 +20,7 @@ from felicity.apps.analysis.services.analysis import (
 )
 from felicity.apps.analysis.services.quality_control import QCLevelService
 from felicity.apps.idsequencer.service import IdSequenceService
+from felicity.apps.setup.entities.setup import Unit
 from felicity.apps.setup.schemas import UnitCreate
 from felicity.apps.setup.services import DepartmentService, UnitService
 from felicity.core.config import get_settings
@@ -30,14 +31,12 @@ settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-units = {}
+
+units: dict[str, Unit] = {}
 
 
-async def unit_resolver(name: str, description=""):
+async def unit_resolver(name: str, description: str="") -> Unit:
     unit_service = UnitService()
-
-    if not name or name is None:
-        return None
 
     if name in units:
         return units[name]
@@ -50,7 +49,7 @@ async def unit_resolver(name: str, description=""):
     return unit
 
 
-async def seed_categories():
+async def seed_categories() -> None:
     logger.info("Setting up analyses categories .....")
     analysis_category_service = AnalysisCategoryService()
 

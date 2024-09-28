@@ -10,5 +10,4 @@ bump-pydantic==0.8.0
 ruff==0.6.7
 pytype==2024.09.13
 mypy==1.11.1
-sqlalchemy-stubs==0.4
 aiosqlite==0.20.0

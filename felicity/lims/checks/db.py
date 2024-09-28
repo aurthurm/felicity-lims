@@ -1,5 +1,6 @@
 import logging
 
+from sqlalchemy import text
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
 from felicity.database.session import async_session
@@ -22,7 +23,7 @@ async def check_db_conn_status() -> None:
     try:
         session = async_session()
         # Try to create session to check if DB is awake
-        await session.execute("SELECT 1")
+        await session.execute(text("SELECT 1"))
         await session.close()
         logger.info("database session connection established. ")
     except Exception as e:

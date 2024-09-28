@@ -20,7 +20,7 @@ def runserver(
     workers: int = 1,
     reload: bool = False,
     colors: bool = True,
-):
+) -> None:
     """Felicity LIMS Server"""
     config = Config(
         app="felicity.main:felicity",
@@ -41,7 +41,7 @@ def gunicorn(
     workers: int = 1,
     reload: bool = False,
     colors: bool = True,
-):
+) -> None:
     """Felicity LIMS Server"""
     # Build the command to run gunicorn with uvicorn workers
     command = [
@@ -64,7 +64,7 @@ def gunicorn(
 
 
 @app.command()
-def upgrade(revision: str = typer.Option("head", help="Target revision to upgrade to")):
+def upgrade(revision: str = typer.Option("head", help="Target revision to upgrade to")) -> None:
     """Upgrade to a specified revision."""
     alembic_service.upgrade(revision)
     typer.echo(f"Upgraded to revision: {revision}")
@@ -73,14 +73,14 @@ def upgrade(revision: str = typer.Option("head", help="Target revision to upgrad
 @app.command()
 def downgrade(
     revision: str = typer.Argument(..., help="Target revision to downgrade to"),
-):
+) -> None:
     """Downgrade to a specified revision."""
     alembic_service.downgrade(revision)
     typer.echo(f"Downgraded to revision: {revision}")
 
 
 @app.command()
-def revision(message: str = typer.Argument(..., help="Message for the new revision")):
+def revision(message: str = typer.Argument(..., help="Message for the new revision")) -> None:
     """Not working --- no idea why yet
     Create a new Alembic revision with a message."""
     alembic_service.create_revision(message)
@@ -88,22 +88,22 @@ def revision(message: str = typer.Argument(..., help="Message for the new revisi
 
 
 @app.command()
-def current():
+def current() -> None:
     """Show the current database revision."""
     alembic_service.current()
 
 
 @app.command()
-def history():
+def history() -> None:
     """Show the revision history."""
     alembic_service.history()
 
 
 @app.command()
-def updates():
+def updates() -> None:
     """Check for updates"""
     asyncio.run(alembic_service.check_for_updates())
 
 
-def main():
+def main() -> None:
     app()

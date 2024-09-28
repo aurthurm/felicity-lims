@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 from felicity.apps.abstract.entity import BaseEntity
 
@@ -68,7 +68,7 @@ class Group(BaseEntity):
     permissions = relationship(
         "Permission", secondary=permission_groups, backref="groups", lazy="selectin"
     )
-    pages = Column(String, nullable=True)
+    pages: Mapped[str] = Column(String, nullable=True)
     active = Column(Boolean(), default=True)
 
 

@@ -1,4 +1,5 @@
 import graphdoc
+from strawberry import Schema
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -10,8 +11,8 @@ settings = get_settings()
 STATIC_DIR = f"{settings.BASE_DIR}/templates/static/"
 
 
-def setup_webapp(app: FastAPI, serve_webapp: bool, schema):
-    backends = "/backends" if serve_webapp else "/"
+def setup_webapp(app: FastAPI, serve_webapp: bool, schema: Schema) -> None:
+    backends: str = "/backends" if serve_webapp else "/"
 
     if serve_webapp:
         app.mount(
@@ -19,17 +20,17 @@ def setup_webapp(app: FastAPI, serve_webapp: bool, schema):
         )
 
         @app.get("/", response_class=HTMLResponse)
-        async def handler(request: Request):
+        async def handler(request: Request) -> HTMLResponse:
             return Jinja2Templates(directory=STATIC_DIR).TemplateResponse(
                 "index.html", context={"request": request}
             )
 
     @app.get("/graphql-docs", response_class=HTMLResponse)
-    async def graphql_docs():
+    async def graphql_docs() -> str:
         return graphdoc.to_doc(schema)
 
     @app.get(backends, response_class=HTMLResponse)
-    def api_gql_view():
+    def api_gql_view() -> str:
         return """
         <!Doctype html>
         <html>

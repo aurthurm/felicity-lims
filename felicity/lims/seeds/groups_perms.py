@@ -202,7 +202,7 @@ permissions = {
 }
 
 
-def get_action_targets():  # e.g ('verify', 'worksheet'),
+def get_action_targets() -> list[tuple[str, str]]:  # e.g ('verify', 'worksheet'),
     final = []
     for a_key, action in permissions.items():
         for o_key, obj in action.items():

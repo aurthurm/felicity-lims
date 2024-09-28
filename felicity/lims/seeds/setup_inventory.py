@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def seed_stock_units():
+async def seed_stock_units() -> None:
     logger.info("Setting up stock units .....")
     stock_unit_service = StockUnitService()
 
@@ -37,7 +37,7 @@ async def seed_stock_units():
             await stock_unit_service.create(su_in)
 
 
-async def seed_stock_categories():
+async def seed_stock_categories() -> None:
     logger.info("Setting up stock categories .....")
     stock_category_service = StockCategoryService()
 
@@ -58,7 +58,7 @@ async def seed_stock_categories():
             await stock_category_service.create(cu_in)
 
 
-async def seed_stock_hazards():
+async def seed_stock_hazards() -> None:
     logger.info("Setting up stock hazards .....")
     hazard_service = HazardService()
 

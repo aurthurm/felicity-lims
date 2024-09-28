@@ -1,4 +1,6 @@
-def get_passed_args(inspection):
+from typing import Any, Union
+
+def get_passed_args(inspection: Any) -> dict:
     """
     Retrieve user passed function arguments from the current frame from inspect
 
@@ -28,7 +30,7 @@ def get_passed_args(inspection):
     return final
 
 
-def has_value_or_is_truthy(val) -> bool:  # noqa
+def has_value_or_is_truthy(val: Any) -> bool:  # noqa
     if isinstance(val, bool):
         return True
 
@@ -41,11 +43,11 @@ def has_value_or_is_truthy(val) -> bool:  # noqa
     return True
 
 
-def to_text(val) -> str:  # noqa
+def to_text(val: Any) -> str:  # noqa
     return str(val)
 
 
-def get_from_nested(obj: dict, path: str):
+def get_from_nested(obj: dict, path: str) -> Union[str, int, float, Any]:
     """
     Traversed a json/dict object tree and returns the required value if exists
     :param obj: dict object to be traversed
@@ -65,7 +67,7 @@ def get_from_nested(obj: dict, path: str):
         return get_from_nested(value, ".".join(keys))
 
 
-def delete_from_nested(obj: dict, path: str):
+def delete_from_nested(obj: dict, path: str) -> dict | None:
     """
     Traverses a json/dict object tree and deletes the required value if exists
     :param obj: dict object to be traversed
@@ -74,7 +76,7 @@ def delete_from_nested(obj: dict, path: str):
     """
 
     if not obj:
-        return
+        return None
     if not path:
         return obj
 
@@ -93,9 +95,10 @@ def delete_from_nested(obj: dict, path: str):
                 delete_from_nested(item, ".".join(keys))
         else:
             delete_from_nested(value, ".".join(keys))
+    return obj
 
 
-def strtobool(val):
+def strtobool(val: str) -> bool:
     """Convert a string representation of truth to true (1) or false (0).
     True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
     are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
@@ -121,7 +124,7 @@ def clean_paths(obj: dict) -> dict | None:
     return obj
 
 
-def remove_circular_refs(ob, _seen=None):
+def remove_circular_refs(ob: dict, _seen: set = None) -> dict:
     if _seen is None:
         _seen = set()
 

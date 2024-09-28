@@ -25,13 +25,13 @@ def resolve_media_dirs_for(target: str) -> str:
     return str_path
 
 
-def create_dir(dir_name: str):
+def create_dir(dir_name: str) -> None:
     path = Path(dir_name)
     if not path.is_dir():
         os.makedirs(dir_name, exist_ok=True)
 
 
-def resolve_root_dirs():
+def resolve_root_dirs() -> None:
     _dirs = ["media"]
     for _dir in _dirs:
         create_dir(_dir)

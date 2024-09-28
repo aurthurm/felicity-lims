@@ -2,7 +2,7 @@ from typing import Any, Mapping
 
 from sqlalchemy import Column, String, select
 from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped
 from sqlalchemy_mixins import ReprMixin, SerializeMixin, SmartQueryMixin, SessionMixin
 from sqlalchemy_mixins.utils import classproperty
 
@@ -28,7 +28,7 @@ class Base(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAtt
     __mapper_args__ = {"eager_defaults": True}
     __abstract__ = True
 
-    uid = Column(
+    uid: Mapped[str] = Column(
         String,
         primary_key=True,
         index=True,
