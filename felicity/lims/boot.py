@@ -77,8 +77,7 @@ def register_graphql(app: FastAPI) -> None:
 def register_tracer(app: FastAPI) -> None:
     if settings.RUN_OPEN_TRACING:
         otlp_exporter = OTLPSpanExporter(
-            endpoint=settings.OTLP_SPAN_EXPORT_URL,
-            insecure=True
+            endpoint=settings.OTLP_SPAN_EXPORT_URL, insecure=True
         )
 
         resource = Resource.create({"service.name": settings.PROJECT_NAME})

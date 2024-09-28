@@ -1,6 +1,13 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.setup.entities.location import Country, District, Province
-from felicity.apps.setup.entities.setup import Department, Laboratory, LaboratorySetting, Manufacturer, Supplier, Unit
+from felicity.apps.setup.entities.setup import (
+    Department,
+    Laboratory,
+    LaboratorySetting,
+    Manufacturer,
+    Supplier,
+    Unit,
+)
 from felicity.apps.setup.repositories import (
     CountryRepository,
     DepartmentRepository,

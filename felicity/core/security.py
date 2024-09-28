@@ -95,7 +95,9 @@ def verify_password_reset_token(token: str) -> str | None:
         return None
 
 
-def password_similarity(username: str, password: str, max_similarity: float=0.7) -> tuple[bool, float]:
+def password_similarity(
+    username: str, password: str, max_similarity: float = 0.7
+) -> tuple[bool, float]:
     """
     check is the similarity between the password and username
     ratio > max_similarity is similar

@@ -27,7 +27,9 @@ def to_datetime(date_value: str) -> datetime:
     return parser.parse(date_value)
 
 
-def datetime_math(date_val: str | datetime, days: int, addition: bool=True) -> datetime:
+def datetime_math(
+    date_val: str | datetime, days: int, addition: bool = True
+) -> datetime:
     if isinstance(date_val, str):
         date_dt: datetime = to_datetime(date_val)
     else:
@@ -40,7 +42,7 @@ def datetime_math(date_val: str | datetime, days: int, addition: bool=True) -> d
 
 
 def format_datetime(
-    dat_value: str | datetime, human_format: bool=False, with_time: bool=True
+    dat_value: str | datetime, human_format: bool = False, with_time: bool = True
 ) -> str:
     if not dat_value:
         return ""

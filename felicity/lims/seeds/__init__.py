@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def requisite_setup(lab_name: str="Felicity Labs") -> bool:
+async def requisite_setup(lab_name: str = "Felicity Labs") -> bool:
     logger.info("Loading requisite setup ...")
 
     await seed_laboratory(lab_name)

@@ -26,7 +26,9 @@ class MongoService:
     def __init__(self) -> None:
         self.db = client.felicity
 
-    async def create(self, collection_name: MongoCollection, data: dict) -> Optional[dict]:
+    async def create(
+        self, collection_name: MongoCollection, data: dict
+    ) -> Optional[dict]:
         logger.info(f"mongodb -- create:{collection_name} --")
         collection = self.db.get_collection(collection_name)
         created = await collection.insert_one(data)

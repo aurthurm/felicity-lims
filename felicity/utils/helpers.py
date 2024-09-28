@@ -1,5 +1,6 @@
 from typing import Any, Union
 
+
 def get_passed_args(inspection: Any) -> dict:
     """
     Retrieve user passed function arguments from the current frame from inspect

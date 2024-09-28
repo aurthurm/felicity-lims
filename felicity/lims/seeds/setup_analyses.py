@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 units: dict[str, Unit] = {}
 
 
-async def unit_resolver(name: str, description: str="") -> Unit:
+async def unit_resolver(name: str, description: str = "") -> Unit:
     unit_service = UnitService()
 
     if name in units:
