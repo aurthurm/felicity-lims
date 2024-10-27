@@ -101,3 +101,4 @@ class UserPreference(BaseEntity):
         "Department", secondary=department_preference, lazy="selectin"
     )
     theme = Column(String, default="light")  # dark, light
+    default_route = Column(String, default="dashboard")  # dark, light

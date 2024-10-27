@@ -5,9 +5,8 @@ Revises: c03167691623
 Create Date: 2024-10-27 06:28:17.903319
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '9d42a09f0754'
@@ -41,6 +40,7 @@ def upgrade():
     op.add_column('user_preference', sa.Column('user_uid', sa.String(), nullable=True))
     op.create_unique_constraint(None, 'user_preference', ['user_uid'])
     op.create_foreign_key(None, 'user_preference', 'user', ['user_uid'], ['uid'], ondelete='CASCADE')
+    op.add_column("user_preference", sa.Column("default_route", sa.String(), nullable=True))
     # ### end Alembic commands ###
 
 
@@ -69,4 +69,5 @@ def downgrade():
     op.create_index('ix_analysis_result_rgt', 'analysis_result', ['rgt'], unique=False)
     op.create_index('ix_analysis_result_lft', 'analysis_result', ['lft'], unique=False)
     op.create_index('ix_analysis_result_level', 'analysis_result', ['level'], unique=False)
+    op.drop_column("user_preference", "default_route")
     # ### end Alembic commands ###

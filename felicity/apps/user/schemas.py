@@ -91,6 +91,7 @@ class UserPreferenceBase(BaseAuditModel):
     user_uid: str
     expanded_menu: bool | None = False
     theme: str | None = "light"
+    default_route: str | None = None
 
 
 class UserPreference(UserPreferenceBase):
@@ -128,7 +129,6 @@ class UserBase(BaseAuditModel):
     user_name: str | None = None
     avatar: str | None = None
     bio: str | None = None
-    default_route: str | None = None
     groups: Optional[List[Group]] = field(default_factory=list)
     login_retry: int | None = 0
     is_blocked: bool | None = False
