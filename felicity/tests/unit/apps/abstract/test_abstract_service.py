@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-import pytest
 from unittest.mock import AsyncMock, create_autospec
 
+import pytest
+from pydantic import BaseModel
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -85,7 +85,7 @@ async def test_get(test_service):
     test_service.repository.get = AsyncMock(return_value=mock_entity)
     result = await test_service.get(uid="1")
     assert result == mock_entity
-    test_service.repository.get.assert_awaited_once_with(uid="1")
+    test_service.repository.get.assert_awaited_once_with(uid="1", related=None)
 
 
 @pytest.mark.asyncio
@@ -103,10 +103,10 @@ async def test_get_by_uids(test_service):
 @pytest.mark.asyncio
 async def test_get_related(test_service):
     mock_entity = MockEntity(uid="1", name="test", bio="test bio")
-    test_service.repository.get_related = AsyncMock(return_value=mock_entity)
+    test_service.repository.get = AsyncMock(return_value=mock_entity)
     result = await test_service.get(related=["related1"], uid="1")
     assert result == mock_entity
-    test_service.repository.get_related.assert_awaited_once_with(
+    test_service.repository.get.assert_awaited_once_with(
         related=["related1"], uid="1"
     )
 

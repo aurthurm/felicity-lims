@@ -52,7 +52,7 @@ async def test_access_token(trial_data):
 @pytest.mark.asyncio
 async def test_access_token_timedelta(trial_data):
     with pytest.raises(TypeError):
-        create_access_token(trial_data["username"], timedelta(minutes=5))
+        create_access_token(trial_data["username"], 5)
 
 
 @pytest.mark.asyncio

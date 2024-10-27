@@ -2,7 +2,7 @@ import logging
 from operator import gt, lt, eq, ge, le, ne
 from typing import List, Optional
 
-from cachetools import TTLCache, cached
+from cachetools import TTLCache
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.analysis import Analysis, Sample
@@ -173,9 +173,9 @@ class ReflexEngineService:
                 logger.info(f"Reflex actions set for {result}")
 
     @staticmethod
-    @cached(cache=reflex_action_cache)
+    # @cached(cache=reflex_action_cache)
     async def get_reflex_action(
-        analysis_uid: str, level: int
+            analysis_uid: str, level: int
     ) -> Optional[ReflexAction]:
         """
         Get reflex action with caching to improve performance.
@@ -278,7 +278,7 @@ class ReflexEngineService:
         await self.apply_actions(brain.actions, results_pool)
 
     async def evaluate(
-        self, conditions: list[ReflexBrainCondition], results_pool: List[AnalysisResult]
+            self, conditions: list[ReflexBrainCondition], results_pool: List[AnalysisResult]
     ) -> bool:
         """
         Evaluate conditions for decision-making.
@@ -298,7 +298,7 @@ class ReflexEngineService:
 
     @staticmethod
     async def _eval_condition(
-        condition: ReflexBrainCondition, results_pool: List[AnalysisResult]
+            condition: ReflexBrainCondition, results_pool: List[AnalysisResult]
     ) -> bool:
         """
         Evaluate a single condition against the results pool.
@@ -401,7 +401,7 @@ class ReflexEngineService:
         return all(evaluations)
 
     async def apply_actions(
-        self, actions: list[ReflexBrainAction], results_pool: List[AnalysisResult]
+            self, actions: list[ReflexBrainAction], results_pool: List[AnalysisResult]
     ) -> None:
         """
         Execute actions for a matching reflex brain.
@@ -436,7 +436,7 @@ class ReflexEngineService:
                 await self.analysis_result_service.hide_report(r.uid)
 
     async def get_results_pool(
-        self, conditions: list[ReflexBrainCondition]
+            self, conditions: list[ReflexBrainCondition]
     ) -> List[AnalysisResult]:
         """
         Get a pool of relevant analysis results for the given conditions.

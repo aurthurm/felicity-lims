@@ -1,4 +1,3 @@
-from felicity.apps.abstract.entity import BaseEntity  # noqa
 from felicity.apps.analysis.entities.analysis import Analysis  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCoding  # noqa
@@ -32,7 +31,6 @@ from felicity.apps.client.entities import Client  # noqa
 from felicity.apps.client.entities import ClientContact  # noqa
 from felicity.apps.idsequencer.entities import IdSequence  # noqa
 from felicity.apps.impress.entities import ReportImpress  # noqa
-
 # from felicity.apps.setup.entities import MethodValidation  # noqa
 # from felicity.apps.setup.entities import InstrumentCompetence  # noqa
 from felicity.apps.instrument.entities import CalibrationCertificate  # noqa
@@ -88,3 +86,4 @@ from felicity.apps.user.entities import User  # noqa
 from felicity.apps.user.entities import UserPreference  # noqa
 from felicity.apps.worksheet.entities import WorkSheet  # noqa
 from felicity.apps.worksheet.entities import WorkSheetTemplate  # noqa
+from felicity.apps.abstract.entity import BaseEntity  # noqa

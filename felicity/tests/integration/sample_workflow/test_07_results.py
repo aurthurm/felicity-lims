@@ -1,9 +1,9 @@
 import logging
 
 import pytest
-from felicity.tests.integration.utils.user import make_password, make_username
 
 from felicity.apps.analysis.tasks import submit_results, verify_results
+from felicity.tests.integration.utils.user import make_password, make_username
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.asyncio
 @pytest.mark.order(80)
 async def test_submit_results(
-    app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
+        app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
 ):
     add_gql = """
      mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: String!) {
@@ -404,6 +404,14 @@ async def test_verify_sample_results(app_gql, users, samples):
     logger.info(f"samples::::::::::::::: {samples}")
     results = samples[0]["analysisResults"]
 
+    sample = None
+    results = None
+    for _sample in samples:
+        results = list(filter(lambda r: r["status"] == "resulted", _sample["analysisResults"]))
+        if len(results) > 0:
+            sample = _sample
+            break
+
     response = await app_gql.post(
         "/felicity-gql",
         json={
@@ -411,7 +419,7 @@ async def test_verify_sample_results(app_gql, users, samples):
             "variables": {
                 "analyses": [results[0]["uid"]],
                 "sourceObject": "sample",
-                "sourceObjectUid": samples[0]["uid"],
+                "sourceObjectUid": sample["uid"],
             },
         },
         headers={"Authorization": f"bearer {user_data['token']}"},

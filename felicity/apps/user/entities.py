@@ -4,15 +4,12 @@ from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import Mapped, relationship
 
 from felicity.apps.abstract.entity import BaseEntity
-
 from .abstract import AbstractBaseUser
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 # TODO: Refactor User to LaboratoryContact, UserAuth to ContactAuth
-
 
 """
 Many to Many Link between Group and User
@@ -38,12 +35,18 @@ permission_groups = Table(
 class User(AbstractBaseUser):
     __tablename__ = "user"
 
+    # One-to-one relationship with UserPreference
+    preference: Mapped["UserPreference"] = relationship(
+        "UserPreference",
+        back_populates="user",
+        lazy="selectin",
+        uselist=False,
+        cascade="all, delete-orphan",
+        foreign_keys="[UserPreference.user_uid]"
+    )
+
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
-    )
-    preference_uid = Column(String, ForeignKey("user_preference.uid"))
-    preference = relationship(
-        "UserPreference", foreign_keys=[preference_uid], lazy="selectin"
     )
 
 
@@ -84,6 +87,14 @@ class UserPreference(BaseEntity):
     """Preferences for System Personalisation"""
 
     __tablename__ = "user_preference"
+
+    user_uid = Column(String, ForeignKey("user.uid", ondelete="CASCADE"), unique=True)
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="preference",
+        foreign_keys=[user_uid],
+        single_parent=True
+    )
 
     expanded_menu = Column(Boolean(), default=False)
     departments = relationship(

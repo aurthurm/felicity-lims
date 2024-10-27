@@ -44,7 +44,7 @@ async def test_add_user(user_service, mocker, user_data):
     result = await user_service.create(UserCreate(**user_data))
 
     user_service.repository.get.assert_called_once_with(
-        user_name=user_data["user_name"]
+        user_name=user_data["user_name"], related=None
     )
     user_service.repository.create.assert_called_once()
 
@@ -83,7 +83,6 @@ async def test_add_user_password_policy_weak(user_service, mocker, user_data):
                 }
             )
         )
-
 
 # @pytest.mark.asyncio
 # async def test_add_user_password_mismatch(user_service, mocker, user_data):

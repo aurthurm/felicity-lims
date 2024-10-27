@@ -88,16 +88,16 @@ def simple_task(message: str):
 class UserMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
-        self,
-        info,
-        first_name: str,
-        last_name: str,
-        email: str,
-        user_name: str,
-        password: str,
-        passwordc: str,
-        group_uid: str | None = None,
-        open_reg: bool | None = False,
+            self,
+            info,
+            first_name: str,
+            last_name: str,
+            email: str,
+            user_name: str,
+            password: str,
+            passwordc: str,
+            group_uid: str | None = None,
+            open_reg: bool | None = False,
     ) -> UserResponse:
         user_service = UserService()
         group_service = GroupService()
@@ -124,6 +124,7 @@ class UserMutations:
             "user_name": user_name,
             "password": password,
             "is_superuser": False,
+            "login_retry": 0,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -135,11 +136,10 @@ class UserMutations:
             user = await user_service.save(user)
 
         # initial user-preferences
-        pref_in = user_schemas.UserPreferenceCreate(expanded_menu=False, theme="LIGHT")
-        preference = await user_preference_service.create(pref_in)
-        user = await user_service.link_preference(
-            user.uid, preference_uid=preference.uid
-        )
+        pref = user_preference_service.get(user_uid=user.uid)
+        if not pref:
+            pref_in = user_schemas.UserPreferenceCreate(user_uid=user.uid, expanded_menu=False, theme="LIGHT")
+            await user_preference_service.create(pref_in)
 
         if user_in.email:
             logger.info("Handle email sending in a standalone service")
@@ -147,17 +147,17 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
-        self,
-        info,
-        user_uid: str,
-        first_name: str | None,
-        last_name: str | None,
-        mobile_phone: str | None,
-        email: str | None,
-        group_uid: str | None,
-        is_active: bool | None,
-        password: str | None = None,
-        passwordc: str | None = None,
+            self,
+            info,
+            user_uid: str,
+            first_name: str | None,
+            last_name: str | None,
+            mobile_phone: str | None,
+            email: str | None,
+            group_uid: str | None,
+            is_active: bool | None,
+            password: str | None = None,
+            passwordc: str | None = None,
     ) -> UserResponse:
         user_service = UserService()
         group_service = GroupService()
@@ -202,7 +202,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def authenticate_user(
-        self, info, username: str, password: str
+            self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
         user_service = UserService()
 
@@ -248,7 +248,7 @@ class UserMutations:
 
     @strawberry.mutation()
     async def validate_password_reset_token(
-        self, info, token: str
+            self, info, token: str
     ) -> PasswordResetValidityResponse:
         user_service = UserService()
         email = verify_password_reset_token(token)
@@ -265,11 +265,11 @@ class UserMutations:
 
     @strawberry.mutation()
     async def reset_password(
-        self,
-        info,
-        user_uid: str,
-        password: str,
-        passwordc: str,
+            self,
+            info,
+            user_uid: str,
+            password: str,
+            passwordc: str,
     ) -> MessageResponse:
         user_service = UserService()
 
@@ -311,7 +311,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group(
-        self, info, uid: str, payload: GroupInputType
+            self, info, uid: str, payload: GroupInputType
     ) -> GroupResponse:
         group_service = GroupService()
 
@@ -336,7 +336,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
-        self, info, group_uid: str, permission_uid: str
+            self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
         group_service = GroupService()
         permission_service = PermissionService()

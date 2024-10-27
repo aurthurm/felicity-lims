@@ -217,7 +217,7 @@ class BaseRepository(Generic[M]):
             await session.flush()
 
     async def query_table(
-        self, table: Table, columns: list[str] | None = None, **kwargs
+            self, table: Table, columns: list[str] | None = None, **kwargs
     ):
         """
         Query a specific table with optional column selection and filters.
@@ -444,11 +444,11 @@ class BaseRepository(Generic[M]):
         return list(combined)
 
     async def filter(
-        self,
-        filters: dict | list[dict],
-        sort_attrs: list[str] | None = None,
-        limit: int | None = None,
-        either: bool = False,
+            self,
+            filters: dict | list[dict],
+            sort_attrs: list[str] | None = None,
+            limit: int | None = None,
+            either: bool = False,
     ) -> list[M]:
         """
         Filter model instances based on the given conditions.
@@ -471,13 +471,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def paginate(
-        self,
-        page_size: int | None,
-        after_cursor: str | None,
-        before_cursor: str | None,
-        filters: dict | list[dict] | None,
-        sort_by: list[str] | None,
-        **kwargs,
+            self,
+            page_size: int | None,
+            after_cursor: str | None,
+            before_cursor: str | None,
+            filters: dict | list[dict] | None,
+            sort_by: list[str] | None,
+            **kwargs,
     ) -> PageCursor:
         """
         Paginate model instances based on the given conditions.
@@ -575,10 +575,10 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def build_page_info(
-        start_cursor: str | None = None,
-        end_cursor: str | None = None,
-        has_next_page: bool = False,
-        has_previous_page: bool = False,
+            start_cursor: str | None = None,
+            end_cursor: str | None = None,
+            has_next_page: bool = False,
+            has_previous_page: bool = False,
     ) -> PageInfo:
         """
         Build a PageInfo object with the given parameters.

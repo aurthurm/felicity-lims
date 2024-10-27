@@ -3,7 +3,6 @@ import logging
 from felicity.apps.user import schemas
 from felicity.apps.user.services import GroupService, UserPreferenceService, UserService
 from felicity.core.config import get_settings
-
 from .groups_perms import FGroup
 
 settings = get_settings()
@@ -39,13 +38,10 @@ async def seed_daemon_user() -> None:
         await user_service.save(system_daemon)
 
     # initial user-preferences
-    if not system_daemon.preference_uid:
-        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
-        preference = await preference_service.create(pref_in)
-        logger.info(
-            f"linking system daemon {system_daemon.uid} to preference {preference.uid}"
-        )
-        await user_service.link_preference(system_daemon.uid, preference.uid)
+    preference = preference_service.get(user_uid=system_daemon.uid)
+    if not preference:
+        pref_in = schemas.UserPreferenceCreate(user_uid=system_daemon.uid, expanded_menu=False, theme="light")
+        await preference_service.create(pref_in)
 
     logger.info("Done Setting up system daemon")
 
@@ -78,9 +74,9 @@ async def seed_super_user() -> None:
         await user_service.save(super_user)
 
     # initial user-preferences
-    if not super_user.preference_uid:
-        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
-        preference = await preference_service.create(pref_in)
-        await user_service.link_preference(super_user.uid, preference.uid)
+    preference = preference_service.get(user_uid=super_user.uid)
+    if not preference:
+        pref_in = schemas.UserPreferenceCreate(user_uid=super_user.uid, expanded_menu=False, theme="light")
+        await preference_service.create(pref_in)
 
     logger.info("Done Setting up system admin")

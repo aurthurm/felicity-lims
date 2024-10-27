@@ -5,6 +5,7 @@ from pydantic import ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 
+
 #
 #  Permission Schema
 #
@@ -87,6 +88,7 @@ class GroupInDB(GroupInDBBase):
 #  User Preferences
 #
 class UserPreferenceBase(BaseAuditModel):
+    user_uid: str
     expanded_menu: bool | None = False
     theme: str | None = "light"
 

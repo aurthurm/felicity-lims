@@ -7,7 +7,7 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 emails==0.6
 apscheduler==3.10.4
-sqlalchemy_mptt==0.2.5
+sqlalchemy_mptt@git+https://github.com/lowatt/sqlalchemy_mptt@sqlalchemy
 sqlalchemy_mixins@git+https://github.com/absent1706/sqlalchemy-mixins
 tenacity==8.2.3
 pydantic[email]==2.5.3

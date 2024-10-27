@@ -27,7 +27,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         super().__init__(UserRepository())
 
     async def create(
-        self, user_in: UserCreate, related: list[str] | None = None
+            self, user_in: UserCreate, related: list[str] | None = None
     ) -> User:
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
@@ -118,11 +118,6 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         user_obj = marshaller(user)
         user_in = UserUpdate(**{**user_obj, "is_active": False})
         await super().update(user_uid, user_in)
-
-    async def link_preference(self, user_uid: str, preference_uid):
-        _update = {"preference_uid": preference_uid}
-        update_in = UserUpdate(**_update)
-        return await super().update(user_uid, update_in)
 
 
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):

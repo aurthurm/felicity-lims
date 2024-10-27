@@ -35,7 +35,7 @@ class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):
         )
         result = await self.user_service.create(UserCreate(**self.user_data))
         self.repository.get.assert_called_once_with(
-            user_name=self.user_data["user_name"]
+            user_name=self.user_data["user_name"], related=None
         )
         self.repository.create.assert_called_once()
         self.assertIsNotNone(result.return_value.uid)
