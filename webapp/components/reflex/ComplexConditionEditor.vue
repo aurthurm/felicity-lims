@@ -29,7 +29,6 @@
   </template>
   
   <script setup lang="ts">
-  import { defineEmits } from 'vue';
   import { IComplexCondition, IAnalysisService } from '@/models/reflex';
   
   const props = defineProps<{
