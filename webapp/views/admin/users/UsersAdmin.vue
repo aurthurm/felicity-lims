@@ -6,9 +6,12 @@
   const tabGroups = defineAsyncComponent(
     () => import('./Groups.vue')
   )
+  const tabPermissions = defineAsyncComponent(
+    () => import('./Permissions.vue')
+  )
 
   let currentTab = ref<string>('users');
-  const tabs: string[] = ['users', 'groups'];
+  const tabs: string[] = ['users', 'groups', 'permissions'];
   let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 </script>
 
@@ -35,6 +38,7 @@
 
         <tab-users v-if="currentTab === 'users'"/>
         <tab-groups v-if="currentTab === 'groups'" />
+        <tab-permissions v-if="currentTab === 'permissions'" />
 
   </div>
 </template>

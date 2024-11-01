@@ -8,14 +8,10 @@ import {
   EDIT_SAMPLE_APPLY_TEMPLATE,
   EDIT_SAMPLE_MANAGE_ANALYSIS,
 } from "@/graphql/operations/analyses.mutations";
-import { on } from "events";
 
 const accordion = defineAsyncComponent(
     () => import('@/components/ui/FelAccordion.vue')
   )
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 const { withClientMutation } = useApiUtil();
 const route = useRoute();
 const analysisStore = useAnalysisStore()
@@ -151,7 +147,7 @@ const applyChanges = async () => {
 
   <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-white">
     <div class="w-full">
-        <accordion v-for="category in analysesServices" :key="category[0]">
+        <accordion v-for="(category, idx) in analysesServices" :key="idx">
           <template v-slot:title>{{ category[0] }}</template>
           <template v-slot:body>
             <table class="min-w-full">

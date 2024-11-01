@@ -61,8 +61,8 @@ axiosInstance.interceptors.response.use(
                                     keyword
                                     pages
                                 }
-                                preferenceUid
                                 preference {
+                                    uid
                                     expandedMenu
                                     theme
                                     departments {

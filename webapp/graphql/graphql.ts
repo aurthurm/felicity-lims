@@ -4583,7 +4583,6 @@ export type UserType = {
   lastName?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   preference?: Maybe<UserPreferenceType>;
-  preferenceUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   updatorName?: Maybe<Scalars['String']['output']>;
@@ -4705,7 +4704,7 @@ export type AuthenticateUserMutationVariables = Exact<{
 }>;
 
 
-export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, preferenceUid?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type AddUserMutationVariables = Exact<{
   firstName: Scalars['String']['input'];
@@ -6429,8 +6428,8 @@ export const AuthenticateUserDocument = gql`
           keyword
           pages
         }
-        preferenceUid
         preference {
+          uid
           expandedMenu
           theme
           departments {

@@ -19,8 +19,8 @@ mutation AuthenticateUser($username: String!, $password: String!) {
                     keyword
                     pages
                 }
-                preferenceUid
                 preference {
+                    uid
                     expandedMenu
                     theme
                     departments {

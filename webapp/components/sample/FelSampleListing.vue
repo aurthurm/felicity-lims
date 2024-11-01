@@ -588,6 +588,7 @@ const prepareRejections = async () => {
   const selection = getSamplesChecked();
   router.push({ name: "reject-samples", state: { samples: JSON.stringify(selection) } });
 };
+
 const prepareStorages = async () => {
   const selection = getSamplesChecked();
   router.push({ name: "store-samples", state: { samples: JSON.stringify(selection) } });

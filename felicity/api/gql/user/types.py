@@ -1,5 +1,6 @@
-import strawberry  # noqa
 from typing import List, Optional, Self
+
+import strawberry  # noqa
 
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
@@ -47,7 +48,6 @@ class UserType:
     mobile_phone: str | None = None
     business_phone: str | None = None
     groups: Optional[List[GroupType]] = None
-    preference_uid: str | None = None
     preference: Optional["UserPreferenceType"] = None
     is_active: bool
     is_superuser: bool

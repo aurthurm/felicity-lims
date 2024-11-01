@@ -23,8 +23,8 @@ export const AUTHENTICATE_USER = gql`
                         keyword
                         pages
                     }
-                    preferenceUid
                     preference {
+                        uid
                         expandedMenu
                         theme
                         departments {
@@ -116,8 +116,8 @@ export const REFRESH_TOKEN = gql`
                         keyword
                         pages
                     }
-                    preferenceUid
                     preference {
+                        uid
                         expandedMenu
                         theme
                         departments {

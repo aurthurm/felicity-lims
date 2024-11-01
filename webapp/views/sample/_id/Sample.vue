@@ -68,27 +68,31 @@ const canReceive = computed(() => {
   return false;
 });
 
-const receiveSample = async () => receiveSamples([sample?.value?.uid!]),
-  canCancel = computed(() => {
+const receiveSample = async () => receiveSamples([sample?.value?.uid!]);
+
+const canCancel = computed(() => {
     if (["received", "expected"].includes(sample?.value?.status?.toLowerCase()!))
       return true;
     return false;
   });
 
-const cancelSample = async () => cancelSamples([sample?.value?.uid!]),
-  canReinstate = computed(() => {
+const cancelSample = async () => cancelSamples([sample?.value?.uid!]);
+
+const canReinstate = computed(() => {
     if (["cancelled"].includes(sample?.value?.status?.toLowerCase()!)) return true;
     return false;
   });
 
-const reInstateSample = async () => reInstateSamples([sample?.value?.uid!]),
-  canVerify = computed(() => {
+const reInstateSample = async () => reInstateSamples([sample?.value?.uid!]);
+
+const canVerify = computed(() => {
     if (sample?.value?.status?.toLowerCase() === "awaiting") return true;
     return false;
   });
 
-const verifySample = async () => verifySamples([sample?.value?.uid!]),
-  canInvalidate = computed(() => {
+const verifySample = async () => verifySamples([sample?.value?.uid!]);
+
+const canInvalidate = computed(() => {
     if (sample?.value?.status?.toLowerCase() === "published") return true;
     return false;
   });
@@ -98,8 +102,9 @@ const publishText = computed(() => {
   if (["published"].includes(sample?.value?.status?.toLowerCase()!))
     return "Re publish";
   return "Pre publish";
-}),
-  canPublish = computed(() => {
+});
+
+const canPublish = computed(() => {
     if (
       ["awaiting", "approved", "published"].includes(
         sample?.value?.status?.toLowerCase()!
@@ -114,8 +119,9 @@ const publishText = computed(() => {
       return true;
     }
     return false;
-  }),
-  publishSample = async () => {
+  });
+
+const publishSample = async () => {
     const action = publishText.value.startsWith("Pre")
       ? "pre-publish"
       : publishText.value.startsWith("Re")
@@ -133,24 +139,24 @@ const invalidateSample = async () =>
 const printBarCooe = async () => router.push({ 
   name: "print-barcodes",
   state: { sampleUids: JSON.stringify([sample?.value?.uid!]) }}
-)
+);
 
 const canReject = computed(() => {
   if (["received", "expected"].includes(sample?.value?.status?.toLowerCase()!))
     return true;
   return false;
-}),
-  rejectSample = async () =>
-    router.push({
-      name: "reject-samples",
-      params: { samples: JSON.stringify([sample?.value]) },
-    });
+});
+
+const rejectSample = async () => {
+  router.push({ name: "reject-samples", state: { samples: JSON.stringify([sample?.value]) } });
+};
 
 const canRecover = computed(() => {
   if (["stored"].includes(sample?.value?.status?.toLowerCase()!)) return true;
   return false;
-}),
-  recoverSample = async () => recoverSamples([sample?.value?.uid!]);
+});
+
+const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
 
 // sample storage
 const goToStorage = async (sample?: ISample) => {

@@ -6,12 +6,15 @@
   import { IGroup, IPermission } from '@/models/auth';
   import * as shield from '@/guards'
 
-const modal = defineAsyncComponent(
-  () =>import('@/components/ui/FelModal.vue')
-)
-const accordion = defineAsyncComponent(
-  () =>import('@/components/ui/FelAccordion.vue')
-)
+  const FelSwitch = defineAsyncComponent(
+    () => import("@/components/ui/switch/FelSwitch.vue")
+  )
+  const modal = defineAsyncComponent(
+    () =>import('@/components/ui/FelModal.vue')
+  )
+  const accordion = defineAsyncComponent(
+    () =>import('@/components/ui/FelAccordion.vue')
+  )
 
   const pages = [
     shield.pages.ADMINISTRATION,
@@ -110,149 +113,62 @@ const accordion = defineAsyncComponent(
 </script>
 
 <template>
-  <div class="">
-    <div class="container w-full my-4">
-      <hr>
-      <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        @click="FormManager(true)"
-      >Add Group</button>
-      <hr>
+  <div class="container w-full my-4">
+    <hr>
+    <button
+      class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      @click="FormManager(true)"
+    >Add Group</button>
+    <hr>
 
-    </div>
-    <hr />
-
-    <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-3 overflow-y-scroll overscroll-contain max-h-[540px]">
-        <ul>
-          <li 
-          v-for="group in groups"
-          :key="group?.uid"
-         
-          @click.prevent.stop="selectGroup(group)"
-          :class="[
-            'bg-white shadow w-full p-1 mb-1 rounded-sm',
-            { 'border border-sky-800 bg-emerald-200': group?.uid === userGroup?.uid },
-          ]">
-            <a class="cursor-pointer">
-              <div class="flex-grow p-1">
-                <div class="font-medium text-gray-800 hover:text-gray-600 flex justify-between">
-                  <span>{{ group?.name }}</span>
-                  <span class="text-sm text-gray-500"></span>
-                </div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </section>
-
-      <section class="col-span-9"  v-if="userGroup?.uid !== undefined">
-        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
-          <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-12 px-3 sm:px-0">
-              <div class="flex justify-between">
-                <section>
-                  <h2 class="sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">{{ userGroup?.name }}</h2>
-                  <hr>
-                  <div div class="flex justify-start mt-2">
-                    <h3 class="mr-2 text-gray-600 font-semibold">Pages: </h3>
-                    <span v-for="item in userGroup?.pages" :key="item" class="mr-2">{{ item?.toLowerCase() }} </span>
-                  </div>
-                </section>
-                <div>
-                  <button
-                    @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
-                  >
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sample and Case Data -->
-        <nav class="bg-white shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <section class="mt-2 p-2 bg-white">
-          <div v-if="currentTab === 'permissions'">
-  
-            <section class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1">
-              <div class="grid grid-cols-4 gap-2 w-full">
-                <div class="col-span-1" v-for="category in permissions" :key="category[0]">
-                    <accordion >
-                      <template v-slot:title>{{ category[0] }}</template>
-                      <template v-slot:body>
-                          <div>
-                            <ul>
-                              <li 
-                              v-for="perm in category[1]" 
-                              :key="perm?.uid" class="cursor-pointer"
-                              @click.prevent="perm.checked = !perm?.checked"
-                              :class="[
-                                { 'border-sky-800 bg-gray-200 underline pl-3': false },
-                              ]"
-                              >
-                                <div class="flex-grow p-1">
-                                  <div 
-                                    :class="[
-                                    'font-medium text-gray-500 hover:text-gray-700 flex justify-start',
-                                      { 'text-gray-700 font-medium': false },
-                                    ]"
-                                  >
-                                    <label for="toggle" class="text-xs text-gray-700 mr-2" @click="updateGroupPerms(userGroup, perm)">
-                                      <div class="inline-block w-10 mr-2 align-middle transition duration-200 ease-in">
-                                          <input 
-                                          type="checkbox" 
-                                          v-model="perm.checked"
-                                          class=""/>
-                                      </div>
-                                      <span>{{ perm?.action }}</span>
-                                    </label>
-                                  </div>
-                                </div>
-                                <hr>
-                              </li>
-                            </ul>
-                          </div>
-                      </template>
-                    </accordion>
-                </div>
-              </div>
-            </section>
-
-          </div>
-          <div v-else> <!-- fiancials -->
-            <h3>Error</h3>
-            <hr>
-          </div>
-        </section>
-
-      </section>
-    </div>
   </div>
+  <hr />
 
-  <!-- AnaltsisProfile Form Modal -->
+  <div class="overflow-x-auto mt-4">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+      <table class="min-w-full">
+        <thead>
+          <tr>
+            <th
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+            >
+              Group Name
+            </th>
+            <th
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+            >
+              Access Pages
+            </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-white">
+          <tr v-for="group in groups" :key="group.uid">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div class="flex items-center">
+                <div class="text-sm leading-5 text-gray-800">{{ group.name }}</div>
+              </div>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div class="text-sm leading-5 text-sky-800">{{ group.pages }}</div>
+            </td>
+            <td
+              class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
+            >
+              <button
+                @click="FormManager(false, group)"
+                class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none"
+              >
+                Edit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+
+  <!-- Group Form Modal -->
   <modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
@@ -306,4 +222,3 @@ const accordion = defineAsyncComponent(
   </modal>
 
 </template>
-@/graphql/operations/_mutations@/graphql/_mutations

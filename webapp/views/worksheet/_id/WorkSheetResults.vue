@@ -9,6 +9,9 @@ import * as shield from "@/guards";
 const FButton = defineAsyncComponent(
   () => import("@/components/ui/buttons/FelButton.vue")
 )
+const FelSwitch = defineAsyncComponent(
+  () => import("@/components/ui/switch/FelSwitch.vue")
+)
 
 const worksheetStore = useWorksheetStore();
 const setupStore = useSetupStore();
@@ -129,7 +132,12 @@ function prepareResults(): any[] {
   let results = getResultsChecked();
   let ready: IAnalysisResult[] = [];
   results?.forEach((result: IAnalysisResult) =>
-    ready.push({ uid: result.uid, result: result.result } as IAnalysisResult)
+    ready.push({ 
+      uid: result.uid, 
+      result: result.result,
+      laboratoryInstrumentUid: result.laboratoryInstrumentUid,
+      methodUid: result.methodUid
+    } as IAnalysisResult)
   );
   return ready;
 }
@@ -154,24 +162,6 @@ function getResultRowColor(result: any): string {
   switch (result?.status) {
     case "retracted":
       return "bg-gray-300 text-sm italic text-gray-500";
-    case "pending":
-      if (result?.retest === true) {
-        return "bg-sky-800 text-sm leading-5 text-sky-800";
-      } else {
-        return "";
-      }
-    case "resulted":
-      if (result?.retest === true) {
-        return "bg-sky-800 text-sm leading-5 text-sky-800";
-      } else {
-        return "";
-      }
-    case "approved":
-      if (result?.retest === true) {
-        return "bg-sky-800 text-sm leading-5 text-sky-800";
-      } else {
-        return "";
-      }
     default:
       return "text-sm leading-5 text-sky-800";
   }
@@ -251,24 +241,7 @@ const printBarCodes = async () => {
   <div class="">
     <hr class="mt-4" />
     <div class="flex justify-between items-center" v-motion-slide-left>
-      <label for="toggle" class="text-medium text-gray-700 my-4"
-        >More Sample Detail
-        <div
-          class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-        >
-          <input
-            type="checkbox"
-            name="toggle"
-            id="toggle"
-            v-model="viewDetail"
-            class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
-          />
-          <label
-            for="toggle"
-            class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-          ></label>
-        </div>
-      </label>
+      <FelSwitch v-model="viewDetail" label="More Sample Detail" />
 
       <form action="post" class="p-1" v-show="!applying">
         <div class="flex justify-start items-center mb-4">
@@ -418,10 +391,10 @@ const printBarCodes = async () => {
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <span
-                  v-if="result?.sample?.priority! > 0"
+                  v-if="result?.sample?.priority > 0"
                   :class="[
                         'font-small',
-                        { 'text-orange-600': worksheet?.priority! > 1 },
+                        { 'text-orange-600': worksheet?.priority > 1 },
                     ]"
                 >
                   <i class="fa fa-star"></i>
@@ -459,19 +432,39 @@ const printBarCodes = async () => {
                 <div>{{ result?.analysis?.name }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div>
-                  {{ result?.laboratoryInstrument?.instrument?.name }}: 
-                  {{  (result?.laboratoryInstrument?.labName) }}
+                <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                  {{ result.laboratoryInstrument?.labName || "---" }}
                 </div>
+                <label v-else class="block col-span-2 mb-2">
+                  <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
+                    <option value=""></option>
+                    <option v-for="instrument in setupStore.laboratoryInstruments" :key="instrument.uid"
+                      :value="instrument.uid">
+                      <div class="flex justify-start items-center gap-x-1">
+                        <span>{{ instrument.labName }}</span> &rarr;
+                        <span class="text-xs font-thin text-gray-300">({{ instrument?.instrument?.name }})</span>
+                      </div>
+                    </option>
+                  </select>
+                </label>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div>{{ result?.method?.name || "None" }}</div>
+                <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                  {{ result.method?.name || "---" }}
+                </div>
+                <label v-else class="block col-span-2 mb-2">
+                  <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
+                    <option value=""></option>
+                    <option v-for="method in setupStore.methods" :key="method.uid"
+                      :value="method.uid">
+                      {{ method.name }}
+                    </option>
+                  </select>
+                </label>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div
-                  v-if="
-                    !isEditable(result) || (result?.analysis?.interims?.length ?? 0) === 0
-                  "
+                  v-if="!isEditable(result) || (result?.analysis?.interims?.length ?? 0) === 0"
                   class="text-sm leading-5 text-sky-800"
                 >
                   ---
@@ -484,8 +477,8 @@ const printBarCodes = async () => {
                   >
                     <option value=""></option>
                     <option
-                      v-for="(interim, index) in result?.analysis?.interims"
-                      :key="interim.key"
+                      v-for="(interim, idx) in result?.analysis?.interims"
+                      :key="interim.key || idx"
                       :value="interim.value"
                     >
                       {{ interim.value }}
@@ -513,8 +506,8 @@ const printBarCodes = async () => {
                   >
                     <option value=""></option>
                     <option
-                      v-for="(option, index) in result?.analysis?.resultOptions"
-                      :key="option.optionKey"
+                      v-for="(option, idx) in result?.analysis?.resultOptions"
+                      :key="option.optionKey || idx"
                       :value="option.value"
                     >
                       {{ option.value }}

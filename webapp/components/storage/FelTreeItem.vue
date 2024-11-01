@@ -1,36 +1,49 @@
 <script setup>
+import { computed } from 'vue';
 import useTreeStateComposable from "@/composables/tree-state";
 
 const props = defineProps({
-  tree: Object,
+  tree: {
+    type: Object,
+    required: true
+  }
 });
 
 const { tags, setActiveTree, activePath } = useTreeStateComposable();
 
-const toggle = (treeNode) => setActiveTree(treeNode);
+const toggle = () => setActiveTree(props.tree);
 
-function isSelected(treeNode) {
-  if (treeNode.tag === tags.storeRoom) {
-    return activePath.value.room === treeNode.uid;
-  } else if (treeNode.tag === tags.storageLocation) {
-    return activePath.value.location === treeNode.uid;
-  } else if (treeNode.tag === tags.storageSection) {
-    return activePath.value.section === treeNode.uid;
-  } else if (treeNode.tag === tags.storageContainer) {
-    return activePath.value.container === treeNode.uid;
+const isSelected = computed(() => {
+  if (!props.tree) return false;
+
+  switch (props.tree.tag) {
+    case tags.storeRoom:
+      return activePath.value.room === props.tree.uid;
+    case tags.storageLocation:
+      return activePath.value.location === props.tree.uid;
+    case tags.storageSection:
+      return activePath.value.section === props.tree.uid;
+    case tags.storageContainer:
+      return activePath.value.container === props.tree.uid;
+    default:
+      return false;
   }
-}
+});
 </script>
 
 <template>
   <li class="cursor-pointer leading-6 mb-2">
-    <div :class="[{ 'text-blue-500 font-bold': isSelected(tree) }]" @click="toggle(tree)">
+    <div 
+      :class="[{ 'text-blue-500 font-bold': isSelected }]" 
+      @click="toggle"
+    >
       {{ tree?.name }}
-      <span v-if="tree.children?.length">[{{ tree.isOpen ? "-" : "+" }}]</span>
+      <span v-if="tree.children?.length">
+        [{{ tree.isOpen ? "-" : "+" }}]
+      </span>
     </div>
     <ul
-      v-show="tree.isOpen"
-      v-if="tree.children?.length"
+      v-if="tree.children?.length && tree.isOpen"
       :class="[
         'pl-4 border-l-2',
         {
@@ -40,7 +53,17 @@ function isSelected(treeNode) {
         },
       ]"
     >
-      <TreeItem v-for="(children, idx) in tree?.children" :tree="children" :key="idx" />
+      <TreeItem 
+        v-for="(children, idx) in tree?.children" 
+        :key="children.uid || idx" 
+        :tree="children" 
+      />
     </ul>
   </li>
 </template>
+
+<script>
+export default {
+  name: 'TreeItem'
+}
+</script>
