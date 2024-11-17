@@ -224,13 +224,16 @@ const items = [
             <span class="text-gray-700 ml-3">Auto receive samples</span>
           </label>
           <span class="block col-span-1 mb-2"></span>
+        </div>
+        <hr class="my-4" />
+        <div class="grid grid-cols-2 gap-x-4">
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowBilling" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow Billing</span>
+            <span class="text-gray-700 ml-3">Enable Sample Billing</span>
           </label>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowAutoBilling" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow Auto Billing</span>
+            <span class="text-gray-700 ml-3">Allow automatic billing on sample registration</span>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700 ml-3">Currency</span>
@@ -240,7 +243,6 @@ const items = [
             <span class="text-gray-700 ml-3">Payment Terms (Days)</span>
             <input type="number" min="0" class="form-input mt-1 block w-full" v-model="formSettings.paymentTermsDays" :disabled="processing" />
           </label>
-          
         </div>
         <hr class="my-4" />
         <button v-show="!processing" type="button" @click.prevent="saveSettingForm()"

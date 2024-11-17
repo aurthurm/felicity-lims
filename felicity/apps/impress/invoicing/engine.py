@@ -93,7 +93,7 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Billed on: ", border=0)
         self.pdf.set_font("arial", "", 12)
         self.pdf.set_xy(170.0, 33)
-        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=bill_created, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=format_datetime(bill_created), border=0)
         # ---
         terms_days = int(get_from_nested(laboratory_settings, "payment_terms_days"))
         days = "Immediate"
@@ -115,16 +115,16 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Due Date: ", border=0)
         self.pdf.set_font("arial", "", 12)
         self.pdf.set_xy(170.0, 43)
-        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=due_date, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=format_datetime(due_date), border=0)
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 53.0, 180.0, 53.0)
 
         # Customer Details
         full_name = (
-            get_from_nested(customer, "first_name")
-            + " "
-            + get_from_nested(customer, "last_name")
+                get_from_nested(customer, "first_name")
+                + " "
+                + get_from_nested(customer, "last_name")
         )
         self.pdf.set_font("arial", "B", 14)
         self.pdf.set_xy(20, 55)
@@ -281,7 +281,7 @@ class FelicityInvoice:
                 h=5.5,
                 align="L",
                 w=10.0,
-                text=get_from_nested(transaction, "created_at"),
+                text=format_datetime(get_from_nested(transaction, "created_at")),
                 border=0,
             )
             self.pdf.set_xy(70, ty)
@@ -299,7 +299,7 @@ class FelicityInvoice:
                 h=5.5,
                 align="L",
                 w=10.0,
-                text="$" + str(get_from_nested(transaction, "amount")),
+                text="$" + str(round(float(get_from_nested(transaction, "amount")), 2)),
                 border=0,
             )
 
@@ -311,7 +311,7 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Total Paid:", border=0)
         self.pdf.set_xy(150, ty)
         self.pdf.cell(
-            ln=0, h=5.5, align="L", w=10.0, text="$" + str(total_paid), border=0
+            ln=0, h=5.5, align="L", w=10.0, text="$" + str(round(float(total_paid), 2)), border=0
         )
 
         ty += 8
@@ -329,7 +329,7 @@ class FelicityInvoice:
             h=5.5,
             align="L",
             w=10.0,
-            text="$" + str(total_charged - total_paid),
+            text="$" + str(round(total_charged - total_paid, 2)),
             border=0,
         )
 

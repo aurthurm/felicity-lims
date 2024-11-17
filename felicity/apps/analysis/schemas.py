@@ -692,6 +692,7 @@ class SampleBase(BaseAuditModel):
     date_invalidated: datetime | None = None
     internal_use: bool | None = False
     due_date: datetime | None = None
+    date_collected: datetime | None = None
     status: str | None = None
 
 

@@ -213,6 +213,30 @@ export const ADD_TEST_BILL_TRANSACTION = gql`
     }
 `
 
+export const CONFIRM_TEST_BILL_TRANSACTION = gql`
+    mutation confirmTestBillTransaction($uid: String!, $notes: String) {
+        confirmTestBillTransaction(uid: $uid, notes: $notes) {
+            __typename
+            ...on TestBillTransactionType {
+                uid
+                testBillUid
+                kind
+                amount
+                isSuccess
+                actionRequired
+                processed
+                notes
+                createdAt
+                createdByUid
+            }
+            ...on OperationError {
+                error
+                suggestion
+            }
+        } 
+    }
+`
+
 export const APPLY_BILL_VOUCHER = gql`
     mutation applyBillVoucher($payload: ApplyVoucherInput!) {
         applyVoucher(payload: $payload) {

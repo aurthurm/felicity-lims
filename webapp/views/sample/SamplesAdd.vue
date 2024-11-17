@@ -16,12 +16,11 @@ import {
   ISampleType,
 } from "@/models/analysis";
 import { ADD_ANALYSIS_REQUEST } from "@/graphql/operations/analyses.mutations";
-import { ifNoValEmpty } from "@/utils/helpers";
-
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number } from "yup";
 import { IClient } from "@/models/client";
 import { useApiUtil, useNotifyToast } from "@/composables";
+import { formatDate } from "@/utils/helpers";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
@@ -44,19 +43,15 @@ let clientParams = reactive({
   after: "",
   text: "",
   sortBy: ["name"],
+  contacts: true
 });
 clientStore.fetchClients(clientParams);
 
 const clients = computed(() => clientStore.getClients);
-
-// const client = ref<IClient>({} as IClient);
-
-function getClientContacts(item: IClient): void {
-  if (ifNoValEmpty(item)) {
-    clientStore.fetchClientContacts(item?.uid);
-  }
-}
-const clientContacts = computed(() => clientStore.getClientContacts);
+const selectedClient = ref<IClient | null>(null);
+const selectContact = (client: IClient) => {
+  selectedClient.value = client;
+};
 
 // Sample Types
 sampleStore.fetchSampleTypes();
@@ -88,6 +83,8 @@ const analysesProfiles = computed(() => analysisStore.getAnalysesProfiles);
 
 // Analysis Request Form
 const arSaving = ref(false);
+const maxDate = new Date();
+
 const arSchema = object({
   clientRequestId: string().required("Client Request ID is Required"),
   clinicalData: string().nullable(),
@@ -138,7 +135,12 @@ function addAnalysesRequest(request: IAnalysisRequest): void {
     clinicalData: request.clinicalData,
     clientUid: client?.value?.uid,
     clientContactUid: request.clientContactUid,
-    samples: request.samples,
+    samples: request.samples?.map((s: ISample) => {
+      return {
+        ...s,
+        dateCollected: formatDate(s.dateCollected, "YYYY-MM-DD HH:mm"),
+      };
+    }),
   };
   withClientMutation(ADD_ANALYSIS_REQUEST, { payload }, "createAnalysisRequest")
     .then((result) => {
@@ -190,7 +192,7 @@ function removeSample(index: number): void {
           <span class="text-gray-700 w-4/12">Client</span>
           <div class="w-full">
             <VueMultiselect placeholder="Select a Client" v-model="client" :options="clients" :searchable="true"
-              label="name" track-by="uid" @select="getClientContacts">
+              label="name" track-by="uid" @select="selectContact">
             </VueMultiselect>
           </div>
         </label>
@@ -201,7 +203,7 @@ function removeSample(index: number): void {
             <select name="clientContacts" id="clientContacts" v-model="clientContactUid"
               class="form-input mt-1 block w-full">
               <option value=""></option>
-              <option v-for="contact in clientContacts" :key="contact.uid" :value="contact.uid">
+              <option v-for="contact in client?.contacts" :key="contact.uid" :value="contact.uid">
                 {{ contact.firstName }} {{ contact.lastName }}
               </option>
             </select>
@@ -212,7 +214,12 @@ function removeSample(index: number): void {
         <label class="flex whitespace-nowrap mb-2 w-full">
           <span class="text-gray-700 w-4/12">Priority</span>
           <div class="w-full">
-            <input type="number" min="0" max="2" class="form-input mt-1 block w-full" v-model="priority" />
+            <select name="clientContacts" id="clientContacts" v-model="priority"
+              class="form-input mt-1 block w-full">
+              <option value=0>Low</option>
+              <option value=1>Medium</option>
+              <option value=2>High</option>
+            </select>
             <div class="text-orange-600 w-4/12">{{ errors.priority }}</div>
           </div>
         </label>
@@ -244,7 +251,10 @@ function removeSample(index: number): void {
               </label>
               <label class="flex flex-col whitespace-nowrap mb-2">
                 <span class="text-gray-700">Date Collected</span>
-                <input type="datetime-local" class="form-input mt-1 block w-full" v-model="sample.dateCollected" />
+                <VueDatePicker 
+                class="z-60 disabled:bg-slate-200" 
+                v-model="sample.dateCollected" 
+                :max-date="maxDate" time-picker-inline></VueDatePicker>
               </label>
 
               <label class="flex flex-col whitespace-nowrap mb-2">
@@ -252,7 +262,7 @@ function removeSample(index: number): void {
                 <select name="analysisProfiles" id="analysisProfiles" v-model="sample.profiles" class="form-input mt-1"
                   multiple>
                   <option value=""></option>
-                  <option v-for="(profile, index) in analysesProfiles" :key="profile.uid" :value="profile.uid">
+                  <option v-for="profile in analysesProfiles" :key="profile.uid" :value="profile.uid">
                     {{ profile.name }}
                   </option>
                 </select>
@@ -263,7 +273,7 @@ function removeSample(index: number): void {
                 <select name="analysesServices" id="analysesServices" v-model="sample.analyses" class="form-input mt-1"
                   multiple>
                   <option value=""></option>
-                  <option v-for="(service, index) in analysesServices" :key="service.uid" :value="service.uid">
+                  <option v-for="service in analysesServices" :key="service.uid" :value="service.uid">
                     {{ service.name }}
                   </option>
                 </select>

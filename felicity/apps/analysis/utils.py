@@ -72,7 +72,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
 
 
 async def sample_search(
-    status: str | None = None, text: str | None = None, client_uid: str | None = None
+        status: str | None = None, text: str | None = None, client_uid: str | None = None
 ) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
@@ -105,7 +105,7 @@ async def sample_search(
 
 
 async def retest_from_result_uids(
-    uids: list[str], user: User
+        uids: list[str], user: User
 ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
     analysis_result_wf = AnalysisResultWorkFlow()
@@ -128,7 +128,7 @@ async def retest_from_result_uids(
 
 
 async def results_submitter(
-    analysis_results: List[dict], submitter: User
+        analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
     sample_wf = SampleWorkFlow()
     worksheet_wf = WorkSheetWorkFlow()
@@ -251,8 +251,8 @@ async def result_mutator(result: AnalysisResult) -> None:
         # Correction factor
         for cf in correction_factors:
             if (
-                cf.instrument_uid == result.laboratory_instrument_uid
-                and cf.method_uid == result.method_uid
+                    cf.instrument_uid == result.laboratory_instrument_uid
+                    and cf.method_uid == result.method_uid
             ):
                 await result_mutation_service.create(
                     c={
@@ -385,7 +385,7 @@ async def billing_setup_profiles(profile_uids: list[str] | None = None) -> None:
                         "name": profile.name + "-Discount",
                         "profile_uid": profile.uid,
                         "discount_type": DiscountType.SALE,
-                        "value_type": DiscountValueType.PERCENTATE,
+                        "value_type": DiscountValueType.PERCENTAGE,
                         "value_percent": 0.0,
                         "value_amount": 0.0,
                         "is_active": False,
@@ -421,7 +421,7 @@ async def billing_setup_analysis(analysis_uids: list[str] | None = None) -> None
                         "name": analysis.name + "-Discount",
                         "analysis_uid": analysis.uid,
                         "discount_type": DiscountType.SALE,
-                        "value_type": DiscountValueType.PERCENTATE,
+                        "value_type": DiscountValueType.PERCENTAGE,
                         "value_percent": 0.0,
                         "value_amount": 0.0,
                         "is_active": False,

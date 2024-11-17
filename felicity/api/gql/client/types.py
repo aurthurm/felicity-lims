@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional
 
 import strawberry  # noqa
@@ -5,6 +7,7 @@ import strawberry  # noqa
 from felicity.api.gql.setup.types import DistrictType, ProvinceType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
+from felicity.apps.client.services import ClientContactService
 
 
 @strawberry.type
@@ -31,6 +34,10 @@ class ClientType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
+
+    @strawberry.field
+    def contacts(self) -> List[ClientContactType] | None:
+        return ClientContactService().get_all(client_uid=self.uid)
 
 
 @strawberry.type

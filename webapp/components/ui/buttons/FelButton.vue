@@ -1,9 +1,17 @@
 <template>
   <button
     :class="buttonClasses"
-    :disabled="disabled"
+    :disabled="disabled || loading"
   >
-    <slot />
+    <div class="flex items-center justify-center gap-2">
+      <div v-if="loading" 
+           class="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"
+           :class="`border-${color}`"
+      ></div>
+      <span :class="{ 'opacity-0': loading && loadingOnly }">
+        <slot />
+      </span>
+    </div>
   </button>
 </template>
 
@@ -21,12 +29,20 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    loadingOnly: {
+      type: Boolean,
+      default: false, // If true, hides text content while loading
+    },
   },
   setup(props) {
     const buttonClasses = computed(() => [
-      "px-2 py-1 mr-2 border transition duration-300 focus:outline-none disabled:opacity-50",
-      props.disabled
-        ? ""
+      "px-2 py-1 mr-2 border transition duration-300 focus:outline-none disabled:opacity-50 relative",
+      props.disabled || props.loading
+        ? "cursor-not-allowed"
         : `border-${props.color} text-${props.color} hover:bg-${props.color} hover:text-white`,
     ]);
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref, computed } from "vue";
+import { defineAsyncComponent, ref, computed, h } from "vue";
 import { useBillingStore, useSampleStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import { parseDate } from "@/utils/helpers";
 import { ITestBill, ITestBillTransaction } from "@/models/billing";
-import { ADD_TEST_BILL_TRANSACTION,  APPLY_BILL_VOUCHER } from "@/graphql/operations/billing.mutations";
-import { useApiUtil, useBillComposable } from "@/composables";
+import { ADD_TEST_BILL_TRANSACTION,  CONFIRM_TEST_BILL_TRANSACTION, APPLY_BILL_VOUCHER } from "@/graphql/operations/billing.mutations";
+import { useApiUtil, useBillComposable, useNotifyToast } from "@/composables";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
@@ -15,12 +15,17 @@ const LoadingMessage = defineAsyncComponent(
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
+const FelButton = defineAsyncComponent(
+  () => import("@/components/ui/buttons/FelButton.vue")
+)
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
 )
 const props = defineProps({
   patientUid: String
 });
+
+const { toastSuccess } = useNotifyToast();
 const { withClientMutation } = useApiUtil();
 
 const billingStore = useBillingStore();
@@ -53,7 +58,7 @@ const transactionSchema = object({
   testBillUid: string().required(),
   kind: string().required(),
   amount: number().required(),
-  notes: string().nullable(),
+  notes: string(),
 });
 
 const { handleSubmit, errors, setFieldValue } = useForm({
@@ -67,19 +72,47 @@ const { value: kind } = useField("kind");
 const { value: amount } = useField("amount");
 const { value: notes } = useField("notes");
 
-const submitTransactionForm = handleSubmit((values) => addTransaction(values as ITestBillTransaction));
+const processing = ref(false);
+const submitTransactionForm = handleSubmit((values) => {
+  processing.value = true;
+  addTransaction(values as ITestBillTransaction)
+});
 
 const newTransaction = () => {
   setFieldValue("testBillUid", testBill.value?.uid)
   setFieldValue("kind", "cash")
-  setFieldValue("amount", +testBill?.value?.totalCharged - +testBill?.value?.totalPaid)
+  setFieldValue("amount", Math.ceil(Number((testBill?.value?.totalCharged - testBill?.value?.totalPaid).toFixed(2))))
   setFieldValue("notes", "")
   showTransactionModal.value = true;
 }
 
 const addTransaction = (values: ITestBillTransaction) => {
-  withClientMutation( ADD_TEST_BILL_TRANSACTION, {payload: values}, "createTestBillTransaction"
-  ).then((result) => billingStore.addTransaction(result));
+  withClientMutation(ADD_TEST_BILL_TRANSACTION, {payload: values}, "createTestBillTransaction"
+  ).then((result) => {
+    billingStore.addTransaction(result);
+    processing.value = false;
+    showTransactionModal.value = false;
+    toastSuccess("Transaction added.");
+  });
+}
+
+const showConfirmTransactionModal = ref(false);
+const confirmTransaction = ref({} as ITestBillTransaction);
+const submitConfirmTransaction = () => {
+  processing.value = true;
+  withClientMutation(
+    CONFIRM_TEST_BILL_TRANSACTION, 
+    {
+      uid: confirmTransaction.value.uid,
+      notes: confirmTransaction.value.notes
+    }, 
+    "confirmTestBillTransaction"
+  ).then((result) => {
+    billingStore.updateTransaction(result);
+    processing.value = false;
+    showConfirmTransactionModal.value = false;
+    toastSuccess("Transaction confirmed.");
+  });
 }
 
 const tableColumns = ref([
@@ -126,7 +159,37 @@ const tableColumns = ref([
     sortable: false,
     sortBy: "asc",
     hidden: false,
+    customRender: function (transaction, _) {
+      return h(
+        "span",
+        {
+          innerHTML: transaction.processed ? "Yes" : "Pending confirmation",
+        },
+        []
+      );
+    },
   },
+  {
+    name: "Action",
+    sortable: false,
+    hidden: false,
+    customRender: (transaction, _) => {
+      if (!transaction.processed) {
+        return h(
+          "button",
+          {
+            onClick() {
+              showConfirmTransactionModal.value = true;
+              confirmTransaction.value = transaction;
+            },
+            type: "button",
+            class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+          },
+          "confirm"
+        );
+      }
+    }
+  }
 ])
 
 const showVoucherModal = ref(false);
@@ -136,12 +199,13 @@ const applyVoucher = () => {
 }
 
 const submitVoucherCodeForm = () => {
+  processing.value = true;
   withClientMutation(APPLY_BILL_VOUCHER, {payload: {
     voucherCode: voucherCodeForm.value?.code,
     testBillUid: testBill.value?.uid,
     customerUid: props.patientUid
   }}, "applyVoucher"
-  ).then((result) => {});
+  ).then((_) => (processing.value = false));
 }
 
 const { downloadInvoice } = useBillComposable();
@@ -279,7 +343,7 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
     </div>
   </div>
 
-  <!-- Transaction Form Modal -->
+  <!-- New Transaction Form Modal -->
   <modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'">
       <template v-slot:header>
         <h3>Transaction Form</h3>
@@ -293,7 +357,8 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
               <div class="w-full">
                 <select 
                 :class="['form-select mt-1 w-full', {'border-red-500 animate-pulse': errors.kind }]"
-                v-model="kind">
+                v-model="kind" 
+                :disabled="processing">
                   <option></option>
                   <option v-for="kind of kinds" :key="kind" :value="kind">
                     {{ kind }}
@@ -308,6 +373,7 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
                 :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.amount }]"
                 type="number"
                 v-model="amount"
+                :disabled="processing"
               />
             </label>
           </div>
@@ -316,22 +382,47 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
               <span class="text-gray-700">Notes</span>
               <input
                 :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.notes }]"
-                type="number"
-                min="1"
                 v-model="notes"
+                :disabled="processing"
               />
             </label>
           </div>
 
-          <hr />
-          <button type="submit"
-            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-            @click.prevent="submitTransactionForm">
+          <hr class="mb-4" />
+          <FelButton :color="'sky-800'" type="submit" :loading="processing" @click.prevent="submitTransactionForm">
             Save Transaction
-          </button>
+          </FelButton>
         </form>
       </template>
   </modal>
+
+  <!-- Confirm Transaction Form Modal -->
+  <modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'">
+    <template v-slot:header>
+      <h3>Confirm Tranaction</h3>
+    </template>
+
+    <template v-slot:body>
+      <form>
+        <h4>{{ kind }} Transaction </h4>
+        <div class="grid grid-cols-4 gap-x-4 mb-4">
+          <label class="block col-span-4 mb-2">
+            <span class="text-gray-700">Notes</span>
+            <input
+              :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.notes }]"
+              v-model="confirmTransaction.notes"
+              :disabled="processing"
+            />
+          </label>
+        </div>
+        <hr class="mb-4" />
+        <FelButton :color="'sky-800'" type="submit" :loading="processing" @click.prevent="submitConfirmTransaction">
+          Confirm Transaction
+        </FelButton>
+      </form>
+    </template>
+  </modal>
+
 
   <!-- Voucher Code Form Modal -->
   <modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'">
@@ -348,16 +439,15 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
                 :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': !voucherCodeForm.code }]"
                 type="text"
                 v-model="voucherCodeForm.code"
+                :disabled="processing"
               />
             </label>
           </div>
 
-          <hr />
-          <button type="submit"
-            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-            @click.prevent="submitVoucherCodeForm">
+          <hr class="mb-4"/>
+          <FelButton :color="'sky-800'" type="submit" :loading="processing" @click.prevent="submitVoucherCodeForm">
             Apply Voucher
-          </button>
+          </FelButton>
         </form>
       </template>
   </modal>

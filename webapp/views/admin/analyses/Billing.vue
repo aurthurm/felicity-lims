@@ -6,7 +6,7 @@
   } from '@/graphql/operations/billing.mutations'
   import { useBillingStore } from '@/stores';
   import { useApiUtil } from '@/composables';
-import { IAnalysisDiscount, IProfileDiscount } from '@/models/billing';
+  import { IAnalysisDiscount, IProfileDiscount } from '@/models/billing';
 
   const  billingStore = useBillingStore()
   const { withClientMutation } = useApiUtil()
@@ -195,7 +195,8 @@ import { IAnalysisDiscount, IProfileDiscount } from '@/models/billing';
           <div class="grid grid-cols-2 gap-x-4 mt-1">
             <label v-show="formDiscount.valueType === 'percentage'" class="col-span-1">
               <span class="text-gray-700">Value Percent</span>
-              <input class="form-input w-full" v-model="formDiscount.valuePercent" type="number" step="0.1" min="0.0" max="100" />
+              <input class="form-input w-full" v-model="formDiscount.valuePercent" type="number" step="0.01" min="0.00" max="1" />
+              <span class="italic leading text-xs">Example: 0.05 for 5%</span>
             </label>
             <label v-show="formDiscount.valueType === 'amount'" class="col-span-1">
               <span class="text-gray-700">Value Amount</span>

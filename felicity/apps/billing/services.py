@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import logging
+
 from felicity.apps.abstract import BaseService
 from felicity.apps.billing.entities import (
     AnalysisDiscount,
@@ -46,6 +50,9 @@ from felicity.apps.billing.schemas import (
     VoucherUpdate,
 )
 from felicity.apps.idsequencer.service import IdSequenceService
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class AnalysisPriceService(
@@ -97,17 +104,26 @@ class VoucherCustomerService(
 
 class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
     def __init__(self) -> None:
-        self.id_sequence_servce = IdSequenceService()
+        self.id_sequence_service = IdSequenceService()
+        self.test_bill_transaction_service = TestBillTransactionService()
         super().__init__(TestBillRepository())
 
     async def create(
-        self, obj_in: dict | TestBillCreate, related: list[str] | None = None
+            self, obj_in: dict | TestBillCreate, related: list[str] | None = None
     ) -> "TestBill":
         data = self._import(obj_in)
         data["bill_id"] = (
-            await self.id_sequence_servce.get_next_number(prefix="X", generic=True)
+            await self.id_sequence_service.get_next_number(prefix="X", generic=True)
         )[1]
         return await super().create(data, related)
+
+    async def confirm_bill(self, test_bill_uid: str):
+        bill = await self.get(uid=test_bill_uid)
+        transactions = await self.test_bill_transaction_service.get_all(
+            test_bill_uid=test_bill_uid
+        )
+        if all(t.processed for t in transactions) and bill.partial == False:
+            await self.update(test_bill_uid, {"to_confirm": False})
 
 
 class TestBillTransactionService(

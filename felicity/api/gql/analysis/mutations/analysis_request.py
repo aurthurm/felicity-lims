@@ -121,7 +121,7 @@ class ManageAnalysisInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -273,7 +273,7 @@ async def create_analysis_request(
         related=["samples"], uid=analysis_request.uid
     )
 
-    #
+    # auto_bill=True during sample registration
     await bill_order(analysis_request, auto_bill=True)
 
     return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
@@ -420,7 +420,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -464,7 +464,7 @@ async def reject_samples(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-    info, samples: List[SamplePublishInputType]
+        info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     felicity_user = await auth_from_info(info)
 
@@ -581,7 +581,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def samples_apply_template(
-    info, uid: str, analysis_template_uid: str
+        info, uid: str, analysis_template_uid: str
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -643,7 +643,7 @@ async def samples_apply_template(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def manage_analyses(
-    info, sample_uid: str, payload: ManageAnalysisInputType
+        info, sample_uid: str, payload: ManageAnalysisInputType
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 

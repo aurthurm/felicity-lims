@@ -95,7 +95,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
             discount["value_type"] = (p_discount.value_type,)
             discount["percentage"] = (p_discount.value_percent,)
             discount["amount"] = p_discount.value_amount
-            if p_discount.value_type == DiscountValueType.PERCENTATE:
+            if p_discount.value_type == DiscountValueType.PERCENTAGE:
                 discount["amount"] = round(
                     float(p_discount.value_percent) * float(p_price.amount), 2
                 )
@@ -131,7 +131,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
             discount["value_type"] = (a_discount.value_type,)
             discount["percentage"] = (a_discount.value_percent,)
             discount["amount"] = a_discount.value_amount
-            if a_discount.value_type == DiscountValueType.PERCENTATE:
+            if a_discount.value_type == DiscountValueType.PERCENTAGE:
                 discount["amount"] = round(
                     float(a_discount.value_percent) * float(a_price.amount), 2
                 )
@@ -195,11 +195,12 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
         await TestBillTransactionService().update(transaction.uid, tra_update_in)
 
     logger.info("invoicing...")
+    bill = await TestBillService().get(uid=bill.uid, related=['patient'])
     await impress_invoice(bill)
 
 
 async def apply_voucher(
-    voucher_code: str, test_bill_uid: str, customer_uid: str
+        voucher_code: str, test_bill_uid: str, customer_uid: str
 ) -> TestBill:
     today = timenow_dt()
     bill = await TestBillService().get(uid=test_bill_uid)
@@ -262,7 +263,7 @@ async def apply_voucher(
     anal_in_trans = []
     for p_disc in profiles_discounts:
         amount = p_disc.value_amount
-        if p_disc.value_type == DiscountValueType.PERCENTATE:
+        if p_disc.value_type == DiscountValueType.PERCENTAGE:
             p_price = await ProfilePriceService().get(profile_uid=p_disc.profile_uid)
             amount = float(p_disc.value_percent) * float(p_price.amount)
             amount = round(amount, 2)
@@ -280,7 +281,7 @@ async def apply_voucher(
 
     for a_disc in analyses_discounts:
         amount = a_disc.value_amount
-        if a_disc.value_type == DiscountValueType.PERCENTATE:
+        if a_disc.value_type == DiscountValueType.PERCENTAGE:
             a_price = await AnalysisPriceService().get(analysis_uid=a_disc.analysis_uid)
             amount = float(a_disc.value_percent) * float(a_price.amount)
             amount = round(amount, 2)

@@ -14,6 +14,14 @@ export const GET_ALL_CLIENTS = gql`
                 uid
                 name
                 code
+                contacts {
+                    uid
+                    firstName
+                    lastName
+                    email
+                    mobilePhone
+                    consentSms
+                }
                 district {
                     uid
                     name

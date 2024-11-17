@@ -7,7 +7,7 @@ class DiscountType(StrEnum):
 
 
 class DiscountValueType(StrEnum):
-    PERCENTATE = auto()
+    PERCENTAGE = auto()
     AMOUNT = auto()
 
 

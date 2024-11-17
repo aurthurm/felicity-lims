@@ -195,6 +195,15 @@ export const useBillingStore = defineStore('billing', {
         },
         async addTransaction(transaction: ITestBillTransaction) {
             this.transactions = [transaction, ...this.transactions]
+        },
+        async updateTransaction(transaction: ITestBillTransaction) {
+            const index = this.transactions?.findIndex(item => item.uid === transaction.uid);
+            if (index > -1) {
+                this.transactions[index] = {
+                    ...this.transactions[index],
+                    ...transaction
+                };
+            }
         }
     },
 });
