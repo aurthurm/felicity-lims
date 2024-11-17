@@ -220,7 +220,6 @@ const goToStorage = async (sample?: ISample) => {
             </span>
           </div>
           <span>{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
-          <!-- <button type="button" class="bg-sky-800 text-white p-1rounded-smleading-none">{{ sample?.status }}</button> -->
           <div>
             <div @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">

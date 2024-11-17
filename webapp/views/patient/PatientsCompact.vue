@@ -1,51 +1,56 @@
 <script setup lang="ts">
-import { ref, reactive, computed, defineAsyncComponent } from "vue";
-import { storeToRefs } from "pinia"
+import { ref, reactive, computed, defineAsyncComponent, onMounted } from "vue";
 import { useLocationStore, usePatientStore } from "@/stores";
+import { storeToRefs } from "pinia";
 import { IPatient } from "@/models/patient";
 import * as shield from "@/guards";
 
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-const PageHeading = defineAsyncComponent(
-  () => import("@/components/common/FelPageHeading.vue")
-)
-const tabSamples = defineAsyncComponent(
-  () => import("@/components/sample/FelAnalyisRequestListing.vue")
-)
-const tabCases = defineAsyncComponent(
-  () => import("../../components/case/CaseTable.vue")
-)
-const tabLogs = defineAsyncComponent(
-  () => import("@/components/audit/FelAuditLog.vue")
-)
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
-const PatientForm = defineAsyncComponent(
-  () => import("@/components/person/PatientForm.vue")
-)
-const PatientInfo = defineAsyncComponent(
-  () => import("@/components/person/PatientInfo.vue")
-)
-const tabPatientBills = defineAsyncComponent(
-  () => import("./_id/PatientBill.vue")
-)
+// Constants
+const GENDERS = {
+  MALE: 0,
+  FEMALE: 1,
+  MISSING: 2,
+  TRANS: 3
+} as const;
 
+const GENDER_LABELS: Record<number, string> = {
+  [GENDERS.MALE]: "Male",
+  [GENDERS.FEMALE]: "Female",
+  [GENDERS.MISSING]: "Missing",
+  [GENDERS.TRANS]: "Trans Gender"
+};
 
-let patientStore = usePatientStore();
-let locationStore = useLocationStore();
+// Lazy-loaded components
+const components = {
+  LoadingMessage: defineAsyncComponent(() => 
+    import("@/components/ui/spinners/FelLoadingMessage.vue")
+  ),
+  PageHeading: defineAsyncComponent(() => 
+    import("@/components/common/FelPageHeading.vue")
+  ),
+  Modal: defineAsyncComponent(() => 
+    import("@/components/ui/FelModal.vue")
+  ),
+  PatientForm: defineAsyncComponent(() => 
+    import("@/components/person/PatientForm.vue")
+  ),
+  PatientInfo: defineAsyncComponent(() => 
+    import("@/components/person/PatientInfo.vue")
+  ),
+  Tabs: defineAsyncComponent(() => 
+    import("@/components/ui/tabs/FelTabs.vue")
+  )
+};
 
+// Store setup
+const patientStore = usePatientStore();
+const locationStore = useLocationStore();
 const { patients, fetchingPatients } = storeToRefs(patientStore);
 
-let showModal = ref<boolean>(false);
-let currentTab = ref<string>("samples");
-const tabs: string[] = ["samples", "cases", "billing", "logs"];
-
-let patientForm = ref({} as IPatient);
-
-let patientParams = reactive({
+// State
+const showModal = ref(false);
+const patientForm = ref({} as IPatient);
+const searchParams = reactive({
   first: 25,
   before: "",
   text: "",
@@ -53,145 +58,215 @@ let patientParams = reactive({
   filterAction: false,
 });
 
-const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"];
+// Computed
+const isPatientSelected = computed(() => 
+  Object.keys(patientForm.value).length > 0
+);
 
-locationStore.fetchCountries();
-patientStore.fetchPatients(patientParams);
+const tabs = computed(() => [
+  {
+    id: "samples",
+    label: "Samples",
+    component: defineAsyncComponent(() => 
+      import("@/components/sample/FelAnalyisRequestListing.vue")
+    ),
+    props: {
+      target: "patient-samples",
+      targetUid: patientForm.value.uid
+    }
+  },
+  {
+    id: "billing",
+    label: "Billing",
+    component: defineAsyncComponent(() => 
+      import("./_id/PatientBill.vue")
+    ),
+    props: {
+      patientUid: patientForm.value.uid
+    }
+  },
+  {
+    id: "logs",
+    label: "Logs",
+    component: defineAsyncComponent(() => 
+      import("@/components/audit/FelAuditLog.vue")
+    ),
+    props: {
+      targetType: "patient",
+      targetUid: patientForm.value.uid
+    }
+  }
+]);
 
-function searchPatients(event: any) {
-  patientParams.first = 100;
-  patientParams.before = "";
-  patientParams.text = event.target.value;
-  patientParams.filterAction = true;
-  patientStore.fetchPatients(patientParams);
-}
+// Methods
+const getPatientFullName = (patient: IPatient): string => 
+  `${patient.firstName} ${patient.lastName}`;
 
-const isPatientSelected = computed(() => Object.keys(patientForm?.value)?.length > 0)
+const getGender = (genderCode: number): string => 
+  GENDER_LABELS[genderCode] || 'Unknown';
 
-let getPatientFullName = (pt: IPatient) => {
-  return pt.firstName + " " + pt.lastName;
+const selectPatient = (patient: IPatient): void => {
+  patientForm.value = patient;
+  patientStore.setPatient(patient);
 };
 
-let getGender = (pos: any) => genders[pos];
-
-let selectPatient = (pt: IPatient) => {
-  patientForm.value = pt;
-  patientStore.setPatient(pt);
-};
-
-let setPatientToNull = () => {
+const resetPatient = (): void => {
   patientForm.value = {} as IPatient;
   patientStore.resetPatient();
 };
 
-const quickRegistration = async () => {
-  setPatientToNull()
+const handleSearch = (event: Event): void => {
+  const target = event.target as HTMLInputElement;
+  searchParams.first = 100;
+  searchParams.before = "";
+  searchParams.text = target.value;
+  searchParams.filterAction = true;
+  patientStore.fetchPatients(searchParams);
+};
+
+const handleQuickRegistration = async (): Promise<void> => {
+  resetPatient();
   showModal.value = true;
 };
 
-const updatePatient = (patient: IPatient) => {
+const handlePatientUpdate = (patient: IPatient): void => {
   selectPatient(patient);
   showModal.value = false;
 };
 
+// Lifecycle
+onMounted(() => {
+  locationStore.fetchCountries();
+  patientStore.fetchPatients(searchParams);
+});
 </script>
 
-<style lang="css" scoped>
-.patient-scroll {
-  /* min-height: calc(100vh - 250px); */
-  min-height: 100%;
-}
-</style>
-
 <template>
-  <PageHeading title="Patients Quick View" />
-  <div class="">
-    <div class="flex justify-between">
-      <div class="flex items-center content-between">
-        <!-- <h1 class="h1 my-4 font-bold text-dark-700">Listing</h1> -->
-        <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)" to="/patients/search"
-          class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-800 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
-          Add Patient</router-link>
+  <div class="p-4">
+    <components.PageHeading title="Patients Quick View" />
+    
+    <!-- Header Actions -->
+    <div class="flex justify-between mb-4">
+      <div class="flex items-center gap-4">
+        <router-link
+          v-if="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
+          to="/patients/search"
+          class="px-4 py-2 text-sm border border-sky-800 text-dark-800 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150"
+        >
+          Add Patient
+        </router-link>
+        
         <input
-          class="w-64 ml-6 pl-4 pr-2 py-1 text-sm text-gray-800 placeholder-gray-400 border-1 border-gray-400 rounded-sm focus:placeholder-gray-500 focus:border-sky-800 focus:outline-none focus:shadow-outline-purple form-input"
-          type="text" placeholder="Search ..." aria-label="Search" @keyup="searchPatients($event)"
-          @focus="setPatientToNull()" />
+          type="text"
+          placeholder="Search patients..."
+          class="w-64 px-4 py-2 text-sm text-gray-800 placeholder-gray-400 border border-gray-400 rounded-sm focus:border-sky-800 focus:outline-none focus:ring-1 focus:ring-sky-800"
+          @keyup="handleSearch"
+          @focus="resetPatient"
+        />
       </div>
-      <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)" @click.prevent="quickRegistration"
-        class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
+      
+      <button
+        v-if="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
+        class="px-4 py-2 text-sm border border-sky-800 text-dark-700 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150"
+        @click="handleQuickRegistration"
+      >
         Quick Registration
       </button>
     </div>
 
-    <hr />
+    <hr class="my-4" />
 
-    <div class="grid grid-cols-12 gap-4 mt-2">
-      <section v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
-        :variants="{ custom: { scale: 2 } }" :delay="400"
-        class="col-span-3 h-screen overflow-y-scroll overscroll-contain patient-scroll">
-        <div v-if="fetchingPatients" class="py-4 text-center bg-white w-full mb-1 rounded-sm shadow border">
-          <LoadingMessage message="Fetching patients ..." />
-        </div>
-        <div v-else>
-          <a v-for="pt in patients" :key="pt.patientId" @click="selectPatient(pt)" :class="[
-            'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
-            { 'border-sky-800 bg-emerald-200': pt.uid === patientForm?.uid },
-          ]">
-            <div class="flex-grow p-1">
-              <div class="font-semibold text-gray-800 flex justify-between">
-                <span>{{ getPatientFullName(pt) }}</span>
-                <span class="text-sm text-gray-500">{{ pt.age }} yrs, {{ getGender(pt.gender) }}</span>
+    <!-- Main Content -->
+    <div class="grid grid-cols-12 gap-4">
+      <!-- Patient List -->
+      <section 
+        v-motion
+        :initial="{ opacity: 0, y: 100 }"
+        :enter="{ opacity: 1, y: 0 }"
+        :delay="400"
+        class="col-span-3 h-screen overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+      >
+        <components.LoadingMessage 
+          v-if="fetchingPatients"
+          message="Fetching patients..." 
+        />
+        
+        <template v-else>
+          <div
+            v-for="patient in patients"
+            :key="patient.patientId"
+            @click="selectPatient(patient)"
+            class="bg-white w-full flex items-center mb-1 rounded-sm shadow border cursor-pointer transition-colors duration-150 hover:border-sky-800 hover:bg-sky-50"
+            :class="{ 'border-sky-800 bg-emerald-200': patient.uid === patientForm?.uid }"
+          >
+            <div class="flex-grow p-3">
+              <div class="flex justify-between font-semibold">
+                <span>{{ getPatientFullName(patient) }}</span>
+                <span class="text-sm text-gray-500">
+                  {{ patient.age }} yrs, {{ getGender(patient.gender) }}
+                </span>
               </div>
-              <div class="text-sm text-gray-500 flex justify-between">
-                <span>{{ pt.patientId }}</span>
-                <span>{{ pt.clientPatientId }}</span>
+              
+              <div class="text-sm text-gray-500 flex justify-between mt-1">
+                <span>{{ patient.patientId }}</span>
+                <span>{{ patient.clientPatientId }}</span>
               </div>
-              <div class="text-sm text-gray-500 flex justify-between">
-                <span>{{ pt?.client?.district?.province?.name }}</span>
-                <span>{{ pt?.client?.name }}</span>
+              
+              <div class="text-sm text-gray-500 flex justify-between mt-1">
+                <span>{{ patient?.client?.district?.province?.name }}</span>
+                <span>{{ patient?.client?.name }}</span>
               </div>
             </div>
-            <div class="p-2">
-              <!-- <span class="block h-4 w-4 bg-sky-800 rounded-full bottom-0 right-0"></span> -->
-            </div>
-          </a>
-        </div>
+          </div>
+        </template>
       </section>
 
-      <section v-if="isPatientSelected" v-motion :initial="{ opacity: 0, y: -100 }"
-        :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" class="col-span-9">
-        <!-- PatientInfo -->
-
-        <PatientInfo @editPatient="() => (showModal = true)" />
-
-        <!-- Sample and Case Data -->
-        <nav class="bg-white shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a v-for="tab in tabs" :key="tab" :class="[
-              'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200 hover:bg-sky-600 hover:text-gray-200',
-              { 'tab-active': currentTab === tab },
-            ]" @click="currentTab = tab">
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patientForm.uid" />
-        <tab-cases v-if="currentTab === 'cases'" />
-        <tab-patient-bills v-if="currentTab === 'billing'"  :patientUid="patientForm?.uid" />
-        <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetUid="patientForm?.uid" />
+      <!-- Patient Details -->
+      <section
+        v-if="isPatientSelected"
+        v-motion
+        :initial="{ opacity: 0, y: -100 }"
+        :enter="{ opacity: 1, y: 0 }"
+        :delay="400"
+        class="col-span-9"
+      >
+        <components.PatientInfo @editPatient="showModal = true" />
+        <components.Tabs :tabs="tabs" initial-tab="samples" />
       </section>
     </div>
 
-    <!-- Patient Edit Form Modal -->
-    <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/6'">
-      <template v-slot:header>
+    <!-- Edit Modal -->
+    <components.Modal
+      v-if="showModal"
+      @close="showModal = false"
+      content-width="w-3/6"
+    >
+      <template #header>
         <h3>Patient Form</h3>
       </template>
-
-      <template v-slot:body>
-        <PatientForm :patient="patientForm" :navigate="false" @close="updatePatient" />
+      
+      <template #body>
+        <components.PatientForm
+          :patient="patientForm"
+          :navigate="false"
+          @close="handlePatientUpdate"
+        />
       </template>
-    </modal>
+    </components.Modal>
   </div>
 </template>
+
+<style lang="css" scoped>
+.scrollbar::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d1d1;
+  border-radius: 9999px;
+}
+</style>

@@ -1,8 +1,15 @@
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
+
+@layer components {
+    /* Your custom component classes go here */
+    .btn-primary {
+      @apply px-4 py-2 text-sm border border-sky-800 text-dark-800 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150;
+    }
+    /* More component classes... */
+}
+
 
 /* Hack since tailwind is misbehaving */
 .grid-cols-5 {

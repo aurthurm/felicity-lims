@@ -23,6 +23,7 @@ from felicity.apps.worksheet import schemas
 from felicity.apps.worksheet.entities import worksheet_template_qc_level
 from felicity.apps.worksheet.enum import WorkSheetState
 from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
+from felicity.apps.worksheet.workflow import WorkSheetWorkFlow
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -81,7 +82,7 @@ WorkSheetResponse = strawberry.union(
 class WorkSheetMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_worksheet_template(
-        self, info, payload: WorksheetTemplateInputType
+            self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
         felicity_user = await auth_from_info(info)
 
@@ -150,7 +151,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_template(
-        self, uid: str, payload: WorksheetTemplateInputType
+            self, uid: str, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
         if not uid:
             return OperationError(error="Worksheet Template uid is required")
@@ -192,11 +193,11 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_worksheet(
-        self,
-        info,
-        template_uid: str,
-        analyst_uid: str,
-        count: int | None = 1,
+            self,
+            info,
+            template_uid: str,
+            analyst_uid: str,
+            count: int | None = 1,
     ) -> WorkSheetsResponse:
         felicity_user = await auth_from_info(info)
 
@@ -268,14 +269,14 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet(
-        self,
-        info,
-        worksheet_uid: str,
-        analyst_uid: str | None = None,
-        instrument_uid: str | None = None,
-        method_uid: str | None = None,
-        action: str | None = None,
-        samples: list[str] | None = None,
+            self,
+            info,
+            worksheet_uid: str,
+            analyst_uid: str | None = None,
+            instrument_uid: str | None = None,
+            method_uid: str | None = None,
+            action: str | None = None,
+            samples: list[str] | None = None,
     ) -> WorkSheetResponse:  # noqa
         if not worksheet_uid:
             return OperationError(error="Worksheet uid required")
@@ -337,7 +338,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_apply_template(
-        self, info, template_uid: str, worksheet_uid: str
+            self, info, template_uid: str, worksheet_uid: str
     ) -> WorkSheetResponse:
         felicity_user = await auth_from_info(info)
 
@@ -359,7 +360,7 @@ class WorkSheetMutations:
             return OperationError(
                 error=f"Worksheet has {ws.assigned_count} assigned samples. You can not apply a different template",
                 suggestion="Un-assign contained samples first and you will be able to apply any template of your "
-                "choosing ",
+                           "choosing ",
             )
 
         incoming = {
@@ -394,11 +395,11 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_manual_assign(
-        self,
-        info,
-        uid: str,
-        analyses_uids: List[str],
-        qc_template_uid: str | None = None,
+            self,
+            info,
+            uid: str,
+            analyses_uids: List[str],
+            qc_template_uid: str | None = None,
     ) -> WorkSheetResponse:
         felicity_user = await auth_from_info(info)
 
@@ -429,3 +430,15 @@ class WorkSheetMutations:
         await JobService().create(job_schema)
 
         return WorkSheetType(**ws.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def action_worksheets(self, info, uids: list[str], action: str) -> WorkSheetsResponse:
+        felicity_user = await auth_from_info(info)
+        worksheet_wf = WorkSheetWorkFlow()
+
+        worksheets = []
+        for ws_uid in uids:
+            action_fun = getattr(worksheet_wf, action)
+            worksheet = await action_fun(ws_uid, felicity_user)
+            worksheets.append(worksheet)
+        return WorksheetListingType(worksheets=worksheets)

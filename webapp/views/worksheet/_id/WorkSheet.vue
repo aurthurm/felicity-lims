@@ -1,24 +1,33 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { IAnalysisService } from "@/models/analysis";
 import { useWorksheetStore } from "@/stores";
+import { useWorkSheetComposable } from "@/composables";
 
 const route = useRoute();
 const workshetStore = useWorksheetStore();
 
+const dropdownOpen = ref(false);
+
 workshetStore.fetchWorksheetByUid(route.params?.workSheetUid as string);  
-
-function analysesText(analyses: IAnalysisService[]): string {
-  let names: string[] = [];
-  analyses?.forEach((a) => names.push(a.name!));
-  return names.join(", ");
-}
-
 const worksheet = computed(() => {
   const ws = workshetStore.getWorkSheet;
   return ws;
 });
+
+const {
+  actionWorksheets,
+} = useWorkSheetComposable();
+
+const canSubmit = computed(() => {
+  if (["pending"].includes(worksheet?.value?.state?.toLowerCase()!)) return true;
+  return false;
+});
+const canApprove = computed(() => {
+  if (["awaiting"].includes(worksheet?.value?.state?.toLowerCase()!)) return true;
+  return false;
+});
+
 </script>
 
 <template>
@@ -31,12 +40,29 @@ const worksheet = computed(() => {
         <!-- Meta Column -->
         <div class="col-span-12 flex justify-between font-bold text-medium mb-2">
           <h3>{{ worksheet?.worksheetId }}</h3>
-          <button
-            type="button"
-            class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none"
-          >
-            {{ worksheet?.state || "unknown" }}
-          </button>
+          <div>
+            <div @click="dropdownOpen = !dropdownOpen"
+              class="hidden md:block md:flex md:items-center ml-2 mt-2">
+              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
+                {{ worksheet?.state }}
+              </button>
+              <div class="ml-2">
+                <font-awesome-icon icon="chevron-down" class="text-gray-400" />
+              </div>
+            </div>
+            <div v-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
+            </div>
+            <div v-show="dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
+              <div v-show="canSubmit" @click="actionWorksheets([worksheet.uid], 'submit')"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                Submit
+              </div>
+              <div v-show="canApprove" @click="actionWorksheets([worksheet.uid], 'approve')"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                Approve
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Summary Column -->
         <div class="col-span-12 sm:col-end-13 px-3 sm:px-0">

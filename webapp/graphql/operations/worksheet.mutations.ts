@@ -229,7 +229,7 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE = gql`
 `;
 
 export const WORKSHEET_MANUAL_ASSIGN = gql`
-    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String!, $analysesUids: [String!]!) {
+    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String, $analysesUids: [String!]!) {
         updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids) {
             ... on WorkSheetType {
                 __typename
@@ -249,6 +249,26 @@ export const WORKSHEET_MANUAL_ASSIGN = gql`
                 template {
                     uid
                     name
+                }
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const WORKSHEETS_ACTION = gql`
+    mutation ActionAssignWorsheet($uids: [String!]!, $action: String!) {
+        actionWorksheets(uids: $uids, action: $action) {
+            ... on WorksheetListingType {
+                __typename
+                worksheets {
+                    uid
+                    state
                 }
             }
 

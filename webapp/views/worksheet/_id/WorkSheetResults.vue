@@ -9,6 +9,9 @@ import * as shield from "@/guards";
 const FButton = defineAsyncComponent(
   () => import("@/components/ui/buttons/FelButton.vue")
 )
+const FelSelect = defineAsyncComponent(
+  () => import("@/components/ui/select/FelSelect.vue")
+)
 const FelSwitch = defineAsyncComponent(
   () => import("@/components/ui/switch/FelSwitch.vue")
 )
@@ -244,54 +247,40 @@ const printBarCodes = async () => {
       <FelSwitch v-model="viewDetail" label="More Sample Detail" />
 
       <form action="post" class="p-1" v-show="!applying">
-        <div class="flex justify-start items-center mb-4">
-          <label class="flex justify-between items-center">
-            <span class="text-gray-700 mr-2">Analyst</span>
-            <select
-              name="instrument_uid"
-              v-model="form.analystUid"
-              class="form-input mt-1 block w-full py-1"
-            >
-              <option v-for="user in userStore.users" :key="user.uid" :value="user.uid">
-                {{ user.firstName }} {{ user.lastName }}
-              </option>
-            </select>
-          </label>
-          <label class="flex justify-between items-center ml-4">
-            <span class="text-gray-700 mr-2">Instrument</span>
-            <select
-              name="instrument_uid"
-              v-model="form.instrumentUid"
-              class="form-input mt-1 block w-full py-1"
-            >
-              <option
-                v-for="labInst in setupStore.laboratoryInstruments"
-                :key="labInst.uid"
-                :value="labInst.uid"
-              >
-                {{ labInst?.instrument.name }}: ({{ labInst?.labName }})
-              </option>
-            </select>
-          </label>
-          <label class="flex justify-between items-center ml-4">
-            <span class="text-gray-700 mr-2">Method</span>
-            <select
-              name="method_uid"
-              v-model="form.methodUid"
-              class="form-input mt-1 block w-full py-1"
-            >
-              <option
-                v-for="method in setupStore.methods"
-                :key="method.uid"
-                :value="method.uid"
-              >
-                {{ method.name }}
-              </option>
-            </select>
-          </label>
+        <div class="flex justify-start items-center gap-x-4 mb-4">
+          <FelSelect
+            label="Analyst"
+            name="analyst_uid"
+            v-model="form.analystUid"
+            :options="userStore.users.map((user) => ({
+              value: user.uid,
+              label: `${user.firstName} ${user.lastName}`,
+            }))"
+            :disabled="worksheet?.state !== 'pending'" />
+
+          <FelSelect 
+            label="Instrument"
+            name="instrument_uid"
+            v-model="form.instrumentUid"
+            :options="setupStore.laboratoryInstruments.map((labInst) => ({
+              value: labInst.uid,
+              label: `${labInst?.instrument.name} (${labInst?.labName})`,
+            }))"
+            :disabled="worksheet?.state !== 'pending'"/>
+
+          <FelSelect 
+            label="Method"
+            name="method_uid"
+            v-model="form.methodUid"
+            :options="setupStore.methods.map((method) => ({
+              value: method.uid,
+              label: `${method.name}`,
+            }))"
+            :disabled="worksheet?.state !== 'pending'"/>
+
           <div class="ml-6 mt-2">
             <FButton @click.prevent="applyChanges()" :color="'sky-800'" class="p-1"
-              >Apply</FButton
+              :disabled="true">Apply</FButton
             >
           </div>
         </div>
@@ -391,10 +380,10 @@ const printBarCodes = async () => {
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <span
-                  v-if="result?.sample?.priority > 0"
+                  v-if="(result?.sample?.priority ?? 0) > 0"
                   :class="[
                         'font-small',
-                        { 'text-orange-600': worksheet?.priority > 1 },
+                        { 'text-orange-600': (worksheet?.priority ?? 0) > 1 },
                     ]"
                 >
                   <i class="fa fa-star"></i>

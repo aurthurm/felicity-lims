@@ -9,6 +9,7 @@ const FelTabs =  defineAsyncComponent(
 const sampleStore = useSampleStore();
 
 const targetUid = computed(() => sampleStore.sample?.uid || '');
+const canManageAnalyses = computed(() => !['rending', 'awaiting'].includes(sampleStore.sample?.status!));
 
 const tabs = [
   {
@@ -19,7 +20,8 @@ const tabs = [
   {
     id: 'manage-analyses',
     label: 'Manage Analyses',
-    component: defineAsyncComponent(() => import('./ManageAnalyses.vue'))
+    component: defineAsyncComponent(() => import('./ManageAnalyses.vue')),
+    hidden: canManageAnalyses.value
   },
   {
     id: 'logs',

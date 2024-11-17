@@ -1,5 +1,5 @@
 const colors = require('tailwindcss/colors');
-
+/** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: 'class',
     content: ['./webapp/**/*.{html,js.jsx,ts,tsx,vue}', './public/**/*.html', './index.html'],
@@ -11,6 +11,7 @@ module.exports = {
             strategy: 'base', // only generate global styles
             strategy: 'class', // only generate classes
         }),
+        require('@tailwindcss/typography'),
     ],
     theme: {
         extend: {

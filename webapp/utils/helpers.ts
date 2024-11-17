@@ -12,13 +12,13 @@ export const decrypter2 = (data: any, key: string) => {
     return JSON.parse(CryptoJs.AES.decrypt(data, key).toString(CryptoJs.enc.Utf8));
 };
 
-export const parseDate = function (str: any, withTime=true) {
-    let dt = dayjs(str);
+export const parseDate = function (date: any, withTime=true) {
+    let dt = dayjs(date);
     if (dt.isValid()) {
         if(withTime) return dt.format('D MMMM YYYY, h:mm:ss a');
         return dt.format('D MMMM YYYY')
     }
-    return str ?? "---";
+    return date ?? "---";
 };
 
 export const formatDate = function (str: any, format: string) {

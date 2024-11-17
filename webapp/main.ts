@@ -23,6 +23,8 @@ import {
     faLevelDownAlt,
     faArrowDownWideShort
 } from '@fortawesome/free-solid-svg-icons';
+import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
 import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
 import LayoutMobile from '@/views/layouts/LayoutMobile.vue';
@@ -31,8 +33,10 @@ import 'vue-multiselect/dist/vue-multiselect.css';
 import 'floating-vue/dist/style.css';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'notyf/notyf.min.css';
+import '@vuepic/vue-datepicker/dist/main.css'
 import '@/index.css';
 import '@/assets/css/style.css';
+import '@/assets/css/ckeditor.css';
 
 import App from './App.vue';
 import router from './router';
@@ -57,11 +61,13 @@ pinia.use(({ store }) => {
 
 const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
+app.component('VueDatePicker', VueDatePicker);
 app.component('default-layout', LayoutDashboard);
 app.component('empty-layout', LayoutEmpty);
 app.component('mobile-layout', LayoutMobile);
 
 app.use(VueSweetalert2);
+app.use(CkeditorPlugin);
 app.use(FloatingVue);
 app.use(MotionPlugin);
 app.use(pinia);

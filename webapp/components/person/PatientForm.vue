@@ -9,7 +9,7 @@ import { useClientStore, useLocationStore, usePatientStore } from "@/stores";
 import { useApiUtil } from "@/composables";
 import { IClient } from "@/models/client";
 import { IPatientIdentificationForm } from "@/models/patient";
-import { isNullOrWs } from "@/utils/helpers";
+import { formatDate, isNullOrWs } from "@/utils/helpers";
 import dayjs from "dayjs";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";
@@ -64,6 +64,7 @@ onMounted(async () => {
 // Patient
 const { patient, navigate } = toRefs(props);
 
+const maxDate = ref(new Date());
 const estimateYears = ref(0);
 const estimateMonths = ref(0);
 const estimateDays = ref(0);
@@ -161,7 +162,7 @@ function addPatient(payload: IPatient) {
         lastName: payload.lastName,
         age: payload.age,
         gender: payload.gender,
-        dateOfBirth: payload.dateOfBirth,
+        dateOfBirth: formatDate(payload.dateOfBirth, "YYYY-MM-DD HH:mm"),
         ageDobEstimated: payload.ageDobEstimated,
         clientUid: payload.client.uid,
         phoneMobile: payload.phoneMobile,
@@ -293,8 +294,12 @@ const removeIdentifier = (index: number) => {
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Date of Birth</span>
       <div class="w-full">
-        <input class="form-input mt-1 w-full disabled:bg-slate-200" type="date" v-model="dateOfBirth"
-          placeholder="Date of Birth" :disabled="ageDobEstimated" @change="calculateAge()" @keyup="calculateAge()" />
+        <VueDatePicker 
+        class="z-60 disabled:bg-slate-200" 
+        v-model="dateOfBirth" 
+        :disabled="ageDobEstimated" 
+        @closed="calculateAge()"
+        :max-date="maxDate"></VueDatePicker>
         <div class="text-orange-600 w-4/12">{{ errors.dateOfBirth }}</div>
       </div>
     </label>

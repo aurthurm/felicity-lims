@@ -33,7 +33,7 @@ export const useNoticeStore = defineStore('notice', {
             await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, 'noticesByCreator')
                 .then(payload => {
                     this.fetchingNotices = false;
-                    this.notices = payload?.map(n => modifyExpiry(n));
+                    this.notices = payload?.map(n => modifyExpiry(n)).sort((a, b) => a.expiry > b.expiry ? 1 : -1);
                 })
                 .catch(err => (this.fetchingNotices = false));
         },

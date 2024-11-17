@@ -131,7 +131,7 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
   </div>
 
   <!-- Notice Form Modal -->
-  <modal v-if="modalState.showModal" @close="modalState.showModal = false">
+  <modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3>{{ modalState.title }}</h3>
     </template>

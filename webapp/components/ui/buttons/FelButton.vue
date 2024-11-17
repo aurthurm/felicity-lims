@@ -1,18 +1,14 @@
 <template>
   <button
-    :class="[
-      'px-2 py-1 mr-2 border transition duration-300 hover:text-white focus:outline-none',
-      'border-' + color,
-      'text-' + color,
-      'hover:bg-' + color,
-    ]"
+    :class="buttonClasses"
+    :disabled="disabled"
   >
     <slot />
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   name: "FButton",
@@ -21,7 +17,22 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props) {},
+  setup(props) {
+    const buttonClasses = computed(() => [
+      "px-2 py-1 mr-2 border transition duration-300 focus:outline-none disabled:opacity-50",
+      props.disabled
+        ? ""
+        : `border-${props.color} text-${props.color} hover:bg-${props.color} hover:text-white`,
+    ]);
+
+    return {
+      buttonClasses,
+    };
+  },
 });
 </script>

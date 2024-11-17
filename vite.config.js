@@ -30,4 +30,12 @@ export default defineConfig({
             // "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "webapp"),
         },
     },
+    css: {
+        postcss: {
+          plugins: [
+            require('tailwindcss'),
+            require('autoprefixer'),
+          ],
+        },
+    },
 });
