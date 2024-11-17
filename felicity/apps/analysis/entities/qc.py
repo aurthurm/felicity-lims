@@ -1,6 +1,7 @@
 import logging
 
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
@@ -69,6 +70,8 @@ class QCReference(BaseEntity):
     supplier = Column(String, nullable=True)
     catalog_number = Column(String, nullable=True)
     lot_number = Column(String, nullable=True)
+    # Metadata snapshot
+    metadata_snapshot = Column(JSONB, nullable=False)
 
 
 class QCLevel(BaseEntity):

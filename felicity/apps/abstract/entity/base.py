@@ -67,3 +67,7 @@ class Base(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAtt
                 return_data[field] = _v
 
         return return_data
+
+    def snapshot(self, nested=False, hybrid_attributes=False, exclude=None):
+        """ride on the serializer's to_dict"""
+        return self.to_dict(nested, hybrid_attributes, exclude)

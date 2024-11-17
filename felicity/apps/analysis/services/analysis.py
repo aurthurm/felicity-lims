@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 from typing import Any, List, Union
 
@@ -20,7 +21,7 @@ from felicity.apps.analysis.entities.analysis import (
     ResultOption,
     Sample,
     SampleType,
-    SampleTypeCoding,
+    SampleTypeCoding, sample_profile, sample_analysis,
 )
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.analysis import (
@@ -82,10 +83,15 @@ from felicity.apps.analysis.schemas import (
     SampleUpdate,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.client.services import ClientService
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.core.dtz import timenow_dt
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class CodingStandardService(
@@ -229,7 +235,7 @@ class AnalysisRequestService(
         super().__init__(AnalysisRequestRepository())
 
     async def create(
-        self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None
+            self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None
     ):
         data = self._import(obj_in)
         data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
@@ -463,7 +469,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [ResultState.PENDING], analysis)
+                filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
@@ -551,7 +557,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return recovered
 
     async def create(
-        self, obj_in: dict | SampleCreate, related: list[str] | None = None
+            self, obj_in: dict | SampleCreate, related: list[str] | None = None
     ):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
@@ -587,3 +593,34 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["parent_id"] = sample.uid
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)
+
+    async def snapshot(self, sample: Sample, metadata: dict = {}):
+        fields = ["sample_type", "client", "profiles", "analyses"]
+        for _field in fields:
+            if _field not in metadata:
+                if _field == "client":
+                    ar = await AnalysisRequestService().get(uid=sample.analysis_request_uid)
+                    client = await ClientService().get(uid=ar.client_uid)
+                    metadata[_field] = client.snapshot()
+                if _field == "sample_type":
+                    st = await SampleTypeService().get(uid=sample.sample_type_uid)
+                    metadata[_field] = st.snapshot()
+                if _field == "profiles":
+                    profile_uids = await ProfileService().repository.query_table(
+                        table=sample_profile,
+                        columns=["profile_uid"],
+                        sample_uid=sample.uid
+                    )
+                    if profile_uids:
+                        profiles = await ProfileService().get_by_uids(uids=profile_uids)
+                        metadata[_field] = [p.snapshot() for p in profiles]
+                if _field == "analyses":
+                    anal_uids = await AnalysisService().repository.query_table(
+                        table=sample_analysis,
+                        columns=["analysis_uid"],
+                        sample_uid=sample.uid
+                    )
+                    if anal_uids:
+                        analyses = await AnalysisService().get_by_uids(uids=anal_uids)
+                        metadata[_field] = [a.snapshot() for a in analyses]
+        return await self.update(sample.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})

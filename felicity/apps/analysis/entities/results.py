@@ -8,8 +8,9 @@ from sqlalchemy import (
     Integer,
     String,
     Table,
-    Text,
+    Text
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity, BaseMPTT
@@ -81,6 +82,8 @@ class AnalysisResult(BaseEntity, BaseMPTT):
     )
     worksheet_position = Column(Integer, nullable=True)
     assigned = Column(Boolean(), default=False)
+    # Metadata snapshot
+    metadata_snapshot = Column(JSONB, nullable=False)
 
     @property
     def keyword(self) -> str:

@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 
 from felicity.apps.abstract.service import BaseService
@@ -13,9 +14,14 @@ from felicity.apps.analysis.repository.results import (
 )
 from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
 from felicity.apps.common.schemas.dummy import Dummy
+from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.instrument.services import LaboratoryInstrumentService
 from felicity.apps.notification.services import ActivityStreamService
-from felicity.apps.user.entities import User
+from felicity.apps.user.entities import User, logger
 from felicity.core.dtz import timenow_dt
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class AnalysisResultService(
@@ -26,7 +32,7 @@ class AnalysisResultService(
         super().__init__(AnalysisResultRepository())
 
     async def verifications(
-        self, uid: str
+            self, uid: str
     ) -> tuple[
         Annotated[int, "Total number required verifications"],
         Annotated[list[User], "Current verifiers"],
@@ -42,7 +48,7 @@ class AnalysisResultService(
         return None
 
     async def retest_result(
-        self, uid: str, retested_by, next_action="verify"
+            self, uid: str, retested_by, next_action="verify"
     ) -> tuple[
         Annotated[AnalysisResult, "Newly Created AnalysisResult"],
         Annotated[AnalysisResult, "Retested AnalysisResult"],
@@ -158,11 +164,11 @@ class AnalysisResultService(
         return await super().update(uid, {"reportable": False})
 
     async def filter_for_worksheet(
-        self,
-        analyses_status: str,
-        analysis_uid: str,
-        sample_type_uid: list[str],
-        limit: int,
+            self,
+            analyses_status: str,
+            analysis_uid: str,
+            sample_type_uid: list[str],
+            limit: int,
     ) -> list[AnalysisResult]:
         filters = {
             "status__exact": analyses_status,
@@ -175,6 +181,34 @@ class AnalysisResultService(
         return await self.repository.filter(
             filters=filters, sort_attrs=sort_attrs, limit=limit
         )
+
+    async def snapshot(self, analyses_results: list[AnalysisResult]) -> None:
+        from felicity.apps.analysis.services.analysis import AnalysisService
+        #
+        analysis_relations = [
+            "unit", "instruments", "methods",
+            "interims", "correction_factors", "specifications",
+            "detection_limits", "uncertainties", "result_options",
+            "category", "department"
+        ]
+        for result in analyses_results:
+            analysis = await AnalysisService().get(related=analysis_relations, uid=result.analysis_uid)
+            metadata = {}
+            for _field in analysis_relations:
+                try:
+                    thing = getattr(analysis, _field)
+                    if isinstance(thing, list):
+                        metadata[_field] = [item.snapshot() for item in thing]
+                        if _field == "instruments":
+                            for k, v in enumerate(metadata[_field]):
+                                lab_insts = await LaboratoryInstrumentService().get(instrument_uid=v.get("uid"))
+                                metadata[_field][k]["laboratory_instruments"] = [li.snapshot() for li in lab_insts]
+                    else:
+                        metadata[_field] = thing.snapshot()
+                except Exception as e:
+                    logger.error(f"Failed to snapshot field {_field}: {e}")
+            await self.update(result.uid, {"metadata_snapshot": marshaller(metadata, depth=4)})
+        return None
 
 
 class ResultMutationService(BaseService[ResultMutation, Dummy, Dummy]):

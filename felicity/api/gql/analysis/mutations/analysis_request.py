@@ -43,6 +43,7 @@ from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
+from felicity.apps.setup.caches import get_laboratory_setting
 from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
@@ -180,6 +181,7 @@ async def create_analysis_request(
             "sample_id": None,
             "priority": payload.priority,
             "status": SampleState.EXPECTED,
+            "metadata_snapshot": {}
         }
 
         profiles = []
@@ -209,13 +211,23 @@ async def create_analysis_request(
             minutes = max(tat_lengths)
             sample_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
 
-        #
-        sample_schema = schemas.SampleCreate(**sample_in)
+        sample_schema = schemas.SampleCreate(
+            **sample_in
+        )
         sample = await SampleService().create(sample_schema)
+        sample = await SampleService().snapshot(
+            sample, {
+                "sample_type": stype.snapshot(),
+                "client": client.snapshot(),
+                "profiles": [p.snapshot() for p in profiles],
+                "analyses": [a.snapshot() for a in analyses]
+            }
+        )
 
         # auto receive samples
-        # ?? sample_workflow based check needed
-        await SampleService().receive(sample.uid, received_by=felicity_user)
+        _, lab_setting = await get_laboratory_setting()
+        if lab_setting.auto_receive_samples:
+            await SampleService().receive(sample.uid, received_by=felicity_user)
 
         # link sample to provided profiles
         for _prof in profiles:
@@ -240,6 +252,7 @@ async def create_analysis_request(
             status=ResultState.PENDING,
             analysis_uid=None,
             due_date=None,
+            metadata_snapshot={},
             created_by_uid=felicity_user.uid,
             updated_by_uid=felicity_user.uid,
         )
@@ -261,6 +274,7 @@ async def create_analysis_request(
         created = await AnalysisResultService().bulk_create(
             result_schemas, related=["sample", "analysis"]
         )
+        await AnalysisResultService().snapshot(created)
 
         # initialise reflex action if exist
         logger.info("ReflexUtil .... set_reflex_actions ...")
@@ -290,6 +304,7 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     to_clone = await SampleService().get_by_uids(uids=samples)
     for _, _sample in enumerate(to_clone):
         clone = await SampleService().clone_afresh(_sample.uid, felicity_user)
+        await SampleService().snapshot(clone, {})
 
         if clone:
             clones.append(clone)
@@ -311,12 +326,15 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                     "sample_uid": clone.uid,
                     "analysis_uid": _service.uid,
                     "status": ResultState.PENDING,
+                    "metadata_snapshot": {}
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
                 created = await AnalysisResultService().create(
                     a_result_schema, related=["sample", "analysis"]
                 )
+                await AnalysisResultService().snapshot([created])
                 await ReflexEngineService().set_reflex_actions([created])
+
     clones = [
         (await SampleService().get(related=["sample_type"], uid=clone.uid))
         for clone in clones

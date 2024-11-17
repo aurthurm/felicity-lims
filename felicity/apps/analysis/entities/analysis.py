@@ -10,6 +10,7 @@ from sqlalchemy import (
     String,
     Table,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity, BaseMPTT
@@ -514,7 +515,8 @@ class Sample(BaseEntity, BaseMPTT):
     )
     storage_slot = Column(String, nullable=True)
     storage_slot_index = Column(Integer, nullable=True)
-
+    # Metadata snapshot
+    metadata_snapshot = Column(JSONB, nullable=False)
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_entities(mapper, connection, target): # noqa

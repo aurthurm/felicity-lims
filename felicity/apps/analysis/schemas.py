@@ -704,7 +704,7 @@ class SampleBaseInDB(SampleBase):
 
 # Properties to receive via API on creation
 class SampleCreate(SampleBase):
-    pass
+    metadata_snapshot: dict
 
 
 # Properties to receive via API on update
@@ -794,7 +794,7 @@ class AnalysisResultBaseInDB(AnalysisResultBase):
 
 # Properties to receive via API on creation
 class AnalysisResultCreate(AnalysisResultBase):
-    pass
+    metadata_snapshot: dict
 
 
 # Properties to receive via API on update
