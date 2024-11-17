@@ -10,6 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from felicity.utils.env import getenv_boolean, getenv_value
 
+ROOT_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", '..'))
 BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ENV_FILE: Path = Path(BASE_DIR, "./../.env")
 load_dotenv(dotenv_path=ENV_FILE)
@@ -70,7 +71,7 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
-        cls, v: str | None, info: ValidationInfo
+            cls, v: str | None, info: ValidationInfo
     ) -> str:
         if isinstance(v, str):
             return v
@@ -132,11 +133,11 @@ class Settings(BaseSettings):
     MINIO_SECRET: str = getenv_value("MINIO_SECRET", "felicity")
     # Store jsons to document database
     DOCUMENT_STORAGE: bool = (
-        bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
+            bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
     )
     # Use external storage for objects/blobs
     OBJECT_STORAGE: bool = (
-        bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
+            bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
     )
     # Limit Tables for audit-log: if empty, all will be audited
     AUDITABLE_ENTITIES: list[str] = [

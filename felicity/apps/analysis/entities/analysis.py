@@ -517,8 +517,3 @@ class Sample(BaseEntity, BaseMPTT):
     storage_slot_index = Column(Integer, nullable=True)
     # Metadata snapshot
     metadata_snapshot = Column(JSONB, nullable=False)
-
-# @event.listens_for(Sample, "after_update")
-# def stream_sample_verified_entities(mapper, connection, target): # noqa
-#     logger.log("stream_sample_verified inn")
-#     logger.log(target)

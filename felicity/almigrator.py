@@ -2,15 +2,15 @@ from alembic import command
 from alembic.config import Config
 from alembic.script import ScriptDirectory
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.engine import CursorResult
+from sqlalchemy.ext.asyncio import create_async_engine
 
-from felicity.core.config import BASE_DIR
+from felicity.core.config import ROOT_DIR
 from felicity.core.config import settings
 
 
 class FelicityMigrator:
-    def __init__(self, config_path: str = f"{BASE_DIR}/alembic.ini") -> None:
+    def __init__(self, config_path: str = f"{ROOT_DIR}/alembic.ini") -> None:
         self.alembic_cfg = Config(config_path)
         self.database_url = settings.SQLALCHEMY_DATABASE_URI
 

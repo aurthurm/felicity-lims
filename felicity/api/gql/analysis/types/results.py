@@ -5,7 +5,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
 from felicity.api.gql.instrument.types import LaboratoryInstrumentType, MethodType
-from felicity.api.gql.types import PageInfo
+from felicity.api.gql.types import PageInfo, JSONScalar
 from felicity.api.gql.user.types import UserType
 from felicity.apps.worksheet.services import WorkSheetService
 
@@ -51,6 +51,7 @@ class AnalysisResultType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
+    metadata_snapshot: JSONScalar | None = None
 
     @strawberry.field
     async def worksheet_id(self, info) -> str | None:

@@ -9,7 +9,7 @@ from felicity.api.gql.patient.types import PatientType
 from felicity.api.gql.setup.types import UnitType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.storage.types import StorageContainerType
-from felicity.api.gql.types.generic import PageInfo
+from felicity.api.gql.types.generic import PageInfo, JSONScalar
 from felicity.api.gql.user.types import UserType
 
 
@@ -346,6 +346,7 @@ class SampleType:  # for Sample
     stored_by: UserType | None = None
     date_stored: datetime | None = None
     date_retrieved_from_storage: datetime | None = None
+    metadata_snapshot: JSONScalar | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
