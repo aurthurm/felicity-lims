@@ -1,1 +1,0 @@
-import{k as t,m as o,o as s,c,g as n}from"./index-53659ec0.js";const r={},i={class:""};function m(_,a){const e=o("router-view");return s(),c("div",i,[n(e)])}const l=t(r,[["render",m],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/shipment/Shipments.vue"]]);export{l as default};
