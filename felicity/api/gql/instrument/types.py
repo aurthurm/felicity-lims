@@ -7,7 +7,8 @@ import strawberry  # noqa
 from felicity.api.gql.setup.types import ManufacturerType, SupplierType
 from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.instrument.services import MethodService
+from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
+from felicity.apps.setup.entities.setup import Laboratory
 
 
 @strawberry.type
@@ -63,7 +64,11 @@ class InstrumentType:
     async def methods(self, info) -> Optional[List["MethodType"]]:
         m = await MethodService().get(instruments___uid=self.uid)
         return MethodType(**m) if m else None
-
+    
+    @strawberry.field
+    async def laboratory_instruments(self, info) -> Optional[List["LaboratoryInstrumentType"]]:
+        lis = await LaboratoryInstrumentService().get(instrument_uid=self.uid)
+        return LaboratoryInstrumentType(**lis) if lis else None
 
 #  relay paginations
 @strawberry.type

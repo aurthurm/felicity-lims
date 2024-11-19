@@ -7,7 +7,7 @@
         class="form-input mt-1 block w-full py-1 disabled:opacity-50"
         :disabled="disabled"
       >
-        <option v-for="option in options" :key="option.key || option.value" :value="option.value">
+        <option v-for="(option, idx) in options" :key="idx" :value="option.value">
           {{ option.label }}
         </option>
       </select>

@@ -772,6 +772,19 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
                         name
                     }
                 }
+                instruments {
+                    uid
+                    name
+                    laboratoryInstruments {
+                        uid
+                        labName
+                        serialNumber
+                    }
+                }
+                methods {
+                    uid
+                    name
+                }
             }
             retest
             reportable

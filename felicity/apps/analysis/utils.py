@@ -242,117 +242,117 @@ async def result_mutator(result: AnalysisResult) -> None:
 
     result_in = result.result
 
-    correction_factors = result.analysis.correction_factors
-    specifications = result.analysis.specifications
-    detection_limits = result.analysis.detection_limits
-    uncertainties = result.analysis.uncertainties
+    correction_factors = result.metadata_snapshot.get("correction_factors", [])
+    specifications = result.metadata_snapshot.get("specifications", []) 
+    detection_limits = result.metadata_snapshot.get("detection_limits", [])
+    uncertainties = result.metadata_snapshot.get("uncertainties", [])
 
     if isinstance(result.result, int):
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.instrument_uid == result.laboratory_instrument_uid
-                    and cf.method_uid == result.method_uid
+                    cf.get("instrument_uid") == result.laboratory_instrument_uid
+                    and cf.get("method_uid") == result.method_uid
             ):
                 await result_mutation_service.create(
                     c={
                         "result_uid": result.uid,
                         "before": result.result,
-                        "after": result.result * cf.factor,
-                        "mutation": f"Multiplied the result {result.result} with a correction factor of {cf.factor}",
+                        "after": result.result * cf.get("factor"),
+                        "mutation": f"Multiplied the result {result.result} with a correction factor of {cf.get('factor')}",
                         "date": timenow_dt(),
                     }
                 )
-                result.result = result.result * cf.factor
+                result.result = result.result * cf.get("factor")
 
         # Specifications: Take more priority than DL
         for spec in specifications:
             # Min
-            if result.result < spec.min_warn:
+            if result.result < spec.get("min_warn"):
                 await result_mutation_service.create(
                     c={
                         "result_uid": result.uid,
                         "before": result.result,
-                        "after": spec.min_report,
-                        "mutation": f"Result was less than the minimun warning specification {spec.min_warn} and must be reported as {spec.min_report}",
+                        "after": spec.get("min_report"),
+                        "mutation": f"Result was less than the minimun warning specification {spec.get('min_warn')} and must be reported as {spec.get('min_report')}",
                         "date": timenow_dt(),
                     }
                 )
-                result.result = spec.min_report
+                result.result = spec.get("min_report")
 
-            elif result.result < spec.min:
+            elif result.result < spec.get("min"):
                 result.result = result.result
 
             # Max
-            if result.result > spec.max_warn:
+            if result.result > spec.get("max_warn"):
                 await result_mutation_service.create(
                     c={
                         "result_uid": result.uid,
                         "before": result.result,
-                        "after": spec.max_report,
-                        "mutation": f"Result was greater than the maximun warning specification {spec.max_warn} and must be reported as {spec.max_report}",
+                        "after": spec.get("max_report"),
+                        "mutation": f"Result was greater than the maximun warning specification {spec.get('max_warn')} and must be reported as {spec.get('max_report')}",
                         "date": timenow_dt(),
                     }
                 )
-                result.result = spec.max_report
+                result.result = spec.get("max_report")
 
-            elif result.result > spec.max:
+            elif result.result > spec.get("max"):
                 result.result = result.result
 
         # Detection Limit Check
         for dlim in detection_limits:
-            if result.result < dlim.lower_limit:
+            if result.result < dlim.get("lower_limit"):
                 await result_mutation_service.create(
                     c={
                         "result_uid": result.uid,
                         "before": result.result,
-                        "after": f"< {dlim.lower_limit}",
-                        "mutation": f"Result fell below the Lower Detection Limit {dlim.lower_limit} and must be reported as < {dlim.lower_limit}",
+                        "after": f"< {dlim.get('lower_limit')}",
+                        "mutation": f"Result fell below the Lower Detection Limit {dlim.get('lower_limit')} and must be reported as < {dlim.get('lower_limit')}",
                         "date": timenow_dt(),
                     }
                 )
-                result.result = f"< {dlim.lower_limit}"
+                result.result = f"< {dlim.get('lower_limit')}"
 
-            if result.result > dlim.upper_limit:
+            if result.result > dlim.get("upper_limit"):
                 await result_mutation_service.create(
                     c={
                         "result_uid": result.uid,
                         "before": result.result,
-                        "after": f"> {dlim.upper_limit}",
-                        "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {dlim.upper_limit}",
+                        "after": f"> {dlim.get('upper_limit')}",
+                        "mutation": f"Result fell Above the Upper Detection Limit {dlim.get('upper_limit')} and must be reported as > {dlim.get('upper_limit')}",
                         "date": timenow_dt(),
                     }
                 )
-                result.result = f"> {dlim.upper_limit}"
+                result.result = f"> {dlim.get('upper_limit')}"
 
         # uncertainty
         if isinstance(result.result, int):
             for uncert in uncertainties:
-                if uncert.min <= result.result <= uncert.max:
+                if uncert.get("min") <= result.result <= uncert.get("max"):
                     await result_mutation_service.create(
                         c={
                             "result_uid": result.uid,
                             "before": result.result,
-                            "after": f"{result.result} +/- {uncert.value}",
-                            "mutation": f"Result fell inside the range [{uncert.min},{uncert.max}]  with an un uncertainty of +/- {uncert.value}",
+                            "after": f"{result.result} +/- {uncert.get('value')}",
+                            "mutation": f"Result fell inside the range [{uncert.get('min')},{uncert.get('max')}]  with an un uncertainty of +/- {uncert.get('value')}",
                             "date": timenow_dt(),
                         }
                     )
-                    result.result = f"{result.result} +/- {uncert.value}"
+                    result.result = f"{result.result} +/- {uncert.get('value')}"
 
     elif isinstance(result.result, str):
         for spec in specifications:
-            if result.result in spec.warn_values.split(","):
+            if result.result in spec.get("warn_values").split(","):
                 await result_mutation_service.create(
                     c={
                         "result_uid": result.uid,
                         "before": result.result,
-                        "after": spec.warn_report,
-                        "mutation": f"Result with specification (result ::equals:: {result.result}) must be reported as {spec.warn_report}",
+                        "after": spec.get("warn_report"),
+                        "mutation": f"Result with specification (result ::equals:: {result.result}) must be reported as {spec.get('warn_report')}",
                         "date": timenow_dt(),
                     }
                 )
-                result.result = spec.warn_report
+                result.result = spec.get("warn_report")
 
     if result_in != result.result:
         result = await analysis_result_service.save(result)

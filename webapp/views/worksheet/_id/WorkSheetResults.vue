@@ -42,9 +42,9 @@ userStore.fetchUsers({});
 setupStore.fetchLaboratoryInstruments();
 setupStore.fetchMethods();
 const form = reactive({
-  analystUid: undefined,
-  instrumentUid: undefined,
-  methodUid: undefined,
+  analystUid: null,
+  instrumentUid: null,
+  methodUid: null,
 });
 
 const applying = ref<boolean>(false);
@@ -154,10 +154,8 @@ function getResultsUids(): string[] {
 
 function getSampleUids(): string[] {
   const results = getResultsChecked();
-  console.log(results);
   let ready: string[] = [];
   results?.forEach((result: IAnalysisResult) => ready.push(result.sample?.uid!));
-  console.log(ready);
   return ready;
 }
 
@@ -266,7 +264,7 @@ const printBarCodes = async () => {
               value: labInst.uid,
               label: `${labInst?.instrument.name} (${labInst?.labName})`,
             }))"
-            :disabled="worksheet?.state !== 'pending'"/>
+            :disabled="worksheet?.state !== 'pending'"/> 
 
           <FelSelect 
             label="Method"
@@ -276,7 +274,7 @@ const printBarCodes = async () => {
               value: method.uid,
               label: `${method.name}`,
             }))"
-            :disabled="worksheet?.state !== 'pending'"/>
+            :disabled="worksheet?.state !== 'pending'"/> 
 
           <div class="ml-6 mt-2">
             <FButton @click.prevent="applyChanges()" :color="'sky-800'" class="p-1"
@@ -427,13 +425,15 @@ const printBarCodes = async () => {
                 <label v-else class="block col-span-2 mb-2">
                   <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
                     <option value=""></option>
-                    <option v-for="instrument in setupStore.laboratoryInstruments" :key="instrument.uid"
-                      :value="instrument.uid">
-                      <div class="flex justify-start items-center gap-x-1">
-                        <span>{{ instrument.labName }}</span> &rarr;
-                        <span class="text-xs font-thin text-gray-300">({{ instrument?.instrument?.name }})</span>
-                      </div>
-                    </option>
+                    <template v-for="instrument in result.analysis?.instruments" :key="instrument.uid">
+                      <option 
+                        v-for="lab_instrument in instrument.laboratoryInstruments" 
+                        :key="lab_instrument.uid"
+                        :value="lab_instrument.uid"
+                      >
+                        {{ lab_instrument.labName }} → ({{ instrument?.name }})
+                      </option>
+                    </template>
                   </select>
                 </label>
               </td>
@@ -444,7 +444,7 @@ const printBarCodes = async () => {
                 <label v-else class="block col-span-2 mb-2">
                   <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
                     <option value=""></option>
-                    <option v-for="method in setupStore.methods" :key="method.uid"
+                    <option v-for="method in result.analysis?.methods" :key="method.uid"
                       :value="method.uid">
                       {{ method.name }}
                     </option>

@@ -14,7 +14,6 @@ const PageHeading = defineAsyncComponent(
 )
 
 let patientStore = usePatientStore();
-let locationsStore = useLocationStore();
 
 const { patients, fetchingPatients, patientPageInfo } = storeToRefs(patientStore);
 
@@ -129,7 +128,6 @@ const tableColumns = ref([
   },
 ]);
 
-locationsStore.fetchCountries();
 let patientParams = reactive({
   first: 50,
   before: "",

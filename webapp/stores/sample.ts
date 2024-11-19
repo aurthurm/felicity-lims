@@ -13,9 +13,6 @@ import {
     GET_SAMPLE_BY_PARENT_ID,
     GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE,
 } from '@/graphql/operations/analyses.queries';
-import {
-    useGetAllSampleTypesQuery
-} from '@/graphql/graphql'
 import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '@/models/analysis';
 import { IPageInfo, IPaginationMeta } from '@/models/pagination';
 

@@ -2,7 +2,7 @@
 import { onMounted, watch, reactive, computed, defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useSampleStore, useSetupStore } from "@/stores";
+import { useSampleStore } from "@/stores";
 import { useAnalysisComposable } from "@/composables";
 import { parseDate } from "@/utils/helpers";
 import {
@@ -30,7 +30,6 @@ const ResultDetail = defineAsyncComponent(
 )
 
 const route = useRoute();
-const setupStore = useSetupStore()
 const sampleStore = useSampleStore();
 const { sample, analysisResults, fetchingResults } = storeToRefs(sampleStore);
 
@@ -45,8 +44,6 @@ const state = reactive({
 });
 
 onMounted(() => {
-  setupStore.fetchLaboratoryInstruments();
-  setupStore.fetchMethods();
   sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid)
 });
 
@@ -359,13 +356,15 @@ const retestResults = () =>
               <label v-else class="block col-span-2 mb-2">
                 <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
                   <option value=""></option>
-                  <option v-for="instrument in setupStore.laboratoryInstruments" :key="instrument.uid"
-                    :value="instrument.uid">
-                    <div class="flex justify-start items-center gap-x-1">
-                      <span>{{ instrument.labName }}</span> &rarr;
-                      <span class="text-xs font-thin text-gray-300">({{ instrument?.instrument?.name }})</span>
-                    </div>
-                  </option>
+                  <template v-for="instrument in result.analysis?.instruments" :key="instrument.uid">
+                    <option 
+                      v-for="lab_instrument in instrument.laboratoryInstruments" 
+                      :key="lab_instrument.uid"
+                      :value="lab_instrument.uid"
+                    >
+                      {{ lab_instrument.labName }} → ({{ instrument?.name }})
+                    </option>
+                  </template>
                 </select>
               </label>
             </td>
@@ -376,7 +375,7 @@ const retestResults = () =>
               <label v-else class="block col-span-2 mb-2">
                 <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
                   <option value=""></option>
-                  <option v-for="method in setupStore.methods" :key="method.uid"
+                  <option v-for="method in result.analysis?.methods" :key="method.uid"
                     :value="method.uid">
                     {{ method.name }}
                   </option>
@@ -462,10 +461,6 @@ const retestResults = () =>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-              <!-- <button @click.prevent="submitResult(result)" 
-                              class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">
-                              submit
-                            </button> -->
             </td>
           </tr>
         </tbody>

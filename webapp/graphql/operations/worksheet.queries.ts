@@ -132,6 +132,24 @@ export const GET_WORKSHEET_BY_UID = gql`
                         optionKey
                         value
                     }
+                    interims {
+                        uid
+                        key
+                        value
+                    }
+                    instruments {
+                        uid
+                        name
+                        laboratoryInstruments {
+                            uid
+                            labName
+                            serialNumber
+                        }
+                    }
+                    methods {
+                        uid
+                        name
+                    }
                 }
                 sample {
                     uid
