@@ -27,6 +27,12 @@ def upgrade():
     op.add_column('sample',
                   sa.Column('metadata_snapshot', postgresql.JSONB(astext_type=sa.Text()), nullable=False,
                             server_default=sa.text("'{}'::jsonb")))
+    op.add_column('analysis_request',
+                  sa.Column('metadata_snapshot', postgresql.JSONB(astext_type=sa.Text()), nullable=False,
+                            server_default=sa.text("'{}'::jsonb")))
+    op.add_column('patient',
+                  sa.Column('metadata_snapshot', postgresql.JSONB(astext_type=sa.Text()), nullable=False,
+                            server_default=sa.text("'{}'::jsonb")))
     # ### end Alembic commands ###
 
 
@@ -35,4 +41,6 @@ def downgrade():
     op.drop_column('sample', 'metadata_snapshot')
     op.drop_column('qc_reference', 'metadata_snapshot')
     op.drop_column('analysis_result', 'metadata_snapshot')
+    op.drop_column('patient', 'metadata_snapshot')
+    op.drop_column('analysis_request', 'metadata_snapshot')
     # ### end Alembic commands ###

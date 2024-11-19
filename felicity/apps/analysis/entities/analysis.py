@@ -396,6 +396,8 @@ class AnalysisRequest(BaseEntity):
     request_id = Column(String, index=True, unique=True, nullable=True)
     client_request_id = Column(String, unique=True, nullable=False)
     internal_use = Column(Boolean(), default=False)  # e.g Test Requests
+    # Metadata snapshot
+    metadata_snapshot = Column(JSONB, nullable=False)
 
 
 """

@@ -5,7 +5,9 @@ import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
 from felicity.api.gql.instrument.types import LaboratoryInstrumentType, MethodType
+from felicity.api.gql.setup.types import UnitType
 from felicity.api.gql.types import PageInfo, JSONScalar
+from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import UserType
 from felicity.apps.worksheet.services import WorkSheetService
 
@@ -19,11 +21,8 @@ class AnalysisResultType:
     worksheet_position: int | None = None
     assigned: bool
     analysis_uid: str | None = None
-    analysis: AnalysisType | None = None
     laboratory_instrument_uid: str | None = None
-    laboratory_instrument: LaboratoryInstrumentType | None = None
     method_uid: str | None = None
-    method: MethodType | None = None
     result: str | None = None
     analyst_uid: str | None = None
     analyst: UserType | None = None
@@ -57,6 +56,34 @@ class AnalysisResultType:
     async def worksheet_id(self, info) -> str | None:
         ws = await WorkSheetService().get(uid=self.worksheet_uid)
         return ws.worksheet_id if ws else None
+
+    @strawberry.field
+    async def laboratory_instrument(self, info) -> Optional[LaboratoryInstrumentType]:
+        instruments = self.metadata_snapshot.get("instruments")
+        if not instruments or len(instruments) < 1: return None
+        lab_inst = filter(lambda inst: inst.get(), instruments)
+        for instrument in instruments:
+            lab_instruments = instrument.get("laboratory_instruments", [])
+            lab_inst = list(filter(lambda inst: inst.get("uid") == self.laboratory_instrument_uid, lab_instruments))
+            if lab_inst:
+                return StrawberryMapper[LaboratoryInstrumentType]().map(**lab_inst[0])
+        return None
+
+    @strawberry.field
+    async def analysis(self, info) -> AnalysisType | None:
+        _analysis = self.metadata_snapshot.get("analysis", None)
+        if not _analysis: return None
+        _unit = self.metadata_snapshot.get("unit", None)
+        if _unit:
+            _unit = StrawberryMapper[UnitType]().map(**_unit)
+        _analysis["unit"] = _unit
+        return StrawberryMapper[AnalysisType]().map(**_analysis)
+
+    @strawberry.field
+    async def method(self, info) -> MethodType | None:
+        _method = self.metadata_snapshot.get("method")
+        if not _method: return None
+        return StrawberryMapper[MethodType]().map(**_method)
 
 
 @strawberry.type

@@ -193,7 +193,7 @@ class AnalysisResultService(
         ]
         for result in analyses_results:
             analysis = await AnalysisService().get(related=analysis_relations, uid=result.analysis_uid)
-            metadata = {}
+            metadata = {"analysis": analysis.snapshot()}
             for _field in analysis_relations:
                 try:
                     thing = getattr(analysis, _field)

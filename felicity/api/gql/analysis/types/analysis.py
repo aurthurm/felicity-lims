@@ -3,13 +3,13 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.client.types import ClientType
+from felicity.api.gql.client.types import ClientType, ClientContactType
 from felicity.api.gql.instrument.types import InstrumentType, MethodType
 from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import UnitType
+from felicity.api.gql.setup.types import UnitType, DistrictType, ProvinceType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.storage.types import StorageContainerType
-from felicity.api.gql.types.generic import PageInfo, JSONScalar
+from felicity.api.gql.types.generic import PageInfo, JSONScalar, StrawberryMapper
 from felicity.api.gql.user.types import UserType
 
 
@@ -109,10 +109,10 @@ class AnalysisRequestType:
     patient_uid: str
     patient: PatientType
     client_uid: str
-    client: ClientType
     request_id: str
     client_request_id: str
     internal_use: bool
+    metadata_snapshot: JSONScalar | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -120,6 +120,21 @@ class AnalysisRequestType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
+
+    @strawberry.field
+    async def client(self, info) -> ClientType | None:
+        _client = self.metadata_snapshot.get("client")
+        if not _client: return None
+        _district = _client.get("district", None)
+        _province = _client.get("province", None)
+        _client["district"] = StrawberryMapper[DistrictType]().map(**_district) if _district else None
+        _client["province"] = StrawberryMapper[ProvinceType]().map(**_province) if _province else None
+        _contacts = _client.get("contacts", [])
+        mapping = StrawberryMapper[ClientType]().map(exclude=["contacts"], **_client)
+        mapping.contacts = [
+            StrawberryMapper[ClientContactType]().map(**c) for c in _contacts
+        ]
+        return mapping
 
 
 @strawberry.type
@@ -165,7 +180,7 @@ class AnalysisType:
     department_uid: str | None = None
     department: Optional[DepartmentType] = None
     unit_uid: str | None = None
-    unit: Optional[UnitType]
+    unit: Optional[UnitType] = None
     sample_types: Optional[List[SampleTypeTyp]] = None
     category_uid: str | None = None
     category: Optional[AnalysisCategoryType] = None
@@ -297,10 +312,7 @@ class SampleType:  # for Sample
     analysis_request_uid: str
     analysis_request: Optional[AnalysisRequestType]
     sample_type_uid: str
-    sample_type: Optional[SampleTypeTyp]
     sample_id: str
-    profiles: Optional[List[ProfileType]] = None
-    analyses: Optional[List[AnalysisType]] = None
     priority: int
     status: str | None = None
     assigned: bool
@@ -354,6 +366,24 @@ class SampleType:  # for Sample
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
+
+    @strawberry.field
+    async def sample_type(self, info) -> Optional[SampleTypeTyp]:
+        _sample_type = self.metadata_snapshot.get("client")
+        if not _sample_type: return None
+        return StrawberryMapper[SampleTypeTyp]().map(**_sample_type)
+
+    @strawberry.field
+    async def profiles(self, info) -> List[ProfileType]:
+        _profiles = self.metadata_snapshot.get("profiles")
+        if not _profiles or len(_profiles) < 1: return []
+        return [StrawberryMapper[ProfileType]().map(**profile) for profile in _profiles]
+
+    @strawberry.field
+    async def analyses(self, info) -> Optional[List[AnalysisType]]:
+        _analyses = self.metadata_snapshot.get("analyses")
+        if not _analyses or len(_analyses) < 1: return []
+        return [StrawberryMapper[AnalysisType]().map(**analysis) for analysis in _analyses]
 
 
 @strawberry.type

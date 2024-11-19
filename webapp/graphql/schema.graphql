@@ -1,6 +1,8 @@
 input ARResultInputType {
   uid: String!
   result: String!
+  methodUid: String!
+  laboratoryInstrumentUid: String!
   reportable: Boolean = true
 }
 
@@ -8,6 +10,7 @@ input ARSampleInputType {
   sampleType: String!
   profiles: [String!]!
   analyses: [String!]!
+  dateCollected: String!
 }
 
 type ActivityFeedType {
@@ -16,11 +19,16 @@ type ActivityFeedType {
   subscribers: [UserType!]
 }
 
+type ActivityProcessType {
+  uid: String!
+  objectType: String!
+  status: String!
+}
+
 type ActivityStreamType {
   uid: String!
   feeds: [ActivityFeedType!]
   actorUid: String
-  actor: UserType
   verb: String
   actionObjectType: String
   actionObjectUid: String
@@ -30,6 +38,10 @@ type ActivityStreamType {
   createdAt: String
   createdByUid: String
   createdBy: UserType
+  updatedAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  actor: UserType!
   actionObject: WorkSheetTypeSampleTypeAnalysisResultTypeReportMetaTypeUnknownObjectType!
 }
 
@@ -266,16 +278,17 @@ type AnalysisRequestType {
   patientUid: String!
   patient: PatientType!
   clientUid: String!
-  client: ClientType!
   requestId: String!
   clientRequestId: String!
   internalUse: Boolean!
+  metadataSnapshot: JSONScalar
   createdByUid: String
   createdBy: UserType
   createdAt: String
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  client: ClientType!
 }
 
 type AnalysisRequestWithSamples {
@@ -283,16 +296,17 @@ type AnalysisRequestWithSamples {
   patientUid: String!
   patient: PatientType!
   clientUid: String!
-  client: ClientType!
   requestId: String!
   clientRequestId: String!
   internalUse: Boolean!
+  metadataSnapshot: JSONScalar
   createdByUid: String
   createdBy: UserType
   createdAt: String
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  client: ClientType!
   samples: [SampleType!]
 }
 
@@ -322,11 +336,8 @@ type AnalysisResultType {
   worksheetPosition: Int
   assigned: Boolean!
   analysisUid: String
-  analysis: AnalysisType
-  instrumentUid: String
-  instrument: InstrumentType
+  laboratoryInstrumentUid: String
   methodUid: String
-  method: MethodType
   result: String
   analystUid: String
   analyst: UserType
@@ -354,7 +365,11 @@ type AnalysisResultType {
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  metadataSnapshot: JSONScalar
   worksheetId: String
+  laboratoryInstrument: LaboratoryInstrumentType
+  analysis: AnalysisType
+  method: MethodType
 }
 
 input AnalysisSpecificationInput {
@@ -402,6 +417,31 @@ type AnalysisSpecificationType {
   updatedAt: String
 }
 
+input AnalysisTemplateInputType {
+  name: String!
+  description: String! = ""
+  departmentUid: String = null
+  services: [String!]
+}
+
+"""Union of possible outcomes"""
+union AnalysisTemplateResponse = AnalysisTemplateType | OperationError
+
+type AnalysisTemplateType {
+  uid: String!
+  name: String!
+  description: String
+  departmentUid: String
+  department: DepartmentType
+  analyses: [AnalysisType!]
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
 type AnalysisType {
   uid: String!
   name: String!
@@ -422,6 +462,7 @@ type AnalysisType {
   resultOptions: [ResultOptionType!]
   instruments: [InstrumentType!]
   methods: [MethodType!]
+  resultType: String
   tatLengthMinutes: Int
   sortKey: Int
   precision: Int
@@ -486,6 +527,7 @@ type AnalysisWithProfiles {
   resultOptions: [ResultOptionType!]
   instruments: [InstrumentType!]
   methods: [MethodType!]
+  resultType: String
   tatLengthMinutes: Int
   sortKey: Int
   precision: Int
@@ -515,8 +557,14 @@ type AuditLogType {
   targetType: String
   targetUid: String
   action: Int
-  stateBefore: String
-  stateAfter: String
+  stateBefore: JSONScalar
+  stateAfter: JSONScalar
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
 }
 
 type AuthenticatedData {
@@ -539,7 +587,7 @@ input BillTransactionInput {
 scalar BytesScalar
 
 input CalibrationCertificateInput {
-  instrumentUid: String!
+  laboratoryInstrumentUid: String!
   dateIssued: DateTime
   validFromDate: String
   validToDate: String
@@ -556,8 +604,8 @@ union CalibrationCertificateResponse = CalibrationCertificateType | OperationErr
 
 type CalibrationCertificateType {
   uid: String!
-  instrumentUid: String!
-  instrument: InstrumentType
+  laboratoryInstrumentUid: String!
+  laboratoryInstrument: LaboratoryInstrumentType
   certificateCode: String!
   internal: Boolean!
   issuer: String!
@@ -567,6 +615,12 @@ type CalibrationCertificateType {
   performedBy: String!
   approvedBy: String!
   remarks: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
 }
 
 input ClientContactInputType {
@@ -654,6 +708,7 @@ type ClientType {
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  contacts: [ClientContactType!]
 }
 
 input CodingStandardInputType {
@@ -699,8 +754,7 @@ type CountryType {
 }
 
 type CreateQCSetData {
-  samples: [SampleType!]!
-  qcSets: [QCSetType!]!
+  qcSets: [QCSetWithSamples!]!
 }
 
 """Date with time (isoformat)"""
@@ -808,6 +862,12 @@ type GroupType {
   permissions: [PermissionType!]
   active: Boolean
   pages: String
+  createdByUid: String
+  createdBy: GroupType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: GroupType
+  updatedAt: String
 }
 
 type GroupedCounts {
@@ -853,7 +913,7 @@ type IdentificationType {
 }
 
 input InstrumentCalibrationInput {
-  instrumentUid: String!
+  laboratoryInstrumentUid: String!
   dateReported: DateTime
   startDate: String
   endDate: String
@@ -870,8 +930,8 @@ union InstrumentCalibrationResponse = InstrumentCalibrationType | OperationError
 
 type InstrumentCalibrationType {
   uid: String!
-  instrumentUid: String!
-  instrument: InstrumentType
+  laboratoryInstrumentUid: String!
+  laboratoryInstrument: LaboratoryInstrumentType
   calibrationId: String!
   dateReported: DateTime!
   reportId: String!
@@ -881,6 +941,44 @@ type InstrumentCalibrationType {
   notesBefore: String!
   workDone: String!
   remarks: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
+input InstrumentCompetenceInput {
+  instrumentUid: String!
+  description: String!
+  userUid: String!
+  issueDate: DateTime!
+  expiryDate: DateTime!
+  internal: Boolean!
+  competence: String!
+}
+
+""""""
+union InstrumentCompetenceResponse = InstrumentCompetenceType | OperationError
+
+type InstrumentCompetenceType {
+  uid: String!
+  instrumentUid: String!
+  instrument: InstrumentType
+  description: String!
+  userUid: String!
+  user: UserType
+  issueDate: DateTime!
+  expiryDate: DateTime!
+  internal: Boolean!
+  competence: BytesScalar
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
 }
 
 type InstrumentCursorPage {
@@ -977,6 +1075,45 @@ input LaboratoryInputType {
   qualityStatement: String = null
 }
 
+type LaboratoryInstrumentCursorPage {
+  pageInfo: PageInfo!
+  edges: [LaboratoryInstrumentEdge!]
+  items: [LaboratoryInstrumentType!]
+  totalCount: Int!
+}
+
+type LaboratoryInstrumentEdge {
+  cursor: String!
+  node: LaboratoryInstrumentType!
+}
+
+input LaboratoryInstrumentInputType {
+  instrumentUid: String!
+  labName: String!
+  serialNumber: String = null
+  dateCommissioned: DateTime = null
+  dateDecommissioned: DateTime = null
+}
+
+""""""
+union LaboratoryInstrumentResponse = LaboratoryInstrumentType | OperationError
+
+type LaboratoryInstrumentType {
+  uid: String!
+  instrumentUid: String
+  instrument: InstrumentType
+  labName: String
+  serialNumber: String
+  dateCommissioned: DateTime
+  dateDecommissioned: DateTime
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
 """"""
 union LaboratoryResponse = LaboratoryType | OperationError
 
@@ -1069,6 +1206,11 @@ type LaggardData {
 
 type LaggardStatistics {
   data: [LaggardData!]!
+}
+
+input ManageAnalysisInputType {
+  cancel: [String!] = null
+  add: [String!] = null
 }
 
 input ManufacturerInputType {
@@ -1169,16 +1311,13 @@ type MethodType {
 }
 
 type Mutation {
-  createUser(firstName: String!, lastName: String!, email: String!, groupUid: String = null, openReg: Boolean = false): UserResponse!
-  updateUser(userUid: String!, firstName: String, lastName: String, mobilePhone: String, email: String, groupUid: String, isActive: Boolean): UserResponse!
-  createUserAuth(userUid: String!, userName: String!, password: String!, passwordc: String!): UserResponse!
-  updateUserAuth(userUid: String!, userName: String, password: String, passwordc: String): UserResponse!
+  createUser(firstName: String!, lastName: String!, email: String!, userName: String!, password: String!, passwordc: String!, groupUid: String = null, openReg: Boolean = false): UserResponse!
+  updateUser(userUid: String!, firstName: String, lastName: String, mobilePhone: String, email: String, groupUid: String, isActive: Boolean, password: String = null, passwordc: String = null): UserResponse!
   authenticateUser(username: String!, password: String!): AuthenticatedDataResponse!
   refresh(refreshToken: String!): AuthenticatedDataResponse!
-  unlinkUserAuth(userUid: String!): UserResponse!
   requestPasswordReset(email: String!): MessageResponse!
   validatePasswordResetToken(token: String!): PasswordResetValidityResponse!
-  resetPassword(authUid: String!, username: String!, password: String!, passwordc: String!): MessageResponse!
+  resetPassword(userUid: String!, password: String!, passwordc: String!): MessageResponse!
   createGroup(payload: GroupInputType!): GroupResponse!
   updateGroup(uid: String!, payload: GroupInputType!): GroupResponse!
   updateGroupPermissions(groupUid: String!, permissionUid: String!): UpdatedGroupPermsResponse!
@@ -1221,6 +1360,8 @@ type Mutation {
   updateAnalysisCategory(uid: String!, payload: AnalysisCategoryInputType!): AnalysisCategoryResponse!
   createProfile(payload: ProfileInputType!): AnalysisProfileResponse!
   updateProfile(uid: String!, payload: ProfileInputType!): AnalysisProfileResponse!
+  createAnalysisTemplate(payload: AnalysisTemplateInputType!): AnalysisTemplateResponse!
+  updateAnalysisTemplate(uid: String!, payload: AnalysisTemplateInputType!): AnalysisTemplateResponse!
   createProfileMapping(payload: ProfileMappingInputType!): ProfileMappingResponse!
   updateProfileMapping(uid: String!, payload: ProfileMappingInputType!): ProfileMappingResponse!
   createAnalysis(payload: AnalysisInputType!): ProfilesServiceResponse!
@@ -1238,6 +1379,8 @@ type Mutation {
   updateAnalysisDetectionLimit(uid: String!, payload: AnalysisDetectionLimitInput!): AnalysisDetectionLimitResponse!
   createAnalysisSpecification(payload: AnalysisSpecificationInput!): AnalysisSpecificationResponse!
   updateAnalysisSpecification(uid: String!, payload: AnalysisSpecificationInput!): AnalysisSpecificationResponse!
+  samplesApplyTemplate(uid: String!, analysisTemplateUid: String!): ResultedSampleActionResponse!
+  manageAnalyses(sampleUid: String!, payload: ManageAnalysisInputType!): ResultedSampleActionResponse!
   cloneSamples(samples: [String!]!): SampleActionResponse!
   cancelSamples(samples: [String!]!): ResultedSampleActionResponse!
   reInstateSamples(samples: [String!]!): ResultedSampleActionResponse!
@@ -1264,6 +1407,7 @@ type Mutation {
   updateWorksheet(worksheetUid: String!, analystUid: String = null, instrumentUid: String = null, methodUid: String = null, action: String = null, samples: [String!] = null): WorkSheetResponse!
   updateWorksheetApplyTemplate(templateUid: String!, worksheetUid: String!): WorkSheetResponse!
   updateWorksheetManualAssign(uid: String!, analysesUids: [String!]!, qcTemplateUid: String = null): WorkSheetResponse!
+  actionWorksheets(uids: [String!]!, action: String!): WorkSheetsResponse!
   sendMessage(recipients: [String!]!, body: String!): MessageResponse!
   replyMessage(threadUid: String!, body: String!): MessageResponse!
   viewMessage(uid: String!): MessageResponse!
@@ -1279,6 +1423,7 @@ type Mutation {
   updateReflexAction(uid: String!, payload: ReflexActionInput!): ReflexActionResponse!
   createReflexBrain(payload: ReflexBrainInput!): ReflexBrainResponse!
   updateReflexBrain(uid: String!, payload: ReflexBrainInput!): ReflexBrainResponse!
+  deleteReflexBrain(uid: String!): DeletedItem!
   createStoreRoom(payload: StoreRoomInputType!): StoreRoomResponse!
   updateStoreRoom(uid: String!, payload: StoreRoomInputType!): StoreRoomResponse!
   createStorageLocation(payload: StorageLocationInputType!): StorageLocationResponse!
@@ -1291,28 +1436,30 @@ type Mutation {
   recoverSamples(sampleUids: [String!]!): StoreSampleResponse!
   createStockItem(payload: StockItemInputType!): StockItemResponse!
   updateStockItem(uid: String!, payload: StockItemInputType!): StockItemResponse!
+  createStockItemVariant(stockItemUid: String!, payload: StockItemVariantInputType!): StockItemVariantResponse!
+  updateStockItemVariant(uid: String!, payload: StockItemVariantInputType!): StockItemVariantResponse!
   createStockCategory(payload: StockCategoryInputType!): StockCategoryResponse!
   updateStockCategory(uid: String!, payload: StockCategoryInputType!): StockCategoryResponse!
   createHazard(payload: HazardInputType!): HazardResponse!
   updateHazard(uid: String!, payload: HazardInputType!): HazardResponse!
   createStockUnit(payload: StockUnitInputType!): StockUnitResponse!
   updateStockUnit(uid: String!, payload: StockUnitInputType!): StockUnitResponse!
-  createStockPackaging(payload: StockPackagingInputType!): StockPackagingResponse!
-  updateStockPackaging(uid: String!, payload: StockPackagingInputType!): StockPackagingResponse!
-  createStockProduct(payload: StockProductInputType!): StockProductResponse!
-  updateStockProduct(uid: String!, payload: StockProductInputType!): StockProductResponse!
+  createStockReceipt(payload: StockReceiptInputType!): StockItemVariantResponse!
   createStockOrder(payload: StockOrderInputType!): StockOrderResponse!
   updateStockOrder(uid: String!, payload: StockOrderInputType!): StockOrderResponse!
   submitStockOrder(uid: String!): StockOrderResponse!
   approveStockOrder(uid: String!, payload: StockOrderApprovalInputType!): StockOrderResponse!
   issueStockOrder(uid: String!, payload: [StockOrderProductLineInputType!]!): StockOrderResponse!
   deleteStockOrder(uid: String!): StockOrderResponse!
-  createStockTransaction(payload: StockTransactionInputType!): StockTransactionResponse!
   createStockAdjustment(payload: StockAdjustmentInputType!): StockAdjustmentResponse!
   createInstrumentType(payload: InstrumentTypeInputType!): InstrumentTypeResponse!
   updateInstrumentType(uid: String!, payload: InstrumentTypeInputType!): InstrumentTypeResponse!
   createInstrument(payload: InstrumentInputType!): InstrumentResponse!
   updateInstrument(uid: String!, payload: InstrumentInputType!): InstrumentResponse!
+  createInstrumentCompetence(payload: InstrumentCompetenceInput!): InstrumentCompetenceResponse!
+  updateInstrumentCompetence(uid: String!, payload: InstrumentInputType!): InstrumentCompetenceResponse!
+  createLaboratoryInstrument(payload: LaboratoryInstrumentInputType!): LaboratoryInstrumentResponse!
+  updateLaboratoryInstrument(uid: String!, payload: LaboratoryInstrumentInputType!): LaboratoryInstrumentResponse!
   createInstrumentCaliberation(payload: InstrumentCalibrationInput!): InstrumentCalibrationResponse!
   updateInstrumentCaliberation(uid: String!, payload: InstrumentInputType!): InstrumentCalibrationResponse!
   createCaliberationCertificate(payload: CalibrationCertificateInput!): CalibrationCertificateResponse!
@@ -1334,6 +1481,7 @@ type Mutation {
   createVoucherCode(payload: VoucherCodeInput!): VoucherCodeResponse!
   updateVoucherCode(uid: String!, payload: VoucherCodeInput!): VoucherCodeResponse!
   createTestBillTransaction(payload: BillTransactionInput!): TestBillTransactionResponse!
+  confirmTestBillTransaction(uid: String!, notes: String): TestBillTransactionResponse!
   applyVoucher(payload: ApplyVoucherInput!): TestBillTransactionResponse!
 }
 
@@ -1478,7 +1626,7 @@ type PatientType {
   province: ProvinceType
   countryUid: String
   country: CountryType
-  identifications: [PatientIdentificationType]!
+  identifications: [PatientIdentificationType!]
   createdByUid: String
   createdBy: UserType
   createdAt: String
@@ -1497,6 +1645,12 @@ type PermissionType {
   action: String
   target: String
   active: Boolean
+  createdByUid: String
+  createdBy: PermissionType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: PermissionType
+  updatedAt: String
 }
 
 input PriceDiscountInput {
@@ -1746,7 +1900,7 @@ input QCTemplateInputType {
   name: String!
   description: String! = ""
   departments: [String!] = null
-  levels: [String!]!
+  levels: [String!] = null
 }
 
 """"""
@@ -1785,7 +1939,7 @@ type Query {
   provincesByCountryUid(uid: String!): [ProvinceType!]!
   countryByUid(uid: String!): CountryType!
   unitByUid(uid: String!): UnitType!
-  auditLogsFilter(targetType: String!, targetId: String!): [AuditLogType!]!
+  auditLogsFilter(targetType: String!, targetUid: String!): [AuditLogType!]
   userAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): UserCursorPage!
   userMe(token: String!): UserType
   userByEmail(email: String!): UserType
@@ -1824,6 +1978,8 @@ type Query {
   profileMappingsByProfile(profileUid: String!): [ProfileMappingType!]!
   analysisCategoryAll: [AnalysisCategoryType!]!
   analysisCategoryByUid(uid: String!): AnalysisCategoryType!
+  analysisTemplateAll: [AnalysisTemplateType!]!
+  analysisTemplateByUid(uid: String!): AnalysisTemplateType!
   analysisAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null, qcOnly: Boolean = false): AnalysisCursorPage!
   analysisByUid(uid: String!): AnalysisType!
   analysisMappingsByAnalysis(analysisUid: String!): [AnalysisMappingType!]!
@@ -1854,6 +2010,7 @@ type Query {
   resultOptionsByAnalysisUid(uid: String!): ResultOptionType!
   rejectionReasonsAll: [RejectionReasonType!]!
   rejectionReasonByUid(uid: String!): RejectionReasonType!
+  resultMutationByResultUid(resultUid: String!): ResultMutationType
   worksheetAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, status: String = null, sortBy: [String!] = null): WorkSheetCursorPage!
   worksheetTemplateAll: [WorkSheetTemplateType!]!
   worksheetByAnalyst(analystUid: String!): [WorkSheetType!]!
@@ -1889,33 +2046,35 @@ type Query {
   storageContainerByUid(uid: String!): StorageContainerType
   stockItemAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockItemCursorPage!
   stockItemByUid(uid: String!): StockItemType
+  stockItemVariants(stockItemUid: String!): [StockItemVariantType!]!
+  stockProductAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockItemVariantCursorPage!
+  stockProductByUid(uid: String!): StockItemVariantType
+  stockLots(productUid: String!): [StockLotType!]!
   stockCategoryAll: [StockCategoryType!]!
   stockCategoryByUid(uid: String!): StockCategoryType
   hazardAll: [HazardType!]!
   hazardByUid(uid: String!): HazardType
   stockUnitAll: [StockUnitType!]!
   stockUnitByUid(uid: String!): StockUnitType
-  stockPackagingAll: [StockPackagingType!]!
-  stockPackagingByUid(uid: String!): StockPackagingType
-  stockProductAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockProductCursorPage!
-  stockProductByUid(uid: String!): StockProductType
+  stockProductInventory(productUid: String!, stockLotUid: String!): StockProductInventoryType
   stockOrderAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, status: String = null, text: String = null, sortBy: [String!] = null): StockOrderCursorPage!
   stockOrderByUid(uid: String!): StockOrderType
   stockOrderProductAll(stockOrderUid: String!): [StockOrderProductType!]!
   stockOrderProductByUid(uid: String!): StockOrderProductType
-  stockTransactionAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockTransactionCursorPage!
-  stockTransactionByUid(uid: String!): StockTransactionType
-  stockAdjustmentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockAdjustmentCursorPage!
+  stockReceipt(productUid: String!, stockLotUid: String!): [StockReceiptType!]!
+  stockAdjustmentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null, productUid: String = null): StockAdjustmentCursorPage!
   stockAdjustmentByUid(uid: String!): StockAdjustmentType
   impressReportsMeta(uids: [String!]!): [ReportImpressType!]!
-  impressReportsDownload(uids: [String!]!): BytesScalar
+  impressReportsDownload(sampleIds: [String!]!): BytesScalar
   impressReportDownload(uid: String!): BytesScalar
-  barcodeSamples(sampleUids: [String!]!): BytesScalar
+  barcodeSamples(sampleUids: [String!]!): [BytesScalar!]
   instrumentTypeAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): InstrumentTypeCursorPage!
   instrumentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): InstrumentCursorPage!
+  laboratoryInstrumentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): LaboratoryInstrumentCursorPage!
   methodAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): MethodCursorPage!
   instrumentTypeByUid(uid: String!): InstrumentTypeType!
   instrumentByUid(uid: String!): InstrumentType!
+  laboratoryInstrumentByUid(uid: String!): LaboratoryInstrumentType!
   methodByUid(uid: String!): MethodType!
   shipmentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, incoming: Boolean! = false, status: String = null, sortBy: [String!] = null): ShipmentCursorPage!
   shipmentByUid(shipmentUid: String!): ShipmentType!
@@ -1980,7 +2139,7 @@ type ReferralLaboratoryType {
 
 input ReflexActionInput {
   level: Int!
-  description: String!
+  description: String = ""
   analyses: [String!]!
   reflexRuleUid: String!
   sampleTypeUid: String = null
@@ -2012,50 +2171,19 @@ input ReflexAddNewInput {
   count: Int!
 }
 
-type ReflexBrainAdditionType {
-  analysisUid: String!
-  analysis: AnalysisType
-  reflexBrainUid: String!
-  reflexBrain: ReflexBrainType
-  count: Int!
-}
-
-type ReflexBrainCriteriaType {
-  analysisUid: String!
-  analysis: AnalysisType
-  reflexBrainUid: String!
-  reflexBrain: ReflexBrainType
-  operator: String!
-  value: String!
-}
-
-type ReflexBrainFinalType {
-  analysisUid: String!
-  analysis: AnalysisType
-  reflexBrainUid: String!
-  reflexBrain: ReflexBrainType
-  value: String!
-}
-
-input ReflexBrainInput {
-  reflexActionUid: String!
-  description: String!
-  analysesValues: [ReflexCriteriaInput!] = null
+input ReflexBrainActionInput {
   addNew: [ReflexAddNewInput!] = null
   finalise: [ReflexFinalInput!] = null
 }
 
-""""""
-union ReflexBrainResponse = ReflexBrainType | OperationError
-
-type ReflexBrainType {
-  reflexActionUid: String!
-  reflexAction: ReflexBrainType
+type ReflexBrainActionType {
+  reflexBrainUid: String!
+  reflexBrain: ReflexBrainType
   uid: String!
   description: String!
-  analysesValues: [ReflexBrainCriteriaType!]
   addNew: [ReflexBrainAdditionType!]
   finalise: [ReflexBrainFinalType!]
+  priority: Int!
   createdByUid: String
   createdBy: UserType
   createdAt: String
@@ -2064,10 +2192,77 @@ type ReflexBrainType {
   updatedAt: String
 }
 
-input ReflexCriteriaInput {
+type ReflexBrainAdditionType {
+  analysisUid: String!
+  analysis: AnalysisType
+  reflexBrainActionUid: String!
+  reflexBrainAction: ReflexBrainActionType
+  count: Int!
+}
+
+type ReflexBrainConditionCriteriaType {
+  analysisUid: String!
+  analysis: AnalysisType
+  reflexBrainConditionUid: String!
+  reflexBrainCondition: ReflexBrainConditionType
+  operator: String!
+  value: String!
+}
+
+input ReflexBrainConditionInput {
+  description: String = ""
+  priority: Int = 0
+  criteria: [ReflexBrainCriteriaInput!] = null
+}
+
+type ReflexBrainConditionType {
+  uid: String!
+  reflexBrainUid: String!
+  reflexBrain: ReflexBrainType!
+  description: String
+  criteria: [ReflexBrainConditionCriteriaType!]
+  priority: Int!
+}
+
+input ReflexBrainCriteriaInput {
   analysisUid: String!
   operator: String!
   value: String!
+}
+
+type ReflexBrainFinalType {
+  analysisUid: String!
+  analysis: AnalysisType
+  reflexBrainActionUid: String!
+  reflexBrainAction: ReflexBrainActionType
+  value: String!
+}
+
+input ReflexBrainInput {
+  reflexActionUid: String!
+  description: String = ""
+  priority: Int = 0
+  conditions: [ReflexBrainConditionInput!] = null
+  actions: [ReflexBrainActionInput!] = null
+}
+
+""""""
+union ReflexBrainResponse = ReflexBrainType | OperationError
+
+type ReflexBrainType {
+  reflexActionUid: String!
+  reflexAction: ReflexBrainType
+  actions: [ReflexBrainActionType!]!
+  conditions: [ReflexBrainConditionType!]!
+  uid: String!
+  description: String!
+  priority: Int!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
 }
 
 input ReflexFinalInput {
@@ -2089,7 +2284,7 @@ type ReflexRuleEdge {
 
 input ReflexRuleInput {
   name: String!
-  description: String!
+  description: String = ""
 }
 
 """"""
@@ -2100,6 +2295,8 @@ type ReflexRuleType {
   name: String!
   description: String!
   reflexActions: [ReflexActionType!]
+  isActive: Boolean!
+  priority: Int!
   createdByUid: String
   createdBy: UserType
   createdAt: String
@@ -2127,8 +2324,6 @@ type ReportImpressType {
   state: String
   sampleUid: String
   sample: SampleType
-  jsonContent: JSONScalar
-  pdfContent: BytesScalar
   emailRequired: Boolean
   emailSent: Boolean
   smsRequired: Boolean
@@ -2137,9 +2332,10 @@ type ReportImpressType {
   generatedBy: UserType
   createdByUid: String
   createdBy: UserType
+  createdAt: DateTime!
   updatedByUid: String
   updatedBy: UserType
-  dateGenerated: DateTime
+  jsonContent: JSONScalar
 }
 
 type ReportMetaType {
@@ -2170,8 +2366,24 @@ type ResultListingType {
   results: [AnalysisResultType!]!
 }
 
+type ResultMutationType {
+  uid: String!
+  resultUid: String!
+  before: String!
+  after: String!
+  mutation: String!
+  date: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
 input ResultOptionInputType {
   analysisUid: String!
+  sampleTypes: [String!]
   optionKey: Int!
   value: String!
 }
@@ -2184,6 +2396,7 @@ type ResultOptionType {
   optionKey: Int!
   value: String!
   analysisUid: String!
+  sampleTypes: [SampleTypeTyp!]
   createdByUid: String
   createdBy: UserType
   createdAt: String
@@ -2234,10 +2447,7 @@ type SampleType {
   analysisRequestUid: String!
   analysisRequest: AnalysisRequestType
   sampleTypeUid: String!
-  sampleType: SampleTypeTyp
   sampleId: String!
-  profiles: [ProfileType!]
-  analyses: [AnalysisType!]
   priority: Int!
   status: String
   assigned: Boolean!
@@ -2281,12 +2491,16 @@ type SampleType {
   storedBy: UserType
   dateStored: DateTime
   dateRetrievedFromStorage: DateTime
+  metadataSnapshot: JSONScalar
   createdByUid: String
   createdBy: UserType
   createdAt: String
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  sampleType: SampleTypeTyp
+  profiles: [ProfileType!]!
+  analyses: [AnalysisType!]
 }
 
 input SampleTypeInputType {
@@ -2348,10 +2562,7 @@ type SamplesWithResults {
   analysisRequestUid: String!
   analysisRequest: AnalysisRequestType
   sampleTypeUid: String!
-  sampleType: SampleTypeTyp
   sampleId: String!
-  profiles: [ProfileType!]
-  analyses: [AnalysisType!]
   priority: Int!
   status: String
   assigned: Boolean!
@@ -2395,12 +2606,16 @@ type SamplesWithResults {
   storedBy: UserType
   dateStored: DateTime
   dateRetrievedFromStorage: DateTime
+  metadataSnapshot: JSONScalar
   createdByUid: String
   createdBy: UserType
   createdAt: String
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  sampleType: SampleTypeTyp
+  profiles: [ProfileType!]!
+  analyses: [AnalysisType!]
   analysisResults: [AnalysisResultType!]
 }
 
@@ -2442,10 +2657,8 @@ type ShipmentType {
   courier: String
   assignedCount: Int
   data: JSONScalar
-  samples: [SampleType!]
-  shippedSamples: [ShippedSampleType!]
   state: String
-  incoming: Boolean
+  incoming: Boolean!
   laboratoryUid: String
   laboratory: ReferralLaboratoryType
   jsonContent: JSONScalar
@@ -2471,6 +2684,8 @@ type ShipmentType {
   updatedByUid: String
   updatedBy: UserType
   updatedAt: String
+  samples: [SampleType!]
+  shippedSamples: [ShippedSampleType!]
 }
 
 input ShipmentUpdateInputType {
@@ -2506,6 +2721,7 @@ type StockAdjustmentEdge {
 
 input StockAdjustmentInputType {
   productUid: String!
+  stockLotUid: String!
   adjustmentType: String!
   adjust: Int!
   remarks: String = null
@@ -2517,13 +2733,17 @@ union StockAdjustmentResponse = StockAdjustmentType | OperationError
 type StockAdjustmentType {
   uid: String!
   productUid: String
-  product: StockProductType
+  product: StockItemVariantType
+  stockLotUid: String
+  stockLot: StockLotType
   adjustmentType: String
   adjust: Int
   adjustmentDate: String
   remarks: String
   adjustmentByUid: String
   adjustmentBy: UserType
+  adjustmentForUid: String
+  adjustmentFor: UserType
   createdAt: String
   createdByUid: String
   createdBy: UserType
@@ -2567,7 +2787,8 @@ type StockItemEdge {
 input StockItemInputType {
   name: String!
   description: String!
-  departmentUid: String = null
+  categoryUid: String = null
+  hazardUid: String = null
   maximumLevel: Int = null
   minimumLevel: Int = null
 }
@@ -2578,8 +2799,10 @@ union StockItemResponse = StockItemType | OperationError
 type StockItemType {
   uid: String!
   name: String!
-  departmentUid: String
-  department: DepartmentType
+  categoryUid: String
+  category: StockCategoryType
+  hazardUid: String
+  hazard: HazardType
   minimumLevel: Int
   maximumLevel: Int
   description: String
@@ -2589,6 +2812,56 @@ type StockItemType {
   updatedAt: String
   updatedByUid: String
   updatedBy: UserType
+  variants: [StockItemVariantType!]
+}
+
+type StockItemVariantCursorPage {
+  pageInfo: PageInfo!
+  edges: [StockItemVariantType!]
+  items: [StockItemVariantType!]
+  totalCount: Int!
+}
+
+type StockItemVariantEdge {
+  cursor: String!
+  node: StockItemVariantType!
+}
+
+input StockItemVariantInputType {
+  name: String!
+  description: String!
+  maximumLevel: Int = null
+  minimumLevel: Int = null
+}
+
+""""""
+union StockItemVariantResponse = StockItemVariantType | OperationError
+
+type StockItemVariantType {
+  uid: String!
+  name: String!
+  stockItemUid: String
+  stockItem: StockItemType
+  minimumLevel: Int
+  maximumLevel: Int
+  description: String
+  createdAt: String
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  quantity: Int!
+}
+
+type StockLotType {
+  uid: String!
+  productUid: String!
+  product: StockItemVariantType
+  lotNumber: String!
+  expiryDate: DateTime!
+  remarks: String
+  quantity: Int!
 }
 
 input StockOrderApprovalInputType {
@@ -2620,17 +2893,20 @@ type StockOrderLineType {
 
 input StockOrderProductLineInputType {
   productUid: String!
+  stockLotUid: String!
   quantity: Int!
+  price: Float! = 0
   remarks: String = null
 }
 
 type StockOrderProductType {
   uid: String!
   productUid: String
-  product: StockProductType
+  product: StockItemVariantType
+  stockLotUid: String!
+  stockLot: StockLotType
   orderUid: String
   order: StockOrderType
-  price: Int
   quantity: Int
   createdAt: String
   createdByUid: String
@@ -2645,8 +2921,8 @@ union StockOrderResponse = StockOrderLineType | StockOrderType | OperationError
 
 type StockOrderType {
   uid: String!
-  fullfilledByUid: String
-  fullfilledBy: UserType
+  fulfilledByUid: String
+  fulfilledBy: UserType
   orderByUid: String
   orderBy: UserType
   departmentUid: String
@@ -2662,13 +2938,6 @@ type StockOrderType {
   updatedBy: UserType
 }
 
-input StockPackagingInputType {
-  name: String!
-}
-
-""""""
-union StockPackagingResponse = StockPackagingType | OperationError
-
 type StockPackagingType {
   uid: String!
   name: String!
@@ -2680,76 +2949,53 @@ type StockPackagingType {
   updatedBy: UserType
 }
 
-type StockProductCursorPage {
-  pageInfo: PageInfo!
-  edges: [StockProductEdge!]
-  items: [StockProductType!]
-  totalCount: Int!
-}
-
-type StockProductEdge {
-  cursor: String!
-  node: StockProductType!
-}
-
-input StockProductInputType {
-  name: String!
-  stockItemUid: String = null
-  departmentUid: String = null
-  supplierUid: String = null
-  categoryUid: String = null
-  hazardUid: String = null
-  storeRoomUid: String = null
-  lotNumber: String = null
-  batch: String = null
-  size: Int = null
-  unitUid: String = null
-  packagingUid: String = null
-  price: Int = null
-  quantityReceived: Int = null
-  dateReceived: DateTime = null
-  expiryDate: String = null
-  receivedByUid: String = null
-}
-
-""""""
-union StockProductResponse = StockProductType | OperationError
-
-type StockProductType {
+type StockProductInventoryType {
   uid: String!
-  name: String!
-  stockItemUid: String
-  stockItem: StockItemType
-  departmentUid: String
-  department: DepartmentType
+  productUid: String!
+  product: StockItemVariantType
+  stockLotUid: String!
+  stockLot: StockLotType
+  quantity: Int!
+  remarks: String
+}
+
+input StockReceiptInputType {
+  productUid: String!
+  lotNumber: String!
+  unitPrice: Float = null
+  totalPrice: Float = null
+  supplierUid: String!
+  unitUid: String!
+  singlesReceived: Int!
+  packagesReceived: Int!
+  packageFactor: Int!
+  quantityReceived: Int!
+  receiptType: String!
+  receiptByUid: String!
+  receiptDate: DateTime
+  expiryDate: DateTime
+}
+
+type StockReceiptType {
+  uid: String!
+  productUid: String
+  product: StockItemVariantType
+  stockLotUid: String
+  stockLot: StockLotType
+  unitPrice: Float!
+  totalPrice: Float!
   supplierUid: String
   supplier: SupplierType
-  categoryUid: String
-  category: StockCategoryType
-  hazardUid: String
-  hazard: HazardType
-  storeRoomUid: String
-  storeRoom: StoreRoomType
-  lotNumber: String
-  batch: String
-  size: Int
-  unitUid: String
+  unitUid: String!
   unit: StockUnitType
-  packagingUid: String
-  packaging: StockPackagingType
-  price: Int
+  singlesReceived: Int
+  packagesReceived: Int
+  packageFactor: Int
   quantityReceived: Int
-  remaining: Int
-  dateReceived: DateTime
-  expiryDate: String
-  receivedByUid: String
-  receivedBy: UserType
-  createdAt: String
-  createdByUid: String
-  createdBy: UserType
-  updatedAt: String
-  updatedByUid: String
-  updatedBy: UserType
+  receiptType: String!
+  receiptByUid: String!
+  receiptBy: UserType
+  receiptDate: DateTime!
 }
 
 type StockTransactionCursorPage {
@@ -2764,20 +3010,10 @@ type StockTransactionEdge {
   node: StockTransactionType!
 }
 
-input StockTransactionInputType {
-  productUid: String!
-  issued: Int!
-  issuedToUid: String!
-  departmentUid: String = null
-}
-
-""""""
-union StockTransactionResponse = StockTransactionType | OperationError
-
 type StockTransactionType {
   uid: String!
   productUid: String
-  product: StockProductType
+  product: StockItemVariantType
   issued: Int
   issuedToUid: String
   issuedTo: UserType
@@ -2804,6 +3040,8 @@ union StockUnitResponse = StockUnitType | OperationError
 type StockUnitType {
   uid: String!
   name: String!
+  description: String!
+  synonyms: String!
   createdAt: String
   createdByUid: String
   createdBy: UserType
@@ -2869,7 +3107,7 @@ type StorageLocationType {
   updatedByUid: String
   updatedBy: UserType
   tag: String!
-  children: [StorageSectionType]!
+  children: [StorageSectionType!]
 }
 
 input StorageSectionInputType {
@@ -2894,7 +3132,7 @@ type StorageSectionType {
   updatedByUid: String
   updatedBy: UserType
   tag: String!
-  children: [StorageContainerType]!
+  children: [StorageContainerType!]
 }
 
 input StoreRoomInputType {
@@ -2916,7 +3154,7 @@ type StoreRoomType {
   updatedByUid: String
   updatedBy: UserType
   tag: String!
-  children: [StorageLocationType]!
+  children: [StorageLocationType!]
 }
 
 """"""
@@ -2936,7 +3174,7 @@ type StoredSamplesType {
 type Subscription {
   latestActivity: ActivityStreamType!
   streamAll: ActivityStreamType!
-  count(target: Int! = 100): Int!
+  streamProcesses: ActivityProcessType!
 }
 
 """Union of possible outcomes when deleting some object"""
@@ -3045,7 +3283,7 @@ union UnitResponse = UnitType | OperationError
 type UnitType {
   uid: String!
   name: String!
-  isSiUnit: Boolean!
+  description: String
   createdByUid: String
   createdBy: UserType
   createdAt: String
@@ -3066,20 +3304,6 @@ type UpdatedGroupPerms {
 """"""
 union UpdatedGroupPermsResponse = UpdatedGroupPerms | OperationError
 
-type UserAuthType {
-  uid: String!
-  userName: String!
-  loginRetry: Int!
-  isBlocked: Boolean!
-  userType: String
-  createdAt: String
-  creatorName: String
-  creatorUid: String
-  updatedAt: String
-  updatorName: String
-  updatorUid: String
-}
-
 type UserCursorPage {
   pageInfo: PageInfo!
   edges: [UserEdge!]
@@ -3097,6 +3321,12 @@ type UserPreferenceType {
   expandedMenu: Boolean
   departments: [DepartmentType!]
   theme: String
+  createdByUid: String
+  createdBy: UserPreferenceType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserPreferenceType
+  updatedAt: String
 }
 
 """"""
@@ -3113,17 +3343,18 @@ type UserType {
   preference: UserPreferenceType
   isActive: Boolean!
   isSuperuser: Boolean!
-  authUid: String
-  auth: UserAuthType
   bio: String
   avatar: String
   defaultRoute: String
+  userName: String!
+  loginRetry: Int!
+  isBlocked: Boolean!
+  createdByUid: String
+  createdBy: UserType
   createdAt: String
-  creatorName: String
-  creatorUid: String
+  updatedByUid: String
+  updatedBy: UserType
   updatedAt: String
-  updatorName: String
-  updatorUid: String
 }
 
 input VoucherCodeInput {

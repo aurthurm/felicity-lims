@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, relationship
 
 from felicity.apps.abstract import BaseEntity
@@ -59,6 +60,8 @@ class Patient(BaseEntity):
     province = relationship("Province", backref="patients", lazy="selectin")
     country_uid = Column(String, ForeignKey("country.uid"), nullable=True)
     country = relationship("Country", backref="patients", lazy="selectin")
+    # Metadata snapshot
+    metadata_snapshot = Column(JSONB, nullable=False)
 
     @property
     def full_name(self):

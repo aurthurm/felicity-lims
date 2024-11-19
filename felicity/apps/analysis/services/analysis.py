@@ -83,7 +83,7 @@ from felicity.apps.analysis.schemas import (
     SampleUpdate,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.client.services import ClientService
+from felicity.apps.client.services import ClientService, ClientContactService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
@@ -240,6 +240,19 @@ class AnalysisRequestService(
         data = self._import(obj_in)
         data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
         return await super().create(data, related)
+
+    async def snapshot(self, ar: AnalysisRequest, metadata: dict = {}):
+        fields = ["client"]
+        for _field in fields:
+            if _field not in metadata:
+                if _field == "client":
+                    client = await ClientService().get(related=["province", "district"], uid=ar.client_uid)
+                    contacts = await ClientContactService().get_all(client_uid=ar.client_uid)
+                    metadata[_field] = client.snapshot()
+                    metadata[_field]["province"] = client.province.snapshot() if client.province else None
+                    metadata[_field]["district"] = client.district.snapshot() if client.district else None
+                    metadata[_field]["contacts"] = [cc.snapshot() for cc in contacts]
+        return await self.update(ar.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})
 
 
 class RejectionReasonService(
@@ -595,13 +608,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await self.create(obj_in=data)
 
     async def snapshot(self, sample: Sample, metadata: dict = {}):
-        fields = ["sample_type", "client", "profiles", "analyses"]
+        fields = ["sample_type", "profiles", "analyses"]
         for _field in fields:
             if _field not in metadata:
-                if _field == "client":
-                    ar = await AnalysisRequestService().get(uid=sample.analysis_request_uid)
-                    client = await ClientService().get(uid=ar.client_uid)
-                    metadata[_field] = client.snapshot()
                 if _field == "sample_type":
                     st = await SampleTypeService().get(uid=sample.sample_type_uid)
                     metadata[_field] = st.snapshot()

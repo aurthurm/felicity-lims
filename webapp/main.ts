@@ -74,3 +74,8 @@ app.use(pinia);
 app.use(router);
 app.use(urql, urqlClient);
 app.mount('#felicityApp');
+
+
+
+// https://enterprisevue.dev/blog/error-handling-in-vue-3/
+// https://medium.com/@dillonchanis/handling-errors-in-vue-with-error-boundaries-91f6ead0093b

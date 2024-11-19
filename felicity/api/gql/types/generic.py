@@ -79,14 +79,16 @@ SuccessErrorResponse = strawberry.union(
 
 
 class StrawberryMapper(Generic[T]):
-    def map(self, **kwargs) -> T:
+    def map(self, exclude: list[str] | None = None, **kwargs) -> T:
+        if exclude is None:
+            exclude = []
         type_class = getattr(self, "__orig_class__").__args__[0]
         # Get the annotations from the Strawberry type
         attrs = type_class.__dict__.get("__annotations__", {})
         # Remove keys not in the Strawberry type from the payload
         keys = list(kwargs.keys())
         for key in keys:
-            if key not in attrs:
+            if key in exclude or key not in attrs:
                 del kwargs[key]
 
         # Create an instance of the Strawberry type
