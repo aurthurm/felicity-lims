@@ -1,11 +1,9 @@
 overwrite: true
 debug: true
-schema: 
+schema:
   - "http://127.0.0.1:8000/felicity-gql"
-  - './felicity/api/gql/schema.graphql'
-documents: 
-  - './felicity/api/gql/schema.graphql'
-  - './webapp/graphql/operations/**/*.graphql'
+documents:
+  - "./webapp/graphql/operations/**/*.graphql"
 ignoreNoDocuments: true
 config:
   scalars:
@@ -13,7 +11,7 @@ config:
   defaultScalarType: never
   useTypeImports: true
 generates:
-  webapp/graphql:
+  webapp/graphql/:
     preset: client
     config:
       useTypeImports: true
@@ -24,7 +22,7 @@ generates:
   webapp/graphql/operations:
     preset: near-operation-file
     presetConfig:
-      baseTypesPath: schema.ts
+      baseTypesPath: ../schema.ts
       extension: .ts
     config:
       preResolveTypes: false

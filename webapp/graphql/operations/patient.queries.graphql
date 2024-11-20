@@ -1,0 +1,180 @@
+
+query getAllPatients($first: Int!, $after: String, $before: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    patientAll(pageSize: $first, afterCursor: $after, beforeCursor: $before, text: $text, sortBy: $sortBy) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            clientPatientId
+            patientId
+            firstName
+            middleName
+            lastName
+            age
+            gender
+            dateOfBirth
+            ageDobEstimated
+            clientUid
+            client {
+                uid
+                name
+                district {
+                    uid
+                    name
+                    province {
+                        uid
+                        name
+                        country {
+                            uid
+                            name
+                        }
+                    }
+                }
+            }
+            phoneHome
+            phoneMobile
+            consentSms
+            identifications {
+                uid
+                value
+                identificationUid
+                identification {
+                    uid
+                    name
+                }
+            }
+            countryUid
+            country {
+                uid
+                name
+            }
+            provinceUid
+            province {
+                uid
+                name
+            }
+            districtUid
+            district {
+                uid
+                name
+            }
+        }
+    }
+}
+
+query searchPatients($queryString: String!) {
+    patientSearch(queryString: $queryString) {
+        uid
+        clientPatientId
+        patientId
+        firstName
+        middleName
+        lastName
+        age
+        gender
+        dateOfBirth
+        ageDobEstimated
+        client {
+            uid
+            name
+            district {
+                name
+                province {
+                    name
+                }
+            }
+        }
+        phoneHome
+        phoneMobile
+        consentSms
+        identifications {
+            uid
+            value
+            identificationUid
+            identification {
+                uid
+                name
+            }
+        }
+        countryUid
+        country {
+            uid
+            name
+        }
+        provinceUid
+        province {
+            uid
+            name
+        }
+        districtUid
+        district {
+            uid
+            name
+        }
+    }
+}
+
+query getPatientByUid($uid: String!) {
+    patientByUid(uid: $uid) {
+        uid
+        clientPatientId
+        patientId
+        firstName
+        middleName
+        lastName
+        age
+        gender
+        dateOfBirth
+        ageDobEstimated
+        client {
+            uid
+            name
+            district {
+                name
+                province {
+                    name
+                }
+            }
+        }
+        phoneHome
+        phoneMobile
+        consentSms
+        identifications {
+            uid
+            value
+            identificationUid
+            identification {
+                uid
+                name
+            }
+        }
+        countryUid
+        country {
+            uid
+            name
+        }
+        provinceUid
+        province {
+            uid
+            name
+        }
+        districtUid
+        district {
+            uid
+            name
+        }
+    }
+}
+
+query identificationTypes {
+    identificationAll {
+        uid
+        name
+    }
+}
+

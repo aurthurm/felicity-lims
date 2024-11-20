@@ -1,0 +1,115 @@
+query getLaboratory($setupName: String! = "felicity") {
+    laboratory(setupName: $setupName) {
+        uid
+        setupName
+        labName
+        tagLine
+        labManagerUid
+        email
+        emailCc
+        mobilePhone
+        businessPhone
+        address
+        banking
+        logo
+        qualityStatement
+    }
+}
+
+query getLaboratorySetting($setupName: String! = "felicity") {
+    laboratorySetting(setupName: $setupName) {
+        uid
+        laboratoryUid
+        allowSelfVerification
+        allowPatientRegistration
+        allowSampleRegistration
+        allowWorksheetCreation
+        defaultRoute
+        passwordLifetime
+        inactivityLogOut
+        defaultTheme
+        autoReceiveSamples
+        stickerCopies
+        allowBilling
+        allowAutoBilling
+        currency
+        paymentTermsDays
+    }
+}
+
+query userAll($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
+    userAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            firstName
+            lastName
+            email
+            isActive
+            isSuperuser
+            mobilePhone
+            userName
+            isBlocked
+            groups {
+                uid
+                name
+                keyword
+                pages
+                permissions {
+                    uid
+                    action
+                    target
+                }
+            }
+        }
+    }
+}
+
+query groupsAndPermissions {
+    groupAll {
+        uid
+        name
+        keyword
+        pages
+        active
+        permissions {
+            uid
+            action
+            target
+        }
+    }
+
+    permissionAll {
+        uid
+        action
+        target
+    }
+}
+
+query getAuditLogs($targetType: String!, $targetUid: String!) {
+    auditLogsFilter(targetType: $targetType, targetUid: $targetUid) {
+        uid
+        userUid
+        targetType
+        targetUid
+        action
+        stateBefore
+        stateAfter
+    }
+}
+
+query getAllDepartments {
+    departmentAll {
+        uid
+        name
+        code
+        description
+    }
+}
+

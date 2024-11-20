@@ -1,0 +1,380 @@
+
+mutation AddHazard($payload: HazardInputType!) {
+    createHazard(payload: $payload) {
+        ... on HazardType {
+            __typename
+            uid
+            name
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditHazard($uid: String!, $payload: HazardInputType!) {
+    updateHazard(uid: $uid, payload: $payload) {
+        ... on HazardType {
+            __typename
+            uid
+            name
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddStockCategory($payload: StockCategoryInputType!) {
+    createStockCategory(payload: $payload) {
+        ... on StockCategoryType {
+            __typename
+            uid
+            name
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditStockCategory($uid: String!, $payload: StockCategoryInputType!) {
+    updateStockCategory(uid: $uid, payload: $payload) {
+        ... on StockCategoryType {
+            __typename
+            uid
+            name
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddStockUnit($payload: StockUnitInputType!) {
+    createStockUnit(payload: $payload) {
+        ... on StockUnitType {
+            __typename
+            uid
+            name
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation editStockUnit($uid: String!, $payload: StockUnitInputType!) {
+    updateStockUnit(uid: $uid, payload: $payload) {
+        ... on StockUnitType {
+            __typename
+            uid
+            name
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation ReceiveStockProduct($payload: StockReceiptInputType!) {
+    createStockReceipt(payload: $payload) {
+        ... on StockItemVariantType {
+            __typename
+            uid
+            name
+            description
+            stockItem {
+                name
+                description
+                category {
+                    name
+                }
+                hazard {
+                    name
+                }
+            }
+            quantity
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddStockItem($payload: StockItemInputType!) {
+    createStockItem(payload: $payload) {
+        ... on StockItemType {
+            __typename
+            uid
+            name
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation editStockItem($uid: String!, $payload: StockItemInputType!) {
+    updateStockItem(uid: $uid, payload: $payload) {
+        ... on StockItemType {
+            __typename
+            uid
+            name
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddStockItemVariant($stockItemUid: String!, $payload: StockItemVariantInputType!) {
+    createStockItemVariant(stockItemUid: $stockItemUid, payload: $payload) {
+        ... on StockItemVariantType {
+            __typename
+            uid
+            name
+            description
+            stockItemUid
+            minimumLevel
+            maximumLevel
+            createdAt
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation editStockItemVariant($uid: String!, $payload: StockItemVariantInputType!) {
+    updateStockItemVariant(uid: $uid, payload: $payload) {
+        ... on StockItemVariantType {
+            __typename
+            uid
+            name
+            description
+            stockItemUid
+            minimumLevel
+            maximumLevel
+            createdAt
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            updatedAt
+            updatedBy {
+                uid
+                firstName
+                lastName
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddStockAdjustment($payload: StockAdjustmentInputType!) {
+    createStockAdjustment(payload: $payload) {
+        ... on StockAdjustmentType {
+            __typename
+            uid
+            productUid
+            adjustmentType
+            adjust
+            adjustmentDate
+            remarks
+            adjustmentByUid
+            createdAt
+            createdByUid
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddStockOrder($payload: StockOrderInputType!) {
+    createStockOrder(payload: $payload) {
+        ... on StockOrderLineType {
+            __typename
+            stockOrder {
+                uid
+                orderByUid
+                departmentUid
+                status
+                orderNumber
+            }
+            orderProducts {
+                uid
+                productUid
+                orderUid
+                quantity
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditStockOrder($uid: String!, $payload: StockOrderInputType!) {
+    updateStockOrder(uid: $uid, payload: $payload) {
+        ... on StockOrderLineType {
+            __typename
+            stockOrder {
+                uid
+                orderByUid
+                departmentUid
+                status
+                orderNumber
+                remarks
+            }
+            orderProducts {
+                uid
+                productUid
+                orderUid
+                quantity
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation SubmitStockOrder($uid: String!) {
+    submitStockOrder(uid: $uid) {
+        ... on StockOrderType {
+            __typename
+            uid
+            status
+            orderNumber
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation ApproveStockOrder($uid: String!, $payload: StockOrderApprovalInputType!) {
+    approveStockOrder(uid: $uid, payload: $payload) {
+        ... on StockOrderType {
+            __typename
+            uid
+            orderByUid
+            departmentUid
+            status
+            orderNumber
+            remarks
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation IssueStockOrder($uid: String!, $payload: [StockOrderProductLineInputType!]!) {
+    issueStockOrder(uid: $uid, payload: $payload) {
+        ... on StockOrderLineType {
+            __typename
+            stockOrder {
+                uid
+                orderByUid
+                departmentUid
+                status
+                orderNumber
+                remarks
+            }
+            orderProducts {
+                uid
+                product {
+                    uid
+                    quantity
+                }
+                orderUid
+                quantity
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation DeleteStockOrder($uid: String!) {
+    deleteStockOrder(uid: $uid) {
+        ... on StockOrderLineType {
+            __typename
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}

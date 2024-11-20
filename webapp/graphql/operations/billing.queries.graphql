@@ -1,0 +1,181 @@
+
+query GetPiceForProfile($profileUid: String!) {
+    priceForProfile(profileUid: $profileUid) {
+        uid
+        profileUid
+        isActive
+        amount
+    }
+}
+
+query GetPiceForAnalysis($analysisUid: String!) {
+    priceForAnalysis(analysisUid: $analysisUid) {
+        uid
+        analysisUid
+        isActive
+        amount
+    }
+}
+
+query GetDiscountForProfile($profileUid: String!) {
+    discountForProfile(profileUid: $profileUid) {
+        uid
+        profileUid
+        name
+        discountType
+        valueType
+        startDate
+        endDate
+        voucherUid
+        voucher {
+            uid
+            name
+            usageLimit
+            used
+            startDate
+            endDate
+        }
+        valuePercent
+        valueAmount
+        isActive
+    }
+}
+
+query GetDiscountForAnalysis($analysisUid: String!) {
+    discountForAnalysis(analysisUid: $analysisUid) {
+        uid
+        analysisUid
+        name
+        discountType
+        valueType
+        startDate
+        endDate
+        voucherUid
+        voucher {
+            uid
+            name
+            usageLimit
+            used
+            startDate
+            endDate
+        }
+        valuePercent
+        valueAmount
+        isActive
+    }
+}
+
+query getAllVouchers{
+    voucherAll {
+        uid
+        name
+        usageLimit
+        used
+        startDate
+        endDate
+        oncePerCustomer
+        oncePerOrder
+        codes {
+            uid
+            code
+            usageLimit
+            used
+            isActive
+            createdAt
+            createdByUid
+            updatedAt
+            updatedByUid
+        }
+        createdAt
+        createdByUid
+        updatedAt
+        updatedByUid
+    }
+}
+
+query getVoucherByUid ($uid: String!) {
+    voucherByUid(uid: $uid) {
+        uid
+        name
+        usageLimit
+        used
+        startDate
+        endDate
+        oncePerCustomer
+        oncePerOrder
+        codes {
+            uid
+            code
+            usageLimit
+            used
+            isActive
+            createdAt
+            createdByUid
+            updatedAt
+            updatedByUid
+        }
+        createdAt
+        createdByUid
+        updatedAt
+        updatedByUid
+    }
+}
+
+query getVoucherCodes ($voucherUid: String!) {
+    voucherCodes(voucherUid: $voucherUid) {
+        uid
+            voucherUid
+        code
+        usageLimit
+        used
+        isActive
+        createdAt
+        createdByUid
+        updatedAt
+        updatedByUid
+    }
+}
+
+query getBillsForPatient($patientUid: String!) {
+    billsForPatient(patientUid: $patientUid) {
+        uid
+        billId
+        patientUid
+        clientUid
+        client {
+            name
+        }
+        isActive
+        toConfirm
+        partial
+        totalCharged
+        totalPaid
+        orders {
+            uid
+            requestId
+            clientRequestId
+        }
+        createdAt
+        updatedAt
+    } 
+}
+
+query getBillTransactions($billUid: String!) {
+    billTransactions(billUid: $billUid) {
+        uid
+        testBillUid
+        kind
+        amount
+        isSuccess
+        actionRequired
+        processed
+        notes
+        createdAt
+        createdByUid
+    } 
+}
+
+query impressBillingReport($billUid: String!) {
+    billInvoiceCreate(billUid: $billUid)
+}
+

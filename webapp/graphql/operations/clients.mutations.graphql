@@ -1,0 +1,115 @@
+
+mutation AddClient($payload: ClientInputType!) {
+    createClient(payload: $payload) {
+        ... on ClientType {
+            __typename
+            uid
+            name
+            code
+            districtUid
+            district {
+                uid
+                name
+                province {
+                    uid
+                    name
+                    country {
+                        uid
+                        name
+                    }
+                }
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation editClient($uid: String!, $payload: ClientInputType!) {
+    updateClient(uid: $uid, payload: $payload) {
+        ... on ClientType {
+            __typename
+            uid
+            name
+            code
+            districtUid
+            district {
+                uid
+                name
+                province {
+                    uid
+                    name
+                    country {
+                        uid
+                        name
+                    }
+                }
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddClientContact($payload: ClientContactInputType!) {
+    createClientContact(payload: $payload) {
+        ... on ClientContactType {
+            __typename
+            uid
+            firstName
+            lastName
+            email
+            mobilePhone
+            consentSms
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation editClientContact($uid: String!, $payload: ClientContactInputType!) {
+    updateClientContact(uid: $uid, payload: $payload) {
+        ... on ClientContactType {
+            __typename
+            uid
+            firstName
+            lastName
+            email
+            mobilePhone
+            consentSms
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation deleteClientContact($uid: String!) {
+    deleteClientContact(uid: $uid) {
+        ... on DeletedItem {
+            uid
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+

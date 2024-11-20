@@ -1,0 +1,20 @@
+
+query getNoticesByCreatorUid($uid: String!) {
+    noticesByCreator(uid: $uid) {
+        uid
+        title
+        body
+        expiry
+        createdByUid
+        departments {
+            uid
+            name
+        }
+        groups {
+            uid
+            name
+        }
+    }
+}
+
+

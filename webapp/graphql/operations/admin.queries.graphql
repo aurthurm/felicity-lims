@@ -1,0 +1,71 @@
+
+query getAllCountries {
+    countryAll {
+        uid
+        name
+        code
+    }
+}
+
+query getAllProvinces {
+    provinceAll {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            name
+            code
+            email
+            emailCc
+            businessPhone
+            mobilePhone
+            countryUid
+        }
+    }
+}
+
+query filterProvincesByCountry($uid: String!) {
+    provincesByCountryUid(uid: $uid) {
+        name
+        uid
+        code
+        countryUid
+    }
+}
+
+query getAllDistricts {
+    districtAll {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            name
+            code
+            email
+            emailCc
+            businessPhone
+            mobilePhone
+            provinceUid
+        }
+    }
+}
+
+query filterDistrictsByProvince($uid: String!) {
+    districtsByProvinceUid(uid: $uid) {
+        name
+        uid
+        code
+        provinceUid
+    }
+}
+

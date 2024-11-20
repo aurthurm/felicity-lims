@@ -1,0 +1,108 @@
+
+query getAllStoreRooms {
+    storeRoomAll {
+        uid
+        name
+        description
+    }
+}
+
+query getStoreRoomByUid($uid: String!) {
+    storeRoomByUid(uid: $uid) {
+        uid
+        name
+        description
+    }
+}
+
+query getAllStorageLocations($storeRoomUid: String!) {
+    storageLocations(storeRoomUid: $storeRoomUid) {
+        uid
+        name
+        description
+        storeRoomUid
+    }
+}
+
+query getStorageLocationByUid($uid: String!) {
+    storageLocationByUid(uid: $uid) {
+        uid
+        name
+        description
+        storeRoomUid
+    }
+}
+
+query getAllStorageSections($storageLocationUid: String!) {
+    storageSections(storageLocationUid: $storageLocationUid) {
+        uid
+        name
+        description
+        storageLocationUid
+    }
+}
+
+query getStorageSectionByUid($uid: String!) {
+    storageSectionByUid(uid: $uid) {
+        uid
+        name
+        description
+        storageLocationUid
+    }
+}
+
+query getAllStorageContainers($storageSectionUid: String!) {
+    storageContainers(storageSectionUid: $storageSectionUid) {
+        uid
+        name
+        description
+        storageSectionUid
+        grid
+        rowWise
+        cols
+        rows
+        slots
+    }
+}
+
+query getSrorageContainerByUid($uid: String!) {
+    storageContainerByUid(uid: $uid) {
+        uid
+        name
+        description
+        storageSectionUid
+        grid
+        rowWise
+        cols
+        rows
+        slots
+        storedCount
+    }
+}
+
+query getStoreRoomsTree {
+    storeRoomAll {
+        uid
+        name
+        description
+        tag
+        children {
+            uid
+            name
+            description
+            tag
+            children {
+                uid
+                name
+                description
+                tag
+                children {
+                    uid
+                    name
+                    description
+                    tag
+                }
+            }
+        }
+    }
+}

@@ -3,6 +3,7 @@ mutation AuthenticateUser($username: String!, $password: String!) {
         ... on AuthenticatedData {
             __typename
             token
+            refresh
             tokenType
             user {
                 uid
@@ -39,21 +40,90 @@ mutation AuthenticateUser($username: String!, $password: String!) {
 }
 
 mutation RequestPassReset($email: String!) {
-  requestPasswordReset(email: $email) {
-    ... on MessagesType {
-      __typename
-      message
+    requestPasswordReset(email: $email) {
+        ... on MessagesType {
+        __typename
+        message
+        }
+        ... on OperationError {
+        __typename
+        error
+        suggestion
+        }
     }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
 }
 
-mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
-    createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid) {
+mutation ValidatePassResetToken($token: String!) {
+    validatePasswordResetToken(token: $token) {
+        ... on PasswordResetValidityType {
+        __typename
+        username
+        }
+        ... on OperationError {
+        __typename
+        error
+        suggestion
+        }
+    }
+}
+
+mutation PasswordReset($userUid: String!, $password: String!, $passwordc: String!) {
+    resetPassword(userUid: $userUid, password: $password, passwordc:$passwordc) {
+        ... on MessagesType {
+        __typename
+        message
+        }
+        ... on OperationError {
+        __typename
+        error
+        suggestion
+        }
+    }
+}
+
+mutation TokenRefresh($refreshToken: String!) {
+    refresh(refreshToken: $refreshToken) {
+        ... on AuthenticatedData {
+            __typename
+            token
+            refresh
+            tokenType
+            user {
+                uid
+                firstName
+                lastName
+                groups {
+                    permissions {
+                        uid
+                        action
+                        target
+                    }
+                    uid
+                    name
+                    keyword
+                    pages
+                }
+                preference {
+                    uid
+                    expandedMenu
+                    theme
+                    departments {
+                        uid
+                        name
+                    }
+                }
+            }
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
+    createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid, userName: $userName, password: $password, passwordc: $passwordc) {
         ... on UserType {
             uid
             firstName
@@ -64,7 +134,6 @@ mutation addUser($firstName: String!, $lastName: String!, $email: String!, $grou
             mobilePhone
             userName
             isBlocked
-            userType
             groups {
                 permissions {
                     uid
@@ -93,6 +162,8 @@ mutation editUser(
     $groupUid: String
     $mobilePhone: String
     $isActive: Boolean
+    $password: String, 
+    $passwordc: String
 ) {
     updateUser(
         userUid: $userUid
@@ -102,6 +173,7 @@ mutation editUser(
         groupUid: $groupUid
         mobilePhone: $mobilePhone
         isActive: $isActive
+        password: $password, passwordc: $passwordc
     ) {
         ... on UserType {
             uid
@@ -113,73 +185,6 @@ mutation editUser(
             mobilePhone
             userName
             isBlocked
-            userType
-            groups {
-                permissions {
-                    uid
-                    action
-                    target
-                }
-                uid
-                name
-                keyword
-                pages
-            }
-        }
-        ... on OperationError {
-            __typename
-            error
-            suggestion
-        }
-    }
-}
-
-mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-    createUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
-        ... on UserType {
-            uid
-            firstName
-            lastName
-            email
-            isActive
-            isSuperuser
-            mobilePhone
-            userName
-            isBlocked
-            userType
-            groups {
-                permissions {
-                    uid
-                    action
-                    target
-                }
-                uid
-                name
-                keyword
-                pages
-            }
-        }
-        ... on OperationError {
-            __typename
-            error
-            suggestion
-        }
-    }
-}
-
-mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-    updateUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
-        ... on UserType {
-            uid
-            firstName
-            lastName
-            email
-            isActive
-            isSuperuser
-            mobilePhone
-            userName
-            isBlocked
-            userType
             groups {
                 permissions {
                     uid
@@ -309,13 +314,16 @@ mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
             uid
             setupName
             labName
+            tagLine
             labManagerUid
             email
             emailCc
             mobilePhone
             businessPhone
             address
+            banking
             logo
+            qualityStatement
         }
         ... on OperationError {
             __typename
@@ -340,6 +348,10 @@ mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputTy
             defaultTheme
             autoReceiveSamples
             stickerCopies
+            allowBilling
+            allowAutoBilling
+            currency
+            paymentTermsDays
         }
         ... on OperationError {
             __typename
