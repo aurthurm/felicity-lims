@@ -1,5 +1,5 @@
-import { defineComponent, computed, watch } from 'vue';
-import { useStorageStore } from '@/stores';
+import { defineComponent, computed } from 'vue';
+import { useStorageStore } from '@/stores/storage';
 
 const ContainerGrid = defineComponent({
     name: 'container-grid-view',

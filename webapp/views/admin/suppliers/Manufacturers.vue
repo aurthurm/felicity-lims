@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IManufacturer } from '@/models/setup'
-  import { ADD_MANUFACTURER, EDIT_MANUFACTURER } from '@/graphql/operations/instrument.mutations';
-  import { useSetupStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddManufacturerDocument, AddManufacturerMutation, AddManufacturerMutationVariables,
+    EditManufacturerDocument, EditManufacturerMutation, EditManufacturerMutationVariables } from '@/graphql/operations/instrument.mutations';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -21,13 +22,13 @@
 
   function addManufacturer(): void {
     const payload = { name: form.name, description: form.description}
-    withClientMutation(ADD_MANUFACTURER, { payload }, "createManufacturer")
+    withClientMutation<AddManufacturerMutation, AddManufacturerMutationVariables>(AddManufacturerDocument, { payload }, "createManufacturer")
     .then((result) => setupStore.addManufacturer(result));
   }
 
   function editManufacturer(): void {
     const payload = { name: form.name, description: form.description}
-    withClientMutation(EDIT_MANUFACTURER, { uid: form.uid, payload }, "updateManufacturer")
+    withClientMutation<EditManufacturerMutation, EditManufacturerMutationVariables>(EditManufacturerDocument, { uid: form.uid, payload }, "updateManufacturer")
     .then((result) => setupStore.updateManufacturer(result));
   }
 

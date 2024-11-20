@@ -3,10 +3,12 @@ import VueMultiselect from "vue-multiselect";
 import { reactive, computed, onMounted, PropType, toRefs, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { IPatient } from "@/models/patient";
-import { ADD_PATIENT, UPDATE_PATIENT } from "@/graphql/operations/patient.mutations";
+import { AddPatientDocument, AddPatientMutation, AddPatientMutationVariables } from "@/graphql/operations/patient.mutations";
 
-import { useClientStore, useLocationStore, usePatientStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useClientStore } from "@/stores/client";
+import { useLocationStore } from "@/stores/location";
+import { usePatientStore } from "@/stores/patient";
+import useApiUtil  from "@/composables/api_util";
 import { IClient } from "@/models/client";
 import { IPatientIdentificationForm } from "@/models/patient";
 import { formatDate, isNullOrWs } from "@/utils/helpers";
@@ -152,8 +154,8 @@ const submitPatientForm = handleSubmit((values) => {
 
 //
 function addPatient(payload: IPatient) {
-  withClientMutation(
-    ADD_PATIENT,
+  withClientMutation<AddPatientMutation, AddPatientMutationVariables>(
+    AddPatientDocument,
     {
       payload: {
         clientPatientId: payload.clientPatientId,
@@ -183,8 +185,8 @@ function addPatient(payload: IPatient) {
 }
 
 function updatePatient(payload: IPatient) {
-  withClientMutation(
-    UPDATE_PATIENT,
+  withClientMutation<UpdatePatientMutation, UpdatePatientMutationVariables>(
+    UpdatePatientDocument,
     {
       uid: payload.uid,
       payload: {

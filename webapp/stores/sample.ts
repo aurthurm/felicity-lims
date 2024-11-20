@@ -1,22 +1,11 @@
 import { defineStore } from 'pinia';
 import { parseEdgeNodeToList, addListsUnique } from '@/utils/helpers';
 
-import {
-    GET_ALL_SAMPLE_TYPES,
-    GET_ALL_SAMPLES,
-    GET_ANALYSIS_REQUESTS_BY_PATIENT_UID,
-    GET_ANALYSIS_REQUESTS_BY_CLIENT_UID,
-    GET_ANALYSIS_RESULTS_BY_SAMPLE_UID,
-    GET_ALL_QC_SETS,
-    GET_QC_SET_BY_UID,
-    GET_SAMPLE_BY_UID,
-    GET_SAMPLE_BY_PARENT_ID,
-    GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE,
-} from '@/graphql/operations/analyses.queries';
 import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '@/models/analysis';
 import { IPageInfo, IPaginationMeta } from '@/models/pagination';
 
 import useApiUtil from '@/composables/api_util';
+import { GeSampleTypeMappingsBySampleTypeUidDocument, GeSampleTypeMappingsBySampleTypeUidQuery, GeSampleTypeMappingsBySampleTypeUidQueryVariables, GetAllSamplesDocument, GetAllSamplesQuery, GetAllSamplesQueryVariables, GetAllSampleTypesDocument, GetAllSampleTypesQuery, GetAllSampleTypesQueryVariables, GetAnalysesRequestsByClientUidDocument, GetAnalysesRequestsByClientUidQuery, GetAnalysesRequestsByClientUidQueryVariables, GetAnalysesRequestsByPatientUidDocument, GetAnalysesRequestsByPatientUidQueryVariables, GetAnalysesResultsBySampleUidDocument, GetAnalysesResultsBySampleUidQueryVariables, GetQcSetByUidDocument, GetQcSetByUidQuery, GetQcSetByUidQueryVariables, GetQcSeTsDocument, GetQcSeTsQuery, GetQcSeTsQueryVariables, GetSampleByUidDocument, GetSampleByUidQuery, GetSampleByUidQueryVariables, GetSampleParentIdDocument, GetSampleParentIdQuery, GetSampleParentIdQueryVariables } from '@/graphql/operations/analyses.queries';
 
 const { withClientQuery } = useApiUtil();
 
@@ -91,7 +80,7 @@ export const useSampleStore = defineStore('sample', {
         // SAMPLE TYPES
         async fetchSampleTypes() {
             this.fetchingSampleTypes = true;
-            await withClientQuery(GET_ALL_SAMPLE_TYPES, {}, 'sampleTypeAll')
+            await withClientQuery<GetAllSampleTypesQuery, GetAllSampleTypesQueryVariables>(GetAllSampleTypesDocument, {}, 'sampleTypeAll')
                 .then(payload => {
                     this.fetchingSampleTypes = false;
                     this.sampleTypes = payload;
@@ -107,7 +96,7 @@ export const useSampleStore = defineStore('sample', {
         },       
         
         async fetchSampleTypesMappings(profileUid) {
-            await withClientQuery(GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE, { uid: profileUid }, 'sampleTypeMappingsBySampleType').then(payload => (this.sampleTypesMappings = payload));
+            await withClientQuery<GeSampleTypeMappingsBySampleTypeUidQuery, GeSampleTypeMappingsBySampleTypeUidQueryVariables>(GeSampleTypeMappingsBySampleTypeUidDocument, { uid: profileUid }, 'sampleTypeMappingsBySampleType').then(payload => (this.sampleTypesMappings = payload));
         },
         addSampleTypesMapping(payload) {
             this.sampleTypesMappings?.unshift(payload);
@@ -132,7 +121,7 @@ export const useSampleStore = defineStore('sample', {
         },
         async fetchSamples(params) {
             this.fetchingSamples = true;
-            await withClientQuery(GET_ALL_SAMPLES, params, undefined)
+            await withClientQuery<GetAllSamplesQuery, GetAllSamplesQueryVariables>(GetAllSamplesDocument, params, undefined)
                 .then(payload => {
                     this.fetchingSamples = false;
                     const page = payload.sampleAll;
@@ -152,7 +141,7 @@ export const useSampleStore = defineStore('sample', {
         async fetchSampleByUid(uid) {
             if (!uid) return;
             this.fetchingSample = true;
-            await withClientQuery(GET_SAMPLE_BY_UID, { uid }, 'sampleByUid', 'network-only')
+            await withClientQuery<GetSampleByUidQuery, GetSampleByUidQueryVariables>(GetSampleByUidDocument, { uid }, 'sampleByUid', 'network-only')
                 .then(payload => {
                     this.fetchingSample = false;
                     payload.analyses = parseEdgeNodeToList(payload?.analyses) || [];
@@ -204,7 +193,7 @@ export const useSampleStore = defineStore('sample', {
                 return;
             }
             this.fetchingSamplesStatuses = true;
-            await withClientQuery(GET_SAMPLE_BY_UID, { uid }, 'sampleByUid', 'network-only')
+            await withClientQuery<GetSampleByUidQuery, GetSampleByUidQueryVariables>(GetSampleByUidDocument, { uid }, 'sampleByUid', 'network-only')
                 .then(payload => {
                     this.fetchingSamplesStatuses = false;
                     if (this.sample && payload.status) {
@@ -220,7 +209,7 @@ export const useSampleStore = defineStore('sample', {
                 return;
             }
             this.fetchingRepeatSample = true;
-            await withClientQuery(GET_SAMPLE_BY_PARENT_ID, { parentId, text: 'repeat' }, 'sampleByParentId')
+            await withClientQuery<GetSampleParentIdQuery, GetSampleParentIdQueryVariables>(GetSampleParentIdDocument, { parentId, text: 'repeat' }, 'sampleByParentId')
                 .then(payload => {
                     this.fetchingRepeatSample = false;
                     if (payload?.length > 0) {
@@ -239,7 +228,7 @@ export const useSampleStore = defineStore('sample', {
                 return;
             }
             this.fetchingAnalysisRequests = true;
-            await withClientQuery(GET_ANALYSIS_REQUESTS_BY_PATIENT_UID, { uid }, 'analysisRequestsByPatientUid')
+            await withClientQuery<GetAnalysesRequestsByPatientUidQuery, GetAnalysesRequestsByPatientUidQueryVariables>(GetAnalysesRequestsByPatientUidDocument, { uid }, 'analysisRequestsByPatientUid')
                 .then(payload => {
                     this.fetchingAnalysisRequests = false;
                     this.analysisRequests = sortAnalysisRequests(payload);
@@ -251,7 +240,7 @@ export const useSampleStore = defineStore('sample', {
                 return;
             }
             this.fetchingAnalysisRequests = true;
-            await withClientQuery(GET_ANALYSIS_REQUESTS_BY_CLIENT_UID, { uid }, 'analysisRequestsByClientUid')
+            await withClientQuery<GetAnalysesRequestsByClientUidQuery, GetAnalysesRequestsByClientUidQueryVariables>(GetAnalysesRequestsByClientUidDocument, { uid }, 'analysisRequestsByClientUid')
                 .then(payload => {
                     this.fetchingAnalysisRequests = false;
                     this.analysisRequests = sortAnalysisRequests(payload);
@@ -266,7 +255,7 @@ export const useSampleStore = defineStore('sample', {
         async fetchAnalysisResultsForSample(uid) {
             if (!uid) return;
             this.fetchingResults = true;
-            await withClientQuery(GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, 'analysisResultBySampleUid', 'network-only')
+            await withClientQuery<GetAnalysesResultsBySampleUidQueryVariables, GetAnalysesResultsBySampleUidQueryVariables>(GetAnalysesResultsBySampleUidDocument, { uid }, 'analysisResultBySampleUid', 'network-only')
                 .then(payload => {
                     this.fetchingResults = false;
                     this.analysisResults = sortResults(payload);
@@ -318,7 +307,7 @@ export const useSampleStore = defineStore('sample', {
         },
         async fetchQCSets(params) {
             this.fetchingQCSets = true;
-            await withClientQuery(GET_ALL_QC_SETS, params, undefined)
+            await withClientQuery<GetQcSeTsQuery, GetQcSeTsQueryVariables>(GetQcSeTsDocument, params, undefined)
                 .then(payload => {
                     this.fetchingQCSets = false;
                     const page = payload.qcSetAll;
@@ -341,7 +330,7 @@ export const useSampleStore = defineStore('sample', {
                 return;
             }
             this.fetchingQCSet = true;
-            await withClientQuery(GET_QC_SET_BY_UID, { uid }, 'qcSetByUid')
+            await withClientQuery<GetQcSetByUidQuery, GetQcSetByUidQueryVariables>(GetQcSetByUidDocument, { uid }, 'qcSetByUid')
                 .then(payload => {
                     this.fetchingQCSet = false;
                     this.qcSet = payload;

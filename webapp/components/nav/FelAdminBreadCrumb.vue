@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLocationStore } from '@/stores';
+import { useLocationStore } from '@/stores/location';
 
 const props = defineProps({
     title: String,

@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { ILaboratoryInstrument } from '@/models/setup'
-  import { ADD_LABORATORY_INSTRUMENT, EDIT_LABORATORY_INSTRUMENT  } from '@/graphql/operations/instrument.mutations';
-  import { useSetupStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddLaboratoryInstrumentDocument, AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables,
+    EditLaboratoryInstrumentDocument, EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -30,7 +31,7 @@
       dateDecommissioned: instrument.dateDecommissioned,
       instrumentUid: instrument.instrumentUid,
     }
-    withClientMutation(ADD_LABORATORY_INSTRUMENT, { payload }, "createLaboratoryInstrument")
+    withClientMutation<AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables>(AddLaboratoryInstrumentDocument, { payload }, "createLaboratoryInstrument")
     .then((result) => setupStore.addLaboratoryInstrument(result));
   }
 
@@ -42,7 +43,7 @@
       dateDecommissioned: instrument.dateDecommissioned,
       instrumentUid: instrument.instrumentUid,
     }
-    withClientMutation(EDIT_LABORATORY_INSTRUMENT,{ uid: instrument.uid, payload },"updateLaboratoryInstrument")
+    withClientMutation<EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables>(EditLaboratoryInstrumentDocument, { uid: instrument.uid, payload },"updateLaboratoryInstrument")
     .then((result) => setupStore.updateLaboratoryInstrument(result));
   }
 

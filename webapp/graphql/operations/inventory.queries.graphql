@@ -152,7 +152,7 @@ query getAllStockOrderProducts($stockOrderUid: String!) {
     }
 }
 
-query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"], $productUid: String) {
+query getAllStockAdjustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"], $productUid: String) {
     stockAdjustmentAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy, productUid: $productUid) {
         totalCount
         pageInfo {

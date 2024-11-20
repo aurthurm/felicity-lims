@@ -2,8 +2,8 @@
 import { storeToRefs } from "pinia";
 import { computed, defineAsyncComponent, reactive, watch } from "vue";
 import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
-import { useSampleComposable } from "@/composables";
-import { useSampleStore } from "@/stores";
+import useSampleComposable from "@/composables/samples";
+import { useSampleStore } from "@/stores/sample";
 import { useRoute, useRouter } from "vue-router";
 import { parseDate } from "@/utils/helpers";
 const LoadingMessage = defineAsyncComponent(

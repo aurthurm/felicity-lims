@@ -3,8 +3,11 @@ import { useRoute, useRouter } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { isNullOrWs } from "@/utils/helpers";
 import { IAnalysisResult, IAnalysisService } from "@/models/analysis";
-import { useAnalysisComposable, useWorkSheetComposable } from "@/composables";
-import { useWorksheetStore, useSetupStore, useUserStore } from "@/stores";
+import useWorkSheetComposable from "@/composables/worksheet";
+import useAnalysisComposable from "@/composables/analysis";
+import { useWorksheetStore } from "@/stores/worksheet";
+import { useUserStore } from "@/stores/user";
+import { useSetupStore } from "@/stores/setup";
 import * as shield from "@/guards";
 const FButton = defineAsyncComponent(
   () => import("@/components/ui/buttons/FelButton.vue")

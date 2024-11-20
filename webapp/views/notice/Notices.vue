@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { DELETE_NOTICE } from "@/graphql/operations/notice.mutations";
+import { DeleteNoticeDocument, DeleteNoticeMutation, DeleteNoticeMutationVariables } from "@/graphql/operations/notice.mutations";
 import { onMounted, reactive, computed, defineAsyncComponent } from "vue";
 import { INotice } from "@/models/notice";
-import { useNoticeStore, useSetupStore, useAuthStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useAuthStore } from "@/stores/auth";
+import { useNoticeStore } from "@/stores/notice";
+import { useSetupStore} from "@/stores/setup";
+import useApiUtil  from "@/composables/api_util";
 import Swal from 'sweetalert2';
 const PageHeading = defineAsyncComponent(
   () => import("@/components/common/FelPageHeading.vue")
@@ -53,7 +55,7 @@ async function deleteNotice(uid: string) {
     cancelButtonText: 'No, do not delete!',
   }).then(async (result) => {
     if (result.isConfirmed) {
-      withClientMutation(DELETE_NOTICE, { uid }, "deleteNotice").then((payload) =>
+      withClientMutation<DeleteNoticeMutation, DeleteNoticeMutationVariables>(DeleteNoticeDocument, { uid }, "deleteNotice").then((payload) =>
         noticeStore.deleteNotice(payload)
       );
     }

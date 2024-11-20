@@ -3,19 +3,23 @@ import { ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import {
-    GET_SAMPLE_GROUP_BY_STATUS,
-    GET_ANALYSIS_GROUP_BY_STATUS,
-    GET_WORKSHEET_GROUP_BY_STATUS,
-    GET_EXTRAS_GROUP_BY_STATUS,
-    GET_ANALYSIS_GROUP_BY_INSTRUMENT,
-    GET_SAMPLE_PROCESS_PEFORMANCE,
-    GET_ANALYSIS_PROCESS_PEFORMANCE,
-    GET_SAMPLE_GROUPS_BY_ACTION,
-    GET_SAMPLE_LAGGARDS,
+    GetSampleGroupByStatusDocument, GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables,
+    GetAnalysisGroupByStatusDocument, GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables,
+    GetWorksheetGroupByStatusDocument, GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables,
+    GetExtrasGroupByStatusDocument, GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables,
+    GetAnalysisGroupByInstrumentDocument, GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables,
+    GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables, GetAnalysisProcessPeformanceDocument,
+    GetSampleLaggardsDocument, GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables,
+    SampleGroupByActionQuery,
+    SampleGroupByActionQueryVariables,
+    SampleGroupByActionDocument,
+    SampleProcessPeformanceQuery,
+    SampleProcessPeformanceQueryVariables,
+    SampleProcessPeformanceDocument,
 } from '@/graphql/operations/dashboard.queries';
 import { mapOrder } from '@/utils/helpers';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 const { withClientQuery } = useApiUtil();
 
 interface GroupCount {
@@ -126,7 +130,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.fromIso,
             endDate: dashboard.value.filterRange.toIso,
         };
-        await withClientQuery(GET_SAMPLE_GROUP_BY_STATUS, filters, 'countSampleGroupByStatus', 'network-only').then(
+        await withClientQuery<GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables>(GetSampleGroupByStatusDocument, filters, 'countSampleGroupByStatus', 'network-only').then(
             payload =>
                 (dashboard.value.overViewStats.samples = mapOrder(
                     payload.data,
@@ -142,7 +146,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.fromIso,
             endDate: dashboard.value.filterRange.toIso,
         };
-        await withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS, filters, 'countAnalyteGroupByStatus', 'network-only').then(
+        await withClientQuery<GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables>(GetAnalysisGroupByStatusDocument, filters, 'countAnalyteGroupByStatus', 'network-only').then(
             payload => (dashboard.value.overViewStats.analyses = mapOrder(payload.data, ['pending', 'resulted'], 'group'))
         );
     };
@@ -153,7 +157,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.fromIso,
             endDate: dashboard.value.filterRange.toIso,
         };
-        await withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS, filters, 'countWorksheetGroupByStatus', 'network-only').then(
+        await withClientQuery<GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables>(GetWorksheetGroupByStatusDocument, filters, 'countWorksheetGroupByStatus', 'network-only').then(
             payload => (dashboard.value.overViewStats.worksheets = mapOrder(payload.data, ['empty', 'awaiting', 'pending'], 'group'))
         );
     };
@@ -164,7 +168,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.fromIso,
             endDate: dashboard.value.filterRange.toIso,
         };
-        await withClientQuery(GET_EXTRAS_GROUP_BY_STATUS, filters, 'countExtrasGroupByStatus', 'network-only').then(
+        await withClientQuery<GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables>(GetExtrasGroupByStatusDocument, filters, 'countExtrasGroupByStatus', 'network-only').then(
             payload =>
                 (dashboard.value.overViewStats.extras = mapOrder(
                     payload.data,
@@ -180,7 +184,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.fromIso,
             endDate: dashboard.value.filterRange.toIso,
         };
-        await withClientQuery(GET_ANALYSIS_GROUP_BY_INSTRUMENT, filters, 'countAnalyteGroupByInstrument', 'network-only').then(
+        await withClientQuery<GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables>(GetAnalysisGroupByInstrumentDocument, filters, 'countAnalyteGroupByInstrument', 'network-only').then(
             payload => (dashboard.value.resourceStats.instruments = payload.data)
         );
     };
@@ -191,7 +195,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.fromIso,
             endDate: dashboard.value.filterRange.toIso,
         };
-        await withClientQuery(GET_SAMPLE_GROUPS_BY_ACTION, filters, 'countSampleGroupByAction', 'network-only').then(
+        await withClientQuery<SampleGroupByActionQuery, SampleGroupByActionQueryVariables>(SampleGroupByActionDocument, filters, 'countSampleGroupByAction', 'network-only').then(
             payload => (dashboard.value.resourceStats.samples = payload.data)
         );
     };
@@ -203,7 +207,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             endDate: dayjs().endOf('day').toISOString(),
         };
         dashboard.value.fetchingSampePeformanceStats = true;
-        await withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE, filters, 'sampleProcessPerformance', 'network-only')
+        await withClientQuery<SampleProcessPeformanceQuery, SampleProcessPeformanceQueryVariables>(SampleProcessPeformanceDocument, filters, 'sampleProcessPerformance', 'network-only')
             .then(payload => {
                 dashboard.value.fetchingSampePeformanceStats = false;
                 dashboard.value.peformanceStats.sample = payload.data;
@@ -219,7 +223,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             endDate: dayjs().endOf('day').toISOString(),
         };
         dashboard.value.fetchingAnalysisPeformanceStats = true;
-        await withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE, filters, 'analysisProcessPerformance', 'network-only')
+        await withClientQuery<GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables>(GetAnalysisProcessPeformanceDocument, filters, 'analysisProcessPerformance', 'network-only')
             .then(payload => {
                 dashboard.value.fetchingAnalysisPeformanceStats = false;
                 dashboard.value.peformanceStats.analysis = payload.data;
@@ -230,7 +234,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_SAMPLE_LAGGARDS
     const getSampleLaggards = async () => {
         dashboard.value.fetchingLaggards = true;
-        await withClientQuery(GET_SAMPLE_LAGGARDS, {}, 'sampleLaggards', 'network-only')
+        await withClientQuery<GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables>(GetSampleLaggardsDocument, {}, 'sampleLaggards', 'network-only')
             .then(payload => {
                 dashboard.value.laggards = payload.data;
                 dashboard.value.fetchingLaggards = false;

@@ -122,7 +122,7 @@ mutation TokenRefresh($refreshToken: String!) {
     }
 }
 
-mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
+mutation AddUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
     createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid, userName: $userName, password: $password, passwordc: $passwordc) {
         ... on UserType {
             uid
@@ -154,7 +154,7 @@ mutation addUser($firstName: String!, $lastName: String!, $email: String!, $grou
     }
 }
 
-mutation editUser(
+mutation EditUser(
     $userUid: String!
     $firstName: String!
     $lastName: String
@@ -205,7 +205,7 @@ mutation editUser(
     }
 }
 
-mutation addGroup($payload: GroupInputType!) {
+mutation AddGroup($payload: GroupInputType!) {
     createGroup(payload: $payload) {
         ... on GroupType {
             __typename
@@ -228,7 +228,7 @@ mutation addGroup($payload: GroupInputType!) {
     }
 }
 
-mutation editGroup($uid: String!, $payload: GroupInputType!) {
+mutation EditGroup($uid: String!, $payload: GroupInputType!) {
     updateGroup(uid: $uid, payload: $payload) {
         ... on GroupType {
             __typename
@@ -251,7 +251,7 @@ mutation editGroup($uid: String!, $payload: GroupInputType!) {
     }
 }
 
-mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
+mutation UpdateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
     updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
         ... on UpdatedGroupPerms {
             group {
@@ -280,7 +280,7 @@ mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!)
     }
 }
 
-mutation addDepartment($payload: DepartmentInputType!) {
+mutation AddDepartment($payload: DepartmentInputType!) {
     createDepartment(payload: $payload) {
         ... on DepartmentType {
             uid
@@ -294,7 +294,7 @@ mutation addDepartment($payload: DepartmentInputType!) {
     }
 }
 
-mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
+mutation EditDepartment($uid: String!, $payload: DepartmentInputType!) {
     updateDepartment(uid: $uid, payload: $payload) {
         ... on DepartmentType {
             uid
@@ -308,7 +308,7 @@ mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
     }
 }
 
-mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
+mutation EditLaboratory($uid: String!, $payload: LaboratoryInputType!) {
     updateLaboratory(uid: $uid, payload: $payload) {
         ... on LaboratoryType {
             uid
@@ -333,7 +333,7 @@ mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
     }
 }
 
-mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
+mutation EditLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
     updateLaboratorySetting(uid: $uid, payload: $payload) {
         ... on LaboratorySettingType {
             uid

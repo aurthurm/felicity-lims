@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 import { 
-    GET_PRICE_FOR_PROFILE, GET_DISCOUNT_FOR_PROFILE, 
-    GET_PRICE_FOR_ANALYSIS, GET_DISCOUNT_FOR_ANALYSIS,
-    GET_ALL_VOUCHERS, GET_VOUCHER_BY_UID, GET_VOUCHER_CODES, GET_BILLS_FOR_PATIENT, GET_BILL_TRANSACTIONS
+    GetPiceForProfileDocument, GetPiceForProfileQuery, GetPiceForProfileQueryVariables,
+    GetDiscountForProfileDocument, GetDiscountForProfileQuery, GetDiscountForProfileQueryVariables,
+    GetPriceForAnalysisDocument, GetPriceForAnalysisQuery, GetPriceForAnalysisQueryVariables,
+    GetDiscountForAnalysisDocument, GetDiscountForAnalysisQuery, GetDiscountForAnalysisQueryVariables,
+    GetAllVouchersDocument, GetAllVouchersQuery, GetAllVouchersQueryVariables,
+    GetVoucherByUidDocument, GetVoucherByUidQueryVariables, GetVoucherByUidQuery,
+    GetVoucherCodesDocument, GetVoucherCodesQueryVariables, GetVoucherCodesQuery,
+    GetBillsForPatientDocument, GetBillsForPatientQueryVariables, GetBillsForPatientQuery,
+    GetBillTransactionsDocument, GetBillTransactionsQueryVariables, GetBillTransactionsQuery,
 } from '@/graphql/operations/billing.queries'
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 import { 
     IAnalysisDiscount, IAnalysisPrice, IProfileDiscount, 
     IProfilePrice, IVoucher, IVoucherCode, ITestBill, ITestBillTransaction 
@@ -64,7 +70,7 @@ export const useBillingStore = defineStore('billing', {
         // Profiles
         async fetchProfilePrice(profileUid: string) {
             this.fetchingPrice = true;
-            await withClientQuery(GET_PRICE_FOR_PROFILE, { profileUid }, 'priceForProfile')
+            await withClientQuery<GetPiceForProfileQuery, GetPiceForProfileQueryVariables>(GetPiceForProfileDocument, { profileUid }, 'priceForProfile')
                 .then(payload => {
                     this.fetchingPrice = false;
                     this.profilePrice = payload;
@@ -73,7 +79,7 @@ export const useBillingStore = defineStore('billing', {
         },
         async fetchProfileDiscount(profileUid: string) {
             this.fetchingDiscount = true;
-            await withClientQuery(GET_DISCOUNT_FOR_PROFILE, { profileUid }, 'discountForProfile')
+            await withClientQuery<GetDiscountForProfileQuery, GetDiscountForProfileQueryVariables>(GetDiscountForProfileDocument, { profileUid }, 'discountForProfile')
                 .then(payload => {
                     this.fetchingDiscount = false;
                     this.profileDiscount = payload;
@@ -83,7 +89,7 @@ export const useBillingStore = defineStore('billing', {
         // Analyses
         async fetchAnalysisPrice(analysisUid: string) {
             this.fetchingPrice = true;
-            await withClientQuery(GET_PRICE_FOR_ANALYSIS, { analysisUid }, 'priceForAnalysis')
+            await withClientQuery<GetPriceForAnalysisQuery, GetPriceForAnalysisQueryVariables>(GetPriceForAnalysisDocument, { analysisUid }, 'priceForAnalysis')
                 .then(payload => {
                     this.fetchingPrice = false;
                     this.analysisPrice = payload;
@@ -92,7 +98,7 @@ export const useBillingStore = defineStore('billing', {
         },
         async fetchAnalysisDiscount(analysisUid: string) {
             this.fetchingDiscount = true;
-            await withClientQuery(GET_DISCOUNT_FOR_ANALYSIS, { analysisUid }, 'discountForAnalysis')
+            await withClientQuery<GetDiscountForAnalysisQuery, GetDiscountForAnalysisQueryVariables>(GetDiscountForAnalysisDocument, { analysisUid }, 'discountForAnalysis')
                 .then(payload => {
                     this.fetchingDiscount = false;
                     this.analyisDiscount = payload;
@@ -102,7 +108,7 @@ export const useBillingStore = defineStore('billing', {
         // Vouchers
         async fetchVouchers() {
             this.fetchingVouchers = true;
-            await withClientQuery(GET_ALL_VOUCHERS, {}, 'voucherAll')
+            await withClientQuery<GetAllVouchersQuery, GetAllVouchersQueryVariables>(GetAllVouchersDocument, {}, 'voucherAll')
                 .then(payload => {
                     this.fetchingVouchers = false;
                     this.vouchers = payload;
@@ -111,10 +117,9 @@ export const useBillingStore = defineStore('billing', {
         },
         async fetchVoucherbyUid(uid: string) {
             this.fetchingVoucher = true;
-            await withClientQuery(GET_VOUCHER_BY_UID, { uid }, 'voucherAll')
+            await withClientQuery<GetVoucherByUidQuery, GetVoucherByUidQueryVariables>(GetVoucherByUidDocument, { uid }, 'voucherByUid')
                 .then(payload => {
                     this.fetchingVoucher = false;
-                    this.vouchers = payload;
                     const index = this.vouchers?.findIndex(item => item.uid === payload.uid);
                     if (index > -1) {
                         this.vouchers[index] = payload;
@@ -126,7 +131,7 @@ export const useBillingStore = defineStore('billing', {
         },
         async fetchVoucherCodes(voucherUid: string) {
             this.fetchingVoucherCodes = true;
-            await withClientQuery(GET_VOUCHER_CODES, { voucherUid }, 'voucherCodes')
+            await withClientQuery<GetVoucherCodesQuery, GetVoucherCodesQueryVariables>(GetVoucherCodesDocument, { voucherUid }, 'voucherCodes')
                 .then(payload => {
                     this.fetchingVoucherCodes = false;
                     const index = this.vouchers?.findIndex(item => item.uid === payload.uid);
@@ -175,7 +180,7 @@ export const useBillingStore = defineStore('billing', {
         // Bills
         async fetchBillsForPatient(patientUid: string) {
             this.fetchingBills = true;
-            await withClientQuery(GET_BILLS_FOR_PATIENT, { patientUid }, 'billsForPatient')
+            await withClientQuery<GetBillsForPatientQuery, GetBillsForPatientQueryVariables>(GetBillsForPatientDocument, { patientUid }, 'billsForPatient')
                 .then(payload => {
                     this.fetchingBills = false;
                     this.bills = payload;
@@ -186,7 +191,7 @@ export const useBillingStore = defineStore('billing', {
         async fetchBillTransactions(billUid: string) {
             this.fetchingTransactions = true;
             this.transactions = [];
-            await withClientQuery(GET_BILL_TRANSACTIONS, { billUid }, 'billTransactions')
+            await withClientQuery<GetBillTransactionsQuery, GetBillTransactionsQueryVariables>(GetBillTransactionsDocument, { billUid }, 'billTransactions')
                 .then(payload => {
                     this.fetchingTransactions = false;
                     this.transactions = payload;

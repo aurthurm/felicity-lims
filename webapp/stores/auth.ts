@@ -1,16 +1,18 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import { IUser } from '@/models/auth';
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '@/conf';
-import { AUTHENTICATE_USER, REFRESH_TOKEN, REQUEST_PASSWORD_RESET, RESET_PASSWORD, VALIDATE_PASSWORD_RESET_TOKEN } from '@/graphql/operations/_mutations';
-import { useAuthenticateUserMutation } from '@/graphql/graphql';
-import { useNotifyToast, useApiUtil, userPreferenceComposable } from '@/composables';
+import {
+    AuthenticateUserDocument, AuthenticateUserMutation, AuthenticateUserMutationVariables,
+    TokenRefreshDocument, TokenRefreshMutation, TokenRefreshMutationVariables,
+    RequestPassResetDocument, RequestPassResetMutation, RequestPassResetMutationVariables,
+    PasswordResetDocument, PasswordResetMutation, PasswordResetMutationVariables,
+    ValidatePassResetTokenDocument, ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables 
+} from '@/graphql/operations/_mutations';
+import useApiUtil  from '@/composables/api_util';
 import jwtDecode from 'jwt-decode';
 
-const { withClientMutation } = useApiUtil();
-const { toastInfo } = useNotifyToast();
-const { initPreferences } = userPreferenceComposable();
+const { withClientMutation } = useApiUtil();    
 
 interface IAuth {
     token?: string;
@@ -110,7 +112,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         // const { operation } = useAuthenticateUserMutation({username: "", password: ""});
         
-        await withClientMutation(AUTHENTICATE_USER, payload, 'authenticateUser')
+        await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(AuthenticateUserDocument, payload, 'authenticateUser')
             .then(res => {
                 if(!res) {
                     auth.value.processing = false;
@@ -131,7 +133,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const resetPasswordRequest = async (email: string) => {
         auth.value.processing = true;
-        await withClientMutation(REQUEST_PASSWORD_RESET, { email }, 'requestPasswordReset')
+        await withClientMutation<RequestPassResetMutation, RequestPassResetMutationVariables>(RequestPassResetDocument, { email }, 'requestPasswordReset')
         .then(({ message }) => {
             setReceivedResetToken(true);
             auth.value.processing = false;
@@ -141,7 +143,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const validatePasswordResetToken = async (token: string) => {
         auth.value.processing = true;
-        await withClientMutation(VALIDATE_PASSWORD_RESET_TOKEN, { token }, 'validatePasswordResetToken')
+        await withClientMutation<ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables>(ValidatePassResetTokenDocument, { token }, 'validatePasswordResetToken')
         .then(res => {
             auth.value.resetData = {
                 canReset: !!!res?.username,
@@ -154,7 +156,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const resetPassword = async (password: string, passwordc: string) => {
         auth.value.processing = true;
-        await withClientMutation(RESET_PASSWORD, { 
+        await withClientMutation<PasswordResetMutation, PasswordResetMutationVariables>(PasswordResetDocument, { 
             username: auth.value?.resetData?.username, 
             password, passwordc 
         }, 'resetPassword')
@@ -166,7 +168,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     
     const refreshToken = async (): Promise<void> => {
-        await withClientMutation(REFRESH_TOKEN, { refreshToken: auth.value.refresh }, 'refresh')
+        await withClientMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(TokenRefreshDocument, { refreshToken: auth.value.refresh }, 'refresh')
         .then(res => {
             if(!res) {
                 return

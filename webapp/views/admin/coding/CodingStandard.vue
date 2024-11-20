@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { ICodingStandard } from '@/models/analysis'
-  import { ADD_CODING_STANDARD, EDIT_CODING_STANDARD  } from '@/graphql/operations/analyses.mutations';
-  import { useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddCodingStandardDocument, AddCodingStandardMutation, AddCodingStandardMutationVariables,
+    EditCodingStandardDocument, EditCodingStandardMutation, EditCodingStandardMutationVariables } from '@/graphql/operations/analyses.mutations';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
@@ -34,12 +35,12 @@
     const payload = { name: form.name, description: form.description}
 
     if (formAction.value === true) {
-      withClientMutation(ADD_CODING_STANDARD, { payload }, "createCodingStandard")
+      withClientMutation<AddCodingStandardMutation, AddCodingStandardMutationVariables>(AddCodingStandardDocument, { payload }, "createCodingStandard")
       .then((result) => analyisStore.addCodingStandard(result));
     };
 
     if (formAction.value === false) {
-      withClientMutation(EDIT_CODING_STANDARD,{ uid: form.uid, payload }, "updateCodingStandard")
+      withClientMutation<EditCodingStandardMutation, EditCodingStandardMutationVariables>(EditCodingStandardDocument, { uid: form.uid, payload }, "updateCodingStandard")
       .then((result) => analyisStore.updateCodingStandard(result));
     };
 

@@ -1,8 +1,9 @@
 import { defineAsyncComponent, defineComponent, PropType, toRefs, watch } from 'vue';
 import { ref, reactive } from 'vue';
-import { ADD_STOCK_ITEM_VARIANT, EDIT_STOCK_ITEM_VARIANT } from '@/graphql/operations/inventory.mutations';
-import { useInventoryStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { AddStockItemVariantDocument, AddStockItemVariantMutation, AddStockItemVariantMutationVariables,
+  EditStockItemVariantDocument, EditStockItemVariantMutation, EditStockItemVariantMutationVariables } from '@/graphql/operations/inventory.mutations';
+import { useInventoryStore } from '@/stores/inventory';
+import  useApiUtil  from '@/composables/api_util';
 import { IStockItemVariant, IStockItem } from '@/models/inventory';
 const Modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -35,7 +36,7 @@ const StockItemDetail = defineComponent({
 
         function addStockItemVariant(): void {
             const payload = { ...form };
-            withClientMutation(ADD_STOCK_ITEM_VARIANT, { stockItemUid: stockItem?.value?.uid, payload }, 'createStockItemVariant').then(result => inventoryStore.addItemVariant(result));
+            withClientMutation<AddStockItemVariantMutation, AddStockItemVariantMutationVariables>(AddStockItemVariantDocument, { stockItemUid: stockItem?.value?.uid, payload }, 'createStockItemVariant').then(result => inventoryStore.addItemVariant(result));
         }
 
         function editStockItemVariant(): void {
@@ -45,7 +46,7 @@ const StockItemDetail = defineComponent({
                 minimumLevel: form.minimumLevel,
                 maximumLevel: form.maximumLevel,
             };
-            withClientMutation(EDIT_STOCK_ITEM_VARIANT, { uid: form.uid, payload }, 'updateStockItemVariant').then(result => inventoryStore.updateItemVariant(result));
+            withClientMutation<EditStockItemVariantMutation, EditStockItemVariantMutationVariables>(EditStockItemVariantDocument, { uid: form.uid, payload }, 'updateStockItemVariant').then(result => inventoryStore.updateItemVariant(result));
         }
 
         function FormManager(create: boolean, obj: IStockItemVariant | null): void {

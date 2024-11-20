@@ -2,11 +2,12 @@
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import { IAnalysisTemplate, IAnalysisService } from "@/models/analysis";
 import {
-  ADD_ANALYSIS_TEMPLATE,
-  EDIT_ANALYSIS_TEMPLATE,
+  AddAnalysisTemplateDocument, AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables,
+  EditAnalysisTemplateDocument, EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables
 } from "@/graphql/operations/analyses.mutations";
-import { useSetupStore, useAnalysisStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useSetupStore } from "@/stores/setup";
+import { useAnalysisStore } from "@/stores/analysis";
+import useApiUtil  from "@/composables/api_util";
 
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
@@ -43,7 +44,7 @@ function addAnalysisTemplate(): void {
     description: analysisTemplate.description,
     departmentUid: analysisTemplate.departmentUid,
   };
-  withClientMutation(ADD_ANALYSIS_TEMPLATE, { payload }, "createAnalysisTemplate").then((result) =>
+  withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(AddAnalysisTemplateDocument, { payload }, "createAnalysisTemplate").then((result) =>
     analysisStore.addAnalysisTemplate(result)
   );
 }
@@ -56,8 +57,7 @@ function editAnalysisTemplate(): void {
     active: analysisTemplate.active,
     services: analysisTemplate.analyses?.map((item) => item.uid),
   };
-  withClientMutation(
-    EDIT_ANALYSIS_TEMPLATE,
+  withClientMutation<EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables>(EditAnalysisTemplateDocument,
     { uid: analysisTemplate.uid, payload },
     "updateAnalysisTemplate"
   ).then((result) => analysisStore.updateAnalysesTemplate(result));

@@ -2,13 +2,15 @@
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import { IAnalysisProfile, IAnalysisService } from "@/models/analysis";
 import {
-  ADD_ANALYSIS_PROFILE,
-  ADD_PROFILE_MAPPING,
-  EDIT_ANALYSIS_PROFILE,
-  EDIT_PROFILE_MAPPING,
+  AddAnalysisProfileDocument, AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables,
+  EditAnalysisProfileDocument, EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables,
+  AddProfileMappingDocument, AddProfileMappingMutation, AddProfileMappingMutationVariables,
+  EditProfileMappingDocument, EditProfileMappingMutation, EditProfileMappingMutationVariables,
 } from "@/graphql/operations/analyses.mutations";
-import { useSetupStore, useAnalysisStore, useSampleStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useSetupStore } from "@/stores/setup";
+import { useAnalysisStore } from "@/stores/analysis";
+import { useSampleStore } from "@/stores/sample";
+import useApiUtil  from "@/composables/api_util";
 
 const VueMultiselect = defineAsyncComponent(
   () => import("vue-multiselect")
@@ -54,7 +56,7 @@ function addAnalysisProfile(): void {
     sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid),
     active: analysisProfile.active,
   };
-  withClientMutation(ADD_ANALYSIS_PROFILE, { payload }, "createProfile").then((result) =>
+  withClientMutation<AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables>(AddAnalysisProfileDocument, { payload }, "createProfile").then((result) =>
     analysisStore.addAnalysisProfile(result)
   );
 }
@@ -69,8 +71,7 @@ function editAnalysisProfile(): void {
     services: analysisProfile.analyses?.map((item) => item.uid),
     sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid),
   };
-  withClientMutation(
-    EDIT_ANALYSIS_PROFILE,
+  withClientMutation<EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables>(EditAnalysisProfileDocument,
     { uid: analysisProfile.uid, payload },
     "updateProfile"
   ).then((result) => analysisStore.updateAnalysesProfile(result));
@@ -145,8 +146,7 @@ function addMapping(): void {
     code: mappingForm.code,
     description: mappingForm.description,
   };
-  withClientMutation(
-    ADD_PROFILE_MAPPING,
+  withClientMutation<AddProfileMappingMutation, AddProfileMappingMutationVariables>(AddProfileMappingDocument,
     { payload },
     "createProfileMapping"
   ).then((result) => analysisStore.addProfileMapping(result));
@@ -160,8 +160,7 @@ function updateMapping(): void {
     code: mappingForm.code,
     description: mappingForm.description,
   };
-  withClientMutation(
-    EDIT_PROFILE_MAPPING,
+  withClientMutation<EditProfileMappingMutation, EditProfileMappingMutationVariables>(EditProfileMappingDocument,
     { uid: mappingForm.uid, payload },
     "updateProfileMapping"
   ).then((result) => analysisStore.updateProfileMapping(result));

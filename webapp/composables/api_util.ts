@@ -1,110 +1,187 @@
 import { urqlClient } from '@/urql';
-import { ref } from 'vue';
+import { TypedDocumentNode } from '@urql/core';
+import { AnyVariables, CombinedError } from '@urql/core';
+import { Ref, ref } from 'vue';
 import { RequestPolicy } from '@urql/vue';
 import useNotifyToast from './alert_toast';
 
-const { toastSuccess, toastInfo, toastWarning, toastError, swalSuccess, swalInfo, swalWarning, swalError } = useNotifyToast();
+// Define clear interfaces for different types of responses
+interface OperationError {
+  __typename: 'OperationError';
+  error: string;
+  suggestion: string;
+}
 
-const errors = ref<any[]>([]);
-const messages = ref<any[]>([]);
+interface OperationSuccess {
+  __typename: 'OperationSuccess' | 'MessagesType';
+  message: string;
+}
+
+// Discriminated union for operation results
+type OperationResult = 
+  | OperationError 
+  | OperationSuccess 
+  | null 
+  | undefined;
+
+// Enhanced error handling interface
+interface GraphQLErrorContext {
+  networkError?: Error;
+  graphQLErrors?: Array<{
+    message: string;
+    extensions?: Record<string, any>;
+  }>;
+}
 
 export default function useApiUtil() {
-    // Automatic Error handling from Graphql backend
-    const gqlErrorHandler = (error: any) => {
-        if (typeof error == 'object') {
-            if (error.graphQLErrors) {
-                const gErrors = new Set();
-                error.graphQLErrors?.forEach((err: any) => gErrors.add(err.message));
-                gErrors?.forEach((err: any) => toastError(err));
-            }
-            if (error.networkError) {
-                toastError(error.networkError.message);
-                swalError('!!OOPS!!: Something just hapenned Please login again :)');
-            }
-        }
-    };
+  // Reactive error and message tracking with proper typing
+  const errors: Ref<OperationError[]> = ref([]);
+  const messages: Ref<OperationSuccess[]> = ref([]);
+  const { toastInfo, toastError, swalError } = useNotifyToast();
 
-    const gqlResponseHandler = (res: any): any => {
-        if (res?.error) {
-            errors.value.unshift(res.error);
-            gqlErrorHandler(res.error);
-        }
-        return res?.data ?? {};
-    };
-
-    const gqlOpertionalErrorHandler = (payload: any, key: string): any => {
-        if (payload.hasOwnProperty(key)) {
-            const res = payload[key];
-            if(res?.__typename) {
-                if (res?.__typename === 'OperationError') {
-                    errors.value.unshift(res);
-                    swalError(res.error + '\n' + res.suggestion);
-                    return;
-                } else if (["MessagesType", "OperationSuccess"].includes(res?.__typename)){
-                    messages.value.unshift(res);
-                    toastInfo(res.message)
-                } else {
-                    //
-                }
-            } else {
-                // instread of this which is not good. maybe create some dots status bar that appear green for success and red for error
-            }
-        }
-        return payload;
-    };
-
-    const GQLResponseInterceptor = (res: any, key: string): any => {
-        return gqlOpertionalErrorHandler(gqlResponseHandler(res), key);
-    };
-
-    async function withClientMutation(query, payload, dataKey): Promise<any> {
-        return await urqlClient
-            .mutation(query, payload)
-            .toPromise()
-            .then(result => {
-                const data = GQLResponseInterceptor(result, dataKey);
-                if (dataKey) {
-                    return data[dataKey];
-                } else {
-                    return data;
-                }
-            });
+  /**
+   * Comprehensive error handler for GraphQL operations
+   * @param error - The error object from GraphQL operation
+   */
+  const gqlErrorHandler = (error: GraphQLErrorContext | CombinedError) => {
+    // Network errors
+    if ('networkError' in error && error.networkError) {
+      toastError(error.networkError.message);
+      swalError('Network Error: Please check your connection and try again.');
     }
 
-    async function withClientQuery(query, variables, dataKey, requestPolicy: RequestPolicy = 'cache-first'): Promise<any> {
-        // cache-and-network
-        return await urqlClient
-            .query(query, variables, { requestPolicy })
-            .toPromise()
-            .then(result => {
-                const data = GQLResponseInterceptor(result, dataKey);
-                if (dataKey) {
-                    return data[dataKey];
-                } else {
-                    return data;
-                }
-            });
+    // GraphQL specific errors
+    if ('graphQLErrors' in error && error.graphQLErrors?.length) {
+      const uniqueErrors = new Set<string>();
+      
+      error.graphQLErrors.forEach(err => {
+        uniqueErrors.add(err.message);
+        // Optional: log extended error information
+        if (err.extensions) {
+          console.error('GraphQL Error Details:', err.extensions);
+        }
+      });
+
+      uniqueErrors.forEach(errorMessage => {
+        toastError(errorMessage);
+      });
+    }
+  };
+
+  /**
+   * Handles the response from GraphQL operations
+   * @param res - The raw response from the operation
+   * @returns Processed data or empty object
+   */
+  const gqlResponseHandler = <T = any>(res: { data?: T; error?: CombinedError }): T => {
+    if (res?.error) {
+      gqlErrorHandler(res.error);
+      throw res.error;
+    }
+    return res?.data ?? {} as T;
+  };
+
+  /**
+   * Handles operational errors with type-specific logic
+   * @param payload - The response payload
+   * @param key - The key to extract from payload
+   * @returns Processed payload
+   */
+  const gqlOperationalErrorHandler = <T extends Record<string, OperationResult>>(
+    payload: T, 
+    key?: keyof T
+  ): T => {
+    if (!key) return payload;
+
+    const result = payload[key];
+
+    if (result?.__typename === 'OperationError') {
+      errors.value.unshift(result as OperationError);
+      swalError(`${result.error}\n${result.suggestion}`);
+      throw new Error(result.error);
     }
 
-    async function withClientOperation(operationType, query, variables, dataKey, requestPolicy: RequestPolicy = 'cache-first'): Promise<any> {
-        const operation = operationType === 'mutation' ? urqlClient.mutation(query, variables) : urqlClient.query(query, variables, { requestPolicy });
-        return await operation
-            .toPromise()
-            .then(result => {
-                const data = GQLResponseInterceptor(result, dataKey);
-                return dataKey ? data[dataKey] : data;
-            });
-        }
+    if (["MessagesType", "OperationSuccess"].includes(result?.__typename as string)) {
+      const successResult = result as OperationSuccess;
+      messages.value.unshift(successResult);
+      toastInfo(successResult.message);
+    }
+    return payload;
+  };
 
-    // --
-    return {
-        gqlResponseHandler,
-        gqlErrorHandler,
-        gqlOpertionalErrorHandler,
-        GQLResponseInterceptor,
-        withClientMutation,
-        withClientQuery,
-        withClientOperation,
-        errors,
-    };
+  /**
+   * Unified response interceptor for all GraphQL operations
+   * @param res - The raw response
+   * @param key - Optional key to extract from response
+   * @returns Processed data
+   */
+  const GQLResponseInterceptor = <T extends Record<string, any>>(
+    res: any, 
+    key?: keyof T
+  ): T => {
+    const processedResponse = gqlResponseHandler<T>(res);
+    
+    // Use type assertion to handle empty object case
+    return key 
+      ? gqlOperationalErrorHandler({ [key]: processedResponse[key] } as T, key)
+      : processedResponse;
+  };
+
+  /**
+   * Perform a type-safe GraphQL query
+   * @param query - The GraphQL query document
+   * @param variables - Query variables
+   * @param dataKey - Optional key to extract from response
+   * @param requestPolicy - Caching policy
+   */
+  async function withClientQuery<TData extends Record<string, any>, TVariables extends AnyVariables>(
+    query: TypedDocumentNode<TData, TVariables>,
+    variables: TVariables,
+    dataKey?: keyof TData,
+    requestPolicy: RequestPolicy = 'cache-first'
+  ): Promise<TData[keyof TData] | undefined> {
+    try {
+      const result = await urqlClient
+        .query(query, variables, { requestPolicy })
+        .toPromise();
+
+      const data = GQLResponseInterceptor<TData>(result, dataKey);
+      return dataKey ? (data[dataKey] as TData[keyof TData]) : (data as unknown as TData[keyof TData]);
+    } catch (error) {
+      gqlErrorHandler(error as GraphQLErrorContext);
+      throw error;
+    }
+  }
+
+  /**
+   * Perform a type-safe GraphQL mutation
+   * @param mutation - The GraphQL mutation document
+   * @param variables - Mutation variables
+   * @param dataKey - Optional key to extract from response
+   */
+  async function withClientMutation<TData extends Record<string, any>, TVariables extends AnyVariables>(
+    mutation: TypedDocumentNode<TData, TVariables>,
+    variables: TVariables,
+    dataKey?: keyof TData
+  ): Promise<TData[keyof TData] | undefined> {
+    try {
+      const result = await urqlClient
+        .mutation(mutation, variables)
+        .toPromise();
+
+      const data = GQLResponseInterceptor<TData>(result, dataKey);
+      return dataKey ? (data[dataKey] as TData[keyof TData]) : (data as unknown as TData[keyof TData]);
+    } catch (error) {
+      gqlErrorHandler(error as GraphQLErrorContext);
+      throw error;
+    }
+  }
+
+  return {
+    withClientQuery,
+    withClientMutation,
+    gqlErrorHandler,
+    errors,
+    messages,
+  };
 }

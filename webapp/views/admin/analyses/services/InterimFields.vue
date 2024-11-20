@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_INTERIM, EDIT_ANALYSIS_INTERIM  } from '@/graphql/operations/analyses.mutations';
+  import { AddAnalysisInterimDocument, AddAnalysisInterimMutation, AddAnalysisInterimMutationVariables,
+    EditAnalysisInterimDocument, EditAnalysisInterimMutation, EditAnalysisInterimMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { IAnalysisInterim } from '@/models/analysis';
   import { IInstrument } from '@/models/setup';
-  import { useSetupStore, useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -41,7 +43,7 @@
   function addAnalysisInterim(): void {
       form.key = +form.key!;
       const payload = { ...form, analysisUid: analysis?.value?.uid }
-      withClientMutation(ADD_ANALYSIS_INTERIM,{ payload },"createAnalysisInterim")
+      withClientMutation<AddAnalysisInterimMutation, AddAnalysisInterimMutationVariables>(AddAnalysisInterimDocument, { payload }, "createAnalysisInterim")
       .then((result) => analysisStore.addAnalysisInterim(result));
   }
 
@@ -50,7 +52,7 @@
       delete payload['uid']
       delete payload['__typename']
 
-      withClientMutation(EDIT_ANALYSIS_INTERIM, { uid : form.uid,  payload }, "updateAnalysisInterim")
+      withClientMutation<EditAnalysisInterimMutation, EditAnalysisInterimMutationVariables>(EditAnalysisInterimDocument, { uid : form.uid,  payload }, "updateAnalysisInterim")
       .then((result) => analysisStore.updateAnalysisInterim(result));
   }
 

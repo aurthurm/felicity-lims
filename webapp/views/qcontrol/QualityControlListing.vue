@@ -1,11 +1,14 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
   import { storeToRefs } from 'pinia'
-  import { useSampleStore, useAnalysisStore, useSetupStore } from '@/stores';
+  import { useSetupStore } from '@/stores/setup';
+  import { useSampleStore } from '@/stores/sample';
+  import { useAnalysisStore } from '@/stores/analysis';
   import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '@/models/analysis';
-  import { ADD_QC_REQUEST } from '@/graphql/operations/analyses.mutations';
-  import { useApiUtil } from '@/composables'
   import * as shield from '@/guards'
+  import useApiUtil from '@/composables/api_util';
+import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariables } from '@/graphql/operations/analyses.mutations';
+
   const LoadingMessage = defineAsyncComponent(
     () => import("@/components/ui/spinners/FelLoadingMessage.vue")
   )
@@ -77,7 +80,7 @@
 
   function addQCRequest(): void {
     console.log(form)
-    withClientMutation(ADD_QC_REQUEST, { samples: form.samples }, "createQcSet")
+    withClientMutation<AddQcRequestMutation, AddQcRequestMutationVariables>(AddQcRequestDocument, { samples: form.samples }, "createQcSet")
     .then((result) => sampleStore.addQCSets(result?.qcSets ));
   }
 

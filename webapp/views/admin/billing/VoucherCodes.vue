@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, defineAsyncComponent, onMounted, computed } from "vue";
-import { ADD_VOUCHER_CODE, EDIT_VOUCHER_CODE } from '@/graphql/operations/billing.mutations';
+import { AddVoucherCodeDocument, AddVoucherCodeMutation, AddVoucherCodeMutationVariables,
+  EditVoucherCodeDocument, EditVoucherCodeMutation, EditVoucherCodeMutationVariables } from '@/graphql/operations/billing.mutations'; 
 import { storeToRefs } from "pinia"
-import { useBillingStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useBillingStore } from "@/stores/billing";
+import useApiUtil  from "@/composables/api_util";
 import { IVoucherCode } from "@/models/billing";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number } from "yup";
@@ -89,7 +90,7 @@ const  newVoucherCode = () => {
 
 const addVoucherCode = (vcode: IVoucherCode) => {
   delete vcode['uid'];
-  withClientMutation(ADD_VOUCHER_CODE, { payload: vcode },"createVoucherCode")
+  withClientMutation<AddVoucherCodeMutation, AddVoucherCodeMutationVariables>(AddVoucherCodeDocument, { payload: vcode },"createVoucherCode")
   .then((result) => billingStore.addVoucherCode(result))
   .finally(() => (showModal.value = false));
 };
@@ -97,7 +98,7 @@ const addVoucherCode = (vcode: IVoucherCode) => {
 const updateVoucherCode = (vocher: IVoucherCode) => {
   delete vocher['uid'];
   delete vocher['used'];
-  withClientMutation(EDIT_VOUCHER_CODE, { uid: uid?.value, payload: vocher },"updateVoucherCode")
+  withClientMutation<EditVoucherCodeMutation, EditVoucherCodeMutationVariables>(EditVoucherCodeDocument, { uid: uid?.value, payload: vocher },"updateVoucherCode")
   .then((result) => billingStore.updateVoucherCode(result))
   .finally(() => (showModal.value = false));
 };

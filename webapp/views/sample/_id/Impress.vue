@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { GET_IMPRESS_META } from "@/graphql/operations/analyses.queries";
-import { useApiUtil, useSampleComposable } from "@/composables";
+import useApiUtil from "@/composables/api_util";
+import useSampleComposable from "@/composables/samples";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
@@ -21,8 +21,7 @@ const selectedMeta = ref<any>({});
 
 const loadMeta = () => {
   loadingMeta.value = true;
-  withClientQuery(
-    GET_IMPRESS_META,
+  withClientQuery<GetSampleImpressMetaQuery, GetSampleImpressMetaQueryVariables>(GetSampleImpressMetaDocument,
     { uids: [route?.params?.sampleUid] },
     "impressReportsMeta"
   )

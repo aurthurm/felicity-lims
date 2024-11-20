@@ -1,8 +1,10 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_STOCK_ITEM, EDIT_STOCK_ITEM } from '@/graphql/operations/inventory.mutations';
-import { useInventoryStore, useSetupStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { AddStockItemDocument, AddStockItemMutation, AddStockItemMutationVariables,
+  EditStockItemDocument, EditStockItemMutation, EditStockItemMutationVariables } from '@/graphql/operations/inventory.mutations';   
+import { useInventoryStore } from '@/stores/inventory';
+import { useSetupStore } from '@/stores/setup';
+import  useApiUtil  from '@/composables/api_util';
 import { IStockItem } from '@/models/inventory';
 const Modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -40,7 +42,7 @@ const StockItem = defineComponent({
 
         function addStockItem(): void {
             const payload = { ...form };
-            withClientMutation(ADD_STOCK_ITEM, { payload }, 'createStockItem').then(result => inventoryStore.addItem(result));
+            withClientMutation<AddStockItemMutation, AddStockItemMutationVariables>(AddStockItemDocument, { payload }, 'createStockItem').then(result => inventoryStore.addItem(result));
         }
 
         function editStockItem(): void {
@@ -50,7 +52,7 @@ const StockItem = defineComponent({
                 hazardUid: form.hazardUid,
                 categoryUid: form.categoryUid,
             };
-            withClientMutation(EDIT_STOCK_ITEM, { uid: form.uid, payload }, 'updateStockItem').then(result =>
+            withClientMutation<EditStockItemMutation, EditStockItemMutationVariables>(EditStockItemDocument, { uid: form.uid, payload }, 'updateStockItem').then(result =>
                 inventoryStore.updateItem(result)
             );
         }

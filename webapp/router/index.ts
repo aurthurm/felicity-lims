@@ -1,5 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
-import * as guards from '@//guards';
+import * as guards from '@/guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
@@ -8,7 +8,7 @@ import qualityRoutes from './quality';
 import worksheetRoutes from './worksheet';
 import shipmentRoutes from './referral';
 import { isTokenValid } from './checks';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/auth';
 
 const routes: RouteRecordRaw[] = [
     {

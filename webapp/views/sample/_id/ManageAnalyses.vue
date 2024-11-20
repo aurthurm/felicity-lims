@@ -2,13 +2,13 @@
 import Swal from "sweetalert2";
 import { defineAsyncComponent, onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import { useApiUtil } from "@/composables";
-import { useAnalysisStore, useSampleStore } from "@/stores";
+import useApiUtil  from "@/composables/api_util";
+import { useAnalysisStore} from "@/stores/analysis";
+import { useSampleStore } from "@/stores/sample";
 import {
-  EDIT_SAMPLE_APPLY_TEMPLATE,
-  EDIT_SAMPLE_MANAGE_ANALYSIS,
+  EditSampleApplyTemplateDocument, EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables, SampleManageAnalysisDocument, SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables
 } from "@/graphql/operations/analyses.mutations";
-
+import { defineEmits } from "vue";
 const accordion = defineAsyncComponent(
     () => import('@/components/ui/FelAccordion.vue')
   )
@@ -43,8 +43,7 @@ const applyTemplate = async () => {
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
       if (result.isConfirmed) {
-        withClientMutation(
-          EDIT_SAMPLE_APPLY_TEMPLATE,
+        withClientMutation<EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables>(EditSampleApplyTemplateDocument,
           { uid: route.params.sampleUid, analysisTemplateUid: templateUid.value },
           "samplesApplyTemplate"
         ).then((result) => changeTab("analysis-results"));
@@ -100,8 +99,7 @@ const applyChanges = async () => {
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
       if (result.isConfirmed) {
-        withClientMutation(
-          EDIT_SAMPLE_MANAGE_ANALYSIS,
+        withClientMutation<SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables>(SampleManageAnalysisDocument,
           { sampleUid: route.params.sampleUid, payload: { cancel, add} },
           "manageAnalyses"
         ).then((result) => changeTab("analysis-results"));

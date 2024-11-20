@@ -2,7 +2,8 @@
 import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
-import { usePatientStore, useLocationStore } from "@/stores";
+import { usePatientStore } from "@/stores/patient";
+import { useLocationStore } from "@/stores/location";
 import { IPatient } from "@/models/patient";
 import * as shield from "@/guards";
 

@@ -1,9 +1,9 @@
 import { computed, watch, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
-import { useInventoryStore } from '@/stores';
+import { useInventoryStore } from '@/stores/inventory';
 import { IStockLot, IStockProduct } from '@/models/inventory';
-import { useApiUtil } from '@/composables';
-import { ADD_STOCK_ADJUSTMENT } from '@/graphql/operations/inventory.mutations';
-import { GET_ALL_STOCK_LOTS } from '@/graphql/operations/inventory.queries';
+import  useApiUtil  from '@/composables/api_util';
+import { AddStockAdjustmentDocument, AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables } from '@/graphql/operations/inventory.mutations';
+import { GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables } from '@/graphql/operations/inventory.queries';
 import { parseDate } from '@/utils/helpers';
 
 const DataTable = defineAsyncComponent(
@@ -45,7 +45,7 @@ const InventoryListing = defineComponent({
 
         const stockLots = ref([]);
         const fetchLots = (productUid: string) => {
-            withClientQuery(GET_ALL_STOCK_LOTS, { productUid }, 'stockLots').then(result => {
+            withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid }, 'stockLots').then(result => {
                 stockLots.value = result;
             })
         }
@@ -208,8 +208,7 @@ const InventoryListing = defineComponent({
                 // choiceProduct.quantity = value;
             },
             adjustStock: () => {
-                withClientMutation(
-                    ADD_STOCK_ADJUSTMENT,
+                withClientMutation<AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables>(AddStockAdjustmentDocument,
                     {
                       payload: {
                         productUid: choiceProduct.product.uid,

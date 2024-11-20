@@ -9,7 +9,7 @@ const modal = defineAsyncComponent(
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
-import { useDashBoardStore } from "@/stores";
+import { useDashBoardStore } from "@/stores/dashboard";
 
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);

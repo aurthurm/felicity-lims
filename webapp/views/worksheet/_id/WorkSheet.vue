@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useWorksheetStore } from "@/stores";
-import { useWorkSheetComposable } from "@/composables";
+import { useWorksheetStore } from "@/stores/worksheet";
+import useWorkSheetComposable from "@/composables/worksheet";
 
 const route = useRoute();
 const workshetStore = useWorksheetStore();

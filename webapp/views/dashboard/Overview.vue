@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { defineAsyncComponent, onMounted, watch } from "vue";
-import { useDashBoardStore } from "@/stores";
+import { useDashBoardStore } from "@/stores/dashboard";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )

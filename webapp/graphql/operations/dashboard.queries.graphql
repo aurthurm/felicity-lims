@@ -49,7 +49,7 @@ query getAnalysisGroupByInstrument($startDate: String!, $endDate: String!) {
     }
 }
 
-query sampleProcessPeformance($startDate: String!, $endDate: String!) {
+query SampleProcessPeformance($startDate: String!, $endDate: String!) {
     sampleProcessPerformance(startDate: $startDate, endDate: $endDate) {
         __typename
         data {
@@ -82,7 +82,7 @@ query getAnalysisProcessPeformance($process: String!, $startDate: String!, $endD
     }
 }
 
-query sampleGroupByAction($startDate: String!, $endDate: String!) {
+query SampleGroupByAction($startDate: String!, $endDate: String!) {
     countSampleGroupByAction(startDate: $startDate, endDate: $endDate) {
         __typename
         data {

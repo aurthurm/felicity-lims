@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
-import { useLocationStore } from '@/stores';
+import { useLocationStore } from '@/stores/location';
 const PageHeading = defineAsyncComponent(
   () => import("@/components/common/FelPageHeading.vue")
 )

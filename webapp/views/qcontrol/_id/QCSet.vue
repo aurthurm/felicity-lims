@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import { useSampleStore } from "@/stores";
+import { useSampleStore } from "@/stores/sample";
 import { isNullOrWs } from "@/utils/helpers";
-import { useAnalysisComposable } from "@/composables";
+import useAnalysisComposable from "@/composables/analysis";
 import { IAnalysisResult, IQCLevel, IQCSet, ISample } from "@/models/analysis";
 
 import * as shield from "@/guards";

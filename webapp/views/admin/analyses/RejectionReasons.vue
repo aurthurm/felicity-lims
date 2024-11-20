@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { reactive, computed, defineAsyncComponent } from 'vue';
   import { IRejectionReason } from '@/models/analysis';
-  import { ADD_REJECTION_REASON, EDIT_REJECTION_REASON } from '@/graphql/operations/analyses.mutations';
+  import { AddRejectionReasonDocument, AddRejectionReasonMutation, AddRejectionReasonMutationVariables,
+    EditRejectionReasonDocument, EditRejectionReasonMutation, EditRejectionReasonMutationVariables } from '@/graphql/operations/analyses.mutations';
 
-  import { useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -23,12 +24,12 @@
   const rejectionReasons = computed(() => analysisStore.getRejectionReasons)
 
   function addRejectionReason(): void {
-    withClientMutation(ADD_REJECTION_REASON, { reason: state.form.reason }, "createRejectionReason")
+    withClientMutation<AddRejectionReasonMutation, AddRejectionReasonMutationVariables>(AddRejectionReasonDocument, { reason: state.form.reason }, "createRejectionReason")
     .then((result) => analysisStore.addRejectionReason(result));
   }
 
   function editRejectionReason(): void {
-    withClientMutation(EDIT_REJECTION_REASON, { uid: state.form.uid, reason: state.form.reason }, "updateRejectionReason")
+    withClientMutation<EditRejectionReasonMutation, EditRejectionReasonMutationVariables>(EditRejectionReasonDocument, { uid: state.form.uid, reason: state.form.reason }, "updateRejectionReason")
     .then((result) => analysisStore.updateRejectionReason(result));
   }
 

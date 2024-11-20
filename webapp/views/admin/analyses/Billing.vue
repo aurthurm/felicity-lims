@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { toRefs, watch, reactive, ref } from 'vue';
   import { 
-    EDIT_PROFILE_PRICING, EDIT_ANALYSIS_PRICING,
-    EDIT_ANALYSIS_DISCOUNT, EDIT_PROFILE_DISCOUNT
+    EditProfilePricingDocument, EditProfilePricingMutation, EditProfilePricingMutationVariables,
+    EditAnalysisPricingDocument, EditAnalysisPricingMutation, EditAnalysisPricingMutationVariables,
+    EditAnalysisDiscountDocument, EditAnalysisDiscountMutation, EditAnalysisDiscountMutationVariables,
+    EditProfileDiscountDocument, EditProfileDiscountMutation, EditProfileDiscountMutationVariables
   } from '@/graphql/operations/billing.mutations'
-  import { useBillingStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useBillingStore } from '@/stores/billing';
+  import  useApiUtil  from '@/composables/api_util';
   import { IAnalysisDiscount, IProfileDiscount } from '@/models/billing';
 
   const  billingStore = useBillingStore()
@@ -54,15 +56,19 @@
 
   const updatePricing = () => {
     const payload = { ...formPricing  };
-    let mutation = target.value == 'profile' ? EDIT_PROFILE_PRICING : EDIT_ANALYSIS_PRICING;
-    let mutationKey = target.value == 'profile' ? "updateProfilePrice" : "updateAnaysisPrice"
-    let pricing = target.value == 'profile' ? billingStore.profilePrice : billingStore.analysisPrice;
-    withClientMutation(
-      mutation,
-      { uid: pricing?.uid, payload },
-      mutationKey
-    ).then((result) => {
-    });
+    if(target?.value === "profile"){
+        withClientMutation<EditProfilePricingMutation, EditProfilePricingMutationVariables>(
+          EditProfilePricingDocument,
+          { uid: pricing?.uid, payload },
+          "updateProfilePrice"
+        ).then();
+    } else {
+        withClientMutation<EditAnalysisPricingMutation, EditAnalysisPricingMutationVariables>(
+          EditAnalysisPricingDocument,
+          { uid: pricing?.uid, payload },
+          "updateAnalysisPrice"
+        ).then();
+    }
   };
 
   const formDiscount = reactive({ 
@@ -100,15 +106,19 @@
 
   const updateDiscounting = () => {
     const payload = { ...formDiscount  };
-    let mutation = target.value == 'profile' ? EDIT_PROFILE_DISCOUNT : EDIT_ANALYSIS_DISCOUNT;
-    let mutationKey = target.value == 'profile' ? "updateProfileDiscount" : "updateAnalysisDiscount"
-    let discount = target.value == 'profile' ? billingStore.profileDiscount : billingStore.analyisDiscount;
-    withClientMutation(
-      mutation,
-      { uid: discount?.uid, payload },
-      mutationKey
-    ).then((result) => {
-    });
+    if(target.value == 'profile'){
+      withClientMutation<EditProfileDiscountMutation, EditProfileDiscountMutationVariables>(
+        EditProfileDiscountDocument,
+        { uid: discount?.uid, payload },
+        "updateProfileDiscount"
+      ).then();
+    } else {
+      withClientMutation<EditAnalysisDiscountMutation, EditAnalysisDiscountMutationVariables>(
+        EditAnalysisDiscountDocument,
+        { uid: discount?.uid, payload },
+        "updateAnalysisDiscount"
+      ).then();
+    }
   };
 
   watch(() => formDiscount.discountType, (dt, _) => {

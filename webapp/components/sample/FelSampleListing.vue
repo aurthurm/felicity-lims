@@ -5,8 +5,9 @@ import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
 import { ifZeroEmpty, parseDate } from "@/utils/helpers";
-import { useSampleStore, useAnalysisStore } from "@/stores";
-import { useSampleComposable } from "@/composables";
+import { useSampleStore } from "@/stores/sample";
+import { useAnalysisStore } from "@/stores/analysis";
+import useSampleComposable from "@/composables/samples";
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
 )

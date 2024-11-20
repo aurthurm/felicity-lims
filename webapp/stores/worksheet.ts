@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID } from '@/graphql/operations/worksheet.queries';
-import { WORKSHEET_UPDATE } from '@/graphql/operations/worksheet.mutations';
-
-import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '@/graphql/operations/analyses.queries';
 import { parseData, keysToCamel, addListsUnique } from '@/utils/helpers';
 import { IAnalysisResult } from '@/models/analysis';
 import { IWorkSheetTemplate, IWorkSheet, IReserved } from '@/models/worksheet';
 import { IPageInfo } from '@/models/pagination';
 
-import { useApiUtil } from '@/composables';
+import useApiUtil  from '@/composables/api_util';
+import { GetAllWorksheetsDocument, GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables, GetAllWorksheetTemplatesDocument, GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables, GetWorkSheetByUidDocument, GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables } from '@/graphql/operations/worksheet.queries';
+import { UpdateWorkSheetDocument, UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables } from '@/graphql/operations/worksheet.mutations';
+import { GetAnalysesResultsForWsAssignDocument, GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables } from '@/graphql/operations/analyses.queries';
 
 const { withClientQuery, withClientMutation } = useApiUtil();
 
@@ -55,7 +54,7 @@ export const useWorksheetStore = defineStore('worksheet', {
         // WorkSheet Templates
         async fetchWorkSheetTemplates() {
             this.fetchingWorkSheetTemplates = true;
-            await withClientQuery(GET_ALL_WORKSHEET_TEMPLATES, {}, 'worksheetTemplateAll')
+            await withClientQuery<GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables>(GetAllWorksheetTemplatesDocument, {}, 'worksheetTemplateAll')
                 .then(payload => {
                     this.fetchingWorkSheetTemplates = false;
                     payload?.forEach((template: IWorkSheetTemplate) => {
@@ -90,7 +89,7 @@ export const useWorksheetStore = defineStore('worksheet', {
         // WorkSheets
         async fetchWorkSheets(params) {
             this.fetchingWorkSheets = true;
-            await withClientQuery(GET_ALL_WORKSHEETS, params, undefined)
+            await withClientQuery<GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables>(GetAllWorksheetsDocument, params, undefined)
                 .then(payload => {
                     this.fetchingWorkSheets = false;
                     const page = payload.worksheetAll;
@@ -107,7 +106,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 .catch(err => (this.fetchingWorkSheets = false));
         },
         async fetchWorksheetByUid(worksheetUid: string) {
-            await withClientQuery(GET_WORKSHEET_BY_UID, { worksheetUid }, 'worksheetByUid').then(
+            await withClientQuery<GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables>(GetWorkSheetByUidDocument, { worksheetUid }, 'worksheetByUid').then(
                 payload => (this.workSheet = sortAnalysisResults(payload))
             );
         },
@@ -118,7 +117,7 @@ export const useWorksheetStore = defineStore('worksheet', {
             this.workSheet = undefined;
         },
         async updateWorksheet(payload) {
-            await withClientMutation(WORKSHEET_UPDATE, payload, 'updateWorksheet').then(payload => {});
+            await withClientMutation<UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables>(UpdateWorkSheetDocument, payload, 'updateWorksheet').then(payload => {});
         },
         updateWorksheetStatus(worksheet: any) {
             const index = this.workSheets.findIndex(x => x.uid === worksheet.uid);
@@ -151,7 +150,7 @@ export const useWorksheetStore = defineStore('worksheet', {
         // Analyses for WS Assign
         async fetchForWorkSheetsAssign(params) {
             this.fetchingAnalysisResults = true;
-            await withClientQuery(GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN, params, undefined)
+            await withClientQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables>(GetAnalysesResultsForWsAssignDocument, params, undefined)
                 .then(payload => {
                     this.fetchingAnalysisResults = false;
                     const page = payload.analysisResultsForWsAssign;

@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import LoadingMessage from "@/components/ui/spinners/FelLoadingMessage.vue";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
 import modal from "@/components/ui/FelModal.vue";
 import {
-  ADD_CLIENT_CONTACT,
-  EDIT_CLIENT_CONTACT,
-  DELETE_CLIENT_CONTACT,
+  DeleteClientContactDocument, DeleteClientContactMutation, DeleteClientContactMutationVariables,
+  AddClientContactDocument, AddClientContactMutation, AddClientContactMutationVariables,
+  EditClientContactDocument, EditClientContactMutation, EditClientContactMutationVariables,
 } from "@/graphql/operations/clients.mutations";
-import { useClientStore } from "@/stores";
+import { useClientStore } from "@/stores/client";
 import { IClientContact } from "@/models/client";
-import { useApiUtil } from "@/composables";
+import useApiUtil  from "@/composables/api_util";
 import * as shield from "@/guards";
+
+const LoadingMessage = defineAsyncComponent(
+    () => import('@/components/ui/spinners/FelLoadingMessage.vue')
+)
 
 let clientStore = useClientStore();
 let router = useRoute();
@@ -33,8 +36,7 @@ const props = defineProps({
 clientStore.fetchClientContacts(router.query.clientUid!);
 
 function addClientContact() {
-  withClientMutation(
-    ADD_CLIENT_CONTACT,
+  withClientMutation<AddClientContactMutation, AddClientContactMutationVariables>(AddClientContactDocument,
     {
       payload: {
         clientUid: router.query.clientUid!,
@@ -48,8 +50,7 @@ function addClientContact() {
 }
 
 function editClientContact() {
-  withClientMutation(
-    EDIT_CLIENT_CONTACT,
+  withClientMutation<EditClientContactMutation, EditClientContactMutationVariables>(EditClientContactDocument,
     {
       uid: contact.value.uid,
       payload: {
@@ -81,7 +82,7 @@ function saveForm() {
 }
 
 function deleteClientContact(uid: string) {
-  withClientMutation(DELETE_CLIENT_CONTACT, { uid },
+  withClientMutation<DeleteClientContactMutation, DeleteClientContactMutationVariables>(DeleteClientContactDocument, { uid },
     "deleteClientContact"
   ).then((res) => clientStore.deleteClientContact(res?.uid));
 }

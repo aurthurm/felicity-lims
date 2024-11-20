@@ -6,13 +6,16 @@ import {
   IDistrict
 } from '@/models/location';
 import {
-  ADD_COUNTRY, UPDATE_COUNTRY,
-  ADD_PROVINCE, ADD_DISTRICT,
-  UPDATE_DISTRICT, UPDATE_PROVINCE
+  AddCountryDocument, AddCountryMutation, AddCountryMutationVariables,
+  EditCountryDocument, EditCountryMutation, EditCountryMutationVariables,
+  AddProvinceDocument, AddProvinceMutation, AddProvinceMutationVariables,
+  AddDistrictDocument, AddDistrictMutation, AddDistrictMutationVariables,
+  EditDistrictDocument, EditDistrictMutation, EditDistrictMutationVariables,
+  EditProvinceDocument, EditProvinceMutation, EditProvinceMutationVariables
 } from '@/graphql/operations/admin.mutations';
 
-import { useLocationStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { useLocationStore } from '@/stores/location';
+import  useApiUtil  from '@/composables/api_util';
 const modal = defineAsyncComponent(
   () => import('@/components/ui/FelModal.vue')
 )
@@ -40,7 +43,7 @@ const countries = computed(() => locationStore.getCountries)
 
 function addCountry(): void {
   const payload = { name: form.name, code: form.code }
-  withClientMutation(ADD_COUNTRY, { payload }, "createCountry").then((result) => {
+  withClientMutation<AddCountryMutation, AddCountryMutationVariables>(AddCountryDocument, { payload }, "createCountry").then((result) => {
     locationStore.addCountry(result)
     Object.assign(country, result);
   });
@@ -48,7 +51,7 @@ function addCountry(): void {
 
 function editCountry(): void {
   const payload = { name: form.name, code: form.code, active: true }
-  withClientMutation(UPDATE_COUNTRY, { uid: form.uid, payload }, "updateCountry").then(
+  withClientMutation<EditCountryMutation, EditCountryMutationVariables>(EditCountryDocument, { uid: form.uid, payload }, "updateCountry").then(
     (result) => {
       locationStore.updateCountry(result)
       Object.assign(country, result);
@@ -58,7 +61,7 @@ function editCountry(): void {
 
 function addProvince(): void {
   const payload = { name: form.name, code: form.code, countryUid: country.uid }
-  withClientMutation(ADD_PROVINCE, { payload }, "createProvince").then((result) => {
+  withClientMutation<AddProvinceMutation, AddProvinceMutationVariables>(AddProvinceDocument, { payload }, "createProvince").then((result) => {
     locationStore.addProvince(result)
     Object.assign(province, result);
   });
@@ -66,7 +69,7 @@ function addProvince(): void {
 
 function editProvince(): void {
   const payload = { name: form.name, code: form.code, active: true, countryUid: +form.countryUid }
-  withClientMutation(UPDATE_PROVINCE, { uid: form.uid, payload }, "updateProvince").then(
+  withClientMutation<EditProvinceMutation, EditProvinceMutationVariables>(EditProvinceDocument, { uid: form.uid, payload }, "updateProvince").then(
     (result) => {
       locationStore.updateProvince(result)
       Object.assign(province, result);
@@ -76,7 +79,7 @@ function editProvince(): void {
 
 function addDistrict(): void {
   const payload = { name: form.name, code: form.code, provinceUid: province.uid }
-  withClientMutation(ADD_DISTRICT, { payload }, "createDistrict").then((result) => {
+  withClientMutation<AddDistrictMutation, AddDistrictMutationVariables>(AddDistrictDocument, { payload }, "createDistrict").then((result) => {
     locationStore.addDistrict(result)
     Object.assign(district, result);
   });
@@ -84,7 +87,7 @@ function addDistrict(): void {
 
 function editDistrict(): void {
   const payload = { name: form.name, code: form.code, active: true, provinceUid: +form.provinceUid }
-  withClientMutation(UPDATE_DISTRICT, { uid: form.uid, payload }, "updateDistrict").then(
+  withClientMutation<EditDistrictMutation, EditDistrictMutationVariables>(EditDistrictDocument, { uid: form.uid, payload }, "updateDistrict").then(
     (result) => {
       locationStore.updateDistrict(result)
       Object.assign(district, result);

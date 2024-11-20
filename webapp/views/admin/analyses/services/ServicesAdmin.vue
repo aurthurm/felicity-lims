@@ -2,9 +2,14 @@
   import { ref, reactive, computed, defineAsyncComponent, watch } from 'vue';
   import { useRoute } from 'vue-router';
   import { IAnalysisService } from '@/models/analysis';
-  import { ADD_ANALYSIS_MAPPING, ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_MAPPING, EDIT_ANALYSIS_SERVICE  } from '@/graphql/operations/analyses.mutations';
-  import { useSetupStore, useAnalysisStore, useSampleStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddAnalysisMappingDocument, AddAnalysisMappingMutation, AddAnalysisMappingMutationVariables,
+    AddAnalysisServiceDocument, AddAnalysisServiceMutation, AddAnalysisServiceMutationVariables,
+    EditAnalysisMappingDocument, EditAnalysisMappingMutation, EditAnalysisMappingMutationVariables,
+    EditAnalysisServiceDocument, EditAnalysisServiceMutation, EditAnalysisServiceMutationVariables } from '@/graphql/operations/analyses.mutations';
+  import { useSetupStore } from '@/stores/setup';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import { useSampleStore } from '@/stores/sample';
+  import  useApiUtil  from '@/composables/api_util';
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -100,7 +105,7 @@
       requiredVerifications: analysisService.requiredVerifications,
       selfVerification: analysisService.selfVerification,
     }
-    withClientMutation(ADD_ANALYSIS_SERVICE,{ payload }, "createAnalysis")
+    withClientMutation<AddAnalysisServiceMutation, AddAnalysisServiceMutationVariables>(AddAnalysisServiceDocument, { payload }, "createAnalysis")
     .then((result) => analysisStore.addAnalysesService(result));
   }
 
@@ -122,7 +127,7 @@
       requiredVerifications: analysisService.requiredVerifications,
       selfVerification: analysisService.selfVerification,
     }
-    withClientMutation(EDIT_ANALYSIS_SERVICE, {  uid: analysisService.uid,  payload }, "updateAnalysis")
+    withClientMutation<EditAnalysisServiceMutation, EditAnalysisServiceMutationVariables>(EditAnalysisServiceDocument, {  uid: analysisService.uid,  payload }, "updateAnalysis")
     .then((result) => analysisStore.updateAnalysisService(result));
   }
 
@@ -170,11 +175,7 @@ function addMapping(): void {
     code: mappingForm.code,
     description: mappingForm.description,
   };
-  withClientMutation(
-    ADD_ANALYSIS_MAPPING,
-    { payload },
-    "createAnalysisMapping"
-  ).then((result) => analysisStore.addAnalysesMapping(result));
+  withClientMutation<AddAnalysisMappingMutation, AddAnalysisMappingMutationVariables>(AddAnalysisMappingDocument, { payload }, "createAnalysisMapping").then((result) => analysisStore.addAnalysesMapping(result));
 }
 
 function updateMapping(): void {
@@ -185,11 +186,7 @@ function updateMapping(): void {
     code: mappingForm.code,
     description: mappingForm.description,
   };
-  withClientMutation(
-    EDIT_ANALYSIS_MAPPING,
-    { uid: mappingForm.uid, payload },
-    "updateAnalysisMapping"
-  ).then((result) => analysisStore.updateAnalysesMapping(result));
+  withClientMutation<EditAnalysisMappingMutation, EditAnalysisMappingMutationVariables>(EditAnalysisMappingDocument, { uid: mappingForm.uid, payload }, "updateAnalysisMapping").then((result) => analysisStore.updateAnalysesMapping(result));
 }
 
 function MappingFormManager(create: boolean, obj = {} as any): void {

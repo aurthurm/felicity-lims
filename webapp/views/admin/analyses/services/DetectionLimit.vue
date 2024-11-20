@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_DETECTION_LIMIT, EDIT_ANALYSIS_DETECTION_LIMIT  } from '@/graphql/operations/analyses.mutations';
+  import { AddAnalysisDetectionLimitDocument, AddAnalysisDetectionLimitMutation, AddAnalysisDetectionLimitMutationVariables,
+    EditAnalysisDetectionLimitDocument, EditAnalysisDetectionLimitMutation, EditAnalysisDetectionLimitMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { IAnalysisDetectionLimit } from '@/models/analysis';
   import { IInstrument, IMethod } from '@/models/setup';
-  import { useSetupStore, useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -44,7 +46,7 @@
 
   function addAnalysisDetectionLimit(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
-      withClientMutation(ADD_ANALYSIS_DETECTION_LIMIT, { payload }, "createAnalysisDetectionLimit")
+      withClientMutation<AddAnalysisDetectionLimitMutation, AddAnalysisDetectionLimitMutationVariables>(AddAnalysisDetectionLimitDocument, { payload }, "createAnalysisDetectionLimit")
       .then((result) => analysisStore.addAnalysisDetectionLimit(result));
   }
 
@@ -53,7 +55,7 @@
       delete payload['uid']
       delete payload['__typename']
 
-      withClientMutation(EDIT_ANALYSIS_DETECTION_LIMIT, { uid : form.uid,  payload }, "updateAnalysisDetectionLimit")
+      withClientMutation<EditAnalysisDetectionLimitMutation, EditAnalysisDetectionLimitMutationVariables>(EditAnalysisDetectionLimitDocument, { uid : form.uid,  payload }, "updateAnalysisDetectionLimit")
       .then((result) => analysisStore.updateAnalysisDetectionLimit(result));
   }
 

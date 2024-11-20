@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useClientStore } from "@/stores";
-import tabSamples from "@/components/sample/FelSampleListing.vue";
-import tabContacts from "./ContactTable.vue";
-import tabLogs from "@/components/audit/FelAuditLog.vue";
+import { ref, computed, defineAsyncComponent } from "vue";
+import { useClientStore } from "@/stores/client";
 
+const tabSamples = defineAsyncComponent(
+    () => import('@/components/sample/FelSampleListing.vue')
+)
+const tabContacts = defineAsyncComponent(
+    () => import('./ContactTable.vue')
+)
+const tabLogs = defineAsyncComponent(
+    () => import('@/components/audit/FelAuditLog.vue')
+)
 const clientStore = useClientStore();
 
 let currentTab = ref("samples");

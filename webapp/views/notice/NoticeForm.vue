@@ -2,10 +2,13 @@
 import 'ckeditor5/ckeditor5.css';
 import { PropType, toRefs, ref, onMounted } from "vue";
 import { INotice } from "@/models/notice";
-import { ADD_NOTICE, EDIT_NOTICE } from "@/graphql/operations/notice.mutations";
+import { 
+	AddNoticeDocument, AddNoticeMutation, AddNoticeMutationVariables,
+	EditNoticeDocument, EditNoticeMutation, EditNoticeMutationVariables
+} from "@/graphql/operations/notice.mutations";
 
-import { useNoticeStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useNoticeStore } from "@/stores/notice";
+import useApiUtil  from "@/composables/api_util";
 
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number, date } from "yup";
@@ -176,8 +179,7 @@ const submitNoticeForm = handleSubmit((values) => {
 
 //
 function addNotice(payload: INotice) {
-  withClientMutation(
-    ADD_NOTICE,
+  withClientMutation<AddNoticeMutation, AddNoticeMutationVariables>(AddNoticeDocument,
     {
       payload: {
         title: payload.title,
@@ -195,8 +197,7 @@ function addNotice(payload: INotice) {
 }
 
 function updateNotice(payload: INotice) {
-  withClientMutation(
-    EDIT_NOTICE,
+  withClientMutation<EditNoticeMutation, EditNoticeMutationVariables>(EditNoticeDocument,
     {
       uid: payload.uid,
       payload: {

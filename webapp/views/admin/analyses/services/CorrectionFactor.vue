@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_CORRECTION_FACTOR, EDIT_ANALYSIS_CORRECTION_FACTOR  } from '@/graphql/operations/analyses.mutations';
+  import { AddAnalysisCorrectionFactorDocument, AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables,
+    EditAnalysisCorrectionFactorDocument, EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { IAnalysisCorrectionFactor } from '@/models/analysis';
   import { IInstrument, IMethod } from '@/models/setup';
-  import { useSetupStore, useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -44,7 +46,7 @@
 
   function addAnalysisCorrectionFactor(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
-      withClientMutation(ADD_ANALYSIS_CORRECTION_FACTOR, { payload }, "createAnalysisCorrectionFactor")
+      withClientMutation<AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables>(AddAnalysisCorrectionFactorDocument, { payload }, "createAnalysisCorrectionFactor")
       .then((result) => analysisStore.AddAnalysisCorrectionFactor(result));
   }
 
@@ -53,7 +55,7 @@
       delete payload['uid']
       delete payload['__typename']
 
-      withClientMutation(EDIT_ANALYSIS_CORRECTION_FACTOR, { uid : form.uid,  payload }, "updateAnalysisCorrectionFactor")
+      withClientMutation<EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables>(EditAnalysisCorrectionFactorDocument, { uid : form.uid,  payload }, "updateAnalysisCorrectionFactor")
       .then((result) => analysisStore.updateAnalysisCorrectionFactor(result));
   }
 

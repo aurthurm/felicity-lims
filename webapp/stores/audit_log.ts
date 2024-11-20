@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 
 const { withClientQuery } = useApiUtil();
 
-import { GET_AUDIT_LOG_FOR_TARGET } from '@/graphql/operations/_queries';
+import { GetAuditLogsDocument, GetAuditLogsQuery, GetAuditLogsQueryVariables } from '@/graphql/operations/_queries';
 
 export const useAuditLogStore = defineStore('auditlog', {
     state: () => {
@@ -18,7 +18,7 @@ export const useAuditLogStore = defineStore('auditlog', {
     actions: {
         async fetchAuditLogs(params) {
             this.fetchingAudits = true;
-            await withClientQuery(GET_AUDIT_LOG_FOR_TARGET, params, 'auditLogsFilter')
+            await withClientQuery<GetAuditLogsQuery, GetAuditLogsQueryVariables>(GetAuditLogsDocument, params, 'auditLogsFilter')
                 .then(payload => {
                     this.fetchingAudits = false;
                     this.auditLogs = payload?.map(logs => {

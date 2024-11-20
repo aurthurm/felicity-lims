@@ -2,12 +2,10 @@
 import VueMultiselect from "vue-multiselect";
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import { useRouter } from "vue-router";
-import {
-  useSampleStore,
-  useAnalysisStore,
-  useClientStore,
-  usePatientStore,
-} from "@/stores";
+import { usePatientStore } from "@/stores/patient";
+import { useSampleStore } from "@/stores/sample";
+import { useAnalysisStore } from "@/stores/analysis";
+import { useClientStore } from "@/stores/client";
 import {
   IAnalysisProfile,
   IAnalysisRequest,
@@ -15,11 +13,12 @@ import {
   ISample,
   ISampleType,
 } from "@/models/analysis";
-import { ADD_ANALYSIS_REQUEST } from "@/graphql/operations/analyses.mutations";
+import { AddAnalysisRequestDocument, AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables } from "@/graphql/operations/analyses.mutations";
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number } from "yup";
 import { IClient } from "@/models/client";
-import { useApiUtil, useNotifyToast } from "@/composables";
+import useNotifyToast from "@/composables/alert_toast";
+import useApiUtil from "@/composables/api_util";
 import { formatDate } from "@/utils/helpers";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
@@ -142,7 +141,7 @@ function addAnalysesRequest(request: IAnalysisRequest): void {
       };
     }),
   };
-  withClientMutation(ADD_ANALYSIS_REQUEST, { payload }, "createAnalysisRequest")
+  withClientMutation<AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables>(AddAnalysisRequestDocument, { payload }, "createAnalysisRequest")
     .then((result) => {
       sampleStore.addAnalysisRequest(result);
       router.push({ name: "patient-detail", params: { patientUid: patient.value?.uid } });

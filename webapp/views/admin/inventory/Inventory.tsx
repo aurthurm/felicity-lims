@@ -1,5 +1,6 @@
 import { defineComponent, ref, computed, defineAsyncComponent } from 'vue';
-import { useSampleStore, useSetupStore } from '@/stores';
+import { useSampleStore } from '@/stores/sample';
+import { useSetupStore } from '@/stores/setup';
 const StockCategory = defineAsyncComponent(
     () => import('./StockCategory')
 )
@@ -33,7 +34,7 @@ const InventoryHome = defineComponent({
         return (
             <div class="mt-4">
                 <nav class="bg-white shadow-md mt-2">
-                    <div class="-mb-px flex justify-start">
+                    <div class="-mb-px flex justify-start" role="tablist">
                         {tabs.map(tab => {
                             return (
                                 <a

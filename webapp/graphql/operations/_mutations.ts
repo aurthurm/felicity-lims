@@ -472,7 +472,7 @@ export function useTokenRefreshMutation() {
   return Urql.useMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(TokenRefreshDocument);
 };
 export const AddUserDocument = gql`
-    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
+    mutation AddUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
   createUser(
     firstName: $firstName
     lastName: $lastName
@@ -517,7 +517,7 @@ export function useAddUserMutation() {
   return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
 };
 export const EditUserDocument = gql`
-    mutation editUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean, $password: String, $passwordc: String) {
+    mutation EditUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean, $password: String, $passwordc: String) {
   updateUser(
     userUid: $userUid
     firstName: $firstName
@@ -564,7 +564,7 @@ export function useEditUserMutation() {
   return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
 };
 export const AddGroupDocument = gql`
-    mutation addGroup($payload: GroupInputType!) {
+    mutation AddGroup($payload: GroupInputType!) {
   createGroup(payload: $payload) {
     ... on GroupType {
       __typename
@@ -592,7 +592,7 @@ export function useAddGroupMutation() {
   return Urql.useMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument);
 };
 export const EditGroupDocument = gql`
-    mutation editGroup($uid: String!, $payload: GroupInputType!) {
+    mutation EditGroup($uid: String!, $payload: GroupInputType!) {
   updateGroup(uid: $uid, payload: $payload) {
     ... on GroupType {
       __typename
@@ -620,7 +620,7 @@ export function useEditGroupMutation() {
   return Urql.useMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument);
 };
 export const UpdateGroupsAndPermissionsDocument = gql`
-    mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
+    mutation UpdateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
   updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
     ... on UpdatedGroupPerms {
       group {
@@ -654,7 +654,7 @@ export function useUpdateGroupsAndPermissionsMutation() {
   return Urql.useMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument);
 };
 export const AddDepartmentDocument = gql`
-    mutation addDepartment($payload: DepartmentInputType!) {
+    mutation AddDepartment($payload: DepartmentInputType!) {
   createDepartment(payload: $payload) {
     ... on DepartmentType {
       uid
@@ -673,7 +673,7 @@ export function useAddDepartmentMutation() {
   return Urql.useMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument);
 };
 export const EditDepartmentDocument = gql`
-    mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
+    mutation EditDepartment($uid: String!, $payload: DepartmentInputType!) {
   updateDepartment(uid: $uid, payload: $payload) {
     ... on DepartmentType {
       uid
@@ -692,7 +692,7 @@ export function useEditDepartmentMutation() {
   return Urql.useMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument);
 };
 export const EditLaboratoryDocument = gql`
-    mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
+    mutation EditLaboratory($uid: String!, $payload: LaboratoryInputType!) {
   updateLaboratory(uid: $uid, payload: $payload) {
     ... on LaboratoryType {
       uid
@@ -722,7 +722,7 @@ export function useEditLaboratoryMutation() {
   return Urql.useMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument);
 };
 export const EditLaboratorySettingDocument = gql`
-    mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
+    mutation EditLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
   updateLaboratorySetting(uid: $uid, payload: $payload) {
     ... on LaboratorySettingType {
       uid

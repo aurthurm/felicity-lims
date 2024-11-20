@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IInstrumentType } from '@/models/setup'
-  import { ADD_INSTRUMENT_TYPE, EDIT_INSTRUMENT_TYPE } from '@/graphql/operations/instrument.mutations';
-  import { useSetupStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddInstrumentTypeDocument, AddInstrumentTypeMutation, AddInstrumentTypeMutationVariables,
+    EditInstrumentTypeDocument, EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables } from '@/graphql/operations/instrument.mutations';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -21,13 +22,13 @@
 
   function addInstrumentType(): void {
     const payload = { name: instrumentType.name, description: instrumentType.description }
-    withClientMutation(ADD_INSTRUMENT_TYPE, { payload }, "createInstrumentType")
+    withClientMutation<AddInstrumentTypeMutation, AddInstrumentTypeMutationVariables>(AddInstrumentTypeDocument, { payload }, "createInstrumentType")
     .then((result) => setupStore.addInstrumentType(result));
   }
 
   function editInstrumentType(): void {
     const payload = { name: instrumentType.name, description: instrumentType.description }
-    withClientMutation(EDIT_INSTRUMENT_TYPE, { uid: instrumentType.uid, payload }, "updateInstrumentType")
+    withClientMutation<EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables>(EditInstrumentTypeDocument, { uid: instrumentType.uid, payload }, "updateInstrumentType")
     .then((result) => setupStore.updateInstrumentType(result));
   }
 

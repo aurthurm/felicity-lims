@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, defineAsyncComponent } from "vue";
 import { IReflexRule } from "@/models/reflex";
-import { useApiUtil } from "@/composables";
-import { useReflexStore } from "@/stores";
-import { ADD_REFLEX_RULE, EDIT_REFLEX_RULE } from "@/graphql/operations/reflex.mutations";
+import useApiUtil  from "@/composables/api_util";
+import { useReflexStore } from "@/stores/reflex";
+import { AddReflexRuleDocument, AddReflexRuleMutation, AddReflexRuleMutationVariables, EditReflexRuleDocument, EditReflexRuleMutation, EditReflexRuleMutationVariables } from "@/graphql/operations/reflex.mutations";
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
@@ -22,18 +22,14 @@ onMounted(async () => {
 
 function addReflexRule(): void {
   const payload = { name: form.name, description: form.description };
-  withClientMutation(ADD_REFLEX_RULE, { payload }, "createReflexRule").then((payload) =>
+  withClientMutation<AddReflexRuleMutation, AddReflexRuleMutationVariables>(AddReflexRuleDocument, { payload }, "createReflexRule").then((payload) =>
     reflexStore.addReflexRule(payload)
   );
 }
 
 function editReflexRule(): void {
   const payload = { name: form.name, description: form.description };
-  withClientMutation(
-    EDIT_REFLEX_RULE,
-    { uid: form.uid, payload },
-    "updateReflexRule"
-  ).then((payload) => reflexStore.updateReflexRule(payload));
+  withClientMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(EditReflexRuleDocument, { uid: form.uid, payload }, "updateReflexRule").then((payload) => reflexStore.updateReflexRule(payload));
 }
 
 function FormManager(create: boolean, obj = {} as IReflexRule): void {

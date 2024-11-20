@@ -3,9 +3,10 @@ import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
-import { useWorksheetStore, useUserStore } from "@/stores";
-import { useApiUtil } from "@/composables";
-import { ADD_WORKSHEET } from "@/graphql/operations/worksheet.mutations";
+import { useWorksheetStore } from "@/stores/worksheet";
+import { useUserStore } from "@/stores/user";
+import useApiUtil  from "@/composables/api_util";
+import { AddWorkSheetDocument, AddWorkSheetMutation, AddWorkSheetMutationVariables } from "@/graphql/operations/worksheet.mutations";
 import { IAnalysisService } from "@/models/analysis";
 import { useField, useForm } from "vee-validate";
 import { object, number } from "yup";
@@ -160,7 +161,7 @@ const { value: instrumentUid } = useField("instrumentUid");
 
 const saveForm = handleSubmit((values) => {
   showModal.value = false;
-  withClientMutation(ADD_WORKSHEET, values, "createWorksheet").then((result) => {
+  withClientMutation<AddWorkSheetMutation, AddWorkSheetMutationVariables>(AddWorkSheetDocument, values, "createWorksheet").then((result) => {
     worksheetStore.addWorksheet(result);
     showModal.value = false;
   });

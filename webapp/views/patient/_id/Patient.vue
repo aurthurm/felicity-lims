@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
-import { usePatientStore } from "@/stores";
+import { usePatientStore } from "@/stores/patient";
 import { IPatient } from "@/models/patient";
 
 const modal = defineAsyncComponent(

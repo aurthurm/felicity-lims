@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IQCLevel } from '@/models/analysis';
-  import { ADD_QC_LEVEL, EDIT_QC_LEVEL  } from '@/graphql/operations/analyses.mutations';
+  import { AddQcLevelDocument, AddQcLevelMutation, AddQcLevelMutationVariables,
+    EditQcLevelDocument, EditQcLevelMutation, EditQcLevelMutationVariables } from '@/graphql/operations/analyses.mutations';
 
-  import { useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -21,12 +22,12 @@
   const qcLevels = computed(() => analysisStore.getQCLevels)
 
   function addQCLevel(): void {
-    withClientMutation(ADD_QC_LEVEL, { level: form.level }, "createQcLevel")
+    withClientMutation<AddQcLevelMutation, AddQcLevelMutationVariables>(AddQcLevelDocument, { level: form.level }, "createQcLevel")
     .then((result) => analysisStore.addQcLevel(result));
   }
 
   function editQCLevel(): void {
-    withClientMutation(EDIT_QC_LEVEL,{ uid: form.uid, level: form.level },"updateQcLevel")
+    withClientMutation<EditQcLevelMutation, EditQcLevelMutationVariables>(EditQcLevelDocument, { uid: form.uid, level: form.level },"updateQcLevel")
     .then((result) => analysisStore.updateQcLevel(result));
   }
 

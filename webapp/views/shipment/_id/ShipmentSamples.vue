@@ -2,8 +2,8 @@
 import { useRoute } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { ISample } from "@/models/analysis";
-import { useShipmentComposable } from "@/composables";
-import { useShipmentStore } from "@/stores";
+import useShipmentComposable from "@/composables/shipment";
+import { useShipmentStore } from "@/stores/shipment";
 const FButton = defineAsyncComponent(
   () => import("@/components/ui/buttons/FelButton.vue")
 )

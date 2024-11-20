@@ -1,19 +1,11 @@
 import { defineStore } from 'pinia';
-import {
-    GET_ALL_SUPPLIERS,
-    GET_ALL_MANUFACTURERS,
-    GET_ALL_METHODS,
-    GET_ALL_INSTRUMENT_TYPES,
-    GET_ALL_INSTRUMENTS,
-    GET_ALL_LABORATORY_INSTRUMENTS,
-    GET_ALL_UNITS,
-} from '@/graphql/operations/instrument.queries';
-import { GET_DEPARTMENTS } from '@/graphql/operations/_queries';
-import { GET_LABORATORY, GET_LABORATORY_SETTING } from '@/graphql/operations/_queries';
 import { IInstrument, IInstrumentType, ILaboratory, ILaboratoryInstrument, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '@/models/setup';
 import { IDepartment } from '@/models/setup';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
+import { GetAllDepartmentsDocument, GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables, GetLaboratoryDocument, GetLaboratoryQuery, GetLaboratoryQueryVariables, GetLaboratorySettingDocument, GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables } from '@/graphql/operations/_queries';
+import { GetAllInstrumentsDocument, GetAllInstrumentsQuery, GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables, GetAllLaboratoryInstrumentsDocument, GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables, GetAllManufacturersDocument, GetAllManufacturersQuery, GetAllManufacturersQueryVariables, GetAllMethodsDocument, GetAllMethodsQuery, GetAllMethodsQueryVariables, GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllUnitsDocument, GetAllUnitsQuery, GetAllUnitsQueryVariables } from '@/graphql/operations/instrument.queries';
+import { GetAllSampleTypesQueryVariables } from '@/graphql/operations/analyses.queries';
 
 const { withClientQuery } = useApiUtil();
 
@@ -73,7 +65,7 @@ export const useSetupStore = defineStore('setup', {
         // DEPARMENT
         async fetchDepartments(params) {
             this.fetchingDepartments = true;
-            await withClientQuery(GET_DEPARTMENTS, params, 'departmentAll')
+            await withClientQuery<GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables>(GetAllDepartmentsDocument, params, 'departmentAll')
                 .then((depts: IDepartment[]) => {
                     this.fetchingDepartments = false;
                     this.departments = depts;
@@ -90,7 +82,7 @@ export const useSetupStore = defineStore('setup', {
 
         // LABORATORY
         async fetchLaboratory() {
-            await withClientQuery(GET_LABORATORY, {}, 'laboratory').then(payload => (this.laboratory = payload));
+            await withClientQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>(GetLaboratoryDocument, {}, 'laboratory').then(payload => (this.laboratory = payload));
         },
         updateLaboratory(payload: ILaboratory): void {
             this.laboratory = payload;
@@ -98,7 +90,7 @@ export const useSetupStore = defineStore('setup', {
 
         // LABORATORY SETTING
         async fetchLaboratorySetting() {
-            await withClientQuery(GET_LABORATORY_SETTING, {}, 'laboratorySetting').then(payload => (this.laboratorySetting = payload));
+            await withClientQuery<GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables>(GetLaboratorySettingDocument, {}, 'laboratorySetting').then(payload => (this.laboratorySetting = payload));
         },
         updateLaboratorySetting(payload: ILaboratorySetting) {
             this.laboratorySetting = payload;
@@ -107,7 +99,7 @@ export const useSetupStore = defineStore('setup', {
         // SUPPLIERS
         async fetchSuppliers() {
             this.fetchingSuppliers = true;
-            await withClientQuery(GET_ALL_SUPPLIERS, {}, 'supplierAll')
+            await withClientQuery<GetAllSuppliersQuery, GetAllSampleTypesQueryVariables>(GetAllSuppliersDocument, {}, 'supplierAll')
                 .then(payload => {
                     this.fetchingSuppliers = false;
                     this.suppliers = payload;
@@ -125,7 +117,7 @@ export const useSetupStore = defineStore('setup', {
         // MAUFACTURERS
         async fetchManufacturers() {
             this.fetchingManufacturers = true;
-            await withClientQuery(GET_ALL_MANUFACTURERS, {}, 'manufacturerAll')
+            await withClientQuery<GetAllManufacturersQuery, GetAllManufacturersQueryVariables>(GetAllManufacturersDocument, {}, 'manufacturerAll')
                 .then(payload => {
                     this.fetchingManufacturers = false;
                     this.manufacturers = payload;
@@ -143,7 +135,7 @@ export const useSetupStore = defineStore('setup', {
         // INSTRUMENT TYOES
         async fetchInstrumentTypes() {
             this.fetchingInstrumentTypes = true;
-            await withClientQuery(GET_ALL_INSTRUMENT_TYPES, {}, 'instrumentTypeAll')
+            await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(GetAllInstrumentsDocument, {}, 'instrumentTypeAll')
                 .then(payload => {
                     this.fetchingInstrumentTypes = false;
                     this.instrumentTypes = payload?.items;
@@ -161,7 +153,7 @@ export const useSetupStore = defineStore('setup', {
         // INSTRUMENTS
         async fetchInstruments() {
             this.fetchingInstruments = false;
-            await withClientQuery(GET_ALL_INSTRUMENTS, {}, 'instrumentAll')
+            await withClientQuery<GetAllInstrumentsQuery, GetAllDepartmentsQueryVariables>(GetAllInstrumentsDocument, {}, 'instrumentAll')
                 .then(payload => {
                     this.fetchingInstruments = false;
                     this.instruments = payload?.items;
@@ -179,7 +171,7 @@ export const useSetupStore = defineStore('setup', {
         // laboratory INSTRUMENTS
         async fetchLaboratoryInstruments() {
             this.fetchingInstruments = false;
-            await withClientQuery(GET_ALL_LABORATORY_INSTRUMENTS, {}, 'laboratoryInstrumentAll')
+            await withClientQuery<GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables>(GetAllLaboratoryInstrumentsDocument, {}, 'laboratoryInstrumentAll')
                 .then(payload => {
                     this.fetchingInstruments = false;
                     this.laboratoryInstruments = payload?.items;
@@ -197,7 +189,7 @@ export const useSetupStore = defineStore('setup', {
         // METHODS
         async fetchMethods() {
             this.fetchingMethods = true;
-            await withClientQuery(GET_ALL_METHODS, {}, 'methodAll')
+            await withClientQuery<GetAllMethodsQuery, GetAllMethodsQueryVariables>(GetAllMethodsDocument, {}, 'methodAll')
                 .then(payload => {
                     this.fetchingMethods = false;
                     this.methods = payload?.items;
@@ -215,7 +207,7 @@ export const useSetupStore = defineStore('setup', {
         // UNITS
         async fetchUnits() {
             this.fetchingUnits = true;
-            await withClientQuery(GET_ALL_UNITS, {}, 'unitAll')
+            await withClientQuery<GetAllUnitsQuery, GetAllUnitsQueryVariables>(GetAllUnitsDocument, {}, 'unitAll')
                 .then(payload => {
                     this.fetchingUnits = false;
                     this.units = payload;

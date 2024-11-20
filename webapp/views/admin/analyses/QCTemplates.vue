@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IQCTemplate, IQCLevel } from '@/models/analysis';
-  import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '@/graphql/operations/analyses.mutations';
-  import { useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddQcTemplateDocument, AddQcTemplateMutation, AddQcTemplateMutationVariables,
+    EditQcTemplateDocument, EditQcTemplateMutation, EditQcTemplateMutationVariables } from '@/graphql/operations/analyses.mutations';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -24,13 +25,13 @@
 
   function addQCTemplate(): void {
     const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
-    withClientMutation(ADD_QC_TEMPLATE, { payload}, "createQcTemplate")
+    withClientMutation<AddQcTemplateMutation, AddQcTemplateMutationVariables>(AddQcTemplateDocument, { payload}, "createQcTemplate")
     .then((result) => analysisStore.addQcTemplate(result));
   }
 
   function editQCTemplate(): void {
     const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
-    withClientMutation(EDIT_QC_TEMPLATE,{ uid: form.uid, payload }, "updateQcTemplate")
+    withClientMutation<EditQcTemplateMutation, EditQcTemplateMutationVariables>(EditQcTemplateDocument, { uid: form.uid, payload }, "updateQcTemplate")
     .then((result) => analysisStore.updateQcTemplate(result));
   }
 

@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import DataTable from "@/components/ui/datatable/FelDataTable.vue";
-import { ref, reactive, computed, h } from "vue";
+import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import modal from "@/components/ui/FelModal.vue";
 import { IClient } from "@/models/client";
-import { ADD_CLIENT, EDIT_CLIENT } from "@/graphql/operations/clients.mutations";
+import { 
+  AddClientDocument, AddClientMutation, AddClientMutationVariables,
+  EditClientDocument, EditClientMutation, EditClientMutationVariables
+} from "@/graphql/operations/clients.mutations";
 
-import { useClientStore, useLocationStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useClientStore } from "@/stores/client";
+import { useLocationStore } from "@/stores/location";
+import useApiUtil  from "@/composables/api_util";
 
 import * as shield from "@/guards";
-import PageHeading from "@/components/common/FelPageHeading.vue";
+const DataTable = defineAsyncComponent(
+    () => import('@/components/ui/datatable/FelDataTable.vue')
+)
+
+const PageHeading = defineAsyncComponent(
+    () => import('@/components/common/FelPageHeading.vue')
+)
 
 const clientStore = useClientStore();
 const locationStore = useLocationStore();
@@ -112,16 +121,14 @@ clientStore.fetchClients(clientParams);
 locationStore.fetchCountries();
 
 function addClient() {
-  withClientMutation(
-    ADD_CLIENT,
+  withClientMutation<AddClientMutation, AddClientMutationVariables>(AddClientDocument,
     { payload: { name: client.name, code: client.code, districtUid: client.districtUid } },
     "createClient"
   ).then((res) => clientStore.addClient(res));
 }
 
 function editClient() {
-  withClientMutation(
-    EDIT_CLIENT,
+  withClientMutation<EditClientMutation, EditClientMutationVariables>(EditClientDocument,
     {
       uid: client.uid,
       payload: {

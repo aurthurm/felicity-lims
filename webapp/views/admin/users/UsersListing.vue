@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import {
-  ADD_USER,
-  EDIT_USER,
+    AddUserDocument, AddUserMutation, AddUserMutationVariables,
+    EditUserDocument, EditUserMutation, EditUserMutationVariables
 } from "@/graphql/operations/_mutations";
 import { IUser } from "@/models/auth";
-import { useUserStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useUserStore } from "@/stores/user";
+import useApiUtil  from "@/composables/api_util";
 const modal = defineAsyncComponent(
   () => import( "@/components/ui/FelModal.vue")
 )
@@ -32,13 +32,13 @@ let users = computed<IUser[]>(() => userStore.getUsers);
 const groups = computed(() => userStore.getGroups);
 
 function addUser(): void {
-  withClientMutation(ADD_USER, form, "createUser").then((result) =>
+  withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, form, "createUser").then((result) =>
     userStore.addUser(result)
   );
 }
 
 function editUser(): void {
-  withClientMutation(EDIT_USER, form, "updateUser").then((result) =>
+    withClientMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument, form, "updateUser").then((result) =>
     userStore.updateUser(result)
   );
 }

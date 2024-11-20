@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-import { usePatientStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { usePatientStore } from '@/stores/patient';
+import  useApiUtil  from '@/composables/api_util';
 import { IIdentification } from '@/models/patient'
-import { ADD_IDENTIFICATION, UPDATE_IDENTIFICATION } from '@/graphql/operations/patient.mutations';
+import { AddIdentificationDocument, AddIdentificationMutation, AddIdentificationMutationVariables,
+  EditIdentificationDocument, EditIdentificationMutation, EditIdentificationMutationVariables } from '@/graphql/operations/patient.mutations';
 const modal = defineAsyncComponent(
   () => import('@/components/ui/FelModal.vue')
 )
@@ -19,12 +20,12 @@ const formAction = ref<boolean>(true);
 patientStore.fetchIdentifications();
 
 function addIdentification(): void {
-  withClientMutation(ADD_IDENTIFICATION, { name: form.name }, "createIdentification")
+  withClientMutation<AddIdentificationMutation, AddIdentificationMutationVariables>(AddIdentificationDocument, { name: form.name }, "createIdentification")
     .then((result) => patientStore.addIdentification(result));
 }
 
 function editIdentification(): void {
-  withClientMutation(UPDATE_IDENTIFICATION, { uid: form.uid, name: form.name }, "updateIdentification")
+  withClientMutation<EditIdentificationMutation, EditIdentificationMutationVariables>(EditIdentificationDocument, { uid: form.uid, name: form.name }, "updateIdentification")
     .then((result) => patientStore.updateIdentification(result));
 }
 

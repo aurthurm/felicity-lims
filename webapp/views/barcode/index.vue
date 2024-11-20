@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useRoute } from 'vue-router'
-import { useSampleComposable } from "@/composables";
+import useSampleComposable from "@/composables/samples";
 
 const route = useRoute()
 // const routerState = router.options.history.state;

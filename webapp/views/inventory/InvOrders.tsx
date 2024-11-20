@@ -1,9 +1,12 @@
 import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
-import { useInventoryStore, useSetupStore } from '@/stores';
+import { useInventoryStore } from '@/stores/inventory';
+import { useSetupStore } from '@/stores/setup';
 import { IStockOrder, IStockOrderProduct } from '@/models/inventory';
-import { useApiUtil } from '@/composables';
-import { GET_ALL_STOCK_ORDER_PRODUCTS } from '@/graphql/operations/inventory.queries';
-import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '@/graphql/operations/inventory.mutations';
+import  useApiUtil  from '@/composables/api_util';
+import { GetAllStockOrderProductsDocument, GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables } from '@/graphql/operations/inventory.queries';
+import { EditStockOrderDocument, EditStockOrderMutation, EditStockOrderMutationVariables,
+    IssueStockOrderDocument, IssueStockOrderMutation, IssueStockOrderMutationVariables,
+    SubmitStockOrderDocument, SubmitStockOrderMutation, SubmitStockOrderMutationVariables } from '@/graphql/operations/inventory.mutations';
 import * as shield from "@/guards";
 
 const Drawer = defineAsyncComponent(
@@ -35,7 +38,7 @@ const InventoryOrders = defineComponent({
         });
 
         const getOrderProducts = async (stockOrderUid: number) => {
-            await withClientQuery(GET_ALL_STOCK_ORDER_PRODUCTS, { stockOrderUid }, 'stockOrderProductAll').then(
+            await withClientQuery<GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables>(GetAllStockOrderProductsDocument, { stockOrderUid }, 'stockOrderProductAll').then(
                 (products: IStockOrderProduct[]) => {
                     slectedStockOrder.products = products?.map(op => ({ ...op, issue: op.quantity }));
                 }
@@ -165,8 +168,7 @@ const InventoryOrders = defineComponent({
                         remarks: 'issue stock',
                     });
                 }
-                withClientMutation(
-                    ISSUE_STOCK_ORDER,
+                withClientMutation<IssueStockOrderMutation, IssueStockOrderMutationVariables>(IssueStockOrderDocument,
                     {
                         uid: slectedStockOrder?.order?.uid,
                         payload,
@@ -192,8 +194,7 @@ const InventoryOrders = defineComponent({
                     });
                 }
 
-                withClientMutation(
-                    EDIT_STOCK_ORDER,
+                withClientMutation<EditStockOrderMutation, EditStockOrderMutationVariables>(EditStockOrderDocument,
                     {
                         uid: slectedStockOrder.order.uid,
                         payload: {
@@ -208,8 +209,7 @@ const InventoryOrders = defineComponent({
                 });
             },
             submitOrder: () => {
-                withClientMutation(
-                    SUBMIT_STOCK_ORDER,
+                withClientMutation<SubmitStockOrderMutation, SubmitStockOrderMutationVariables>(SubmitStockOrderDocument,
                     {
                         uid: slectedStockOrder.order.uid,
                     },

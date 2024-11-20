@@ -1,10 +1,10 @@
 import { defineComponent, computed, ref, watch, PropType } from 'vue';
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 import { IStockAdjustment, IStockLot, IStockProduct } from '@/models/inventory';
-import { GET_ALL_STOCK_LOTS } from '@/graphql/operations/inventory.queries';
-import {
-    GET_ALL_STOCK_ADJUSTMENTS
-} from '@/graphql/operations/inventory.queries';
+import { 
+    GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables,
+    GetAllStockAdjustmentsDocument, GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables
+ } from '@/graphql/operations/inventory.queries';
 import { parseDate } from '@/utils/helpers';
 import { IPagination } from '@/models/pagination';
 
@@ -24,10 +24,10 @@ const ProductDetail = defineComponent({
         const stockAdjustments = ref([] as IStockAdjustment[]);
         watch(() => props.product?.uid, async (newUid, old) => {
             if (newUid) {
-                withClientQuery(GET_ALL_STOCK_LOTS, { productUid: newUid }, 'stockLots').then(result => {
+                withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid: newUid }, 'stockLots').then(result => {
                     stockLots.value = result;
                 })
-                withClientQuery(GET_ALL_STOCK_ADJUSTMENTS, {
+                withClientQuery<GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables>(GetAllStockAdjustmentsDocument, {
                     first: 25,
                     after: '',
                     text: '',

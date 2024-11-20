@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent, onMounted } from "vue";
-import { useLocationStore, usePatientStore } from "@/stores";
+import { usePatientStore } from "@/stores/patient";
+import { useLocationStore } from "@/stores/location";
 import { storeToRefs } from "pinia";
 import { IPatient } from "@/models/patient";
 import * as shield from "@/guards";

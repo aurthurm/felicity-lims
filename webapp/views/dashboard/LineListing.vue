@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, onMounted, defineAsyncComponent } from "vue";
 import { REST_BASE_URL } from "@/conf";
-import { useAnalysisStore } from "@/stores";
+import { useAnalysisStore } from "@/stores/analysis";
 import { IReportListing } from "@/models/reports";
 import useAnalyticsComposable from "@/composables/analytics";
 const accordion = defineAsyncComponent(

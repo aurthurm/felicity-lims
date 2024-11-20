@@ -9,14 +9,15 @@ import {
   IReflexBrainCondition,
   IReflexBrainConditionCriteria,
 } from "@/models/reflex";
-import { useApiUtil } from "@/composables";
-import { useReflexStore, useAnalysisStore } from "@/stores";
+import useApiUtil  from "@/composables/api_util";
+import { useReflexStore } from "@/stores/reflex";
+import { useAnalysisStore } from "@/stores/analysis";
 import {
-  ADD_REFLEX_ACTION,
-  EDIT_REFLEX_ACTION,
-  ADD_REFLEX_BRAIN,
-  EDIT_REFLEX_BRAIN,
-  DELETE_REFLEX_BRAIN,
+  AddReflexActionDocument, AddReflexActionMutation, AddReflexActionMutationVariables,
+  EditReflexActionDocument, EditReflexActionMutation, EditReflexActionMutationVariables,
+  AddReflexBrainDocument, AddReflexBrainMutation, AddReflexBrainMutationVariables,
+  EditReflexBrainDocument, EditReflexBrainMutation, EditReflexBrainMutationVariables,
+  DeleteReflexBrainDocument, DeleteReflexBrainMutation, DeleteReflexBrainMutationVariables
 } from "@/graphql/operations/reflex.mutations";
 import { stringifyNumber } from "@/utils/helpers";
 import { IAnalysisService, IResultOption } from "@/models/analysis";
@@ -66,11 +67,7 @@ function addReflexAction(): void {
     description: actionForm.description,
     analyses: actionForm.analyses,
   };
-  withClientMutation(
-    ADD_REFLEX_ACTION,
-    { payload },
-    "createReflexAction"
-  ).then((payload) => reflexStore.addReflexAction(payload));
+  withClientMutation<AddReflexActionMutation, AddReflexActionMutationVariables>(AddReflexActionDocument, { payload }, "createReflexAction").then((payload) => reflexStore.addReflexAction(payload));
 }
 
 function editReflexAction(): void {
@@ -80,11 +77,7 @@ function editReflexAction(): void {
     description: actionForm.description,
     analyses: actionForm.analyses,
   };
-  withClientMutation(
-    EDIT_REFLEX_ACTION,
-    { uid: actionForm.uid, payload },
-    "updateReflexAction"
-  ).then((payload) => reflexStore.updateReflexAction(payload));
+  withClientMutation<EditReflexActionMutation, EditReflexActionMutationVariables>(EditReflexActionDocument, { uid: actionForm.uid, payload }, "updateReflexAction").then((payload) => reflexStore.updateReflexAction(payload));
 }
 
 function reflexActionFormManager(create: boolean, obj: IReflexAction = {}): void {
@@ -114,7 +107,7 @@ function addReflexBrain(): void {
     ...brainForm,
     reflexActionUid: forAction.value,
   };
-  withClientMutation(ADD_REFLEX_BRAIN, { payload }, "createReflexBrain").then((payload) =>
+  withClientMutation<AddReflexBrainMutation, AddReflexBrainMutationVariables>(AddReflexBrainDocument, { payload }, "createReflexBrain").then((payload) =>
     reflexStore.updateReflexBrain(payload)
   );
 }
@@ -144,11 +137,7 @@ function editReflexBrain(): void {
       })),
     })),
   };
-  withClientMutation(
-    EDIT_REFLEX_BRAIN,
-    { uid: brainForm.uid, payload },
-    "updateReflexBrain"
-  ).then((payload) => reflexStore.updateReflexBrain(payload));
+  withClientMutation<EditReflexBrainMutation, EditReflexBrainMutationVariables>(EditReflexBrainDocument, { uid: brainForm.uid, payload }, "updateReflexBrain").then((payload) => reflexStore.updateReflexBrain(payload));
 }
 
 function addCondition(): void {
@@ -244,7 +233,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
     confirmButtonText: 'Yes, delete it!'
   }).then(result => {
     if (result.isConfirmed) {
-      withClientMutation(DELETE_REFLEX_BRAIN, { uid }, "deleteReflexBrain").then(_ =>
+      withClientMutation<DeleteReflexBrainMutation, DeleteReflexBrainMutationVariables>(DeleteReflexBrainDocument, { uid }, "deleteReflexBrain").then(_ =>
         reflexStore.deleteReflexBrain(actionUid, uid)
       );
     }

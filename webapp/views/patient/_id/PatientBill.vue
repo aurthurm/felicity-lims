@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref, computed, h } from "vue";
-import { useBillingStore, useSampleStore } from "@/stores";
+import { useBillingStore } from "@/stores/billing";
+import { useSampleStore } from "@/stores/sample";
 import { storeToRefs } from "pinia";
 import { parseDate } from "@/utils/helpers";
 import { ITestBill, ITestBillTransaction } from "@/models/billing";
-import { ADD_TEST_BILL_TRANSACTION,  CONFIRM_TEST_BILL_TRANSACTION, APPLY_BILL_VOUCHER } from "@/graphql/operations/billing.mutations";
-import { useApiUtil, useBillComposable, useNotifyToast } from "@/composables";
+import { 
+  AddTestBillTransactionDocument, AddTestBillTransactionMutation, AddTestBillTransactionMutationVariables,
+  ConfirmTestBillTransactionDocument, ConfirmTestBillTransactionMutation, ConfirmTestBillTransactionMutationVariables,
+  ApplyBillVoucherDocument, ApplyBillVoucherMutation, ApplyBillVoucherMutationVariables
+} from "@/graphql/operations/billing.mutations";
+import useApiUtil from "@/composables/api_util";
+import useBillComposable from "@/composables/bills";
+import useNotifyToast from "@/composables/alert_toast";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
@@ -87,7 +94,7 @@ const newTransaction = () => {
 }
 
 const addTransaction = (values: ITestBillTransaction) => {
-  withClientMutation(ADD_TEST_BILL_TRANSACTION, {payload: values}, "createTestBillTransaction"
+  withClientMutation<AddTestBillTransactionMutation, AddTestBillTransactionMutationVariables>(AddTestBillTransactionDocument, {payload: values}, "createTestBillTransaction"
   ).then((result) => {
     billingStore.addTransaction(result);
     processing.value = false;
@@ -100,8 +107,7 @@ const showConfirmTransactionModal = ref(false);
 const confirmTransaction = ref({} as ITestBillTransaction);
 const submitConfirmTransaction = () => {
   processing.value = true;
-  withClientMutation(
-    CONFIRM_TEST_BILL_TRANSACTION, 
+  withClientMutation<ConfirmTestBillTransactionMutation, ConfirmTestBillTransactionMutationVariables>(ConfirmTestBillTransactionDocument, 
     {
       uid: confirmTransaction.value.uid,
       notes: confirmTransaction.value.notes
@@ -200,7 +206,7 @@ const applyVoucher = () => {
 
 const submitVoucherCodeForm = () => {
   processing.value = true;
-  withClientMutation(APPLY_BILL_VOUCHER, {payload: {
+  withClientMutation<ApplyBillVoucherMutation, ApplyBillVoucherMutationVariables>(ApplyBillVoucherDocument, {payload: {
     voucherCode: voucherCodeForm.value?.code,
     testBillUid: testBill.value?.uid,
     customerUid: props.patientUid

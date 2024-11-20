@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, defineAsyncComponent } from 'vue';
-  import { useWorksheetStore } from '@/stores'
+  import { useWorksheetStore } from '@/stores/worksheet'
   const FelTabs = defineAsyncComponent(
     () => import("@/components/ui/tabs/FelTabs.vue")
   )

@@ -1,16 +1,10 @@
 import { defineStore } from 'pinia';
 
-import { useApiUtil, useTreeStateComposable } from '@/composables';
+import useApiUtil from '@/composables/api_util';
+import useTreeStateComposable from '@/composables/tree-state';
 import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '@/models/storage';
-import {
-    GET_STORAGE_TREE,
-    GET_ALL_STORAGE_CONTAINERS,
-    GET_ALL_STORAGE_LOCATIONS,
-    GET_ALL_STORAGE_SECTIONS,
-    GET_ALL_STORE_ROOMS,
-    GET_STORAGE_CONTAINER_BY_UID,
-} from '@/graphql/operations/storage.queries';
-import { GET_SAMPLES_BY_STORAGE_CONTAINER_UID } from '@/graphql/operations/analyses.queries';
+import { GetAllStorageContainersDocument, GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables, GetAllStorageLocationsDocument, GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables, GetAllStorageSectionsDocument, GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables, GetAllStoreRoomsDocument, GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables, GetStoreRoomsTreeDocument, GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables } from '@/graphql/operations/storage.queries';
+import { GetSamplesByStorageContainerUidDocument, GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables } from '@/graphql/operations/analyses.queries';
 
 const { withClientQuery } = useApiUtil();
 const { setTree } = useTreeStateComposable();
@@ -59,7 +53,7 @@ export const useStorageStore = defineStore('storage', {
         // Tree
         async fetchStorageTree() {
             this.fetchingTree = true;
-            await withClientQuery(GET_STORAGE_TREE, {}, 'storeRoomAll')
+            await withClientQuery<GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables>(GetStoreRoomsTreeDocument, {}, 'storeRoomAll')
                 .then((tree: IStoreRoom[]) => {
                     this.fetchingTree = false;
                     this.tree = tree;
@@ -71,7 +65,7 @@ export const useStorageStore = defineStore('storage', {
         // storeRooms
         async fetchStoreRooms() {
             this.fetchingStoreRooms = true;
-            await withClientQuery(GET_ALL_STORE_ROOMS, {}, 'storeRoomAll')
+            await withClientQuery<GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables>(GetAllStoreRoomsDocument, {}, 'storeRoomAll')
                 .then((storeRooms: IStoreRoom[]) => {
                     this.fetchingStoreRooms = false;
                     this.storeRooms = storeRooms;
@@ -89,7 +83,7 @@ export const useStorageStore = defineStore('storage', {
         // storageLocations
         async fetchStorageLocations(storeRoomUid: string) {
             this.fetchingStorageLocations = true;
-            await withClientQuery(GET_ALL_STORAGE_LOCATIONS, { storeRoomUid }, 'storageLocationAll')
+            await withClientQuery<GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables>(GetAllStorageLocationsDocument, { storeRoomUid }, 'storageLocationAll')
                 .then((storageLocations: IStorageLocation[]) => {
                     this.fetchingStorageLocations = false;
                     this.storageLocations = storageLocations;
@@ -107,7 +101,7 @@ export const useStorageStore = defineStore('storage', {
         // storageSection
         async fetchStorageSections(storageSectionUid: string) {
             this.fetchingStorageSections = true;
-            await withClientQuery(GET_ALL_STORAGE_SECTIONS, { storageSectionUid }, 'storageSectionAll')
+            await withClientQuery<GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables>(GetAllStorageSectionsDocument, { storageSectionUid }, 'storageSectionAll')
                 .then((storageSections: IStorageSection[]) => {
                     this.fetchingStorageSections = false;
                     this.storageSections = storageSections;
@@ -125,7 +119,7 @@ export const useStorageStore = defineStore('storage', {
         // storageContainers
         async fetchStorageContainers(storageContainerUid: string) {
             this.fetchingStorageContainers = true;
-            await withClientQuery(GET_ALL_STORAGE_CONTAINERS, { storageContainerUid }, 'storageContainerAll')
+            await withClientQuery<GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables>(GetAllStorageContainersDocument, { storageContainerUid }, 'storageContainerAll')
                 .then((storageContainers: IStorageContainer[]) => {
                     this.fetchingStorageContainers = false;
                     this.storageContainers = storageContainers;
@@ -143,7 +137,7 @@ export const useStorageStore = defineStore('storage', {
         async fetchStorageContainer(uid: string) {
             if (!uid) return;
             this.fetchingStorageContainer = true;
-            await withClientQuery(GET_STORAGE_CONTAINER_BY_UID, { uid }, 'storageContainerByUid', 'network-only')
+            await withClientQuery<GetSamplesByStorageContainerUidQuery,GetSamplesByStorageContainerUidQueryVariables>(GetSamplesByStorageContainerUidDocument, { uid }, 'storageContainerByUid', 'network-only')
                 .then(async payload => {
                     this.fetchingStorageContainer = false;
                     this.storageContainer = payload;
@@ -159,7 +153,7 @@ export const useStorageStore = defineStore('storage', {
         async fetchStorageContainerSamples(uid: string) {
             if (!uid) return;
             this.fetchingStorageContainerSamples = true;
-            await withClientQuery(GET_SAMPLES_BY_STORAGE_CONTAINER_UID, { uid }, 'samplesByStorageContainerUid', 'network-only')
+            await withClientQuery<GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables>(GetSamplesByStorageContainerUidDocument, { uid }, 'samplesByStorageContainerUid', 'network-only')
                 .then(payload => {
                     this.fetchingStorageContainerSamples = false;
                     this.storageContainer = {

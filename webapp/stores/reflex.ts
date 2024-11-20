@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_REFLEX_RULES, GET_EFLEX_RULE_BY_UID } from '@/graphql/operations/reflex.queries';
 import { IReflexAction, IReflexBrain, IReflexRule } from '@/models/reflex';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
+import { GetAllReflexRulesDocument, GetAllReflexRulesQuery, GetAllReflexRulesQueryVariables, GetReflexRuleByUidDocument, GetReflexRuleByUidQuery, GetReflexRuleByUidQueryVariables } from '@/graphql/operations/reflex.queries';
 const { withClientQuery } = useApiUtil();
 
 export const useReflexStore = defineStore('reflex', {
@@ -25,7 +25,7 @@ export const useReflexStore = defineStore('reflex', {
     actions: {
         async fetchAllReflexRules() {
             this.fetchingReflexRules = true;
-            await withClientQuery(GET_ALL_REFLEX_RULES, {}, 'reflexRuleAll')
+            await withClientQuery<GetAllReflexRulesQuery, GetAllReflexRulesQueryVariables>(GetAllReflexRulesDocument, {}, 'reflexRuleAll')
                 .then(payload => {
                     this.fetchingReflexRules = false;
                     this.reflexRules = payload.items;
@@ -34,7 +34,7 @@ export const useReflexStore = defineStore('reflex', {
         },
         async fetchReflexRuleByUid(uid: string) {
             this.fetchingReflexRule = true;
-            await withClientQuery(GET_EFLEX_RULE_BY_UID, { uid }, 'reflexRuleByUid')
+            await withClientQuery<GetReflexRuleByUidQuery, GetReflexRuleByUidQueryVariables>(GetReflexRuleByUidDocument, { uid }, 'reflexRuleByUid')
                 .then(payload => {
                     this.fetchingReflexRule = false;
                     this.reflexRule = payload;

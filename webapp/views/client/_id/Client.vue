@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import LoadingMessage from "@/components/ui/spinners/FelLoadingMessage.vue"
 import modal from '@/components/ui/FelModal.vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue';
-import { ADD_CLIENT, EDIT_CLIENT } from '@/graphql/operations/clients.mutations';
-import { useLocationStore, useClientStore } from '@/stores';
+import { ref, defineAsyncComponent } from 'vue';
+import { AddClientDocument, AddClientMutation, AddClientMutationVariables,
+  EditClientDocument, EditClientMutation, EditClientMutationVariables } from '@/graphql/operations/clients.mutations';
+import { useLocationStore } from '@/stores/location';
+import { useClientStore } from '@/stores/client';
 import { IClient } from '@/models/client';
-import { useApiUtil } from '@/composables'
+import useApiUtil  from '@/composables/api_util'
 
 import * as shield from '@/guards'
+
+const LoadingMessage = (
+    () => import('@/components/ui/spinners/FelLoadingMessage.vue')
+)
+
 
 const locationStore = useLocationStore();
 const { withClientMutation } = useApiUtil()
@@ -52,12 +58,12 @@ function FormManager(create: boolean, obj: IClient = {} as IClient) {
 }
 
 function addClient() {
-  withClientMutation(ADD_CLIENT, { payload: { name: form?.value?.name, code: form?.value?.code, districtUid: form?.value?.districtUid } }, "createClient")
+  withClientMutation<AddClientMutation, AddClientMutationVariables>(AddClientDocument, { payload: { name: form?.value?.name, code: form?.value?.code, districtUid: form?.value?.districtUid } }, "createClient")
     .then((res) => clientStore.addClient(res));
 }
 
 function editClient() {
-  withClientMutation(EDIT_CLIENT, {
+  withClientMutation<EditClientMutation, EditClientMutationVariables>(EditClientDocument, {
     uid: form?.value?.uid,
     payload: {
       name: form?.value?.name,

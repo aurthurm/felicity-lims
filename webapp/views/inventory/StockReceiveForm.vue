@@ -3,10 +3,13 @@ import VueMultiselect from "vue-multiselect";
 import { useField, useForm } from "vee-validate";
 import { object, string, number, date } from "yup";
 import { IStockItemVariant, IStockReceive } from '@/models/inventory';
-import { GET_ALL_STOCK_PRODUCTS } from "@/graphql/operations/inventory.queries";
-import { RECEIVE_STOCK_PRODUCT } from '@/graphql/operations/inventory.mutations';
-import { useApiUtil } from "@/composables";
-import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from "@/stores";
+import { GetAllStockProductsDocument, GetAllStockProductsQuery, GetAllStockProductsQueryVariables } from "@/graphql/operations/inventory.queries";
+import { ReceiveStockProductDocument, ReceiveStockProductMutation, ReceiveStockProductMutationVariables } from '@/graphql/operations/inventory.mutations';
+import useApiUtil  from "@/composables/api_util";
+import { useInventoryStore } from "@/stores/inventory";
+import { useStorageStore } from "@/stores/storage";
+import { useSetupStore } from "@/stores/setup";
+import { useUserStore } from "@/stores/user";
 import { defineAsyncComponent, ref } from "vue";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
@@ -77,7 +80,7 @@ function receiveStockProduct(payload: IStockReceive) {
       totalPrice: 0.00,
    }
    delete receivable["stockItemVariant"];
-  withClientMutation(RECEIVE_STOCK_PRODUCT, { payload: receivable },  "createStockReceipt").then((result) => {
+  withClientMutation<ReceiveStockProductMutation, ReceiveStockProductMutationVariables>(ReceiveStockProductDocument, { payload: receivable },  "createStockReceipt").then((result) => {
     // inventoryStore.addStockProduct(result);
     console.log(result)
   }).finally(() => {
@@ -89,7 +92,7 @@ function receiveStockProduct(payload: IStockReceive) {
 const findProduct = async (search: string) => {
   if (search.length > 3) {
     const params ={ first: 50, after: '', text: search, sortBy: ['name']}
-    withClientQuery(GET_ALL_STOCK_PRODUCTS, params, "stockProductAll").then((paging) => {
+    withClientQuery<GetAllStockProductsQuery, GetAllStockProductsQueryVariables>(GetAllStockProductsDocument, params, "stockProductAll").then((paging) => {
       stockItems.value = paging?.items;
     })
   }

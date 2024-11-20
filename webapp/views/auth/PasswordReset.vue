@@ -3,7 +3,7 @@ import { computed, defineAsyncComponent, reactive, ref } from 'vue'
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
-import { useAuthStore } from "@/stores"
+import { useAuthStore } from "@/stores/auth"
 import { storeToRefs } from "pinia"
 
 const emit = defineEmits(["forgot"])

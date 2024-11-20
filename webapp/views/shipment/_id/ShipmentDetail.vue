@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
-  import { useShipmentStore } from '@/stores'
+  import { useShipmentStore } from '@/stores/shipment'
 
   const tabAssignSamples = defineAsyncComponent(
     () => import('./ShipmentAssign.vue')

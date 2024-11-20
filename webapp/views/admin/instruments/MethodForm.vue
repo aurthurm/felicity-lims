@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { ref, reactive, computed, PropType, watch, toRefs, defineAsyncComponent } from 'vue';
   import { IInstrument, IMethod } from '@/models/setup'
-  import { ADD_METHOD, EDIT_METHOD  } from '@/graphql/operations/instrument.mutations';
+  import { AddMethodDocument, AddMethodMutation, AddMethodMutationVariables,
+    EditMethodDocument, EditMethodMutation, EditMethodMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { IAnalysisService } from '@/models/analysis';
-  import { useAnalysisStore, useSetupStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -70,7 +72,7 @@
       instruments: selectedIntsruments.value?.map((i) => i.uid), 
       analyses: selectedAnalyses.value?.map((i) => i.uid),
     }
-    withClientMutation(ADD_METHOD, { payload }, "createMethod").then((result) => {
+    withClientMutation<AddMethodMutation, AddMethodMutationVariables>(AddMethodDocument, { payload }, "createMethod").then((result) => {
       emit('close');
       setupStore.addMethod(result);
     });
@@ -84,7 +86,7 @@
       instruments: selectedIntsruments.value?.map((i) => i.uid), 
       analyses: selectedAnalyses.value?.map((i) => i.uid),
     }
-    withClientMutation(EDIT_METHOD, { uid: form?.uid, payload }, "updateMethod")
+    withClientMutation<EditMethodMutation, EditMethodMutationVariables>(EditMethodDocument, { uid: form?.uid, payload }, "updateMethod")
     .then((result) => {
       emit('close');
       setupStore.updateMethod(result)

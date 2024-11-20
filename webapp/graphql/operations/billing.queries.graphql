@@ -8,7 +8,7 @@ query GetPiceForProfile($profileUid: String!) {
     }
 }
 
-query GetPiceForAnalysis($analysisUid: String!) {
+query GetPriceForAnalysis($analysisUid: String!) {
     priceForAnalysis(analysisUid: $analysisUid) {
         uid
         analysisUid

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, onMounted, defineAsyncComponent } from "vue";
-import { useSampleComposable } from "@/composables";
-import { useStorageStore } from "@/stores";
+import useSampleComposable from "@/composables/samples";
+import { useStorageStore } from "@/stores/storage";
 import useTreeStateComposable from "@/composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";

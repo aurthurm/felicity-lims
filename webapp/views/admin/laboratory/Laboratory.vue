@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { reactive, ref, defineAsyncComponent, computed, watch } from "vue";
 import { ILaboratory, ILaboratorySetting } from "@/models/setup";
-import {
-  UPDATE_LABORATOTY,
-  UPDATE_LABORATOTY_SETTING,
-} from "@/graphql/operations/_mutations";
-import { useUserStore, useSetupStore } from "@/stores";
-import { useApiUtil, useNotifyToast } from "@/composables";
+import { useUserStore } from "@/stores/user";
+import { useSetupStore } from "@/stores/setup";
+import useApiUtil from "@/composables/api_util";
+import useNotifyToast from "@/composables/alert_toast";
+import { EditLaboratoryMutation, EditLaboratoryMutationVariables, EditLaboratoryDocument, EditLaboratorySettingDocument, EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables } from "@/graphql/operations/_mutations";
 
 const FelAsideTabs = defineAsyncComponent(
     () => import("@/components/ui/tabs/FelTabsAside.vue")
@@ -33,11 +32,7 @@ const saveLaboratoryForm = () => {
   delete payload["uid"];
   delete payload["__typename"];
   payload["labManagerUid"] = payload["labManagerUid"]!;
-  withClientMutation(
-    UPDATE_LABORATOTY,
-    { uid: formLaboratory.uid, payload },
-    "updateLaboratory"
-  ).then((result) => {
+  withClientMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument, { uid: formLaboratory.uid, payload }, "updateLaboratory").then((result) => {
     setupStore.updateLaboratory(result);
     processing.value = false;
     toastSuccess("Laboratory information updated");
@@ -58,11 +53,7 @@ const saveSettingForm = () => {
   const payload = { ...formSettings };
   delete payload["uid"];
   delete payload["__typename"];
-  withClientMutation(
-    UPDATE_LABORATOTY_SETTING,
-    { uid: formSettings.uid, payload },
-    "updateLaboratorySetting"
-  ).then((result) => {
+  withClientMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument, { uid: formSettings.uid, payload }, "updateLaboratorySetting").then((result) => {
     setupStore.updateLaboratorySetting(result);
     processing.value = false;
     toastSuccess("Laboratory settings updated");

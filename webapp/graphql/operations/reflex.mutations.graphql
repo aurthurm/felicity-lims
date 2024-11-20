@@ -1,5 +1,5 @@
 
-mutation AddReflexR($payload: ReflexRuleInput!) {
+mutation AddReflexRule($payload: ReflexRuleInput!) {
     createReflexRule(payload: $payload) {
         __typename
         ... on ReflexRuleType {
@@ -16,7 +16,7 @@ mutation AddReflexR($payload: ReflexRuleInput!) {
     }
 }
 
-mutation editReflexR($uid: String!, $payload: ReflexRuleInput!) {
+mutation EditReflexRule($uid: String!, $payload: ReflexRuleInput!) {
     updateReflexRule(uid: $uid, payload: $payload) {
         __typename
         ... on ReflexRuleType {
@@ -33,7 +33,7 @@ mutation editReflexR($uid: String!, $payload: ReflexRuleInput!) {
     }
 }
 
-mutation AddReflexA($payload: ReflexActionInput!) {
+mutation AddReflexAction($payload: ReflexActionInput!) {
     createReflexAction(payload: $payload) {
         __typename
         ... on ReflexActionType {
@@ -56,7 +56,7 @@ mutation AddReflexA($payload: ReflexActionInput!) {
     }
 }
 
-mutation editReflexA($uid: String!, $payload: ReflexActionInput!) {
+mutation editReflexAction($uid: String!, $payload: ReflexActionInput!) {
     updateReflexAction(uid: $uid, payload: $payload) {
         __typename
         ... on ReflexActionType {
@@ -79,7 +79,7 @@ mutation editReflexA($uid: String!, $payload: ReflexActionInput!) {
     }
 }
 
-mutation AddReflexB($payload: ReflexBrainInput!) {
+mutation AddReflexBrain($payload: ReflexBrainInput!) {
     createReflexBrain(payload: $payload) {
         __typename
         ... on ReflexBrainType {
@@ -146,7 +146,7 @@ mutation AddReflexB($payload: ReflexBrainInput!) {
     }
 }
 
-mutation editReflexB($uid: String!, $payload: ReflexBrainInput!) {
+mutation editReflexBrain($uid: String!, $payload: ReflexBrainInput!) {
     updateReflexBrain(uid: $uid, payload: $payload) {
         __typename
         ... on ReflexBrainType {

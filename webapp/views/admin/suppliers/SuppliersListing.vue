@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { useSetupStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
   import { ISupplier } from '@/models/setup'
-  import { ADD_SUPPLIER, EDIT_SUPPLIER } from '@/graphql/operations/instrument.mutations';
+  import { AddSupplierDocument, AddSupplierMutation, AddSupplierMutationVariables,
+    EditSupplierDocument, EditSupplierMutation, EditSupplierMutationVariables } from '@/graphql/operations/instrument.mutations';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -21,13 +22,13 @@
 
   function addSupplier(): void {
     const payload = { name: form.name, description: form.description }
-    withClientMutation(ADD_SUPPLIER, { payload }, "createSupplier")
+    withClientMutation<AddSupplierMutation, AddSupplierMutationVariables>(AddSupplierDocument, { payload }, "createSupplier")
     .then((result) => setupStore.addSupplier(result));
   }
 
   function editSupplier(): void {
     const payload = { name: form.name, description: form.description }
-    withClientMutation(EDIT_SUPPLIER, { uid: form.uid, payload }, "updateSupplier")
+    withClientMutation<EditSupplierMutation, EditSupplierMutationVariables>(EditSupplierDocument, { uid: form.uid, payload }, "updateSupplier")
     .then((result) => setupStore.updateSupplier(result));
   }
 

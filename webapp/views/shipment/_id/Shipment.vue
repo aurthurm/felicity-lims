@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
 import { useRoute } from "vue-router";
-import { useShipmentStore } from "@/stores";
-import  { useShipmentComposable } from "@/composables"
+import { useShipmentStore } from "@/stores/shipment";
+import useShipmentComposable from "@/composables/shipment"
 
 const route = useRoute();
 const shipmentStore = useShipmentStore();

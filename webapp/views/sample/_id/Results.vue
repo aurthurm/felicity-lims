@@ -2,8 +2,8 @@
 import { onMounted, watch, reactive, computed, defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useSampleStore } from "@/stores";
-import { useAnalysisComposable } from "@/composables";
+import { useSampleStore } from "@/stores/sample";
+import useAnalysisComposable from "@/composables/analysis";
 import { parseDate } from "@/utils/helpers";
 import {
   IAnalysisProfile,

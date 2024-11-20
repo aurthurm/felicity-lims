@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
-import { useShipmentComposable } from "@/composables";
-import { useShipmentStore } from "@/stores";
+import useShipmentComposable from "@/composables/shipment";
+import { useShipmentStore } from "@/stores/shipment";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")

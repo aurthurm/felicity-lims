@@ -1,9 +1,11 @@
 <script setup lang="ts">
   import { ref, computed, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '@/graphql/operations/analyses.mutations';
+  import { AddResultOptionDocument, AddResultOptionMutation, AddResultOptionMutationVariables,
+    EditResultOptionDocument, EditResultOptionMutation, EditResultOptionMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { IResultOption } from '@/models/analysis';
-  import { useAnalysisStore, useSampleStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import { useSampleStore } from '@/stores/sample';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -46,7 +48,7 @@
         analysisUid: analysis?.value?.uid,
         sampleTypes: form.sampleTypes?.map(item => item.uid),
       }
-      withClientMutation(ADD_RESULT_OPTION, { payload }, "createResultOption")
+      withClientMutation<AddResultOptionMutation, AddResultOptionMutationVariables>(AddResultOptionDocument, { payload }, "createResultOption")
       .then((result) => analysisStore.addResultOption(result));
   }
 
@@ -54,7 +56,7 @@
       const payload = { ...form, analysisUid: analysis?.value?.uid, sampleTypes: form.sampleTypes?.map(item => item.uid) };
       delete payload['__typename']
       delete payload['uid']
-      withClientMutation(EDIT_RESULT_OPTION, { uid : form.uid,  payload }, "updateResultOption")
+      withClientMutation<EditResultOptionMutation, EditResultOptionMutationVariables>(EditResultOptionDocument, { uid : form.uid,  payload }, "updateResultOption")
       .then((result) => analysisStore.updateResultOption(result));
   }
 

@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_PATIENTS, SEARCH_PATIENTS, GET_PATIENT_BY_UID, IDENTIFICATION_TYPES } from '@/graphql/operations/patient.queries';
 import { addListsUnique } from '@/utils/helpers';
 import { IIdentification, IPatient } from '@/models/patient';
 import { IPageInfo } from '@/models/pagination';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
+import { GetAllPatientsDocument, GetAllPatientsQuery, GetAllPatientsQueryVariables, GetPatientByUidDocument, GetPatientByUidQuery, GetPatientByUidQueryVariables, IdentificationTypesDocument, IdentificationTypesQuery, IdentificationTypesQueryVariables, SearchPatientsDocument, SearchPatientsQuery, SearchPatientsQueryVariables, useIdentificationTypesQuery } from '@/graphql/operations/patient.queries';
 
 const { withClientQuery } = useApiUtil();
 
@@ -42,7 +42,7 @@ export const usePatientStore = defineStore('patient', {
     actions: {
         // identifications
         async fetchIdentifications() {
-            await withClientQuery(IDENTIFICATION_TYPES, {}, 'identificationAll').then(payload => {
+            await withClientQuery<IdentificationTypesQuery, IdentificationTypesQueryVariables>(IdentificationTypesDocument, {}, 'identificationAll').then(payload => {
                 this.identifications = payload;
             });
         },
@@ -60,7 +60,7 @@ export const usePatientStore = defineStore('patient', {
         // patiets
         async fetchPatients(params) {
             this.fetchingPatients = true;
-            await withClientQuery(GET_ALL_PATIENTS, { ...params, sortBy: ['-uid'] }, undefined)
+            await withClientQuery<GetAllPatientsQuery, GetAllPatientsQueryVariables>(GetAllPatientsDocument, { ...params, sortBy: ['-uid'] }, undefined)
                 .then(payload => {
                     this.fetchingPatients = false;
                     const page = payload.patientAll;
@@ -90,7 +90,7 @@ export const usePatientStore = defineStore('patient', {
                 return;
             }
             this.fetchingPatient = true;
-            await withClientQuery(GET_PATIENT_BY_UID, { uid }, 'patientByUid')
+            await withClientQuery<GetPatientByUidQuery, GetPatientByUidQueryVariables>(GetPatientByUidDocument, { uid }, 'patientByUid')
                 .then(payload => {
                     this.fetchingPatient = false;
                     this.patient = payload;
@@ -112,7 +112,7 @@ export const usePatientStore = defineStore('patient', {
 
         async searchPatients(queryString: string) {
             this.searchQuery = queryString;
-            await withClientQuery(SEARCH_PATIENTS, { queryString }, 'patientSearch').then(payload => (this.patients = payload));
+            await withClientQuery<SearchPatientsQuery, SearchPatientsQueryVariables>(SearchPatientsDocument, { queryString }, 'patientSearch').then(payload => (this.patients = payload));
         },
 
         clearSearchQuery() {

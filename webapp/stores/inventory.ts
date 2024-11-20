@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 import {
     IHazard,
     IStockAdjustment,
@@ -12,14 +12,14 @@ import {
     IStockUnit,
 } from '@/models/inventory';
 import {
-    GET_ALL_HAZARDS,
-    GET_ALL_STOCK_ADJUSTMENTS,
-    GET_ALL_STOCK_CATEGORIES,
-    GET_ALL_STOCK_ITEMS,
-    GET_ALL_STOCK_ITEM_VARIANTS,
-    GET_ALL_STOCK_ORDERS,
-    GET_ALL_STOCK_PRODUCTS,
-    GET_ALL_STOCK_UNITS,
+    GetAllHazardsDocument, GetAllHazardsQuery, GetAllHazardsQueryVariables,
+    GetAllStockAdjustmentsDocument, GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables,
+    GetAllStockCategoriesDocument, GetAllStockCategoriesQuery, GetAllStockCategoriesQueryVariables,
+    GetAllStockItemsDocument, GetAllStockItemsQuery, GetAllStockItemsQueryVariables,
+    GetAllStockItemVariantsDocument, GetAllStockItemVariantsQuery, GetAllStockItemVariantsQueryVariables,
+    GetAllStockOrdersDocument, GetAllStockOrdersQuery, GetAllStockOrdersQueryVariables,
+    GetAllStockProductsDocument, GetAllStockProductsQuery, GetAllStockProductsQueryVariables,
+    GetAllStockUnitsDocument, GetAllStockUnitsQuery, GetAllStockUnitsQueryVariables,
 } from '@/graphql/operations/inventory.queries';
 import { IPagination, IPaginationMeta } from '@/models/pagination';
 
@@ -89,7 +89,7 @@ export const useInventoryStore = defineStore('inventory', {
         // hazards
         async fetchHazards() {
             this.fetchingHazards = true;
-            await withClientQuery(GET_ALL_HAZARDS, {}, 'hazardAll')
+            await withClientQuery<GetAllHazardsQuery, GetAllHazardsQueryVariables>(GetAllHazardsDocument, {}, 'hazardAll')
                 .then((hazards: IHazard[]) => {
                     this.fetchingHazards = false;
                     this.hazards = hazards;
@@ -107,7 +107,7 @@ export const useInventoryStore = defineStore('inventory', {
         // categories
         async fetchCategories() {
             this.fetchingCategories = true;
-            await withClientQuery(GET_ALL_STOCK_CATEGORIES, {}, 'stockCategoryAll')
+            await withClientQuery<GetAllStockCategoriesQuery, GetAllStockCategoriesQueryVariables>(GetAllStockCategoriesDocument, {}, 'stockCategoryAll')
                 .then((categories: IStockCategory[]) => {
                     this.fetchingCategories = false;
                     this.categories = categories;
@@ -125,7 +125,7 @@ export const useInventoryStore = defineStore('inventory', {
         // units
         async fetchUnits() {
             this.fetchingUnits = true;
-            await withClientQuery(GET_ALL_STOCK_UNITS, {}, 'stockUnitAll')
+            await withClientQuery<GetAllStockUnitsQuery, GetAllStockUnitsQueryVariables>(GetAllStockUnitsDocument, {}, 'stockUnitAll')
                 .then((units: IStockUnit[]) => {
                     this.fetchingUnits = false;
                     this.units = units;
@@ -143,7 +143,7 @@ export const useInventoryStore = defineStore('inventory', {
         // products
         async fetchProducts(params) {
             this.fetchingProducts = true;
-            await withClientQuery(GET_ALL_STOCK_PRODUCTS, params, 'stockProductAll')
+            await withClientQuery<GetAllStockProductsQuery, GetAllStockProductsQueryVariables>(GetAllStockProductsDocument, params, 'stockProductAll')
                 .then((paging: IPagination<IStockProduct>) => {
                     this.fetchingProducts = false;
                     this.products = paging.items ?? [];
@@ -164,8 +164,8 @@ export const useInventoryStore = defineStore('inventory', {
         // stockItems
         async fetchItems(params) {
             this.fetchingItems = true;
-            await withClientQuery(GET_ALL_STOCK_ITEMS, params, 'stockItemAll')
-                .then((paging: IPagination<IStockItem>) => {
+            await withClientQuery<GetAllStockItemsQuery, GetAllStockItemsQueryVariables>(GetAllStockItemsDocument, params, 'stockItemAll')
+                .then(paging => {
                     this.fetchingItems = false;
                     this.stockItems = paging.items ?? [];
                     this.stockItemsPaging['totalCount'] = paging.totalCount;
@@ -181,7 +181,7 @@ export const useInventoryStore = defineStore('inventory', {
             if (index > -1) this.stockItems[index] = payload;
         },
         async fetchItemVariants(stockItemUid: string) {
-            await withClientQuery(GET_ALL_STOCK_ITEM_VARIANTS, { stockItemUid }, 'stockItemVariants')
+            await withClientQuery<GetAllStockItemVariantsQuery, GetAllStockItemVariantsQueryVariables>(GetAllStockItemVariantsDocument, { stockItemUid }, 'stockItemVariants')
                 .then((data: IStockItemVariant[]) => {
                     this.stockItems?.map(item => {
                         if (item.uid === stockItemUid) {
@@ -211,7 +211,7 @@ export const useInventoryStore = defineStore('inventory', {
         async fetchStockOrders(params) {
             this.fetchingItems = true;
             this.stockOrders = []
-            await withClientQuery(GET_ALL_STOCK_ORDERS, params, 'stockOrderAll')
+            await withClientQuery<GetAllStockOrdersQuery, GetAllStockOrdersQueryVariables>(GetAllStockOrdersDocument, params, 'stockOrderAll')
                 .then((paging: IPagination<IStockOrder>) => {
                     this.fetchingItems = false;
                     this.stockOrders = paging.items ?? [];
@@ -238,7 +238,7 @@ export const useInventoryStore = defineStore('inventory', {
         // adjustments
         async fetchAdjustments(params) {
             this.fetchingAdjustments = true;
-            await withClientQuery(GET_ALL_STOCK_ADJUSTMENTS, params, 'stockAdjustmentAll')
+            await withClientQuery<GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables>(GetAllStockAdjustmentsDocument, params, 'stockAdjustmentAll')
                 .then((paging: IPagination<IStockAdjustment>) => {
                     this.fetchingAdjustments = false;
                     this.adjustments = paging.items ?? [];

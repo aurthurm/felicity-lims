@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { IGroup, IPermission, IUser } from '@/models/auth';
 import { IPagination, IPageInfo } from '@/models/pagination';
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
+import { GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllSuppliersQueryVariables } from '@/graphql/operations/instrument.queries';
+import { GroupsAndPermissionsDocument, GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables } from '@/graphql/operations/_queries';
 
 const { withClientQuery } = useApiUtil();
-
-import { GET_GROUPS_AND_PERMISSIONS, GET_ALL_USERS } from '@/graphql/operations/_queries';
 
 interface IUserPage extends IPagination<IUser> {}
 
@@ -38,7 +38,7 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUsers(params) {
             this.fetchingUsers = true;
-            await withClientQuery(GET_ALL_USERS, params, 'userAll')
+            await withClientQuery<GetAllSuppliersQuery,GetAllSuppliersQueryVariables>(GetAllSuppliersDocument, params, 'userAll')
                 .then((users: IUserPage) => {
                     this.fetchingUsers = false;
                     this.users = users.items?.filter(user => user.email != 'system_daemon@system.daemon') ?? [];
@@ -57,7 +57,7 @@ export const useUserStore = defineStore('user', {
 
         async fetchGroupsAndPermissions() {
             this.fetchingGroups = true;
-            await withClientQuery(GET_GROUPS_AND_PERMISSIONS, {}, undefined)
+            await withClientQuery<GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables>(GroupsAndPermissionsDocument, {}, undefined)
                 .then((resp: any) => {
                     this.fetchingGroups = false;
                     this.groups = resp.groupAll;

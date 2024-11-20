@@ -1,9 +1,11 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IAnalysisCategory } from '@/models/analysis';
-  import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '@/graphql/operations/analyses.mutations';
-  import { useSetupStore, useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddAnalysisCategoryDocument, AddAnalysisCategoryMutation, AddAnalysisCategoryMutationVariables,
+    EditAnalysisCategoryDocument, EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables } from '@/graphql/operations/analyses.mutations';
+  import { useSetupStore } from '@/stores/setup';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -29,7 +31,7 @@
       departmentUid: form.departmentUid,
       active: form.active 
     }
-    withClientMutation(ADD_ANALYSIS_CATEGORY, { payload }, "createAnalysisCategory")
+    withClientMutation<AddAnalysisCategoryMutation, AddAnalysisCategoryMutationVariables>(AddAnalysisCategoryDocument, { payload }, "createAnalysisCategory")
     .then((result) => analysisStore.addAnalysisCategory(result));
   }
 
@@ -40,7 +42,7 @@
       departmentUid: form.departmentUid,
       active: form.active 
     }
-    withClientMutation(EDIT_ANALYSIS_CATEGORY, { uid: form.uid, payload }, "updateAnalysisCategory")
+    withClientMutation<EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables>(EditAnalysisCategoryDocument, { uid: form.uid, payload }, "updateAnalysisCategory")
     .then((result) => analysisStore.updateAnalysisCategory(result));
   }
 

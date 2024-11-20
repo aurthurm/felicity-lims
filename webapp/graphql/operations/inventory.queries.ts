@@ -183,7 +183,7 @@ export type GetAllStockOrderProductsQuery = (
   )> }
 );
 
-export type GetAllStockAdustmentsQueryVariables = Types.Exact<{
+export type GetAllStockAdjustmentsQueryVariables = Types.Exact<{
   first: Types.Scalars['Int']['input'];
   after?: Types.InputMaybe<Types.Scalars['String']['input']>;
   text: Types.Scalars['String']['input'];
@@ -192,7 +192,7 @@ export type GetAllStockAdustmentsQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetAllStockAdustmentsQuery = (
+export type GetAllStockAdjustmentsQuery = (
   { __typename?: 'Query' }
   & { stockAdjustmentAll: (
     { __typename?: 'StockAdjustmentCursorPage' }
@@ -429,8 +429,8 @@ export const GetAllStockOrderProductsDocument = gql`
 export function useGetAllStockOrderProductsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockOrderProductsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllStockOrderProductsQuery>({ query: GetAllStockOrderProductsDocument, ...options });
 };
-export const GetAllStockAdustmentsDocument = gql`
-    query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"], $productUid: String) {
+export const GetAllStockAdjustmentsDocument = gql`
+    query getAllStockAdjustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"], $productUid: String) {
   stockAdjustmentAll(
     pageSize: $first
     afterCursor: $after
@@ -469,6 +469,6 @@ export const GetAllStockAdustmentsDocument = gql`
 }
     `;
 
-export function useGetAllStockAdustmentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockAdustmentsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetAllStockAdustmentsQuery>({ query: GetAllStockAdustmentsDocument, ...options });
+export function useGetAllStockAdjustmentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockAdjustmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockAdjustmentsQuery>({ query: GetAllStockAdjustmentsDocument, ...options });
 };

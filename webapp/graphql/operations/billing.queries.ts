@@ -16,12 +16,12 @@ export type GetPiceForProfileQuery = (
   )> }
 );
 
-export type GetPiceForAnalysisQueryVariables = Types.Exact<{
+export type GetPriceForAnalysisQueryVariables = Types.Exact<{
   analysisUid: Types.Scalars['String']['input'];
 }>;
 
 
-export type GetPiceForAnalysisQuery = (
+export type GetPriceForAnalysisQuery = (
   { __typename?: 'Query' }
   & { priceForAnalysis?: Types.Maybe<(
     { __typename?: 'AnalysisPriceType' }
@@ -166,8 +166,8 @@ export const GetPiceForProfileDocument = gql`
 export function useGetPiceForProfileQuery(options: Omit<Urql.UseQueryArgs<never, GetPiceForProfileQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPiceForProfileQuery>({ query: GetPiceForProfileDocument, ...options });
 };
-export const GetPiceForAnalysisDocument = gql`
-    query GetPiceForAnalysis($analysisUid: String!) {
+export const GetPriceForAnalysisDocument = gql`
+    query GetPriceForAnalysis($analysisUid: String!) {
   priceForAnalysis(analysisUid: $analysisUid) {
     uid
     analysisUid
@@ -177,8 +177,8 @@ export const GetPiceForAnalysisDocument = gql`
 }
     `;
 
-export function useGetPiceForAnalysisQuery(options: Omit<Urql.UseQueryArgs<never, GetPiceForAnalysisQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetPiceForAnalysisQuery>({ query: GetPiceForAnalysisDocument, ...options });
+export function useGetPriceForAnalysisQuery(options: Omit<Urql.UseQueryArgs<never, GetPriceForAnalysisQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPriceForAnalysisQuery>({ query: GetPriceForAnalysisDocument, ...options });
 };
 export const GetDiscountForProfileDocument = gql`
     query GetDiscountForProfile($profileUid: String!) {

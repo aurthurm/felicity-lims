@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
-import { useAuthStore } from "@/stores"
+import { useAuthStore } from "@/stores/auth"
 import { storeToRefs } from "pinia"
 import { useField, useForm } from "vee-validate"
 import { object, string } from "yup"

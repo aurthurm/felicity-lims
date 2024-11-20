@@ -1,8 +1,9 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_STOCK_CATEGORY, EDIT_STOCK_CATEGORY } from '@/graphql/operations/inventory.mutations';
-import { useInventoryStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { AddStockCategoryDocument, AddStockCategoryMutation, AddStockCategoryMutationVariables,
+  EditStockCategoryDocument, EditStockCategoryMutation, EditStockCategoryMutationVariables } from '@/graphql/operations/inventory.mutations';
+import { useInventoryStore } from '@/stores/inventory';
+import  useApiUtil  from '@/composables/api_util';
 import { IStockCategory } from '@/models/inventory';
 const Modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -24,7 +25,7 @@ const StockCategory = defineComponent({
 
         function addStockCategory(): void {
             const payload = { ...form };
-            withClientMutation(ADD_STOCK_CATEGORY, { payload }, 'createStockCategory').then(result => inventoryStore.addCategory(result));
+            withClientMutation<AddStockCategoryMutation, AddStockCategoryMutationVariables>(AddStockCategoryDocument, { payload }, 'createStockCategory').then(result => inventoryStore.addCategory(result));
         }
 
         function editStockCategory(): void {
@@ -32,7 +33,7 @@ const StockCategory = defineComponent({
                 name: form.name,
                 description: form.description,
             };
-            withClientMutation(EDIT_STOCK_CATEGORY, { uid: form.uid, payload }, 'updateStockCategory').then(result =>
+            withClientMutation<EditStockCategoryMutation, EditStockCategoryMutationVariables>(EditStockCategoryDocument, { uid: form.uid, payload }, 'updateStockCategory').then(result =>
                 inventoryStore.updateCategory(result)
             );
         }

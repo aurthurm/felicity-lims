@@ -1,18 +1,11 @@
 import Swal from 'sweetalert2';
 import { IAnalysisResult } from '@/models/analysis';
-import {
-    CANCEL_ANALYSIS_RESULTS,
-    REINSTATE_ANALYSIS_RESULTS,
-    SUBMIT_ANALYSIS_RESULTS,
-    VERIFY_ANALYSIS_RESULTS,
-    RETEST_ANALYSIS_RESULTS,
-    RETRACT_ANALYSIS_RESULTS,
-} from '@/graphql/operations/analyses.mutations';
-
-import { useSampleStore, useWorksheetStore } from '@/stores';
+import { useSampleStore } from '@/stores/sample';
+import { useWorksheetStore } from '@/stores/worksheet';
 
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
+import { CancelAnalysisResultsDocument, CancelAnalysisResultsMutation, CancelAnalysisResultsMutationVariables, ReInstateAnalysisResultsDocument, ReInstateAnalysisResultsMutation, ReInstateAnalysisResultsMutationVariables, RetestAnalysisResultsDocument, RetestAnalysisResultsMutation, RetestAnalysisResultsMutationVariables, RetractAnalysisResultsDocument, RetractAnalysisResultsMutation, RetractAnalysisResultsMutationVariables, SubmitAnalysisResultsDocument, SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables, VerifyAnalysisResultsDocument, VerifyAnalysisResultsMutation, VerifyAnalysisResultsMutationVariables } from '@/graphql/operations/analyses.mutations';
 
 export default function useAnalysisComposable() {
     const sampleStore = useSampleStore();
@@ -34,7 +27,7 @@ export default function useAnalysisComposable() {
                 cancelButtonText: 'No, do not cancel!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(CANCEL_ANALYSIS_RESULTS, { analyses: uids }, 'cancelAnalysisResults').then(resp => {
+                    withClientMutation<CancelAnalysisResultsMutation, CancelAnalysisResultsMutationVariables>(CancelAnalysisResultsDocument, { analyses: uids }, 'cancelAnalysisResults').then(resp => {
                         sampleStore.updateAnalysesResultsStatus(resp.results);
                         worksheetStore.updateWorksheetResultsStatus(resp.results);
                     });
@@ -57,7 +50,7 @@ export default function useAnalysisComposable() {
                 cancelButtonText: 'No, do not reinstate!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(REINSTATE_ANALYSIS_RESULTS, { analyses: uids }, 'reInstateAnalysisResults').then(resp => {
+                    withClientMutation<ReInstateAnalysisResultsMutation, ReInstateAnalysisResultsMutationVariables>(ReInstateAnalysisResultsDocument, { analyses: uids }, 'reInstateAnalysisResults').then(resp => {
                         sampleStore.updateAnalysesResultsStatus(resp.results);
                         worksheetStore.updateWorksheetResultsStatus(resp.results);
                     });
@@ -70,7 +63,7 @@ export default function useAnalysisComposable() {
     function submitResult(result: IAnalysisResult): void {
         if (result.status !== 'pending') return;
         result.result = result.editResult;
-        withClientMutation(SUBMIT_ANALYSIS_RESULTS, [{ uid: result.uid, result: result.result }], 'submitAnalysisResults').then(resp => {
+        withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(SubmitAnalysisResultsDocument, [{ uid: result.uid, result: result.result }], 'submitAnalysisResults').then(resp => {
             toastInfo(resp.message);
             sampleStore.backgroundProcessing([{ uid: result.uid, result: result.result }], undefined, 'submitting');
             worksheetStore.backgroundProcessing([{ uid: result.uid, result: result.result }], undefined, 'submitting');
@@ -90,8 +83,8 @@ export default function useAnalysisComposable() {
                 cancelButtonText: 'No, cancel submission!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(
-                        SUBMIT_ANALYSIS_RESULTS,
+                    withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
+                        SubmitAnalysisResultsDocument,
                         { analysisResults: results, sourceObject, sourceObjectUid },
                         'submitAnalysisResults'
                     ).then(resp => {
@@ -122,8 +115,8 @@ export default function useAnalysisComposable() {
                 cancelButtonText: 'No, cancel approval!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(
-                        VERIFY_ANALYSIS_RESULTS,
+                    withClientMutation<VerifyAnalysisResultsMutation, VerifyAnalysisResultsMutationVariables>(
+                        VerifyAnalysisResultsDocument,
                         { analyses: uids, sourceObject, sourceObjectUid },
                         'verifyAnalysisResults'
                     ).then(resp => {
@@ -151,7 +144,7 @@ export default function useAnalysisComposable() {
                 cancelButtonText: 'No, cancel retraction!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(RETRACT_ANALYSIS_RESULTS, { analyses: uids }, 'retractAnalysisResults').then(resp => {
+                    withClientMutation<RetractAnalysisResultsMutation,RetractAnalysisResultsMutationVariables>(RetractAnalysisResultsDocument, { analyses: uids }, 'retractAnalysisResults').then(resp => {
                         sampleStore.updateAnalysesResults(resp.results);
                         worksheetStore.updateWorksheetResultsStatus(resp.results);
                     });
@@ -174,7 +167,7 @@ export default function useAnalysisComposable() {
                 cancelButtonText: 'No, cancel retesting!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(RETEST_ANALYSIS_RESULTS, { analyses: uids }, 'retestAnalysisResults').then(resp =>
+                    withClientMutation<RetestAnalysisResultsMutation, RetestAnalysisResultsMutationVariables>(RetestAnalysisResultsDocument, { analyses: uids }, 'retestAnalysisResults').then(resp =>
                         sampleStore.updateAnalysesResults(resp.results)
                     );
                 }

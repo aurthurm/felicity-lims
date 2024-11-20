@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from "vue";
 import { IAnalysisProfile, IAnalysisService } from "@/models/analysis";
-import { useSampleComposable } from "@/composables";
-import { useAnalysisStore } from "@/stores";
+import useSampleComposable from "@/composables/samples";
+import { useAnalysisStore } from "@/stores/analysis";
 import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();

@@ -1,16 +1,15 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_REFERRAL_LABORATORIES, GET_ALL_SHIPMENTS, GET_SHIPMENT_BY_UID } from '@/graphql/operations/shipment.queries';
-import { SHIPMENT_UPDATE } from '@/graphql/operations/shipment.mutations';
-
-import { GET_SAMPLES_FOR_SH_ASSIGN } from '@/graphql/operations/analyses.queries';
-import { parseData, keysToCamel, addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils/helpers';
 import { ISample } from '@/models/analysis';
 import { IShipment, IReferralLaboratory, IShippedSample } from '@/models/shipment';
 import { IPageInfo } from '@/models/pagination';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
+import { GetAllReferralLaboratoriesDocument, GetAllReferralLaboratoriesQuery, GetAllReferralLaboratoriesQueryVariables, GetAllShipmentsDocument, GetAllShipmentsQuery, GetAllShipmentsQueryVariables, GetShipmentByUidDocument, GetShipmentByUidQuery, GetShipmentByUidQueryVariables } from '@/graphql/operations/shipment.queries';
+import { UpdateShipmentDocument, UpdateShipmentMutation, UpdateShipmentMutationVariables } from '@/graphql/operations/shipment.mutations';
+import { GetSamplesForShipmentAssignDocument, GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables } from '@/graphql/operations/analyses.queries';
 
-const { withClientOperation } = useApiUtil();
+const { withClientQuery, withClientMutation } = useApiUtil();
 
 export const useShipmentStore = defineStore('shipment', {
     state: () => {
@@ -55,7 +54,7 @@ export const useShipmentStore = defineStore('shipment', {
         // referral laboratories
         async fetchReferralLaboratories() {
             this.fetchingLaboratories = true;
-            await withClientOperation("query", GET_ALL_REFERRAL_LABORATORIES, {}, 'referralLaboratoryAll')
+            await withClientQuery<GetAllReferralLaboratoriesQuery, GetAllReferralLaboratoriesQueryVariables>(GetAllReferralLaboratoriesDocument, {}, 'referralLaboratoryAll')
                 .then(payload => {
                     this.fetchingLaboratories = false;
                     this.laboratories = payload;
@@ -72,7 +71,7 @@ export const useShipmentStore = defineStore('shipment', {
         // Shipments
         async fetcShipments(params) {
             this.fetchingShipments = true;
-            await withClientOperation("query", GET_ALL_SHIPMENTS, params, undefined)
+            await withClientQuery<GetAllShipmentsQuery, GetAllShipmentsQueryVariables>(GetAllShipmentsDocument, params, undefined)
                 .then(payload => {
                     this.fetchingShipments = false;
                     const page = payload.shipmentAll;
@@ -89,7 +88,7 @@ export const useShipmentStore = defineStore('shipment', {
                 .catch(err => (this.fetchingShipments = false));
         },
         async fetchShipmentByUid(uid: string) {
-            await withClientOperation("query", GET_SHIPMENT_BY_UID, { shipmentUid: uid }, 'shipmentByUid').then(
+            await withClientQuery<GetShipmentByUidQuery, GetShipmentByUidQueryVariables>(GetShipmentByUidDocument, { shipmentUid: uid }, 'shipmentByUid').then(
                 payload => (this.shipment = payload)
             );
         },
@@ -103,7 +102,7 @@ export const useShipmentStore = defineStore('shipment', {
             this.shipment = undefined;
         },
         async updateShipment(payload) {
-            await withClientOperation("mutation", SHIPMENT_UPDATE, payload, 'updateShipment').then(payload => {
+            await withClientMutation<UpdateShipmentMutation, UpdateShipmentMutationVariables>(UpdateShipmentDocument, payload, 'updateShipment').then(payload => {
                 this.updateShipmentMetadata(payload)
             });
         },
@@ -126,7 +125,7 @@ export const useShipmentStore = defineStore('shipment', {
         // Samples for SH Assign
         async fetchFoShipmentAssign(params) {
             this.fetchingSamples = true;
-            await withClientOperation("query",GET_SAMPLES_FOR_SH_ASSIGN, params, undefined)
+            await withClientQuery<GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables>(GetSamplesForShipmentAssignDocument, params, undefined)
                 .then(payload => {
                     this.fetchingSamples = false;
                     const page = payload.samplesForShipmentAssign;

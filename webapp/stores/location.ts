@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia';
 import { IDistrict, IProvince, ICountry } from '@/models/location';
 
-import { GET_ALL_COUNTRIES, FILTER_PROVINCES_BY_COUNTRY, FILTER_DISTRICTS_BY_PROVINCE } from '@/graphql/operations/admin.queries';
+import {
+    GetAllCountriesQuery, GetAllCountriesQueryVariables, GetAllCountriesDocument, 
+    FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables, FilterProvincesByCountryDocument, 
+    FilterDistrictsByProvinceQuery,
+    FilterDistrictsByProvinceQueryVariables,
+    FilterDistrictsByProvinceDocument
+} from '@/graphql/operations/admin.queries';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 
 const { withClientQuery } = useApiUtil();
 
@@ -41,7 +47,7 @@ export const useLocationStore = defineStore('location', {
         // COUNTRIES
         async fetchCountries() {
             this.fetchingCountries = true;
-            await withClientQuery(GET_ALL_COUNTRIES, {}, 'countryAll')
+            await withClientQuery<GetAllCountriesQuery, GetAllCountriesQueryVariables>(GetAllCountriesDocument, {}, 'countryAll')
                 .then(payload => {
                     this.fetchingCountries = false;
                     this.countries = payload;
@@ -65,7 +71,7 @@ export const useLocationStore = defineStore('location', {
                 return;
             }
             this.fetchingProvinces = true;
-            await withClientQuery(FILTER_PROVINCES_BY_COUNTRY, { uid: countryUid }, 'provincesByCountryUid', 'network-only')
+            await withClientQuery<FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables>(FilterProvincesByCountryDocument, { uid: countryUid }, 'provincesByCountryUid', 'network-only')
                 .then(payload => {
                     this.fetchingProvinces = false;
                     this.provinces = payload;
@@ -89,7 +95,7 @@ export const useLocationStore = defineStore('location', {
                 return;
             }
             this.fetchingDstricts = true;
-            await withClientQuery(FILTER_DISTRICTS_BY_PROVINCE, { uid: provinceUid }, 'districtsByProvinceUid', 'network-only')
+            await withClientQuery<FilterDistrictsByProvinceQuery, FilterDistrictsByProvinceQueryVariables>(FilterDistrictsByProvinceDocument, { uid: provinceUid }, 'districtsByProvinceUid', 'network-only')
                 .then(payload => {
                     this.fetchingDstricts = false;
                     this.districts = payload;

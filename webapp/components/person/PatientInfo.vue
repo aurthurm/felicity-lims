@@ -2,7 +2,7 @@
 import * as shield from "@/guards";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { usePatientStore } from "@/stores";
+import { usePatientStore } from "@/stores/patient";
 import { parseDate } from "@/utils/helpers";
 import { defineAsyncComponent } from "vue";
 const LoadingMessage = defineAsyncComponent(

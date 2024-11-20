@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { urqlClient } from '@/urql';
-import { SUBSCRIBE_TO_ACTIVITY_STREAM } from '@/graphql/operations/stream.subscriptions';
 import { pipe, subscribe } from 'wonka';
 import { useWorksheetStore } from './worksheet';
 import { useSampleStore } from './sample';
 import useAnalyticsComposable from '@/composables/analytics';
+import { GetSystemActivityDocument, GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables } from '@/graphql/operations/stream.subscriptions';
 
 export const useStreamStore = defineStore('stream', {
     state: () =>
@@ -44,7 +44,7 @@ export const useStreamStore = defineStore('stream', {
         },
         subscribeToActivityStream() {
             pipe(
-                urqlClient.subscription(SUBSCRIBE_TO_ACTIVITY_STREAM, {}),
+                urqlClient.subscription<GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables>(GetSystemActivityDocument, {}),
                 subscribe(result => {
                     if (result.data?.latestActivity) {
                         this.addStream(result.data?.latestActivity);

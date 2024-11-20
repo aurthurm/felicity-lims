@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, toRefs } from "vue";
 import { storeToRefs } from "pinia";
-import { useUserStore, useAuditLogStore } from "@/stores";
+import { useUserStore } from "@/stores/user";
+import { useAuditLogStore } from "@/stores/audit_log";
 import { parseDate } from "@/utils/helpers";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")

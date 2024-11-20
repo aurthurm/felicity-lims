@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/auth';
 import { IGroup } from '@/models/auth';
 
 function canAccessPage(pageName: string) {

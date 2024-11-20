@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, defineAsyncComponent, ref, computed } from "vue";
-import { useApiUtil } from "@/composables";
-import { GET_ANALYSES_SERVICE_BY_UID } from "@/graphql/operations/analyses.queries";
+import useApiUtil  from "@/composables/api_util";
 import { IAnalysisService } from "@/models/analysis";
+import { GetAnalysesServicesByUidDocument, GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables } from "@/graphql/operations/analyses.queries";
 const FelLabelValueList = defineAsyncComponent(
   () => import("@/components/ui/label/FelLabelValueList.vue")
 )
@@ -12,7 +12,7 @@ const { withClientQuery } = useApiUtil();
 const analysis = ref<IAnalysisService | null>(null);
 
 onMounted(async () => {
-    await withClientQuery(GET_ANALYSES_SERVICE_BY_UID, { uid: props.analysisUid }, 'analysisByUid').then(
+    await withClientQuery<GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables>(GetAnalysesServicesByUidDocument, { uid: props.analysisUid }, 'analysisByUid').then(
         payload => analysis.value = payload
     );
 });

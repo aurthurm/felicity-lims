@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useNoticeStore, useAuthStore } from '@/stores'
+import { useNoticeStore } from '@/stores/notice'
+import { useAuthStore } from '@/stores/auth'
 import { computed, onMounted, defineAsyncComponent } from 'vue'
 const FelInbox = defineAsyncComponent(
   () => import("@/components/ui/inbox/FelInbox.vue")

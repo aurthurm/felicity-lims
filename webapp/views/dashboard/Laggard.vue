@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { onMounted, watch, ref, defineAsyncComponent } from "vue";
 import { Chart } from "@antv/g2";
-import { useDashBoardStore } from "@/stores";
+import { useDashBoardStore } from "@/stores/dashboard";
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )

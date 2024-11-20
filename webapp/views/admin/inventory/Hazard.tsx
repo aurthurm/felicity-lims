@@ -1,8 +1,9 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_HAZARD, EDIT_HAZARD } from '@/graphql/operations/inventory.mutations';
-import { useInventoryStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { AddHazardDocument, AddHazardMutation, AddHazardMutationVariables,
+  EditHazardDocument, EditHazardMutation, EditHazardMutationVariables } from '@/graphql/operations/inventory.mutations';
+import { useInventoryStore } from '@/stores/inventory';
+import  useApiUtil  from '@/composables/api_util';
 import { IHazard } from '@/models/inventory';
 const Modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -24,7 +25,7 @@ const Hazard = defineComponent({
 
         function addHazard(): void {
             const payload = { ...form };
-            withClientMutation(ADD_HAZARD, { payload }, 'createHazard').then(result => inventoryStore.addHazard(result));
+            withClientMutation<AddHazardMutation, AddHazardMutationVariables>(AddHazardDocument, { payload }, 'createHazard').then(result => inventoryStore.addHazard(result));
         }
 
         function editHazard(): void {
@@ -32,7 +33,7 @@ const Hazard = defineComponent({
                 name: form.name,
                 description: form.description,
             };
-            withClientMutation(EDIT_HAZARD, { uid: form.uid, payload }, 'updateHazard').then(result => inventoryStore.updateHazard(result));
+            withClientMutation<EditHazardMutation, EditHazardMutationVariables>(EditHazardDocument, { uid: form.uid, payload }, 'updateHazard').then(result => inventoryStore.updateHazard(result));
         }
 
         function FormManager(create: boolean, obj: IHazard | null): void {

@@ -1,22 +1,12 @@
 import Swal from 'sweetalert2';
 import { toRefs, computed, reactive } from 'vue';
-import {
-    REINSTATE_SAMPLES,
-    RECEIVE_SAMPLES,
-    CANCEL_SAMPLES,
-    CLONE_SAMPLES,
-    PRINT_SAMPLES,
-    PUBLISH_SAMPLES,
-    INVALIDATE_SAMPLES,
-    VERIFY_SAMPLES,
-    REJECT_SAMPLES,
-} from '@/graphql/operations/analyses.mutations';
-import { BARCODE_SAMPLES, DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '@/graphql/operations/analyses.queries';
-import { RECOVER_SAMPLES, STORE_SAMPLES } from '@/graphql/operations/storage.mutations';
-import { useSampleStore } from '@/stores';
+import { useSampleStore } from '@/stores/sample';
 import { ISample } from '@/models/analysis';
-import useApiUtil from './api_util';
+import useApiUtil  from './api_util';
 import useNotifyToast from './alert_toast';
+import { CancelSamplesDocument, CancelSamplesMutation, CancelSamplesMutationVariables, CloneSamplesDocument, CloneSamplesMutation, CloneSamplesMutationVariables, InvalidateSamplesDocument, InvalidateSamplesMutation, InvalidateSamplesMutationVariables, PrintSamplesDocument, PrintSamplesMutation, PrintSamplesMutationVariables, PublishSamplesDocument, PublishSamplesMutation, PublishSamplesMutationVariables, ReceiveSamplesDocument, ReceiveSamplesMutation, ReceiveSamplesMutationVariables, ReInstateSamplesDocument, ReInstateSamplesMutation, ReInstateSamplesMutationVariables, RejectSamplesDocument, RejectSamplesMutation, RejectSamplesMutationVariables, VerifySamplesDocument, VerifySamplesMutation, VerifySamplesMutationVariables } from '@/graphql/operations/analyses.mutations';
+import { RecoverSamplesDocument, RecoverSamplesMutation, RecoverSamplesMutationVariables, StoreSamplesDocument, StoreSamplesMutation, StoreSamplesMutationVariables } from '@/graphql/operations/storage.mutations';
+import { BarcodeSamplesDocument, BarcodeSamplesQuery, BarcodeSamplesQueryVariables, ImpressSampleReportDocument, ImpressSampleReportQuery, ImpressSampleReportQueryVariables, ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables } from '@/graphql/operations/analyses.queries';
 
 export default function useSampleComposable() {
     const sampleStore = useSampleStore();
@@ -51,7 +41,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not cancel!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(CANCEL_SAMPLES, { samples: uids }, 'cancelSamples').then(resp => {
+                    withClientMutation<CancelSamplesMutation, CancelSamplesMutationVariables>(CancelSamplesDocument, { samples: uids }, 'cancelSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                         _updateSampleStatus(resp.samples[0]);
@@ -79,7 +69,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not clone!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(CLONE_SAMPLES, { samples: uids }, 'cloneSamples').then(resp => {
+                    withClientMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(CloneSamplesDocument, { samples: uids }, 'cloneSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _addSampleClones(resp.samples);
                     });
@@ -104,7 +94,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not reinstate!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(REINSTATE_SAMPLES, { samples: uids }, 'reInstateSamples').then(resp => {
+                    withClientMutation<ReInstateSamplesMutation, ReInstateSamplesMutationVariables>(ReInstateSamplesDocument, { samples: uids }, 'reInstateSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                         _updateSampleStatus(resp.samples[0]);
@@ -132,7 +122,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not receive!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(RECEIVE_SAMPLES, { samples: uids }, 'receiveSamples').then(resp => {
+                    withClientMutation<ReceiveSamplesMutation, ReceiveSamplesMutationVariables>(ReceiveSamplesDocument, { samples: uids }, 'receiveSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                         _updateSampleStatus(resp.samples[0]);
@@ -160,7 +150,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not recover!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(RECOVER_SAMPLES, { sampleUids }, 'recoverSamples').then(resp => {
+                    withClientMutation<RecoverSamplesMutation, RecoverSamplesMutationVariables>(RecoverSamplesDocument, { sampleUids }, 'recoverSamples').then(resp => {
                         if (resp.length <= 0) return;
                         _updateSamples(resp.samples);
                         if (resp.samples.length !== 1) return;
@@ -187,7 +177,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not publish!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(PUBLISH_SAMPLES, { samples }, 'publishSamples').then(resp => {
+                    withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(PublishSamplesDocument, { samples }, 'publishSamples').then(resp => {
                         toastInfo(resp.message);
                     });
 
@@ -211,7 +201,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not download!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientQuery(DOWNLOAD_IMPRESS_SAMPLES, { sampleIds }, 'impressReportsDownload').then(resp => {
+                    withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(ImpressSampleReportDocument, { sampleIds }, 'impressReportsDownload').then(resp => {
                         const tempLink = document.createElement('a');
                         tempLink.href = `data:application/pdf;base64,${resp}`;
                         tempLink.setAttribute('download', 'impress-report.pdf');
@@ -238,7 +228,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not download!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientQuery(DOWNLOAD_IMPRESS, { impressUid }, 'impressReportDownload').then(resp => {
+                    withClientQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables>(ImpressSampleReportDocument, { impressUid }, 'impressReportDownload').then(resp => {
                         const tempLink = document.createElement('a');
                         tempLink.href = `data:application/pdf;base64,${resp}`;
                         tempLink.setAttribute('download', 'impress-report.pdf');
@@ -254,7 +244,7 @@ export default function useSampleComposable() {
     const barcodeSamples = async (sampleUids: string[]) => {
         let data = [];
         try {
-            await withClientQuery(BARCODE_SAMPLES, { sampleUids }, 'barcodeSamples')
+            await withClientQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables>(BarcodeSamplesDocument, { sampleUids }, 'barcodeSamples')
             .then(resp => (data = resp));
         } catch (error) {}
         return data
@@ -274,7 +264,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not flag!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(PRINT_SAMPLES, { samples: uids }, 'printSamples').then(resp => {
+                    withClientMutation<PrintSamplesMutation, PrintSamplesMutationVariables>(PrintSamplesDocument, { samples: uids }, 'printSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                         _updateSampleStatus(resp.samples[0]);
@@ -302,7 +292,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not verify!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(VERIFY_SAMPLES, { samples: uids }, 'verifySamples').then(resp => {
+                    withClientMutation<VerifySamplesMutation, VerifySamplesMutationVariables>(VerifySamplesDocument, { samples: uids }, 'verifySamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                         _updateSampleStatus(resp.samples[0]);
@@ -329,7 +319,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not reject!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(REJECT_SAMPLES, { samples }, 'rejectSamples').then(resp => {
+                    withClientMutation<RejectSamplesMutation, RejectSamplesMutationVariables>(RejectSamplesDocument, { samples }, 'rejectSamples').then(resp => {
                         rejected = true;
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
@@ -357,7 +347,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not invalidate!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(INVALIDATE_SAMPLES, { samples: uids }, 'invalidateSamples').then(resp => {
+                    withClientMutation<InvalidateSamplesMutation, InvalidateSamplesMutationVariables>(InvalidateSamplesDocument, { samples: uids }, 'invalidateSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                         _updateSampleStatus(resp.samples[0]);
@@ -385,7 +375,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not store!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientMutation(STORE_SAMPLES, { payload: storageParams }, 'storeSamples').then(resp => {
+                    withClientMutation<StoreSamplesMutation, StoreSamplesMutationVariables>(StoreSamplesDocument, { payload: storageParams }, 'storeSamples').then(resp => {
                         if (resp.samples.length <= 0) return;
                         _updateSamplesStatus(resp.samples);
                     });

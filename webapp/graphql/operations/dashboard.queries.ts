@@ -235,7 +235,7 @@ export function useGetAnalysisGroupByInstrumentQuery(options: Omit<Urql.UseQuery
   return Urql.useQuery<GetAnalysisGroupByInstrumentQuery>({ query: GetAnalysisGroupByInstrumentDocument, ...options });
 };
 export const SampleProcessPeformanceDocument = gql`
-    query sampleProcessPeformance($startDate: String!, $endDate: String!) {
+    query SampleProcessPeformance($startDate: String!, $endDate: String!) {
   sampleProcessPerformance(startDate: $startDate, endDate: $endDate) {
     __typename
     data {
@@ -282,7 +282,7 @@ export function useGetAnalysisProcessPeformanceQuery(options: Omit<Urql.UseQuery
   return Urql.useQuery<GetAnalysisProcessPeformanceQuery>({ query: GetAnalysisProcessPeformanceDocument, ...options });
 };
 export const SampleGroupByActionDocument = gql`
-    query sampleGroupByAction($startDate: String!, $endDate: String!) {
+    query SampleGroupByAction($startDate: String!, $endDate: String!) {
   countSampleGroupByAction(startDate: $startDate, endDate: $endDate) {
     __typename
     data {

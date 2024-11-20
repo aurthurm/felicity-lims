@@ -10,7 +10,9 @@ import path from 'path'
  * @type {import('vite').UserConfig}
  */
 export default defineConfig({
-    plugins: [tsConfigPaths(), vue(), vueJsx()], // ,
+    plugins: [
+        tsConfigPaths(), vue(), vueJsx()
+    ],
     build: {
         target: 'esnext',
         // rollupOptions: {

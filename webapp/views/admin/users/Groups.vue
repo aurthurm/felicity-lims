@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { ref,reactive, computed, defineAsyncComponent } from 'vue';
-  import { useUserStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
-  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '@/graphql/operations/_mutations';
+  import { useUserStore } from '@/stores/user';
+  import  useApiUtil  from '@/composables/api_util';
+  import { AddGroupDocument, AddGroupMutation, AddGroupMutationVariables, EditGroupDocument, EditGroupMutation, EditGroupMutationVariables, UpdateGroupsAndPermissionsDocument, UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, } from '@/graphql/operations/_mutations';
   import { IGroup, IPermission } from '@/models/auth';
   import * as shield from '@/guards'
 
@@ -81,12 +81,12 @@
     payload['pages'] = pgs.join(',')
 
     if (formAction.value === true) {
-      withClientMutation(ADD_GROUP, {  payload }, "createGroup")
+      withClientMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument, {  payload }, "createGroup")
       .then((result) => userStore.addGroup(result));
     }
 
     if (formAction.value === false) {
-      withClientMutation(UPDATE_GROUP, {  uid: userGroup?.uid, payload: {
+      withClientMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument, {  uid: userGroup?.uid, payload: {
         name: payload["name"],
         pages: payload["pages"],
       } }, "updateGroup").then((result) => userStore.updateGroup(result));
@@ -106,7 +106,7 @@
   const permissions = computed(() => Array.from(Object.entries(groupBy(userStore.getPermissions, 'target'))))
   
   function updateGroupPerms(group: IGroup, permission: IPermission): void {
-      withClientMutation(UPDATE_GROUP_PERMS, {  groupUid: group?.uid, permissionUid: permission?.uid }, "updateGroupPermissions")
+      withClientMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument, {  groupUid: group?.uid, permissionUid: permission?.uid }, "updateGroupPermissions")
       .then((result) => userStore.updateGroupsAndPermissions(result));
   }
 

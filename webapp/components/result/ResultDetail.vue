@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from "vue";
-import { useApiUtil } from "@/composables";
-import { GET_ANALYSIS_RESULT_MUTATION } from "@/graphql/operations/analyses.queries";
+import useApiUtil  from "@/composables/api_util";
 import { IResultMutation } from "@/models/analysis";
+import { GetAnalysisResultMutationDocument, GetAnalysisResultMutationQuery, GetAnalysisResultMutationQueryVariables } from "@/graphql/operations/analyses.queries";
 
 const FelAuditLog = defineAsyncComponent(
   () => import("@/components/audit/FelAuditLog.vue")
@@ -17,9 +17,9 @@ const { withClientQuery } = useApiUtil();
 const mutations = ref<IResultMutation[] | null>(null);
 
 onMounted(async () => {
-    await withClientQuery(GET_ANALYSIS_RESULT_MUTATION, { resultUid: props.analysisResultesultUid }, 'resultMutationByResultUid').then(
+    await withClientQuery<GetAnalysisResultMutationQuery, GetAnalysisResultMutationQueryVariables>(GetAnalysisResultMutationDocument, { resultUid: props.analysisResultesultUid }, 'resultMutationByResultUid').then(
         payload => mutations.value = payload
-);
+    );
 });
 
 const columns = [

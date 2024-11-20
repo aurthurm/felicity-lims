@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
-
-import {
-  ADD_WORKSHEET_TEMPLATE,
-  EDIT_WORKSHEET_TEMPLATE,
-} from "@/graphql/operations/worksheet.mutations";
-import {
-  useWorksheetStore,
-  useAnalysisStore,
-  useSampleStore,
-  useSetupStore,
-} from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useWorksheetStore } from "@/stores/worksheet";
+import { useAnalysisStore } from "@/stores/analysis";
+import { useSampleStore } from "@/stores/sample";
+import { useSetupStore } from "@/stores/setup";
+import useApiUtil  from "@/composables/api_util";
 import { IReserved, IWorkSheetTemplate } from "@/models/worksheet";
 import {
   IAnalysisService,
@@ -20,6 +13,7 @@ import {
   ISampleType,
 } from "@/models/analysis";
 import { IInstrument } from "@/models/setup";
+import { AddWorkSheetTemplateDocument, AddWorkSheetTemplateMutation, AddWorkSheetTemplateMutationVariables, EditWorkSheetTemplateDocument, EditWorkSheetTemplateMutation, EditWorkSheetTemplateMutationVariables } from "@/graphql/operations/worksheet.mutations";
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
@@ -73,8 +67,7 @@ function addWorksheetTemplate() {
     rowWise: workSheetTemplate.rowWise,
     analysisUid: workSheetTemplate.analysisUid,
   };
-  withClientMutation(
-    ADD_WORKSHEET_TEMPLATE,
+  withClientMutation<AddWorkSheetTemplateMutation, AddWorkSheetTemplateMutationVariables>(AddWorkSheetTemplateDocument,
     { payload },
     "createWorksheetTemplate"
   ).then((result) => worksheetStore.addWorksheetTemplate(result));
@@ -95,8 +88,7 @@ function editWorksheetTemplate() {
     rowWise: workSheetTemplate.rowWise,
     analysisUid: workSheetTemplate.analysisUid,
   };
-  withClientMutation(
-    EDIT_WORKSHEET_TEMPLATE,
+  withClientMutation<EditWorkSheetTemplateMutation, EditWorkSheetTemplateMutationVariables>(EditWorkSheetTemplateDocument,
     { uid: workSheetTemplate.uid, payload },
     "updateWorksheetTemplate"
   ).then((result) => worksheetStore.updateWorksheetTemplate(result));

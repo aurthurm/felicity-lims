@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
-import { useUserStore } from '@/stores';
-import { useApiUtil } from '@/composables';
-import { UPDATE_GROUP_PERMS } from '@/graphql/operations/_mutations';
+import { useUserStore } from '@/stores/user';
+import  useApiUtil  from '@/composables/api_util';
 import { IGroup, IPermission } from '@/models/auth';
+import { UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, UpdateGroupsAndPermissionsDocument } from '@/graphql/operations/_mutations';
 
 const FelSwitch = defineAsyncComponent(
   () => import("@/components/ui/switch/FelSwitch.vue")
@@ -29,7 +29,7 @@ const groupBy = (xs, key):Map<any, any> => {
 const permissions = computed(() => Array.from(Object.entries(groupBy(userStore.getPermissions, 'target'))))
 
 function updateGroupPerms(group: IGroup, permission: IPermission): void {
-  withClientMutation(UPDATE_GROUP_PERMS, { 
+  withClientMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument, { 
     groupUid: group?.uid, 
     permissionUid: permission?.uid 
   }, "updateGroupPermissions")

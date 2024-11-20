@@ -1,21 +1,21 @@
 import { defineStore } from 'pinia';
 
 import {
-    GET_ALL_ANALYSES_SERVICES,
-    GET_ALL_ANALYSES_PROFILES,
-    GET_ALL_ANALYSES_TEMPLATES,
-    GET_ALL_ANALYSES_CATEGORIES,
-    GET_ALL_ANALYSES_PROFILES_AND_SERVICES,
-    GET_ALL_QC_TEMPLATES,
-    GET_ALL_QC_LEVELS,
-    GET_ALL_REJECTION_REASONS,
-    GET_ALL_CODING_STANDARDS,
-    GET_PROFILE_MAPPINGS_BY_PROFILE,
-    GET_ANALYSIS_MAPPINGS_BY_ANALYSIS,
+    GetAllAnalysesServicesDocument, GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables,
+    GetAllAnalysesProfilesDocument, GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables,
+    GetAllAnalysesTemplatesDocument, GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables,
+    GetAllAnalysesCategoriesDocument, GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables,
+    GetAllProfilesAndServicesDocument, GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables,
+    GetAllQcTemplatesDocument, GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables,
+    GetAllQcLevelsDocument, GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables,
+    GetAllRejectionReasonsDocument, GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables,
+    GetAllCodingStandardsDocument, GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables,
+    GetProfileMappingsByProfileUidDocument, GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables,
+    GetAnalysisMappingsByAnalysisUidDocument, GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables,
 } from '@/graphql/operations/analyses.queries';
 import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason, ICodingStandard, IAnalysisTemplate } from '@/models/analysis';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 const { withClientQuery } = useApiUtil();
 
 function updateItem(arr, payload) {
@@ -84,7 +84,7 @@ export const useAnalysisStore = defineStore('analysis', {
     actions: {     
         async fetchCodingStandards() {
             this.fetchingCodingStandards = true;
-            await withClientQuery(GET_ALL_CODING_STANDARDS, {}, 'codingStandardAll')
+            await withClientQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables>(GetAllCodingStandardsDocument, {}, 'codingStandardAll')
                 .then(payload => {
                     this.fetchingCodingStandards = false;
                     this.codingStandards = payload;
@@ -100,8 +100,8 @@ export const useAnalysisStore = defineStore('analysis', {
         },
         // analysis categories
         async fetchAnalysesCategories() {
-            await withClientQuery(GET_ALL_ANALYSES_CATEGORIES, {}, 'analysisCategoryAll').then(
-                payload => (this.analysesCategories = payload)
+            await withClientQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables>(GetAllAnalysesCategoriesDocument, {}, 'analysisCategoryAll')
+                .then(payload => (this.analysesCategories = payload)
             );
         },
         updateAnalysisCategory(payload) {
@@ -114,8 +114,8 @@ export const useAnalysisStore = defineStore('analysis', {
 
         // analysis services
         async fetchAnalysesServices(params) {
-            await withClientQuery(GET_ALL_ANALYSES_SERVICES, params, 'analysisAll').then(
-                payload => (this.analysesServices = payload.items)
+            await withClientQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables>(GetAllAnalysesServicesDocument, params, 'analysisAll')
+                .then(payload => (this.analysesServices = payload.items)
             );
         },
         updateAnalysisService(payload) {
@@ -127,14 +127,14 @@ export const useAnalysisStore = defineStore('analysis', {
         },
 
         async fetchAnalysesProfilesAndServices() {
-            await withClientQuery(GET_ALL_ANALYSES_PROFILES_AND_SERVICES, {}, undefined).then(payload => {
+            await withClientQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables>(GetAllProfilesAndServicesDocument, {}, undefined).then(payload => {
                 this.analysesProfiles = payload.profileAll;
                 this.analysesServices = payload.analysisAll?.items;
             });
         },
 
         async fetchAnalysesMappings(profileUid) {
-            await withClientQuery(GET_ANALYSIS_MAPPINGS_BY_ANALYSIS, { uid: profileUid }, 'analysisMappingsByAnalysis').then(payload => (this.analysesMappings = payload));
+            await withClientQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables>(GetAnalysisMappingsByAnalysisUidDocument, { uid: profileUid }, 'analysisMappingsByAnalysis').then(payload => (this.analysesMappings = payload));
         },
         addAnalysesMapping(payload) {
             this.analysesMappings?.unshift(payload);
@@ -146,7 +146,7 @@ export const useAnalysisStore = defineStore('analysis', {
 
         // analysis profiles
         async fetchAnalysesProfiles() {
-            await withClientQuery(GET_ALL_ANALYSES_PROFILES, {}, 'profileAll').then(payload => (this.analysesProfiles = payload));
+            await withClientQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables>(GetAllAnalysesProfilesDocument, {}, 'profileAll').then(payload => (this.analysesProfiles = payload));
         },
         updateAnalysesProfile(payload) {
             const index = this.analysesProfiles.findIndex(x => x.uid === payload.uid);
@@ -156,7 +156,7 @@ export const useAnalysisStore = defineStore('analysis', {
             this.analysesProfiles.unshift(payload);
         },
         async fetchProfileMappings(profileUid) {
-            await withClientQuery(GET_PROFILE_MAPPINGS_BY_PROFILE, { uid: profileUid }, 'profileMappingsByProfile').then(payload => (this.profileMappings = payload));
+            await withClientQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables>(GetProfileMappingsByProfileUidDocument, { uid: profileUid }, 'profileMappingsByProfile').then(payload => (this.profileMappings = payload));
         },
         addProfileMapping(payload) {
             this.profileMapings?.unshift(payload);
@@ -168,7 +168,7 @@ export const useAnalysisStore = defineStore('analysis', {
 
         // analysis profiles
         async fetchAnalysesTemplates() {
-            await withClientQuery(GET_ALL_ANALYSES_TEMPLATES, {}, 'analysisTemplateAll').then(payload => (this.analysesTemplates = payload));
+            await withClientQuery<GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables>(GetAllAnalysesTemplatesDocument, {}, 'analysisTemplateAll').then(payload => (this.analysesTemplates = payload));
         },
         updateAnalysesTemplate(payload) {
             const index = this.analysesTemplates.findIndex(x => x.uid === payload.uid);
@@ -180,7 +180,7 @@ export const useAnalysisStore = defineStore('analysis', {
 
         // QC LEVELS
         async fetchQCLevels() {
-            await withClientQuery(GET_ALL_QC_LEVELS, {}, 'qcLevelAll').then(payload => (this.qcLevels = payload));
+            await withClientQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables>(GetAllQcLevelsDocument, {}, 'qcLevelAll').then(payload => (this.qcLevels = payload));
         },
         updateQcLevel(payload) {
             const index = this.qcLevels.findIndex(x => x.uid === payload.uid);
@@ -192,7 +192,7 @@ export const useAnalysisStore = defineStore('analysis', {
 
         // analysis QC TEMPLATES
         async fetchQCTemplates() {
-            await withClientQuery(GET_ALL_QC_TEMPLATES, {}, 'qcTemplateAll').then(payload => {
+            await withClientQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables>(GetAllQcTemplatesDocument, {}, 'qcTemplateAll').then(payload => {
                 this.qcTemplates = payload.map((qcTemplate: IQCTemplate) => {
                     qcTemplate.qcLevels = qcTemplate?.qcLevels || [];
                     qcTemplate.departments = qcTemplate?.departments || [];
@@ -340,7 +340,7 @@ export const useAnalysisStore = defineStore('analysis', {
 
         // ReJECTION REASONS
         async fetchRejectionReasons() {
-            await withClientQuery(GET_ALL_REJECTION_REASONS, {}, 'rejectionReasonsAll').then(payload => (this.rejectionReasons = payload));
+            await withClientQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables>(GetAllRejectionReasonsDocument, {}, 'rejectionReasonsAll').then(payload => (this.rejectionReasons = payload));
         },
         updateRejectionReason(payload) {
             const index = this.rejectionReasons.findIndex(x => x.uid === payload.uid);

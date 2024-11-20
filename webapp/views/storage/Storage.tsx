@@ -2,17 +2,17 @@ import { defineComponent, computed, reactive, toRefs, ref, watch, defineAsyncCom
 import useTreeStateComposable from '@/composables/tree-state';
 import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '@/models/storage';
 import {
-    ADD_STORE_ROOM,
-    EDIT_STORE_ROOM,
-    ADD_STORAGE_LOCATION,
-    EDIT_STORAGE_LOCATION,
-    ADD_STORAGE_SECTION,
-    EDIT_STORAGE_SECTION,
-    ADD_STORAGE_CONTAINER,
-    EDIT_STORAGE_CONTAINER,
+    AddStoreRoomDocument, AddStoreRoomMutationVariables, AddStoreRoomMutation,             
+    EditStoreRoomDocument, EditStoreRoomMutationVariables, EditStoreRoomMutation,
+    AddStorageLocationDocument, AddStorageLocationMutationVariables, AddStorageLocationMutation,
+    EditStorageLocationDocument, EditStorageLocationMutationVariables, EditStorageLocationMutation,
+    AddStorageSectionDocument, AddStorageSectionMutationVariables, AddStorageSectionMutation,
+    EditStorageSectionDocument, EditStorageSectionMutationVariables, EditStorageSectionMutation,
+    AddStorageContainerDocument, AddStorageContainerMutationVariables, AddStorageContainerMutation,
+    EditStorageContainerDocument, EditStorageContainerMutationVariables, EditStorageContainerMutation
 } from '@/graphql/operations/storage.mutations';
-import { useStorageStore } from '@/stores';
-import { useApiUtil } from '@/composables';
+import { useStorageStore } from '@/stores/storage';
+import  useApiUtil  from '@/composables/api_util';
 import { useRouter } from 'vue-router';
 const Modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -104,7 +104,11 @@ const StorageHome = defineComponent({
         // Store Room
         function addStoreRoom(): void {
             const payload = { ...state.roomForm };
-            withClientMutation(ADD_STORE_ROOM, { payload }, 'createStoreRoom').then(result => {
+            withClientMutation<AddStoreRoomMutation, AddStoreRoomMutationVariables>(
+                AddStoreRoomDocument,
+                { payload },
+                'createStoreRoom'
+            ).then(result => {
                 storageStore.addStoreRoom(result);
                 newStoreRoom(result);
             });
@@ -115,9 +119,11 @@ const StorageHome = defineComponent({
                 name: state.roomForm.name,
                 description: state.roomForm.description,
             };
-            withClientMutation(EDIT_STORE_ROOM, { uid: state.roomForm.uid, payload }, 'updateStoreRoom').then(result =>
-                storageStore.updateStoreRoom(result)
-            );
+            withClientMutation<EditStoreRoomMutation, EditStoreRoomMutationVariables>(
+                EditStoreRoomDocument,
+                { uid: state.roomForm.uid, payload },
+                'updateStoreRoom'
+            ).then(result => storageStore.updateStoreRoom(result));
         }
 
         function roomFormManager(create: boolean, obj: IStoreRoom | null): void {
@@ -140,7 +146,11 @@ const StorageHome = defineComponent({
         // Storage Location
         function addStorageLocation(): void {
             const payload = { ...state.locationForm, storeRoomUid: activeTree.value.uid };
-            withClientMutation(ADD_STORAGE_LOCATION, { payload }, 'createStorageLocation').then(result => {
+            withClientMutation<AddStorageLocationMutation, AddStorageLocationMutationVariables>(
+                AddStorageLocationDocument,
+                { payload },
+                'createStorageLocation'
+            ).then(result => {
                 storageStore.addStorageLocation(result);
                 newStorageLocation(result);
             });
@@ -151,9 +161,11 @@ const StorageHome = defineComponent({
                 name: state.locationForm.name,
                 description: state.locationForm.description,
             };
-            withClientMutation(EDIT_STORAGE_LOCATION, { uid: state.locationForm.uid, payload }, 'updateStorageLocation').then(result =>
-                storageStore.updateStorageLocation(result)
-            );
+            withClientMutation<EditStorageLocationMutation, EditStorageLocationMutationVariables>(
+                EditStorageLocationDocument,
+                { uid: state.locationForm.uid, payload },
+                'updateStorageLocation'
+            ).then(result => storageStore.updateStorageLocation(result));
         }
 
         function locationFormManager(create: boolean, obj: IStorageLocation | null): void {
@@ -176,7 +188,11 @@ const StorageHome = defineComponent({
         // Storage Section
         function addStorageSection(): void {
             const payload = { ...state.sectionForm, storageLocationUid: activeTree.value.uid };
-            withClientMutation(ADD_STORAGE_SECTION, { payload }, 'createStorageSection').then(result => {
+            withClientMutation<AddStorageSectionMutation, AddStorageSectionMutationVariables>(
+                AddStorageSectionDocument,
+                { payload },
+                'createStorageSection'
+            ).then(result => {
                 storageStore.addStorageSection(result);
                 newStorageSection(result);
             });
@@ -187,9 +203,11 @@ const StorageHome = defineComponent({
                 name: state.sectionForm.name,
                 description: state.sectionForm.description,
             };
-            withClientMutation(EDIT_STORAGE_SECTION, { uid: state.sectionForm.uid, payload }, 'updateStorageSection').then(result =>
-                storageStore.updateStorageSection(result)
-            );
+            withClientMutation<EditStorageSectionMutation, EditStorageSectionMutationVariables>(
+                EditStorageSectionDocument,
+                { uid: state.sectionForm.uid, payload },
+                'updateStorageSection'
+            ).then(result => storageStore.updateStorageSection(result));
         }
 
         function sectionFormManager(create: boolean, obj: IStorageSection | null): void {
@@ -212,7 +230,11 @@ const StorageHome = defineComponent({
         // Storage Container
         function addStorageContainer(): void {
             const payload = { ...state.containerForm, storageSectionUid: activeTree.value.uid };
-            withClientMutation(ADD_STORAGE_CONTAINER, { payload }, 'createStorageContainer').then(result => {
+            withClientMutation<AddStorageContainerMutation, AddStorageContainerMutationVariables>(
+                AddStorageContainerDocument,
+                { payload },
+                'createStorageContainer'
+            ).then(result => {
                 storageStore.addStorageContainer(result);
                 newStorageContainer(result);
             });
@@ -223,9 +245,11 @@ const StorageHome = defineComponent({
                 name: state.containerForm.name,
                 description: state.containerForm.description,
             };
-            withClientMutation(EDIT_STORAGE_CONTAINER, { uid: state.containerForm.uid, payload }, 'updateStorageContainer').then(result =>
-                storageStore.updateStorageContainer(result)
-            );
+            withClientMutation<EditStorageContainerMutation, EditStorageContainerMutationVariables>(
+                EditStorageContainerDocument,
+                { uid: state.containerForm.uid, payload },
+                'updateStorageContainer'
+            ).then(result => storageStore.updateStorageContainer(result));
         }
 
         function containerFormManager(create: boolean, obj: IStorageContainer | null): void {

@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '@/graphql/operations/analyses.mutations';
+  import { AddAnalysisSpecificationDocument, AddAnalysisSpecificationMutation, AddAnalysisSpecificationMutationVariables,
+    EditAnalysisSpecificationDocument, EditAnalysisSpecificationMutation, EditAnalysisSpecificationMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { IAnalysisSpecification } from '@/models/analysis';
   import { IMethod } from '@/models/setup';
-  import { useSetupStore, useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useSetupStore } from '@/stores/setup';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -42,7 +44,7 @@
 
   function addAnalysisSpecification(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
-      withClientMutation(ADD_ANALYSIS_SPECIFICATION, { payload }, "createAnalysisSpecification")
+      withClientMutation<AddAnalysisSpecificationMutation, AddAnalysisSpecificationMutationVariables>(AddAnalysisSpecificationDocument, { payload }, "createAnalysisSpecification")
       .then((result) => analysisStore.addAnalysisSpecification(result));
   }
 
@@ -52,7 +54,7 @@
       delete payload['__typename']
       delete payload['unit']
 
-      withClientMutation(EDIT_ANALYSIS_SPECIFICATION, { uid : form.uid,  payload }, "updateAnalysisSpecification")
+      withClientMutation<EditAnalysisSpecificationMutation, EditAnalysisSpecificationMutationVariables>(EditAnalysisSpecificationDocument, { uid : form.uid,  payload }, "updateAnalysisSpecification")
       .then((result) => analysisStore.updateAnalysisSpecification(result));
   }
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '@/graphql/operations/_mutations';
+  import { AddDepartmentDocument, AddDepartmentMutation, AddDepartmentMutationVariables,
+    EditDepartmentDocument, EditDepartmentMutation, EditDepartmentMutationVariables } from '@/graphql/operations/_mutations';
   import { IDepartment } from '@/models/setup';
 
-  import { useSetupStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useSetupStore } from '@/stores/setup';
+  import  useApiUtil  from '@/composables/api_util';
 
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -34,10 +35,10 @@
 
   function saveForm():void {
     if (formAction.value === true) {
-      withClientMutation(ADD_DEPARTMENT, { payload: { name: form.name } }, "createDepartment")
+      withClientMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument, { payload: { name: form.name } }, "createDepartment")
       .then((result) => setupStore.addDepartment(result));
     } else {
-      withClientMutation(UPDATE_DEPARTMENT, { uid: form.uid, payload: { name: form.name }},"updateDepartment")
+      withClientMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument, { uid: form.uid, payload: { name: form.name }},"updateDepartment")
       .then((result) => setupStore.updateDepartment(result));
     };
     showModal.value = false;

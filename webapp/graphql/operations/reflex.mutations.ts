@@ -3,12 +3,12 @@ import type * as Types from '../schema';
 import gql from 'graphql-tag';
 import * as Urql from '@urql/vue';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type AddReflexRMutationVariables = Types.Exact<{
+export type AddReflexRuleMutationVariables = Types.Exact<{
   payload: Types.ReflexRuleInput;
 }>;
 
 
-export type AddReflexRMutation = (
+export type AddReflexRuleMutation = (
   { __typename?: 'Mutation' }
   & { createReflexRule: (
     { __typename: 'OperationError' }
@@ -19,13 +19,13 @@ export type AddReflexRMutation = (
   ) }
 );
 
-export type EditReflexRMutationVariables = Types.Exact<{
+export type EditReflexRuleMutationVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
   payload: Types.ReflexRuleInput;
 }>;
 
 
-export type EditReflexRMutation = (
+export type EditReflexRuleMutation = (
   { __typename?: 'Mutation' }
   & { updateReflexRule: (
     { __typename: 'OperationError' }
@@ -36,12 +36,12 @@ export type EditReflexRMutation = (
   ) }
 );
 
-export type AddReflexAMutationVariables = Types.Exact<{
+export type AddReflexActionMutationVariables = Types.Exact<{
   payload: Types.ReflexActionInput;
 }>;
 
 
-export type AddReflexAMutation = (
+export type AddReflexActionMutation = (
   { __typename?: 'Mutation' }
   & { createReflexAction: (
     { __typename: 'OperationError' }
@@ -59,13 +59,13 @@ export type AddReflexAMutation = (
   ) }
 );
 
-export type EditReflexAMutationVariables = Types.Exact<{
+export type EditReflexActionMutationVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
   payload: Types.ReflexActionInput;
 }>;
 
 
-export type EditReflexAMutation = (
+export type EditReflexActionMutation = (
   { __typename?: 'Mutation' }
   & { updateReflexAction: (
     { __typename: 'OperationError' }
@@ -83,12 +83,12 @@ export type EditReflexAMutation = (
   ) }
 );
 
-export type AddReflexBMutationVariables = Types.Exact<{
+export type AddReflexBrainMutationVariables = Types.Exact<{
   payload: Types.ReflexBrainInput;
 }>;
 
 
-export type AddReflexBMutation = (
+export type AddReflexBrainMutation = (
   { __typename?: 'Mutation' }
   & { createReflexBrain: (
     { __typename: 'OperationError' }
@@ -140,13 +140,13 @@ export type AddReflexBMutation = (
   ) }
 );
 
-export type EditReflexBMutationVariables = Types.Exact<{
+export type EditReflexBrainMutationVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
   payload: Types.ReflexBrainInput;
 }>;
 
 
-export type EditReflexBMutation = (
+export type EditReflexBrainMutation = (
   { __typename?: 'Mutation' }
   & { updateReflexBrain: (
     { __typename: 'OperationError' }
@@ -212,8 +212,8 @@ export type DeleteReflexBrainMutation = (
 );
 
 
-export const AddReflexRDocument = gql`
-    mutation AddReflexR($payload: ReflexRuleInput!) {
+export const AddReflexRuleDocument = gql`
+    mutation AddReflexRule($payload: ReflexRuleInput!) {
   createReflexRule(payload: $payload) {
     __typename
     ... on ReflexRuleType {
@@ -231,11 +231,11 @@ export const AddReflexRDocument = gql`
 }
     `;
 
-export function useAddReflexRMutation() {
-  return Urql.useMutation<AddReflexRMutation, AddReflexRMutationVariables>(AddReflexRDocument);
+export function useAddReflexRuleMutation() {
+  return Urql.useMutation<AddReflexRuleMutation, AddReflexRuleMutationVariables>(AddReflexRuleDocument);
 };
-export const EditReflexRDocument = gql`
-    mutation editReflexR($uid: String!, $payload: ReflexRuleInput!) {
+export const EditReflexRuleDocument = gql`
+    mutation EditReflexRule($uid: String!, $payload: ReflexRuleInput!) {
   updateReflexRule(uid: $uid, payload: $payload) {
     __typename
     ... on ReflexRuleType {
@@ -253,11 +253,11 @@ export const EditReflexRDocument = gql`
 }
     `;
 
-export function useEditReflexRMutation() {
-  return Urql.useMutation<EditReflexRMutation, EditReflexRMutationVariables>(EditReflexRDocument);
+export function useEditReflexRuleMutation() {
+  return Urql.useMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(EditReflexRuleDocument);
 };
-export const AddReflexADocument = gql`
-    mutation AddReflexA($payload: ReflexActionInput!) {
+export const AddReflexActionDocument = gql`
+    mutation AddReflexAction($payload: ReflexActionInput!) {
   createReflexAction(payload: $payload) {
     __typename
     ... on ReflexActionType {
@@ -281,11 +281,11 @@ export const AddReflexADocument = gql`
 }
     `;
 
-export function useAddReflexAMutation() {
-  return Urql.useMutation<AddReflexAMutation, AddReflexAMutationVariables>(AddReflexADocument);
+export function useAddReflexActionMutation() {
+  return Urql.useMutation<AddReflexActionMutation, AddReflexActionMutationVariables>(AddReflexActionDocument);
 };
-export const EditReflexADocument = gql`
-    mutation editReflexA($uid: String!, $payload: ReflexActionInput!) {
+export const EditReflexActionDocument = gql`
+    mutation editReflexAction($uid: String!, $payload: ReflexActionInput!) {
   updateReflexAction(uid: $uid, payload: $payload) {
     __typename
     ... on ReflexActionType {
@@ -309,11 +309,11 @@ export const EditReflexADocument = gql`
 }
     `;
 
-export function useEditReflexAMutation() {
-  return Urql.useMutation<EditReflexAMutation, EditReflexAMutationVariables>(EditReflexADocument);
+export function useEditReflexActionMutation() {
+  return Urql.useMutation<EditReflexActionMutation, EditReflexActionMutationVariables>(EditReflexActionDocument);
 };
-export const AddReflexBDocument = gql`
-    mutation AddReflexB($payload: ReflexBrainInput!) {
+export const AddReflexBrainDocument = gql`
+    mutation AddReflexBrain($payload: ReflexBrainInput!) {
   createReflexBrain(payload: $payload) {
     __typename
     ... on ReflexBrainType {
@@ -381,11 +381,11 @@ export const AddReflexBDocument = gql`
 }
     `;
 
-export function useAddReflexBMutation() {
-  return Urql.useMutation<AddReflexBMutation, AddReflexBMutationVariables>(AddReflexBDocument);
+export function useAddReflexBrainMutation() {
+  return Urql.useMutation<AddReflexBrainMutation, AddReflexBrainMutationVariables>(AddReflexBrainDocument);
 };
-export const EditReflexBDocument = gql`
-    mutation editReflexB($uid: String!, $payload: ReflexBrainInput!) {
+export const EditReflexBrainDocument = gql`
+    mutation editReflexBrain($uid: String!, $payload: ReflexBrainInput!) {
   updateReflexBrain(uid: $uid, payload: $payload) {
     __typename
     ... on ReflexBrainType {
@@ -453,8 +453,8 @@ export const EditReflexBDocument = gql`
 }
     `;
 
-export function useEditReflexBMutation() {
-  return Urql.useMutation<EditReflexBMutation, EditReflexBMutationVariables>(EditReflexBDocument);
+export function useEditReflexBrainMutation() {
+  return Urql.useMutation<EditReflexBrainMutation, EditReflexBrainMutationVariables>(EditReflexBrainDocument);
 };
 export const DeleteReflexBrainDocument = gql`
     mutation deleteReflexBrain($uid: String!) {

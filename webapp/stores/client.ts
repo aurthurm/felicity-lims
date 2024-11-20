@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_CLIENTS, SEARCH_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID, GET_CLIENT_BY_UID } from '@/graphql/operations/clients.queries';
+import { 
+    GetAllClientsDocument, GetAllClientsQuery, GetAllClientsQueryVariables,
+    SearchClientsDocument, SearchClientsQuery, SearchClientsQueryVariables,
+    GetClientContactsByClientUidDocument, GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables,
+    GetClientByUidDocument, GetClientByUidQuery, GetClientByUidQueryVariables
+} from '@/graphql/operations/clients.queries';
 import { addListsUnique } from '@/utils/helpers';
 import { IClient, IClientContact } from '@/models/client';
 import { IPageInfo } from '@/models/pagination';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
 import { useLocationStore } from './location';
 
 const { withClientQuery } = useApiUtil();
@@ -42,7 +47,7 @@ export const useClientStore = defineStore('client', {
     actions: {
         async fetchClients(params) {
             this.fetchingClients = true;
-            await withClientQuery(GET_ALL_CLIENTS, params, undefined)
+            await withClientQuery<GetAllClientsQuery, GetAllClientsQueryVariables>(GetAllClientsDocument, params, undefined)
                 .then(payload => {
                     this.fetchingClients = false;
                     const page = payload.clientAll;
@@ -61,7 +66,7 @@ export const useClientStore = defineStore('client', {
         },
         async searchClients(queryString: string) {
             this.fetchingClients = true;
-            await withClientQuery(SEARCH_CLIENTS, { queryString }, 'clientSearch')
+            await withClientQuery<SearchClientsQuery, SearchClientsQueryVariables>(SearchClientsDocument, { queryString }, 'clientSearch')
                 .then(payload => {
                     this.fetchingClients = false;
                     this.clients = payload;
@@ -73,7 +78,7 @@ export const useClientStore = defineStore('client', {
                 return;
             }
             this.fetchingClient = true;
-            await withClientQuery(GET_CLIENT_BY_UID, { uid }, 'clientByUid')
+            await withClientQuery<GetClientByUidQuery, GetClientByUidQueryVariables>(GetClientByUidDocument, { uid }, 'clientByUid')
                 .then((payload: IClient) => {
                     this.fetchingClient = false;
                     this.client = payload;
@@ -96,7 +101,7 @@ export const useClientStore = defineStore('client', {
                 return;
             }
             this.fetchingClientContacts = true;
-            await withClientQuery(GET_CLIENT_CONTACTS_BY_CLIENT_UID, { clientUid }, 'clientContactByClientUid')
+            await withClientQuery<GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables>(GetClientContactsByClientUidDocument, { clientUid }, 'clientContactByClientUid')
                 .then(payload => {
                     this.fetchingClientContacts = false;
                     this.clientContacts = payload;

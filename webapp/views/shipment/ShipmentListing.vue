@@ -4,9 +4,9 @@ import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
-import { useShipmentStore } from "@/stores";
-import { useApiUtil } from "@/composables";
-import { ADD_SHIPMENT } from "@/graphql/operations/shipment.mutations";
+import { useShipmentStore } from "@/stores/shipment";
+import useApiUtil  from "@/composables/api_util";
+import { AddShipmentDocument, AddShipmentMutation, AddShipmentMutationVariables } from "@/graphql/operations/shipment.mutations";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
@@ -167,7 +167,7 @@ const { value: count } = useField("count");
 
 const saveForm = handleSubmit((values) => {
   showModal.value = false;
-  withClientMutation(ADD_SHIPMENT, { payload: values }, "createShipment").then((result) => {
+  withClientMutation<AddShipmentMutation, AddShipmentMutationVariables>(AddShipmentDocument, { payload: values }, "createShipment").then((result) => {
     shipmentStore.addShipment(result);
     showModal.value = false;
   });

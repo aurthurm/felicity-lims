@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { ISampleType } from '@/models/analysis'
-  import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '@/graphql/operations/analyses.mutations';
-  import { useSampleStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddSampleTypeDocument, AddSampleTypeMutation, AddSampleTypeMutationVariables,
+    EditSampleTypeDocument, EditSampleTypeMutation, EditSampleTypeMutationVariables } from '@/graphql/operations/analyses.mutations';
+  import { useSampleStore } from '@/stores/sample';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
@@ -34,12 +35,12 @@
     const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
 
     if (formAction.value === true) {
-      withClientMutation(ADD_SAMPLE_TYPE, { payload }, "createSampleType")
+      withClientMutation<AddSampleTypeMutation, AddSampleTypeMutationVariables>(AddSampleTypeDocument, { payload }, "createSampleType")
       .then((result) => sampleStore.addSampleType(result));
     };
 
     if (formAction.value === false) {
-      withClientMutation(EDIT_SAMPLE_TYPE,{ uid: form.uid, payload }, "updateSampleType")
+      withClientMutation<EditSampleTypeMutation, EditSampleTypeMutationVariables>(EditSampleTypeDocument, { uid: form.uid, payload }, "updateSampleType")
       .then((result) => sampleStore.updateSampleType(result));
     };
 

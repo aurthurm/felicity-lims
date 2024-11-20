@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { GET_NOTICES_BY_CREATOR } from '@/graphql/operations/notice.queries';
 import { INotice } from '@/models/notice';
 import { subtractDates } from '@/utils/helpers';
 
-import { useApiUtil } from '@/composables';
+import  useApiUtil  from '@/composables/api_util';
+import { GetNoticesByCreatorUidDocument, GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables } from '@/graphql/operations/notice.queries';
 
 const { withClientQuery } = useApiUtil();
 
@@ -30,7 +30,7 @@ export const useNoticeStore = defineStore('notice', {
     actions: {
         async fetchMyNotices(uid: string) {
             this.fetchingNotices = true;
-            await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, 'noticesByCreator')
+            await withClientQuery<GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables>(GetNoticesByCreatorUidDocument, { uid }, 'noticesByCreator')
                 .then(payload => {
                     this.fetchingNotices = false;
                     this.notices = payload?.map(n => modifyExpiry(n)).sort((a, b) => a.expiry > b.expiry ? 1 : -1);

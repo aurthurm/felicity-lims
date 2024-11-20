@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IReferralLaboratory } from '@/models/shipment'
-  import { ADD_REFERRAL_LABORATORY, EDIT_REFERRAL_LABORATORY  } from '@/graphql/operations/shipment.mutations';
-  import { useShipmentStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { AddReferralLaboratoryDocument, AddReferralLaboratoryMutation, AddReferralLaboratoryMutationVariables,
+    EditReferralLaboratoryDocument, EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables } from '@/graphql/operations/shipment.mutations';
+  import { useShipmentStore } from '@/stores/shipment';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import("@/components/ui/FelModal.vue")
   )
@@ -42,12 +43,12 @@
     }
 
     if (formAction.value === true) {
-      withClientMutation(ADD_REFERRAL_LABORATORY, { payload }, "createReferralLaboratory")
+      withClientMutation<AddReferralLaboratoryMutation, AddReferralLaboratoryMutationVariables>(AddReferralLaboratoryDocument, { payload }, "createReferralLaboratory")
       .then((result) => shipmentStore.addReferralLaboratory(result));
     };
 
     if (formAction.value === false) {
-      withClientMutation(EDIT_REFERRAL_LABORATORY,{ uid: form.uid, payload }, "updateReferralLaboratory")
+      withClientMutation<EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables>(EditReferralLaboratoryDocument, { uid: form.uid, payload }, "updateReferralLaboratory")
       .then((result) => shipmentStore.updateReferralLaboratory(result));
     };
 

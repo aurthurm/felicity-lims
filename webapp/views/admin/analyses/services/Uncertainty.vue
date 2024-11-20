@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_UNCERTAINTY, EDIT_ANALYSIS_UNCERTAINTY  } from '@/graphql/operations/analyses.mutations';
+  import { AddAnalysisUncertaintyDocument, AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables,
+    EditAnalysisUncertaintyDocument, EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { IAnalysisUncertainty } from '@/models/analysis';
   import { IInstrument, IMethod } from '@/models/setup';
-  import { useSetupStore, useAnalysisStore } from '@/stores';
-  import { useApiUtil } from '@/composables';
+  import { useSetupStore } from '@/stores/setup';
+  import { useAnalysisStore } from '@/stores/analysis';
+  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -44,7 +46,7 @@
 
   function addAnalysisUncertainty(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
-      withClientMutation(ADD_ANALYSIS_UNCERTAINTY, { payload }, "createAnalysisUncertainty")
+      withClientMutation<AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables>(AddAnalysisUncertaintyDocument, { payload }, "createAnalysisUncertainty")
       .then((result) => analysisStore.addAnalysisUncertainty(result));
   }
 
@@ -53,7 +55,7 @@
       delete payload['uid']
       delete payload['__typename']
 
-      withClientMutation(EDIT_ANALYSIS_UNCERTAINTY, { uid : form.uid,  payload }, "updateAnalysisUncertainty")
+      withClientMutation<EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables>(EditAnalysisUncertaintyDocument, { uid : form.uid,  payload }, "updateAnalysisUncertainty")
       .then((result) => analysisStore.updateAnalysisUncertainty(result));
   }
 

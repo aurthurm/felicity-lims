@@ -1,7 +1,10 @@
 import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
-import { ADD_STOCK_ORDER } from '@/graphql/operations/inventory.mutations';
-import { useApiUtil } from '@/composables';
-import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '@/stores';
+import { AddStockOrderDocument, AddStockOrderMutation, AddStockOrderMutationVariables } from '@/graphql/operations/inventory.mutations';
+import  useApiUtil  from '@/composables/api_util';
+import { useInventoryStore } from '@/stores/inventory';
+import { useStorageStore } from '@/stores/storage';
+import { useSetupStore } from '@/stores/setup';
+import { useUserStore } from '@/stores/user';
 const Drawer = defineAsyncComponent(
     () => import('@/components/ui/FelDrawer.vue')
 )
@@ -57,8 +60,7 @@ const InventoryHome = defineComponent({
             inventoryStore,
             createOrder: () => {
                 const basket = inventoryStore.getBasket;
-                withClientMutation(
-                    ADD_STOCK_ORDER,
+                withClientMutation<AddStockOrderMutation, AddStockOrderMutationVariables>(AddStockOrderDocument,
                     {
                         payload: {
                             orderProducts: basket.map(order => ({

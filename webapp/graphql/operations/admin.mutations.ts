@@ -125,7 +125,7 @@ export function useAddCountryMutation() {
   return Urql.useMutation<AddCountryMutation, AddCountryMutationVariables>(AddCountryDocument);
 };
 export const EditCountryDocument = gql`
-    mutation editCountry($uid: String!, $payload: CountryInputType!) {
+    mutation EditCountry($uid: String!, $payload: CountryInputType!) {
   updateCountry(uid: $uid, payload: $payload) {
     ... on CountryType {
       __typename
@@ -168,7 +168,7 @@ export function useAddProvinceMutation() {
   return Urql.useMutation<AddProvinceMutation, AddProvinceMutationVariables>(AddProvinceDocument);
 };
 export const EditProvinceDocument = gql`
-    mutation editProvince($uid: String!, $payload: ProvinceInputType!) {
+    mutation EditProvince($uid: String!, $payload: ProvinceInputType!) {
   updateProvince(uid: $uid, payload: $payload) {
     ... on ProvinceType {
       __typename
@@ -212,7 +212,7 @@ export function useAddDistrictMutation() {
   return Urql.useMutation<AddDistrictMutation, AddDistrictMutationVariables>(AddDistrictDocument);
 };
 export const EditDistrictDocument = gql`
-    mutation editDistrict($uid: String!, $payload: DistrictInputType!) {
+    mutation EditDistrict($uid: String!, $payload: DistrictInputType!) {
   updateDistrict(uid: $uid, payload: $payload) {
     ... on DistrictType {
       __typename

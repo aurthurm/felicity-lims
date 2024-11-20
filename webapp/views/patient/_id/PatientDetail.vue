@@ -3,7 +3,7 @@
   import { defineAsyncComponent, computed } from "vue";
   import { useRouter } from "vue-router";
   import { IPatient } from "@/models/patient";
-  import { usePatientStore } from "@/stores";
+  import { usePatientStore } from "@/stores/patient";
   import * as shield from "@/guards";
 
   const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.vue"));

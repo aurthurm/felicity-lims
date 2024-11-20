@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Swal from "sweetalert2";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
-import { useWorksheetStore, useAnalysisStore, useSampleStore } from "@/stores";
-import { useApiUtil } from "@/composables";
+import { useWorksheetStore} from "@/stores/worksheet";
+import { useAnalysisStore } from "@/stores/analysis";
+import { useSampleStore } from "@/stores/sample";
+import useApiUtil  from "@/composables/api_util";
 import {
-  EDIT_WORKSHEET_APPLY_TEMPLATE,
-  WORKSHEET_MANUAL_ASSIGN,
+  EditWorkSheetApplyTemplateDocument, EditWorkSheetApplyTemplateMutation, EditWorkSheetApplyTemplateMutationVariables,
+  ManualyAssignWorsheetDocument, ManualyAssignWorsheetMutation, ManualyAssignWorsheetMutationVariables
 } from "@/graphql/operations/worksheet.mutations";
 
 import * as shield from "@/guards";
@@ -42,8 +44,7 @@ const applyTemplate = async () => {
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
       if (result.isConfirmed) {
-        withClientMutation(
-          EDIT_WORKSHEET_APPLY_TEMPLATE,
+        withClientMutation<EditWorksheetApplyTemplateMutation, EditWorksheetApplyTemplateMutationVariables>(EditWorksheetApplyTemplateDocument,
           { worksheetUid: worksheet?.value?.uid, templateUid: templateUid.value },
           "updateWorksheetApplyTemplate"
         ).then((result) => {});
@@ -106,14 +107,13 @@ const assignToWorkSheet = () => {
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
       if (result.isConfirmed) {
-        withClientMutation(
-          WORKSHEET_MANUAL_ASSIGN,
+        withClientMutation<ManualyAssignWorsheetMutation, ManualyAssignWorsheetMutationVariables>(ManualyAssignWorsheetDocument,
           {
             uid: worksheet?.value?.uid,
             qcTemplateUid: qcTemplateUid.value,
             analysesUids: selected,
           },
-          "updateWorksheetApplyTemplate"
+          "updateWorksheetManualAssign"
         ).then((result) => {
         });
       }

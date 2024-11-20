@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
-import { DOWNLOAD_INVOICE } from '@/graphql/operations/billing.queries';
 import useApiUtil from './api_util';
+import { ImpressBillingReportDocument, ImpressBillingReportQuery, ImpressBillingReportQueryVariables } from '@/graphql/operations/billing.queries';
 
 export default function useBillComposable() {
     const { withClientQuery } = useApiUtil();
@@ -19,7 +19,7 @@ export default function useBillComposable() {
                 cancelButtonText: 'No, do not download!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientQuery(DOWNLOAD_INVOICE, { billUid }, 'billInvoiceCreate', 'network-only').then(resp => {
+                    withClientQuery<ImpressBillingReportQuery, ImpressBillingReportQueryVariables>(ImpressBillingReportDocument, { billUid }, 'billInvoiceCreate', 'network-only').then(resp => {
                         const tempLink = document.createElement('a');
                         tempLink.href = `data:application/pdf;base64,${resp}`;
                         tempLink.setAttribute('download', 'invoice-report.pdf');
