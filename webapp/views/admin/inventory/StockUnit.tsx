@@ -2,7 +2,7 @@ import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
 import { AddStockUnitDocument, AddStockUnitMutation, AddStockUnitMutationVariables,
   EditStockUnitDocument, EditStockUnitMutation, EditStockUnitMutationVariables } from '@/graphql/operations/inventory.mutations';
-import { useInventoryStore } from '@/stores';
+import { useInventoryStore } from '@/stores/inventory';
 import  useApiUtil  from '@/composables/api_util';
 import { IStockUnit } from '@/models/inventory';
 const Modal = defineAsyncComponent(

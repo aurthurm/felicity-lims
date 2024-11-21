@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import modal from '@/components/ui/FelModal.vue';
 import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia'
-import { ref, defineAsyncComponent } from 'vue';
+import { ref, defineAsyncComponent, onMounted } from 'vue';
 import { AddClientDocument, AddClientMutation, AddClientMutationVariables,
   EditClientDocument, EditClientMutation, EditClientMutationVariables } from '@/graphql/operations/clients.mutations';
 import { useLocationStore } from '@/stores/location';
@@ -12,17 +11,20 @@ import useApiUtil  from '@/composables/api_util'
 
 import * as shield from '@/guards'
 
-const LoadingMessage = (
+const LoadingMessage = defineAsyncComponent(
     () => import('@/components/ui/spinners/FelLoadingMessage.vue')
 )
-
 
 const locationStore = useLocationStore();
 const { withClientMutation } = useApiUtil()
 const route = useRoute();
 
 const clientStore = useClientStore()
-const { client, fetchingClient } = storeToRefs(clientStore)
+onMounted(() => {
+  console.log("route.query.clientUid!", route.query.clientUid!)
+  clientStore.fetchClientByUid(route.query.clientUid!)
+  locationStore.fetchCountries();
+})
 
 let showClientModal = ref<boolean>(false);
 let createItem = ref<boolean>(false);
@@ -32,9 +34,6 @@ let formTitle = ref<string>('');
 let form = ref<IClient>({} as IClient);
 let countryUid = ref<string>();
 let provinceUid = ref<string>();
-
-clientStore.fetchClientByUid(route.query.clientUid!)
-locationStore.fetchCountries();
 
 function getProvinces(event: Event) {
   locationStore.filterProvincesByCountry(countryUid.value!)
@@ -93,17 +92,17 @@ function saveForm() {
 
         <!-- Listing Item Card -->
         <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4">
-          <div v-if="fetchingClient" class="py-4 text-center">
+          <div v-if="clientStore.fetchingClient" class="py-4 text-center">
             <LoadingMessage message="Fetching client metadata ..." />
           </div>
           <div class="grid grid-cols-12 gap-3" v-else>
             <!-- Summary Column -->
             <div class="col-span-12 px-3 sm:px-0">
               <div class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
-                <span>{{ client?.name }}</span>
+                <span>{{ clientStore.client?.name }}</span>
                 <div>
                   <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
-                    @click="FormManager(false, client)"
+                    @click="FormManager(false, clientStore.client)"
                     class="p-1 ml-2 border-white border text-gray-500 text-md rounded-sm transition duration-300 hover:text-sky-800 focus:outline-none">
                     <font-awesome-icon icon="fa-edit" />
                   </button>
@@ -115,26 +114,26 @@ function saveForm() {
                   <!-- Client Details -->
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Province:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.name }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ clientStore.client?.name }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">District:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.district?.name }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ clientStore.client?.district?.name }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Code:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.code }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ clientStore.client?.code }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
                   <!-- Communication Details -->
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Email:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.email }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ clientStore.client?.email }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Mobile:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.mobilePhone }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ clientStore.client?.mobilePhone }}</span>
                   </div>
                 </div>
               </div>

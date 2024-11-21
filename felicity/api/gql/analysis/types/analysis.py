@@ -369,7 +369,7 @@ class SampleType:  # for Sample
 
     @strawberry.field
     async def sample_type(self, info) -> Optional[SampleTypeTyp]:
-        _sample_type = self.metadata_snapshot.get("client")
+        _sample_type = self.metadata_snapshot.get("sample_type")
         if not _sample_type: return None
         return StrawberryMapper[SampleTypeTyp]().map(**_sample_type)
 

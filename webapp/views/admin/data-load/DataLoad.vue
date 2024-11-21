@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
-import axios from "@/api";
+import axios from "@/composables/axios";
+import useApiUtils from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
+
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
-const { toastSuccess } = useNotifyToast();
+const{ addError } = useApiUtils()
+const { toastSuccess, toastError } = useNotifyToast();
 const loading = ref(false);
 
 const loadDefault = (_) => {
@@ -15,9 +18,19 @@ const loadDefault = (_) => {
   axios.defaults.timeout = 1000 * 30;
   axios
     .post("setup/load-default-setup")
-    .then((resp) => toastSuccess(resp.data.message))
+    .then(({ data: {success, message }} ) => {
+      if(success){
+        toastSuccess(message)
+      } else {
+        addError(message)
+        toastError(message);
+      }
+    })
     .finally(() => (loading.value = false));
+
 };
+
+
 </script>
 
 <template>

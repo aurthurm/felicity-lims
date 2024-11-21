@@ -13,6 +13,7 @@ from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analytics.services import ReportMetaService
 from felicity.apps.user.services import UserService
 from felicity.apps.worksheet.services import WorkSheetService
+from felicity.api.gql.types.generic import StrawberryMapper
 
 
 @strawberry.type
@@ -64,7 +65,7 @@ class ActivityStreamType:
     ]:
         if self.action_object_type == "sample":
             sample = await SampleService().get(uid=self.action_object_uid)
-            return SampleType(
+            return StrawberryMapper[SampleType]().map(
                 **sample.marshal_simple(
                     exclude=["right", "left", "tree_id", "level", "analysis_results"]
                 ),

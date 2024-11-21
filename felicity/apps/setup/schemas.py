@@ -12,7 +12,7 @@ from felicity.apps.common.schemas import BaseAuditModel
 
 
 class LaboratoryBase(BaseModel):
-    setup_name: str | None = "felicity"
+    setup_name: str = "felicity"
     lab_name: str | None = None
     tag_line: str | None = None
     email: Optional[EmailStr] = None
@@ -91,7 +91,7 @@ class LaboratorySetting(LaboratorySettingBase):
 
 # Shared properties
 class DepartmentBase(BaseModel):
-    name: str | None = None
+    name: str
     description: str | None = None
     code: str | None = None
 
@@ -128,7 +128,7 @@ class DepartmentInDB(DepartmentInDBBase):
 
 # Shared properties
 class UnitBase(BaseModel):
-    name: str | None = None
+    name: str
     description: str | None = None
 
 

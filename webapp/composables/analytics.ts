@@ -1,5 +1,5 @@
 import { toRefs, reactive } from 'vue';
-import axios from '@/api';
+import axios from "@/composables/axios";
 
 import useNotifyToast from './alert_toast';
 import { IReportListing } from '@/models/reports';

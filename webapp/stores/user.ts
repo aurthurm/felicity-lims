@@ -3,7 +3,7 @@ import { IGroup, IPermission, IUser } from '@/models/auth';
 import { IPagination, IPageInfo } from '@/models/pagination';
 import  useApiUtil  from '@/composables/api_util';
 import { GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllSuppliersQueryVariables } from '@/graphql/operations/instrument.queries';
-import { GroupsAndPermissionsDocument, GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables } from '@/graphql/operations/_queries';
+import { GroupsAndPermissionsDocument, GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables, UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries';
 
 const { withClientQuery } = useApiUtil();
 
@@ -37,15 +37,19 @@ export const useUserStore = defineStore('user', {
     },
     actions: {
         async fetchUsers(params) {
+            console.log("Fetch user")
             this.fetchingUsers = true;
-            await withClientQuery<GetAllSuppliersQuery,GetAllSuppliersQueryVariables>(GetAllSuppliersDocument, params, 'userAll')
-                .then((users: IUserPage) => {
+            await withClientQuery<UserAllQuery,UserAllQueryVariables>(UserAllDocument, params, 'userAll')
+                .then((resp) => {
                     this.fetchingUsers = false;
-                    this.users = users.items?.filter(user => user.email != 'system_daemon@system.daemon') ?? [];
-                    this.usersTotalCount = users.totalCount;
-                    this.usersPageInfo = users.pageInfo;
+                    this.users = resp.items?.filter(user => user.email != 'system_daemon@system.daemon') ?? [];
+                    this.usersTotalCount = resp.totalCount;
+                    this.usersPageInfo = resp.pageInfo;
                 })
-                .catch(err => (this.fetchingUsers = false));
+                .catch(err => {
+                    this.fetchingUsers = false
+                    console.log("Fetch user error: ",err)
+                });
         },
         addUser(payload: IUser): void {
             this.users?.unshift(payload);

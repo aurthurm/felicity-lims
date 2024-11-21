@@ -16,6 +16,9 @@ from felicity.apps.patient.services import (
     PatientIdentificationService,
     PatientService,
 )
+from felicity.apps.impress.sample.utils import exclude
+from felicity.api.gql.types.generic import StrawberryMapper
+from felicity.apps.abstract.repository import M
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -125,7 +128,7 @@ class PatientMutations:
         if exists:
             return OperationError(error="Client Patient Id already in use")
 
-        client = await ClientService().get(uid=payload.client_uid)
+        client = await ClientService().get(related=["province","district"],uid=payload.client_uid)
         if not client:
             return OperationError(
                 error=f"Client with uid {payload.client_uid} does not exist"
@@ -149,8 +152,12 @@ class PatientMutations:
                 value=p_id.value,
             )
             await PatientIdentificationService().create(pid_in)
-
-        return PatientType(**patient.marshal_simple())
+            
+        metadata = {"client": client.snapshot()}
+        metadata["client"]["province"] = client.province.snapshot() if client.province else {}
+        metadata["client"]["district"] = client.district.snapshot() if client.district else {}
+        patient = await PatientService().snapshot(patient, metadata)
+        return StrawberryMapper[PatientType]().map(**patient.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_patient(

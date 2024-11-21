@@ -42,7 +42,7 @@ async def unit_resolver(name: str, description: str = "") -> Unit:
         return units[name]
 
     unit = await unit_service.get(name=name)
-    if not unit:
+    if not unit and name:
         unit_in = UnitCreate(name=name, descritpion=description)
         unit = await unit_service.create(unit_in)
     units[name] = unit

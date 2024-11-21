@@ -45,6 +45,7 @@ from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.setup.caches import get_laboratory_setting
 from felicity.core.dtz import timenow_dt
+from felicity.apps.impress.sample.utils import exclude
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -289,8 +290,9 @@ async def create_analysis_request(
 
     # auto_bill=True during sample registration
     await bill_order(analysis_request, auto_bill=True)
-
-    return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
+    _ar = analysis_request.marshal_simple()
+    del _ar["client"]
+    return a_types.AnalysisRequestWithSamples(**_ar)
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])

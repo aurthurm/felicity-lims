@@ -112,7 +112,10 @@ async def seed_clients() -> None:
                 email=f"{uuid4().hex}@dummy.inc",
                 user_name=uuid4().hex,
             )
-            await client_contact_Service.create(cc_in)
+            try:
+                await client_contact_Service.create(cc_in)
+            except Exception:
+                pass
 
 
 async def seed_laboratory(name: str) -> None:

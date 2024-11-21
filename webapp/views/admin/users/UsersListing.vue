@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, defineAsyncComponent } from "vue";
+import { ref, computed, reactive, defineAsyncComponent, onMounted } from "vue";
 import {
     AddUserDocument, AddUserMutation, AddUserMutationVariables,
     EditUserDocument, EditUserMutation, EditUserMutationVariables
@@ -16,21 +16,19 @@ interface IUserAuthForm extends IUser {
 }
 
 const userStore = useUserStore();
-const { withClientMutation } = useApiUtil();
+onMounted(() => {
+  userStore.fetchUsers({});
+  userStore.fetchGroupsAndPermissions();
+})
 
+let users = computed<IUser[]>(() => userStore.getUsers);
+const groups = computed(() => userStore.getGroups);
 let showUserModal = ref<boolean>(false);
 let formTitle = ref<string>("");
 let form = reactive({}) as IUserAuthForm;
 const formAction = ref<boolean>(true);
 
-userStore.fetchUsers({});
-userStore.fetchGroupsAndPermissions();
-
-userStore.fetchGroupsAndPermissions();
-userStore.fetchUsers({});
-let users = computed<IUser[]>(() => userStore.getUsers);
-const groups = computed(() => userStore.getGroups);
-
+const { withClientMutation } = useApiUtil();
 function addUser(): void {
   withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, form, "createUser").then((result) =>
     userStore.addUser(result)

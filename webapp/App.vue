@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onBeforeMount, watch } from "vue";
 import { useRouter } from "vue-router";
-import axios from "@/api";
+import axios from "@/composables/axios";
 import { useStreamStore } from "@/stores/stream";
 import { useAuthStore } from "@/stores/auth";
 import userPreferenceComposable from "@/composables/preferences";

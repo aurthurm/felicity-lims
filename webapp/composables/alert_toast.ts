@@ -53,7 +53,10 @@ export default function useNotifyToast() {
         toastSuccess: (message: string) => notyf.success(message),
         toastInfo: (message: string) => notyf.open({ type: 'info', message }),
         toastWarning: (message: string) => notyf.open({ type: 'warning', message }),
-        toastError: (message: string) => notyf.error(message),
+        toastError: (message: string) => {
+            const errorMessage = message?.toString().split(" ").slice(0, 10).join(" ");
+            notyf.error(`${errorMessage}...`)
+        },
 
         swalSuccess: (message: string) => fireAlert({ icon: 'success', message }),
         swalInfo: (message: string) => fireAlert({ icon: 'info', message }),

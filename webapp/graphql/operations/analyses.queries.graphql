@@ -1166,7 +1166,7 @@ query getAllRejectionReasons {
     }
 }
 
-query impressSamplesMeta($uids: [String!]!) {
+query ImpressSamplesMeta($uids: [String!]!) {
     impressReportsMeta(uids: $uids) {
         uid
         state

@@ -79,7 +79,7 @@ export const useClientStore = defineStore('client', {
             }
             this.fetchingClient = true;
             await withClientQuery<GetClientByUidQuery, GetClientByUidQueryVariables>(GetClientByUidDocument, { uid }, 'clientByUid')
-                .then((payload: IClient) => {
+                .then(payload => {
                     this.fetchingClient = false;
                     this.client = payload;
                     if(payload?.district){

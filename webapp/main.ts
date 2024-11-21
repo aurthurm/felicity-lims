@@ -21,7 +21,8 @@ import {
     faArrowUpWideShort,
     faArrowDown,
     faLevelDownAlt,
-    faArrowDownWideShort
+    faArrowDownWideShort,
+    faPen
 } from '@fortawesome/free-solid-svg-icons';
 import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
@@ -50,7 +51,7 @@ const icons = [
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
-    faArrowDown, faLevelDownAlt
+    faArrowDown, faLevelDownAlt, faPen
 ]
 library.add(...icons);
 

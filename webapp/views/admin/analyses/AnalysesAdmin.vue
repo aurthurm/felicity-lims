@@ -23,7 +23,8 @@
     () => import('./RejectionReasons.vue')
   )
 
-  import { useSampleStore, useSetupStore } from '@/stores';
+  import { useSampleStore } from '@/stores/sample';
+  import { useSetupStore } from '@/stores/setup';
 
   const setupStore = useSetupStore()
   const  sampleStore = useSampleStore()

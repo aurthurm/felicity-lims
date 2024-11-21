@@ -1,4 +1,5 @@
 import base64
+import inspect
 import json
 from typing import Any, Generic, NewType, TypeVar
 
@@ -85,6 +86,15 @@ class StrawberryMapper(Generic[T]):
         type_class = getattr(self, "__orig_class__").__args__[0]
         # Get the annotations from the Strawberry type
         attrs = type_class.__dict__.get("__annotations__", {})
+        
+        # Identify methods in the class for exclusion
+        methods = {
+            name: method for name, method in type_class.__dict__.items() 
+            if inspect.isfunction(method) or inspect.ismethod(method)
+            and not name.startswith('_')
+        }
+        exclude.extend(list(methods.keys()))
+  
         # Remove keys not in the Strawberry type from the payload
         keys = list(kwargs.keys())
         for key in keys:

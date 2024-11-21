@@ -19,3 +19,7 @@ docker push amusendame/felicity-static-nginx:0.1.1
 // Build caddy static
 export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target caddy-static -t amusendame/felicity-static-caddy:0.1.1 .
 docker push amusendame/felicity-static-caddy:0.1.1
+
+
+//
+psql -U postgres -p 5432 -d felicity_lims -c "grant all on schema public to felicity"

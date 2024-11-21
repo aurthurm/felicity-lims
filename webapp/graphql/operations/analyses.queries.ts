@@ -2233,7 +2233,7 @@ export function useGetAllRejectionReasonsQuery(options: Omit<Urql.UseQueryArgs<n
   return Urql.useQuery<GetAllRejectionReasonsQuery>({ query: GetAllRejectionReasonsDocument, ...options });
 };
 export const ImpressSamplesMetaDocument = gql`
-    query impressSamplesMeta($uids: [String!]!) {
+    query ImpressSamplesMeta($uids: [String!]!) {
   impressReportsMeta(uids: $uids) {
     uid
     state

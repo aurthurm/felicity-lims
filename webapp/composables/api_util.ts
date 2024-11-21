@@ -1,10 +1,10 @@
 import { urqlClient } from '@/urql';
 import { TypedDocumentNode } from '@urql/core';
 import { AnyVariables, CombinedError } from '@urql/core';
-import { Ref, ref } from 'vue';
+import { ref } from 'vue';
 import { RequestPolicy } from '@urql/vue';
 import useNotifyToast from './alert_toast';
-
+import { STORAGE_AUTH_KEY } from '@/conf';
 // Define clear interfaces for different types of responses
 interface OperationError {
   __typename: 'OperationError';
@@ -33,11 +33,16 @@ interface GraphQLErrorContext {
   }>;
 }
 
+// Global Access
+const errors = ref<any[]>([]);
 export default function useApiUtil() {
   // Reactive error and message tracking with proper typing
-  const errors: Ref<OperationError[]> = ref([]);
-  const messages: Ref<OperationSuccess[]> = ref([]);
+  const messages = ref<OperationSuccess[]>([]);
   const { toastInfo, toastError, swalError } = useNotifyToast();
+
+  const addError = (err: any): void  => {
+    errors.value.unshift(err)
+  };
 
   /**
    * Comprehensive error handler for GraphQL operations
@@ -46,6 +51,7 @@ export default function useApiUtil() {
   const gqlErrorHandler = (error: GraphQLErrorContext | CombinedError) => {
     // Network errors
     if ('networkError' in error && error.networkError) {
+      errors.value.unshift(error.networkError.message);
       toastError(error.networkError.message);
       swalError('Network Error: Please check your connection and try again.');
     }
@@ -56,6 +62,11 @@ export default function useApiUtil() {
       
       error.graphQLErrors.forEach(err => {
         uniqueErrors.add(err.message);
+        if(err.message == "Only accessible to authenticated users"){
+          localStorage.removeItem(STORAGE_AUTH_KEY);
+          setTimeout(() => location.reload(), 3000);
+          toastInfo("You are being redirected to re-login...")
+        }
         // Optional: log extended error information
         if (err.extensions) {
           console.error('GraphQL Error Details:', err.extensions);
@@ -63,9 +74,11 @@ export default function useApiUtil() {
       });
 
       uniqueErrors.forEach(errorMessage => {
+        errors.value.unshift(errorMessage);
         toastError(errorMessage);
       });
     }
+    //
   };
 
   /**
@@ -96,7 +109,7 @@ export default function useApiUtil() {
     const result = payload[key];
 
     if (result?.__typename === 'OperationError') {
-      errors.value.unshift(result as OperationError);
+      errors.value.unshift(result);
       swalError(`${result.error}\n${result.suggestion}`);
       throw new Error(result.error);
     }
@@ -181,6 +194,7 @@ export default function useApiUtil() {
     withClientQuery,
     withClientMutation,
     gqlErrorHandler,
+    addError,
     errors,
     messages,
   };
