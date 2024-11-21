@@ -8,7 +8,6 @@ import { useSampleStore } from "@/stores/sample";
 import {
   EditSampleApplyTemplateDocument, EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables, SampleManageAnalysisDocument, SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables
 } from "@/graphql/operations/analyses.mutations";
-import { defineEmits } from "vue";
 const accordion = defineAsyncComponent(
     () => import('@/components/ui/FelAccordion.vue')
   )

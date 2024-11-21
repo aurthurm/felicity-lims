@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2';
-import useApiUtil  from '.';
+import useApiUtil  from '@/composables/api_util';
 import { useShipmentStore } from '@/stores/shipment';
 import { ActionShipmentDocument, ActionShipmentMutation, ActionShipmentMutationVariables, ShipmentManageSamplesDocument, ShipmentManageSamplesMutation, ShipmentManageSamplesMutationVariables } from '@/graphql/operations/shipment.mutations';
 import { ManifestReportDocument, ManifestReportQuery, ManifestReportQueryVariables } from '@/graphql/operations/shipment.queries';

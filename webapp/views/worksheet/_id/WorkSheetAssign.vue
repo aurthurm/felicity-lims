@@ -6,7 +6,9 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { useSampleStore } from "@/stores/sample";
 import useApiUtil  from "@/composables/api_util";
 import {
-  EditWorkSheetApplyTemplateDocument, EditWorkSheetApplyTemplateMutation, EditWorkSheetApplyTemplateMutationVariables,
+  EditWorkSheetApplyTemplateDocument,
+  EditWorkSheetApplyTemplateMutation,
+  EditWorkSheetApplyTemplateMutationVariables,
   ManualyAssignWorsheetDocument, ManualyAssignWorsheetMutation, ManualyAssignWorsheetMutationVariables
 } from "@/graphql/operations/worksheet.mutations";
 
@@ -44,7 +46,7 @@ const applyTemplate = async () => {
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
       if (result.isConfirmed) {
-        withClientMutation<EditWorksheetApplyTemplateMutation, EditWorksheetApplyTemplateMutationVariables>(EditWorksheetApplyTemplateDocument,
+        withClientMutation<EditWorkSheetApplyTemplateMutation, EditWorkSheetApplyTemplateMutationVariables>(EditWorkSheetApplyTemplateDocument,
           { worksheetUid: worksheet?.value?.uid, templateUid: templateUid.value },
           "updateWorksheetApplyTemplate"
         ).then((result) => {});
