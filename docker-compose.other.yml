@@ -56,7 +56,7 @@ services:
 
   felicity-aio:
     container_name: felicity-aio
-    image: amusendame/felicity-lims:aio-0.1.1
+    image: amusendame/felicity-lims:aio-0.1.4
     restart: unless-stopped
     env_file:
       - .env
@@ -86,7 +86,7 @@ services:
 
   felicity-static-caddy:
     container_name: felicity-static-caddy
-    image: amusendame/felicity-static-caddy:0.1.1
+    image: amusendame/felicity-static-caddy:0.1.4
     restart: unless-stopped
     ports:
       - "80:80"
@@ -109,7 +109,7 @@ services:
 
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.1.1
+    image: amusendame/felicity-static-nginx:0.1.4
     restart: unless-stopped
     ports:
       - "80:80"
@@ -128,7 +128,7 @@ services:
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.1.1
+    image: amusendame/felicity-lims:api-0.1.4
     restart: unless-stopped
     env_file:
       - .env
