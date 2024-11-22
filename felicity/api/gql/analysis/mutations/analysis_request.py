@@ -45,7 +45,6 @@ from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.setup.caches import get_laboratory_setting
 from felicity.core.dtz import timenow_dt
-from felicity.apps.impress.sample.utils import exclude
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -347,28 +346,8 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
-    return_samples = []
-
-    if len(samples) == 0:
-        return OperationError(error="No Samples to cancel are provided!")
-
-    for _sa_uid in samples:
-        sample = await SampleService().get(uid=_sa_uid)
-        if not sample:
-            return OperationError(error=f"Sample with uid {_sa_uid} not found")
-
-        # only samples with unassigned analyses can be cancelled
-        analysis_results = await SampleService().get_analysis_results(sample.uid)
-        match = [result.assigned for result in analysis_results]
-        if any(match):
-            return_samples.append(sample)
-            continue
-
-        sample = await SampleWorkFlow().cancel(sample.uid, cancelled_by=felicity_user)
-        if sample:
-            return_samples.append(sample)
-
-    return ResultedSampleListingType(samples=return_samples)
+    cancelled = await SampleWorkFlow().cancel(samples, cancelled_by=felicity_user)
+    return ResultedSampleListingType(samples=cancelled)
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])

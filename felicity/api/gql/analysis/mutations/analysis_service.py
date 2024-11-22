@@ -37,7 +37,7 @@ class AnalysisInputType:
     unit_uid: str | None = None
     internal_use: bool | None = False
     tat_length_minutes: int = None
-    precision: int = None
+    precision: int | None = None
     required_verifications: int = 1
     self_verification: bool | None = False
     active: bool | None = True
@@ -117,7 +117,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis(
-    info, uid: str, payload: AnalysisInputType
+        info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
     await auth_from_info(info)
 
@@ -166,7 +166,7 @@ async def update_analysis(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_mapping(
-    info, payload: AnalysisMappingInputType
+        info, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     felicity_user = await auth_from_info(info)
 
@@ -188,7 +188,7 @@ async def create_analysis_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_mapping(
-    info, uid: str, payload: AnalysisMappingInputType
+        info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     await auth_from_info(info)
 

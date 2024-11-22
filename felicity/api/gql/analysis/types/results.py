@@ -3,7 +3,8 @@ from typing import Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types.analysis import AnalysisInterimType, AnalysisType, QCSetType, ResultOptionType, SampleType
+from felicity.api.gql.analysis.types.analysis import AnalysisInterimType, AnalysisType, QCSetType, ResultOptionType, \
+    SampleType
 from felicity.api.gql.instrument.types import InstrumentType, LaboratoryInstrumentType, MethodType
 from felicity.api.gql.setup.types import UnitType
 from felicity.api.gql.types import PageInfo, JSONScalar
@@ -72,39 +73,37 @@ class AnalysisResultType:
     @strawberry.field
     async def analysis(self, info) -> AnalysisType | None:
         _analysis = self.metadata_snapshot.get("analysis", None)
-        _instruments = self.metadata_snapshot.get("instruments",[])
-        _methods = self.metadata_snapshot.get("methods",[])
-        _result_options = self.metadata_snapshot.get("result_options",[])
-        _interims = self.metadata_snapshot.get("interims",[])
-        analyss = StrawberryMapper[AnalysisType]().map(**_analysis)
         if not _analysis: return None
+        _instruments = self.metadata_snapshot.get("instruments", [])
+        _methods = self.metadata_snapshot.get("methods", [])
+        _result_options = self.metadata_snapshot.get("result_options", [])
+        _interims = self.metadata_snapshot.get("interims", [])
+        analysis = StrawberryMapper[AnalysisType]().map(**_analysis)
         _unit = self.metadata_snapshot.get("unit", None)
-        if _unit:
-            _unit = StrawberryMapper[UnitType]().map(**_unit)
-        _analysis["unit"] = _unit
-        instruments = [
-            StrawberryMapper[InstrumentType]().map(**instrument)
-            for instrument in _instruments
-        ]
-        for instrument in _instruments:
+        _analysis["unit"] = StrawberryMapper[UnitType]().map(**_unit) if _unit else None
+        instruments = []
+        for _instrument in _instruments:
+            instrument = StrawberryMapper[InstrumentType]().map(**_instrument)
             instrument.laboratory_instruments = [
                 StrawberryMapper[LaboratoryInstrumentType]().map(**lab_inst)
-                for lab_inst in instrument.get("laboratory_instruments", [])
+                for lab_inst in _instrument.get("laboratory_instruments", [])
             ]
-        analyss.instruments = instruments
-        analyss.methods = [
+            instruments.append(instrument)
+
+        analysis.instruments = instruments
+        analysis.methods = [
             StrawberryMapper[MethodType]().map(**method)
             for method in _methods
         ]
-        analyss.result_options = [
+        analysis.result_options = [
             StrawberryMapper[ResultOptionType]().map(**result_option)
             for result_option in _result_options
         ]
-        analyss.interims = [
+        analysis.interims = [
             StrawberryMapper[AnalysisInterimType]().map(**interim)
             for interim in _interims
         ]
-        return analyss
+        return analysis
 
     @strawberry.field
     async def method(self, info) -> MethodType | None:

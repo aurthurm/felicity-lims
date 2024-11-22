@@ -201,7 +201,7 @@ class AnalysisResultService(
                         metadata[_field] = [item.snapshot() for item in thing]
                         if _field == "instruments":
                             for k, v in enumerate(metadata[_field]):
-                                lab_insts = await LaboratoryInstrumentService().get(instrument_uid=v.get("uid"))
+                                lab_insts = await LaboratoryInstrumentService().get_all(instrument_uid=v.get("uid"))
                                 metadata[_field][k]["laboratory_instruments"] = [li.snapshot() for li in lab_insts]
                     else:
                         metadata[_field] = thing.snapshot()

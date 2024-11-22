@@ -6,6 +6,7 @@ from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.analytics.types import ReportMetaType
 from felicity.api.gql.setup.types.department import DepartmentType
+from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import GroupType, UserType
 from felicity.api.gql.worksheet.types import WorkSheetType
 from felicity.apps.analysis.services.analysis import SampleService
@@ -13,7 +14,6 @@ from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analytics.services import ReportMetaService
 from felicity.apps.user.services import UserService
 from felicity.apps.worksheet.services import WorkSheetService
-from felicity.api.gql.types.generic import StrawberryMapper
 
 
 @strawberry.type
@@ -59,7 +59,7 @@ class ActivityStreamType:
 
     @strawberry.field
     async def action_object(
-        self, info
+            self, info
     ) -> Union[
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:
@@ -80,7 +80,7 @@ class ActivityStreamType:
             result = await AnalysisResultService().get(
                 related=["sample"], uid=self.action_object_uid
             )
-            return AnalysisResultType(
+            return StrawberryMapper[AnalysisResultType]().map(
                 **result.marshal_simple(
                     exclude=[
                         "right",
