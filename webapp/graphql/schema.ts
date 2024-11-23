@@ -194,7 +194,7 @@ export type AnalysisInputType = {
   keyword: Scalars['String']['input'];
   methods?: InputMaybe<Array<Scalars['String']['input']>>;
   name: Scalars['String']['input'];
-  precision: Scalars['Int']['input'];
+  precision?: InputMaybe<Scalars['Int']['input']>;
   requiredVerifications?: Scalars['Int']['input'];
   sampleTypes?: InputMaybe<Array<Scalars['String']['input']>>;
   selfVerification?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3067,6 +3067,7 @@ export type Query = {
   provinceAll: ProvinceCursorPage;
   provinceByUid: ProvinceType;
   provincesByCountryUid: Array<ProvinceType>;
+  qcChartData: Array<AnalysisResultType>;
   qcLevelAll: Array<QcLevelType>;
   qcLevelByUid: QcLevelType;
   qcSetAll: QcSetCursorPage;
@@ -3601,6 +3602,13 @@ export type QueryProvinceByUidArgs = {
 
 export type QueryProvincesByCountryUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryQcChartDataArgs = {
+  analyses: Array<Scalars['String']['input']>;
+  month: Scalars['Int']['input'];
+  year: Scalars['Int']['input'];
 };
 
 
@@ -5751,6 +5759,7 @@ export type GraphCacheResolvers = {
     provinceAll?: GraphCacheResolver<WithTypename<Query>, QueryProvinceAllArgs, WithTypename<ProvinceCursorPage> | string>,
     provinceByUid?: GraphCacheResolver<WithTypename<Query>, QueryProvinceByUidArgs, WithTypename<ProvinceType> | string>,
     provincesByCountryUid?: GraphCacheResolver<WithTypename<Query>, QueryProvincesByCountryUidArgs, Array<WithTypename<ProvinceType> | string>>,
+    qcChartData?: GraphCacheResolver<WithTypename<Query>, QueryQcChartDataArgs, Array<WithTypename<AnalysisResultType> | string>>,
     qcLevelAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<QcLevelType> | string>>,
     qcLevelByUid?: GraphCacheResolver<WithTypename<Query>, QueryQcLevelByUidArgs, WithTypename<QcLevelType> | string>,
     qcSetAll?: GraphCacheResolver<WithTypename<Query>, QueryQcSetAllArgs, WithTypename<QcSetCursorPage> | string>,
@@ -8194,6 +8203,7 @@ export type GraphCacheUpdaters = {
     provinceAll?: GraphCacheUpdateResolver<{ provinceAll: WithTypename<ProvinceCursorPage> }, QueryProvinceAllArgs>,
     provinceByUid?: GraphCacheUpdateResolver<{ provinceByUid: WithTypename<ProvinceType> }, QueryProvinceByUidArgs>,
     provincesByCountryUid?: GraphCacheUpdateResolver<{ provincesByCountryUid: Array<WithTypename<ProvinceType>> }, QueryProvincesByCountryUidArgs>,
+    qcChartData?: GraphCacheUpdateResolver<{ qcChartData: Array<WithTypename<AnalysisResultType>> }, QueryQcChartDataArgs>,
     qcLevelAll?: GraphCacheUpdateResolver<{ qcLevelAll: Array<WithTypename<QcLevelType>> }, Record<string, never>>,
     qcLevelByUid?: GraphCacheUpdateResolver<{ qcLevelByUid: WithTypename<QcLevelType> }, QueryQcLevelByUidArgs>,
     qcSetAll?: GraphCacheUpdateResolver<{ qcSetAll: WithTypename<QcSetCursorPage> }, QueryQcSetAllArgs>,

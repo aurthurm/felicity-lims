@@ -17,7 +17,7 @@ let show = ref(false);
             <slot name="title">Accordion Title</slot>
           </span>
           <span class="ml-2">
-            <i class="fa fa-chevron-down"></i>
+            <font-awesome-icon icon="fa-chevron-down" />
           </span>
         </button>
       </div>

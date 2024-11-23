@@ -266,7 +266,7 @@ function saveMappingForm(): void {
               <div class="grid grid-rows-2 mx-auto mb-1 py-3 w-4/5 2lg:w-3/5 rounded-sm bg-sky-800" >
                 <p class="font-bold">KEYWORD</p>
                 <div class="inline-block font-medium text-2xl text-white">
-                  <i class="fa fa-exclamation-circle"></i>
+                  <font-awesome-icon icon="fa-exclamation-circle" />
                 </div>
                 <div class="inline-block font-medium text-white text-md mt-2">{{ analysisService?.keyword }}</div>
               </div>

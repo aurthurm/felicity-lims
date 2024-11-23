@@ -387,7 +387,7 @@ const printBarCodes = async () => {
                         { 'text-orange-600': (worksheet?.priority ?? 0) > 1 },
                     ]"
                 >
-                  <i class="fa fa-star"></i>
+                  <font-awesome-icon icon="fa-star" />
                 </span>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">

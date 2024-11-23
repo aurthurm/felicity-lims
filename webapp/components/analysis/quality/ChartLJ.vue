@@ -1,215 +1,298 @@
 <script setup lang="ts">
-  import { onMounted } from 'vue';
-  import { Chart } from '@antv/g2';
-  import { jStat } from 'jstat';
+import { computed, onMounted, ref } from 'vue';
+import { Chart } from '@antv/g2';
+import { jStat } from 'jstat';
 
-  interface ChartLJProps {
-    series: {date: Date, value: number}[]
-  }
+const SERIES_LIMIT = 5;
+const chartId = ref(`lj-chart-${Math.random().toString(36).substr(2, 9)}`);
 
-  const { series } = defineProps<ChartLJProps>()
+interface ChartLJProps {
+  title: string,
+  series: {date: Date, value: number}[]
+}
 
-  const  ERROR = "#FF0000";
-  const  WARNING = "#FEB900";
-  const  GOOD = "#00FF00";
+const { series } = defineProps<ChartLJProps>()
+const cannotPlot = computed(() => {
+  return !series || series.length < SERIES_LIMIT;
+});
 
-  function westGardRule(dataset: any[], key: string): any {
-    let values: number[] = [];
-    dataset?.forEach(item => {
-      if(typeof(item[key]) == "number") values.push(item[key])
-    })
+// Enhanced color scheme with better accessibility
+const COLORS = {
+  ERROR: "#dc2626",    // Red with better contrast
+  WARNING: "#f59e0b",  // Amber for warnings
+  GOOD: "#22c55e",     // Green that's easier to see
+  MEAN_LINE: "#3b82f6" // Blue for mean line
+};
 
-    const n:number = values.length;
-    const mu:number = jStat.mean(values)
-    const sd:number = jStat.stdev(values)
-    const x_sds:number[] = [-4,-3,-2,-1,0,1,2,3,4].map(x =>  Math.round((x * (mu + sd)) * 100) / 100);
+// Improved rule descriptions for tooltips
+const RULE_DESCRIPTIONS = {
+  "1_3s": "1-3s: One control result outside ±3SD",
+  "1_2s": "1-2s: One control result outside ±2SD (Warning)",
+  "2_2s": "2-2s: Two consecutive controls outside ±2SD",
+  "R_4s": "R-4s: Difference between consecutive runs ≥4SD",
+  "4_1s": "4-1s: Four consecutive controls outside ±1SD on same side",
+  "10_x": "10-x: Ten consecutive controls on same side of mean"
+};
 
-    // adjust based on  x_sds
-    const zero:number = 0
-    const one_sd:number = Math.round((mu + sd) * 100) / 100
-    const two_sd:number = Math.round(2 * (mu + sd) * 100) / 100
-    const three_sd:number = Math.round(3 * (mu + sd) * 100) / 100
-    const four_sd:number  = Math.round(4 * (mu + sd) * 100) / 100
+function westGardRule(dataset: any[], key: string): any {
+  let values: number[] = [];
+  dataset?.forEach(item => {
+    if(typeof(item[key]) == "number") values.push(item[key])
+  })
 
-    for(let [i, obs] of dataset.entries()) {
-      const current = jStat.abs([obs[key]])[0]
-      let prev_1, prev_2, prev_3;
-      // defaults
-      obs["color"] = GOOD
-      obs["rule"] = null
+  const n: number = values.length;
+  const mu: number = jStat.mean(values);
+  const sd: number = jStat.stdev(values);
+  const x_sds: number[] = [-4,-3,-2,-1,0,1,2,3,4].map(x => 
+    Math.round((mu + (x * sd)) * 100) / 100
+  );
 
-      // 1_3s Rule:
-      // 1 control result outside 3sd
-        if(current > three_sd){
-            obs["color"] = ERROR
-            obs["rule"]  = "1_3s" 
-            continue
-        }
+  // Calculate control limits
+  const controlLimits = {
+    mean: mu,
+    sd1: { upper: mu + sd, lower: mu - sd },
+    sd2: { upper: mu + (2 * sd), lower: mu - (2 * sd) },
+    sd3: { upper: mu + (3 * sd), lower: mu - (3 * sd) }
+  };
 
-      // 1_2s Rule : Warning rule
-      // one of two control results fall outside +- 2SD
-      if(current > two_sd) {
-        obs["color"] = WARNING
-        obs["rule"]  = "1_2s"
-
-        // 2_2s Rule:
-        // two control results fall outside 2sd in the same direction
-        // or both controls in the same run exceeded 2sd
-        if(i > 1 && dataset[i-1]) {
-            prev_1 = jStat.abs([dataset[i-1][key]])[0]
-            if(prev_1 <= three_sd && prev_1 > two_sd) {
-              obs["color"] = ERROR
-              obs["rule"]  = "2_2s"
-              continue
-            }
-        }
-        continue
-      }
-
-      // R_4s  Rule:
-      // Difference between two runs equals or exceeds 4sd	    
-      if(i > 1 && dataset[i -1]){
-        prev_1 = jStat.abs([dataset[i-1][key]])[0]
-        let diff = jStat.abs([current - prev_1])[0]
-        if(diff >= sd * 4){
-          obs["color"] = ERROR
-          obs["rule"]  = "R_4s"
-          continue
-        }
-      }
-
-      // 4_1s:
-      // 4 consecutive controls outside 1sd 
-      if(i > 3 && dataset[i - 3]){
-        prev_1 = jStat.abs([dataset[i-1][key]])[0]
-        prev_2 = jStat.abs([dataset[i-2][key]])[0]
-        prev_3 = jStat.abs([dataset[i-3][key]])[0]
-
-        if(current > one_sd && current <= two_sd &&
-          prev_1 > one_sd && prev_1 <= two_sd &&
-          prev_2 > one_sd && prev_2 <= two_sd &&
-          prev_3 > one_sd && prev_3 <= two_sd){
-            // on either side of the mean 
-            // obs["color"] = ERROR
-            // obs["rule"]  = "4_1s"
-
-            // for one side of mead
-            const x = [dataset[i][key],dataset[i-1][key],dataset[i-2][key],dataset[i-3][key]];
-            const x_above = x.every(x => x > 0)
-            const x_below = x.every(x => x < 0)
-
-            if(x_above || x_below) {
-              obs["color"] = ERROR
-              obs["rule"]  = "4_1s"
-            }
-
-            // A correction to make sure that even if the fifth control lies in the same 
-            // range it will not be regarded as a 4_1s.
-            if (dataset[i-1]["rule"] == "4_1s"){
-                obs["rule"]  = "!!!"
-            }
-            if (dataset[i-2]["rule"] == "4_1s"){
-                obs["rule"]  = "!!!"
-            }
-            if (dataset[i-3]["rule"] == "4_1s"){
-                obs["rule"]  = "!!!"
-            }
-            if (dataset[i-4]["rule"] == "4_1s"){
-                obs["rule"]  = "!!!"
-            }
-            continue
-        }
-      }
-      // 10_x Rule:
-      // 10 consecutive control results are on the same sideof the mean
-      // Not Done. Yu can create it and share with me
-    }
+  for(let [i, obs] of dataset.entries()) {
+    const current = jStat.abs([obs[key]])[0];
+    let prev_1, prev_2, prev_3;
     
-    return {
-      rules: dataset,
-      stats: { n, mu, sd, x_sds },
+    // Enhanced point metadata
+    obs["color"] = COLORS.GOOD;
+    obs["rule"] = null;
+    obs["description"] = "";
+    obs["deviation"] = Math.round(((current - mu) / sd) * 100) / 100;
+
+    // 1_3s Rule
+    if(Math.abs(obs[key] - mu) > 3 * sd) {
+      obs["color"] = COLORS.ERROR;
+      obs["rule"] = "1_3s";
+      obs["description"] = RULE_DESCRIPTIONS["1_3s"];
+      continue;
+    }
+
+    // Enhanced 1_2s Rule with more context
+    if(Math.abs(obs[key] - mu) > 2 * sd) {
+      obs["color"] = COLORS.WARNING;
+      obs["rule"] = "1_2s";
+      obs["description"] = RULE_DESCRIPTIONS["1_2s"];
+      
+      // 2_2s Rule check
+      if(i > 0 && dataset[i-1]) {
+        prev_1 = dataset[i-1][key];
+        if(Math.abs(prev_1 - mu) > 2 * sd && 
+           ((prev_1 > mu && obs[key] > mu) || (prev_1 < mu && obs[key] < mu))) {
+          obs["color"] = COLORS.ERROR;
+          obs["rule"] = "2_2s";
+          obs["description"] = RULE_DESCRIPTIONS["2_2s"];
+        }
+      }
+      continue;
+    }
+
+    // R_4s Rule with improved detection
+    if(i > 0 && dataset[i-1]) {
+      prev_1 = dataset[i-1][key];
+      const diff = Math.abs(obs[key] - prev_1);
+      if(diff >= 4 * sd) {
+        obs["color"] = COLORS.ERROR;
+        obs["rule"] = "R_4s";
+        obs["description"] = RULE_DESCRIPTIONS["R_4s"];
+        continue;
+      }
+    }
+
+    // Enhanced 4_1s Rule
+    if(i >= 3) {
+      const prevValues = dataset.slice(i-3, i).map(d => d[key]);
+      const currentValue = obs[key];
+      
+      const allAboveMean = [currentValue, ...prevValues].every(v => v > mu);
+      const allBelowMean = [currentValue, ...prevValues].every(v => v < mu);
+      const allOutside1SD = [currentValue, ...prevValues].every(v => 
+        Math.abs(v - mu) > sd
+      );
+
+      if((allAboveMean || allBelowMean) && allOutside1SD) {
+        obs["color"] = COLORS.ERROR;
+        obs["rule"] = "4_1s";
+        obs["description"] = RULE_DESCRIPTIONS["4_1s"];
+        continue;
+      }
+    }
+
+    // New: 10_x Rule implementation
+    if(i >= 9) {
+      const tenPoints = dataset.slice(i-9, i+1).map(d => d[key]);
+      const allAboveMean = tenPoints.every(v => v > mu);
+      const allBelowMean = tenPoints.every(v => v < mu);
+
+      if(allAboveMean || allBelowMean) {
+        obs["color"] = COLORS.ERROR;
+        obs["rule"] = "10_x";
+        obs["description"] = RULE_DESCRIPTIONS["10_x"];
+      }
     }
   }
-  
-  const data = series || [
-    { date: new Date(2021, 1, 1).toDateString(), value: 1.2 },
-    { date: new Date(2021, 1, 2).toDateString(), value: 3.3 },
-    { date: new Date(2021, 1, 3).toDateString(), value: 2.1},
-    { date: new Date(2021, 1, 4).toDateString(), value: 0.2 },
-    { date: new Date(2021, 1, 5).toDateString(), value: 3 },
-    { date: new Date(2021, 1, 6).toDateString(), value: -19.5 },
-    { date: new Date(2021, 1, 7).toDateString(), value: -22.1 },
-    { date: new Date(2021, 1, 8).toDateString(), value: 0},
-    { date: new Date(2021, 1, 9).toDateString(), value: -1.3 },
-    { date: new Date(2021, 1, 10).toDateString(), value: 2.4 },
-    { date: new Date(2021, 1, 11).toDateString(), value: -1.3 },
-    { date: new Date(2021, 1, 12).toDateString(), value: 2.3 },
-    { date: new Date(2021, 1, 13).toDateString(), value: 29.9},
-    { date: new Date(2021, 1, 14).toDateString(), value: 2.1 },
-    { date: new Date(2021, 1, 15).toDateString(), value: 1.4 },
-    { date: new Date(2021, 1, 16).toDateString(), value: -1.2 },
-    { date: new Date(2021, 1, 17).toDateString(), value: -6.4 },
-    { date: new Date(2021, 1, 18).toDateString(), value: 6.2 },
-    { date: new Date(2021, 1, 19).toDateString(), value: -6.5 },
-    { date: new Date(2021, 1, 20).toDateString(), value: -6.4},
-    { date: new Date(2021, 1, 21).toDateString(), value: -2.8 },
-    { date: new Date(2021, 1, 22).toDateString(), value: 1.3 },
-    { date: new Date(2021, 1, 23).toDateString(), value: -1.5 },
-    { date: new Date(2021, 1, 24).toDateString(), value: 5.5 },
-    { date: new Date(2021, 1, 25).toDateString(), value: 5.7 },
-    { date: new Date(2021, 1, 26).toDateString(), value: 5.4 },
-    { date: new Date(2021, 1, 27).toDateString(), value: 5.6 },
-    { date: new Date(2021, 1, 28).toDateString(), value: 5.3 },
-    { date: new Date(2021, 1, 29).toDateString(), value: 4.5 },
-    { date: new Date(2021, 1, 30).toDateString(), value: 4.2 },
-  ]; 
 
-  const plotLevyJennings = () => {
-    document.getElementById('lj-chart')!.innerHTML = '';
-    const chart = new Chart({
-      container: 'lj-chart',
-      autoFit: true,
-      height: 250,
+  return {
+    rules: dataset,
+    stats: { 
+      n, 
+      mu, 
+      sd, 
+      x_sds,
+      controlLimits 
+    }
+  };
+}
+
+
+
+const plotLevyJennings = () => {
+  document.getElementById(chartId.value)!.innerHTML = '';
+  const chart = new Chart({
+    container: chartId.value,
+    autoFit: true,
+    height: 400,
+    padding: [30, 40, 120, 60] // Increased bottom padding for slanted labels
+  });
+
+  const west_gard = westGardRule(series, 'value');
+  chart.data(west_gard.rules);
+
+  // Scales and tooltip configurations remain the same
+  chart.scale({
+    date: {
+      range: [0, 1],
+      tickCount: Math.min(10, series.length),
+    },
+    value: {
+      ticks: west_gard.stats.x_sds,
+      nice: true,
+      alias: 'Standard Deviations',
+    },
+  });
+
+  chart.tooltip({
+    showTitle: true,
+    showCrosshairs: true,
+    customItems: (originalItems: any) => {
+      const item = originalItems[0];
+      return [
+        { name: 'Date', value: item.data.date },
+        { name: 'Value', value: item.data.value.toFixed(2) },
+        { name: 'Deviation', value: `${item.data.deviation}σ` },
+        { name: 'Rule Violation', value: item.data.description || 'None' }
+      ];
+    }
+  });
+
+  // Fixed mean line annotation
+  chart.annotation().line({
+    start: ['min', west_gard.stats.mu],
+    end: ['max', west_gard.stats.mu],
+    style: {
+      stroke: COLORS.MEAN_LINE,
+      lineDash: [4, 4],
+    },
+    text: {
+      content: 'Mean',
+      position: 'end',
+      autoRotate: true,
+      style: {
+        fill: COLORS.MEAN_LINE,
+      }
+    }
+  });
+
+  // Fixed control limit lines
+  [-3, -2, -1, 1, 2, 3].forEach(multiple => {
+    const value = west_gard.stats.mu + (multiple * west_gard.stats.sd);
+    chart.annotation().line({
+      start: ['min', value],
+      end: ['max', value],
+      style: {
+        stroke: multiple === 3 || multiple === -3 ? COLORS.ERROR : 
+               multiple === 2 || multiple === -2 ? COLORS.WARNING : '#ddd',
+        lineDash: [2, 2],
+        opacity: 0.5
+      },
+      text: {
+        content: `${multiple}σ`,
+        position: 'end',
+        autoRotate: true,
+        style: {
+          fill: multiple === 3 || multiple === -3 ? COLORS.ERROR : 
+                multiple === 2 || multiple === -2 ? COLORS.WARNING : '#666',
+        }
+      }
+    });
+  });
+
+  // Line and point configurations remain the same
+  chart.line()
+    .position('date*value')
+    .tooltip('date*value*deviation*description')
+    .style({
+      stroke: '#666',
+      lineWidth: 1
     });
 
-    const west_gard = westGardRule(data, 'value');
-    chart.data(west_gard.rules);
+  chart.point()
+    .position('date*value')
+    .color('color')
+    .shape('circle')
+    .style({
+      stroke: '#fff',
+      lineWidth: 1
+    })
+    .size(6);
 
-    chart.scale({
-        date: {
-          range: [0, 1],
-        },
-        value: {
-          ticks: west_gard.stats.x_sds,
-          nice: true,
-          alias: 'Value',
-        },
-      });
-      chart.tooltip({
-        showTitle: true,
-        showCrosshairs: true,
-      });
-      chart.line().position('date*value').label('value');
-      chart.point()
-            .position('date*value')
-            .color('value*color*rule', (v,c,r) => {
-              return typeof(c) === 'string' ? c : ""
-            });
+  // Configure axis with slanted labels
+  chart.axis('date', {
+    label: {
+      autoRotate: true,
+      rotate: 45, // Slant the labels 45 degrees
+      offset: 20, // Add some spacing
+      style: {
+        textAlign: 'left',
+        textBaseline: 'middle'
+      }
+    },
+    tickLine: {
+      alignTick: true,
+    },
+  });
 
-      chart.legend('rule' ,{
-        position: 'bottom',
-      });
+  chart.legend({
+    position: 'bottom',
+    flipPage: false,
+    itemMarginBottom: 8
+  });
 
-      chart.render();
-  }
-  onMounted(() => {
-    plotLevyJennings()
-  })
-  
+  chart.render();
+};
+
+onMounted(() => {
+  plotLevyJennings();
+});
+
+
 </script>
 
 <template>
-  <div class="">
-    <div id="lj-chart"></div>
+  <!-- Template remains the same -->
+  <div class="w-full">
+    <div class="mb-4">
+      <h2 class="text-lg font-semibold">{{ title }}</h2>
+    </div>
+    
+    <div class="relative w-full min-h-[400px] border bg-white shadow-sm" v-if="!cannotPlot">
+      <div :id="chartId" class="absolute inset-0"></div>
+    </div>
+    <div v-else>At least {{ SERIES_LIMIT }} data points are required to plot. Currently you have {{ series?.length }} for the selected period.</div>
   </div>
 </template>

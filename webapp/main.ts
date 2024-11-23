@@ -10,21 +10,10 @@ import {
     faBell, faCog, faUser, faChevronDown, faBars, faMeteor, faTachometerAlt, faBullseye,
     faUserInjured, faClinicMedical, faVial, faGripVertical, faDatabase, faTruck, faBoxesStacked,
     faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
-    faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode, faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan,
-    faCartShopping,
-    faInfo,
-    faInfoCircle,
-    faAnchor,
-    faThList,
-    faTh,
-    faTrash,
-    faAsterisk,
-    faArrowUpWideShort,
-    faArrowDown,
-    faLevelDownAlt,
-    faArrowDownWideShort,
-    faPen,
-    faDeleteLeft
+    faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode, 
+    faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan,
+    faCartShopping, faInfo, faInfoCircle, faAnchor, faThList, faTh, faTrash, faAsterisk, faArrowUpWideShort,
+    faArrowDown, faLevelDownAlt, faArrowDownWideShort, faPen, faDeleteLeft, faEllipsisH
 } from '@fortawesome/free-solid-svg-icons';
 import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
@@ -53,7 +42,7 @@ const icons = [
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
-    faArrowDown, faLevelDownAlt, faPen, faDeleteLeft
+    faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH
 ]
 library.add(...icons);
 

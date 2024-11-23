@@ -197,13 +197,13 @@ const goToStorage = async (sample?: ISample) => {
               'font-small',
               { 'text-orange-600': sample?.priority ?? 0 < 1 },
             ]">
-              <i class="fa fa-star"></i>
+              <font-awesome-icon icon="fa-star" />
             </span>
             {{ sample?.sampleId }}
             <!-- <button
                                                 class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                                               >
-                                                <i class="fa fa-pen"></i>
+                                                <font-awesome-icon icon="fa-pen" />
                                               </button> -->
             <span v-if="sample?.analysisRequest?.patient?.uid && repeatSample?.uid">
               <font-awesome-icon icon="angle-double-right" class="mx-2" />

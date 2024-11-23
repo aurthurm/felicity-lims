@@ -194,7 +194,7 @@ export type AnalysisInputType = {
   keyword: Scalars['String']['input'];
   methods?: InputMaybe<Array<Scalars['String']['input']>>;
   name: Scalars['String']['input'];
-  precision: Scalars['Int']['input'];
+  precision?: InputMaybe<Scalars['Int']['input']>;
   requiredVerifications?: Scalars['Int']['input'];
   sampleTypes?: InputMaybe<Array<Scalars['String']['input']>>;
   selfVerification?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3067,6 +3067,7 @@ export type Query = {
   provinceAll: ProvinceCursorPage;
   provinceByUid: ProvinceType;
   provincesByCountryUid: Array<ProvinceType>;
+  qcChartData: Array<AnalysisResultType>;
   qcLevelAll: Array<QcLevelType>;
   qcLevelByUid: QcLevelType;
   qcSetAll: QcSetCursorPage;
@@ -3601,6 +3602,13 @@ export type QueryProvinceByUidArgs = {
 
 export type QueryProvincesByCountryUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryQcChartDataArgs = {
+  analyses: Array<Scalars['String']['input']>;
+  month: Scalars['Int']['input'];
+  year: Scalars['Int']['input'];
 };
 
 

@@ -1069,82 +1069,109 @@ query getQCSeTs($first: Int!, $after: String, $text: String!, $sortBy: [String!]
 }
 
 query getQCSetByUid($uid: String!) {
-    qcSetByUid(uid: $uid) {
+  qcSetByUid(uid: $uid) {
+    uid
+    name
+    note
+    createdAt
+    samples {
+      uid
+      sampleId
+      status
+      createdAt
+      updatedAt
+      assigned
+      qcLevel {
         uid
-        name
-        note
-        createdAt
-        samples {
+        level
+      }
+      analysisResults {
+        uid
+        status
+        sampleUid
+        result
+        analysisUid
+        retest
+        reportable
+        analysis {
+          uid
+          name
+          sortKey
+          interims {
             uid
-            sampleId
-            status
-            createdAt
-            updatedAt
-            assigned
-            qcLevel {
-                uid
-                level
+            key
+            value
+          }
+          resultOptions {
+            uid
+            optionKey
+            value
+            sampleTypes {
+              uid
+              name
             }
-            analysisResults {
-                uid
-                status
-                sampleUid
-                result
-                analysisUid
-                retest
-                reportable
-                analysis {
-                    uid
-                    name
-                    sortKey
-                    resultOptions {
-                        uid
-                        optionKey
-                        value
-                        sampleTypes{
-                            uid
-                            name
-                        }
-                    }
-                }
-                method {
-                    uid
-                    name
-                }
-                laboratoryInstrument {
-                    uid
-                    labName
-                    instrument {
-                        uid
-                        name
-                    }
-                }
+          }
+          instruments {
+            uid
+            name
+            laboratoryInstruments {
+              uid
+              labName
+              serialNumber
             }
-            analyses {
-                uid
-                name
-                unitUid
-                unit {
-                    uid
-                    name
-                }
-                resultOptions {
-                    uid
-                    optionKey
-                    value
-                    sampleTypes{
-                        uid
-                        name
-                    }
-                }
-            }
-            profiles {
-                uid
-                name
-            }
+          }
+          methods {
+            uid
+            name
+          }
         }
+        laboratoryInstrument {
+          uid
+          labName
+          instrument {
+            uid
+            name
+          }
+        }
+        method {
+          uid
+          name
+        }
+        submittedBy {
+          uid
+          userName
+          firstName
+          lastName
+        }
+        dateSubmitted
+        verifiedBy {
+          uid
+          userName
+          firstName
+          lastName
+        }
+        dateVerified
+      }
     }
+  }
 }
+
+query GetReferenceRuns($analyses:[String!]!, $month:Int!, $year:Int!) {
+  qcChartData(analyses:$analyses, month:$month, year: $year) {
+    result
+    dateVerified
+    analysis {
+      uid
+      name
+    }
+    sample {
+      qcLevel {
+        level
+      }
+    }
+  }
+}
+
 
 query resultOptionsByAnalysisUid($uid: String!) {
     resultOptionsByAnalysisUid(uid: $uid) {

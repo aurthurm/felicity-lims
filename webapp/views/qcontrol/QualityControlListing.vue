@@ -7,10 +7,13 @@
   import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '@/models/analysis';
   import * as shield from '@/guards'
   import useApiUtil from '@/composables/api_util';
-import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariables } from '@/graphql/operations/analyses.mutations';
+  import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariables } from '@/graphql/operations/analyses.mutations';
 
   const LoadingMessage = defineAsyncComponent(
     () => import("@/components/ui/spinners/FelLoadingMessage.vue")
+  )
+  const PageHeader = defineAsyncComponent(
+    () => import("@/components/common/FelPageHeading.vue")
   )
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
@@ -37,6 +40,7 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
   sampleStore.resetQCSets()
 
   let qcSetBatch = ref<number>(25);
+  let qcSetCount = computed(() => `Showing ${qcSets?.value?.length} of ${sampleStore.getQCSetCount} QC Sets`);
   let qcSetParams = reactive({ 
     first: qcSetBatch.value, 
     after: "",
@@ -132,14 +136,14 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
   function qcSetProfileAnalyses(samples: ISample[]): string {
     let names: string[] = [];
     samples?.forEach((sample: ISample) => {
-        sample.profiles!.forEach(p => {
+        sample?.profiles?.forEach(p => {
           if(!names.includes(p.name!)){
             names.push(p.name!)
           }
         });
     })
     samples?.forEach(sample => {
-        sample.analyses!.forEach(a => {
+        sample?.analyses?.forEach(a => {
           if(!names.includes(a.name!)){
             names.push(a.name!)
           }
@@ -148,23 +152,27 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
     return names.join(', ');
   }
 
-  const drillDown = ref(false)
   const departments = computed(() => setupStore.getDepartments)
   const qcTemplates = computed(() => analysisStore.getQCTemplates)
   const qcLevels = computed(() => analysisStore.getQCLevels)
-  const qcSetCount = computed(() => sampleStore.getQCSets?.length + " of " + sampleStore.getQCSetCount + " QC Sets")
 </script>
 
 <template>
   <div class="flex items-center justify-between">
-    <h1 class="h1 font-bold text-dark-700">QC Analyses Requests</h1>
-    <button 
-    v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
-    type="button" 
-    class="border border-sky-800 text-sky-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-white focus:outline-none focus:shadow-outline"
-    @click.prevent="showModal = !showModal">
-      Add New QC Request
-    </button>
+    <PageHeader title="QC Analyses Requests" />
+    <div>
+      <button 
+        v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
+        type="button" 
+        class="border border-sky-800 text-sky-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-white focus:outline-none focus:shadow-outline"
+        @click.prevent="showModal = !showModal">
+        Add New QC Request
+      </button>
+      <router-link to="/quality-control/charts" id="control-charts"
+      class="border border-orange-800 text-orange-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-orange-800 hover:text-white focus:outline-none focus:shadow-outline">
+        View Charts
+      </router-link>
+    </div>
   </div>
   <hr>
 
@@ -238,7 +246,7 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <router-link 
                     :to="{ name:'qc-set-detail', params: { qcSetUid: qcSet.uid } }"
-                    class="px-2 py-1 mr-2 border-sky-800 border text-gray-500rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">View Detail</router-link>
+                    class="px-2 mr-2 border-sky-800 border text-gray-500rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">View Detail</router-link>
                 </td>
             </tr>
             </tbody>
@@ -285,7 +293,7 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
       </div>
     </section>
 
-  <modal v-if="showModal" @close="showModal = false">
+  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
     <template v-slot:header>
       <h3>Create QC Analyses Requests</h3>
     </template>
@@ -311,12 +319,8 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
         <section id="samples">
             <hr>
             <div class="flex justify-between items-center py-2">
-                <h5>Process Control Samples</h5>
-                <span class="cursor-pointer text-xl text-sky-800"
-                @click="drillDown = !drillDown">
-                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                </span>
-                <button
+              <h5>Add Control Samples</h5>
+              <button
                 v-if="form.samples?.length < 20"
                 @click.prevent="addQCSet()"
                 class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add QCSet</button>
@@ -338,7 +342,7 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
                                   :value="template.uid" >{{ template.name }}</option>
                               </select>
                             </label>
-                            <label class="block col-span-1 mb-2" v-if="drillDown">
+                            <label class="block col-span-1 mb-2">
                               <span class="text-gray-700">QC Levels</span>
                               <select 
                                 v-model="sample.qcLevels"
@@ -362,7 +366,7 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
                                   :value="profile.uid" >{{ profile.name }}</option>
                               </select>
                             </label>
-                            <label class="block col-span-1 mb-2" v-if="drillDown">
+                            <label class="block col-span-1 mb-2">
                               <span class="text-gray-700">Analysis Services</span>
                               <select 
                                 v-model="sample.analysisServices"
@@ -376,9 +380,8 @@ import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariabl
                             </label>
                         </div>
                     </div>
-                    <div class="">
-                        <button
-                        @click.prevent="removeQCSet(index)"
+                    <div class="ml-4">
+                      <button @click.prevent="removeQCSet(index)"
                         class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>

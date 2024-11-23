@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useSampleStore } from "@/stores/sample";
-import { isNullOrWs } from "@/utils/helpers";
+import { isNullOrWs, parseDate } from "@/utils/helpers";
 import useAnalysisComposable from "@/composables/analysis";
 import { IAnalysisResult, IQCLevel, IQCSet, ISample } from "@/models/analysis";
 
@@ -54,7 +54,7 @@ let qcSet = computed(() => {
     }
   });
 
-  toggleView("grid");
+  toggleView("list");
 
   return {
     levels: final.levels as IQCLevel[],
@@ -90,9 +90,9 @@ function getResultsChecked(): IAnalysisResult[] {
   return results;
 }
 
-function getResultsUids(): number[] {
+function getResultsUids(): string[] {
   const results = getResultsChecked();
-  let ready: number[] = [];
+  let ready: string[] = [];
   results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
   return ready;
 }
@@ -173,7 +173,6 @@ function isEditable(result: IAnalysisResult): Boolean {
       editResult(result);
       return true;
     }
-    return true;
   }
   return false;
 }
@@ -198,7 +197,12 @@ function prepareResults(): IAnalysisResult[] {
   let results = getResultsChecked();
   let ready: any[] = [];
   results?.forEach((result: IAnalysisResult) =>
-    ready.push({ uid: result.uid, result: result.result })
+    ready.push({ 
+      uid: result.uid, 
+      result: result.result,
+      laboratoryInstrumentUid: result.laboratoryInstrumentUid,
+      methodUid: result.methodUid
+    })
   );
   return ready;
 }
@@ -261,7 +265,7 @@ function toggleView(choice: string): void {
 
   for (let sample of samples) {
     const filtered: IAnalysisResult[] = results.filter((r) => r.sampleUid === sample.uid);
-    let analysisUids: number[] = [];
+    let analysisUids: string[] = [];
     filtered?.forEach((result) => analysisUids.push(result.analysisUid!));
     hasDuplicates.value = new Set(analysisUids).size !== analysisUids.length;
     if (hasDuplicates.value === true) break;
@@ -344,46 +348,82 @@ function toggleView(choice: string): void {
               :key="result.uid"
               class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"
             >
-              <div class="flex items-center">
-                <input
-                  type="checkbox"
-                  class="mr-2"
-                  v-model="result.checked"
-                  @change="checkCheck()"
-                  :disabled="isDisabledRowCheckBox(result)"
-                />
+              <div class="flex items-center gap-x-4">
                 <div>
-                  <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
-                    {{ result?.result }}
+                  <div class="text-md font-semibold italics text-sky-800"> {{ result?.sample?.qcLevel?.level }}</div>
+                  <div class="text-sm italics text-sky-400">({{ result?.status }})</div>
+                  <input
+                    type="checkbox"
+                    class="mr-2"
+                    v-model="result.checked"
+                    @change="checkCheck()"
+                    :disabled="isDisabledRowCheckBox(result)"
+                  />
+                </div>
+                <div class="w-3/5">
+                  <div class="flex justify-start items-center gap-x-4 px-1 py-1">
+                    <h4 class="w-28">Instrument</h4>
+                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                      {{ result.laboratoryInstrument?.labName }}
+                    </div>
+                    <label v-else class="mb-2 w-full">
+                      <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
+                        <option value=""></option>
+                        <template v-for="instrument in result.analysis?.instruments" :key="instrument.uid">
+                          <option 
+                            v-for="lab_instrument in instrument.laboratoryInstruments" 
+                            :key="lab_instrument.uid"
+                            :value="lab_instrument.uid"
+                          >
+                            {{ lab_instrument.labName }} → ({{ instrument?.name }})
+                          </option>
+                        </template>
+                      </select>
+                    </label>
                   </div>
-                  <label
-                    v-else-if="result?.analysis?.resultOptions?.length < 1"
-                    class="block"
-                  >
-                    <input
-                      class="form-input mt-1 block w-full"
-                      v-model="result.result"
-                      @keyup="check(result)"
-                    />
-                  </label>
-                  <label v-else class="block col-span-2">
-                    <select
-                      class="form-input mt-1 block w-full"
-                      v-model="result.result"
-                      @change="check(result)"
-                    >
-                      <option value=""></option>
-                      <option
-                        v-for="(option, index) in result?.analysis?.resultOptions"
-                        :key="option.optionKey"
-                        :value="option.value"
+
+                  <div class="flex justify-start items-center gap-x-4 px-1 py-1">
+                    <h4 class="w-28">Method</h4>
+                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                      {{ result.method?.name }}
+                    </div>
+                    <label v-else class="mb-2 w-full">
+                      <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
+                        <option value=""></option>
+                        <option v-for="method in result.analysis?.methods" :key="method.uid"
+                          :value="method.uid">
+                          {{ method.name }}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="flex justify-start items-center gap-x-4 px-1 py-1">
+                    <h4 class="w-28">Result</h4>
+                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                      {{ result?.result }}
+                    </div>
+                    <label v-else-if="result?.analysis?.resultOptions?.length > 0" class="block w-full" >
+                      <input class="form-input mt-1 block w-full" v-model="result.result"  @keyup="check(result)"/>
+                    </label>
+                    <label v-else class="block col-span-2 w-full">
+                      <select
+                        class="form-input mt-1 block w-full"
+                        v-model="result.result"
+                        @change="check(result)"
                       >
-                        {{ option.value }}
-                      </option>
-                    </select>
-                  </label>
-                  <!-- <div class="text-sm italics text-sky-800"> {{ result?.sample?.qcLevel?.level }}</div> -->
-                  <div class="text-sm italics text-sky-800">{{ result?.status }}</div>
+                        <option value=""></option>
+                        <option
+                          v-for="option in result?.analysis?.resultOptions"
+                          :key="option.optionKey"
+                          :value="option.value"
+                        >
+                          {{ option.value }}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+
                 </div>
               </div>
             </td>
@@ -400,69 +440,21 @@ function toggleView(choice: string): void {
       <table class="min-w-full">
         <thead>
           <tr>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            >
-              <input
-                type="checkbox"
-                class=""
-                @change="toggleCheckAll()"
-                v-model="allChecked"
-              />
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+              <input type="checkbox"  @change="toggleCheckAll()"  v-model="allChecked" />
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            ></th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            >
-              Analysis
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Methods
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Instrument
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Analyst
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Result
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Retest
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Submitted
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Due Date
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Status
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
-              Reportable
-            </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Analysis</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Methods</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Instrument </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Analyst</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Reviewer</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Interims </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Retest</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Submitted</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Reviewed</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Status</th>
             <th class="px-1 py-1 border-b-2 border-gray-300"></th>
           </tr>
         </thead>
@@ -482,21 +474,67 @@ function toggleView(choice: string): void {
               <div class="text-sm leading-5 text-sky-800">
                 {{ result.analysis?.name }}
               </div>
+              <div class="italic text-sm text-gray-400">({{ result?.sample?.qcLevel?.level }})</div>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                {{ result.laboratoryInstrument?.labName || "---" }}
+              </div>
+              <label v-else class="block col-span-2 mb-2">
+                <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
+                  <option value=""></option>
+                  <template v-for="instrument in result.analysis?.instruments" :key="instrument.uid">
+                    <option 
+                      v-for="lab_instrument in instrument.laboratoryInstruments" 
+                      :key="lab_instrument.uid"
+                      :value="lab_instrument.uid"
+                    >
+                      {{ lab_instrument.labName }} → ({{ instrument?.name }})
+                    </option>
+                  </template>
+                </select>
+              </label>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                {{ result.method?.name }}
+              </div>
+              <label v-else class="block col-span-2 mb-2">
+                <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
+                  <option value=""></option>
+                  <option v-for="method in result.analysis?.methods" :key="method.uid"
+                    :value="method.uid">
+                    {{ method.name }}
+                  </option>
+                </select>
+              </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
-                {{ result.method?.name || "None" }}
+                {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
-                {{ result.instrument?.name || "None" }}
+                <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
+                  {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
+                </span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
-                {{ result.analyst?.name || "moyoza" }}
+              <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
+                class="text-sm leading-5 text-sky-800">
+                ---
               </div>
+              <label v-else class="block col-span-2 mb-2">
+                <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                  <option value=""></option>
+                  <option v-for="interim in result?.analysis?.interims" :key="interim.key"
+                    :value="interim.value">
+                    {{ interim.value }}
+                  </option>
+                </select>
+              </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
@@ -520,7 +558,7 @@ function toggleView(choice: string): void {
                 >
                   <option value=""></option>
                   <option
-                    v-for="(option, index) in result?.analysis?.resultOptions"
+                    v-for="option in result?.analysis?.resultOptions"
                     :key="option.optionKey"
                     :value="option.value"
                   >
@@ -532,44 +570,30 @@ function toggleView(choice: string): void {
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
                 <span v-if="result?.retest" class="text-sky-800">
-                  <i class="fa fa-check-circle" aria-hidden="true"></i>
+                  <font-awesome-icon icon="fa-check-circle" />
                 </span>
                 <span v-else class="text-orange-600">
-                  <i class="fa fa-times-circle" aria-hidden="true"></i>
+                  <font-awesome-icon icon="fa-times-circle" />
                 </span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateSubmitted) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateVerified) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <button
                 type="button"
-                class="bg-sky-800 text-white p-1rounded-smleading-none"
+                class="p-1 bg-sky-800 text-white rounded-sm leading-none"
               >
                 {{ result.status }}
               </button>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
-                <span v-if="result?.reportable" class="text-sky-800">
-                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                </span>
-                <span v-else class="text-orange-600">
-                  <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                </span>
-              </div>
-            </td>
             <td
               class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
             >
-              <!-- <button @click.prevent="submitResult(result)" 
-                            class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">
-                            submit
-                          </button> -->
             </td>
           </tr>
         </tbody>

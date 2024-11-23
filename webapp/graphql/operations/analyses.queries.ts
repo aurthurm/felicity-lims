@@ -828,21 +828,31 @@ export type GetQcSetByUidQuery = (
         & Pick<Types.QcLevelType, 'uid' | 'level'>
       )>, analysisResults?: Types.Maybe<Array<(
         { __typename?: 'AnalysisResultType' }
-        & Pick<Types.AnalysisResultType, 'uid' | 'status' | 'sampleUid' | 'result' | 'analysisUid' | 'retest' | 'reportable'>
+        & Pick<Types.AnalysisResultType, 'uid' | 'status' | 'sampleUid' | 'result' | 'analysisUid' | 'retest' | 'reportable' | 'dateSubmitted' | 'dateVerified'>
         & { analysis?: Types.Maybe<(
           { __typename?: 'AnalysisType' }
           & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
-          & { resultOptions?: Types.Maybe<Array<(
+          & { interims?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisInterimType' }
+            & Pick<Types.AnalysisInterimType, 'uid' | 'key' | 'value'>
+          )>>, resultOptions?: Types.Maybe<Array<(
             { __typename?: 'ResultOptionType' }
             & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
             & { sampleTypes?: Types.Maybe<Array<(
               { __typename?: 'SampleTypeTyp' }
               & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
             )>> }
+          )>>, instruments?: Types.Maybe<Array<(
+            { __typename?: 'InstrumentType' }
+            & Pick<Types.InstrumentType, 'uid' | 'name'>
+            & { laboratoryInstruments?: Types.Maybe<Array<(
+              { __typename?: 'LaboratoryInstrumentType' }
+              & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName' | 'serialNumber'>
+            )>> }
+          )>>, methods?: Types.Maybe<Array<(
+            { __typename?: 'MethodType' }
+            & Pick<Types.MethodType, 'uid' | 'name'>
           )>> }
-        )>, method?: Types.Maybe<(
-          { __typename?: 'MethodType' }
-          & Pick<Types.MethodType, 'uid' | 'name'>
         )>, laboratoryInstrument?: Types.Maybe<(
           { __typename?: 'LaboratoryInstrumentType' }
           & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
@@ -850,27 +860,44 @@ export type GetQcSetByUidQuery = (
             { __typename?: 'InstrumentType' }
             & Pick<Types.InstrumentType, 'uid' | 'name'>
           )> }
-        )> }
-      )>>, analyses?: Types.Maybe<Array<(
-        { __typename?: 'AnalysisType' }
-        & Pick<Types.AnalysisType, 'uid' | 'name' | 'unitUid'>
-        & { unit?: Types.Maybe<(
-          { __typename?: 'UnitType' }
-          & Pick<Types.UnitType, 'uid' | 'name'>
-        )>, resultOptions?: Types.Maybe<Array<(
-          { __typename?: 'ResultOptionType' }
-          & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
-          & { sampleTypes?: Types.Maybe<Array<(
-            { __typename?: 'SampleTypeTyp' }
-            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
-          )>> }
+        )>, method?: Types.Maybe<(
+          { __typename?: 'MethodType' }
+          & Pick<Types.MethodType, 'uid' | 'name'>
+        )>, submittedBy?: Types.Maybe<(
+          { __typename?: 'UserType' }
+          & Pick<Types.UserType, 'uid' | 'userName' | 'firstName' | 'lastName'>
+        )>, verifiedBy?: Types.Maybe<Array<(
+          { __typename?: 'UserType' }
+          & Pick<Types.UserType, 'uid' | 'userName' | 'firstName' | 'lastName'>
         )>> }
-      )>>, profiles: Array<(
-        { __typename?: 'ProfileType' }
-        & Pick<Types.ProfileType, 'uid' | 'name'>
-      )> }
+      )>> }
     )>> }
   ) }
+);
+
+export type GetReferenceRunsQueryVariables = Types.Exact<{
+  analyses: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+  month: Types.Scalars['Int']['input'];
+  year: Types.Scalars['Int']['input'];
+}>;
+
+
+export type GetReferenceRunsQuery = (
+  { __typename?: 'Query' }
+  & { qcChartData: Array<(
+    { __typename?: 'AnalysisResultType' }
+    & Pick<Types.AnalysisResultType, 'result' | 'dateVerified'>
+    & { analysis?: Types.Maybe<(
+      { __typename?: 'AnalysisType' }
+      & Pick<Types.AnalysisType, 'uid' | 'name'>
+    )>, sample: (
+      { __typename?: 'SampleType' }
+      & { qcLevel?: Types.Maybe<(
+        { __typename?: 'QCLevelType' }
+        & Pick<Types.QcLevelType, 'level'>
+      )> }
+    ) }
+  )> }
 );
 
 export type ResultOptionsByAnalysisUidQueryVariables = Types.Exact<{
@@ -2149,6 +2176,11 @@ export const GetQcSetByUidDocument = gql`
           uid
           name
           sortKey
+          interims {
+            uid
+            key
+            value
+          }
           resultOptions {
             uid
             optionKey
@@ -2158,10 +2190,19 @@ export const GetQcSetByUidDocument = gql`
               name
             }
           }
-        }
-        method {
-          uid
-          name
+          instruments {
+            uid
+            name
+            laboratoryInstruments {
+              uid
+              labName
+              serialNumber
+            }
+          }
+          methods {
+            uid
+            name
+          }
         }
         laboratoryInstrument {
           uid
@@ -2171,28 +2212,24 @@ export const GetQcSetByUidDocument = gql`
             name
           }
         }
-      }
-      analyses {
-        uid
-        name
-        unitUid
-        unit {
+        method {
           uid
           name
         }
-        resultOptions {
+        submittedBy {
           uid
-          optionKey
-          value
-          sampleTypes {
-            uid
-            name
-          }
+          userName
+          firstName
+          lastName
         }
-      }
-      profiles {
-        uid
-        name
+        dateSubmitted
+        verifiedBy {
+          uid
+          userName
+          firstName
+          lastName
+        }
+        dateVerified
       }
     }
   }
@@ -2201,6 +2238,27 @@ export const GetQcSetByUidDocument = gql`
 
 export function useGetQcSetByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetQcSetByUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetQcSetByUidQuery>({ query: GetQcSetByUidDocument, ...options });
+};
+export const GetReferenceRunsDocument = gql`
+    query GetReferenceRuns($analyses: [String!]!, $month: Int!, $year: Int!) {
+  qcChartData(analyses: $analyses, month: $month, year: $year) {
+    result
+    dateVerified
+    analysis {
+      uid
+      name
+    }
+    sample {
+      qcLevel {
+        level
+      }
+    }
+  }
+}
+    `;
+
+export function useGetReferenceRunsQuery(options: Omit<Urql.UseQueryArgs<never, GetReferenceRunsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetReferenceRunsQuery>({ query: GetReferenceRunsDocument, ...options });
 };
 export const ResultOptionsByAnalysisUidDocument = gql`
     query resultOptionsByAnalysisUid($uid: String!) {

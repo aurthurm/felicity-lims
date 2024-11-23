@@ -8,6 +8,14 @@ const qualityRoutes = [
         },
     },
     {
+        path: 'charts',
+        name: 'quality-control-charts',
+        component: () => import('@/views/qcontrol/QualityCharts.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/qc-set/:qcSetUid',
         name: 'qc-set-view',
         component: () => import('@/views/qcontrol/_id/QualityControl.vue'),
