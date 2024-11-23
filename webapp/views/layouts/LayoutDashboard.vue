@@ -6,7 +6,7 @@ const SideBar = defineAsyncComponent(
 const HeaderMain = defineAsyncComponent(
   () => import("@/components/nav/NavigationMain.vue")
 )
-const Notification = defineAsyncComponent(
+const FelNotification = defineAsyncComponent(
   () => import("@/components/notification/FelNotification.vue")
 )
 </script>
@@ -27,6 +27,6 @@ const Notification = defineAsyncComponent(
   </div>
   <!-- <footer-main><slot /></footer-main> -->
 
-  <notification />
+  <FelNotification />
 </template>
 

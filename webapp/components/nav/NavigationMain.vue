@@ -9,7 +9,7 @@ const Drawer = defineAsyncComponent(
   () => import("@/components/ui/FelDrawer.vue")
 )
 
-const { errors } = useApiUtil()
+const { errors, clearErrors } = useApiUtil()
 
 const dropdownOpen = ref(false);
 const themeChange = ref(false);
@@ -89,12 +89,23 @@ const showErrors = ref(false)
 
   <Drawer :show="showErrors" @close="showErrors = false">
     <template v-slot:header>
-      <h3>Errors List</h3>
+      <div class="flex items-center justify-between">
+      <h3 class="font-semibold text-lg">Errors List</h3>
+      <button 
+        class="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+        @click="clearErrors()"
+      >
+        <font-awesome-icon 
+          icon="fa-delete-left" 
+          class="w-5 h-5"
+        />
+      </button>
+    </div>
     </template>
     <template v-slot:body>
       <ul>
-        <li v-for="(err, idx) in errors" :key="idx">
-          {{ err }}
+        <li v-for="(err, idx) in errors" :key="idx" class="mb-2 p-2 bg-white italic text-xs">
+          <code>{{ err }}</code>
         </li>
       </ul>
     </template>

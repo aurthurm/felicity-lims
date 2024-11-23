@@ -2,6 +2,7 @@ import { createApp, markRaw } from 'vue';
 import urql from '@urql/vue';
 import { MotionPlugin } from '@vueuse/motion';
 import VueSweetalert2 from 'vue-sweetalert2';
+import Notifications from '@kyvg/vue3-notification'
 import FloatingVue from 'floating-vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -22,7 +23,8 @@ import {
     faArrowDown,
     faLevelDownAlt,
     faArrowDownWideShort,
-    faPen
+    faPen,
+    faDeleteLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
@@ -51,7 +53,7 @@ const icons = [
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
-    faArrowDown, faLevelDownAlt, faPen
+    faArrowDown, faLevelDownAlt, faPen, faDeleteLeft
 ]
 library.add(...icons);
 
@@ -68,6 +70,7 @@ app.component('empty-layout', LayoutEmpty);
 app.component('mobile-layout', LayoutMobile);
 
 app.use(VueSweetalert2);
+app.use(Notifications)
 app.use(CkeditorPlugin);
 app.use(FloatingVue);
 app.use(MotionPlugin);

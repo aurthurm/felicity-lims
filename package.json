@@ -51,6 +51,7 @@
     "@graphql-codegen/typescript-vue-urql": "^2.3.6",
     "@graphql-codegen/urql-introspection": "^3.0.0",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@kyvg/vue3-notification": "^3.4.1",
     "@magidoc/cli": "^4.1.2",
     "@types/lodash-es": "^4.17.12",
     "@urql/core": "^3.2.2",

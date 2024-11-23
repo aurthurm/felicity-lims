@@ -7,6 +7,8 @@ from fastapi import APIRouter, HTTPException
 from packaging import version
 
 __version__ = "0.1.4"
+
+_cache_duration = timedelta(hours=1)
 router = APIRouter()
 
 
@@ -15,17 +17,16 @@ class FelicityVersion:
     _owner = "beak-insights"
     _repo = "felicity-lims"
     _cache = {}
-    _cache_duration = timedelta(hours=1)
+    _cache_duration = _cache_duration
     _last_check = None
     _lock = asyncio.Lock()
 
-    @classmethod
-    def version(cls) -> str:
-        return cls._version
+    @property
+    def version(self) -> str:
+        return self._version
 
-    @classmethod
-    async def _fetch_github_version(cls) -> Dict:
-        url = f"https://api.github.com/repos/{cls._owner}/{cls._repo}/releases/latest"
+    async def _fetch_github_version(self) -> Dict:
+        url = f"https://api.github.com/repos/{self._owner}/{self._repo}/releases/latest"
         headers = {"Accept": "application/vnd.github.v3+json"}
 
         async with httpx.AsyncClient() as client:
@@ -40,20 +41,19 @@ class FelicityVersion:
                     raise HTTPException(status_code=429, detail="GitHub API rate limit exceeded")
                 raise HTTPException(status_code=502, detail=f"GitHub API error: {str(e)}")
 
-    @classmethod
-    async def check_github_version(cls) -> Dict:
-        async with cls._lock:
+    async def check_github_version(self) -> Dict:
+        async with self._lock:
             now = datetime.now()
 
             # Return cached response if valid
-            if cls._last_check and (now - cls._last_check) < cls._cache_duration:
-                return cls._cache
+            if self._last_check and (now - self._last_check) < self._cache_duration:
+                return self._cache
 
-            latest_release = await cls._fetch_github_version()
+            latest_release = await self._fetch_github_version()
             latest_version = latest_release["tag_name"].lstrip("v")
 
             try:
-                current = version.parse(cls.version())
+                current = version.parse(self.version)
                 latest = version.parse(latest_version)
             except version.InvalidVersion as e:
                 raise HTTPException(status_code=500, detail=f"Invalid version format: {str(e)}")
@@ -68,7 +68,11 @@ class FelicityVersion:
             }
 
             # Update cache
-            cls._cache = result
-            cls._last_check = now
+            self._cache = result
+            self._last_check = now
 
             return result
+
+
+# use as singleton
+felicity_version = FelicityVersion()

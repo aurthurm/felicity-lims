@@ -61,7 +61,7 @@ let layout = computed(
 
 <template>
   <component :is="layout">
-    <!-- <div class="text-center">Flash Messages will come here.</div> -->
+    <notifications position="bottom right"  /> <!-- @kyvg/vue3-notification -->
     <router-view />
   </component>
 </template>

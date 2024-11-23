@@ -68,6 +68,9 @@ importers:
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.8.1)
+      '@kyvg/vue3-notification':
+        specifier: ^3.4.1
+        version: 3.4.1(vue@3.4.15(typescript@5.3.3))
       '@magidoc/cli':
         specifier: ^4.1.2
         version: 4.1.2
@@ -1470,6 +1473,11 @@ packages:
 
   '@kamilkisiela/fast-url-parser@1.1.4':
     resolution: {integrity: sha512-gbkePEBupNydxCelHCESvFSFM8XPh1Zs/OAVRW/rKpEqPAl5PbOM90Si8mv9bvnR53uPD2s/FiRxdvSejpRJew==}
+
+  '@kyvg/vue3-notification@3.4.1':
+    resolution: {integrity: sha512-WhTWCbF36JHLJR5UdKmJF7KXGOGVy4tLeaJuKTHZhwttZWnbF9w1/c2d32tvCSwY9CdeX/n9uoaKWLMKK3vOyg==}
+    peerDependencies:
+      vue: ^3.0.0
 
   '@ljharb/resumer@0.0.1':
     resolution: {integrity: sha512-skQiAOrCfO7vRTq53cxznMpks7wS1va95UCidALlOVWqvBAzwPVErwizDwoMqNVMEn1mDq0utxZd02eIrvF1lw==}
@@ -6248,6 +6256,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.4.15
 
   '@kamilkisiela/fast-url-parser@1.1.4': {}
+
+  '@kyvg/vue3-notification@3.4.1(vue@3.4.15(typescript@5.3.3))':
+    dependencies:
+      vue: 3.4.15(typescript@5.3.3)
 
   '@ljharb/resumer@0.0.1':
     dependencies:

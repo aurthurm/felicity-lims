@@ -44,6 +44,10 @@ export default function useApiUtil() {
     errors.value.unshift(err)
   };
 
+  const clearErrors = (): void => {
+    errors.value = [];
+  }
+
   /**
    * Comprehensive error handler for GraphQL operations
    * @param error - The error object from GraphQL operation
@@ -195,6 +199,7 @@ export default function useApiUtil() {
     withClientMutation,
     gqlErrorHandler,
     addError,
+    clearErrors,
     errors,
     messages,
   };

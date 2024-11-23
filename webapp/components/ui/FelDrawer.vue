@@ -37,7 +37,7 @@ watch(
     <div ref="notification"
       class="w-full absolute z-20 right-0 h-full overflow-x-hidden transform translate-x-full transition ease-in-out duration-700">
       <div class=" " :class="[
-        'bg-gray-50 h-screen overflow-y-auto p-8 absolute right-0 flex flex-col',
+        'bg-gray-100 h-screen overflow-y-auto p-8 absolute right-0 flex flex-col',
         contentWidth ? contentWidth : 'w-1/3',
       ]">
         <div class="flex items-center justify-between">
@@ -54,11 +54,11 @@ watch(
           </button>
         </div>
 
-        <div class="w-full my-4 py-1 px-2 bg-white shadow-xs flex-1">
+        <div class="w-full my-4 py-1 shadow-xs flex-1">
           <slot name="body">Drawer Body</slot>
         </div>
 
-        <div class="w-full my-1 py-1 px-2 flex items-center">
+        <div class="w-full my-1 py-1 flex items-center">
           <slot name="footer"></slot>
         </div>
       </div>

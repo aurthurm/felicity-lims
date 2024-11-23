@@ -4,6 +4,9 @@ import { useLocationStore } from '@/stores/location';
 const PageHeading = defineAsyncComponent(
   () => import("@/components/common/FelPageHeading.vue")
 )
+const VersionDisplay = defineAsyncComponent(
+  () => import("./VersionDisplay.vue")
+)
 
 const locationStore = useLocationStore()
 const resetSelected = () => locationStore.updateConfRoute("");
@@ -11,7 +14,10 @@ const selectedRoute = computed(() => locationStore.getConfRoute)
 </script>
 
 <template>
-  <PageHeading title="Felicity Configurations" />
+  <div class="flex justify-between items-center">
+    <PageHeading title="Felicity Configurations" />
+    <VersionDisplay />
+  </div>
   <div class="flex justify-start italic uppercase text-md text-gray-600 font-bold">
     <span @click="resetSelected">
       <router-link to="/admin" class="no-underline">
