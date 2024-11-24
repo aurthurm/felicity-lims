@@ -2920,6 +2920,7 @@ export type QcSetType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
+  status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -2934,6 +2935,7 @@ export type QcSetWithSamples = {
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
   samples?: Maybe<Array<SamplesWithResults>>;
+  status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -3621,8 +3623,8 @@ export type QueryQcSetAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  text?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: Array<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -6916,6 +6918,7 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     note?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
+    status?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -6928,6 +6931,7 @@ export type GraphCacheResolvers = {
     name?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     note?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     samples?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Array<WithTypename<SamplesWithResults> | string>>,
+    status?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, WithTypename<UserType> | string>,
@@ -9539,6 +9543,7 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     note?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
@@ -9551,6 +9556,7 @@ export type GraphCacheUpdaters = {
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     note?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     samples?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,

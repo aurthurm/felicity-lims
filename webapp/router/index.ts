@@ -14,6 +14,9 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/',
         redirect: { name: guards.pages.DASHBOARD },
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/installation',

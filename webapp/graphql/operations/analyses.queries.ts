@@ -737,7 +737,7 @@ export type GetAllQcTemplatesQuery = (
 export type GetQcSeTsQueryVariables = Types.Exact<{
   first: Types.Scalars['Int']['input'];
   after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  text: Types.Scalars['String']['input'];
+  status: Types.Scalars['String']['input'];
   sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
@@ -752,7 +752,7 @@ export type GetQcSeTsQuery = (
       & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'endCursor' | 'startCursor'>
     ), items?: Types.Maybe<Array<(
       { __typename?: 'QCSetWithSamples' }
-      & Pick<Types.QcSetWithSamples, 'uid' | 'name' | 'note' | 'createdAt'>
+      & Pick<Types.QcSetWithSamples, 'uid' | 'name' | 'note' | 'status' | 'createdAt'>
       & { samples?: Types.Maybe<Array<(
         { __typename?: 'SamplesWithResults' }
         & Pick<Types.SamplesWithResults, 'uid' | 'sampleId' | 'status' | 'createdByUid' | 'createdAt' | 'updatedAt' | 'assigned'>
@@ -2049,8 +2049,13 @@ export function useGetAllQcTemplatesQuery(options: Omit<Urql.UseQueryArgs<never,
   return Urql.useQuery<GetAllQcTemplatesQuery>({ query: GetAllQcTemplatesDocument, ...options });
 };
 export const GetQcSeTsDocument = gql`
-    query getQCSeTs($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-  qcSetAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+    query getQCSeTs($first: Int!, $after: String, $status: String!, $sortBy: [String!] = ["uid"]) {
+  qcSetAll(
+    pageSize: $first
+    afterCursor: $after
+    status: $status
+    sortBy: $sortBy
+  ) {
     totalCount
     pageInfo {
       hasNextPage
@@ -2062,6 +2067,7 @@ export const GetQcSeTsDocument = gql`
       uid
       name
       note
+      status
       createdAt
       samples {
         uid

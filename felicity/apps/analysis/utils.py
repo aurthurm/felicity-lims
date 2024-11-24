@@ -18,6 +18,7 @@ from felicity.apps.analysis.services.result import (
     ResultMutationService,
 )
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
+from felicity.apps.analysis.workflow.qcset import CQSetWorkFlow
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.enum import DiscountType, DiscountValueType
 from felicity.apps.billing.schemas import (
@@ -133,6 +134,7 @@ async def results_submitter(
     sample_wf = SampleWorkFlow()
     worksheet_wf = WorkSheetWorkFlow()
     analysis_result_wf = AnalysisResultWorkFlow()
+    qc_set_workflow = CQSetWorkFlow()
 
     return_results: list[AnalysisResult] = []
 
@@ -145,7 +147,9 @@ async def results_submitter(
 
         # try to submit sample
         try:
-            await sample_wf.submit(a_result.sample_uid, submitted_by=submitter)
+            sample = await sample_wf.submit(a_result.sample_uid, submitted_by=submitter)
+            if sample.qc_set_uid:
+                await qc_set_workflow.submit(sample.qc_set_uid, submitter)
         except Exception as e:
             await sample_wf.revert(a_result.sample_uid, by_uid=submitter.uid)
             logger.warning(e)
@@ -169,6 +173,7 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
     worksheet_wf = WorkSheetWorkFlow()
     analysis_result_wf = AnalysisResultWorkFlow()
     sample_wf = SampleWorkFlow()
+    qc_set_workflow = CQSetWorkFlow()
 
     approved = await analysis_result_wf.approve(uids, user)
 
@@ -184,6 +189,10 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
             sample_verified, _ = await sample_wf.approve(
                 a_result.sample_uid, approved_by=user
             )
+            if sample_verified.qc_set_uid:
+                await qc_set_workflow.submit(sample_verified.qc_set_uid, user)
+                # auto publish QC samples without report generation
+                await sample_service.change_status(a_result.sample_uid, SampleState.PUBLISHED, user)
         except Exception as e:
             await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
             logger.warning(e)
@@ -243,7 +252,7 @@ async def result_mutator(result: AnalysisResult) -> None:
     result_in = result.result
 
     correction_factors = result.metadata_snapshot.get("correction_factors", [])
-    specifications = result.metadata_snapshot.get("specifications", []) 
+    specifications = result.metadata_snapshot.get("specifications", [])
     detection_limits = result.metadata_snapshot.get("detection_limits", [])
     uncertainties = result.metadata_snapshot.get("uncertainties", [])
 

@@ -81,6 +81,7 @@ class QCSetType:
     uid: str
     name: str
     note: str
+    status: str
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

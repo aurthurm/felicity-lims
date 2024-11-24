@@ -116,10 +116,10 @@ export interface IAnalysisTemplate {
 }
 
 export interface IQCRequest {
-    qcTemplateUid?: string;
-    qcLevels?: string[]; // uids
-    analysisProfiles?: string[]; // uids
-    analysisServices?: string[]; // uids
+    qcTemplate?: IQCTemplate;
+    qcLevels?: IQCLevel[];
+    analysisProfiles?: IAnalysisProfile[]; 
+    analysisServices?: IAnalysisService[];
 }
 
 export interface IQCLevel {

@@ -214,15 +214,26 @@ const countNone = computed(
       </button>
     </div>
   </div>
-  <DataTable :columns="tableColumns" :data="workSheets" :toggleColumns="true" :loading="fetchingWorkSheets"
-    :paginable="true" :pageMeta="{
+  <DataTable 
+  :columns="tableColumns" 
+  :data="workSheets" 
+  :toggleColumns="true" 
+  :loading="fetchingWorkSheets"
+  :paginable="true" 
+  :pageMeta="{
       fetchCount: workSheetParams.first,
       hasNextPage: workSheetPageInfo?.hasNextPage,
       countNone,
-    }" :searchable="true" :filterable="true" :filterMeta="{
-  defaultFilter: workSheetParams.status,
-  filters: filterOptions,
-}" @onSearch="searchWorkSheets" @onPaginate="showMoreWorkSheets" :selectable="false">
+  }" 
+  :searchable="true" 
+  :filterable="true" 
+  :filterMeta="{  
+      defaultFilter: workSheetParams.status,
+      filters: filterOptions,
+  }" 
+  @onSearch="searchWorkSheets" 
+  @onPaginate="showMoreWorkSheets" 
+  :selectable="false">
     <template v-slot:footer> </template>
   </DataTable>
 

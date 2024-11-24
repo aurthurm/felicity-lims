@@ -158,7 +158,7 @@ const toCapitalize = (str) => {
     <div>
       <section class="my-2 flex justify-between items-center w-full">
         <div class="w-2/4">
-          <div v-if="searchable" class="flex sm:flex-row flex-col">
+          <div class="flex sm:flex-row flex-col">
             <div class="flex flex-row mb-1 sm:mb-0" v-if="filterable">
               <div class="relative flex justify-between items-center">
                 <div><slot name="pre-filter"></slot></div>
@@ -189,7 +189,7 @@ const toCapitalize = (str) => {
                 </div>
               </div>
             </div>
-            <div class="block relative">
+            <div class="block relative" v-if="searchable">
               <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
                 <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
                   <path
@@ -208,7 +208,7 @@ const toCapitalize = (str) => {
             <button
               @click.prevent="searchEntries()"
               class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-            >
+              v-if="searchable || filterable">
               Search
             </button>
           </div>

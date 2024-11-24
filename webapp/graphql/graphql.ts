@@ -2920,6 +2920,7 @@ export type QcSetType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
+  status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -2934,6 +2935,7 @@ export type QcSetWithSamples = {
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
   samples?: Maybe<Array<SamplesWithResults>>;
+  status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -3621,8 +3623,8 @@ export type QueryQcSetAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  text?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: Array<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
 };
 
 

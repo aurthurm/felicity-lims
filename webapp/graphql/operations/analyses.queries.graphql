@@ -975,8 +975,8 @@ query getAllQCTemplates {
     }
 }
 
-query getQCSeTs($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-    qcSetAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+query getQCSeTs($first: Int!, $after: String, $status: String!, $sortBy: [String!] = ["uid"]) {
+    qcSetAll(pageSize: $first, afterCursor: $after, status: $status, sortBy: $sortBy) {
         totalCount
         pageInfo {
             hasNextPage
@@ -988,6 +988,7 @@ query getQCSeTs($first: Int!, $after: String, $text: String!, $sortBy: [String!]
             uid
             name
             note
+            status
             createdAt
             samples {
                 uid

@@ -15058,6 +15058,17 @@ export default {
             "args": []
           },
           {
+            "name": "status",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -15158,6 +15169,17 @@ export default {
                   "name": "SamplesWithResults",
                   "ofType": null
                 }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "status",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
               }
             },
             "args": []
@@ -18196,18 +18218,21 @@ export default {
               {
                 "name": "sortBy",
                 "type": {
-                  "kind": "LIST",
+                  "kind": "NON_NULL",
                   "ofType": {
-                    "kind": "NON_NULL",
+                    "kind": "LIST",
                     "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Any"
+                      "kind": "NON_NULL",
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Any"
+                      }
                     }
                   }
                 }
               },
               {
-                "name": "text",
+                "name": "status",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Any"

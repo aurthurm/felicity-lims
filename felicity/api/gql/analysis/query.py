@@ -513,21 +513,12 @@ class AnalysisQuery:
             page_size: int | None = None,
             after_cursor: str | None = None,
             before_cursor: str | None = None,
-            text: str | None = None,
-            sort_by: list[str] | None = None,
+            status: str | None = None,
+            sort_by: list[str] = ["-uid"],
     ) -> r_types.QCSetCursorPage:
-        filters = []
-
-        _or_text_ = {}
-        if has_value_or_is_truthy(text):
-            arg_list = ["name__ilike", "description__ilike", "keyword__ilike"]
-            for _arg in arg_list:
-                _or_text_[_arg] = f"%{text}%"
-
-            text_filters = {sa.or_: _or_text_}
-            filters.append(text_filters)
-
-        # filters.append({'internal_use__ne': True})
+        filters = {}
+        if status:
+            filters = {"status": status}
 
         page = await QCSetService().paging_filter(
             page_size=page_size,
