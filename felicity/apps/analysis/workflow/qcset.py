@@ -73,7 +73,7 @@ class CQSetWorkFlow:
         return await self.qc_set_service.approve(uid, by)
 
     @staticmethod
-    async def _guard_approve(self, samples):
+    async def _guard_approve(samples):
         all_are_approved = [s.status == SampleState.APPROVED for s in samples]
         if not all(all_are_approved):
-            raise CQSetWorkFlowException(f"Cannot submit this qs set. All samples by the approved")
+            raise CQSetWorkFlowException(f"Cannot approve this qs set. All samples by the approved")

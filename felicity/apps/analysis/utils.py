@@ -186,11 +186,11 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         # try to verify associated sample
         sample_verified = False
         try:
-            sample_verified, _ = await sample_wf.approve(
+            sample_verified, sample = await sample_wf.approve(
                 a_result.sample_uid, approved_by=user
             )
-            if sample_verified.qc_set_uid:
-                await qc_set_workflow.submit(sample_verified.qc_set_uid, user)
+            if sample_verified and sample.qc_set_uid:
+                await qc_set_workflow.approve(sample.qc_set_uid, user)
                 # auto publish QC samples without report generation
                 await sample_service.change_status(a_result.sample_uid, SampleState.PUBLISHED, user)
         except Exception as e:

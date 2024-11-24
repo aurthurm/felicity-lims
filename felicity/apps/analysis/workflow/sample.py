@@ -262,7 +262,7 @@ class SampleWorkFlow:
         match = all([(result.status in statuses) for result in analyses_results])
 
         #  ?? cannot approve referred unless u r system_daemon
-        if match and sample.status == [SampleState.AWAITING, SampleState.PAIRED]:
+        if match and sample.status in [SampleState.AWAITING, SampleState.PAIRED]:
             allow = True
 
         # Are there are results in referred state or some are in pending state
@@ -272,6 +272,7 @@ class SampleWorkFlow:
         ):
             allow = False
 
+        print(f"matches = {match}, allow = {allow}, sample status = {sample.status}")
         if not allow:
             raise SampleWorkFlowException("Cannot approve this Sample")
 
