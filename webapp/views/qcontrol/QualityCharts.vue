@@ -51,10 +51,24 @@
   const isLoading = ref(false);
 
   const handleAnalysisChange = async (newValue: IAnalysisService) => {
+    if(!selectedMonth.value) return;
     const filters = {
       analyses: [newValue.uid],
       month: selectedMonth.value.month + 1,
       year: selectedMonth.value.year
+    }
+    await withClientQuery<GetReferenceRunsQuery, GetReferenceRunsQueryVariables>(GetReferenceRunsDocument, filters, 'qcChartData')
+        .then(payload => {
+          rawData.value = (payload as unknown as QCDataPoint[]) ?? [];
+        }).finally(() => isLoading.value = false)
+  };
+
+  const handlePeriodChange = async (newValue: {month: number, year: number}) => {
+    if(!selectedAnalyses.value) return;
+    const filters = {
+      analyses: [selectedAnalyses.value?.uid],
+      month: newValue.month + 1,
+      year: newValue.year
     }
     await withClientQuery<GetReferenceRunsQuery, GetReferenceRunsQueryVariables>(GetReferenceRunsDocument, filters, 'qcChartData')
         .then(payload => {
@@ -97,10 +111,14 @@
     }));
   }
 
-  // Option 1: Using watch
+  // watch
   watch(selectedAnalyses, async (newValue) => {
     if (!newValue) return;
     await handleAnalysisChange(newValue);
+  });
+  watch(selectedMonth, async (newValue) => {
+    if (!newValue) return;
+    await handlePeriodChange(newValue);
   });
 </script>
 

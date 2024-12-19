@@ -2,29 +2,27 @@
 // For every push change and bump the version up
 
 // Server All in one
-export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target server-aio -t amusendame/felicity-lims:aio-0.1.4 .
-docker push amusendame/felicity-lims:aio-0.1.4
+export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target server-aio -t amusendame/felicity-lims:aio-0.1.5 .
+docker push amusendame/felicity-lims:aio-0.1.5
 
 // Server API
-export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target server-api -t amusendame/felicity-lims:api-0.1.4 .
-docker push amusendame/felicity-lims:api-0.1.4
+export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target server-api -t amusendame/felicity-lims:api-0.1.5 .
+docker push amusendame/felicity-lims:api-0.1.5
 
 // View a summary of image vulnerabilities and recommendations
 docker scout quickview
 
 // Build nginx static
-export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-nginx:0.1.4 .
-docker push amusendame/felicity-static-nginx:0.1.4
+export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-nginx:0.1.5 .
+docker push amusendame/felicity-static-nginx:0.1.5
 
 // Build caddy static
-export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target caddy-static -t amusendame/felicity-static-caddy:0.1.4 .
-docker push amusendame/felicity-static-caddy:0.1.4
-
+export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target caddy-static -t amusendame/felicity-static-caddy:0.1.5 .
+docker push amusendame/felicity-static-caddy:0.1.5
 
 //
 psql -U postgres -p 5432 -d felicity_lims -c "grant all on schema public to felicity"
 
-
 // Git tags
-git tag -a v0.1.4 -m "Prepare release 0.1.4
-git push origin v0.1.4
+git tag -a v0.1.5 -m "Prepare release 0.1.5"
+git push origin v0.1.5

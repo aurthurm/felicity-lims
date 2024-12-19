@@ -35,7 +35,7 @@ ResultOptionResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_result_option(
-    info, payload: ResultOptionInputType
+        info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -60,7 +60,7 @@ async def create_result_option(
             incoming[k] = v
 
     obj_in = schemas.ResultOptionCreate(**incoming)
-    result_option = await ResultOptionService().create(obj_in)
+    result_option = await ResultOptionService().create(obj_in, related=["sample_types"])
 
     if payload.sample_types:
         for _st_uid in payload.sample_types:
@@ -77,11 +77,11 @@ async def create_result_option(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_result_option(
-    info, uid: str, payload: ResultOptionInputType
+        info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     await auth_from_info(info)
 
-    result_option = await ResultOptionService().get(uid=uid)
+    result_option = await ResultOptionService().get(uid=uid, related=["sample_types"])
     if not result_option:
         return OperationError(error=f"ResultOption with uid {uid} does not exist")
 
@@ -95,7 +95,7 @@ async def update_result_option(
 
     result_option_in = schemas.ResultOptionUpdate(**result_option.to_dict())
     result_option = await ResultOptionService().update(
-        result_option.uid, result_option_in
+        result_option.uid, result_option_in, related=["sample_types"]
     )
 
     if payload.sample_types:

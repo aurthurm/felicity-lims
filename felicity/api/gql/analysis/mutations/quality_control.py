@@ -244,7 +244,7 @@ async def update_QC_template(
 ) -> QCTemplateResponse:
     await auth_from_info(info)
 
-    qc_template = await QCTemplateService().get(uid=uid)
+    qc_template = await QCTemplateService().get(uid=uid, related=["qc_levels"])
     if not qc_template:
         return OperationError(error=f"QCTemplate with uid {uid} does not exist")
 
@@ -258,7 +258,7 @@ async def update_QC_template(
                 pass
 
     qc_in = schemas.QCTemplateUpdate(**qc_template.to_dict())
-    qc_template = await QCTemplateService().update(qc_template.uid, qc_in)
+    qc_template = await QCTemplateService().update(qc_template.uid, qc_in, related=["qc_levels"])
 
     if payload.levels:
         qc_template.qc_levels.clear()

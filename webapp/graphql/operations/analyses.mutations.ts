@@ -1101,7 +1101,7 @@ export type AddQcRequestMutation = (
     { __typename: 'CreateQCSetData' }
     & { qcSets: Array<(
       { __typename?: 'QCSetWithSamples' }
-      & Pick<Types.QcSetWithSamples, 'uid' | 'name' | 'note' | 'createdAt'>
+      & Pick<Types.QcSetWithSamples, 'uid' | 'name' | 'note' | 'status' | 'createdAt'>
       & { samples?: Types.Maybe<Array<(
         { __typename?: 'SamplesWithResults' }
         & Pick<Types.SamplesWithResults, 'uid' | 'sampleId' | 'status' | 'createdAt' | 'updatedAt' | 'assigned'>
@@ -2634,6 +2634,7 @@ export const AddQcRequestDocument = gql`
         uid
         name
         note
+        status
         createdAt
         samples {
           uid

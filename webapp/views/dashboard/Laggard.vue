@@ -235,7 +235,7 @@ const resetLateAuth = () => {
   <div v-if="dashboard.fetchingLaggards" class="text-start my-4 w-100">
     <LoadingMessage message="fetching laggard stats ..." />
   </div>
-  <section>
+  <section class="mt-4">
     <h1 class="text-xl text-gray-700 font-semibold">Delayed and incomplete</h1>
     <hr class="my-2" />
     <div class="flex justify-start items-center">

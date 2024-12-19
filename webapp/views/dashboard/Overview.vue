@@ -27,7 +27,7 @@ watch(
   <div v-if="dashboard.fetchingOverViewStats" class="text-start my-4 w-100">
     <LoadingMessage message="fetching updated overview stats ..." />
   </div>
-  <section>
+  <section class="mt-4">
   
     <h1 class="text-xl text-gray-700 font-semibold">Analyses Status</h1>
     <hr class="my-2" />

@@ -21,10 +21,13 @@ const handleNoticeSelect = (notice) => {
 </script>
 
 <template>
-    <FelInbox
-      :items="notices"
-      title="Notice Board"
-      :loading="noticeStore.fetchingNotices"
-      @select="handleNoticeSelect"
-    />
+  <div v-if="notices.length <= 0" class="w-full mt-4">
+    You have no notices.
+  </div>
+  <FelInbox v-else
+    :items="notices"
+    title="Notice Board"
+    :loading="noticeStore.fetchingNotices"
+    @select="handleNoticeSelect"
+  />
 </template>
