@@ -6,7 +6,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped
 from sqlalchemy_mixins import ReprMixin, SerializeMixin, SmartQueryMixin, SessionMixin
 from sqlalchemy_mixins.utils import classproperty
 
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.core.uid_gen import get_flake_uid
+from felicity.apps.impress.sample.utils import exclude
 
 
 def new_query(cls):
@@ -47,6 +49,9 @@ class Base(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAtt
             else:
                 raise KeyError("Attribute '{}' doesn't exist".format(name))
         return self
+    
+    def marshall(self, exclude=None, depth=1):
+        return marshaller(self, exclude=exclude, depth=depth)
 
     def marshal_simple(self, exclude=None) -> Mapping[str, Any]:
         """convert instance to dict
