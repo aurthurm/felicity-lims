@@ -8,8 +8,6 @@ from sqlalchemy_mixins.utils import classproperty
 
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.core.uid_gen import get_flake_uid
-from felicity.apps.impress.sample.utils import exclude
-
 
 def new_query(cls):
     """
