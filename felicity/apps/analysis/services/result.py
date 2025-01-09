@@ -204,7 +204,7 @@ class AnalysisResultService(
                                 lab_insts = await LaboratoryInstrumentService().get_all(instrument_uid=v.get("uid"))
                                 metadata[_field][k]["laboratory_instruments"] = [li.snapshot() for li in lab_insts]
                     else:
-                        metadata[_field] = thing.snapshot()
+                        metadata[_field] = thing.snapshot() if thing else None
                 except Exception as e:
                     logger.error(f"Failed to snapshot field {_field}: {e}")
             await self.update(result.uid, {"metadata_snapshot": marshaller(metadata, depth=4)})

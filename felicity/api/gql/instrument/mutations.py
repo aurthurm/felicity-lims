@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from dataclasses import field
 from datetime import datetime
@@ -19,7 +20,9 @@ from felicity.apps.analysis.entities.analysis import (
     analysis_instrument,
     analysis_method,
 )
+from felicity.apps.analysis.enum import SampleState
 from felicity.apps.analysis.services.analysis import AnalysisService
+from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.instrument import schemas
 from felicity.apps.instrument.entities import method_instrument
 from felicity.apps.instrument.services import (
@@ -468,6 +471,16 @@ class InstrumentMutations:
                             }
                         ],
                     )
+
+        # Refresh samples that are affected by the method changes
+        async def process_snapshots(analyses):
+            results = await AnalysisResultService().get_all(related=['sample'], analysis_uid__in=analyses)
+            to_snapshot = list(filter(lambda r: r.sample.status == SampleState.RECEIVED, results))
+            await AnalysisResultService().snapshot(to_snapshot)
+
+        # Add the task to background tasks
+        # info.context.background_tasks.add_task(process_snapshots, payload.analyses)
+        asyncio.create_task(process_snapshots(payload.analyses))
         return MethodType(**method.marshal_simple(exclude=["instruments", "analyses"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -555,11 +568,14 @@ class InstrumentMutations:
                         mappings=[{"instrument_uid": _instr, "analysis_uid": _anal}],
                     )
 
-        # handle sacked ?? only handle where both are sacked
+        # handle sacked -- an instrument or analyses or both can be removed from method
+        # if both analysis and instrument are removed at the same time
         for _instr in _sacked_instruments:
             for _anal in _sacked_analyses:
                 exists = await AnalysisService().repository.query_table(
-                    table=analysis_instrument, instrument_uid=_instr, analysis_uid=_anal,
+                    table=analysis_instrument,
+                    instrument_uid=_instr,
+                    analysis_uid=_anal,
                 )
                 if exists:
                     await AnalysisService().repository.delete_table(
@@ -568,4 +584,46 @@ class InstrumentMutations:
                         analysis_uid=_anal,
                     )
 
+        # Remove relationships in analysis_instrument for sacked instruments only
+        for _instr in _sacked_instruments:
+            exists = await AnalysisService().repository.query_table(
+                table=analysis_instrument,
+                instrument_uid=_instr,
+                columns=['analysis_uid']
+            )
+            for relation in exists:
+                if relation not in _sacked_analyses:
+                    await AnalysisService().repository.delete_table(
+                        table=analysis_instrument,
+                        instrument_uid=_instr,
+                    )
+
+        # Remove relationships in analysis_instrument for sacked analyses only
+        for _anal in _sacked_analyses:
+            exists = await AnalysisService().repository.query_table(
+                table=analysis_instrument,
+                analysis_uid=_anal,
+                columns=['instrument_uid']
+            )
+            for relation in exists:
+                if relation not in _sacked_instruments:
+                    await AnalysisService().repository.delete_table(
+                        table=analysis_instrument,
+                        analysis_uid=_anal,
+                    )
+
+        # Refresh samples that are affected by the method changes
+        async def process_snapshots(analyses):
+            results = await AnalysisResultService().get_all(related=['sample'], analysis_uid__in=analyses)
+            to_snapshot = list(filter(lambda r: r.sample.status == SampleState.RECEIVED, results))
+            await AnalysisResultService().snapshot(to_snapshot)
+
+        # Add the task to background tasks
+        linked_analyses = await AnalysisService().repository.query_table(
+            table=analysis_method,
+            method_uid=method.uid,
+            columns=["analysis_uid"],
+        )
+        # info.context.background_tasks.add_task(process_snapshots, list(_added_analyses) + list(_sacked_analyses))
+        asyncio.create_task(process_snapshots(linked_analyses))
         return MethodType(**method.marshal_simple())

@@ -185,7 +185,7 @@ analysis_method = Table(
 )
 
 """
- Many to Many Link between Analyses and Intruments
+ Many to Many Link between Analyses and Instruments
 """
 analysis_instrument = Table(
     "analysis_instrument",

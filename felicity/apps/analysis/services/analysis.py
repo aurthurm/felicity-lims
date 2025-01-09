@@ -607,6 +607,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)
 
+    async def get_by_analyses(self, analyses: list[str]) -> list[Sample]:
+        return await self.get_all(analysis_results___analysis_uid__in=analyses)
+
     async def snapshot(self, sample: Sample, metadata: dict = {}):
         fields = ["sample_type", "profiles", "analyses"]
         for _field in fields:
