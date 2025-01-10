@@ -114,10 +114,12 @@ For production, use **Supervisor** to demonize processes as follows:
     sudo systemctl status supervisor
    ```
     
-3. create supervisor config file
-    ```sudo nano /etc/supervisor/conf.d/felicity_lims.conf```
+3. **create supervisor config file**
+    ```
+    sudo nano /etc/supervisor/conf.d/felicity_lims.conf
+   ```
     
-4. Copy and Paste the following and edit correct accordingly
+5. **Copy and Paste the following and edit correct accordingly**
     ```[program:felicity_lims]
     command=/home/<user>/miniconda3/bin/python <full path to felicity lims root folder>
     autostart=true
@@ -126,18 +128,18 @@ For production, use **Supervisor** to demonize processes as follows:
     stdout_logfile=/var/log/felicity_lims.out.log
     ```
 
-5. inform supervisor of our new programs:
+6. **Inform supervisor of our new programs:**
     ```sudo supervisorctl reread
     sudo supervisorctl update
     sudo supervisorctl reload
     ```
 
-6. Tail Error logs:
+7. **Tail Error logs:**
     ```sudo supervisorctl tail -f felicity_lims stderr  # or
     tail -f /var/log/felicity_lims.err.log
     ```
     
-7. Tail output logs:
+8. **Tail output logs:**
     ```sudo supervisorctl tail -f felicity_lims stdout  # or
     tail -f /var/log/felicity_lims.out.log
     ```
