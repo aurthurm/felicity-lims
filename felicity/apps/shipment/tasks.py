@@ -4,7 +4,7 @@ from felicity.apps.iol.fhir.utils import (
     get_diagnostic_report_resource,
     get_shipment_bundle_resource,
 )
-from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.iol.relay import post_data
 from felicity.apps.job.enum import JobState
@@ -66,7 +66,7 @@ async def populate_shipment_manually(job_uid: str):
     await shipment_assign(shipment.uid, job.data, job.creator_uid)
 
     await job_service.change_status(job.uid, new_status=JobState.FINISHED)
-    await process_tracker.release(uid=job.uid, object_type=TrackableObject.SHIPMENT)
+    await task_guard.release(uid=job.uid, object_type=TrackableObject.SHIPMENT)
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")
 
 
@@ -142,7 +142,7 @@ async def receive_shipment(job_uid: str):
     await shipment_receive(shipment.uid)
 
     await job_service.change_status(job.uid, new_status=JobState.FINISHED)
-    await process_tracker.release(uid=job.uid, object_type=TrackableObject.SHIPMENT)
+    await task_guard.release(uid=job.uid, object_type=TrackableObject.SHIPMENT)
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")
 
 

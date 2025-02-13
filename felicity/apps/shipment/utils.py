@@ -22,7 +22,7 @@ from felicity.apps.client.services import ClientService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.shipment.utils import gen_pdf_manifest
 from felicity.apps.iol.fhir.utils import get_shipment_bundle_resource
-from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.iol.relay import post_data
 from felicity.apps.job import schemas as job_schemas
@@ -410,7 +410,7 @@ async def add_sh_receive_task(shipment_uid: str, actor_uid):
         data=None,
     )
     await job_service.create(job_schema)
-    await process_tracker.process(
+    await task_guard.process(
         uid=shipment.uid, object_type=TrackableObject.SHIPMENT
     )
     return shipment

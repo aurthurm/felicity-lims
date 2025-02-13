@@ -6,7 +6,7 @@ from felicity.core.config import settings
 from .client import create_redis_pool
 
 
-class ProcessingTracker:
+class TaskGuard:
     """Track background processing
     This will help notify the frontend to lock and prevent user taking action
     on these objects
@@ -74,4 +74,4 @@ class ProcessingTracker:
         return exists
 
 
-process_tracker = ProcessingTracker()
+task_guard = TaskGuard()

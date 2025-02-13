@@ -37,28 +37,28 @@ class EventListenable:
 
     @staticmethod
     def handle_insert(mapper: Any, connection: Any, target: "EventListenable") -> None:
-        logger.debug(f"Handling insert for {getattr(target, "__class__").__name__}")
+        logger.debug(f'Handling insert for {getattr(target, "__class__").__name__}')
         target.put_out(
             "after-insert", getattr(target, "__tablename__"), marshaller(target)
         )
 
     @staticmethod
     def handle_delete(mapper: Any, connection: Any, target: "EventListenable") -> None:
-        logger.debug(f"Handling delete for {getattr(target, "__class__").__name__}")
+        logger.debug(f'Handling delete for {getattr(target, "__class__").__name__}')
         target.put_out(
             "after-delete", getattr(target, "__tablename__"), marshaller(target)
         )
 
     @staticmethod
     def handle_update(mapper: Any, connection: Any, target: "EventListenable") -> None:
-        logger.debug(f"Handling update for {getattr(target, "__class__").__name__}")
+        logger.debug(f'Handling update for {getattr(target, "__class__").__name__}')
         target.put_out(
             "after-update", getattr(target, "__tablename__"), target.get_changes(target)
         )
 
     @staticmethod
     def get_changes(target: "EventListenable") -> Dict[str, Any]:
-        logger.info(f"Getting changes for {getattr(target, "__class__").__name__}")
+        logger.info(f'Getting changes for {getattr(target, "__class__").__name__}')
         state_before: Dict[str, Any] = {}
         state_after: Dict[str, Any] = {}
         inspector = inspect(target)

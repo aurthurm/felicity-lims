@@ -5,7 +5,7 @@ from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.impress.sample import utils
-from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobState
@@ -37,7 +37,7 @@ async def impress_results(job_uid: str):
     await utils.impress_samples(job.data, user)
     try:
         await JobService().change_status(job.uid, new_status=JobState.FINISHED)
-        await process_tracker.release(uid=job.uid, object_type=TrackableObject.SAMPLE)
+        await task_guard.release(uid=job.uid, object_type=TrackableObject.SAMPLE)
         await NotificationService().notify(
             "Your results were successfully published", user
         )
@@ -68,7 +68,7 @@ async def prepare_for_impress():
 
     await JobService().create(job_schema)
     for sample in samples:
-        await process_tracker.process(
+        await task_guard.process(
             uid=sample.uid, object_type=TrackableObject.SAMPLE
         )
 

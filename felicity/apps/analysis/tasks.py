@@ -1,8 +1,8 @@
 import logging
 
 from felicity.apps.analysis import utils
-from felicity.apps.iol.redis import process_tracker
 from felicity.apps.iol.redis.enum import TrackableObject
+from felicity.apps.iol.redis.tracking import task_guard
 from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import NotificationService
@@ -25,6 +25,7 @@ async def submit_results(job_uid: str) -> None:
     if not job.status == JobState.PENDING:
         return
 
+    await task_guard.process(job.uid, TrackableObject.RESULT)
     await job_service.change_status(job.uid, new_status=JobState.RUNNING)
 
     user = await user_service.get(uid=job.creator_uid)
@@ -33,13 +34,14 @@ async def submit_results(job_uid: str) -> None:
         await utils.results_submitter(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
         for res in job.data:
-            await process_tracker.release(
+            await task_guard.release(
                 uid=res["uid"], object_type=TrackableObject.RESULT
             )
         await notification_service.notify(
             "Your results were successfully submitted", user
         )
     except Exception as e:
+        await task_guard.release(job.uid, TrackableObject.RESULT)
         await job_service.change_status(
             job.uid, new_status=JobState.FAILED, change_reason=str(e)
         )
@@ -63,6 +65,7 @@ async def verify_results(job_uid: str) -> None:
     if not job.status == JobState.PENDING:
         return
 
+    await task_guard.process(job.uid, TrackableObject.RESULT)
     await job_service.change_status(job.uid, new_status=JobState.RUNNING)
 
     user = await user_service.get(uid=job.creator_uid)
@@ -71,12 +74,13 @@ async def verify_results(job_uid: str) -> None:
         await utils.verify_from_result_uids(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
         for res in job.data:
-            await process_tracker.release(uid=res, object_type=TrackableObject.RESULT)
+            await task_guard.release(uid=res, object_type=TrackableObject.RESULT)
         await notification_service.notify(
             "Your results were successfully verified", user
         )
     except Exception as e:
         logger.info(f"Exception ....... {e}")
+        await task_guard.release(job.uid, TrackableObject.RESULT)
         await job_service.change_status(
             job.uid, new_status=JobState.FAILED, change_reason=str(e)
         )

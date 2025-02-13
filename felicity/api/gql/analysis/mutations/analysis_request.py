@@ -35,7 +35,7 @@ from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFl
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
-from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
@@ -488,7 +488,7 @@ async def publish_samples(
     await JobService().create(job_schema)
     if final_publish:
         for sample in final_publish:
-            await process_tracker.process(
+            await task_guard.process(
                 uid=sample.uid, object_type=TrackableObject.SAMPLE
             )
 

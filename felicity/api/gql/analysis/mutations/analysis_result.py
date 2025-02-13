@@ -11,7 +11,7 @@ from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.utils import retest_from_result_uids
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
-from felicity.apps.iol.redis import process_tracker
+from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
@@ -51,10 +51,10 @@ AnalysisResultOperationResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def submit_analysis_results(
-    info,
-    analysis_results: List[ARResultInputType],
-    source_object: str,
-    source_object_uid: str,
+        info,
+        analysis_results: List[ARResultInputType],
+        source_object: str,
+        source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -76,16 +76,16 @@ async def submit_analysis_results(
 
     await JobService().create(job_schema)
     for _ar in an_results:
-        await process_tracker.process(
+        await task_guard.process(
             uid=_ar["uid"], object_type=TrackableObject.RESULT
         )
 
     if source_object == "worksheet" and source_object_uid:
-        await process_tracker.process(
+        await task_guard.process(
             uid=source_object_uid, object_type=TrackableObject.WORKSHEET
         )
     elif source_object == "sample" and source_object_uid:
-        await process_tracker.process(
+        await task_guard.process(
             uid=source_object_uid, object_type=TrackableObject.SAMPLE
         )
 
@@ -96,7 +96,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-    info, analyses: list[str], source_object: str, source_object_uid: str
+        info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -115,15 +115,15 @@ async def verify_analysis_results(
 
     await JobService().create(job_schema)
     for uid in analyses:
-        await process_tracker.process(uid=uid, object_type=TrackableObject.RESULT)
+        await task_guard.process(uid=uid, object_type=TrackableObject.RESULT)
 
     if source_object == "worksheet" and source_object_uid:
-        await process_tracker.process(
+        await task_guard.process(
             uid=source_object_uid, object_type=TrackableObject.WORKSHEET
         )
     elif source_object == "sample" and source_object_uid:
         # TODO: ? we might not need to lock the sample
-        await process_tracker.process(
+        await task_guard.process(
             uid=source_object_uid, object_type=TrackableObject.SAMPLE
         )
 
@@ -226,7 +226,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def re_instate_analysis_results(
-    info, analyses: list[str]
+        info, analyses: list[str]
 ) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
