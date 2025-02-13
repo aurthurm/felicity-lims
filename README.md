@@ -52,7 +52,18 @@ Felicity is the quality of being good, pleasant, or desirable.
 
 ---
 
-## **Installation**  
+## **Development setup (docker)**
+
+```bash
+git clone https://github.com/beak-insights/felicity-lims.git
+cd felicity-lims
+# build and run
+docker compose -f docker-compose.dev.yml up -d --build
+# database setup 
+docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade
+```
+
+## **Production Installation**  
 
 ### **Using Docker** *(Recommended)*  
 Felicity LIMS can be quickly deployed using Docker Compose.  
@@ -61,6 +72,7 @@ Felicity LIMS can be quickly deployed using Docker Compose.
 ```bash
 git clone https://github.com/beak-insights/felicity-lims.git
 cd felicity-lims
+docker compose -f docker-compose.dev.yml up -d <preset> --build
 ```
 
 #### **Step 2**: Choose a Preset  
@@ -77,9 +89,9 @@ Choose between FastAPI serving static files or using Nginx/Caddy as a reverse pr
 
 #### **Step 3**: Deploy  
 ```bash
-docker-compose -f docker-compose.prod.yml up -d <preset> --build
-docker-compose -f docker-compose.prod.yml exec <preset> bash -c "felicity-lims upgrade"
-docker-compose -f docker-compose.prod.yml logs <preset> -f -n100
+docker compose -f docker-compose.yml up -d <preset> --build
+docker compose -f docker-compose.yml exec <preset> bash -c "felicity-lims upgrade"
+docker compose -f docker-compose.yml logs <preset> -f -n100
 ```
 
 ### **Manual Installation** *(Alternative)*  
