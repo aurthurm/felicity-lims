@@ -57,6 +57,7 @@ Felicity is the quality of being good, pleasant, or desirable.
 ```bash
 git clone https://github.com/beak-insights/felicity-lims.git
 cd felicity-lims
+cp env.example .env
 # build and run
 docker compose -f docker-compose.dev.yml up -d --build
 # database setup 
@@ -72,6 +73,7 @@ Felicity LIMS can be quickly deployed using Docker Compose.
 ```bash
 git clone https://github.com/beak-insights/felicity-lims.git
 cd felicity-lims
+cp env.example .env
 docker compose -f docker-compose.dev.yml up -d <preset> --build
 ```
 

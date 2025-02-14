@@ -1,5 +1,7 @@
 from functools import lru_cache
 
+import pandas as pd
+
 from felicity.core.config import settings
 from felicity.utils.loader import json_from_file
 
@@ -22,3 +24,24 @@ def load_seed_files() -> dict:
 
 def get_seeds(name: str) -> dict | None:
     return load_seed_files().get(name)
+
+
+# AMR
+@lru_cache
+def load_whonet_dataframes() -> dict:
+    data = dict()
+    for _f in [
+        "Antibiotics",
+        "Breakpoints",
+        "ExpectedResistancePhenotypes",
+        "ExpertInterpretationRules",
+        "Organisms",
+        "QCRanges",
+        "Serotype",
+    ]:
+        data[_f] = pd.read_csv(f"{settings.SEEDS_DIR}/whonet/{_f}.txt", delimiter="\t")
+    return data
+
+
+def get_whonet_dataframes(name: str) -> dict | None:
+    return load_whonet_dataframes().get(name)

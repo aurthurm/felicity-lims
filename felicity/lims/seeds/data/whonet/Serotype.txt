@@ -1,0 +1,2151 @@
+SEROTYPE	ORGANISM	SEROGROUP	SUBSPECIES	O_ANTIGENS	H_PHASE_1	H_PHASE_2	X997_CHECK	FATE
+Escherichia coli	eco							
+Escherichia coli serogroup O1	eco	O1						
+Escherichia coli serogroup O2	eco	O2						
+Escherichia coli serogroup O4	eco	O4						
+Escherichia coli serogroup O5	eco	O5						
+Escherichia coli serogroup O6	eco	O6						
+Escherichia coli serogroup O7	eco	O7						
+Escherichia coli serogroup O8	eco	O8						
+Escherichia coli serogroup O9	eco	O9						
+Escherichia coli serogroup O11	eco	O11						
+Escherichia coli serogroup O15	eco	O15						
+Escherichia coli serogroup O16	eco	O16						
+Escherichia coli serogroup O18	eco	O18						
+Escherichia coli serogroup O20	eco	O20						
+Escherichia coli serogroup O22	eco	O22						
+Escherichia coli serogroup O25	eco	O25						
+Escherichia coli serogroup O26	eco	O26						
+Escherichia coli serogroup O27	eco	O27						
+Escherichia coli serogroup O28	eco	O28						
+Escherichia coli serogroup O35	eco	O35						
+Escherichia coli serogroup O44	eco	O44						
+Escherichia coli serogroup O45	eco	O45						
+Escherichia coli serogroup O46	eco	O46						
+Escherichia coli serogroup O48	eco	O48						
+Escherichia coli serogroup O55	eco	O55						
+Escherichia coli serogroup O75	eco	O75						
+Escherichia coli serogroup O77	eco	O77						
+Escherichia coli serogroup O78	eco	O78						
+Escherichia coli serogroup O86	eco	O86						
+Escherichia coli serogroup O91	eco	O91						
+Escherichia coli serogroup O98	eco	O98						
+Escherichia coli serogroup O101	eco	O101						
+Escherichia coli serogroup O103	eco	O103						
+Escherichia coli serogroup O111	eco	O111						
+Escherichia coli serogroup O112	eco	O112						
+Escherichia coli serogroup O113	eco	O113						
+Escherichia coli serogroup O114	eco	O114						
+Escherichia coli serogroup O115	eco	O115						
+Escherichia coli serogroup O117	eco	O117						
+Escherichia coli serogroup O118	eco	O118						
+Escherichia coli serogroup O119	eco	O119						
+Escherichia coli serogroup O124	eco	O124						
+Escherichia coli serogroup O125	eco	O125						
+Escherichia coli serogroup O126	eco	O126						
+Escherichia coli serogroup O127	eco	O127						
+Escherichia coli serogroup O128	eco	O128						
+Escherichia coli serogroup O136	eco	O136						
+Escherichia coli serogroup O137	eco	O137						
+Escherichia coli serogroup O138	eco	O138						
+Escherichia coli serogroup O139	eco	O139						
+Escherichia coli serogroup O141	eco	O141						
+Escherichia coli serogroup O142	eco	O142						
+Escherichia coli serogroup O143	eco	O143						
+Escherichia coli serogroup O144	eco	O144						
+Escherichia coli serogroup O145	eco	O145						
+Escherichia coli serogroup O148	eco	O148						
+Escherichia coli serogroup O149	eco	O149						
+Escherichia coli serogroup O152	eco	O152						
+Escherichia coli serogroup O157	eco	O157						
+Escherichia coli serogroup O158	eco	O158						
+Escherichia coli serogroup O159	eco	O159						
+Escherichia coli serogroup O167	eco	O167						
+Escherichia coli serogroup O172	eco	O172						
+Escherichia coli serogroup O173	eco	O173						
+Escherichia coli serotype O1:H-	eco	O1						
+Escherichia coli serotype O1:H4	eco	O1						
+Escherichia coli serotype O1:H6	eco	O1						
+Escherichia coli serotype O1:H7	eco	O1						
+Escherichia coli serotype O2:H1	eco	O2						
+Escherichia coli serotype O2:H4	eco	O2						
+Escherichia coli serotype O2:H6	eco	O2						
+Escherichia coli serotype O4:H-	eco	O4						
+Escherichia coli serotype O4:H5	eco	O4						
+Escherichia coli serotype O5:H-	eco	O5						
+Escherichia coli serotype O6:H1	eco	O6						
+Escherichia coli serotype O6:H16	eco	O6						
+Escherichia coli serotype O7:H-	eco	O7						
+Escherichia coli serotype O7:H4	eco	O7						
+Escherichia coli serotype O7:H6	eco	O7						
+Escherichia coli serotype O8:H19	eco	O8						
+Escherichia coli serotype O8:H9	eco	O8						
+Escherichia coli serotype O9:H-	eco	O9						
+Escherichia coli serotype O11:H27	eco	O11						
+Escherichia coli serotype O15:H-	eco	O15						
+Escherichia coli serotype O15:H11	eco	O15						
+Escherichia coli serotype O16:H6	eco	O16						
+Escherichia coli serotype O18a,c:H-	eco	O18						
+Escherichia coli serotype O18a,c:H7	eco	O18						
+Escherichia coli serotype O20:H-	eco	O20						
+Escherichia coli serotype O20:H26	eco	O20						
+Escherichia coli serotype O20:H34	eco	O20						
+Escherichia coli serotype O22:H1	eco	O22						
+Escherichia coli serotype O25:H-	eco	O25						
+Escherichia coli serotype O25:H1	eco	O25						
+Escherichia coli serotype O25:H42	eco	O25						
+Escherichia coli serotype O26:H-	eco	O26						
+Escherichia coli serotype O26:H11	eco	O26						
+Escherichia coli serotype O26:H21	eco	O26						
+Escherichia coli serotype O26:H32	eco	O26						
+Escherichia coli serotype O27:H7	eco	O27						
+Escherichia coli serotype O28:H-	eco	O28						
+Escherichia coli serotype O44:H34	eco	O44						
+Escherichia coli serotype O45:H-	eco	O45						
+Escherichia coli serotype O46:H31	eco	O46						
+Escherichia coli serotype O48:H21	eco	O48						
+Escherichia coli serotype O55:H-	eco	O55						
+Escherichia coli serotype O55:H6	eco	O55						
+Escherichia coli serotype O55:H7	eco	O55						
+Escherichia coli serotype O75:H-	eco	O75						
+Escherichia coli serotype O75:H5	eco	O75						
+Escherichia coli serotype O77:H18	eco	O77						
+Escherichia coli serotype O78:H11	eco	O78						
+Escherichia coli serotype O78:H12	eco	O78						
+Escherichia coli serotype O86:H-	eco	O86						
+Escherichia coli serotype O86:H27	eco	O86						
+Escherichia coli serotype O86:H34	eco	O86						
+Escherichia coli serotype O91:H-	eco	O91						
+Escherichia coli serotype O91:H10	eco	O91						
+Escherichia coli serotype O91:H21	eco	O91						
+Escherichia coli serotype O91:H7	eco	O91						
+Escherichia coli serotype O98:H-	eco	O98						
+Escherichia coli serotype O101:H-	eco	O101						
+Escherichia coli serotype O103:H2	eco	O103						
+Escherichia coli serotype O111:H-	eco	O111						
+Escherichia coli serotype O111:H12	eco	O111						
+Escherichia coli serotype O111:H2	eco	O111						
+Escherichia coli serotype O111:H8	eco	O111						
+Escherichia coli serotype O112a,c:H-	eco	O112						
+Escherichia coli serotype O113:H21	eco	O113						
+Escherichia coli serotype O114:H10	eco	O114						
+Escherichia coli serotype O114:H32	eco	O114						
+Escherichia coli serotype O117:H14	eco	O117						
+Escherichia coli serotype O118:H12	eco	O118						
+Escherichia coli serotype O119:H-	eco	O119						
+Escherichia coli serotype O119:H6	eco	O119						
+Escherichia coli serotype O124:H-	eco	O124						
+Escherichia coli serotype O124:H30	eco	O124						
+Escherichia coli serotype O124:H32	eco	O124						
+Escherichia coli serotype O125:H-	eco	O125						
+Escherichia coli serotype O125:H21	eco	O125						
+Escherichia coli serotype O126:27	eco	O126						
+Escherichia coli serotype O126:H-	eco	O126						
+Escherichia coli serotype O126:H2	eco	O126						
+Escherichia coli serotype O126:H8	eco	O126						
+Escherichia coli serotype O127:H-	eco	O127						
+Escherichia coli serotype O127:H2	eco	O127						
+Escherichia coli serotype O127:H21	eco	O127						
+Escherichia coli serotype O127:H40	eco	O127						
+Escherichia coli serotype O127:H9	eco	O127						
+Escherichia coli serotype O128:H-	eco	O128						
+Escherichia coli serotype O128:H12	eco	O128						
+Escherichia coli serotype O128:H2	eco	O128						
+Escherichia coli serotype O128:H7	eco	O128						
+Escherichia coli serotype O128:H8	eco	O128						
+Escherichia coli serotype O136:H-	eco	O136						
+Escherichia coli serotype O138:H-	eco	O138						
+Escherichia coli serotype O138:H14	eco	O138						
+Escherichia coli serotype O139:H1	eco	O139						
+Escherichia coli serotype O141:H4	eco	O141						
+Escherichia coli serotype O142:H6	eco	O142						
+Escherichia coli serotype O143:H-	eco	O143						
+Escherichia coli serotype O144:H-	eco	O144						
+Escherichia coli serotype O145:H-	eco	O145						
+Escherichia coli serotype O147:H19	eco	O147						
+Escherichia coli serotype O148:H28	eco	O148						
+Escherichia coli serotype O149:H10	eco	O149						
+Escherichia coli serotype O152:H-	eco	O152						
+Escherichia coli serotype O157:H-	eco	O157						
+Escherichia coli serotype O157:H7	eco	O157						
+Escherichia coli serotype O158:H23	eco	O158						
+Escherichia coli serotype O159:H-	eco	O159						
+Escherichia coli serotype O159:H20	eco	O159						
+Escherichia coli serotype O167:H4	eco	O167						
+Escherichia coli serotype O167:H5	eco	O167						
+Escherichia coli serotype O172:H-	eco	O172						
+Escherichia coli serotype O173:H-	eco	O173						
+Salmonella Aachen	sal	J		17	z35	1,6		
+Salmonella Aarhus	sal	K		18	z4,z23	z64		
+Salmonella Aba	sal	C2,3		6,8	i	e,n,z15		
+Salmonella Abadina	sal	M		28	g,m	[e,n,z15]		
+Salmonella Abaetetuba	sal	F		11	k	1,5		
+Salmonella Aberdeen	sal	F		11	i	1,2		
+Salmonella Abidjan	sal	Q		39	b	l,w		
+Salmonella Ablogame	sal	I		16	l,z13,z28	z6		
+Salmonella Abobo	sal	I		16	i	z6		
+Salmonella Abony	sal	B		.1.,4,[5],12,.27.	b	e,n,x		
+Salmonella Abortusbovis (old serotype)	sal	B					o	Abony
+Salmonella Abortuscanis (old serotype)	sal	B		4,5,12	b	Rz5	o	4,5,12:b:Rz5, Paratyphi B
+Salmonella Abortusequi	sal	B		4,12	-	e,n,x		
+Salmonella Abortusovis	sal	B		4,12	c	1,6		
+Salmonella Abuja	sal	F		11	g,m	1,5		
+Salmonella Accra	sal	E4		1,3,19	b	z6		
+Salmonella Ackwepe	sal	D2		9,46	l,w	-		
+Salmonella Acres (old serotype)	sal	G1,2	II	.1.,13,23	b	[1,5]:z42	o	II .1.,13,23:b:[1,5]:z42
+Salmonella Adabraka	sal	E1		3,10	z4,z23	[1,7]		
+Salmonella Adamstown	sal	M		28	k	1,6		
+Salmonella Adamstua	sal	F		11	e,h	1,6		
+Salmonella Adana	sal	U		43	z10	1,5		
+Salmonella Adelaide	sal	O		35	f,g	-		
+Salmonella Adeoyo	sal	I		16	g,m,[t]	-		
+Salmonella Aderike	sal	M		28	z38	e,n,z15		
+Salmonella Adime	sal	C1,4		6,7	b	1,6		
+Salmonella Adjame	sal	G1,2		13,23	r	1,6		
+Salmonella Aequatoria	sal	C1,4		6,7	z4,z23	e,n,z15		
+Salmonella Aesch	sal	C2,3		6,8	z60	1,2		
+Salmonella Aflao	sal	H		1,6,14,25	l,z28	e,n,x		
+Salmonella Africana	sal	B		4,12	r,i	l,w		
+Salmonella Afula	sal	C1,4		6,7	f,g,t	e,n,x		
+Salmonella Agama	sal	B		4,12	i	1,6		
+Salmonella Agbara	sal	I		16	i	1,6		
+Salmonella Agbeni	sal	G1,2		.1.,13,23	g,m,[t]	-		
+Salmonella Agege	sal	E1		3,10	c	e,n,z15		
+Salmonella Ago	sal	N		30	z38	-		
+Salmonella Agodi	sal	O		35	g,t	-		
+Salmonella Agona	sal	B		.1.,4,[5],12	f,g,s	[1,2]		
+Salmonella Agoueve	sal	G1,2		13,22	z29	-		
+Salmonella Ahanou	sal	J		17	i	1,7		
+Salmonella Ahepe	sal	U		43	z35	1,6		
+Salmonella Ahmadi	sal	E4		1,3,19	d	1,5		
+Salmonella Ahoutoue	sal	S		41	z35	1,6		
+Salmonella Ahuza	sal	U		43	k	1,5		
+Salmonella Ajiobo	sal	G1,2		13,23	z4,z23	-		
+Salmonella Akanji	sal	C2,3		6,8	r	1,7		
+Salmonella Akuafo	sal	I		16	y	1,6		
+Salmonella Alabama	sal	D1		9,12	c	e,n,z15		
+Salmonella Alachua	sal	O		35	z4,z23	-		
+Salmonella Alagbon	sal	C2,3		8	y	1,7		
+Salmonella Alamo	sal	C1,4		6,7	g,z51	1,5		
+Salmonella Albany	sal	C2,3		8,.20.	z4,z24	-		
+Salmonella Albert	sal	B		4,12	z10	e,n,x		
+Salmonella Albuquerque	sal	H		1,6,14,24	d	z6		
+Salmonella Alexander (old serotype)	sal	E1	II	3,10	z	1,5	o	
+Salmonella Alexanderplatz	sal	X		47	z38	-		
+Salmonella Alexanderpolder	sal	C2,3		8	c	l,w		
+Salmonella Alfort	sal	E1		3,10	f,g	e,n,x		
+Salmonella Alger	sal	P		38	l,v	1,2		
+Salmonella Alkmaar	sal	E4		1,3,19	a	l,w		
+Salmonella Allandale	sal	R		.1.,40	k	1,6		
+Salmonella Allerton	sal	E1		3,10	b	1,6		
+Salmonella Alma	sal	Q		39	i	e,n,z15		
+Salmonella Alminko	sal	C2,3		8,.20.	g,s,t	-		
+Salmonella Alsterdorf (old serotype)	sal	R	II	.1.,40	g,m,[s],t	[1,5]	o	
+Salmonella Altendorf	sal	B		4,12,.27.	c	1,7		
+Salmonella Altona	sal	C2,3		8,.20.	r,[i]	z6		
+Salmonella Amager	sal	E1		3,10	y	1,2		
+Salmonella Amba	sal	F		11	k	l,z13,z28		
+Salmonella Amersfoort	sal	C1,4		6,7	d	e,n,x		
+Salmonella Amherstiana	sal	C2,3		8	l,v	1,6		
+Salmonella Amina	sal	I		16	i	1,5		
+Salmonella Aminatu	sal	E1		3,10	a	1,2		
+Salmonella Amounderness	sal	E1		3,10	i	1,5		
+Salmonella Amoutive	sal	M		28	d	1,5		
+Salmonella Amsterdam	sal	E1		3,10	g,m,s	-		
+Salmonella Amunigun	sal	I		16	a	1,6		
+Salmonella Anatum	sal	E1		3,10	e,h	1,6		
+Salmonella Anderlecht	sal	E1		3,10	c	l,w		
+Salmonella Anecho	sal	O		35	g,s,t	-		
+Salmonella Anfo	sal	Q		39	y	1,2		
+Salmonella Angers	sal	C2,3		8,.20.	z35	z6		
+Salmonella Angoda	sal	N		30	k	e,n,x		
+Salmonella Angola (old serotype)	sal	D1	II	.1.,9,12	z	z6	o	
+Salmonella Angouleme	sal	I		16	z10	z6		
+Salmonella Anie (old serotype)	sal	no					o	Mesbit
+Salmonella Ank	sal	M		28	k	e,n,z15		
+Salmonella Anna	sal	G1,2		13,23	z35	e,n,z15		
+Salmonella Annedal	sal	I		16	r,i	e,n,x		
+Salmonella Antarctica	sal	D1		9,12	g,z63	-		
+Salmonella Antonio	sal	57		57	a	z6		
+Salmonella Antsalova	sal	51		51	z	1,5		
+Salmonella Antwerpen	sal	T		.1.,42	c	e,n,z15		
+Salmonella Apapa	sal	W		45	m,t	-		
+Salmonella Apeyeme	sal	C2,3		8,.20.	z38	-		
+Salmonella Aprad	sal	W		45	z10	-		
+Salmonella Aqua	sal	N		30	k	1,6		
+Salmonella Aragua	sal	N		30	z29	-		
+Salmonella Arapahoe	sal	H		6,14	z4,z23	1,5		
+Salmonella Ardwick (old serotype)	sal	C1,4		6,7,.14.	f,g	-	o	
+Salmonella Arechavaleta	sal	B		4,[5],12	a	1,7		
+Salmonella Argentina (old serotype)	sal	C1,4	IV	6,7	z36	-	o	
+Salmonella Arkansas (old serotype)	sal	E3		3,.15.,.34.	e,h	1,5	o	
+Salmonella Artis (old serotype)	sal	56	II	56	b	-	o	
+Salmonella Arusha	sal	U		43	z	e,n,z15		
+Salmonella Aschersleben	sal	N		30	b	1,5		
+Salmonella Ashanti	sal	M		28	b	1,6		
+Salmonella Askraal (old serotype)	sal	51	II	51	l,z28	[z6]	o	
+Salmonella Assen	sal	L		21	a	[1,5]		
+Salmonella Assinie	sal	E1		3,10	l,w	z6		
+Salmonella Asylanta	sal	E1		3,10	c	1,2		
+Salmonella Atakpame	sal	C2,3		8,.20.	e,h	1,7		
+Salmonella Atento	sal	F		11	b	1,2		
+Salmonella Atherton (old serotype)	sal	S					o	Waycross
+Salmonella Athinai	sal	C1,4		6,7	i	e,n,z15		
+Salmonella Ati	sal	F		11	d	1,2		
+Salmonella Atlanta (old serotype)	sal	G1,2					o	Mississippi
+Salmonella Atra (old serotype)	sal	Z	II	50	m,t	z6:z42	o	
+Salmonella Augustenborg	sal	C1,4		6,7	i	1,2		
+Salmonella Austin	sal	C1,4		6,7	a	1,7		
+Salmonella Australia	sal	Y		48	l,v	1,5		
+Salmonella Avignon	sal	I		16	y	e,n,z15		
+Salmonella Avonmouth	sal	E4		1,3,19	i	e,n,z15		
+Salmonella Ayinde	sal	B		.1.,4,12,.27.	d	z6		
+Salmonella Ayton	sal	B		.1.,4,12,.27.	.,w	z6		
+Salmonella Azteca	sal	B		4,[5]12,.27.	l,v	1,5		
+Salmonella Babelsberg	sal	M		28	z4,z23	[e,n,z15]		
+Salmonella Babili	sal	M		28	z35	1,7		
+Salmonella Bacongo (old serotype)	sal	C1,4	II	6,7	z36	z42	o	
+Salmonella Badagry	sal	I		16	z10	1,5		
+Salmonella Baguida	sal	L		21	z4,z23	-		
+Salmonella Baguirmi	sal	N		30	y	e,n,x		
+Salmonella Bahati	sal	G1,2		13,22	b	e,n,z15		
+Salmonella Bahrenfeld	sal	H		6,14,24	e,h	1,5		
+Salmonella Baiboukoum	sal	C1,4		6,7	k	1,7		
+Salmonella Baildon	sal	D2		9,46	a	e,n,x		
+Salmonella Bakau	sal	M		28	a	1,7		
+Salmonella Balboa (old serotype)	sal	Y	V	48	z41	-	o	
+Salmonella Balcones	sal	W		45	z36	-		
+Salmonella Ball	sal	B		.1.,4,[5],12,.27.	y	e,n,x		
+Salmonella Bama	sal	J		17	m,t	-		
+Salmonella Bambesa (old serotype)	sal	D1					o	Miami
+Salmonella Bamboye	sal	D2		9,46	b	l,w		
+Salmonella Bambylor	sal	D2		9,46	z	e,n,z15		
+Salmonella Banalia	sal	C2,3		6,8	b	z6		
+Salmonella Banana	sal	B		4,[5],12	m,t	[1,5]		
+Salmonella Banco	sal	M		28	r,i	1,7		
+Salmonella Bandia	sal	O		35	i	l,w		
+Salmonella Bangkok	sal	P		38	z4,z24	-		
+Salmonella Bangui	sal	D1		9,12	d	e,n,z15		
+Salmonella Banjul	sal	H		1,6,14,25	a	e,n,z15		
+Salmonella Bantam (old serotype)	sal	E1					o	Meleagridis
+Salmonella Baragwanath (old serotype)	sal	C2,3	II	6,8	m,t	1,5	o	
+Salmonella Bardo	sal	C2,3		8	e,h	1,2		
+Salmonella Bareilly	sal	C1,4		6,7,.14.	y	1,5		
+Salmonella Bargny	sal	C2,3		8,.20.	i	1,5		
+Salmonella Barmbek	sal	I		16	d	z6		
+Salmonella Barranquilla	sal	I		16	d	e,n,x		
+Salmonella Barry	sal	54		54	z10	e,n,z15		
+Salmonella Basel (old serotype)	sal	58	II	58	l,z13,z28	1,5	o	
+Salmonella Basingstoke	sal	D2		9,46	z35	e,n,z15		
+Salmonella Bassa	sal	C2,3		6,8	m,t	-		
+Salmonella Bassadji	sal	M		28	r	1,6		
+Salmonella Batavia (old serotype)	sal	E1					o	Lexington
+Salmonella Batonrouge	sal	57		57	b	e,n,z15		
+Salmonella Battle	sal	I		16	l,z13,z28	1,6		
+Salmonella Bazenheid	sal	C2,3		8,.20.	z10	1,2		
+Salmonella Be	sal	C2,3		8,.20.	a	-		
+Salmonella Beaudesert	sal	H		[1],6,14,[25]	e,h	1,7		
+Salmonella Bechuana (old serotype)	sal	B	II	.1.,4,12,.27.	g,[m],t	[1,5]	o	
+Salmonella Bedford	sal	E4		1,3,19	l,z13,z28	e,n,z15		
+Salmonella Belem	sal	C2,3		6,8	c	e,n,x		
+Salmonella Belfast	sal	C2,3		6,8	c	1,7		
+Salmonella Bellevue	sal	C2,3		8	z4,z23	1,7		
+Salmonella Bellville (old serotype)	sal	I	II	16	e,n,x	1,(5),7	o	
+Salmonella Beloha (old serotype)	sal	K	II	18	z36	-	o	
+Salmonella Benfica	sal	E1		3,10	b	e,n,x		
+Salmonella Benguella	sal	R		40	b	z6		
+Salmonella Benin	sal	D2		9,46	y	1,7		
+Salmonella Benue	sal	C2,3		6,8	y	l,w		
+Salmonella Bere	sal	X		47	z4,z23	z6		
+Salmonella Bergedorf	sal	D2		9,46	e,h	1,2		
+Salmonella Bergen	sal	X		47	i	e,n,z15		
+Salmonella Bergues	sal	51		51	z10	1,5		
+Salmonella Berkeley	sal	U		43	a	1,5		
+Salmonella Berlin	sal	J		17	d	1,5		
+Salmonella Bern (old serotype)	sal	R	IV	40	z4,z32	-	o	
+Salmonella Berta	sal	D1		.1.,9,12	f,g,t	-		
+Salmonella Bessi	sal	E1		3,10	i	e,n,x		
+Salmonella Bethune	sal	E4		1,3,19	k	1,7		
+Salmonella Betioky (old serotype)	sal	59	II	59	k	(z)	o	
+Salmonella Biafra	sal	E1		3,10	z10	z6		
+Salmonella Bida	sal	E4		1,3,19	c	1,6		
+Salmonella Bietri	sal	N		30	y	1,5		
+Salmonella Bignona	sal	J		17	b	e,n,z15		
+Salmonella Bijlmer	sal	R		.1.,40	g,m	-		
+Salmonella Bilthoven (old serotype)	sal	X	II	47	a	[1,5]	o	
+Salmonella Bilu	sal	E1		(1),3,10,(19)	f,g,t	1,(2),7		
+Salmonella Binche	sal	X		47	z4,z23	l,w		
+Salmonella Bingerville	sal	X		47	z35	e,n,z15		
+Salmonella Binningen	sal	W		45	g,s,t	-		
+Salmonella Binza (old serotype)	sal	E2		3,.15.	y	1,5	o	
+Salmonella Birkenhead	sal	C1,4		6,7	c	1,6		
+Salmonella Birmingham	sal	E1		3,10	d	l,w		
+Salmonella Bispebjerg	sal	B		.1.,4,[5],12	a	e,n,x		
+Salmonella Bissau	sal	B		4,12	c	e,n,x		
+Salmonella Blankenese (old serotype)	sal	D1	II	.1.,9,12	b	z6	o	
+Salmonella Bleadon (old serotype)	sal	J	II	17	g,t	[e,n,x,z15]	o	
+Salmonella Blegdam	sal	D1		9,12	g,m,q	-		
+Salmonella Blijdorp	sal	H		1,6,14,25	c	1,5		
+Salmonella Blitta	sal	X		47	y	e,n,x		
+Salmonella Blockley	sal	C2,3		6,8	k	1.5		
+Salmonella Bloemfontein (old serotype)	sal	C1,4	II	6,7	b	[e,n,x]:z42	o	
+Salmonella Bloomsbury	sal	E1		3,10	g,t	1,5		
+Salmonella Blukwa	sal	K		18	z4,z24	-		
+Salmonella Bobo	sal	V		44	d	1,5		
+Salmonella Bochum	sal	B		4,[5],12	r	l,w		
+Salmonella Bockenheim (old serotype)	sal	53	IV	1,53	z36,z38	-	o	
+Salmonella Bodjonegoro	sal	N		30	z4,z24	-		
+Salmonella Boecker	sal	H		[1],6,14,[25]	l,v	1,7		
+Salmonella Bofflens	sal	S		41	z4,z23	1,7		
+Salmonella Bokanjac	sal	M		28	b	1,7		
+Salmonella Boksburg (old serotype)	sal	R	II	40	g,m,s,t	e,n,x	o	
+Salmonella Bolama	sal	V		44	z	e,n,x		
+Salmonella Bolombo	sal	E1		3,10	z38	[z6]		
+Salmonella Bolton	sal	E1		3,10	y	e,n,z15		
+Salmonella Bonaire (old serotype)	sal	Z	IV	50	z4,z24	-	o	
+Salmonella Bonames	sal	J		17	a	1,2		
+Salmonella Bonariensis	sal	C2,3		6,8	i	e,n,x		
+Salmonella Bongor (old serotype)	sal	Y	V	48	z35	-	o	
+Salmonella bongori	sal	V						
+Salmonella Bonn	sal	C1,4		6,7	l,v	e,n,x		
+Salmonella Bootle	sal	X		47	k	1,5		
+Salmonella Borbeck	sal	G1,2		13,22	l,v	1,6		
+Salmonella Bordeaux	sal	52		52	k	1,5		
+Salmonella Bornheim (old serotype)	sal	H	VI	1,6,14,25	z10	1,(2),7	o	
+Salmonella Bornum (old serotype)	sal	C1,4		6,7,.14.	z38	-	o	
+Salmonella Borreze	sal	54		54	f,g,s	-		
+Salmonella Borromea	sal	T		42	i	1,6		
+Salmonella Bouake	sal	I		16	z	z6		
+Salmonella Boulders (old serotype)	sal	G1,2	II	.1.,13,23	m,t	z,42	o	
+Salmonella Bournemouth	sal	D1		9,12	e,h	1,2		
+Salmonella Bousso	sal	H		1,6,14,25	z4,z23	[e,n,z15]		
+Salmonella Bovismorbificans	sal	C2,3		6,8	r,[i]	1,5		
+Salmonella Bracknell	sal	G1,2		13,23	b	1,6		
+Salmonella Bradford	sal	B		4,12,.27.	r	1,5		
+Salmonella Braenderup	sal	C1,4		6,7,.14.	e,h	e,n,z15		
+Salmonella Brancaster	sal	B		.1.,4,12,.27.	z29	-		
+Salmonella Brandenburg	sal	B		.1.,4,12	l,v	e,n,z15		
+Salmonella Brazil	sal	I		16	a	1,5		
+Salmonella Brazos	sal	K		.6.,.14.,18	a	e,n,z15		
+Salmonella Brazzaville	sal	C1,4		6,7	b	1,2		
+Salmonella Breda	sal	C2,3		6,8	z4,z23	e,n,x		
+Salmonella Bredeney	sal	B		.1.,4,12,.27.	l,v	1,7		
+Salmonella Brefet	sal	V		44	r	e,n,z15		
+Salmonella Bremen (old serotype)	sal	W	II	45	g,m,s,t	e,n,x	o	
+Salmonella Breukelen	sal	C2,3		6,8	l,z13,[z28]	e,n,z15		
+Salmonella Brevik	sal	I		16	z	e,n,[x],z15		
+Salmonella Brezany	sal	B		.1.,4,12,.27.	d	1,6		
+Salmonella Brijbhumi	sal	F		11	i	1,5		
+Salmonella Brikama	sal	C2,3		8,.20.	r,i	l,w		
+Salmonella Brindisi	sal	F		11	c	1,6		
+Salmonella Brisbane	sal	M		28	z	e,n,z15		
+Salmonella Bristol	sal	G1,2		13,22	z	1,7		
+Salmonella Brive	sal	T		.1.,42	r	l,w		
+Salmonella Bron	sal	G1,2		13,22	g,m	[e,n,z15]		
+Salmonella Bronx	sal	C2,3		6,8	c	1,6		
+Salmonella Brookfield (old serotype)	sal	66	V	66	z35	-	o	
+Salmonella Brooklyn	sal	I		16	l,w	e,n,x		
+Salmonella Broughton	sal	E4		1,3,19	b	l,w		
+Salmonella Broxbourne (old serotype)	sal	B					o	Wien
+Salmonella Bruck	sal	C1,4		6,7	z	l,w		
+Salmonella Brunei	sal	C2,3		8,.20.	y	1,5		
+Salmonella Brunflo	sal	I		16	r	1,7		
+Salmonella Bsilla	sal	C2,3		6,8	r	1,2		
+Salmonella Buckeye	sal	Y		48	d	-		
+Salmonella Budapest	sal	B		.1.,4,12,.27.	g,t	-		
+Salmonella Buenos-aires (old serotype)	sal	C2,3					o	Bonariensis
+Salmonella Bukavu	sal	R		.1.,40	l,z28	1,5		
+Salmonella Bukuru	sal	C2,3		6,8	b	l,w		
+Salmonella Bulawayo (old serotype)	sal	R	II	.1.,40	z	1,5	o	
+Salmonella Bulgaria	sal	C2,3		6,8	y	1,6		
+Salmonella Bullbay	sal	F		11	l,v	e,n,z15		
+Salmonella Bulovka	sal	C1,4		6,7	z44	-		
+Salmonella Bunnik (old serotype)	sal	U	II	43	z42	[1,5,7]	o	
+Salmonella Burgas	sal	I		16	l,v	e,n,z15		
+Salmonella Burundi	sal	S		41	a	-		
+Salmonella Bury	sal	B		4,12,.27.	c	z6		
+Salmonella Businga	sal	C1,4		6,7	z	e,n,z15		
+Salmonella Butantan	sal	E1		3,10	b	1,5		
+Salmonella Butare	sal	52		52	e,h	1,6		
+Salmonella Buzu	sal	H		1,6,14,25	i	1,7		
+Salmonella Caen	sal	I		16	d	l,w		
+Salmonella Cairina	sal	E1		3,10	z35	z6		
+Salmonella Cairns	sal	W		45	k	e,n,z15		
+Salmonella Cairo (old serotype)	sal	no					o	Stanley
+Salmonella Calabar	sal	E4		1,3,19	e,h	l,w		
+Salmonella Caledon (old serotype)	sal	B	II	.1.,4,12,.27.	g,[m],[s],t	e,n,x	o	
+Salmonella California	sal	B		4,12	g,m,t	-		
+Salmonella Calvinia (old serotype)	sal	C1,4	II	6,7	a	z42	o	
+Salmonella Camberene	sal	O		35	z10	1,5		
+Salmonella Camberwell	sal	D1		9,12	r	1,7		
+Salmonella Cambridge	sal	E2		3,.15.	e,h	l,w		
+Salmonella Camdeni (old serotype)	sal	V	V	44	r	-	o	
+Salmonella Campinense	sal	D1		9,12	r	e,n,z15		
+Salmonella Canada	sal	B		4,12	b	1,6		
+Salmonella Canary	sal	R		40	l,v	1,6		
+Salmonella Canastel (old serotype)	sal	D1	II	9,12	z29	1,5	o	
+Salmonella Cannobio	sal	M		28	z4,z23	1,5		
+Salmonella Cannonhill	sal	E2		(1),3,.15.,(19)	y	e,n,x		
+Salmonella Cannstatt	sal	E4		1,3,19	m,t	-		
+Salmonella Canoga (old serotype)	sal	E3		3,.15.,.34.	g,s,t,	-	o	
+Salmonella Canton	sal	54		54	z10	e,n,x		
+Salmonella Cape (old serotype)	sal	C1,4	II	6,7	z6	1,7	o	
+Salmonella Caracas	sal	H		[1],6,14,[25]	g,m,s	-		
+Salmonella Cardiff (old serotype)	sal	C1,4		6,7	k	R1	o	Thompson
+Salmonella Cardoner	sal	I		16	g,s,t	-		
+Salmonella Carletonville (old serotype)	sal	P	II	38	d	[1,5]	o	
+Salmonella Carmel	sal	J		17	l,v	e,n,x		
+Salmonella Carnac	sal	K		18	z10	z6		
+Salmonella Carno	sal	E4		1,3,19	z	l,w		
+Salmonella Carrau	sal	H		6,14,[24]	y	1,7		
+Salmonella Carswell	sal	V		44	g,z51	-		
+Salmonella Casablanca	sal	W		45	k	1,7		
+Salmonella Casamance	sal	R		40	z	e,n,x		
+Salmonella Catalunia	sal	M		28	l,z13,z28	1,5		
+Salmonella Catanzaro	sal	H		6,14	g,s,t	-		
+Salmonella Cayar	sal	C1,4		6,7	z	e,n,x		
+Salmonella Ceres (old serotype)	sal	M	II	28	z	z39	o	
+Salmonella Cerro	sal	K		.6.,.14.,18	z4,z23	[1,5]		
+Salmonella Ceyco	sal	D2		9,46	k	z35		
+Salmonella Chagoua	sal	G1,2		.1.,13,23	a	1,5		
+Salmonella Chailey	sal	C2,3		6,8	z4,z23	e,n,z15		
+Salmonella Chameleon (old serotype)	sal	I	IV	16	z4,z32	-	o	
+Salmonella Champaign	sal	Q		39	k	1,5		
+Salmonella Chandans	sal	F		11	d	[e,n,x]:[r]		
+Salmonella Charity	sal	H		[1],6,14,[25]	d	e,n,x		old
+Salmonella Charlottenburg	sal	C2,3		6,8	k	e,n,z15		
+Salmonella Cheltenham	sal	D2		9,46	b	1,5		
+Salmonella Chersina (old serotype)	sal	X	II	47	z	z6	o	
+Salmonella Chester	sal	B		.1.,4,[5],12	e,h	e,n,x		
+Salmonella Chicago	sal	M		28	r,[i]	1,5		
+Salmonella Chichester	sal	E4		1,3,19	i	1,6		
+Salmonella Chichiri	sal	H		6,14,24	z4,z24	-		
+Salmonella Chile	sal	C1,4		6,7	z	1,2		
+Salmonella Chincol	sal	C2,3		6,8	g,m,[s]	[e,n,x]		
+Salmonella Chingola	sal	F		11	e,h	1,2		
+Salmonella Chinovum (old serotype)	sal	T	II	42	b	1,5	o	
+Salmonella Chiredzi	sal	F		11	c	1,5		
+Salmonella Chittagong	sal	E1		(1),3,10,(19)	b	z35		
+Salmonella Choleraesuis	sal	C1,4		6,7	[c]	1,5		
+Salmonella Choleraesuis var. Kunzendorf	sal	C1,4					??	
+Salmonella Chomedy	sal	C2,3		8,.20.	z10	e,n,z,15		
+Salmonella Christiansborg	sal	V		44	z4,z24	-		
+Salmonella Chudleigh (old serotype)	sal	E1	II	3,10	e,n,c	1,7	o	
+Salmonella Clackamas	sal	B		4,12	l,v	1,6		
+Salmonella Claibornei	sal	D1		.1.,9,12	k	1,5		
+Salmonella Clanvillian	sal	F		11	r	e,n,z15		
+Salmonella Clerkenwell	sal	E1		3,10	z	l,w		
+Salmonella Cleveland	sal	C2,3		6,8	z10	1,7		
+Salmonella Clichy (old serotype)	sal	E2		3,.15.	a	1,5	o	
+Salmonella Clifton (old serotype)	sal	G1,2	II	13,22	z29	1,5	o	
+Salmonella Clovelly (old serotype)	sal	V	II	.1.,44	z39	e,n,x,z15	o	
+Salmonella Cochin	sal	D2		9,46	k	1,5		
+Salmonella Cocody	sal	C2,3		8,.20.	r,i	e,n,z15		
+Salmonella Coeln	sal	B		4,[5],12	y	1,2		
+Salmonella Coleypark	sal	C1,4		6,7,.14.	a	l,w		
+Salmonella Colindale	sal	C1,4		6,7	r	1,7		
+Salmonella Colobane	sal	F		11	k	1,7		
+Salmonella Colombo	sal	P		38	y	1,6		
+Salmonella Colorado	sal	C1,4		6,7	l,w	1,5		
+Salmonella Concord	sal	C1,4		6,7	l,v	1,2		
+Salmonella Congo	sal	G1,2		13,23	g,m,s,t	-		
+Salmonella Connecticut	sal	F		11	l,z13,z28	1,5		
+Salmonella Constantia (old serotype)	sal	J	II	17	z	l,w:z42	o	
+Salmonella Coogee	sal	T		42	l,v	e,n,z15		
+Salmonella Cook (old serotype)	sal	Q		39	Rz48	1,5	o	Champaign
+Salmonella Coquilhatville	sal	E1		3,10	z10	1,7		
+Salmonella Coromandel	sal	C1,4		6,7	l,v	z35		
+Salmonella Corvallis	sal	C2,3		8,.20.	z4,z23	[z6]		
+Salmonella Cotham	sal	M		28	i	1,5		
+Salmonella Cotia	sal	K		18	-	1,6		
+Salmonella Cremieu	sal	C2,3		6,8	e,h	1,6		
+Salmonella Crewe	sal	F		11	z	1,5		
+Salmonella Croft	sal	M		28	g,m,s	[e,n,z15]		
+Salmonella Crossness	sal	67		67	r	1,2		
+Salmonella Cubana	sal	G1,2		.1.,13,23	z29	-		
+Salmonella Cuckmere	sal	E1		3,10	i	1,2		
+Salmonella Cullingworth	sal	M		28	d	l,w		
+Salmonella Cumberland	sal	Q		39	i	e,n,x		
+Salmonella Curacao	sal	C2,3		6,8	a	1,6		
+Salmonella Cyprus	sal	C2,3		6,8	i	l,w		
+Salmonella Czernyring	sal	54		54	r	1,5		
+Salmonella Daarle	sal	C2,3		6,8	y	e,n,x		
+Salmonella Dabou	sal	C2,3		8,.20.	z4,z23	l,w		
+Salmonella Dadzie	sal	51		51	l,v	e,n,x		
+Salmonella Dahlem	sal	Y		48	k	e,n,z15		
+Salmonella Dahomey	sal	X		47	k	1,6		
+Salmonella Dahra	sal	J		17	b	1,5		
+Salmonella Dakar	sal	M		28	a	1,6		
+Salmonella Dakota	sal	I		16	z35	e,n,z15		
+Salmonella Dalat (old serotype)	sal	B					o	Ball
+Salmonella Dallgow	sal	E4		1,3,19	z10	e,n,z15		
+Salmonella Damman	sal	C1,4		6,7	a	z6		
+Salmonella Dan	sal	51		51	k	e,n,z15		
+Salmonella Dapango	sal	X		47	r	1,2		
+Salmonella Daressalaam (old serotype)	sal	D1	II	.1.,9,12	l,w	e,n,x	o	
+Salmonella Daula	sal	C2,3		8,.20.	z	z6		
+Salmonella Daytona	sal	C1,4		6,7	k	1,6		
+Salmonella Decatur (old serotype)	sal	no					o	Choleraesuis
+Salmonella Deckstein	sal	D2		9,46	r	1,7		
+Salmonella Degania (old serotype)	sal	R	II	40	z4,z24	z39	o	
+Salmonella Delmenhorst	sal	K		18	z71	-		
+Salmonella Dembe	sal	O		35	d	l,w		
+Salmonella Demerara	sal	G1,2		13,23	z10	l,w		
+Salmonella Denver	sal	C1,4		6,7	a	e,n,z15		
+Salmonella Derby	sal	B		.1.,4,[5],12	f,g	[1,2]		
+Salmonella Derkle	sal	52		52	e,h	1,7		
+Salmonella Dessau	sal	E2		(1),3,.15.,(19)	g,s,t	-		
+Salmonella Detroit (old serotype)	sal	T	II	42	z	1,5	o	
+Salmonella Deversoir	sal	W		45	c	e,n,x		
+Salmonella Dibra	sal	M		28	a	z6		
+Salmonella Dieuppeul	sal	M		28	i	1,7		
+Salmonella Diguel	sal	G1,2		.1.,13,22	d	e,n,z15		
+Salmonella Diogoye	sal	C2,3		8,.20.	z41	z6		
+Salmonella Diourbel	sal	L		21	i	1,2		
+Salmonella Djakarta	sal	Y		48	z4,z24	-		
+Salmonella Djama	sal	T		.1.,42	z29	-		
+Salmonella Djelfa	sal	C2,3		8	b	1,2		
+Salmonella Djermaia	sal	M		28	z29	-		
+Salmonella Djibouti	sal	J		17	z10	e,n,x		
+Salmonella Djugu	sal	C1,4		6,7	z10	e,n,x		
+Salmonella Doba	sal	D2		9,46	a	e,n,z15		
+Salmonella Doel	sal	M		28	z	1,6		
+Salmonella Doncaster	sal	C2,3		6,8	a	1,5		
+Salmonella Donna	sal	N		30	l,v	1,5		
+Salmonella Doorn	sal	M		28	i	1,2		
+Salmonella Douala	sal	M		28	i	l,w		
+Salmonella Dougi	sal	Z		50	y	1,6		
+Salmonella Doulassame	sal	N		30	a	e,n,z15		
+Salmonella Dresden	sal	M		28	c	e,n,x		
+Salmonella Driffield	sal	R		.1.,40	d	1,5		
+Salmonella Drogana	sal	B		.1.,4,12,.27.	r,i	e,n,z15		
+Salmonella Drypool (old serotype)	sal	E2		3,.15.	g,m,s	-	o	
+Salmonella Dublin	sal	D1		.1.,9,12,[Vi]	g,p	-		
+Salmonella Dubrovnik (old serotype)	sal	S	II	41	z	1,5	o	
+Salmonella Duesseldorf	sal	C2,3		6,8	z4,z24	-		
+Salmonella Dugbe	sal	W		45	d	1,6		
+Salmonella Duisburg	sal	B		.1.,4,12,.27.	d	e,n,z15		
+Salmonella Duivenhoks (old serotype)	sal	D2	II	9,46	g,m,s,t	e,n,x	o	
+Salmonella Dumfries	sal	E1		3,10	r,i	1,6		
+Salmonella Dunkwa	sal	C2,3		6,8	d	1,7		
+Salmonella Durban	sal	D1		9,12	a	e,n,z15		
+Salmonella Durbanville (old serotype)	sal	B	II	.1.,4,12,.27.	z39	1,[5],7	o	
+Salmonella Durham	sal	G1,2		13,23	b	e,n,z15		
+Salmonella Duval	sal	R		.1.,40	b	e,n,z15		
+Salmonella Ealing	sal	O		35	g,m,s	-		
+Salmonella Eastbourne	sal	D1		.1.,9,12	e,h	1,5		
+Salmonella Eastglam	sal	E4		1,3,19	c	1,5		
+Salmonella Eberswalde	sal	M		28	c	1,6		
+Salmonella Eboko	sal	C2,3		6,8	b	1,7		
+Salmonella Ebrie	sal	O		35	g,m,t	-		
+Salmonella Echa	sal	P		38	k	1,2		
+Salmonella Edinburg	sal	C1,4		6,7,.14.	b	1,5		
+Salmonella Edmonton	sal	C2,3		6,8	l,v	e,n,z15		
+Salmonella Egusi	sal	S		41	d	[1,5]		
+Salmonella Egusitoo	sal	T		.1.,42	b	z6		
+Salmonella Eilbek (old serotype)	sal	61	II	61	i	z	o	IIIb
+Salmonella Eimsbuettel (old serotype)	sal	C1,4		6,7,.14.	d	l,w	o	
+Salmonella Eingedi	sal	C1,4		6,7	f,g,t	1,2,7		
+Salmonella Ejeda (old serotype)	sal	W	II	45	a	z10	o	
+Salmonella Eko	sal	B		4,12	e,h	1,6		
+Salmonella Ekotedo	sal	D2		9,46	z4,z23	-		
+Salmonella Ekpoui	sal	X		47	z29	-		
+Salmonella Elisabethville	sal	E1		3,10	r	1,7		
+Salmonella Elokate	sal	D1		9,12	c	1,7		
+Salmonella Elomrane	sal	D1		.1.,9,12	z38	-		
+Salmonella Elsiesrivier (old serotype)	sal	I	II	16	z42	1,6	o	
+Salmonella Emek	sal	C2,3		8,.20.	g,m,s	-		
+Salmonella Emmastad	sal	P		38	r	1,6		
+Salmonella Emmerich (old serotype)	sal	H	II	6,14	[m,t]	e,n,x	o	
+Salmonella Encino	sal	H		1,6,14,25	d	l,z13,z28		
+Salmonella Enschede	sal	O		35	z10	l,w		
+Salmonella Entebbe	sal	B		.1.,4,12,.27	z	z6		
+Salmonella enterica ss. arizonae	sal		IIIa					
+Salmonella enterica ss. diarizonae	sal		IIIb					
+Salmonella enterica ss. enterica	sal		I					
+Salmonella enterica ss. houtenae	sal		IV					
+Salmonella enterica ss. indica	sal		VI					
+Salmonella enterica ss. salamae	sal		II					
+Salmonella Enteritidis	sal	D1		.1.,9,12	[f],g,m,[p]	[1,7]		
+Salmonella Enugu	sal	I		16	l,[z13],z28	[1,5]		
+Salmonella Epicrates	sal	E1		3,10	b	l,w		
+Salmonella Epinay	sal	F		11	a	l,z13.z28		
+Salmonella Eppendorf	sal	B		.1.,4,12,.27.	d	1,5		
+Salmonella Epping (old serotype)	sal	G1,2	II	.1.,13,23	e,n,x	1,[5],7	o	
+Salmonella Erlangen (old serotype)	sal	Y	II	48	g,m,t	-	o	
+Salmonella Escanaba	sal	C1,4		6,7	k	e,n,z15		
+Salmonella Eschberg	sal	D1		9,12	d	1,7		
+Salmonella Eschersheim (old serotype)	sal	E2		3,.15.	d	e,n,x	o	
+Salmonella Eschweiler	sal	C1,4		6,7	z10	1,6		
+Salmonella Essen	sal	B		4,12	g,m	-		
+Salmonella Etosha (old serotype)	sal	Y	II	48	d	1,2	o	
+Salmonella Etterbeek	sal	F		11	z4,z23	e,n,z15		
+Salmonella Euston	sal	F		11	r,i	e,n,x,z15		
+Salmonella Everleigh	sal	E1		3,10	z29	e,n,x		
+Salmonella Ezra	sal	M		28	z	1,7		
+Salmonella Fairfield	sal	M		28	r	l,w		
+Salmonella Fajara	sal	M		28	l,z28	e,n,x		
+Salmonella Faji	sal	T		.1.,42	a	e,n,z15		
+Salmonella Falkensee	sal	E1		3,10	i	e,n,z15		
+Salmonella Fallowfield	sal	E1		3,10	l,z13,z28	e,n,z15		
+Salmonella Fandran (old serotype)	sal	R	II	.1.,40	z35	e,n,x,z15	o	
+Salmonella Fann	sal	F		11	l,v	e,n,x		
+Salmonella Fanti	sal	G1,2		13,23	z38	-		
+Salmonella Farakan	sal	M		28	z10	1,5		
+Salmonella Farcha	sal	U		43	y	1,2		
+Salmonella Fareham	sal	E4		1,3,19	r,i	l,w		
+Salmonella Farmsen	sal	G1,2		13,23	z	1,6		
+Salmonella Farsta	sal	B		4,12	i	e,n,x		
+Salmonella Fass	sal	Z		50	l,v	1,2		
+Salmonella Faure (old serotype)	sal	Z	II	50	z42	1,7	o	
+Salmonella Fayed	sal	C2,3		6,8	l,w	1,2		
+Salmonella Ferlac (old serotype)	sal	H	VI	1,6,14,25	a	e,n,x	o	
+Salmonella Ferlo	sal	S		41	k	1,6		
+Salmonella Ferruch	sal	C2,3		8	e,h	1,5		
+Salmonella Finaghy	sal	B		4,12	y	1,6		
+Salmonella Finchley (old serotype)	sal	E1	II	3,10	z	e,n,x	o	
+Salmonella Findorff	sal	F		11	d	z6		
+Salmonella Finkenwerder	sal	H		[1],6,14,[25]	d	1,5		
+Salmonella Fischerhuette	sal	I		16	a	e,n,z15		
+Salmonella Fischerkietz	sal	H		1,6,14,25	y	e,n,x		
+Salmonella Fischerstrasse	sal	V		44	d	e,n,z15		
+Salmonella Fitzroy	sal	Y		48	e,h	1,5		
+Salmonella Flint (old serotype)	sal	Z	IV	50	z4,z23	-	o	
+Salmonella Florian	sal	E1		3,10	z4,z24	-		
+Salmonella Florida	sal	H		[1],6,14,[25]	d	1,7		
+Salmonella Flottbek	sal	52		52	b	[e,n,x]		
+Salmonella Fluntern	sal	K		.6.,.14.,18	b	1,5		
+Salmonella Fomeco	sal	W		45	b	e,n,z15		
+Salmonella Fortlamy	sal	I		16	z	1,6		
+Salmonella Fortune	sal	B		.1.,4,12,.27.	z10	z6		
+Salmonella Foulpointe (old serotype)	sal	P	II	38	g,t	-	o	
+Salmonella Franken	sal	D1		9,12	i	e,n,z15		
+Salmonella Frankfurt	sal	I		16	i	e,n,z15		
+Salmonella Freefalls	sal	M		28	b	l,w		
+Salmonella Freetown	sal	P		38	y	1,5		
+Salmonella Freiburg	sal	E1		3,10	l,z13	1,2		
+Salmonella Fremantle (old serotype)	sal	T	II	42	g,t	-	o	
+Salmonella Fresno	sal	D2		9,46	z38	-		
+Salmonella Friedenau	sal	G1,2		13,22	d	1,6		
+Salmonella Friedrichsfelde	sal	M		28	f,g	-		
+Salmonella Frintrop	sal	D1		.1.,9,12	b	1,5		
+Salmonella Fufu	sal	E1		3,10	z	1,5		
+Salmonella Fuhlsbuettel (old serotype)	sal	E1	II	3,10	l,v	z6	o	
+Salmonella Fulda	sal	E4		1,3,19	l,w	1,5		
+Salmonella Fulica	sal	B		4,[5],12	a	1,5		
+Salmonella Fyris	sal	B		4,[5],12	l,v	1,2		
+Salmonella Gabon	sal	C1,4		6,7	l,w	1,2		
+Salmonella Gafsa	sal	I		16	c	1,6		
+Salmonella Galiema	sal	C1,4		6,7,.14.	k	1,2		
+Salmonella Galil	sal	E1		3,10	a	e,n,z15		
+Salmonella Gallen	sal	F		11	a	1,2		
+Salmonella Gallinarum	sal	D1		.1.,9,12	-	-		
+Salmonella Gamaba	sal	V		.1.,44	g,m,[s]	-		
+Salmonella Gambaga	sal	L		21	z35	e,n,z15		
+Salmonella Gambia	sal	O		35	i	e,n,z15		
+Salmonella Gaminara	sal	I		16	d	1,7		
+Salmonella Garba	sal	H		1,6,14,25	a	1,5		
+Salmonella Garoli	sal	C1,4		6,7	i	1,6		
+Salmonella Gassi	sal	O		35	e,h	z6		
+Salmonella Gateshead	sal	D2		9,46	g,s,t	-		
+Salmonella Gatineau	sal	E4		1,3,19	y	1,5		
+Salmonella Gatow	sal	C1,4		6,7	y	1,7		
+Salmonella Gatuni	sal	C2,3		6,8	b	e,n,x		
+Salmonella Gbadago	sal	E1		3,10	c	1,5		
+Salmonella Gdansk	sal	C1,4		6,7	l,v	z6		
+Salmonella Gege	sal	N		30	r	1,5		
+Salmonella Gelsenkirchen (old serotype)	sal	C1,4		6,7,.14.	l,v	z6	o	
+Salmonella Georgia	sal	C1,4		6,7	b	e,n,z15		
+Salmonella Gera	sal	T		.1.,42	z4,z23	1,6		
+Salmonella Geraldton	sal	D2		9,46	l,v	1,6		
+Salmonella Gerland	sal	I		16	z	1,5		
+Salmonella Germiston (old serotype)	sal	C2,3	II	6,8	m,t	e,n,x	o	
+Salmonella Ghana	sal	L		21	b	1,6		
+Salmonella Giessen	sal	N		30	g,m,s	-		
+Salmonella Gilbert (old serotype)	sal	C1,4	II	6,7	z39	1,5,7	o	
+Salmonella Give	sal	E1		3,10	[d],l,v	1,7		
+Salmonella Giza	sal	C2,3		8,.20.	y	1,2		
+Salmonella Glasgow	sal	I		16	b	1,6		
+Salmonella Glencairn (old serotype)	sal	F	II	11	a	z6:z42	o	
+Salmonella Glidji	sal	F		11	l,w	1,5		
+Salmonella Glostrup	sal	C2,3		6,8	z10	e,n,z15		
+Salmonella Gloucester	sal	B		.1.,4,12,.27.	i	l,w		
+Salmonella Gnesta	sal	E4		1,3,19	b	1,5		
+Salmonella Godesberg	sal	N		30	g,m	-		
+Salmonella Goelzau	sal	E1		3,10	a	1,5		
+Salmonella Goerlitz (old serotype)	sal	E2		3,.15.	e,h	1,2	o	
+Salmonella Goeteborg	sal	D1		9,12	c	1,5		
+Salmonella Goettingen	sal	D1		9,12	l,v	e,n,z15		
+Salmonella Gojenberg (old serotype)	sal	G1,2	II	.1.,13,23	g,t	1,5	o	
+Salmonella Gokul	sal	51		.1.,51	d	[1,5]		
+Salmonella Goldcoast	sal	C2,3		6,8	r	l,w		
+Salmonella Goma	sal	C1,4		6,7	z4,z23	z6		
+Salmonella Gombe	sal	C1,4		6,7,.14.	d	e,n,z15		
+Salmonella Good	sal	L		21	f,g	e,n,x		
+Salmonella Goodwood (old serotype)	sal	G1,2	II	13,22	z29	e,n,x	o	
+Salmonella Gori	sal	J		17	z	1,2		
+Salmonella Goulfey	sal	R		.1.,40	k	1,5		
+Salmonella Gouloumbo	sal	O		35	c	1,5		
+Salmonella Goverdhan	sal	D1		9,12	k	1,6		
+Salmonella Gozo	sal	M		28	e,h	e,n,z15		
+Salmonella Grabouw (old serotype)	sal	F	II	11	g,[m],s,t	z39	o	
+Salmonella Grampian	sal	C1,4		6,7	r	l,w		
+Salmonella Grancanaria	sal	I		16	z39	1,6		
+Salmonella Grandhaven	sal	N		30	r	1,2		
+Salmonella Granlo	sal	J		17	l,z28	e,n,x		
+Salmonella Graz	sal	U		43	a	1,2		
+Salmonella Greenside (old serotype)	sal	Z	II	50	z	e,n,x	o	
+Salmonella Greiz	sal	R		40	a	z6		
+Salmonella Groenekan	sal	K		18	d	1,5		
+Salmonella Group C1 (old)	sal	C1						
+Salmonella Group C2 (old)	sal	C2						
+Salmonella Group C3 (old)	sal	C3						
+Salmonella Group C4 (old)	sal	C4						
+Salmonella Group D1 (old)	sal	D1						
+Salmonella Group D2 (old)	sal	D2						
+Salmonella Group D3 (old)	sal	D3						
+Salmonella Group E1 (old)	sal	E1						
+Salmonella Group E2 (old)	sal	E2						
+Salmonella Group E3 (old)	sal	E3						
+Salmonella Group E4 (old)	sal	E4						
+Salmonella Group G1 (old)	sal	G1						
+Salmonella Group G2 (old)	sal	G2						
+Salmonella Group O:1,3,19 (E4)	sal	E4						
+Salmonella Group O:11 (F)	sal	F						
+Salmonella Group O:13 (G)	sal	G						
+Salmonella Group O:16 (I)	sal	I						
+Salmonella Group O:17 (J)	sal	J						
+Salmonella Group O:18 (K)	sal	K						
+Salmonella Group O:2 (A)	sal	A						
+Salmonella Group O:21 (L)	sal	l						
+Salmonella Group O:28 (M)	sal	M						
+Salmonella Group O:3,10 (E1)	sal	E1						
+Salmonella Group O:30 (N)	sal	N						
+Salmonella Group O:35 (O)	sal	O						
+Salmonella Group O:38 (P)	sal	P						
+Salmonella Group O:39 (Q)	sal	Q						
+Salmonella Group O:4 (B)	sal	B						
+Salmonella Group O:40 (R)	sal	R						
+Salmonella Group O:41 (S)	sal	S						
+Salmonella Group O:42 (T)	sal	T						
+Salmonella Group O:43 (U)	sal	Y						
+Salmonella Group O:44 (V)	sal	V						
+Salmonella Group O:45 (W)	sal	W						
+Salmonella Group O:47 (X)	sal	X						
+Salmonella Group O:48 (Y)	sal	Y						
+Salmonella Group O:50 (Z)	sal	Z						
+Salmonella Group O:51	sal	51						
+Salmonella Group O:52	sal	52						
+Salmonella Group O:53	sal	53						
+Salmonella Group O:54	sal	54						
+Salmonella Group O:55	sal	55						
+Salmonella Group O:56	sal	56						
+Salmonella Group O:57	sal	57						
+Salmonella Group O:58	sal	58						
+Salmonella Group O:59	sal	59						
+Salmonella Group O:6,14 (H)	sal	H						
+Salmonella Group O:60	sal	60						
+Salmonella Group O:61	sal	61						
+Salmonella Group O:62	sal	62						
+Salmonella Group O:63	sal	63						
+Salmonella Group O:64	sal	64						
+Salmonella Group O:65	sal	65						
+Salmonella Group O:66	sal	66						
+Salmonella Group O:67	sal	67						
+Salmonella Group O:7 (C1)	sal	C1						
+Salmonella Group O:8 (C2-C3)	sal	C2,3						
+Salmonella Group O:9 (D1)	sal	D1						
+Salmonella Group O:9,46 (D2)	sal	D2						
+Salmonella Group O:9,46,27 (D3)	sal	D3						
+Salmonella Grumpensis	sal	G1,2		13,23	d	1,7		
+Salmonella Grunty (old serotype)	sal	R	II	.1.,40	z39	1,6	o	
+Salmonella Guarapiranga	sal	N		30	a	e,n,x		
+Salmonella Guerin	sal	D2		9,46	e,h	z6		
+Salmonella Guildford	sal	M		28	k	1,2		
+Salmonella Guinea	sal	V		44	z10	[1,7]		
+Salmonella Gustavia	sal	F		11	d	1,5		
+Salmonella Gwaai (old serotype)	sal	L	II	21	z4,z23	-	o	
+Salmonella Gwale	sal	T		.1.,42	k	z6		
+Salmonella Gwoza	sal	E4		1,3,19	a	e,n,z15		
+Salmonella Haardt	sal	C2,3		8	k	1,5		
+Salmonella Haarlem (old serotype)	sal	D2	II	9,46	z	e,n,x	o	
+Salmonella Hadar	sal	C2,3		6,8	z10	e,n,x		
+Salmonella Haddon (old serotype)	sal	I	II	16	z4,z23	-	o	
+Salmonella Hadejia	sal	J		17	y	e,n,z15		
+Salmonella Haelsingborg	sal	C1,4		6,7	m,p,t,[u]	-		
+Salmonella Haferbreite	sal	T		42	k	1,6		
+Salmonella Haga	sal	O		35	z38	-		
+Salmonella Hagenbeck (old serotype)	sal	Y	II	48	d	z6	o	
+Salmonella Haïfa	sal	B		.1.,4,[5],12	z10	1,2		
+Salmonella Halle	sal	M		28	c	1,7		
+Salmonella Hallfold	sal	B		.1.,4,12,.27.	c	l,w		
+Salmonella Halmstad (old serotype)	sal	E2		3,.15.	g,s,t	-	o	
+Salmonella Hamburg (old serotype)	sal	D1	II	.1.,9,12	g,m,[s],t	[1,5,7]:[z42]	o	with II Manica, II Muizenberg
+Salmonella Hamilton (old serotype)	sal	E1					o	Vejle var 15+,[Rz27]
+Salmonella Hammonia (old serotype)	sal	Y	II	48	e,n,x,z15	z6	o	
+Salmonella Handen	sal	G1,2		.1.,13,23	d	1,2		
+Salmonella Hann	sal	R		40	k	e,n,x		
+Salmonella Hannover	sal	I		16	a	1,2		
+Salmonella Haouaria	sal	G1,2		13,22	c	e,n,x,z15		
+Salmonella Harburg	sal	H		[1],6,14,[25]	k	1,5		
+Salmonella Harcourt	sal	51		51	l,v	1,2		
+Salmonella Harleystreet	sal	E1		3,10	z	1,6		
+Salmonella Harmelen (old serotype)	sal	51	IV	51	z4,z23	-	o	
+Salmonella Harrisonburg	sal	E3		3,.15.,.34.	z10	1,6		
+Salmonella Hartford	sal	C1,4		6,7	y	e,n,x:[z67]		
+Salmonella Harvestehude	sal	T		.1.,42	y	z6		
+Salmonella Hatfield	sal	M		28	d	1,6		
+Salmonella Hato	sal	B		4,[5],12	g,m,s	-		
+Salmonella Havana	sal	G1,2		.1.,13,23	f,g,[s]	-		
+Salmonella Hayindogo	sal	E4		1,3,19	e,h	1,6		
+Salmonella Heerlen	sal	F		11	i	1,6		
+Salmonella Hegau	sal	Q		39	z10	-		
+Salmonella Heidelberg	sal	B		.1.,4,[5],12	r	1,2		
+Salmonella Heilbron (old serotype)	sal	C1,4	II	6,7	l,z28	1,5:[z42]	o	
+Salmonella Helsinki (old serotype)	sal	B	II	.1.,4,12	z29	[e,n,x]	o	
+Salmonella Hemingford	sal	Z		50	d	1,5		
+Salmonella Hennekamp	sal	T		42	z35	e,n,z15		
+Salmonella Hennepin	sal	S	II	41	d	z6	??	
+Salmonella Hermannswerder	sal	M		28	c	1,5		
+Salmonella Heron	sal	I		16	a	z6		
+Salmonella Herston	sal	C2,3		6,8	d	e,n,z15		
+Salmonella Herzliya	sal	F		11	y	e,n,x		
+Salmonella Hessarek	sal	B		4,12,.27.	a	1,5		
+Salmonella Heves (old serotype)	sal	H		6,14,[24]	d	1,5	o	
+Salmonella Hidalgo	sal	C2,3		6,8	r	e,n,z15		
+Salmonella Hiduddify	sal	C2,3		6,8	l,z13,z28	1,5		
+Salmonella Hillbrow (old serotype)	sal	J	II	17	b	e,n,x,z15	o	
+Salmonella Hillegersberg	sal	D2		9,46	z35	1,5		
+Salmonella Hillingdon	sal	D2		9,46	g,m	-		
+Salmonella Hillsborough	sal	C1,4		6,7	z41	l,w		
+Salmonella Hilversum	sal	N		30	k	1,2		
+Salmonella Hindmarsh	sal	C2,3		8,.20.	r	1,5		
+Salmonella Hirschfeldii (old serotype)	sal	no					o	Paratyphi C
+Salmonella Hisingen	sal	Y		48	a	1,5,7		
+Salmonella Hissar	sal	C1,4		6,7,.14.	c	1,2		
+Salmonella Hithergreen	sal	I		16	c	e,n,z15		
+Salmonella Hoboken	sal	E1		3,10	i	l,w		
+Salmonella Hofit	sal	Q		39	i	1,5		
+Salmonella Hoghton	sal	E1		3,10	l,z13,z28	z6		
+Salmonella Holcomb	sal	C2,3		6,8	l,v	e,n,x		
+Salmonella Homosassa	sal	H		1,6,14,25	z	1,5		
+Salmonella Honelis	sal	M		28	a	e,n,z15		
+Salmonella Hongkong	sal	E4		1,3,19	z	z6		
+Salmonella Hooggraven (old serotype)	sal	Z	II	50	z10	z6:z42	o	
+Salmonella Horsham	sal	H		1,6,14,[25]	l,v	e,n,x		
+Salmonella Houten (old serotype)	sal	U	IV	43	z4,z23	-	o	
+Salmonella Huddinge	sal	E1		3,10	z	1,7		
+Salmonella Hueningen (old serotype)	sal	D1	II	9,12	z	z39	o	
+Salmonella Huettwilen	sal	B		.1.,4,12	]a	l,w		
+Salmonella Huila (old serotype)	sal	F	II	11	l,z28	e,n,x	o	
+Salmonella Hull	sal	I		16	b	1,2		
+Salmonella Humber (old serotype)	sal	53	II	53	z4,z24	-	o	
+Salmonella Huvudsta	sal	E1		3,10	b	1,7		
+Salmonella Hvittingfoss	sal	I		16	b	e,n,x		
+Salmonella Hydra	sal	L		21	c	1,6		
+Salmonella Ibadan	sal	G1,2		13,22	b	1,5		
+Salmonella Ibaragi	sal	L		21	y	1,2		
+Salmonella Idikan	sal	G1,2		.1.,13,23	i	1,5		
+Salmonella Ikayi	sal	E1		3,10	c	1,6		
+Salmonella Ikeja	sal	M		28	k	1,7		
+Salmonella Ilala	sal	M		28	k	1,5		
+Salmonella Illinois (old serotype)	sal	E3		3,.15.,.34.	z10	1,5	o	
+Salmonella Ilugun	sal	E1		(1),3,10,(19)	z4,z23	z6		
+Salmonella Imo	sal	W		45	l,v	[e,n,z15]		
+Salmonella Inchpark	sal	C2,3		6,8	y	1,7		
+Salmonella India	sal	D2		9,46	l,v	1,5		
+Salmonella Indiana	sal	B		.1.,4,12,	z	1,7		
+Salmonella Infantis	sal	C1,4		6,7,.14.	r	1,5		
+Salmonella Inganda	sal	C1,4		6,7	z10	1,5		
+Salmonella Inglis	sal	D2		9,46	z10	e,n,x		
+Salmonella Inpraw	sal	S		41	z10	e,n,x		
+Salmonella Inverness	sal	P		38	k	1,6		
+Salmonella Ipeko	sal	D1		9,12	c	1,6		
+Salmonella Ipswich	sal	S		41	z4,z24	[1,5]		
+Salmonella Irchel	sal	D2		9,46	y	e,n,x		
+Salmonella Irenea	sal	J		17	k	1,5		
+Salmonella Irigny	sal	U		43	z38	-		
+Salmonella Irumu	sal	C1,4		6,7	l,v	1,5		
+Salmonella Isangi	sal	C1,4		6,7,.14.	d	1,6		
+Salmonella Isaszeg	sal	Y		48	z10	e,n,x		
+Salmonella Islington (old serotype)	sal	E1	II	3,10	g,t	-	o	
+Salmonella Israel	sal	D1		9,12	e,h	e,n,z15		
+Salmonella Istanbul	sal	C2,3		8	z10	e,n,x		
+Salmonella Istoria	sal	H		1,6,14,25	r,i	1,5		
+Salmonella Isuge	sal	G1,2		13,23	d	z6		
+Salmonella Italiana (old serotype)	sal	D1		9,12	l,v	R1	o	Panama
+Salmonella Itami	sal	D1		9,12	l,z13	1,5		
+Salmonella Ituri	sal	B		.1.,4,12	z10	1,5		
+Salmonella Itutaba	sal	D2		9,46	c	z6		
+Salmonella Ivory	sal	I		16	r	1,6		
+Salmonella Ivorycoast	sal	Z		50	z29	-		
+Salmonella Iwojima (old serotype)	sal	C2,3					o	Kentucky
+Salmonella Jacksonville (old serotype)	sal	I	II	16	z29	e,n,x	o	
+Salmonella Jaffna	sal	D1		.1.,9,12	d	z35		
+Salmonella Jaja (old serotype)	sal	no					o	Stanleyville var. 27+
+Salmonella Jalisco	sal	F		11	y	1,7		
+Salmonella Jamaica	sal	D1		9,12	r	1,5		
+Salmonella Jambur	sal	L		21	l,z28	e,n,z15		
+Salmonella Jangwani	sal	J		17	a	1,5		
+Salmonella Java (old serotype)	sal	B		.1.,4,[5],12	b	1,2	o	
+Salmonella Javiana	sal	D1		.1.,9,12	l,z28	1,5		
+Salmonella Jedburgh	sal	E1		3,10	z29	-		
+Salmonella Jericho	sal	B		.1.,4,12,.27.	c	e,n,z15		
+Salmonella Jerusalem	sal	C1,4		6,7,.14.	z10	l,w		
+Salmonella Joal	sal	E1		3,10	l,z28	1,7		
+Salmonella Jodhpur	sal	W		45	z29	-		
+Salmonella Joenkoeping (old serotype)	sal	no					o	Kingston
+Salmonella Johannesburg	sal	R		.1.,40	b	e,n,x		
+Salmonella Jos	sal	B		.1.,4,12,.27.	y	e,n,z15		
+Salmonella Juba	sal	E4		1,3,19	a	1,7		
+Salmonella Jubilee	sal	J		17	e,h	1,2		
+Salmonella Jukestown	sal	G1,2		13,23	i	e,n,z15		
+Salmonella Kaapstad	sal	B		4,12	e,h	1,7		
+Salmonella Kabete	sal	51		51	I	1,5		
+Salmonella Kaduna	sal	C1,4		6,7,.14.	c	e,n,z15		
+Salmonella Kahla	sal	T		.1.,42	z35	1,6		
+Salmonella Kainji	sal	E4		1,3,19	z	1,6		
+Salmonella Kaitaan	sal	H		1,6,14,25	m,t	-		
+Salmonella Kalamu	sal	B		4,[5],12	z4,24	[1,5]		
+Salmonella Kalina	sal	E1		3,10	b	1,2		
+Salmonella Kallo	sal	C2,3		6,8	k	1,2		
+Salmonella Kaltenhausen (old serotype)	sal	M	II	28	b	z6	o	
+Salmonella Kalumburu	sal	C2,3		6,8	z	e,n,z15		
+Salmonella Kambole	sal	C1,4		6,7	d	1,[2],7		
+Salmonella Kamoru	sal	B		4,12,.27.	y	z6		
+Salmonella Kampala	sal	T		.1.,42	c	z6		
+Salmonella Kanda (old serotype)	sal	E1					o	Meleagridis
+Salmonella Kande	sal	E4		1,3,19	b	e,n,z15		
+Salmonella Kandla	sal	J		17	z29	-		
+Salmonella Kaneshie	sal	T		.1.,42	i	l,w		
+Salmonella Kanifing	sal	H		1,6,14,25	z	1,6		
+Salmonella Kano	sal	B		.1.,4,12,.27.	l,z13,z28	e,n,x		
+Salmonella Kaolack	sal	X		47	z	1,6		
+Salmonella Kapemba	sal	D1		9,12	l,v	1,7		
+Salmonella Kaposvar (old serotype)	sal	B					o	Reading
+Salmonella Karachi	sal	W		45	d	e,n,x		
+Salmonella Karamoja	sal	R		.1.,40	z41	1,2		
+Salmonella Karaya	sal	51		51	b	1,5		
+Salmonella Karlshamn	sal	J		17	d	e,n,z15		
+Salmonella Kasenyi	sal	P		38	e,h	1,5		
+Salmonella Kassberg	sal	H		1,6,14,25	c	1,6		
+Salmonella Katesgrove (old serotype)	sal	G1,2	II	.1.,13,23	m,t	1,5	o	
+Salmonella Kedougou	sal	G1,2		.1.,13,23	i	l,w		
+Salmonella Kentucky	sal	C2,3		8,.20.	i	z6		
+Salmonella Kentucky var. Jerusalem	sal	C2,3					??	
+Salmonella Kenya	sal	C1,4		6,7	l,z13	e,n,x		
+Salmonella Kermel	sal	V		44	d	e,n,x		
+Salmonella Keve	sal	L		21	l,w	-		
+Salmonella Khami (old serotype)	sal	X	II	47	b	e,n,x,z15	o	
+Salmonella Khartoum (old serotype)	sal	E3		3,.15.,.34.	a	1,7	o	
+Salmonella Kiambu	sal	B		4,12	z	1,5		
+Salmonella Kibi	sal	I		16	z4,z23	-		
+Salmonella Kibusi	sal	M		28	r	e,n,x		
+Salmonella Kidderminster	sal	P		38	c	1,6		
+Salmonella Kiel	sal	A		.1.,2,12	g,p	-		
+Salmonella Kikoma	sal	I		16	y	e,n,x		
+Salmonella Kilwa (old serotype)	sal	B	II	4,12	l,w	e,n,x	o	
+Salmonella Kimberley	sal	P		38	l,v	1,5		
+Salmonella Kimpese	sal	D1		9,12	z	1,6		
+Salmonella Kimuenza	sal	B		.1.,4,.12,.27.	l,v	e,n,x		
+Salmonella Kindia	sal	E4		1,3,19	l,z28	e,n,x		
+Salmonella Kingabwa	sal	U		43	y	1,5		
+Salmonella Kingston	sal	B		.1.,4,[5],12,.27.	g,s,t	[1,2]		
+Salmonella Kinondoni	sal	J		17	a	e,n,x		
+Salmonella Kinshasa (old serotype)	sal	E2		3,.15.	l,z13	1,5	o	
+Salmonella Kinson	sal	E4		1,3,19	y	e,n,x		
+Salmonella Kintambo	sal	G1,2		.1.,13,23	m,t	-		
+Salmonella Kirkee	sal	J		17	b	1,2		
+Salmonella Kisangani	sal	B		.1.,4,[5],12	a	1,2		
+Salmonella Kisarawe	sal	F		11	k	e,n,x,[z15]		
+Salmonella Kisii	sal	C1,4		6,7	d	1,2		
+Salmonella Kitenge	sal	M		28	y	e,n,x		
+Salmonella Kivu	sal	C1,4		6,7	d	1,6		
+Salmonella Klapmuts (old serotype)	sal	W	II	45	z	z39	o	
+Salmonella Klouto	sal	P		38	z38	-		
+Salmonella Kluetjenfelde (old serotype)	sal	B	II	4,12	d	e,n,x	o	
+Salmonella Kodjovi	sal	X		47	c	-		
+Salmonella Koenigstuhl	sal	B		.1.,4,[5],12	z	e,n,z15		
+Salmonella Koessen	sal	A		2,12	l,v	1,5		
+Salmonella Kofandoka	sal	W		45	r	e,n,z15		
+Salmonella Koketime	sal	V		44	z38	-		
+Salmonella Kokoli	sal	N		30	z35	1,6		
+Salmonella Kokomlemle	sal	Q		39	l,v	e,n,x		
+Salmonella Kolar	sal	D2		9,46	b	z35		
+Salmonella Kolda	sal	C2,3		8,.20.	z35	1,2		
+Salmonella Kommetje (old serotype)	sal	U	II	43	b	z42	o	
+Salmonella Konolfingen	sal	M		28	z35	1,6		
+Salmonella Konstanz	sal	C2,3		8	b	e,n,x		
+Salmonella Korbol	sal	C2,3		8,.20.	b	1,5		
+Salmonella Korlebu	sal	E4		1,3,19	z	1,5		
+Salmonella Korovi	sal	P		38	g,m,[s]	-		
+Salmonella Kortrijk	sal	C1,4		6,7	l,v	1,7		
+Salmonella Kottbus	sal	C2,3		6,8	e,h	1,5		
+Salmonella Kotte	sal	C1,4		6,7	b	z35		
+Salmonella Kotu	sal	D1		9,12	l,z28	1,6		
+Salmonella Kouka	sal	E4		1,3,19	g,m,[t]	-		
+Salmonella Koumra	sal	C1,4		6,7	b	1,7		
+Salmonella Kpeme	sal	M		28	e,h	1,7		
+Salmonella Kraaifontein (old serotype)	sal	G1,2	II	.1.,13,23	g,m,[s],t	[e,n,x]	o	
+Salmonella Kralendyk (old serotype)	sal	C1,4	IV	6,7	z4,z24	-	o	
+Salmonella Kraligen	sal	C2,3		8,.20.	y	z6		
+Salmonella Krefeld	sal	E4		1,3,19	y	l,w		
+Salmonella Kristianstad	sal	E1		3,10	z10	e,n,z15		
+Salmonella Krugersdorp (old serotype)	sal	Z	II	50	e,n,x	1,7	o	
+Salmonella Kua	sal	V		44	z4,z23	-		
+Salmonella Kubacha	sal	B		.1.,4,12,.27.	l,z13,z28	1,7		
+Salmonella Kuessel	sal	M		28	i	e,n,z15		
+Salmonella Kuilsrivier (old serotype)	sal	D1	II	.1.,9,12	g,m,s,t	e,n,x	o	
+Salmonella Kumasi	sal	N		30	z10	e,n,z15		
+Salmonella Kunduchi	sal	B		.1.,4,[5],12,.27.	l,[z13],[z28]	1,2		
+Salmonella Kuntair	sal	H		1,6,14,25	b	1,5		
+Salmonella Kuru	sal	C2,3		6,8	z	l,w		
+Salmonella Labadi	sal	C2,3		8,.20.	d	z6		
+Salmonella Lagos	sal	B		.1.,4,[5],12	i	1,5		
+Salmonella Lamberhurst	sal	E1		3,10	e,h	e,n,z15		
+Salmonella Lamin	sal	E1		3,10	l,z28	e,n,x		
+Salmonella Lancaster	sal	J		17	l,v	1,7		
+Salmonella Landala	sal	S		41	z10	1,6		
+Salmonella Landau	sal	N		30	i	1,2		
+Salmonella Landwasser	sal	E1		3,10	z	z6		
+Salmonella Langenhorn	sal	K		18	m,t	-		
+Salmonella Langensalza	sal	E1		3,10	y	l,w		
+Salmonella Langford	sal	M		28	b	e,n,z15		
+Salmonella Lanka (old serotype)	sal	E2		3,.15.	r	z6	o	
+Salmonella Lansing	sal	P		38	i	1,5		
+Salmonella Laredo	sal	H		1,6,14,25	z10	1,6		
+Salmonella Larochelle	sal	C1,4		6,7	e,h	1,2		
+Salmonella Lattenkamp	sal	W		45	z35	1,5		
+Salmonella Lawndale	sal	D1		.1.,9,12	z	1,5		
+Salmonella Lawra	sal	V		44	k	e,n,z15		
+Salmonella Leatherhead	sal	S		41	m,t	1,6		
+Salmonella Lechler	sal	51		51	z	e,n,z15		
+Salmonella Leda	sal	53		53	-	1,6		
+Salmonella Leer	sal	K		18	z10	1,5		
+Salmonella Leeuwarden	sal	F		11	b	1,5		
+Salmonella Legon	sal	B		.1.,4,12,.27.	c	1,5		
+Salmonella Leiden	sal	G1,2		13,22	z38	-		
+Salmonella Leipzig	sal	S		41	z10	1,5		
+Salmonella Leith	sal	C2,3		6,8	a	e,n,z15		
+Salmonella Lekke	sal	E1		3,10	d	1,6		
+Salmonella Lene	sal	F		11	z38	-		
+Salmonella Leoben	sal	M		28	l,v	1,5		
+Salmonella Leopoldville	sal	C1,4		6,7,.14.	b	z6		
+Salmonella Lerum	sal	E4		1,3,19	z	1,7		
+Salmonella Lethe (old serotype)	sal	S	II	41	g,t	-	o	
+Salmonella Lexington	sal	E1		3,10	z10	1,5		
+Salmonella Lezennes	sal	C2,3		6,8	z4,z23	1,7		
+Salmonella Libreville	sal	M		28	z10	1,6		
+Salmonella Lichtenberg (old serotype)	sal	S	II	41	z10	z6	o	
+Salmonella Ligeo	sal	N		30	l,v	1,2		
+Salmonella Ligna	sal	O		35	z10	z6		
+Salmonella Lika	sal	C1,4		6,7	i	1,7		
+Salmonella Lille	sal	C1,4		6,7	z38	-		
+Salmonella Limbe (old serotype)	sal	G1,2	II	.1.,13,22	g,m,t	[1,5]	o	
+Salmonella Limete	sal	B		.1.,4,12,.27.	b	1,5		
+Salmonella Lincoln (old serotype)	sal	F	II	11	m,t	e,n,x	o	
+Salmonella Lindenburg	sal	C2,3		6,8	i	1,2		
+Salmonella Lindern	sal	H		6,14,[24]	d	e,n,x		
+Salmonella Lindi	sal	P		38	r	1,5		
+Salmonella Lindrick (old serotype)	sal	D1	II	9,12	e,n,x	1,[5],7	o	
+Salmonella Linguere	sal	D2		9,46	b	z6		
+Salmonella Lingwala	sal	I		16	z	1,7		
+Salmonella Linton	sal	G1,2		13,23	r	e,n,z15		
+Salmonella Lisboa	sal	I		16	z10	1,6		
+Salmonella Lishabi	sal	D2		9,46	z10	1,7		
+Salmonella Litchfield	sal	C2,3		6,8	l,v	1,2		
+Salmonella Liverpool	sal	E4		1,3,19	d	e,n,z15		
+Salmonella Livingstone	sal	C1,4		6,7	d	l,w		
+Salmonella Livulu	sal	N		30	e,h	1,2		
+Salmonella Ljubljana	sal	B		4,12,.27.	k	e,n,x		
+Salmonella Llandoff	sal	E4		1,3,19	z29	[z6]		
+Salmonella Llandudno (old serotype)	sal	M	II	28	g,(m),[s],t	1,5	o	
+Salmonella Llobregat	sal	V		.1.,44	z10	e,n,x		
+Salmonella Loanda	sal	C2,3		6,8	l,v	1,5		
+Salmonella Lobatsi (old serotype)	sal	52	II	52	z44	1,5,7	o	
+Salmonella Locarno (old serotype)	sal	57	II	57	z29	z42	o	
+Salmonella Lockleaze	sal	C1,4		6,7,.14.	b	e,n,x		
+Salmonella Lode	sal	J		17	r	1,2		
+Salmonella Lodz	sal	S		41	z29	-		
+Salmonella Loenga	sal	T		.1.,42	z10	z6		
+Salmonella Logone	sal	Q		39	d	1,5		
+Salmonella Lohbruegge (old serotype)	sal	V	IV	.1.,44	z4,z32	-	o	
+Salmonella Lokstedt	sal	E4		1,3,19	l,z13,z28	1,2		
+Salmonella Lomalinda	sal	D1		.1.,9,12	a	e,n,x		
+Salmonella Lome	sal	D1		9,12	r	z6		
+Salmonella Lomita	sal	C1,4		6,7	e,h	1,5		
+Salmonella Lomnava	sal	I		16	l,w	e,n,z15		
+Salmonella London	sal	E1		3,10	l,v	1,6		
+Salmonella Losangeles	sal	I		16	l,v	z6		
+Salmonella Loubomo	sal	B		4,12	z	1,5		
+Salmonella Louga	sal	N		30	b	1,2		
+Salmonella Louisiana	sal	D2		9,46	z10	z6		
+Salmonella Louwbester (old serotype)	sal	I	II	16	z	e,n,x	o	
+Salmonella Lovelace	sal	G1,2		13,22	l,v	1,5		
+Salmonella Lowestoft	sal	J		17	g,s,t	-		
+Salmonella Luanshya (old serotype)	sal	G1,2	II	.1.,13,23	g,m,[s],t	[e,n,x]	o	
+Salmonella Lubumbashi	sal	S		41	r	1,5		
+Salmonella Luciana	sal	F		11	a	e,n,z15		
+Salmonella Luckenwalde	sal	M		28	z10	e,n,z15		
+Salmonella Luedinghausen	sal	J		17	c	1,5		
+Salmonella Luke	sal	X		.1.,47	g,m	-		
+Salmonella Lundby (old serotype)	sal	D2	II	9,46	b	e,n,x	o	
+Salmonella Lurup (old serotype)	sal	S	II	41	z10	e,n,x,z15	o	
+Salmonella Lutetia	sal	51		51	r,i	l,z13,z28		
+Salmonella Luton (old serotype)	sal	60	II	60	z	e,n,x	o	
+Salmonella Lyon	sal	X		47	k	e,n,z15		
+Salmonella Maarsen (old serotype)	sal	D2	II	9,46	z4,z24	z39:z42	o	
+Salmonella Maastricht	sal	F		11	z41	1,2		
+Salmonella Macallen	sal	E1		3,10	z36	-		
+Salmonella Macclesfield	sal	D2		9,46	g,m,s	1,2,7		
+Salmonella Machaga	sal	E4		1,3,19	i	e,n,x		
+Salmonella Madelia	sal	H		1,6,14,25	y	1,7		
+Salmonella Madiago	sal	E4		1,3,19	c	1,7		
+Salmonella Madigan	sal	V		44	c	1,5		
+Salmonella Madison	sal	L		21	d	z6		
+Salmonella Madjorio	sal	E1		3,10	d	e,n,z15		
+Salmonella Madras	sal	B		4,[5],12	m,t	e,n,z15		
+Salmonella Magherafelt	sal	C2,3		8,.20.	i	l,w		
+Salmonella Magumeri	sal	H		1,6,14,25	e,h	1,6		
+Salmonella Magwa	sal	L		21	d	e,n,x		
+Salmonella Mahina	sal	D2		9,46	z10	e,n,z15		
+Salmonella Maiduguri	sal	E4		1,3,19	f,g,t	e,n,z15		
+Salmonella Makiling	sal	U		43	z29	-		
+Salmonella Makiso	sal	C1,4		6,7	l,z13,z28	z6		
+Salmonella Makoma (old serotype)	sal	B	II	.1.,4,[5],12,.27.	a	[e,n,x]	o	
+Salmonella Makumira (old serotype)	sal	B	II	.1.,4,12,.27.	e,n,x	1,[5],7	o	
+Salmonella Malakal	sal	I		16	e,h	1,2		
+Salmonella Malawi (old serotype)	sal	66	V	66	z41	-	o	
+Salmonella Malaysia	sal	M		28	z10	1,7		
+Salmonella Malika	sal	V		44	l,z28	1,5		
+Salmonella Malmoe	sal	C2,3		6,8	i	1,7		
+Salmonella Malstatt	sal	I		16	b	z6		
+Salmonella Mampeza	sal	H		1,6,14,25	i	1,5		
+Salmonella Mampong	sal	G1,2		13,22	z35	1,6		
+Salmonella Manchester	sal	C2,3		6,8	l,v	1,7		
+Salmonella Mandera	sal	I		16	l,z13	e,n,z15		
+Salmonella Mango	sal	P		38	k	1,5		
+Salmonella Manhattan	sal	C2,3		6,8	d	1,5		
+Salmonella Manica (old serotype)	sal	D1	II	.1.,9,12	g,m,[s],t	[1,5,7]:[z42]	o	with Hamburg, Muizenberg
+Salmonella Manila (old serotype)	sal	E2		3,.15.	z10	1,5	o	
+Salmonella Mannheim	sal	F		11	k	l,w		
+Salmonella Manombo (old serotype)	sal	57	II	57	z39	e,n,x,z15	o	
+Salmonella Mapo	sal	C2,3		6,8	z10	1,5		
+Salmonella Mara	sal	Q		39	e,h	1,5		
+Salmonella Maracaibo	sal	F		11	l,v	1,5		
+Salmonella Marburg	sal	G1,2		13,23	k	-		
+Salmonella Maregrosso (old serotype)	sal	66	V	66	z65	-	o	
+Salmonella Maricopa	sal	T		.1.,42	g,z51	1,5		
+Salmonella Marienthal	sal	E1		3,10	k	e,n,z15		
+Salmonella Marina (old serotype)	sal	Y	IV	48	g,z51	-	o	
+Salmonella Maritzburg	sal	V		.1.,44	i	e,n,z15		
+Salmonella Maron	sal	E1		3,10	d	z35		
+Salmonella Maroua	sal	F		11	z	1,7		
+Salmonella Marseille	sal	F		11	a	1,5		
+Salmonella Marshall	sal	G1,2		13,22	a	l,z13,z28		
+Salmonella Maryland	sal	57		57	b	1,7		
+Salmonella Marylebone	sal	D2		9,46	k	1,2		
+Salmonella Masembe	sal	E1		3,10	a	e,n,x		
+Salmonella Maska	sal	B		.1.,4,12,.27.	z41	e,n,z15		
+Salmonella Massakory	sal	O		35	r	l,w		
+Salmonella Massenya	sal	B		.1.,4,12,.27.	k	1,5		
+Salmonella Matadi	sal	J		17	k	e,n,x		
+Salmonella Mathura	sal	D2		9,46	i	e,n,z15		
+Salmonella Matopeni	sal	N		30	y	1,2		
+Salmonella Matroosfontein (old serotype)	sal	E1	II	3,10	a	e,n,x	o	
+Salmonella Mayday	sal	D2		9,46	y	z6		
+Salmonella Mbandaka	sal	C1,4		6,7,.14.	z10	e,n,z15		
+Salmonella Mbao	sal	U		43	i	1,2		
+Salmonella Meekatharra	sal	W		45	a	e,n,z15		
+Salmonella Melbourne	sal	T		42	z	e,n,z15		
+Salmonella Meleagridis	sal	E1		3,10	e,h	l,w		
+Salmonella Memphis	sal	K		18	k	1,5		
+Salmonella Menden	sal	C1,4		6,7	z10	1,2		
+Salmonella Mendoza	sal	D1		9,12	l,v	1,2		
+Salmonella Menhaden (old serotype)	sal	E3		3,.15.,.34.	l,v	1,7	o	
+Salmonella Menston	sal	C1,4		6,7	g,s,[t]	[1,6]		
+Salmonella Merseyside (old serotype)	sal	I	II	16	g,t	[1,5]	o	
+Salmonella Mesbit	sal	X		47	m,t	[e,n,z15]		
+Salmonella Meskin	sal	51		51	e,h	1,2		
+Salmonella Messina	sal	N		30	d	1,5		
+Salmonella Mgulani	sal	P		38	i	1,2		
+Salmonella Miami	sal	D1		.1.,9,12	a	1,5		
+Salmonella Michigan	sal	J		17	l,v	1,5		
+Salmonella Middlesbrough	sal	T		.1.,42	i	z6		
+Salmonella Midhurst (old serotype)	sal	53	II	53	l,z28	z39	o	
+Salmonella Midway	sal	H		6,14,24	d	1,7		
+Salmonella Mikawasima	sal	C1,4		6,7,.14.	y	e,n,z15		
+Salmonella Millesi	sal	R		.1.,40	l,v	1,2		
+Salmonella Milwaukee	sal	U		43	f,g	-		
+Salmonella Mim	sal	G1,2		13,22	a	1,6		
+Salmonella Minna	sal	H		1,6,14,25	c	l,w		
+Salmonella Minneapolis (old serotype)	sal	E3		3,.15.,.34.	e,h	1,6	o	
+Salmonella Minnesota	sal	L		21	b	e,n,x		
+Salmonella Mishmarhaemek	sal	G1,2		.1.,13,23	d	1,5		
+Salmonella Mission (old serotype)	sal	no					o	Isangi
+Salmonella Mississippi	sal	G1,2		.1.,13,23	b	[1,5]		
+Salmonella Missouri	sal	F		11	g,s,t	-		
+Salmonella Miyazaki	sal	D1		9,12	l,z13	1,7		
+Salmonella Mjimwema (old serotype)	sal	D1	II	.1.,9,12	b	e,n,x	o	
+Salmonella Mjordan	sal	N		30	i	e,n,z15		
+Salmonella Mkamba	sal	C1,4		6,7	l,v	1,6		
+Salmonella Mobeni (old serotype)	sal	I	II	16	g,[m],[s],t	[e,n,x]	o	
+Salmonella Mocamedes	sal	M		28	d	e,n,x		
+Salmonella Moero	sal	M		28	b	1,5		
+Salmonella Moers	sal	F		11	m,t	-		
+Salmonella Mokola	sal	E1		3,10	y	1,7		
+Salmonella Molade	sal	C2,3		8,.20.	z10	z6		
+Salmonella Molesey	sal	52		52	b	1,5		
+Salmonella Mondeor (old serotype)	sal	Q	II	39	l,z28	e,n,x	o	
+Salmonella Mono	sal	B		4,12	l,w	1,5		
+Salmonella Mons	sal	B		.1.,4,12,.27.	d	l,w		
+Salmonella Monschaui	sal	O		35	m,t	-		
+Salmonella Montevideo	sal	C1,4		6,7,.14.	g,m,[p],s	[1,2,7]		
+Salmonella Montgomery (old serotype)	sal	F	II	11	a	d:e,n,z15	o	
+Salmonella Montreal	sal	U		43	c	1,5		
+Salmonella Morehead	sal	N		30	i	1,5		
+Salmonella Morillons	sal	M		28	m,t	1,6		
+Salmonella Morningside	sal	N		30	c	e,n,z15		
+Salmonella Mornington	sal	H		1,6,14,25	y	e,n,z15		
+Salmonella Morocco	sal	N		30	l,z13,z28	e,n,z15		
+Salmonella Morotai	sal	J		17	l,v	1,2		
+Salmonella Moroto	sal	M		28	z10	l,w		
+Salmonella Moscow	sal	D1		9,12	g,q	-		
+Salmonella Mosselbay (old serotype)	sal	U	II	43	g,m,[s],t	[z42]	o	
+Salmonella Moualine	sal	X		47	y	1,6		
+Salmonella Moundou	sal	51		51	l,z28	1,5		
+Salmonella Mountmagnet	sal	L		21	r	-		
+Salmonella Mountpleasant	sal	X		47	z	1,5		
+Salmonella Moussoro	sal	H		1,6,14,25	i	e,n,z15		
+Salmonella Mowanjum	sal	C2,3		6,8	z	1,5		
+Salmonella Mpila (old serotype)	sal	E1	II	3,10	z38	z42	o	
+Salmonella Mpouto	sal	I		16	m,t	-		
+Salmonella Muenchen	sal	C2,3		6,8	d	1,2		
+Salmonella Muenster	sal	E1		3,10	e,h	1,5		
+Salmonella Muguga	sal	V		44	m,t	-		
+Salmonella Muizenberg (old serotype)	sal	D1	II	.1.,9,12	g,m,[s],t	[1,5,7]:[z42]	o	with Hamburg, Manica
+Salmonella Mulhouse	sal	D1		1,9,12	z	1,2		
+Salmonella Mundonobo	sal	M		28	d	1,7		
+Salmonella Mundsburg (old serotype)	sal	F	IV	11	g,z51	-	o	
+Salmonella Mura	sal	B		.1.,4,12	z10	l,w		
+Salmonella Nachshonim (old serotype)	sal	G1,2	II	.1.,13,23	z	1,5	o	
+Salmonella Naestved	sal	D1		.1.,9,12	g,p,s	-		
+Salmonella Nagoya	sal	C2,3		6,8	b	1,5		
+Salmonella Nairobi (old serotype)	sal	T	II	42	r	-	o	
+Salmonella Nakuru	sal	B		.1.,4,12,.27.	a	z6		
+Salmonella Namib (old serotype)	sal	Z	II	50	g,[m],s,t	[1,5]	o	
+Salmonella Namibia	sal	C1,4		6,7	c	e,n,x		
+Salmonella Namoda	sal	X		47	z10	e,n,z15		
+Salmonella Nancy (old serotype)	sal	E2		3,.15.	l,v	1,2	o	
+Salmonella Nanergou	sal	C2,3		6,8	g,s,t	-		
+Salmonella Nanga	sal	G1,2		.1.,13,23	l,v	e,n,z15		
+Salmonella Nantes	sal	D2		9,46	y	l,w		
+Salmonella Napoli	sal	D1		.1.,9,12	l,z13	e,n,x		
+Salmonella Narashino	sal	C2,3		6,8	a	e,n,x		
+Salmonella Nashua	sal	M		28	l,v	e,n,z15		
+Salmonella Natal	sal	D1		9,12	z4,z24	-		
+Salmonella Naware	sal	I		16	z38	-		
+Salmonella Nchanga	sal	E1		3,10	l,v	1,2		
+Salmonella Ndjamena	sal	H		1,6,14,25	b	1,2		
+Salmonella Ndolo	sal	D1		.1.,9,12	d	1,5		
+Salmonella Neasden (old serotype)	sal	D1	II	9,12	g,s,t	e,n,x	o	
+Salmonella Neftenbach	sal	B		4,12	z	e,n,x		
+Salmonella Negev (old serotype)	sal	S	II	41	z10	1,2	o	
+Salmonella Nessa	sal	H		1,6,14,25	z10	1,2		
+Salmonella Nessziona	sal	C1,4		6,7	l,z13	1,5		
+Salmonella Neudorf	sal	N		30	b	e,n,z15		
+Salmonella Neukoelln	sal	C1,4		6,7	l,z13,[z28]	e,n,z15		
+Salmonella Neumuenster	sal	B		.1.,4,12,.27.	k	1,6		
+Salmonella Neunkirchen	sal	P		38	z10	-		
+Salmonella Newbrunswick (old serotype)	sal	E2		3,.15.	l,v	1,7	o	
+Salmonella Newhaw (old serotype)	sal	E2		3,.15.	e,h	1,5	o	
+Salmonella Newholland	sal	54		4,12,54	m,t	-		
+Salmonella Newington (old serotype)	sal	E2		3,.15.	e,h	1,6	o	
+Salmonella Newlands	sal	E1		3,10	e,h	e,n,x		
+Salmonella Newmexico	sal	D1		9,12	g,z51	1,5		
+Salmonella Newport	sal	C2,3		6,8,.20.	e,h	1,2		
+Salmonella Newrochelle	sal	E1		3,10	k	l,w		
+Salmonella Newyork	sal	G1,2		13,22	g,s,t	-		
+Salmonella Ngaparou	sal	D2		9,46	z4,z24	-		
+Salmonella Ngili	sal	C1,4		6,7	z10	1,7		
+Salmonella Ngor	sal	E4		1,3,19	l,v	1,5		
+Salmonella Ngozi (old serotype)	sal	Y	II	48	z10	[1,5]	o	
+Salmonella Niakhar	sal	V		44	a	1,5		
+Salmonella Niamey	sal	J		17	d	l,w		
+Salmonella Niarembe	sal	V		44	a	l,w		
+Salmonella Niederoderwitz	sal	U		43	b	-		
+Salmonella Nienstedten (old serotype)	sal	C1,4		6,7,.14.	b	l,w	o	
+Salmonella Nieukerk	sal	C1,4		6,7,.14.	d	z6		
+Salmonella Nigeria	sal	C1,4		6,7	r	1,6		
+Salmonella Nijmegen	sal	N		30	y	e,n,z15		
+Salmonella Nikolaifleet	sal	I		16	g,m,s	-		
+Salmonella Niloese	sal	E4		1,3,19	d	z6		
+Salmonella Nima	sal	M		28	y	1,5		
+Salmonella Nimes	sal	G1,2		13,22	z35	e,n,z15		
+Salmonella Nissii (old serotype)	sal	C1,4					o	Ohio
+Salmonella Nitra	sal	A		2,12	g,m	-		
+Salmonella Niumi	sal	E4		1,3,19	a	1,5		
+Salmonella Njala	sal	P		38	k	e,n,x		
+Salmonella Nola	sal	C1,4		6,7	e,h	1,7		
+Salmonella Noordhoek (old serotype)	sal	I	II	16	l,w	z6	o	
+Salmonella Nordenham (old serotype)	sal	B	II	.1.,4,12,.27.	z	e,n,x	o	
+Salmonella Nordrhein	sal	D2		9,46	l,z13,z28	e,n,z15		
+Salmonella Nordufer	sal	C2,3		6,8	a	1,7		
+Salmonella Norton	sal	C1,4		6,7	i	l,w		
+Salmonella Norwich	sal	C1,4		6,7	e,h	1,6		
+Salmonella Nottingham	sal	I		16	d	e,n,z15		
+Salmonella Nowawes	sal	R		40	z	z6		
+Salmonella Noya	sal	C2,3		8	r	1,7		
+Salmonella Nuatja	sal	I		16	k	e,n,x		
+Salmonella Nuernberg (old serotype)	sal	T	II	42	z	z6	o	
+Salmonella Nyanza	sal	F		11	z	z6		
+Salmonella Nyborg	sal	E1		3,10	e,h	1,7		
+Salmonella Nyeko	sal	I		16	a	1,7		
+Salmonella Oakey	sal	C1,4		6,7	m,t	z64		
+Salmonella Oakland	sal	C1,4		6,7	z	1,6,[7]		
+Salmonella Obogu	sal	C1,4		6,7	z4,z23	1,5		
+Salmonella Ochiogu	sal	E4		1,3,19	z38	e,n,z15		
+Salmonella Ochsenwerder	sal	54		6,7,54	k	1,5		
+Salmonella Ochsenzoll (old serotype)	sal	I	IV	16	z4,z23	-	o	
+Salmonella Ockenheim	sal	N		30	l,z13,z28	1,6		
+Salmonella Odienne	sal	R		40	y	1,5		
+Salmonella Odjik (old serotype)	sal	N	II	30	a	z39	o	
+Salmonella Odozi	sal	N		30	k	e,n,[x],z15		
+Salmonella Oerlikon	sal	Q		39	l,v	e,n,z15		
+Salmonella Oesterbro	sal	E4		1,3,19	k	1,5		
+Salmonella Oevelgoenne (old serotype)	sal	M	II	28	r	e,n,z15	o	
+Salmonella Offa	sal	S		41	z38	-		
+Salmonella Ogbete	sal	U		43	z	1,5		
+Salmonella Ohio	sal	C1,4		6,7	b	l,w		
+Salmonella Ohlstedt	sal	E1		3,10	y	e,n,x		
+Salmonella Okatie	sal	G1,2		13,23	g,[s],t	-		
+Salmonella Okefoko	sal	E1		3,10	c	z6		
+Salmonella Okerara	sal	E1		3,10	z10	1,2		
+Salmonella Oldenburg	sal	I		16	d	1,2		
+Salmonella Olten	sal	D2		9,46	d	e,n,z15		
+Salmonella Omderman (old serotype)	sal	C1,4		6,7,.14.	d	e,n,x	o	
+Salmonella Omifisan	sal	R		.1.,40	z29	-		
+Salmonella Omuna	sal	C1,4		6,7	z10	z35		
+Salmonella Ona	sal	M		28	g,s,t	-		
+Salmonella Onarimon	sal	D1		.1.,9,12	b	1,2		
+Salmonella Onderstepoort	sal	H		1,6,14,[25]	e,h	1,5		
+Salmonella Onireke	sal	E1		3,10	d	1,7		
+Salmonella Ontario	sal	D2		9,46	d	1,5		
+Salmonella Oran	sal	P		38	a	e,n,z15		
+Salmonella Oranienburg	sal	C1,4		6,7	m,t	[z57]		
+Salmonella Orbe	sal	T		42	b	1,6		
+Salmonella Ord	sal	52		52	a	e,n,z15		
+Salmonella Ordonez	sal	G1,2		.1.,13,23	y	l,w		
+Salmonella Oregon (old serotype)	sal	C2,3					o	Muenchen
+Salmonella Orientalis	sal	I		16	k	e,n,z15		
+Salmonella Orion	sal	E1		3,10	y	1,5		
+Salmonella Oritamerin	sal	C1,4		6,7	i	1,5		
+Salmonella Orlando	sal	K		18	l,v	e,n,z15		
+Salmonella Orleans	sal	U		43	d	1,5		
+Salmonella Os	sal	D1		9,12	a	1,6		
+Salmonella Oskarshamn	sal	M		28	y	1,2		
+Salmonella Oslo	sal	C1,4		6,7	a	e,n,x		
+Salmonella Osnabrueck	sal	F		11	l,z13,z28	e,n,x		
+Salmonella Othmarschen	sal	C1,4		6,7,.14.	g,m,[t]	-		
+Salmonella Ottawa	sal	D1		.1.,9,12	z41	1,5		
+Salmonella Ottershaw (old serotype)	sal	R	II	40	d	-	o	
+Salmonella Ouakam	sal	D2		9,46	z29	-		
+Salmonella Oudwijk	sal	G1,2		13,22	b	1,6		
+Salmonella Overchurch	sal	R		.1.,40	l,w	-		
+Salmonella Overschie	sal	51		51	l,v	1,5		
+Salmonella Overvecht	sal	N		30	a	1,2		
+Salmonella Oxford	sal	E1		3,10	a	1,7		
+Salmonella Oyonnax	sal	C1,4		6,7	y	1,6		
+Salmonella Oysterbeds (old serotype)	sal	C1,4	II	6,7	z	z42	o	
+Salmonella Pakistan	sal	C2,3		8	l,v	1,2		
+Salmonella Palamaner	sal	V		.1.,44	d	z35		
+Salmonella Palime	sal	C1,4		6,7	z35	e,n,z15		
+Salmonella Panama	sal	D1		.1.,9,12	l,v	1,5		
+Salmonella Pankow (old serotype)	sal	E2		3,.15.	d	1,5	o	
+Salmonella Papuana	sal	C1,4		6,7	r	e,n,z15		
+Salmonella Paratyphi A	sal	A		.1.,2,12	a	[1,5]		
+Salmonella Paratyphi A var. Durazzo	sal	A					??	
+Salmonella Paratyphi B	sal	B		.1.,4,[5],12	b	1,2		
+Salmonella Paratyphi B var. Odense	sal	B					??	
+Salmonella Paratyphi C	sal	C1,4		6,7,[Vi]	c	1,5		
+Salmonella Parera (old serotype)	sal	F	IV	11	z4,z23	-	o	
+Salmonella Paris	sal	C2,3		8,.20.	z10	1,5		
+Salmonella Parkroyal	sal	E4		1,3,19	l,v	1,7		
+Salmonella Parrow (old serotype)	sal	E2	II	3,.15.	g,m,s,t	-	o	
+Salmonella Pasing	sal	B		4,12	z35	1,5		
+Salmonella Patience	sal	M		28	d	e,n,z15		
+Salmonella Penarth	sal	D1		9,12	z35	z6		
+Salmonella Penilla	sal	M		28	l,z13,z28	e,n,z15		
+Salmonella Pensacola	sal	D1		.1.,9,12	m,t	[1,2]		
+Salmonella Perinet (old serotype)	sal	W	II	45	g,m,t	e,n,x,z15	o	
+Salmonella Perth	sal	P		38	y	e,n,x		
+Salmonella Petahtikve	sal	E4		1,3,19	f,g,t	1,7		
+Salmonella Phaliron	sal	C2,3		6,8	z	e,n,z15		
+Salmonella Pharr	sal	F		11	b	e,n,z15		
+Salmonella Phoenix (old serotype)	sal	X	II	47	b	1,5	o	
+Salmonella Pietersburg	sal	E3		3,.15.,.34.	z69	1,7		
+Salmonella Pikine (old serotype)	sal	C2,3					o	Altona
+Salmonella Pisa	sal	I		16	i	l,w		
+Salmonella Planckendael	sal	C1,4		6,7	z4,z23	1,6		
+Salmonella Ploufragan	sal	V		1,44	z4,z23	e,n,z15		
+Salmonella Plymouth	sal	D2		9,46	d	z6		
+Salmonella Poano	sal	H		1,6,14,25	z	l,z13,z28		
+Salmonella Poeseldorf	sal	54		8,.20.,54	i	z6		
+Salmonella Poitiers	sal	C1,4		6,7	z	1,5		
+Salmonella Pomona	sal	M		28	y	1,7		
+Salmonella Pontypridd	sal	K		18	g,m	-		
+Salmonella Poona	sal	G1,2		.1.,13,22	z	1,6		
+Salmonella Portanigra	sal	C2,3		8,.20.	d	1,7		
+Salmonella Portbech (old serotype)	sal	T	II	42	l,v	e,n,x,z15	o	
+Salmonella Portland	sal	D1		9,12	z10	1,5		
+Salmonella Portsmouth (old serotype)	sal	E2		3,.15.	l,v	1,6	o	
+Salmonella Potengi	sal	K		18	z	-		
+Salmonella Potosi	sal	H		6,14	z36	1,5		
+Salmonella Potsdam	sal	C1,4		6,7,.14.	l,v	e,n,z15		
+Salmonella Potto	sal	D2		9,46	i	z6		
+Salmonella Powell	sal	D1		9,12	y	1,7		
+Salmonella Praha	sal	C2,3		6,8	y	e,n,z15		
+Salmonella Pramiso	sal	E1		3,10	c	1,7		
+Salmonella Presov	sal	C2,3		6,8	b	e,n,z15		
+Salmonella Preston	sal	B		.1.,4,12	z	l,w		
+Salmonella Pretoria	sal	F		11	k	1,2		
+Salmonella Pueris (old serotype)	sal	C2,3					o	Newport
+Salmonella Pullorum (old serotype)	sal	D1					o	Gallinarum
+Salmonella Putten	sal	G1,2		13,23	d	l,w		
+Salmonella Quebec	sal	V		44	c	e,n,z15		
+Salmonella Quentin	sal	D2		9,46	d	1,6		
+Salmonella Quimbamba (old serotype)	sal	X	II	47	d	z39	o	
+Salmonella Quinhon	sal	X		47	z44	-		
+Salmonella Quiniela	sal	C2,3		6,8	c	e,n,z15		
+Salmonella Ramatgan	sal	N		30	k	1,5		
+Salmonella Ramsey	sal	M		28	l,w	1,6		
+Salmonella Rand (old serotype)	sal	T	II	42	z	e,n,x,z15	o	
+Salmonella Raus	sal	G1,2		13,22	f,g	e,n,x		
+Salmonella Rawash	sal	K		.6.,.14.,18	c	e,n,x		
+Salmonella Reading	sal	B		.1.,4,[5],12	e,h	1,5		
+Salmonella Rechovot	sal	C2,3		8,.20.	e,h	z6		
+Salmonella Redba	sal	C1,4		6,7	z10	z6		
+Salmonella Redhill	sal	F		11	e,h	l,z13,z28		
+Salmonella Redlands	sal	I		16	z10	e,n,z15		
+Salmonella Regent	sal	E1		3,10	f,g,[s]	[1,6]		
+Salmonella Reinickendorf	sal	B		4,12	l,z28	e,n,x		
+Salmonella Remete	sal	F		11	z4,z23	1,6		
+Salmonella Remiremont	sal	C2,3		8,.20.	z10	l,w		
+Salmonella Remo	sal	B		.1.,4,12,.27.	r	1,7		
+Salmonella Reubeuss	sal	C2,3		8,.20.	g,m,t	-		
+Salmonella Rhodesiense (old serotype)	sal	D1	II	.1.,9,12	d	e,n,x	o	
+Salmonella Rhone	sal	L		21	c	e,n,x		
+Salmonella Rhydyfelin	sal	I		16	e,h	e,n,x		
+Salmonella Richmond	sal	C1,4		6,7	y	1,2		
+Salmonella Rideau	sal	E4		1,3,19	f,g	-		
+Salmonella Ridge	sal	D1		9,12	c	z6		
+Salmonella Ried	sal	G1,2		.1.,13,22	z4,z23	[e,n,z15]		
+Salmonella Riggil	sal	C1,4		6,7	g,(t)	-		
+Salmonella Riogrande	sal	R		40	b	1,5		
+Salmonella Rissen	sal	C1,4		6,7	f,g	-		
+Salmonella Rittersbach	sal	P		38	b	e,n,z15		
+Salmonella Riverside	sal	W		45	b	1,5		
+Salmonella Roan	sal	P		38	l,v	e,n,x		
+Salmonella Rochdale	sal	Z		50	b	e,n,x		
+Salmonella Roggeveld (old serotype)	sal	51	II	51	-	1,7	o	
+Salmonella Rogy	sal	M		28	z10	1,2		
+Salmonella Romanby	sal	G1,2		.1.,13,23	z4,z24	-		
+Salmonella Roodepoort	sal	G1,2		.1.,13,22	z10	1,5		
+Salmonella Rooikrantz (old serotype)	sal	H	II	1,6,14	m,t	1,5	o	
+Salmonella Rosenthal (old serotype)	sal	E2		3,.15.	b	1,5	o	
+Salmonella Rossleben	sal	54		54	e,h	1,6		
+Salmonella Rostock	sal	D1		.1.,9,12	g,p,u	-		
+Salmonella Roterberg (old serotype)	sal	C1,4	IV	6,7	z4,z23	-	o	
+Salmonella Rothenburgsort	sal	P		38	m,t	-		
+Salmonella Rotterdam (old serotype)	sal	G1,2	II	.1.,13,22	g,t	1,5	o	
+Salmonella Rottnest	sal	G1,2		.1.,13,22	b	1,7		
+Salmonella Rovaniemi	sal	I		16	r,i	1,5		
+Salmonella Rowburton (old serotype)	sal	I	II	16	m,t	[z42]	o	
+Salmonella Royan	sal	H		1,6,14,25	z	e,n,z15		
+Salmonella Ruanda	sal	D1		9,12	z10	e,n,z15		
+Salmonella Rubislaw	sal	F		11	r	e,n,x		
+Salmonella Ruiru	sal	L		21	y	e,n,x		
+Salmonella Ruki (old serotype)	sal	no					o	Ball
+Salmonella Rumford	sal	C1,4		6,7	z38	1,2		
+Salmonella Runby	sal	H		1,6,14,25	c	e,n,x		
+Salmonella Rutgers (old serotype)	sal	E1		3,10	R1,z40	1,7	o	
+Salmonella Ruzizi	sal	E1		3,10	l,v	e,n,z15		
+Salmonella Saarbruecken	sal	D1		.1.,9,12	a	1,7		
+Salmonella Saboya	sal	I		16	e,h	1,5		
+Salmonella Sachsenwald (old serotype)	sal	R	IV	.1.,40	z4,z23	-	o	
+Salmonella Sada	sal	N		30	z10	1,2		
+Salmonella Saintemarie	sal	52		52	g,t	-		
+Salmonella Saintpaul	sal	B		.1.,4,[5],12	e,h	1,2		
+Salmonella Saka (old serotype)	sal	X					o	Sya
+Salmonella Sakai (old serotype)	sal	C1,4					o	Potsdam
+Salmonella Sakaraha (old serotype)	sal	Y	II	48	k	z39	o	
+Salmonella Salford	sal	I		16	l,v	e,n,x		
+Salmonella Salinatis (old serotype)	sal	B		4,12	d,e,h	d,e,n,z15	o	
+Salmonella Saloniki	sal	I		16	z29	-		
+Salmonella Samaru	sal	S		41	i	1,5		
+Salmonella Sambre	sal	E4		1,3,19	z4,z24	-		
+Salmonella Sandiego	sal	B		4,[5],12	e,h	e,n,z15		
+Salmonella Sandow	sal	C2,3		6,8	f,g	e,n,z15		
+Salmonella Sanga	sal	C2,3		8	b	1,7		
+Salmonella Sangalkam	sal	D2		9,46	m,t	-		
+Salmonella Sangera	sal	I		16	b	e,n,z15		
+Salmonella Sanjuan	sal	C1,4		6,7	a	1,5		
+Salmonella Sanktgeorg	sal	M		28	r,[i]	e,n,z15		
+Salmonella Sanktjohann	sal	G1,2		13,23	b	l,w		
+Salmonella Sanktmarx	sal	E4		1,3,19	e,h	e,n,z15		
+Salmonella Santander	sal	M		28	z35	e,n,z15		
+Salmonella Santhiaba	sal	R		40	l,z28	1,6		
+Salmonella Santiago	sal	C2,3		8,.20.	c	e,n,x		
+Salmonella Sao	sal	E4		1,3,19	e,h	1,7		
+Salmonella Sapele	sal	G1,2		13,23	z10	e,n,z15		
+Salmonella Saphra	sal	I		16	y	1,5		
+Salmonella Sara	sal	H		1,6,14,25	z38	[e,n,x]		
+Salmonella Sarajane	sal	B		4,[5],12,.27.	d	e,n,x		
+Salmonella Sarepta (old serotype)	sal	I	II	16	l,z28	z42	o	
+Salmonella Saugus	sal	R		40	b	1,7		
+Salmonella Schalkwijk	sal	H		6,14,[24]	i	e,n,..		
+Salmonella Schleissheim	sal	B		4,12,.27.	b	-		
+Salmonella Schoeneberg	sal	E4		1,3,19	z	e,n,z15		
+Salmonella Schottmuelleri (old serotype)	sal	B					o	Paratyphi B
+Salmonella Schwabach	sal	C1,4		6,7	c	1,7		
+Salmonella Schwarzengrund	sal	B		.1.,4,12,.27.	d	1,7		
+Salmonella Schwerin	sal	C2,3		6,8	k	e,n,x		
+Salmonella Sculcoates	sal	I		16	d	1,5		
+Salmonella Seaforth (old serotype)	sal	Z	II	50	k	z6	o	
+Salmonella Seattle	sal	M		28	a	e,n,x		
+Salmonella Sedgwick	sal	V		44	b	e,n,z15		
+Salmonella Seegefeld	sal	E1		3,10	r,i	1,2		
+Salmonella Sekondi	sal	E1		3,10	e,h	z6		
+Salmonella Selandia (old serotype)	sal	E2		3,.15.	e,h	1,7	o	
+Salmonella Selby	sal	M		28	y	z6		
+Salmonella Seminole (old serotype)	sal	R	IV	.1.,40	g,z51	-	o	
+Salmonella Sendai	sal	D1		.1.,9,12	a	1,5		
+Salmonella Senegal	sal	F		11	r	1,5		
+Salmonella Senftenberg	sal	E4		1,3,19	g,[s],t	-		
+Salmonella Senneville	sal	N		30	z10	1,5		
+Salmonella Seremban	sal	D1		9,12	i	1,5		
+Salmonella Serrekunda	sal	E1		3,10	k	1,7		
+Salmonella Setubal (old serotype)	sal	60	II	60	g,m,t	z6	o	
+Salmonella Shamba	sal	I		16	c	e,n,x		
+Salmonella Shangani	sal	E1		3,10	d	1,5		
+Salmonella Shanghai	sal	I		16	l,v	1,6		
+Salmonella Shannon	sal	E1		3,10	z35	l,w		
+Salmonella Sharon	sal	F		11	k	1,6		
+Salmonella Sheffield	sal	P		38	c	1,5		
+Salmonella Sherbrooke	sal	I		16	d	1,6		
+Salmonella Shikmonah	sal	R		40	a	1,5		
+Salmonella Shipley	sal	C2,3		8,.20.	b	e,n,z15		
+Salmonella Shomolu	sal	M		28	y	l,w		
+Salmonella Shomron (old serotype)	sal	K	II	18	z4,z32	-	o	IIIa
+Salmonella Shoreditch	sal	D2		9,46	r	e,n,z15		
+Salmonella Shubra	sal	B		4,[5],12	z	1,2		
+Salmonella Sica	sal	S		41	b	e,n,z15		
+Salmonella Siegburg (old serotype)	sal	no					o	Cerro var. 14+
+Salmonella Simi	sal	E1		3,10	r	e,n,z15		
+Salmonella Simonstown (old serotype)	sal	H	II	1,6,14	z10	1,5	o	
+Salmonella Simsbury (old serotype)	sal	E4		1,3,19	Rz27	-	o	Senftenberg
+Salmonella Sinchew	sal	E1		3,10	l,v	z35		
+Salmonella Sindelfingen	sal	C2,3		8,.20.	y	l,w		
+Salmonella Singapore	sal	C1,4		6,7	k	e,n,x		
+Salmonella Sinstorf	sal	E1		3,10	l,v	1,5		
+Salmonella Sinthia	sal	K		18	z38	-		
+Salmonella Sipane	sal	T		.1.,42	r	e,n,z15		
+Salmonella Skansen	sal	C2,3		6,8	b	1,2		
+Salmonella Slade	sal	E4		1,3,19	y	e,n,z15		
+Salmonella Sladun (old serotype)	sal	B					o	Abony
+Salmonella Slangkop (old serotype)	sal	H	II	1,6,14	z10	z6:z42	o	
+Salmonella Slatograd (old serotype)	sal	N		30	g,t	-	o	
+Salmonella Sljeme	sal	X		.1.,47	f,g	-		
+Salmonella Sloterdijk	sal	B		.1.,4,12,.27.	z35	z6		
+Salmonella Soahanina	sal	H		6,14,24	z	e,n,x		
+Salmonella Soerenga	sal	N		30	i	l,w		
+Salmonella Soesterberg (old serotype)	sal	L	IV	21	z4,z23	-	o	
+Salmonella Sofia (old serotype)	sal	B	II	1,4,12,.27.	b	[e,n,x]	o	
+Salmonella Sokode	sal	D2		9,46	r	z6		
+Salmonella Solna	sal	M		28	a	1,5		
+Salmonella Solt	sal	F		11	y	1,5		
+Salmonella Somone	sal	C1,4		6,7	z4,z24	-		
+Salmonella Soumbedioune	sal	M		28	b	e,n,x		
+Salmonella Southampton	sal	B		.1,4,12,.27.	r	z6		
+Salmonella Southbank	sal	E1		3,10	m,t	[1,6]		
+Salmonella Soutpan (old serotype)	sal	F	II	11	z	z39	o	
+Salmonella Souza	sal	E1		3,10	d	e,n,x		
+Salmonella sp.	sal							
+Salmonella sp. (rough)	sal							
+Salmonella Spalentor	sal	T		.1.,42	y	e,n,z15		
+Salmonella Spartel	sal	L		21	d	1,5		
+Salmonella Splott	sal	V		44	g,s,t	-		
+Salmonella Springs (old serotype)	sal	R	II	40	a	z39	o	
+Salmonella Srinagar (old serotype)	sal	F	VI	11	b	e,n,x	o	
+Salmonella Stachus	sal	P		38	z	-		
+Salmonella Stanley	sal	B		.1.,4,[5],12,.27.	d	1,2		
+Salmonella Stanleyville	sal	B		.1.,4,[5],12,.27.	z4,z23	[1,2]		
+Salmonella Staoueli	sal	X		47	k	1,2		
+Salmonella Steinplatz	sal	N		30	y	1,6		
+Salmonella Steinwerder	sal	54		3,.15.,54	y	1,5		
+Salmonella Stellenbosch (old serotype)	sal	D1	II	.1.,9,12	z	1,7	o	
+Salmonella Stellingen	sal	X		47	d	e,n,x		
+Salmonella Stendal	sal	F		11	l,v	1,2		
+Salmonella Sternschanze	sal	N		30	g,s,t	-		
+Salmonella Sterrenbos	sal	C2,3		6,8	d	e,n,x		
+Salmonella Stevenage (old serotype)	sal	G1,2	II	.1.,13,23	[z42]	1,[5],7	o	
+Salmonella Stikland (old serotype)	sal	E1	II	3,10	m,t	e,n,x	o	
+Salmonella Stockholm	sal	E1		3,10	y	z6		
+Salmonella Stoneferry	sal	N		30	z4,z23	-		
+Salmonella Stormont	sal	E1		3,10	d	1,2		
+Salmonella Stourbridge	sal	C2,3		6,8	b	1,6		
+Salmonella Straengnaes	sal	F		11	z10	1,5		
+Salmonella Strasbourg	sal	D2		9,46	d	1,7		
+Salmonella Stratford	sal	E4		1,3,19	i	1,2		
+Salmonella Strathcona	sal	C1,4		6,7	l,z13,z28	1,7		
+Salmonella Stuivenberg	sal	E4		1,3,19	l,[z13],z28	1,5		
+Salmonella Stuttgart	sal	C1,4		6,7,.14.	i	z6		
+Salmonella Suarez (old serotype)	sal	R	II	.1.,40	c	e,n,x,z15	o	
+Salmonella Suberu	sal	E1		3,10	g,m,	-		
+Salmonella Sudan	sal	U		43	l,z13	-		
+Salmonella Suederelbe (old serotype)	sal	D1	II	.1.,9,12	b	z39	o	
+Salmonella Suelldorf	sal	W		45	f,g	-		
+Salmonella Suez (old serotype)	sal	B					o	Shubra
+Salmonella Suipestifer (old serotype)	sal	C1,4					o	Choleraesuis
+Salmonella Sullivan (old serotype)	sal	C1,4	II	6,7	z42	1,7	o	
+Salmonella Sundsvall	sal	H		[1],6,14,[25]	z	e,n,x		
+Salmonella Sunnycove	sal	C2,3		8	y	e,n,x		
+Salmonella Sunnydale (old serotype)	sal	R	II	.1.,40	k	e,n,x,z15	o	
+Salmonella Surat	sal	H		[1],6,14,[25]	r,[i]	e,n,z15		
+Salmonella Surrey	sal	L		21	k	1,(2),5		
+Salmonella Svedvi	sal	E4		1,3,19	l,v	e,n,z15		
+Salmonella Sya	sal	X		47	b	[z6]		
+Salmonella Sydney (old serotype)	sal	Y	II	48	i	z	o	IIIb
+Salmonella Sylvania	sal	H		6,14	g,p	-		
+Salmonella Szentes	sal	I		16	k	1,2		
+Salmonella Tabligbo	sal	X		47	z4,z23	e,n,z15		
+Salmonella Tado	sal	C2,3		8,.20.	c	z6		
+Salmonella Tafelbaai (old serotype)	sal	E1	II	3,10	z	z39	o	
+Salmonella Tafo	sal	B		.1.,4,12,.27.	z35	1,7		
+Salmonella Taihoku (old serotype)	sal	E1					o	Meleagridis
+Salmonella Taiping	sal	G1,2		13,22	l,z13	e,n,z15		
+Salmonella Takoradi	sal	C2,3		6,8	i	1,5		
+Salmonella Taksony	sal	E4		1,3,19	i	z6		
+Salmonella Tallahassee	sal	C2,3		6,8	z4,z32	-		
+Salmonella Tamale	sal	C2,3		8,.20.	z29	[e,n,z15]		
+Salmonella Tambacounda	sal	E4		1,3,19	b	e,n,x		
+Salmonella Tamberma	sal	X		47	z4,z24	-		
+Salmonella Tamilnadu	sal	C1,4		6,7	z41	z35		
+Salmonella Tampico	sal	C1,4		6,7	z36	e,n,z15		
+Salmonella Tananarive	sal	C2,3		6,8	y	1,5		
+Salmonella Tanger	sal	G1,2		.1.,13,22	y	1,6		
+Salmonella Tanzania	sal	G1,2		.1.,13,22	z	e,n,z15		
+Salmonella Tarshyne	sal	D1		9,12	d	1,6		
+Salmonella Taset	sal	T		.1.,42	z41	-		
+Salmonella Taunton	sal	M		28	k	e,n,x		
+Salmonella Taylor	sal	P		38	l,v	e,n,z15		
+Salmonella Tchad	sal	O		35	b	-		
+Salmonella Tchamba	sal	J		17	z	e,n,z15		
+Salmonella Techimani	sal	M		28	c	z6		
+Salmonella Teddington	sal	B		.1.,4,12,.27.	y	1,7		
+Salmonella Tees	sal	I		16	f,g	-		
+Salmonella Tejas	sal	B		4,12	z36	-		
+Salmonella Teko	sal	H		1,6,14,25	d	e,n,z15		
+Salmonella Telaviv	sal	M		28	y	e,n,z15		
+Salmonella Telelkebir	sal	G1,2		13,23	d	e,n,z15		
+Salmonella Telhashomer	sal	F		11	z10	e,n,x		
+Salmonella Teltow	sal	M		28	z4,z23	1,6		
+Salmonella Tema	sal	T		.1.,42	z35	z6		
+Salmonella Tendeba	sal	J		17	y	e,n,x		
+Salmonella Tennenlohe	sal	K		18	r	1,5		
+Salmonella Tennessee	sal	C1,4		6,7,.14.	z29	[1,2,7]		
+Salmonella Tennyson	sal	B		4,[5],12	g,z51	e,n,z15		
+Salmonella Teshie	sal	X		.1.,47	l,z13,z28	e,n,z15		
+Salmonella Texas	sal	B		4,[5],12	k	e,n,z15		
+Salmonella Thayngen	sal	B		.1.,4,12,.27.	z41	1,(2),7		
+Salmonella Thetford	sal	U		43	k	1,2		
+Salmonella Thiaroye	sal	P		38	e,h	1,2		
+Salmonella Thielallee (old serotype)	sal	C1,4		6,7,.14.	m,t	-	o	
+Salmonella Thies	sal	E4		1,3,19	y	1,7		
+Salmonella Thomasville (old serotype)	sal	E3		3,.15.,.34.	y	1,5	o	
+Salmonella Thompson	sal	C1,4		6,7,.14.	k	1,5		
+Salmonella Tibati	sal	E1		3,10	i	1,6		
+Salmonella Tienba	sal	C1,4		6,7	z35	1,6		
+Salmonella Tiergarten	sal	V		44	a	e,n,x		
+Salmonella Tiko	sal	R		.1.,40	l,z13,z28	1,2		
+Salmonella Tilburg	sal	E4		1,3,19	d	l,w		
+Salmonella Tilene	sal	R		.1.,40	e,h	1,2		
+Salmonella Tim (old serotype)	sal	E2					o	Newington
+Salmonella Tinda	sal	B		.1.,4,12,.27.	a	e,n,z15		
+Salmonella Tione	sal	51		51	a	e,n,x		
+Salmonella Togba	sal	I		16	a	e,n,x		
+Salmonella Togo	sal	B		4,12	l,w	1,6		
+Salmonella Tokai (old serotype)	sal	57	II	57	z42	1,6:z53	o	
+Salmonella Tokoin	sal	B		4,12	z10	e,n,z15		
+Salmonella Tomegbe	sal	T		.1.,42	b	e,n,z15		
+Salmonella Tomelilla	sal	E4		1,3,19	l,z28	1,7		
+Salmonella Tonev	sal	54		21,54	b	e,n,x		
+Salmonella Toowong	sal	F		11	a	1,7		
+Salmonella Torhout	sal	N		30	e,h	1,5		
+Salmonella Toricada	sal	T		.1.,42	z4,z24	-		
+Salmonella Tornow	sal	W		45	g,m,[s],[t]	-		
+Salmonella Toronto	sal	D2		9,46	l,v	e,n,x		
+Salmonella Tosamanga (old serotype)	sal	C1,4	II	6,7	z	1,5	o	
+Salmonella Toucra	sal	Y		48	z	1,5		
+Salmonella Toulon	sal	K		18	l,w	e,n,z15		
+Salmonella Tounouma	sal	C2,3		8,.20.	b	z6		
+Salmonella Tournai (old serotype)	sal	E2		3,.15.	y	z6	o	
+Salmonella Tours	sal	F		11	l,z13	1,2		
+Salmonella Trachau	sal	B		4,12,.27.	y	1,5		
+Salmonella Tranaroa (old serotype)	sal	55	II	55	k	z39	o	
+Salmonella Transvaal	sal	W		45	z4,z24	-		
+Salmonella Travis	sal	B		4,[5]12	g,z51	1,7		
+Salmonella Treforest	sal	51		.1.,51	z	1,6		
+Salmonella Treguier	sal	D1		9,12	z10	z6		
+Salmonella Trier	sal	I		16	z35	1,6		
+Salmonella Trimdon	sal	D2		9,46	z35	z6		
+Salmonella Tripoli	sal	B		.1.,4,12,.27.	b	z6		
+Salmonella Trotha	sal	R		40	z10	z6		
+Salmonella Truro	sal	E1		3,10	i	1,7		
+Salmonella Tschangu	sal	G1,2		.1.,13,23	e,h	1,5		
+Salmonella Tsevie	sal	B		4,12	i	e,n,z15		
+Salmonella Tshiongwe	sal	C2,3		6,8	e,h	e,n,z15		
+Salmonella Tucson	sal	H		[1],6,14,[25]	b	[1,7]		
+Salmonella Tudu	sal	B		4,12	z10	1,6		
+Salmonella Tuebingen (old serotype)	sal	E2		3,.15.	y	1,2	o	
+Salmonella Tuindorp (old serotype)	sal	U	IV	43	z4,z32	-	o	
+Salmonella Tulear (old serotype)	sal	C2,3	II	6,8	a	z52	o	
+Salmonella Tumodi	sal	B		.1.,4,12	i	z6		
+Salmonella Tunis	sal	G1,2		.1.,13,23	y	z6		
+Salmonella Tygerberg (old serotype)	sal	G1,2	II	.1.,13,23	a	z42	o	
+Salmonella Typhi	sal	D1		9,12,[Vi]	d	-		
+Salmonella Typhimurium	sal	B		.1.,4,[5],12	i	1,2		
+Salmonella Typhimurium var. Copenhagen	sal	B						
+Salmonella Typhisuis	sal	C1,4		6,7	c	1,5		
+Salmonella Tyresoe	sal	B		4,12	l,[z13],z28	1,5		
+Salmonella Uccle	sal	54		3,54	g,s,t	-		
+Salmonella Uganda	sal	E1		3,10	l,z13	1,5		
+Salmonella Ughelli	sal	E1		3,10	r	1,5		
+Salmonella Uhlenhorst	sal	V		44	z	l,w		
+Salmonella Uithof	sal	52		52	a	1,5		
+Salmonella Ullevi	sal	G1,2		.1.,13,23	b	e,n,x		
+Salmonella Umbilo	sal	M		28	z10	e,n,x		
+Salmonella Umhlali	sal	C1,4		6,7	a	1,6		
+Salmonella Umhlatazana	sal	O		35	a	e,n,z15		
+Salmonella Uno	sal	C2,3		6,8	z29	[e,n,z15]		
+Salmonella Uphill (old serotype)	sal	T	II	42	b	e,n,x,z15	o	
+Salmonella Uppsala	sal	B		4,12,.27.	b	1,7		
+Salmonella Urbana	sal	N		30	b	e,n,x		
+Salmonella Ursenbach	sal	T		.1.,42	z	1,6		
+Salmonella Usumbura	sal	K		.6.,.14.,18	d	1,7		
+Salmonella Utah	sal	C2,3		6,8	c	1,5		
+Salmonella Utbremen (old serotype)	sal	O	II	35	z29	e,n,x	o	
+Salmonella Utrecht	sal	52		52	d	1,5		
+Salmonella Uzaramo	sal	H		1,6,14,25	z4,z24	-		
+Salmonella Vaertan	sal	G1,2		13,22	b	e,n,x		
+Salmonella Valdosta	sal	C2,3		6,8	a	1,2		
+Salmonella Vancouver	sal	I		16	c	1,5		
+Salmonella Vanier	sal	M		28	z	1,5		
+Salmonella Vaugirard	sal	S		41	b	1,6		
+Salmonella Veddel (old serotype)	sal	U	II	43	g,t	-	o	
+Salmonella Vegesack	sal	I		16	b	l,w		
+Salmonella Vejle	sal	E1		3,10	e,h	1,2		
+Salmonella Vellore	sal	B		.1.,4,12,.27.	z10	z35		
+Salmonella Veneziana	sal	F		11	i	e,n,x		
+Salmonella Venusberg (old serotype)	sal	E1					o	Nchanga
+Salmonella Verity (old serotype)	sal	J	II	17	e,n,x,z15	1,6	o	
+Salmonella Verona	sal	S		41	i	z6		
+Salmonella Verviers	sal	W		45	k	1,5		
+Salmonella Victoria	sal	D1		.1.,9,12	l,w	1,5		
+Salmonella Victoriaborg	sal	J		17	c	1,6		
+Salmonella Vietnam	sal	S		41	b	[z6]		
+Salmonella Vilvoorde	sal	E4		1,3,19	e,h	1,5		
+Salmonella Vinohrady	sal	M		28	m,t	[e,n,z15]		
+Salmonella Virchow	sal	C1,4		6,7	r	1,2		
+Salmonella Virginia	sal	C2,3		8	d	1,2		
+Salmonella Visby	sal	E4		1,3,19	b	1,6		
+Salmonella Vitkin	sal	M		28	l,v	e,n,x		
+Salmonella Vleuten	sal	V		44	f,g	-		
+Salmonella Vogan	sal	T		.1.,42	z38	z6		
+Salmonella Volkmarsdorf	sal	M		28	i	1,6		
+Salmonella Volksdorf (old serotype)	sal	U	IV	43	z36,z38	-	o	
+Salmonella Volta	sal	F		11	r	l,z13,z28		
+Salmonella Vom	sal	B		.1.,4,12,.27.	l,z13,z28	e,n,z15		
+Salmonella Voulte	sal	U		43	i	e,n,x		
+Salmonella Vredelust (old serotype)	sal	G1,2	II	.1.,13,23	l,z28	z42	o	
+Salmonella Vridi	sal	G1,2		.1.,13,23	e,h	l,w		
+Salmonella Vrindaban (old serotype)	sal	W	VI	45	a	e,n,x	o	
+Salmonella Vuadens	sal	B		4,12,.27.	z4,z23	z6		
+Salmonella Wa	sal	I		16	b	1,5		
+Salmonella Waedenswil	sal	D2		9,46	e,h	1,5		
+Salmonella Wagadugu	sal	E1		3,10	z4,z23	z6		
+Salmonella Wagenia	sal	B		.1.,4,12,.27.	b	e,n,z15		
+Salmonella Wandsbek (old serotype)	sal	L	II	21	z10	z6	o	
+Salmonella Wandsworth	sal	Q		39	b	1,2		
+Salmonella Wangata	sal	D1		.1.,9,12	z4,z23	[1,7]		
+Salmonella Waral	sal	T		.1.,42	m,t	-		
+Salmonella Warengo	sal	J		17	z	1,5		
+Salmonella Warmsen	sal	W		45	d	e,n,z15		
+Salmonella Warnemuende	sal	M		28	i	e,n,x		
+Salmonella Warnow	sal	C2,3		6,8	i	1,6		
+Salmonella Warragul	sal	H		[1],6,14,[25]	g,m	-		
+Salmonella Warri	sal	J		17	k	1,7		
+Salmonella Washington	sal	G1,2		13,22	m,t	-		
+Salmonella Wassenaar (old serotype)	sal	Z	IV	50	g,z51	-	o	
+Salmonella Waycross	sal	S		41	z4,z23	-		
+Salmonella Wayne	sal	N		30	g,z51	-		
+Salmonella Wedding	sal	M		28	c	e,n,z15		
+Salmonella Welikade	sal	I		16	l,v	1,7		
+Salmonella Weltevreden	sal	E1		3,10	r	z6		
+Salmonella Wenatchee	sal	X		47	b	1,6		
+Salmonella Wentworth	sal	F		11	z10	1,2		
+Salmonella Wernigerode	sal	D2		9,46	f,g	-		
+Salmonella Weslaco	sal	T		42	z36	-		
+Salmonella Westafrica	sal	D1		9,12	e,h	1,7		
+Salmonella Westeinde	sal	I		16	l,w	1,6		
+Salmonella Westerstede	sal	E4		1,3,19	l,z13	[1,2]		
+Salmonella Westhampton	sal	E1		3,10	g,s,t	-		
+Salmonella Westminster	sal	E2		3,.15.	b	z35		
+Salmonella Weston	sal	I		16	e,h	z6		
+Salmonella Westpark (old serotype)	sal	E1	II	3,10	l,z28	e,n,x	o	
+Salmonella Westphalia	sal	O		35	z4,z24	-		
+Salmonella Weybridge	sal	E1		3,10	d	z6		
+Salmonella Wichita	sal	G1,2		.1.,13,23	d	[1,6]		
+Salmonella Widemarsh	sal	O		35	z29	-		
+Salmonella Wien	sal	B		.1.,4,12,.27.	b	l,w		
+Salmonella Wil	sal	C1,4		6,7	d	l,z13,z28		
+Salmonella Wildwood (old serotype)	sal	E3		3,.15.,.34.	e,h	l,w	o	
+Salmonella Wilhelmsburg	sal	B		.1.,4,[5],12,.27.	z38	-		
+Salmonella Wilhelmstrasse (old serotype)	sal	52	II	52	z44	1,5,7	o	
+Salmonella Willemstad	sal	G1,2		.1.,13,22	e,h	1,6		
+Salmonella Wilmington	sal	E1		3,10	b	z6		
+Salmonella Wimborne	sal	E1		3,10	k	1,2		
+Salmonella Winchester (old serotype)	sal	E1	II	3,10	z39	1,[5],7	o	
+Salmonella Windermere	sal	Q		39	y	1,5		
+Salmonella Windhoek (old serotype)	sal	W	II	45	g,m,s,t	1,5	o	
+Salmonella Wingrove	sal	C2,3		6,8	c	1,2		
+Salmonella Winneba	sal	B		4,12	r	1,6		
+Salmonella Winnipeg	sal	54		54	e,h	1,5		
+Salmonella Winston	sal	C1,4		6,7	m,t	1,6		
+Salmonella Winterthur	sal	E4		1,3,19	l,z13	1,6		
+Salmonella Wippra	sal	C2,3		6,8	z10	z6		
+Salmonella Wisbech	sal	I		16	i	1,7		
+Salmonella Woerden (old serotype)	sal	J	II	17	c	z39	o	
+Salmonella Wohlen	sal	F		11	b	1,6		
+Salmonella Womba (old serotype)	sal	B					o	Altendorf
+Salmonella Woodinville	sal	F		11	c	e,n,x		
+Salmonella Woodstock (old serotype)	sal	I	II	16	z42	1,(5),7	o	
+Salmonella Worb	sal	D2		9,46	b	e,n,x		
+Salmonella Worcester (old serotype)	sal	G1,2	II	.1.,13,23	m,t	e,n,x	o	
+Salmonella Worthington	sal	G1,2		.1.,13,23	z	l,w		
+Salmonella Wuerzburg (old serotype)	sal	D1					o	Miami
+Salmonella Wuiti	sal	N		30	z35	e,n,z15		
+Salmonella Wuppertal	sal	D2		9,46	z41	-		
+Salmonella Wyldegreen	sal	G1,2		.1.,13,23	a	l,w		
+Salmonella Wynberg (old serotype)	sal	D1	II	.1.,9,12	z39	1,7	o	
+Salmonella Yaba	sal	E1		3,10	b	e,n,z15		
+Salmonella Yalding	sal	E4		1,3,19	r	e,n,z15		
+Salmonella Yaounde	sal	B		4,12,.27.	z35	e,n,z15		
+Salmonella Yardley	sal	M		28	g,m	1.6		
+Salmonella Yarm	sal	C2,3		6,8	z35	1,2		
+Salmonella Yarrabah	sal	G1,2		13,23	y	1,7		
+Salmonella Yeerongpilly	sal	E1		3,10	i	z6		
+Salmonella Yehuda	sal	F		11	z4,z24	-		
+Salmonella Yekepa	sal	R		.1.,40	z35	e,n,z15		
+Salmonella Yerba	sal	54		54	z4,z23	-		
+Salmonella Yoff	sal	P		38	z4,z23	1,2		
+Salmonella Yokoe	sal	C2,3		8,.20.	m,t	-		
+Salmonella Yolo	sal	O		35	c	[e,n,z15]		
+Salmonella Yopougon	sal	W		45	z	e,n,z15		
+Salmonella Yoruba	sal	I		16	c	l,w		
+Salmonella Yovokome	sal	C2,3		8	d	1,5		
+Salmonella Yundum	sal	E1		3,10	k	e,n,x		
+Salmonella Zadar	sal	D2		9,46	b	1,6		
+Salmonella Zagreb (old serotype)	sal	B					o	Saintpaul
+Salmonella Zaiman	sal	D1		9,12	l,v	e,n,x		
+Salmonella Zaire	sal	N		30	c	1,7		
+Salmonella Zanzibar	sal	E1		3,10	k	1,5		
+Salmonella Zaria	sal	J		17	k	e,n,z15		
+Salmonella Zega	sal	D1		9,12	d	z6		
+Salmonella Zehlendorf	sal	N		30	a	1,5		
+Salmonella Zeist (old serotype)	sal	K	II	18	z10	z6	o	
+Salmonella Zerifin	sal	C2,3		6,8	z10	1,2		
+Salmonella Zigong	sal	I		16	l,w	1,5		
+Salmonella Zinder	sal	V		44	z29	-		
+Salmonella Zongo	sal	E1		3,10	z35	1,7		
+Salmonella Zuerich (old serotype)	sal	D3	II	1,9,12,46,27	c	z39	o	
+Salmonella Zuilen	sal	E4		1,3,19	i	l,w		
+Salmonella Zwickau	sal	I		16	r,i	e,n,z15		
+Salmonella, other	sal							
+Salmonella, unnamed	sal							
+Salmonella, untypable	sal							
+Shigella boydii	shc							
+Shigella boydii serotype 1	shc							
+Shigella boydii serotype 2	shc							
+Shigella boydii serotype 3	shc							
+Shigella boydii serotype 4	shc							
+Shigella boydii serotype 5	shc							
+Shigella boydii serotype 6	shc							
+Shigella boydii serotype 7	shc							
+Shigella boydii serotype 8	shc							
+Shigella boydii serotype 9	shc							
+Shigella boydii serotype 10	shc							
+Shigella boydii serotype 11	shc							
+Shigella boydii serotype 12	shc							
+Shigella boydii serotype 13	shc							
+Shigella boydii serotype 14	shc							
+Shigella boydii serotype 15	shc							
+Shigella boydii serotype 16	shc							
+Shigella boydii serotype 17	shc							
+Shigella boydii serotype 18	shc							
+Shigella dysenteriae	sha							
+Shigella dysenteriae serotype 1	sha							
+Shigella dysenteriae serotype 2	sha							
+Shigella dysenteriae serotype 3	sha							
+Shigella dysenteriae serotype 4	sha							
+Shigella dysenteriae serotype 5	sha							
+Shigella dysenteriae serotype 6	sha							
+Shigella dysenteriae serotype 7	sha							
+Shigella dysenteriae serotype 8	sha							
+Shigella dysenteriae serotype 9	sha							
+Shigella dysenteriae serotype 10	sha							
+Shigella dysenteriae serotype 11	sha							
+Shigella dysenteriae serotype 12	sha							
+Shigella dysenteriae serotype 13	sha							
+Shigella dysenteriae serotype 14	sha							
+Shigella dysenteriae serotype 15	sha							
+Shigella dysenteriae, not serotype 1	sha							
+Shigella flexneri	shb							
+Shigella flexneri serotype 1	shb							
+Shigella flexneri serotype 1a	shb							
+Shigella flexneri serotype 1b	shb							
+Shigella flexneri serotype 2	shb							
+Shigella flexneri serotype 2a	shb							
+Shigella flexneri serotype 2b	shb							
+Shigella flexneri serotype 3	shb							
+Shigella flexneri serotype 3a	shb							
+Shigella flexneri serotype 3b	shb							
+Shigella flexneri serotype 4	shb							
+Shigella flexneri serotype 4a	shb							
+Shigella flexneri serotype 4b	shb							
+Shigella flexneri serotype 4c	shb							
+Shigella flexneri serotype 5	shb							
+Shigella flexneri serotype 5a	shb							
+Shigella flexneri serotype 5b	shb							
+Shigella flexneri serotype 6	shb							
+Shigella sonnei	shd							
+Shigella sonnei Form I	shd							
+Shigella sonnei Form II	shd							
+Streptococcus pneumoniae	spn							
+Streptococcus pneumoniae serotype 1	spn							
+Streptococcus pneumoniae serotype 2	spn							
+Streptococcus pneumoniae serotype 3	spn							
+Streptococcus pneumoniae serotype 4	spn							
+Streptococcus pneumoniae serotype 5	spn							
+Streptococcus pneumoniae serogroup 6	spn							
+Streptococcus pneumoniae serotype 6A	spn							
+Streptococcus pneumoniae serotype 6B	spn							
+Streptococcus pneumoniae serotype 6C	spn							
+Streptococcus pneumoniae serotype 6D	spn							
+Streptococcus pneumoniae serogroup 7	spn							
+Streptococcus pneumoniae serotype 7A	spn							
+Streptococcus pneumoniae serotype 7B	spn							
+Streptococcus pneumoniae serotype 7C	spn							
+Streptococcus pneumoniae serotype 7F	spn							
+Streptococcus pneumoniae serotype 8	spn							
+Streptococcus pneumoniae serogroup 9	spn							
+Streptococcus pneumoniae serotype 9A	spn							
+Streptococcus pneumoniae serotype 9L	spn							
+Streptococcus pneumoniae serotype 9N	spn							
+Streptococcus pneumoniae serotype 9V	spn							
+Streptococcus pneumoniae serogroup 10	spn							
+Streptococcus pneumoniae serotype 10A	spn							
+Streptococcus pneumoniae serotype 10B	spn							
+Streptococcus pneumoniae serotype 10C	spn							
+Streptococcus pneumoniae serotype 10F	spn							
+Streptococcus pneumoniae serogroup 11	spn							
+Streptococcus pneumoniae serotype 11A	spn							
+Streptococcus pneumoniae serotype 11B	spn							
+Streptococcus pneumoniae serotype 11C	spn							
+Streptococcus pneumoniae serotype 11D	spn							
+Streptococcus pneumoniae serotype 11F	spn							
+Streptococcus pneumoniae serogroup 12	spn							
+Streptococcus pneumoniae serotype 12A	spn							
+Streptococcus pneumoniae serotype 12B	spn							
+Streptococcus pneumoniae serotype 12F	spn							
+Streptococcus pneumoniae serotype 13	spn							
+Streptococcus pneumoniae serotype 14	spn							
+Streptococcus pneumoniae serogroup 15	spn							
+Streptococcus pneumoniae serotype 15A	spn							
+Streptococcus pneumoniae serotype 15B	spn							
+Streptococcus pneumoniae serotype 15C	spn							
+Streptococcus pneumoniae serotype 15B/C	spn							
+Streptococcus pneumoniae serotype 15F	spn							
+Streptococcus pneumoniae serogroup 16	spn							
+Streptococcus pneumoniae serotype 16A	spn							
+Streptococcus pneumoniae serotype 16F	spn							
+Streptococcus pneumoniae serogroup 17	spn							
+Streptococcus pneumoniae serotype 17A	spn							
+Streptococcus pneumoniae serotype 17F	spn							
+Streptococcus pneumoniae serogroup 18	spn							
+Streptococcus pneumoniae serotype 18A	spn							
+Streptococcus pneumoniae serotype 18B	spn							
+Streptococcus pneumoniae serotype 18C	spn							
+Streptococcus pneumoniae serotype 18F	spn							
+Streptococcus pneumoniae serogroup 19	spn							
+Streptococcus pneumoniae serotype 19A	spn							
+Streptococcus pneumoniae serotype 19B	spn							
+Streptococcus pneumoniae serotype 19C	spn							
+Streptococcus pneumoniae serotype 19F	spn							
+Streptococcus pneumoniae serotype 20	spn							
+Streptococcus pneumoniae serotype 21	spn							
+Streptococcus pneumoniae serogroup 22	spn							
+Streptococcus pneumoniae serotype 22A	spn							
+Streptococcus pneumoniae serotype 22F	spn							
+Streptococcus pneumoniae serogroup 23	spn							
+Streptococcus pneumoniae serotype 23A	spn							
+Streptococcus pneumoniae serotype 23B	spn							
+Streptococcus pneumoniae serotype 23F	spn							
+Streptococcus pneumoniae serogroup 24	spn							
+Streptococcus pneumoniae serotype 24A	spn							
+Streptococcus pneumoniae serotype 24B	spn							
+Streptococcus pneumoniae serotype 24F	spn							
+Streptococcus pneumoniae serogroup 25	spn							
+Streptococcus pneumoniae serotype 25A	spn							
+Streptococcus pneumoniae serotype 25F	spn							
+Streptococcus pneumoniae serotype 27	spn							
+Streptococcus pneumoniae serogroup 28	spn							
+Streptococcus pneumoniae serotype 28A	spn							
+Streptococcus pneumoniae serotype 28F	spn							
+Streptococcus pneumoniae serotype 29	spn							
+Streptococcus pneumoniae serotype 31	spn							
+Streptococcus pneumoniae serogroup 32	spn							
+Streptococcus pneumoniae serotype 32A	spn							
+Streptococcus pneumoniae serotype 32F	spn							
+Streptococcus pneumoniae serogroup 33	spn							
+Streptococcus pneumoniae serotype 33A	spn							
+Streptococcus pneumoniae serotype 33B	spn							
+Streptococcus pneumoniae serotype 33C	spn							
+Streptococcus pneumoniae serotype 33D	spn							
+Streptococcus pneumoniae serotype 33F	spn							
+Streptococcus pneumoniae serotype 34	spn							
+Streptococcus pneumoniae serogroup 35	spn							
+Streptococcus pneumoniae serotype 35A	spn							
+Streptococcus pneumoniae serotype 35B	spn							
+Streptococcus pneumoniae serotype 35C	spn							
+Streptococcus pneumoniae serotype 35F	spn							
+Streptococcus pneumoniae serotype 36	spn							
+Streptococcus pneumoniae serotype 37	spn							
+Streptococcus pneumoniae serotype 38	spn							
+Streptococcus pneumoniae serotype 39	spn							
+Streptococcus pneumoniae serotype 40	spn							
+Streptococcus pneumoniae serogroup 41	spn							
+Streptococcus pneumoniae serotype 41A	spn							
+Streptococcus pneumoniae serotype 41F	spn							
+Streptococcus pneumoniae serotype 42	spn							
+Streptococcus pneumoniae serotype 43	spn							
+Streptococcus pneumoniae serotype 44	spn							
+Streptococcus pneumoniae serotype 45	spn							
+Streptococcus pneumoniae serotype 46	spn							
+Streptococcus pneumoniae serogroup 47	spn							
+Streptococcus pneumoniae serotype 47A	spn							
+Streptococcus pneumoniae serotype 47F	spn							
+Streptococcus pneumoniae serotype 48	spn							
+Streptococcus pneumoniae, other	spn							
+Streptococcus pneumoniae, untypable	spn							
+Streptococcus pneumoniae serotype 6C	spn							

@@ -1,0 +1,8 @@
+RULE_CODE	DESCRIPTION	ORGANISM_CODE	ORGANISM_CODE_TYPE	RULE_CRITERIA	AFFECTED_ANTIBIOTICS	ANTIBIOTIC_EXCEPTIONS
+ESBL-CONFIRMED	ESBL-producing Enterobacterales	EBC	FAMILY_CODE	ESBL=+ OR X_BLEE=p	MOX,CID,MAN,CFP	
+ESBL-AMPC-PROBABLE	Possible ESBL-producing Enterobacterales	EBC	FAMILY_CODE	CEPH3=R	MOX,CID,MAN,CFP	
+BLNAR-HFLU	Beta-lactamase negative, ampicillin resistant Haemophilus influenzae	HIN	SEROVAR_GROUP	BETA_LACT=- AND AMP=NS	AMC,SAM,CEC,CAT,CID,CPR,CXM,CXA,TZP	
+MRS	Methicillin-resistant Staphylococcus:  MRS = Positive	STA	GENUS_CODE	MECA_PCR=+ OR MRSA=+ OR OXA_SCREEN=+ OR MRSA_SCRN=+ OR PBP2A_AGGL=+	Penicillins,Cephems,Cephems-Oral,Monobactams,Penems,Beta-lactam+Inhibitors,Beta-lactamase inhibitors	CPT,BPR
+MRS	Methicillin-resistant Staphylococcus:  Oxacillin or cefoxitin = Non-susceptible	STA	GENUS_CODE	OXA=NS OR FOX=NS	Penicillins,Cephems,Cephems-Oral,Monobactams,Penems,Beta-lactam+Inhibitors,Beta-lactamase inhibitors	CPT,BPR
+ICR	MLS-DTest = Positive	STA	GENUS_CODE	INDUC_CLI=+ OR MLS_DTEST=+ OR X_MLS=p OR X_MLS_IND=p	Macrolides,Lincosamides,Streptogramins	
+ICR	MLS-DTest = Positive	STR	GENUS_CODE	INDUC_CLI=+ OR MLS_DTEST=+ OR X_MLS=p OR X_MLS_IND=p	Macrolides,Lincosamides,Streptogramins	

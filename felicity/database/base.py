@@ -1,3 +1,9 @@
+# isort: skip_file
+# skip-file
+# ruff: noqa: I001
+# ruff: noqa: I001
+
+from felicity.apps.abstract.entity import BaseEntity  # noqa
 from felicity.apps.analysis.entities.analysis import Analysis  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCoding  # noqa
@@ -51,6 +57,28 @@ from felicity.apps.inventory.entities import StockReceipt  # noqa
 from felicity.apps.inventory.entities import StockUnit  # noqa
 from felicity.apps.job.entities import Job  # noqa
 from felicity.apps.messaging.entities import Message  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxASTPanel  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxAntibiotic  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxAntibioticGuideline  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxBreakpoint  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxBreakpointType  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxClass  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxExpResPhenotype  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxExpertInterpretationRule  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxFamily  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxGenus  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxGuideline  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxHost  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxKingdom  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxMedium  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxOrder  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxOrganism  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxOrganismSerotype  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxPhylum  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxQCRange  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxReferenceTable  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxSiteOfInfection  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxTestMethod  # noqa
 from felicity.apps.noticeboard.entities import Notice  # noqa
 from felicity.apps.notification.entities import ActivityFeed  # noqa
 from felicity.apps.notification.entities import ActivityStream  # noqa
@@ -86,4 +114,3 @@ from felicity.apps.user.entities import User  # noqa
 from felicity.apps.user.entities import UserPreference  # noqa
 from felicity.apps.worksheet.entities import WorkSheet  # noqa
 from felicity.apps.worksheet.entities import WorkSheetTemplate  # noqa
-from felicity.apps.abstract.entity import BaseEntity  # noqa

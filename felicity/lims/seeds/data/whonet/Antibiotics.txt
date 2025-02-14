@@ -1,0 +1,563 @@
+WHONET_ABX_CODE	WHO_CODE	DIN_CODE	JAC_CODE	EUCAST_CODE	USER_CODE	ANTIBIOTIC	GUIDELINES	CLSI	EUCAST	SFM	SRGA	BSAC	DIN	NEO	AFA	ABX_NUMBER	POTENCY	ATC_CODE	CLASS	SUBCLASS	PROF_CLASS	CIA_CATEGORY	CLSI_ORDER	EUCAST_ORDER	HUMAN	VETERINARY	ANIMAL_GP	LOINCCOMP	LOINCGEN	LOINCDISK	LOINCMIC	LOINCETEST	LOINCSLOW	LOINCAFB	LOINCSBT	LOINCMLC	DATE_ENTERED	DATE_MODIFIED	COMMENTS
+AMC	AMC	AMC	AMPC-CVA			Amoxicillin/Clavulanic acid	CLSI,EUCAST(Most bacteria)	X	X	X		X	X			2	20/10µg	J01CR02	Beta-lactam+Inhibitors		BL+INH		03		X			Amoxicilli	18862-3	21-6	20-8	6977-3		25310-4	22-4	19-0	2021-01-01		
+APX	APX	ASP	ASPC			Aspoxicillin										213		J01CA19	Penicillins		PEN		01c														2021-01-01		
+AMC	AMC	AMC	AMPC-CVA			Amoxicillin/Clavulanic acid	BSAC,EUCAST(Haemophilus)		X	X		X				306	2/1µg	J01CR02	Beta-lactam+Inhibitors		BL+INH		03		X			Amoxicilli	18862-3	21-6	20-8	6977-3		25310-4	22-4	19-0	2021-01-01		
+BDP	BDP					Brodimoprim										220		J01EA02	Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+BUT	BUT					Butoconazole										221		G01AF15	Antifungals		FUNG		29														2021-01-01		
+CAP		CPR				Capreomycin										128		J04AB30	Antimycobacterials		MYCO		28					Capreomyci	18872-2	57-0	56-2			23607-5	58-8	55-4	2021-01-01		
+CRB	CB	CAR				Carbenicillin	CLSI,BSAC	X				X				9	100µg	J01CA03	Penicillins	Carboxypenicillin	PEN		01d		X			Carbenicil	18873-0	61-2	60-4	41668-5			62-0	59-6	2021-01-01		
+CAR	CAR	CAM	CRMN			Carumonam										148		J01DF02	Monobactams		MONO		06														2021-01-01		
+CAS		CAS				Caspofungin	CLSI,NEO	X						X		441	5µg	J02AX04	Antifungals		FUNG		29					Caspofungi	32378-2								2021-01-01		
+CAC	CAC	CAC				Cefacetrile										149	30µg	J01DB10	Cephems	Cephalosporin I	CEPH1		04a														2021-01-01		
+CEC	CEC	CEC	CCL			Cefaclor	CLSI,EUCAST	X	X	X		X	X			10	30µg	J01DC04	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefaclor	18874-8	85-1	84-4	6986-4			86-9	83-6	2021-01-01		
+BEK			AKM			Bekanamycin										444		J01GB13	Aminoglycosides		AG		09														2021-01-01		
+SAM	SAM	AMS	ABPC-SBT			Ampicillin/Sulbactam	DIN						X			211	20/10µg	J01CR01	Beta-lactam+Inhibitors		BL+INH		03		X			Ampicillin	18865-6	33-1	32-3	6980-7	20374-5	23618-2	34-9	31-5	2021-01-01		
+SAM	SAM	AMS	ABPC-SBT			Ampicillin/Sulbactam	NEO							X		334	30/30µg	J01CR01	Beta-lactam+Inhibitors		BL+INH		03		X			Ampicillin	18865-6	33-1	32-3	6980-7	20374-5	23618-2	34-9	31-5	2021-01-01		
+AMR						Amprolium										405			Coccidiostats		COCC		27														2021-01-01		
+ANI						Anidulafungin										477		J02AX06	Antifungals		FUNG		29														2021-01-01		
+APL	APL	APL				Apalcillin										144			Penicillins		PEN		01c														2021-01-01		
+APR		APR				Apramycin	CLSI	X								400	15µg		Aminoglycosides		AG		09			X		Apramycin	23659-6	73653-8	73652-0						2021-01-01		
+BAC	B	BTC	BC			Bacitracin zinc	CLSI	X		X						8	10units	J01XX10	Polypeptides		POLYPEP		26		X			Bacitracin	18870-6	10868-8	6827-0	6983-1					2021-01-01		
+AMX	AMX	AMX	AMPC			Amoxicillin										485	2µg	J01CA04	Penicillins	Aminopenicillin	PEN		01b		X			Amoxicilli	18861-5	17-4	16-6	6976-5			18-2	15-8	2021-01-01		
+CPC			CEPM-CVA			Cefepime/Clavulanic acid										432			Beta-lactam+Inhibitors		BL+INH		03					Cefepime+C	42353-3	42350-9	42351-7	35763-2					2021-01-01		
+CCP			CFPN			Cefcapene										152	5µg	J01DD17	Cephems	Cephalosporin III	CEPH3		04c														2021-01-01		
+AMC	AMC	AMC	AMPC-CVA			Amoxicillin/Clavulanic acid										307	25/2µg	J01CR02	Beta-lactam+Inhibitors		BL+INH		03		X			Amoxicilli	18862-3	21-6	20-8	6977-3		25310-4	22-4	19-0	2021-01-01		
+BES						Besifloxacin	CLSI	X								486		S01AE08	Quinolones		FQ		11b		X				73606-6	73651-2	73628-0						2021-01-01		
+BIA			BIPM			Biapenem	CLSI	X								218		J01DH05	Penems		CARB		07a					Biapenem	41728-7	41666-9	41665-1	41667-7					2021-01-01		
+BCZ	BCZ					Bicyclomycin (Bicozamycin)										219			Rho factor inhibitors		RHO		27														2021-01-01		
+AMX	AMX	AMX	AMPC			Amoxicillin	CLSI,NEO	X		X				X		82	30µg	J01CA04	Penicillins	Aminopenicillin	PEN		01b		X			Amoxicilli	18861-5	17-4	16-6	6976-5			18-2	15-8	2021-01-01		
+CTL			CTZ			Ceftezole										450		J01DB12	Cephems		CEPH1		04a														2021-01-01		
+AMX	AMX	AMX	AMPC			Amoxicillin	EUCAST		X	X			X			210	10µg	J01CA04	Penicillins	Aminopenicillin	PEN		01b		X			Amoxicilli	18861-5	17-4	16-6	6976-5			18-2	15-8	2021-01-01		
+CFR	CFR	CFR	CDX			Cefadroxil	EUCAST		X	X	X	X				70	30µg	J01DB05	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefadroxil	18875-5	65-3	64-6				66-1	63-8	2021-01-01		
+RID	CD	CLO				Cefaloridine										71	30µg	J01DB02	Cephems	Cephalosporin I	CEPH1		04a					Cephalorid	18899-5	158-6	157-8	41684-2				156-0	2021-01-01		
+MAN	MA	CMD	CMD			Cefamandole	CLSI,DIN,BSAC	X		X		X	X			11	30µg	J01DC03	Cephems	Cephalosporin II	CEPH2		04b		X			Cefamandol	18876-3	69-5	68-7	41669-3			70-3	67-9	2021-01-01		
+MAN	MA	CMD	CMD			Cefamandole	NEO							X		338	60µg	J01DC03	Cephems	Cephalosporin II	CEPH2		04b		X			Cefamandol	18876-3	69-5	68-7	41669-3			70-3	67-9	2021-01-01		
+APR		APR				Apramycin	NEO							X		145	40µg		Aminoglycosides		AG		09					Apramycin	23659-6								2021-01-01		
+CNX	CNX	CFX	CMNX			Cefminox										229		J01DC12	Cephems		CEPHAM		04e														2021-01-01		
+CZO	CZ	CEZ	CEZ			Cefazolin	CLSI,EUCAST,DIN	X	X				X			12	30µg	J01DB04	Cephems	Cephalosporin I	CEPH1		04a		X			Cefazolin	18878-9	77-8	76-0	41670-1			78-6	75-2	2021-01-01		
+CZO	CZ		CEZ			Cefazolin	NEO							X		339	60µg	J01DB04	Cephems	Cephalosporin I	CEPH1		04a		X			Cefazolin	18878-9	77-8	76-0	41670-1			78-6	75-2	2021-01-01		
+CFB	CFB	CBZ	CBPZ			Cefbuperazone										223		J01DC13	Cephems		CEPHAM		04e														2021-01-01		
+CMZ	CMZ	CMT	CMZ			Cefmetazole	CLSI	X								99	30µg	J01DC09	Cephems	Cephamycin	CEPHAM		04e		X			Cefmetazol	18881-3	89-3	88-5	11575-8			90-1	87-7	2021-01-01		
+CCX		CCP				Cefcapene pivoxil										445		J01DD17	Cephems-Oral		CEPH-ORAL		05a														2021-01-01		
+BAM		BAC	BAPC			Bacampicillin										147		J01CA06	Penicillins		PEN		01b					Bacampicil	18869-8	49-7	48-9				50-5	47-1	2021-01-01		
+AMC	AMC	AMC	AMPC-CVA			Amoxicillin/Clavulanic acid	NEO							X		331	30/15µg	J01CR02	Beta-lactam+Inhibitors		BL+INH		03		X			Amoxicilli	18862-3	21-6	20-8	6977-3		25310-4	22-4	19-0	2021-01-01		
+AXS		AMC	AMPC-SBT			Amoxicillin/Sulbactam										3		J01CR02	Beta-lactam+Inhibitors		BL+INH		03														2021-01-01		
+AMB	AB	APH	AMPH-B			Amphotericin B	CLSI,NEO	X						X		127	10µg	J02AA01	Antifungals		FUNG		29					Amphoteric	18863-1	25-7	24-0	6978-1			26-5	23-2	2021-01-01		
+AMP	AM	AMP	ABPC			Ampicillin	EUCAST(Other bacteria)		X	X		X				309	2µg	J01CA01	Penicillins	Aminopenicillin	PEN		01b		X			Ampicillin	18864-9	29-9	28-1	6979-9			30-7	27-3	2021-01-01		
+CRO	CRO	CRO	CTRX			Ceftriaxone	CLSI,EUCAST	X	X	X	X	X	X		X	20	30µg	J01DD04	Cephems	Cephalosporin III	CEPH3		04c		X			Ceftriaxon	18895-3	142-0	141-2	6998-9		25367-4	143-8	140-4	2021-01-01		
+AMP	AM	AMP	ABPC			Ampicillin	BSAC					X				308	25µg	J01CA01	Penicillins	Aminopenicillin	PEN		01b		X			Ampicillin	18864-9	29-9	28-1	6979-9			30-7	27-3	2021-01-01		
+AMP	AM	AMP	ABPC			Ampicillin	NEO							X		332	2.5µg	J01CA01	Penicillins	Aminopenicillin	PEN		01b		X			Ampicillin	18864-9	29-9	28-1	6979-9			30-7	27-3	2021-01-01		
+AMP	AM	AMP	ABPC			Ampicillin	NEO							X		333	33µg	J01CA01	Penicillins	Aminopenicillin	PEN		01b		X			Ampicillin	18864-9	29-9	28-1	6979-9			30-7	27-3	2021-01-01		
+CRB	CB	CAR				Carbenicillin	NEO							X		337	115µg	J01CA03	Penicillins	Carboxypenicillin	PEN		01d		X			Carbenicil	18873-0	61-2	60-4	41668-5			62-0	59-6	2021-01-01		
+CTB	CTB	CIB	CETB			Ceftibuten	CLSI,EUCAST	X	X	X	X					140	30µg	J01DD14	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Ceftibuten	35779-8	35777-2	35778-0	6996-3					2021-01-01		
+CFM	CFM	CFI	CFIX			Cefixime	CLSI,EUCAST	X	X	X	X	X				69	5µg	J01DD08	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefixime	18880-5	81-0	80-2	35766-5			82-8	79-4	2021-01-01		
+CFM	CFM	CFI	CFIX			Cefixime	DIN			X			X			186	10µg	J01DD08	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefixime	18880-5	81-0	80-2	35766-5			82-8	79-4	2021-01-01		
+CFM	CFM	CFI	CFIX			Cefixime	NEO							X		340	30µg	J01DD08	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefixime	18880-5	81-0	80-2	35766-5			82-8	79-4	2021-01-01		
+CZP			CZX-AP			Ceftizoxime alapivoxil										447		J01DD07	Cephems		CEPH3		04c														2021-01-01		
+CMX	CMX	CMX	CMX			Cefmenoxime	DIN						X			228	10µg	J01DD05	Cephems	Cephalosporin III	CEPH3		04c					Cefmenoxim	32375-8								2021-01-01		
+CTE	CH	CTE				Chlortetracycline										91		J01AA03	Tetracyclines		TETRA		24					Chlortetra	18904-3	178-4	177-6				179-2	176-8	2021-01-01		
+CIC	CI		ACPC			Ciclacillin										159			Penicillins		PEN		01b					Cyclacilli	18913-4	210-5	209-7				211-3	208-9	2021-01-01		
+CIN	CIN	CIN	CINX			Cinoxacin	SRGA,NEO				X			X		191	30µg	J01MB06	Quinolones	Quinolone	QUIN		11a		X			Cinoxacin	18905-0	182-6	181-8				183-4	180-0	2021-01-01		
+CIN	CIN	CIN	CINX			Cinoxacin	CLSI	X								25	100µg	J01MB06	Quinolones	Quinolone	QUIN		11a		X			Cinoxacin	18905-0	182-6	181-8				183-4	180-0	2021-01-01		
+CIP		CIP	CPFX			Ciprofloxacin	AFA,SRGA,NEO				X			X	X	192	10µg	J01MA02	Quinolones	Fluoroquinolone	FQ		11b		X			Ciprofloxa	18906-8	186-7	185-9	7002-9	20377-8	23621-6	187-5	184-2	2021-01-01		
+ARB		ARB	ABK			Arbekacin										212		J01GB12	Aminoglycosides		AG		09					Arbekacin	32373-3								2021-01-01		
+CZD	CZD	CZD				Cefazedone										222		J01DB06	Cephems		CEPH1		04a														2021-01-01		
+CIP		CIP	CPFX			Ciprofloxacin	NEO							X		346	.5µg	J01MA02	Quinolones	Fluoroquinolone	FQ		11b		X			Ciprofloxa	18906-8	186-7	185-9	7002-9	20377-8	23621-6	187-5	184-2	2021-01-01		
+CIP		CIP	CPFX			Ciprofloxacin	BSAC					X				314	1µg	J01MA02	Quinolones	Fluoroquinolone	FQ		11b		X			Ciprofloxa	18906-8	186-7	185-9	7002-9	20377-8	23621-6	187-5	184-2	2021-01-01		
+CIP		CIP	CPFX			Ciprofloxacin	CLSI,EUCAST	X	X	X		X	X			26	5µg	J01MA02	Quinolones	Fluoroquinolone	FQ		11b		X			Ciprofloxa	18906-8	186-7	185-9	7002-9	20377-8	23621-6	187-5	184-2	2021-01-01		
+CLR	CLR	CLR	CAM			Clarithromycin	NEO							X		347	30µg	J01FA09	Macrolides	14-Membered ring	MACRO		17		X			Clarithrom	18907-6	190-9	189-1	7003-7	20375-2	23619-0	191-7	188-3	2021-01-01		
+CTZ	CTZ	CRI	CFT			Cefatrizine				X						151	10µg	J01DB07	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a					Cefatrizin	18877-1	73-7	72-9				74-5	71-1	2021-01-01		
+CLR	CLR	CLR	CAM			Clarithromycin	CLSI,EUCAST	X	X	X	X		X		X	103	15µg	J01FA09	Macrolides	14-Membered ring	MACRO		17a		X			Clarithrom	18907-6	190-9	189-1	7003-7	20375-2	23619-0	191-7	188-3	2021-01-01		
+CLR	CLR	CLR	CAM			Clarithromycin						X				410	2µg	J01FA09	Macrolides	14-Membered ring	MACRO		17		X			Clarithrom	18907-6	190-9	189-1	7003-7	20375-2	23619-0	191-7	188-3	2021-01-01		
+CED	CED	CED	CED			Cephradine	NEO							X		74	60µg	J01DB09	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a					Cephradine	18902-7	170-1	169-3				171-9	168-5	2021-01-01		
+CED	CED	CED	CED			Cephradine	BSAC			X		X				408	30µg	J01DB09	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a					Cephradine	18902-7	170-1	169-3				171-9	168-5	2021-01-01		
+CTB	CTB	CIB	CETB			Ceftibuten	DIN,BSAC			X		X	X			189	10µg	J01DD14	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Ceftibuten	35779-8	35777-2	35778-0	6996-3					2021-01-01		
+DIZ	CDZ	CFO	CDZM			Cefodizime	DIN						X			100	10µg	J01DD09	Cephems	Cephalosporin III	CEPH3		04c					Cefodizime	18882-1	93-5	92-7	6988-0			94-3	91-9	2021-01-01		
+CHL	C	CMP	CP			Chloramphenicol	NEO							X		345	60µg	J01BA01	Phenicols		PHEN		22		X			Chloramphe	18903-5	174-3	173-5	7001-1			175-0	172-7	2021-01-01		
+CMX	CMX	CMX	CMX			Cefmenoxime				X						85	30µg	J01DD05	Cephems	Cephalosporin III	CEPH3		04c					Cefmenoxim	32375-8								2021-01-01		
+CHL	C	CMP	CP			Chloramphenicol	CLSI,EUCAST	X	X	X	X	X	X		X	24	30µg	J01BA01	Phenicols		PHEN		22		X			Chloramphe	18903-5	174-3	173-5	7001-1			175-0	172-7	2021-01-01		
+AVO		AVO				Avoparcin										215			Glycopeptides		GLYCO		21a														2021-01-01		
+FOX	FOX	COX	CFX			Cefoxitin	CLSI,EUCAST	X	X	X		X	X		X	17	30µg	J01DC01	Cephems	Cephamycin	CEPHAM		04e		X			Cefoxitin	18888-8	117-2	116-4	6991-4		25366-6	118-0	115-6	2021-01-01		
+CPD	CPD	CPO	CPDX			Cefpodoxime										407	1µg	J01DD13	Cephems	Cephalosporin III	CEPH3		04c		X			Cefpodoxim	18890-4	121-4	120-6	6993-0			122-2	119-8	2021-01-01		
+AST	AST	AST	ASTM			Astromicin										146			Aminoglycosides		AG		09														2021-01-01		
+CPD	CPD	CPO	CPDX			Cefpodoxime	BSAC					X				311	5µg	J01DD13	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefpodoxim	18890-4	121-4	120-6	6993-0			122-2	119-8	2021-01-01		
+CLI	CM	CLI	CLDM			Clindamycin	AFA,SRGA				X				X	193	15µg	J01FF01	Lincosamides		LINCO		15		X			Clindamyci	18908-4	194-1	193-3	7005-2			195-8	192-5	2021-01-01		
+CLI	CM	CLI	CLDM			Clindamycin	NEO							X		348	25µg	J01FF01	Lincosamides		LINCO		15		X			Clindamyci	18908-4	194-1	193-3	7005-2			195-8	192-5	2021-01-01		
+CLF						Clofazimine										482		J04BA01	Antimycobacterials		MYCO		28														2021-01-01		
+CTR	CTR	CTR				Clotrimazole	NEO							X		158	10µg	D01AC01	Antifungals		FUNG		29					Clotrimazo	18909-2		10653-4					10654-2	2021-01-01		
+CLR	CLR	CLR	CAM			Clarithromycin						X				409	5µg	J01FA09	Macrolides	14-Membered ring	MACRO		17		X			Clarithrom	18907-6	190-9	189-1	7003-7	20375-2	23619-0	191-7	188-3	2021-01-01		
+CLA	CLA	CLA	CVA			Clavulanic acid	CLSI	X								246			Beta-lactamase inhibitors		BL-INH		02					Clavulanat	41733-7	41686-7	41687-5	41685-9					2021-01-01		
+CLX		CLN				Clinafloxacin	CLSI	X								157	5µg		Quinolones	Fluoroquinolone	FQ		11b		X			Clinafloxa	32376-6	35785-5	35786-3	7004-5					2021-01-01		
+CHL	C	CMP	CP			Chloramphenicol	BSAC,NEO					X		X		313	10µg	J01BA01	Phenicols		PHEN		22		X			Chloramphe	18903-5	174-3	173-5	7001-1			175-0	172-7	2021-01-01		
+CTT	CTT	CTT	CTT			Cefotetan	CLSI,BSAC	X		X		X				16	30µg	J01DC05	Cephems	Cephamycin	CEPHAM		04e		X			Cefotetan	18887-0	113-1	112-3	6990-6			114-9	111-5	2021-01-01		
+CTF	CTF	CTM	CTM			Cefotiam	DIN			X			X			86	30µg	J01DC07	Cephems	Cephamycin	CEPHAM		04e					Cefotiam	32374-1	35772-3	35773-1						2021-01-01		
+CHE		CTH	CTM-HE			Cefotiam hexetil				X						235	10µg	J01DC07	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a														2021-01-01		
+CHE		CTH	CTM-HE			Cefotiam hexetil	DIN						X			435	30µg	J01DC07	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a														2021-01-01		
+CLI	CM	CLI	CLDM			Clindamycin	CLSI,EUCAST	X	X	X		X				27	2µg	J01FF01	Lincosamides		LINCO		15		X			Clindamyci	18908-4	194-1	193-3	7005-2			195-8	192-5	2021-01-01		
+FCT	FCT	5FC	5-FC			5-Fluorocytosine	CLSI,NEO	X						X		328	10µg	J02AX01	Antifungals		FUNG		29		X			5-Fluorocy	18855-7	254-3	253-5	7014-4			255-0	252-7	2021-01-01		
+FCT	FCT		5-FC			5-Fluorocytosine	CLSI,NEO	X						X		126	1µg	J02AX01	Antifungals		FUNG		29		X			5-Fluorocy	18855-7	254-3	253-5	7014-4			255-0	252-7	2021-01-01		
+ACM						Acetylmidecamycin										114			Macrolides		MACRO		17														2021-01-01		
+ASP						Acetylspiramycin										113			Macrolides		MACRO		17														2021-01-01		
+CTO	CTO					Cetocycline										245			Tetracyclines		TETRA		24														2021-01-01		
+ATM	ATM	AZT	AZT			Aztreonam	CLSI,EUCAST	X	X	X	X	X			X	7	30µg	J01DF01	Monobactams		MONO		06		X			Aztreonam	18868-0	45-5	44-8	6982-3			46-3	43-0	2021-01-01		
+ATM	ATM	AZT	AZT			Aztreonam	DIN						X			217	10µg	J01DF01	Monobactams		MONO		06		X			Aztreonam	18868-0	45-5	44-8	6982-3			46-3	43-0	2021-01-01		
+CID	CID	CNI				Cefonicid	CLSI	X								13	30µg	J01DC06	Cephems	Cephalosporin II	CEPH2		04b		X			Cefonicid	18883-9	97-6	96-8				98-4	95-0	2021-01-01		
+CFP	CFP	CPZ	CPZ			Cefoperazone	CLSI	X								14	75µg	J01DD12	Cephems	Cephalosporin II	CEPH2		04b		X			Cefoperazo	18884-7	101-6	100-8	35767-3			102-4	99-2	2021-01-01		
+CFP	CFP	CPZ	CPZ			Cefoperazone	DIN						X			230	10µg	J01DD12	Cephems	Cephalosporin II	CEPH2		04b		X			Cefoperazo	18884-7	101-6	100-8	35767-3			102-4	99-2	2021-01-01		
+CFP	CFP	CPZ	CPZ			Cefoperazone	CLSI (Animal), SFM, BSAC	X		X		X				187	30µg	J01DD12	Cephems	Cephalosporin II	CEPH2		04b		X			Cefoperazo	18884-7	101-6	100-8	35767-3			102-4	99-2	2021-01-01		
+CFP	CFP	CPZ	CPZ			Cefoperazone	NEO							X		341	60µg	J01DD12	Cephems	Cephalosporin II	CEPH2		04b		X			Cefoperazo	18884-7	101-6	100-8	35767-3			102-4	99-2	2021-01-01		
+CSL		CPS	CPZ-SBT			Cefoperazone/Sulbactam	DIN						X			101	30/15µg	J01DD62	Beta-lactam+Inhibitors		BL+INH		03									35768-1					2021-01-01		
+CND	CND					Ceforanide	NEO							X		231	30µg	J01DC11	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a					Ceforanide	18885-4	105-7	104-0				106-5	103-2	2021-01-01		
+CSE						Cefoselis										448			Cephems		CEPH4		04d														2021-01-01		
+AMK	AN	AMK	AMK			Amikacin	CLSI,EUCAST	X	X	X	X	X	X			1	30µg	J01GB06	Aminoglycosides		AG		09		X			Amikacin	18860-7	13-3	12-5	6975-7	20373-7	23624-0	14-1	11-7	2021-01-01		
+AMP	AM	AMP	ABPC			Ampicillin	CLSI,EUCAST(Enterobacterales)	X	X	X	X	X	X		X	4	10µg	J01CA01	Penicillins	Aminopenicillin	PEN		01b		X			Ampicillin	18864-9	29-9	28-1	6979-9			30-7	27-3	2021-01-01		
+SAM	SAM	AMS	ABPC-SBT			Ampicillin/Sulbactam	CLSI,EUCAST	X	X	X						5	10/10µg	J01CR01	Beta-lactam+Inhibitors		BL+INH		03		X			Ampicillin	18865-6	33-1	32-3	6980-7	20374-5	23618-2	34-9	31-5	2021-01-01		
+AVB						Avibactam	CLSI	X								496			Beta-lactamase inhibitors		BL-INH																2021-01-01		
+AVI	AVI	AVM				Avilamycin										214			Everninomycins		EVER		27					Avilamycin	35756-6	35754-1	35755-8						2021-01-01		
+AZM	AZM	AZM				Azithromycin	CLSI,EUCAST	X	X	X	X	X	X		X	83	15µg	J01FA10	Macrolides	15-Membered ring	MACRO		17a		X			Azithromyc	18866-4	37-2	36-4	6981-5		23612-5	38-0	35-6	2021-01-01		
+AZM	AZM	AZM				Azithromycin	NEO							X		335	30µg	J01FA10	Macrolides	15-Membered ring	MACRO		17		X			Azithromyc	18866-4	37-2	36-4	6981-5		23612-5	38-0	35-6	2021-01-01		
+AZL	AZL	AZL				Azlocillin	CLSI	X		X						6	75µg	J01CA09	Penicillins	Ureidopenicillin	PEN		01c		X			Azlocillin	18867-2	41-4	40-6	41661-0			42-2	39-8	2021-01-01		
+AZL	AZL	AZL				Azlocillin	AFA,DIN,NEO						X	X	X	216	30µg	J01CA09	Penicillins	Ureidopenicillin	PEN		01c		X			Azlocillin	18867-2	41-4	40-6	41661-0			42-2	39-8	2021-01-01		
+CDR	CDR	CFD	CFDN			Cefdinir	CLSI	X								96	5µg	J01DD15	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefdinir	23636-4	35758-2	23637-2	35757-4					2021-01-01		
+DIT		CDT	CDTR			Cefditoren	CLSI	X								153	5µg	J01DD16	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefditoren	35762-4	35759-0	35761-6	35760-8					2021-01-01		
+DIX			CDTR-PI			Cefditoren pivoxil										446		J01DD16	Cephems-Oral		CEPH-ORAL		05a														2021-01-01		
+FEP	FEP	CEP	CEPM			Cefepime	CLSI,EUCAST	X	X	X	X	X				97	30µg	J01DE01	Cephems	Cephalosporin IV	CEPH4		04d		X			Cefepime	18879-7	8272-7	6644-9	6987-2			8273-5	6643-1	2021-01-01		
+FEP	FEP	CEP	CEPM			Cefepime	DIN						X			224	10µg	J01DE01	Cephems	Cephalosporin IV	CEPH4		04d		X			Cefepime	18879-7	8272-7	6644-9	6987-2			8273-5	6643-1	2021-01-01		
+CTX	CTX	CTX	CTX			Cefotaxime	CLSI,SRGA,BSAC	X		X	X	X			X	15	30µg	J01DD01	Cephems	Cephalosporin III	CEPH3		04c		X			Cefotaxime	18886-2	109-9	108-1	6989-8			110-7	107-3	2021-01-01		
+CTX	CTX	CTX	CTX			Cefotaxime	EUCAST		X	X		X				406	5µg	J01DD01	Cephems	Cephalosporin III	CEPH3		04c		X			Cefotaxime	18886-2	109-9	108-1	6989-8			110-7	107-3	2021-01-01		
+CTX	CTX	CTX	CTX			Cefotaxime	DIN						X			232	10µg	J01DD01	Cephems	Cephalosporin III	CEPH3		04c		X			Cefotaxime	18886-2	109-9	108-1	6989-8			110-7	107-3	2021-01-01		
+CTC			CTX-CVA			Cefotaxime/Clavulanic acid	CLSI	X								394	30/10µg	J01DD51	Beta-lactam+Inhibitors		BL+INH		03		X			Cefotaxime	35771-5	35769-9	35770-7	41671-9					2021-01-01		
+CTS		CTS	CTX-SBT			Cefotaxime/Sulbactam	DIN						X			233	10/15µg	J01DD51	Beta-lactam+Inhibitors		BL+INH		03														2021-01-01		
+CTT	CTT	CTT	CTT			Cefotetan	DIN						X			234	10µg	J01DC05	Cephems	Cephamycin	CEPHAM		04e		X			Cefotetan	18887-0	113-1	112-3	6990-6			114-9	111-5	2021-01-01		
+CAT	CAT	CFT	CEMT			Cefetamet	CLSI	X								98	10µg	J01DD10	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefetamet	32377-4	35764-0	35765-7						2021-01-01		
+CPI		CFP	CEMT-PI			Cefetamet pivoxil	DIN						X			225	10µg	J01DD10	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a														2021-01-01		
+CCL	CCL					Cefetecol (Cefcatacol)										226			Cephems		CEPH4		04d														2021-01-01		
+CZL	CZL					Cefetrizole										227			Cephems		CEPH?		04e														2021-01-01		
+CFS	CFS	CFS	CFS			Cefsulodin	DIN			X			X			73	30µg	J01DD03	Cephems	Cephalosporin III	CEPH3		04c					Cefsulodin	18892-0	129-7	128-9				130-5	127-1	2021-01-01		
+CSU	CSU	CSM				Cefsumide										240			Cephems		CEPH?		04e														2021-01-01		
+CPT						Ceftaroline	CLSI	X								475	30µg	J01DI02	Cephems	Cephalosporin	CEPH		04b		X				73605-8	73650-4	73627-2						2021-01-01		
+CPT						Ceftaroline	EUCAST		X	X						507	5µg	J01DI02	Cephems	Cephalosporin	CEPH		04b						73605-8	73650-4	73627-2						2021-01-01		
+CPA						Ceftaroline/Avibactam	CLSI	X								497	30/15µg		Beta-lactam+Inhibitors		BL+INH		03		X				73604-1	73649-6	73626-4						2021-01-01		
+BAC	B	BTC	BC			Bacitracin zinc	NEO							X		336	40units	J01XX10	Polypeptides		POLYPEP		26		X			Bacitracin	18870-6	10868-8	6827-0	6983-1					2021-01-01		
+CZX	CZX	CZX	CZX			Ceftizoxime	CLSI,BSAC	X		X		X				19	30µg	J01DD07	Cephems	Cephalosporin III	CEPH3		04c		X			Ceftizoxim	18894-6	138-8	137-0	6997-1	20378-6	23622-4	139-6	136-2	2021-01-01		
+CAZ	CAZ	CAZ	CAZ			Ceftazidime	CLSI,SRGA,BSAC	X		X	X	X			X	18	30µg	J01DD02	Cephems	Cephalosporin III	CEPH3		04c		X			Ceftazidim	18893-8	134-7	133-9	6995-5			135-4	132-1	2021-01-01		
+CAZ	CAZ	CAZ	CAZ			Ceftazidime	EUCAST		X	X			X			241	10µg	J01DD02	Cephems	Cephalosporin III	CEPH3		04c		X			Ceftazidim	18893-8	134-7	133-9	6995-5			135-4	132-1	2021-01-01		
+CZA						Ceftazidime/Avibactam	CLSI	X								498	30/20µg		Beta-lactam+Inhibitors		BL+INH		03		X				73603-3	73648-8	73625-6						2021-01-01		
+TIO		CFL				Ceftiofur	CLSI	X								154	30µg	QJ01DD90	Cephems	Cephalosporin III	CEPH3		04c			X		Ceftiofur	23709-9	35780-6	35781-4						2021-01-01		
+CZX	CZX	CZX	CZX			Ceftizoxime	DIN						X			244	5µg	J01DD07	Cephems	Cephalosporin III	CEPH3		04c		X			Ceftizoxim	18894-6	138-8	137-0	6997-1	20378-6	23622-4	139-6	136-2	2021-01-01		
+CZT						Ceftolozane/Tazobactam	CLSI,EUCAST	X	X	X						506	30/10µg	J01DI54	Beta-lactam+Inhibitors		BL+INH				X				73602-5	73647-0	73624-9						2021-01-01		
+CCV			CAZ-CVA			Ceftazidime/Clavulanic acid	CLSI	X								242	30/4µg	J01DD52	Beta-lactam+Inhibitors		BL+INH		03		X			Ceftazidim	35776-4	35774-9	35775-6	42352-5					2021-01-01		
+CEM	CEM	CFM				Cefteram										243		J01DD18	Cephems		CEPH2		04b														2021-01-01		
+CPL			CFTM-PI			Cefteram pivoxil										449		J01DD18	Cephems-Oral		CEPH-ORAL		05a														2021-01-01		
+CEC	CEC	CEC	CCL			Cefaclor				X						185	10µg	J01DC04	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefaclor	18874-8	85-1	84-4	6986-4			86-9	83-6	2021-01-01		
+CXM	CXM	CXM	CXM			Cefuroxime	BSAC					X				312	5µg	J01DC02	Cephems	Cephalosporin II	CEPH2		04b		X			Cefuroxime	18896-1	146-1	145-3	6999-7			147-9	144-6	2021-01-01		
+AMK	AN	AMK	AMK			Amikacin	NEO							X		329	40µg	J01GB06	Aminoglycosides		AG		09		X			Amikacin	18860-7	13-3	12-5	6975-7	20373-7	23624-0	14-1	11-7	2021-01-01		
+CXM	CXM	CXM	CXM			Cefuroxime	CLSI,EUCAST	X	X	X	X	X	X		X	21	30µg	J01DC02	Cephems	Cephalosporin II	CEPH2		04b		X			Cefuroxime	18896-1	146-1	145-3	6999-7			147-9	144-6	2021-01-01		
+CXM	CXM	CXM	CXM			Cefuroxime	NEO							X		343	60µg	J01DC02	Cephems	Cephalosporin II	CEPH2		04b		X			Cefuroxime	18896-1	146-1	145-3	6999-7			147-9	144-6	2021-01-01		
+CXA		CFA	CXM-AX			Cefuroxime axetil	CLSI,EUCAST	X	X	X		X	X			22	30µg	J01DC02	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefuroxime	35783-0	35782-2	20460-2						2021-01-01		
+CXA		CFA	CXM-AX			Cefuroxime axetil				X						190	10µg	J01DC02	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefuroxime	35783-0	35782-2	20460-2						2021-01-01		
+ZON		CFZ				Cefuzonam										155			Cephems		CEPHAM		04e														2021-01-01		
+LEX	CN	CEX	CEX			Cephalexin	EUCAST		X	X		X			X	121	30µg	J01DB01	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cephalexin	18897-9	150-3	149-5	35784-8			151-1	148-7	2021-01-01		
+CEP	CF	CTN	CET			Cephalothin	NEO							X		344	66µg	J01DB03	Cephems	Cephalosporin I	CEPH1		04a		X			Cephalothi	18900-1	162-8	161-0	7000-3			163-6	160-2	2021-01-01		
+CEP	CF	CTN	CET			Cephalothin	CLSI,EUCAST	X	X	X		X			X	23	30µg	J01DB03	Cephems	Cephalosporin I	CEPH1		04a		X			Cephalothi	18900-1	162-8	161-0	7000-3			163-6	160-2	2021-01-01		
+HAP	CP	CAP				Cephapirin				X						150	30µg	J01DB08	Cephems	Cephalosporin I	CEPH1		04a					Cephapirin	18901-9	166-9	165-1				167-7	164-4	2021-01-01		
+GEH						Gentamicin-High	BSAC					X				318	200µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18929-0	7017-7	7018-5	35817-6					2021-01-01		
+GEH						Gentamicin-High	CLSI	X								137	120µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18929-0	7017-7	7018-5	35817-6					2021-01-01		
+GEH						Gentamicin-High	EUCAST		X	X						488	30µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18929-0	7017-7	7018-5	35817-6					2021-01-01		
+GRX		GRE	GPFX			Grepafloxacin	CLSI	X								141	5µg	J01MA11	Quinolones	Fluoroquinolone	FQ		11b		X			Grepafloxa	23638-0	35818-4	23639-8	21316-5					2021-01-01		
+GRI		GRI	GRF			Griseofulvin	NEO							X		257	25µg	D01AA08	Antifungals		FUNG		29														2021-01-01		
+HAB	HAB					Habekacin										258			Aminoglycosides		AG		09														2021-01-01		
+CLO	CX		MCIPC			Cloxacillin										122	5µg	J01CF02	Penicillins	Penicillin (Stable)	PEN-S		01e					Cloxacilli	18910-0	198-2	197-4				199-0	196-6	2021-01-01		
+FOX	FOX	COX	CFX			Cefoxitin	NEO							X		342	60µg	J01DC01	Cephems	Cephamycin	CEPHAM		04e		X			Cefoxitin	18888-8	117-2	116-4	6991-4		25366-6	118-0	115-6	2021-01-01		
+FOX	FOX	COX	CFX			Cefoxitin										439	10µg	J01DC01	Cephems	Cephamycin	CEPHAM		04e		X			Cefoxitin	18888-8	117-2	116-4	6991-4		25366-6	118-0	115-6	2021-01-01		
+ZOP		COP	CZOP			Cefozopran										156		J01DE03	Cephems-Oral		CEPH-ORAL		05a														2021-01-01		
+CFZ	CFZ	CMZ				Cefpimizole										236			Cephems		CEPH3		04c														2021-01-01		
+CPM	CPM		CPM			Cefpiramide										237		J01DD11	Cephems		CEPH3		04c														2021-01-01		
+CPO	CPO	CPI	CPR			Cefpirome	CLSI,SRGA,NEO	X		X	X			X		72	30µg	J01DE02	Cephems	Cephalosporin III	CEPH3		04c					Cefpirome	18889-6	8276-8	8275-0	6992-2			6650-6	8274-3	2021-01-01	2024-08-28	
+CPO	CPO	CPI	CPR			Cefpirome	BSAC					X				310	20µg	J01DE02	Cephems	Cephalosporin III	CEPH3		04c					Cefpirome	18889-6	8276-8	8275-0	6992-2			6650-6	8274-3	2021-01-01		
+COL	CS	COL	CL			Colistin	NEO							X		349	150µg	J01XB01	Lipopeptides		LIPOPEP		16		X			Colistin	18912-6	206-3	205-5	33333-6			207-1	204-8	2021-01-01		
+COL	CS	COL	CL			Colistin	CLSI,EUCAST	X	X	X						28	10µg	J01XB01	Lipopeptides		LIPOPEP		16		X			Colistin	18912-6	206-3	205-5	33333-6			207-1	204-8	2021-01-01		
+COL	CS	COL	CL			Colistin				X						194	50µg	J01XB01	Lipopeptides		LIPOPEP		16		X			Colistin	18912-6	206-3	205-5	33333-6			207-1	204-8	2021-01-01		
+COL	CS	COL	CL			Colistin	BSAC					X				315	25µg	J01XB01	Lipopeptides		LIPOPEP		16		X			Colistin	18912-6	206-3	205-5	33333-6			207-1	204-8	2021-01-01		
+CYC		CSE	CS			Cycloserine										129		J04AB01	Antimycobacterials		MYCO		28					Cycloserin	18914-2	214-7	213-9			23608-3	215-4	212-1	2021-01-01		
+DAL						Dalbavancin	CLSI,EUCAST	X	X	X						467		J01XA04	Glycopeptides		GLYCO		21b		X			Dalbavanci	41734-5	41688-3	41689-1	41690-9					2021-01-01		
+DAN	DFX	DAN				Danofloxacin	CLSI	X								247	5µg	QJ01MA92	Quinolones	Fluoroquinolone	FQ		11b		X				73601-7	73646-2	73623-1						2021-01-01		
+DAP		DPT				Daptomycin	CLSI	X								395	30µg	J01XX09	Lipopeptides		LIPOPEP		16		X			Daptomycin	35789-7	35787-1	35788-9	41691-7					2021-01-01		
+DEM	DM		DMCTC			Demeclocycline										160		J01AA01	Tetracyclines		TETRA		24					Demeclocyc	18915-9	218-8	217-0	7006-0			219-6	216-2	2021-01-01		
+DKB	DKB	DIB	DKB			Dibekacin				X						29	10µg	J01GB09	Aminoglycosides		AG		09														2021-01-01		
+DIC	DX	DIC	MDIPC			Dicloxacillin	DIN						X			123	5µg	J01CF01	Penicillins	Penicillin (Stable)	PEN-S		01e					Dicloxacil	18916-7	222-0	221-2				223-8	220-4	2021-01-01		
+DIF		DIF				Difloxacin	CLSI	X								248	10µg	QJ01MA94	Quinolones	Fluoroquinolone	FQ		11b		X			Difloxacin	35792-1	35790-5	35791-3						2021-01-01		
+DIR		DIR				Dirithromycin	CLSI	X		X						104	15µg	J01FA13	Macrolides		MACRO		17a		X			Dirithromy	35795-4	35793-9	35794-7	7007-8					2021-01-01		
+CPD	CPD	CPO	CPDX			Cefpodoxime	SRGA,NEO				X			X		188	30µg	J01DD13	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefpodoxim	18890-4	121-4	120-6	6993-0			122-2	119-8	2021-01-01		
+CPD	CPD	CPO	CPDX			Cefpodoxime	CLSI,EUCAST	X	X	X						87	10µg	J01DD13	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefpodoxim	18890-4	121-4	120-6	6993-0			122-2	119-8	2021-01-01		
+CPX		CPP	CPDX-PR			Cefpodoxime proxetil	DIN			X			X			238	10µg	J01DD13	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a														2021-01-01		
+CDC			CPDX-CVA			Cefpodoxime/Clavulanic acid										429		J01DD64	Beta-lactam+Inhibitors		BL+INH		03					Cefpodoxim	41731-1	41680-0	41679-2	41678-4					2021-01-01		
+CPR	CPR	CPY				Cefprozil	CLSI	X								102	30µg	J01DC10	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a		X			Cefprozil	18891-2	125-5	124-8	6994-8			126-3	123-0	2021-01-01		
+CEQ						Cefquinome										481		QJ01DE90	Cephems		CEPH?		04d														2021-01-01		
+CRD	CRD		CXD			Cefroxadine										239		J01DB11	Cephems		CEPH1		04a														2021-01-01		
+DOR			DRPM			Doripenem	CLSI,EUCAST	X	X	X						451	10µg	J01DH04	Penems	Carbapenems	CARB		07a		X			Doripenem	60535-2	72893-1	56031-8	58711-3					2021-01-01		
+DOX	DO	DOX	DOXY			Doxycycline	CLSI,SRGA,BSAC	X		X	X	X			X	30	30µg	J01AA02	Tetracyclines		TETRA		24a		X			Doxycyclin	18917-5	226-1	225-3	7008-6	20379-4	23623-2	227-9	224-6	2021-01-01		
+DOX	DO	DOX	DOXY			Doxycycline	NEO							X		350	80µg	J01AA02	Tetracyclines		TETRA		24		X			Doxycyclin	18917-5	226-1	225-3	7008-6	20379-4	23623-2	227-9	224-6	2021-01-01		
+ECO		ECO				Econazole	NEO							X		351	10µg	D01AC03	Antifungals		FUNG		29					Econazole	25595-0		25637-0						2021-01-01		
+ENX	ENX	ENO	ENX			Enoxacin	DIN			X			X			249	5µg	J01MA04	Quinolones	Fluoroquinolone	FQ		11b		X			Enoxacin	18918-3	230-3	229-5	41692-5			231-1	228-7	2021-01-01		
+ENX	ENX	ENO	ENX			Enoxacin	CLSI	X								31	10µg	J01MA04	Quinolones	Fluoroquinolone	FQ		11b		X			Enoxacin	18918-3	230-3	229-5	41692-5			231-1	228-7	2021-01-01		
+GRN						Garenoxacin	CLSI	X								491	5µg	J01MA19	Quinolones	Quinolone	QUIN		11a		X			Garenoxaci	35813-5	35811-9	35812-7						2021-01-01		
+GAT		GAT	GFLX			Gatifloxacin										412	2µg	J01MA16	Quinolones	Fluoroquinolone	FQ		11b		X			Gatifloxac	31038-3	31040-9	31036-7	31042-5		41494-6			2021-01-01		
+GAT		GAT	GFLX			Gatifloxacin	CLSI,DIN	X		X			X			256	5µg	J01MA16	Quinolones	Fluoroquinolone	FQ		11b		X			Gatifloxac	31038-3	31040-9	31036-7	31042-5		41494-6			2021-01-01		
+GEM		GEM				Gemifloxacin	CLSI	X								393	5µg	J01MA15	Quinolones	Fluoroquinolone	FQ		11b		X			Gemifloxac	35816-8	35814-3	35815-0	41697-4					2021-01-01		
+GEM		GEM				Gemifloxacin						X				413	1µg	J01MA15	Quinolones	Fluoroquinolone	FQ		11b		X			Gemifloxac	35816-8	35814-3	35815-0	41697-4					2021-01-01		
+GEN	GM	GEN	GM			Gentamicin				X						196	15µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18928-2	268-3	267-5	7016-9			269-1	266-7	2021-01-01		
+JOS	JM	JOS	JM			Josamycin										115	100µg	J01FA07	Macrolides		MACRO		17					Josamycine	25597-6	41698-2	25702-2	41699-0					2021-01-01		
+GEN	GM	GEN	GM			Gentamicin	CLSI,EUCAST	X	X	X		X	X			35	10µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18928-2	268-3	267-5	7016-9			269-1	266-7	2021-01-01		
+GEN	GM	GEN	GM			Gentamicin	NEO							X		358	40µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18928-2	268-3	267-5	7016-9			269-1	266-7	2021-01-01		
+GEN	GM	GEN	GM			Gentamicin	AFA,SRGA,EUCAST(Enterococcus)				X				X	197	30µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18928-2	268-3	267-5	7016-9			269-1	266-7	2021-01-01		
+GEH						Gentamicin-High	NEO							X		359	250µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18929-0	7017-7	7018-5	35817-6					2021-01-01		
+GEH						Gentamicin-High				X						198	500µg	J01GB03	Aminoglycosides		AG		09		X			Gentamicin	18929-0	7017-7	7018-5	35817-6					2021-01-01		
+HET	H					Hetacillin										259		J01CA18	Penicillins		PEN		01b					Hetacillin	18931-6	276-6	275-8				277-4	274-1	2021-01-01		
+HYG						Hygromycin										414			Aminoglycosides		AG		09														2021-01-01		
+ICL						Iclaprim	CLSI	X								476	5µg	J01EA03	Folate pathway inhibitors		FOLATE		12a		X				73597-7	73642-1	73619-9						2021-01-01		
+IPM	IPM	IMP				Imipenem	CLSI,EUCAST	X	X	X	X	X	X		X	36	10µg	J01DH51	Penems	Carbapenems	CARB		07a		X			Imipenem	18932-4	280-8	279-0	7019-3		23613-3	281-6	278-2	2021-01-01		
+IPM	IPM	IMP	IPM/CS			Imipenem	NEO							X		360	15µg	J01DH51	Penems	Carbapenems	CARB		07a		X			Imipenem	18932-4	280-8	279-0	7019-3		23613-3	281-6	278-2	2021-01-01		
+IPE						Imipenem/EDTA										433			Penems		CARB		07a									35819-2					2021-01-01		
+ISE	ISP	ISE	ISP			Isepamicin				X						75	30µg	J01GB11	Aminoglycosides		AG		09					Isepamicin	32381-6	35820-0	35821-8						2021-01-01		
+ISO		ISL				Isoconazole	NEO							X		165	10µg	D01AC05	Antifungals		FUNG		29														2021-01-01		
+INH		INH	INH			Isoniazid										132		J04AC01	Antimycobacterials		MYCO		28					Isoniazid	18934-0	288-1	287-3	7020-1	20383-6	23947-5	289-9	286-5	2021-01-01		
+ENR		ENR				Enrofloxacin	NEO							X		352	10µg	QJ01MA90	Quinolones	Fluoroquinolone	FQ		11b					Enrofloxac	23712-3	35797-0	35798-8	35796-2					2021-01-01		
+ENR		ENR				Enrofloxacin	CLSI	X								161	5µg	QJ01MA90	Quinolones	Fluoroquinolone	FQ		11b			X		Enrofloxac	23712-3	35797-0	35798-8	35796-2					2021-01-01		
+ENV			EVM			Enviomycin (Tuberactinomycin)										452		QJ04AB06	Antimycobacterials		MYCO		28														2021-01-01		
+EPE						Eperozolid										250			Oxazolidinones		OXAZOLID		20														2021-01-01		
+EPP	EPP					Epiroprim										251			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+ETP		ERT				Ertapenem	CLSI,EUCAST	X	X	X						401	10µg	J01DH03	Penems	Carbapenems	CARB		07a		X			Ertapenem	35802-8	35799-6	35801-0	35800-2					2021-01-01		
+ERY	E	ERY	EM			Erythromycin	BSAC					X				316	5µg	J01FA01	Macrolides		MACRO		17		X			Erythromyc	18919-1	234-5	233-7	7009-4	20380-2	23633-1	235-2	232-9	2021-01-01		
+ERY	E	ERY	EM			Erythromycin	CLSI,EUCAST	X	X	X	X		X		X	32	15µg	J01FA01	Macrolides	14-Membered ring	MACRO		17a		X			Erythromyc	18919-1	234-5	233-7	7009-4	20380-2	23633-1	235-2	232-9	2021-01-01		
+ERY	E	ERY	EM			Erythromycin	NEO							X		353	78µg	J01FA01	Macrolides	14-Membered ring	MACRO		17		X			Erythromyc	18919-1	234-5	233-7	7009-4	20380-2	23633-1	235-2	232-9	2021-01-01		
+ETH	EB	EMB	EB			Ethambutol										130		J04AK02	Antimycobacterials		MYCO		28					Ethambutol	18921-7	242-8	241-0	7010-2	20381-0	23625-7	243-6	240-2	2021-01-01		
+ETI	EA	ETH	ETH			Ethionamide										131		J04AD03	Antimycobacterials		MYCO		28					Ethionamid	18922-5	41693-3	16099-4	7011-0	20382-8	23617-4			2021-01-01		
+ETO						Ethopabate										411		QP51AX17	Coccidiostats		COCC		27														2021-01-01		
+FAR		FAR	FRPM			Faropenem	CLSI	X								428	5µg	J01DI03	Penems	Penem	PENEM		07b		X				73600-9	73645-4	73622-3						2021-01-01		
+FDX						Fidaxomicin	CLSI	X								487		A07AA12	Macrolides				17		X				73599-3	73644-7	73621-5						2021-01-01		
+FIN						Finafloxacin	CLSI	X								500			Quinolones		FQ		11b		X				73598-5	73643-9	73620-7						2021-01-01		
+FLA						Flavomycin										252			Flavophospholipols		FLAVO		27														2021-01-01		
+FLE	FLE	FLO	FLRX			Fleroxacin	NEO							X		354	10µg	J01MA08	Quinolones	Fluoroquinolone	FQ		11b		X			Fleroxacin	32372-5	35806-9	25411-0	7012-8					2021-01-01		
+FLE	FLE	FLO	FLRX			Fleroxacin	CLSI,DIN	X					X			105	5µg	J01MA08	Quinolones	Fluoroquinolone	FQ		11b		X			Fleroxacin	32372-5	35806-9	25411-0	7012-8					2021-01-01		
+FLO	FLO	FLX	FMOX			Flomoxef										162		J01DC14	Cephems		OXACEPH		04f														2021-01-01		
+FLR		FLF				Florfenicol	CLSI	X								253	30µg	QJ01BA90	Phenicols		PHEN		22		X			Florfenico	23740-4	35807-7	35808-5						2021-01-01		
+FLC	FU	FLU				Flucloxacillin	DIN						X			163		J01CF05	Penicillins		PEN-S		01e														2021-01-01		
+FLU		FCA	FLCZ			Fluconazole	CLSI,NEO	X						X		443	25µg	J02AC01	Antifungals		FUNG		29		X			Fluconazol	18924-1	250-1	249-3	7013-6			251-9	248-5	2021-01-01		
+FLM	UB	FLM				Flumequine				X						88	30µg	J01MB07	Quinolones	Quinolone	QUIN		11a														2021-01-01		
+FFL			F-FLCZ			Fosfluconazole										453		J02AC01	Antifungals		FUNG		29														2021-01-01		
+FOS	FOS	FOS	FOM			Fosfomycin	NEO							X		355	70µg	J01XX01	Fosfomycins	Fosfomycin	FOSFO		13		X			Fosfomycin	25596-8	35810-1	25653-7	35809-3					2021-01-01		
+FOS	FOS	FOS	FOM			Fosfomycin	BSAC									317	20µg	J01XX01	Fosfomycins	Fosfomycin	FOSFO		13		X			Fosfomycin	25596-8	35810-1	25653-7	35809-3					2021-01-01		
+FOS	FOS	FOS	FOM			Fosfomycin	CLSI,EUCAST	X	X	X		X				254	200µg	J01XX01	Fosfomycins	Fosfomycin	FOSFO		13		X			Fosfomycin	25596-8	35810-1	25653-7	35809-3					2021-01-01		
+FOS	FOS	FOS	FOM			Fosfomycin				X						33	50µg	J01XX01	Fosfomycins	Fosfomycin	FOSFO		13		X			Fosfomycin	25596-8	35810-1	25653-7	35809-3					2021-01-01		
+FMD	FMD					Fosmidomycin										255			Fosfomycins		FOSFO		13														2021-01-01		
+FRM	FY	FRA				Framycetin										164	30µg	D09AA01	Aminoglycosides		AG		09					Framycetin	18926-6	259-2	258-4				260-0	257-6	2021-01-01		
+FRZ		FUR				Furazolidone										434	100µg	G01AX06	Nitrofurans		FURAN		18														2021-01-01		
+FRZ		FUR				Furazolidone	NEO							X		356	50µg	G01AX06	Nitrofurans		FURAN		18														2021-01-01		
+FUS	FA	FUS	FA			Fusidic acid	AFA,SRGA				X				X	195	50µg	J01XC01	Steroidals	Fusidane	FUSID		26		X			Fusidate	18927-4	263-4	262-6	7015-1			264-2	261-8	2021-01-01		
+FUS	FA	FUS	FA			Fusidic acid	EUCAST	X	X	X		X				34	10µg	J01XC01	Steroidals	Fusidane	FUSID		26		X			Fusidate	18927-4	263-4	262-6	7015-1			264-2	261-8	2021-01-01		
+FUS	FA	FUS	FA			Fusidic acid	NEO							X		357	100µg	J01XC01	Steroidals	Fusidane	FUSID		26		X			Fusidate	18927-4	263-4	262-6	7015-1			264-2	261-8	2021-01-01		
+KAN	K	KAN	KM			Kanamycin	CLSI	X		X						37	30µg	J01GB04	Aminoglycosides		AG		09		X			Kanamycin	18935-7	292-3	291-5	7022-7		23609-1	293-1	290-7	2021-01-01		
+KAN	K		KM			Kanamycin	NEO							X		361	100µg	J01GB04	Aminoglycosides		AG		09		X			Kanamycin	18935-7	292-3	291-5	7022-7		23609-1	293-1	290-7	2021-01-01		
+KAH						Kanamycin-High	CLSI	X		X						138	1000µg	J01GB04	Aminoglycosides		AG		09		X			Kanamycin.	18936-5	7023-5	7024-3						2021-01-01		
+KAH						Kanamycin-High	NEO							X		362	500µg	J01GB04	Aminoglycosides		AG		09		X			Kanamycin.	18936-5	7023-5	7024-3						2021-01-01		
+KET		KET	KCZ			Ketoconazole	NEO							X		134	15µg	J02AB02	Antifungals		FUNG		29					Ketoconazo	18937-3	296-4	295-6	7025-0			297-2	294-9	2021-01-01		
+KIT	LU		LM			Kitasamycin (Leucomycin)										116		QJ01FA93	Macrolides		MACRO		17														2021-01-01		
+LAS						Lasalocid										415		QP51AH02	Combinations		OTHER		28														2021-01-01		
+LEN		LEN	LAPC			Lenampicillin										454			Penicillins		PEN		01b														2021-01-01		
+LVX		LEV	LVFX			Levofloxacin	CLSI,EUCAST	X	X	X	X	X				142	5µg	J01MA12	Quinolones	Fluoroquinolone	FQ		11b		X			Levofloxac	20629-2	21367-8	20396-8	7026-8					2021-01-01		
+LVX		LEV	LVFX			Levofloxacin	BSAC					X				319	1µg	J01MA12	Quinolones	Fluoroquinolone	FQ		11b		X			Levofloxac	20629-2	21367-8	20396-8	7026-8					2021-01-01		
+LIN	L	LIN	LCM			Lincomycin	AFA			X					X	38	15µg	J01FF02	Lincosamides		LINCO		15					Lincomycin	18938-1	300-4	299-8	41700-6			301-2	298-0	2021-01-01		
+LIN	L	LIN	LCM			Lincomycin	NEO							X		363	19µg	J01FF02	Lincosamides		LINCO		15					Lincomycin	18938-1	300-4	299-8	41700-6			301-2	298-0	2021-01-01		
+LSP						Linco-spectin (lincomycin/spectinomycin)	NEO							X		364	15/200µg	QJ01FF52	Combinations	Lincosamide/Aminocyclitol	OTHER		28														2021-01-01		
+LNZ		LIZ	LZD			Linezolid	CLSI	X		X						260	30µg	J01XX08	Oxazolidinones		OXAZOLID		20		X			Linezolid	29258-1	29255-7	29254-0	33332-8		41500-0			2021-01-01		
+LNZ		LIZ	LZD			Linezolid	EUCAST		X	X		X				416	10µg	J01XX08	Oxazolidinones		OXAZOLID		20		X			Linezolid	29258-1	29255-7	29254-0	33332-8		41500-0			2021-01-01		
+LFE						Linoprist-flopristin	CLSI	X								483	10µg		Streptogramins		STREPTOG		23			X			55292-7	55294-3	55293-5						2021-01-01		
+LOM	LOM	LOM	LFLX			Lomefloxacin	CLSI	X								107	10µg	J01MA07	Quinolones	Fluoroquinolone	FQ		11b		X			Lomefloxac	18939-9	304-6	303-8	41701-4			305-3	302-0	2021-01-01		
+LOM	LOM	LOM	LFLX			Lomefloxacin				X						261	5µg	J01MA07	Quinolones	Fluoroquinolone	FQ		11b		X			Lomefloxac	18939-9	304-6	303-8	41701-4			305-3	302-0	2021-01-01		
+LOR		LOR	LCBF			Loracarbef	CLSI,DIN	X					X			108	30µg	J01DC08	Cephems-Oral	Carbacephem	CEPH-ORAL		05b		X			Loracarbef	18940-7	308-7	307-9	7027-6					2021-01-01		
+LOR		LOR	LCBF			Loracarbef				X						262	10µg	J01DC08	Cephems-Oral	Cephalosporin	CEPH-ORAL		05a					Loracarbef	18940-7	308-7	307-9	7027-6			309-5	306-1	2021-01-01		
+MAR		MAR				Marbofloxacin	CLSI	X								468	5µg	QJ01MA93	Quinolones	Fluoroquinolone	FQ		11b			X			73596-9	73641-3	73618-1						2021-01-01		
+MEC	MEC	MCL				Mecillinam (Amdinocillin)	NEO							X		365	33µg	J01CA11	Penicillins	Amidinopenicillin	PEN		01f		X			Amdinocill	18859-9	9-1	8-3	7028-4			10-9	7-5	2021-01-01		
+MEC	MEC	MCL				Mecillinam (Amdinocillin)	CLSI,EUCAST	X	X	X	X	X			X	80	10µg	J01CA11	Penicillins	Amidinopenicillin	PEN		01f		X			Amdinocill	18859-9	9-1	8-3	7028-4			10-9	7-5	2021-01-01		
+MEL						Meleumycin										117			Macrolides		MACRO		17														2021-01-01		
+MEM	MEM	MER	MEPM			Meropenem	CLSI,EUCAST	X	X	X	X	X	X		X	109	10µg	J01DH02	Penems	Carbapenems	CARB		07a		X			Meropenem	18943-1	6653-0	6652-2	7029-2			6654-8	6651-4	2021-01-01		
+MES	MES					Mesulfamide										263			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+MET	ME	MET				Methicillin	CLSI,BSAC	X				X				39	5µg	J01CF03	Penicillins	Penicillin (Stable)	PEN-S		01e		X			Methicilli	18945-6	324-4	323-6	7030-0			325-1	322-8	2021-01-01		
+MET	ME	MET				Methicillin	NEO							X		366	29µg	J01CF03	Penicillins	Penicillin (Stable)	PEN-S		01e		X			Methicilli	18945-6	324-4	323-6	7030-0			325-1	322-8	2021-01-01		
+MTP	MTP					Metioprim										264			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+MXT	MXT					Metioxate										265			Quinolones		QUIN		11a														2021-01-01		
+MTR	MTR	MTR				Metronidazole	SRGA				X					76	4µg	J01XD01	Nitroimidazoles		IMIDAZ		19					Metronidaz	18946-4	328-5	327-7	7031-8			329-3	326-9	2021-01-01		
+MTR	MTR	MTR				Metronidazole	NEO			X				X		367	16µg	J01XD01	Nitroimidazoles		IMIDAZ		19		X			Metronidaz	18946-4	328-5	327-7	7031-8			329-3	326-9	2021-01-01		
+MTR	MTR	MTR				Metronidazole										430	5µg	J01XD01	Nitroimidazoles		IMIDAZ		19		X			Metronidaz	18946-4	328-5	327-7	7031-8			329-3	326-9	2021-01-01		
+MTR	MTR	MTR				Metronidazole	EUCAST		X	X						199	10µg	J01XD01	Nitroimidazoles		IMIDAZ		19		X			Metronidaz	18946-4	328-5	327-7	7031-8			329-3	326-9	2021-01-01		
+MEZ	MZ	MZL				Mezlocillin	CLSI,BSAC	X		X		X				40	75µg	J01CA10	Penicillins	Ureidopenicillin	PEN		01c		X			Mezlocilli	18947-2	332-7	331-9	41702-2			333-5	330-1	2021-01-01		
+MEZ	MZ	MZL				Mezlocillin	DIN						X			266	30µg	J01CA10	Penicillins	Ureidopenicillin	PEN		01c		X			Mezlocilli	18947-2	332-7	331-9	41702-2			333-5	330-1	2021-01-01		
+MSU		MZS				Mezlocillin/Sulbactam	DIN						X			267	30/15µg		Beta-lactam+Inhibitors		BL+INH		03														2021-01-01		
+MIF						Micafungin	CLSI	X								455	10µg	J02AX05	Antifungals		FUNG		29														2021-01-01		
+MCZ	MCZ	MCZ	MCZ			Miconazole	NEO							X		268	10µg	J02AB01	Antifungals		FUNG		29					Miconazole	25607-3		25722-0						2021-01-01		
+MCR	MCR	MCR	MCR			Micronomicin										269		S01AA22	Aminoglycosides		AG		09														2021-01-01		
+MID		MID	MDM			Midecamycin										118	100µg	J01FA03	Macrolides		MACRO		17														2021-01-01		
+MIL	MIL					Miloxacin										270			Quinolones		QUIN		11a														2021-01-01		
+MNO	MNO	MNO	MINO			Minocycline	CLSI,EUCAST	X	X	X						41	30µg	J01AA08	Tetracyclines		TETRA		24a		X			Minocyclin	18948-0	336-8	335-0	7032-6			337-6	334-3	2021-01-01		
+MNO	MNO	MNO	MINO			Minocycline	NEO							X		368	80µg	J01AA08	Tetracyclines		TETRA		24		X			Minocyclin	18948-0	336-8	335-0	7032-6			337-6	334-3	2021-01-01		
+MON						Monensin sodium										417		QP51AH02	Combinations		OTHER		28														2021-01-01		
+MOX	MOX	LMO	LMOX			Moxalactam (Latamoxef)	CLSI	X		X						42	30µg	J01DD06	Cephems	Oxacephem	OXACEPH		04f		X			Moxalactam	18950-6	344-2	343-4	41703-0			345-9	342-6	2021-01-01		
+MFX		MOX	MFLX			Moxifloxacin						X				418	1µg	J01MA14	Quinolones	Fluoroquinolone	FQ		11b		X			Moxifloxac	31039-1	31041-7	31037-5	31043-3		41502-6			2021-01-01		
+MFX		MOX	MFLX			Moxifloxacin	CLSI,EUCAST	X	X	X	X		X			392	5µg	J01MA14	Quinolones	Fluoroquinolone	FQ		11b		X			Moxifloxac	31039-1	31041-7	31037-5	31043-3		41502-6			2021-01-01		
+MUP		MUP	MUP			Mupirocin	CLSI,NEO	X						X		124	10µg	D06AX09	Pseudomonic acids		PSEUDOM		27		X			Mupirocin	20389-3	35822-6	35823-4	7033-4					2021-01-01		
+MUP		MUP	MUP			Mupirocin	BSAC			X		X				419	5µg	D06AX09	Pseudomonic acids		PSEUDOM		27		X			Mupirocin	20389-3	35822-6	35823-4	7033-4					2021-01-01		
+NAD			NDFX			Nadifloxacin										456		D10AF05	Quinolones		FQ		11b														2021-01-01		
+NAF	NF	NCL				Nafcillin	CLSI	X								43	1µg	J01CF06	Penicillins	Penicillin (Stable)	PEN-S		01e		X			Nafcillin	18951-4	348-3	347-5	41704-8			349-1	346-7	2021-01-01		
+NAL	NA	NAL	NA			Nalidixic acid	CLSI,EUCAST	X	X	X					X	44	30µg	J01MB02	Quinolones	Quinolone	QUIN		11a		X			Nalidixate	18952-2	352-5	351-7	7034-2			353-3	350-9	2021-01-01		
+NAL	NA	NAL	NA			Nalidixic acid	NEO							X		369	130µg	J01MB02	Quinolones	Quinolone	QUIN		11a		X			Nalidixate	18952-2	352-5	351-7	7034-2			353-3	350-9	2021-01-01		
+NAR						Narasin										402		QP51AH04	Combinations		OTHER		28														2021-01-01		
+NEO	N	NEO	FRM			Neomycin	CLSI	X								45	30µg	J01GB05	Aminoglycosides		AG		09		X			Neomycin	18953-0	356-6	355-8	41705-5			357-4	354-1	2021-01-01		
+NEO		NEO	FRM			Neomycin						X				420	10µg	J01GB05	Aminoglycosides		AG		09		X			Neomycin	18953-0	356-6	355-8	41705-5			357-4	354-1	2021-01-01		
+NEO	N	NEO	FRM			Neomycin	NEO							X		370	120µg	J01GB05	Aminoglycosides		AG		09		X			Neomycin	18953-0	356-6	355-8	41705-5			357-4	354-1	2021-01-01		
+NET	NET	NET	NTL			Netilmicin	CLSI,SRGA	X		X	X				X	46	30µg	J01GB07	Aminoglycosides		AG		09		X			Netilmicin	18954-8	360-8	359-0	7035-9			361-6	358-2	2021-01-01		
+NET	NET	NET	NTL			Netilmicin	EUCAST		X	X		X	X			271	10µg	J01GB07	Aminoglycosides		AG		09		X			Netilmicin	18954-8	360-8	359-0	7035-9			361-6	358-2	2021-01-01		
+NET	NET	NET	NTL			Netilmicin	NEO							X		371	40µg	J01GB07	Aminoglycosides		AG		09		X			Netilmicin	18954-8	360-8	359-0	7035-9			361-6	358-2	2021-01-01		
+NIC						Nicarbazin										421		QP51AE03	Coccidiostats		COCC		27														2021-01-01		
+NIF	NIF					Nifuroquine										272			Quinolones		QUIN		11a														2021-01-01		
+NTZ						Nitazoxanide	CLSI	X								492		P01AX11	Thiazolides		THIAZ		30						73595-1	73640-5	73617-3						2021-01-01		
+NIT	FT	NFT				Nitrofurantoin	BSAC									327	50µg	J01XE01	Nitrofurans		FURAN		18		X			Nitrofuran	18955-5	364-0	363-2	7036-7			365-7	362-4	2021-01-01		
+NIT	FT	NFT				Nitrofurantoin	NEO							X		372	260µg	J01XE01	Nitrofurans		FURAN		18		X			Nitrofuran	18955-5	364-0	363-2	7036-7			365-7	362-4	2021-01-01		
+NIT	FT	NFT				Nitrofurantoin	EUCAST		X	X	X		X		X	200	100µg	J01XE01	Nitrofurans		FURAN		18		X			Nitrofuran	18955-5	364-0	363-2	7036-7			365-7	362-4	2021-01-01		
+NIT	FT	NFT				Nitrofurantoin	CLSI	X		X						47	300µg	J01XE01	Nitrofurans		FURAN		18		X			Nitrofuran	18955-5	364-0	363-2	7036-7			365-7	362-4	2021-01-01		
+NIT	FT	NFT				Nitrofurantoin	BSAC					X				320	200µg	J01XE01	Nitrofurans		FURAN		18		X			Nitrofuran	18955-5	364-0	363-2	7036-7			365-7	362-4	2021-01-01		
+NIZ	FC					Nitrofurazone										166		P01CC02	Nitrofurans		FURAN		18														2021-01-01		
+NTR	NI	NIT				Nitroxoline				X						89	20µg	J01XX07	Quinolones	Quinolone	QUIN		11a					Nitroxolin	25608-1		25723-8						2021-01-01		
+NOR	NOR	NOR	NFLX			Norfloxacin	CLSI,EUCAST	X	X	X	X		X			48	10µg	J01MA06	Quinolones	Fluoroquinolone	FQ		11b		X			Norfloxaci	18956-3	368-1	367-3	7037-5		41504-2	369-9	366-5	2021-01-01		
+NOR	NOR	NOR	NFLX			Norfloxacin				X						201	5µg	J01MA06	Quinolones	Fluoroquinolone	FQ		11b		X			Norfloxaci	18956-3	368-1	367-3	7037-5		41504-2	369-9	366-5	2021-01-01		
+NOR	NOR	NOR	NFLX			Norfloxacin	BSAC					X				321	2µg	J01MA06	Quinolones	Fluoroquinolone	FQ		11b		X			Norfloxaci	18956-3	368-1	367-3	7037-5		41504-2	369-9	366-5	2021-01-01		
+NVA						Norvancomycin										119			Glycopeptides		GLYCO		21a														2021-01-01		
+NOV	NB					Novobiocin	CLSI,NEO	X						X		49	5µg	QJ01XX95	Polypeptides	Coumarin	POLYPEP		26		X			Novobiocin	18957-1	372-3	371-5	41706-3			373-1	370-7	2021-01-01		
+NOV	NB					Novobiocin	NEO							X		373	100µg	QJ01XX95	Polypeptides	Coumarin	POLYPEP		26		X			Novobiocin	18957-1	372-3	371-5	41706-3			373-1	370-7	2021-01-01		
+NYS	NY	NYS	NYS			Nystatin	NEO							X		273	50µg	D01AA01	Antifungals		FUNG		29					Nystatin	18958-9	35824-2	10697-1					10698-9	2021-01-01		
+OFX		OFX	OFLX			Ofloxacin	CLSI,EUCAST	X	X	X			X			50	5µg	J01MA01	Quinolones	Fluoroquinolone	FQ		11b		X			Ofloxacin	18959-7	376-4	375-6	7038-3	20384-4	23948-3	377-2	374-9	2021-01-01		
+OFX		OFX	OFLX			Ofloxacin	BSAC					X				322	1µg	J01MA01	Quinolones	Fluoroquinolone	FQ		11b		X			Ofloxacin	18959-7	376-4	375-6	7038-3	20384-4	23948-3	377-2	374-9	2021-01-01		
+OFX		OFX	OFLX			Ofloxacin	AFA,SRGA,NEO				X			X	X	202	10µg	J01MA01	Quinolones	Fluoroquinolone	FQ		11b		X			Ofloxacin	18959-7	376-4	375-6	7038-3	20384-4	23948-3	377-2	374-9	2021-01-01		
+OLE	OL	OLE				Oleandomycin										167	15µg	J01FA05	Macrolides		MACRO		17					Oleandomyc	18960-5	380-6	379-8				381-4	378-0	2021-01-01		
+OMC						Omadacycline	CLSI	X								502	30µg	J01AA15	Tetracyclines		TETRA		24c		X				73594-4	73639-7	73616-5						2021-01-01	2024-06-28	
+OPT						Optochin										168	5µg		Optochins		OPT		27														2021-01-01		
+ORB		ORB				Orbifloxacin	CLSI	X								469	10µg	QJ01MA95	Quinolones	Fluoroquinolone	FQ		11b			X		Orbifloxac	35827-5	35825-9	35826-7						2021-01-01		
+ORI						Oritavancin	CLSI,EUCAST	X	X	X						442		J01XA05	Glycopeptides		LIPOGLYC		21a		X			Oritavanci	41736-0	41707-1	41708-9	41709-7					2021-01-01		
+ORS						Ormetroprim/Sulfamethoxazole	CLSI	X								274	1.25/23.75µg		Folate pathway inhibitors		FOLATE		12a			X			73593-6	73638-9	73615-7						2021-01-01		
+ORN	ORN	ORN				Ornidazole										169	4µg	J01XD03	Nitroimidazoles		IMIDAZ		19														2021-01-01		
+OXA	OX	OXA				Oxacillin	CLSI,EUCAST	X	X	X	X	X			X	51	1µg	J01CF04	Penicillins	Penicillin (Stable)	PEN-S		01e		X			Oxacillin	18961-3	384-8	383-0	7039-1			385-5	382-2	2021-01-01		
+OXA	OX	OXA				Oxacillin	DIN,NEO			X			X	X		203	5µg	J01CF04	Penicillins	Penicillin (Stable)	PEN-S		01e		X			Oxacillin	18961-3	384-8	383-0	7039-1			385-5	382-2	2021-01-01		
+OXA	OX	OXA				Oxacillin	AFA								X	398	10µg	J01CF04	Penicillins	Penicillin (Stable)	PEN-S		01e		X			Oxacillin	18961-3	384-8	383-0	7039-1			385-5	382-2	2021-01-01		
+OXO	OA	OXL				Oxolinic acid	CLSI	X								470	2µg	J01MB05	Quinolones	Quinolone	QUIN		11a			X		Oxolinate	55696-9	55697-7	55695-1	55698-5					2021-01-01		
+OXO	OA	OXL				Oxolinic acid				X						90	10µg	J01MB05	Quinolones	Quinolone	QUIN		11a					Oxolinate	55696-9	55697-7	55695-1	55698-5					2021-01-01		
+OXY	OT	OTE	OTC			Oxytetracycline	CLSI	X		X						170	30µg	J01AA06	Tetracyclines		TETRA		24					Oxytetracy	18962-1	388-9	387-1				389-7	386-3	2021-01-01		
+OXY	OT	OTE	OTC			Oxytetracycline	NEO							X		374	80µg	J01AA06	Tetracyclines		TETRA		24					Oxytetracy	18962-1	388-9	387-1				389-7	386-3	2021-01-01		
+PAS		PAS				P-Aminosalicylic acid										171		J04AA01	Antimycobacterials		MYCO		28					Para amino	23629-9		14332-1			23611-7			2021-01-01		
+PAN		PAN	PAPM-BP			Panipenem										172		J01DH55	Penems		CARB		07a														2021-01-01		
+PAR	PM	PAR				Paromomycin										275		A07AA06	Oligosaccharides		OLIGO		27														2021-01-01		
+PAZ		PZF	PZFX			Pazufloxacin										457		J01MA18	Quinolones		FQ		11b														2021-01-01		
+PEF		PEF				Pefloxacin				X						52	5µg	J01MA03	Quinolones	Fluoroquinolone	FQ		11b					Pefloxacin	18963-9	35828-3	390-5	7040-9					2021-01-01		
+PEF		PEF				Pefloxacin	NEO							X		375	10µg	J01MA03	Quinolones	Fluoroquinolone	FQ		11b					Pefloxacin	18963-9	35828-3	390-5	7040-9					2021-01-01		
+PEN	P	PEN	PCG			Penicillin G	CLSI,DIN,SRGA	X		X	X		X		X	53	10units	J01CE01	Penicillins	Penicillin	PEN		01a		X			Penicillin	18965-4	393-9	392-1	7041-7			394-7	391-3	2021-01-01		
+PEN	P	PEN	PCG			Penicillin G	EUCAST		X	X		X				323	1unit	J01CE01	Penicillins	Penicillin	PEN		01a		X			Penicillin	18965-4	393-9	392-1	7041-7			394-7	391-3	2021-01-01		
+PEN	P	PEN	PCG			Penicillin G	NEO							X		376	5µg	J01CE01	Penicillins	Penicillin	PEN		01a		X			Penicillin	18965-4	393-9	392-1	7041-7			394-7	391-3	2021-01-01		
+PNV	PV	PEN				Penicillin V	CLSI,EUCAST	X	X	X	X				X	81	10µg	J01CE02	Penicillins	Penicillin	PEN		01a		X			Penicillin	18966-2	397-0	396-2	7042-5			398-8	395-4	2021-01-01		
+PNO						Penicillin/Novobiocin	CLSI	X								84	10units/30µg		Combinations	Penicillin/Polypeptide	OTHER		28			X		Penicillin	35874-7	35872-1	35873-9						2021-01-01		
+PSU			PCG-SBT			Penicillin/Sulbactam	DIN						X			437	10/10		Beta-lactam+Inhibitors		BL+INH		03														2021-01-01		
+PIM	PIM					Pentisomicin										276			Aminoglycosides		AG		09														2021-01-01		
+PTZ	PTZ					Pentizidone										277			Oxazolidinones		OXAZOLID		20														2021-01-01		
+PHE			PEPC			Phenethicillin										458			Penicillins		PEN		01a					Phenethici	18967-0	401-0	400-2				402-8	399-6	2021-01-01		
+PMR			PMR			Pimaricin (Natamycin)										459		D01AA02	Antifungals		FUNG		29														2021-01-01		
+PPA	PI	PIM	PPA			Pipemidic acid	DIN			X			X			54	20µg	J01MB04	Quinolones	Quinolone	QUIN		11a					Pipemidate	18968-8	405-1	404-4				406-9	403-6	2021-01-01		
+PPA	PI	PIM	PPA			Pipemidic acid	NEO							X		377	30µg	J01MB04	Quinolones	Quinolone	QUIN		11a					Pipemidate	18968-8	405-1	404-4				406-9	403-6	2021-01-01		
+PIP	PIP	PIP	PIPC			Piperacillin	BSAC			X		X				207	75µg	J01CA12	Penicillins	Ureidopenicillin	PEN		01c		X			Piperacill	18969-6	409-3	408-5	7043-3			410-1	407-7	2021-01-01		
+PIP	PIP	PIP	PIPC			Piperacillin	CLSI	X								55	100µg	J01CA12	Penicillins	Ureidopenicillin	PEN		01c		X			Piperacill	18969-6	409-3	408-5	7043-3			410-1	407-7	2021-01-01		
+PIP	PIP	PIP	PIPC			Piperacillin	EUCAST		X	X	X		X			206	30µg	J01CA12	Penicillins	Ureidopenicillin	PEN		01c		X			Piperacill	18969-6	409-3	408-5	7043-3			410-1	407-7	2021-01-01		
+PIS		PIS	PIPC-SBT			Piperacillin/Sulbactam	DIN						X			278	30/15µg	J01CR05	Beta-lactam+Inhibitors		BL+INH		03														2021-01-01		
+TZP		PIT	PIPC-TAZ			Piperacillin/Tazobactam	CLSI	X								92	100/10µg	J01CR05	Beta-lactam+Inhibitors		BL+INH		03		X			Piperacill	18970-4	413-5	412-7	7044-1			414-3	411-9	2021-01-01		
+TZP		PIT	PIPC-TAZ			Piperacillin/Tazobactam	EUCAST		X	X	X					204	30/6µg	J01CR05	Beta-lactam+Inhibitors		BL+INH		03		X			Piperacill	18970-4	413-5	412-7	7044-1			414-3	411-9	2021-01-01		
+TZP		PIT	PIPC-TAZ			Piperacillin/Tazobactam	BSAC			X		X				205	75/10µg	J01CR05	Beta-lactam+Inhibitors		BL+INH		03		X			Piperacill	18970-4	413-5	412-7	7044-1			414-3	411-9	2021-01-01		
+TZP		PIT	PIPC-TAZ			Piperacillin/Tazobactam	DIN						X			279	30/10µg	J01CR05	Beta-lactam+Inhibitors		BL+INH		03		X			Piperacill	18970-4	413-5	412-7	7044-1			414-3	411-9	2021-01-01		
+PRC	PRC					Piridicillin										280			Penicillins		PEN		01h														2021-01-01		
+PRL						Pirlimycin	CLSI	X								173	2µg	QJ51FF90	Lincosamides		LINCO		15			X		Pirlimycin	35831-7	35829-1	35830-9						2021-01-01		
+PIR	PIR		PA			Piromidic acid				X						281	25µg	J01MB03	Quinolones	Quinolone	QUIN		11a														2021-01-01		
+PME			PMPC			Pivmecillinam (Amdinocillin pivoxil)										460		J01CA08	Penicillins		PEN		01f														2021-01-01		
+PLZ						Plazomicin	CLSI	X								503		J01GB14	Aminoglycosides		AG		09		X				73592-8	73637-1	73614-0						2021-01-01		
+POL	PB	POL	PL-B			Polymyxin B	CLSI	X								471	300units	J01XB02	Lipopeptides	Polymyxin	LIPOPEP		16		X			Polymyxin	18972-0	421-8	420-0	35832-5			422-6	419-2	2021-01-01		
+POL	PB	POL	PL-B			Polymyxin B										56	50µg	J01XB02	Lipopeptides	Polymyxin	LIPOPEP		16		X			Polymyxin	18972-0	421-8	420-0	35832-5			422-6	419-2	2021-01-01		
+POS						Posaconazole	CLSI,NEO	X						X		478	5µg	J02AC04	Antifungals		FUNG		29														2021-01-01		
+PRX		PRE				Premafloxacin	CLSI	X								403	1µg		Quinolones	Fluoroquinolone	FQ		11b		X				73591-0	73636-3	73613-2						2021-01-01		
+PRM	PRM					Primycin										282			Macrolides		MACRO		17														2021-01-01		
+PRI	PT	PRI				Pristinamycin	NEO							X		378	30µg	J01FG01	Streptogramins		STREPTOG		23					Pristinamy	32383-2	35833-3	35834-1						2021-01-01		
+PRI	PT					Pristinamycin				X						93	15µg	J01FG01	Streptogramins		STREPTOG		23					Pristinamy	32383-2	35833-3	35834-1						2021-01-01		
+PRP	PR	PRO				Propicillin	DIN						X			174		J01CE03	Penicillins		PEN		01b														2021-01-01		
+PKA	PKA					Propikacin										283			Aminoglycosides		AG		09														2021-01-01		
+PTH		PTH	PTH			Prothionamide										175			Antimycobacterials		MYCO		28														2021-01-01		
+PRU			PUFX			Prulifloxacin										461		J01MA17	Quinolones		FQ		11b														2021-01-01		
+PZA		PZA	PZA			Pyrazinamide										135		J04AK01	Antimycobacterials		MYCO		28					Pyrazinami	18973-8	425-9	424-2		20461-0	23632-3	426-7	423-4	2021-01-01		
+QDA		QPD	QPR/DPR			Quinupristin/Dalfopristin	CLSI,EUCAST	X	X	X		X				176	15µg	J01FG02	Streptogramins		STREPTOG		23		X			Quinuprist	23640-6	35835-8	23641-4	33334-4					2021-01-01		
+RAC						Ractopamine										422			Phenethylamines		PHEN		27				X										2021-01-01		
+RAM						Ramoplanin	CLSI	X								493			Glycopeptides		LIPOGLYC		21a		X			Ramoplanin	41737-8	41712-1	41710-5	41711-3					2021-01-01		
+RZM						Razupenem	CLSI	X								489	10µg		Penems	Carbapenems	CARB		07a		X				73590-2	73635-5	73612-4						2021-01-01		
+RST			RSM			Ribostamycin										462		J01GB10	Aminoglycosides		AG		09														2021-01-01		
+RIB		RIB				Rifabutin										136		J04AB04	Ansamycins		RIF		10					Rifabutin	19149-4		16100-0		20386-9	23630-7			2021-01-01		
+RIF	RA	RAM	RFP			Rifampin	NEO			X				X		58	30µg	J04AB02	Ansamycins		RIF		10		X			Rifampin	18974-6	429-1	428-3	7045-8	20385-1	23949-1	430-9	427-5	2021-01-01		
+RIF	RA	RAM	RFP			Rifampin	CLSI,EUCAST	X	X	X	X				X	57	5µg	J04AB02	Ansamycins		RIF		10		X			Rifampin	18974-6	429-1	428-3	7045-8	20385-1	23949-1	430-9	427-5	2021-01-01		
+RIF	RA	RAM	RFP			Rifampin	BSAC					X				324	2µg	J04AB02	Ansamycins		RIF		10		X			Rifampin	18974-6	429-1	428-3	7045-8	20385-1	23949-1	430-9	427-5	2021-01-01		
+RFX						Rifaximin	CLSI	X								494		D06AX11	Ansamycins		RIF								73589-4	73634-8	73611-6						2021-01-01		
+RIT			RIPM			Ritipenem										463			Penems		CARB		07a														2021-01-01		
+RIA			RIPM-AC			Ritipenem acoxil										464			Penems		CARB		07a														2021-01-01		
+ROK	ROK	ROK	RKM			Rokitamycin										284		J01FA12	Macrolides		MACRO		17														2021-01-01		
+ROS	ROS	ROS				Rosoxacin				X						94	5µg	J01MB01	Quinolones	Quinolone	QUIN		11a					Rosoxacin	18977-9	441-6	440-8				442-4	439-0	2021-01-01		
+RXT	RXT	ROX	RXM			Roxithromicin	EUCAST,NEO		X					X		379	30µg		Macrolides		MACRO		17					Roxithromy	18978-7	445-7	444-0	7046-6			446-5	443-2	2021-01-01		
+RXT	RXT	ROX	RXM			Roxithromicin	SRGA				X					77	15µg		Macrolides		MACRO		17					Roxithromy	18978-7	445-7	444-0	7046-6			446-5	443-2	2021-01-01		
+SAL						Salinomycin										423		QP51AH01	Combinations		OTHER		28					Salinomyci	35838-2	35836-6	35837-4						2021-01-01		
+SAR		SAR				Sarafloxacin	CLSI	X								285	5µg	QJ01MA98	Quinolones	Fluoroquinolone	FQ		11b		X				73588-6	73633-0	73610-8						2021-01-01		
+SRX	SRX					Sarmoxicillin										286			Penicillins		PEN		01b														2021-01-01		
+SIS	SIS	SIS	SISO			Sisomicin				X						78	10µg	J01GB08	Aminoglycosides		AG		09					Sisomicin	18979-5	449-9	448-1				450-7	447-3	2021-01-01		
+SIT		SIT	STFX			Sitafloxacin										465		J01MA21	Quinolones		FQ		11b														2021-01-01		
+SOL						Solithromycin	CLSI	X								504		J01FA16	Macrolides		MACRO		17c		X				73587-8	73632-2	73609-0						2021-01-01		
+SPX		SPF	SPFX			Sparfloxacin	BSAC									325	2µg	J01MA09	Quinolones	Fluoroquinolone	FQ		11b		X			Sparfloxac	23628-1	35839-0	20397-6	7047-4		23610-9			2021-01-01		
+SPX		SPF	SPFX			Sparfloxacin	CLSI,DIN	X		X			X			110	5µg	J01MA09	Quinolones	Fluoroquinolone	FQ		11b		X			Sparfloxac	23628-1	35839-0	20397-6	7047-4		23610-9			2021-01-01		
+SPX		SPF	SPFX			Sparfloxacin	NEO							X		380	10µg	J01MA09	Quinolones	Fluoroquinolone	FQ		11b					Sparfloxac	23628-1	35839-0	20397-6	7047-4		23610-9			2021-01-01		
+SPT	SPT	SPT	SPCM			Spectinomycin	NEO							X		381	200µg	J01XX04	Aminocyclitols		AMINOC		08		X			Spectinomy	18980-3	453-1	452-3	35840-8			454-9	451-5	2021-01-01		
+SPT	SPT	SPT	SPCM			Spectinomycin	CLSI,EUCAST	X	X	X						59	100µg	J01XX04	Aminocyclitols		AMINOC		08		X			Spectinomy	18980-3	453-1	452-3	35840-8			454-9	451-5	2021-01-01		
+SPT		SPT	SPCM			Spectinomycin						X				424	25µg	J01XX04	Aminocyclitols		AMINOC		08		X			Spectinomy	18980-3	453-1	452-3	35840-8			454-9	451-5	2021-01-01		
+SPI	SP	SPM	SPM			Spiramycin				X						95	100µg	J01FA02	Macrolides		MACRO		17					Spiramycin	18981-1	457-2	456-4				458-0	455-6	2021-01-01		
+SPI	SP	SPM	SPM			Spiramycin	NEO							X		382	200µg	J01FA02	Macrolides	16-Membered ring	MACRO		17					Spiramycin	18981-1	457-2	456-4				458-0	455-6	2021-01-01		
+STR	S	STR	SM			Streptomycin	CLSI,EUCAST,BSAC	X	X	X		X				60	10µg	J01GA01	Aminoglycosides		AG		09		X			Streptomyc	18982-9	461-4	460-6	7048-2	20462-8	23626-5	462-2	459-8	2021-01-01		
+STR	S	STR	SM			Streptomycin	NEO							X		383	100µg	J01GA01	Aminoglycosides		AG		09		X			Streptomyc	18982-9	461-4	460-6	7048-2	20462-8	23626-5	462-2	459-8	2021-01-01		
+STH						Streptomycin-High	CLSI	X								139	300µg	J01GA01	Aminoglycosides		AG		09		X			Streptomyc	18983-7	7049-0	6933-6	35841-6					2021-01-01		
+STH						Streptomycin-High	NEO			X				X		208	500µg	J01GA01	Aminoglycosides		AG		09		X			Streptomyc	18983-7	7049-0	6933-6	35841-6					2021-01-01		
+SUL		SUL	SBT			Sulbactam	CLSI	X		X						397		J01CG01	Beta-lactamase inhibitors		BL-INH		02					Sulbactam	41739-4	41716-2	41718-8	41717-0					2021-01-01		
+SBC	SBC		SBPC			Sulbenicillin										125		J01CA16	Penicillins		PEN		01g														2021-01-01		
+SUC	SUC					Sulconazole										287		D01AC09	Antifungals		FUNG		29														2021-01-01		
+SUP						Sulfachlorpyridazine										288		QJ01EQ12	Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+SDI		SLD				Sulfadiazine										425		J01EC02	Folate pathway inhibitors		FOLATE		12a					Sulfadiazi	18984-5	465-5	464-8	7050-8			466-3	463-0	2021-01-01		
+SDM	X					Sulfadimethoxine										289		J01ED01	Folate pathway inhibitors		FOLATE		12a														2021-01-01	2024-04-16	
+SDM	SDM					Sulfadimidine	AFA								X	290	250µg	J01EB03	Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+SZO	SZO					Sulfamazone										291		J01ED09	Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+SUM						Sulfamethazine										292			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+SMX	SMX	SOZ				Sulfamethoxazole	CLSI	X		X						427	200/300µg	J01EC01	Folate pathway inhibitors		FOLATE		12a		X			Sulfametho	18985-2	469-7	468-9	11577-4			470-5	467-1	2021-01-01		
+SMX	SMX	SOZ				Sulfamethoxazole						X				293	100µg	J01EC01	Folate pathway inhibitors		FOLATE		12a		X			Sulfametho	18985-2	469-7	468-9	11577-4			470-5	467-1	2021-01-01		
+SNA	SNA					Sulfasuccinamide										294			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+SUT	ST					Sulfathiazole										295		J01EB07	Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+SOX						Sulfisoxazole	CLSI	X								404	200/300µg	J01EB05	Folate pathway inhibitors		FOLATE		12a		X			Sulfisoxaz	18986-0	473-9	472-1	11578-2			474-7	471-3	2021-01-01		
+SSS	SSS	SSS				Sulfonamides	CLSI	X		X						61	200/300µg	D06BA	Folate pathway inhibitors		FOLATE		12a		X			Sulfonamid	18987-8	477-0	476-2	35842-4			478-8	475-4	2021-01-01		
+SLP						Sulopenem	CLSI	X								484	2µg		Penems	Penem	PENEM		07b		X			Sulopenem	55289-3	55291-9	55290-1						2021-01-01		
+TAL			TAPC			Talampicillin										466		J01CA15	Penicillins		PEN		01b					Talampicil	18988-6	481-2	480-4				482-0	479-6	2021-01-01		
+TLP	TLP					Talmetoprim										296			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+TAZ		TAB	TAZ			Tazobactam	CLSI	X								297		J01CG02	Beta-lactamase inhibitors		BL-INH		02					Tazobactam	41740-2	41719-6	41721-2	41720-4					2021-01-01		
+TZD						Tedizolid	CLSI,EUCAST	X	X	X						505	2µg	J01XX11	Oxazolidinones		OXAZOLID		20						73586-0	73631-4	73608-2						2021-01-01		
+TEC	TEC	TPL	TEIC			Teicoplanin	NEO							X		384	60µg	J01XA02	Glycopeptides	Lipoglycopeptide	GLYCO		21b		X			Teicoplani	18989-4	485-3	484-6	7051-6			486-1	483-8	2021-01-01		
+TEC	TEC	TPL	TEIC			Teicoplanin	CLSI,EUCAST	X	X	X	X				X	79	30µg	J01XA02	Glycopeptides	Lipoglycopeptide	GLYCO		21b		X			Teicoplani	18989-4	485-3	484-6	7051-6					2021-01-01		
+TCM			TEIC			Teicoplanin-Macromethod										440		J01XA02	Glycopeptides		GLYCO		21b														2021-01-01		
+TLV						Telavancin	CLSI	X								472	30µg	J01XA03	Glycopeptides	Lipoglycopeptide	GLYCO		21b		X				72894-9	73630-6	72894-9						2021-01-01		
+TLT		TEL	TEL			Telithromycin	CLSI,EUCAST	X	X	X						396	15µg	J01FA15	Macrolides	Ketolide	MACRO		17b		X			Telithromy	35845-7	35843-2	35844-0	41722-0					2021-01-01		
+TMX	TMX	TEM				Temafloxacin	CLSI	X								111	5µg	J01MA05	Quinolones	Fluoroquinolone	FQ		11b		X			Temafloxac	18990-2	489-5	488-7				490-3	487-9	2021-01-01		
+TEM	TEM	TMO				Temocillin	NEO							X		298	30µg	J01CA17	Penicillins	Penicillin (Stable)	PEN-S		01e					Temocillin	18991-0	493-7	492-9				494-5	491-1	2021-01-01		
+TRB						Terbinafine	NEO							X		479	30µg	D01AE15	Antifungals		FUNG		29														2021-01-01		
+TRC						Terconazole										480		G01AG02	Antifungals		FUNG		29														2021-01-01		
+TCY	TE	TET	TC			Tetracycline	CLSI,EUCAST	X	X	X	X	X	X		X	62	30µg	J01AA07	Tetracyclines		TETRA		24a		X			Tetracycli	18993-6	497-8	496-0	7052-4			498-6	495-2	2021-01-01		
+TCY	TE	TET	TC			Tetracycline	NEO							X		399	80µg	J01AA07	Tetracyclines		TETRA		24		X			Tetracycli	18993-6	497-8	496-0	7052-4			498-6	495-2	2021-01-01		
+TCY	TE	TET	TC			Tetracycline	BSAC,NEO					X		X		326	10µg	J01AA07	Tetracyclines		TETRA		24		X			Tetracycli	18993-6	497-8	496-0	7052-4			498-6	495-2	2021-01-01		
+TET	TET	TTP				Tetroxoprim										299			Folate pathway inhibitors		FOLATE		12a														2021-01-01		
+THA						Thiacetazone										177			Antimycobacterials		MYCO		28					Thiacetazo	32384-0								2021-01-01		
+THI	TP	TPH	TP			Thiamphenicol										120	30µg	J01BA02	Phenicols		PHEN		22					Thiampheni		41723-8	41725-3	41724-6					2021-01-01		
+THI	TP	TPH	TP			Thiamphenicol	NEO							X		385	60µg	J01BA02	Phenicols		PHEN		22					Thiampheni		41723-8	41725-3	41724-6					2021-01-01		
+TIA		TIA				Tiamulin	CLSI,NEO	X						X		178	30µg	QJ01XQ01	Pleuromutilins		OTHER		28			X		Tiamulin	35848-1	35846-5	35847-3						2021-01-01		
+TIC	TIC	TIC				Ticarcillin	CLSI,EUCAST	X	X	X						63	75µg	J01CA13	Penicillins	Carboxypenicillin	PEN		01d		X			Ticarcilli	18994-4	501-7	500-9	7053-2			502-5	499-4	2021-01-01		
+TCC	TCC	TCC				Ticarcillin/Clavulanic acid	CLSI,EUCAST	X	X	X		X	X			64	75/10-15µg	J01CR03	Beta-lactam+Inhibitors		BL+INH		03		X			Ticarcilli	18995-1	505-8	504-1	7054-0			506-6	503-3	2021-01-01		
+TGC		TGC				Tigecycline	CLSI,EUCAST	X	X	X						473	15µg	J01AA12	Tetracyclines	Glycylglycine	TETRA		24b		X			Tigecyclin	42357-4	42356-6	42355-8	42354-1					2021-01-01		
+TBQ	TBQ					Tilbroquinol										300		P01AA05	Quinolones		QUIN		11a														2021-01-01		
+TIL						Tilmicosin	CLSI	X								179	15µg	QJ01FA91	Macrolides	16-Membered ring	MACRO		17a			X		Tilmicosin	35851-5	35849-9	35850-7						2021-01-01		
+TIN		TNZ				Tinidazole	CLSI	X								180	4µg	J01XD02	Nitroimidazoles		IMIDAZ		29					Tinidazole	54928-7	55721-5	55720-7	55722-3					2021-01-01		
+TIN		TNZ				Tinidazole	CLSI,NEO							X		386	16µg	J01XD02	Nitroimidazoles		IMIDAZ		29					Tinidazole	54928-7	55721-5	55720-7	55722-3					2021-01-01		
+TDC	TDC					Tiodonium chloride										301			Thiophenes		THIO		27														2021-01-01		
+TXC	TXC					Tioxacin										302			Quinolones		QUIN		11a														2021-01-01		
+TIZ						Tizoxanide	CLSI	X								495			Thiazolides		THIAZ		30						73585-2	73629-8	73607-4						2021-01-01		
+TOB	TM	TOB	TOB			Tobramycin	AFA,SRGA				X				X	209	30µg	J01GB01	Aminoglycosides		AG		09		X			Tobramycin	18996-9	509-0	508-2	7055-7		25800-4	510-8	507-4	2021-01-01		
+TOB	TM	TOB	TOB			Tobramycin	NEO							X		387	40µg	J01GB01	Aminoglycosides		AG		09		X			Tobramycin	18996-9	509-0	508-2	7055-7		25800-4	510-8	507-4	2021-01-01		
+TOB	TM	TOB	TOB			Tobramycin	CLSI,EUCAST	X	X	X		X	X			65	10µg	J01GB01	Aminoglycosides		AG		09		X			Tobramycin	18996-9	509-0	508-2	7055-7		25800-4	510-8	507-4	2021-01-01		
+TFX	TFX	TOS	TFLX			Tosufloxacin										303		J01MA22	Quinolones		FQ		11b														2021-01-01		
+TMP		TRP				Trimethoprim						X				426	2.5µg	J01EA01	Folate pathway inhibitors		FOLATE		12a		X			Trimethopr	18997-7	513-2	512-4	7056-5		23614-1	514-0	511-6	2021-01-01		
+TMP	TMP	TRP				Trimethoprim	CLSI,EUCAST	X	X	X	X	X			X	66	5µg	J01EA01	Folate pathway inhibitors		FOLATE		12a		X			Trimethopr	18997-7	513-2	512-4	7056-5		23614-1	514-0	511-6	2021-01-01		
+TMP	TMP	TRP				Trimethoprim	NEO							X		388	5.2µg	J01EA01	Folate pathway inhibitors		FOLATE		12a		X			Trimethopr	18997-7	513-2	512-4	7056-5		23614-1	514-0	511-6	2021-01-01		
+SXT	SXT	SXT	ST			Trimethoprim/Sulfamethoxazole	CLSI,EUCAST	X	X	X	X	X	X		X	67	1.25/23.75µg	J01EE01	Folate pathway inhibitors		FOLATE		12a		X			Trimethopr	18998-5	517-3	516-5	7057-3	20387-7	23631-5	518-1	515-7	2021-01-01		
+SXT	SXT	SXT	ST			Trimethoprim/Sulfamethoxazole	NEO							X		389	5.2/240µg	J01EE01	Folate pathway inhibitors		FOLATE		12a		X			Trimethopr	18998-5	517-3	516-5	7057-3	20387-7	23631-5	518-1	515-7	2021-01-01		
+TRL						Troleandomycin										181		J01FA08	Macrolides		MACRO		17					Troleandom	18999-3	521-5	520-7				522-3	519-9	2021-01-01		
+TRO		TRS				Trospectomycin	CLSI	X								112	30µg		Aminocyclitols		AMINOC		08		X			Trospectin	35854-9	35852-3	35853-1						2021-01-01		
+TVA		TRO				Trovafloxacin	CLSI	X		X						182	10µg	J01MA13	Quinolones	Fluoroquinolone	FQ		11b		X			Trovafloxa	23642-2	35855-6	23643-0	7058-1					2021-01-01		
+TVA		TRO				Trovafloxacin	DIN						X			438	5µg	J01MA13	Quinolones	Fluoroquinolone	FQ		11b		X			Trovafloxa	23642-2	35855-6	23643-0	7058-1					2021-01-01		
+TYL	TI	TLS				Tylosin	NEO							X		304	150µg	QJ01FA90	Macrolides	16-Membered ring	MACRO		17			X		Tylosin	35858-0	35856-4	35857-2						2021-01-01		
+PRU						Ulifloxacin (Prulifloxacin)										490	5µg	J01MA17	Quinolones	Fluoroquinolone	FQ		11b														2021-01-01		
+VAN	VA	VAN	VCM			Vancomycin	NEO							X		390	70µg	J01XA01	Glycopeptides	Glycopeptide	GLYCO		21a		X			Vancomycin	19000-9	525-6	524-9	7059-9		23615-8	526-4	523-1	2021-01-01		
+VAN	VA	VAN	VCM			Vancomycin	CLSI,AFA	X		X					X	68	30µg	J01XA01	Glycopeptides	Glycopeptide	GLYCO		21a		X			Vancomycin	19000-9	525-6	524-9	7059-9		23615-8	526-4	523-1	2021-01-01		
+VAN	VA	VAN	VCM			Vancomycin	EUCAST,NEO		X	X	X	X		X		305	5µg	J01XA01	Glycopeptides	Glycopeptide	GLYCO		21a		X			Vancomycin	19000-9	525-6	524-9	7059-9		23615-8	526-4	523-1	2021-01-01		
+VAM			VCM			Vancomycin-Macromethod										436		J01XA01	Glycopeptides		GLYCO		21a														2021-01-01		
+VIO		VIO				Viomycin										183			Antimycobacterials		MYCO		28					Viomycin	19001-7	529-8	528-0			23616-6	530-6	527-2	2021-01-01		
+VIR	VG	VIR				Virginiamycine	NEO							X		391	30µg	D06AX10	Streptogramins		STREPTOG		23					Virginiamy	35861-4	35859-8	35860-6						2021-01-01		
+VIR	VG	VIR				Virginiamycine				X						184	15µg	D06AX10	Streptogramins		STREPTOG		23					Virginiamy	35861-4	35859-8	35860-6						2021-01-01		
+VOR			VRCZ			Voriconazole	CLSI,NEO	X						X		431	1µg	J02AC03	Antifungals		FUNG		29		X			Voriconazo	32379-0	41200-7	35863-0	35862-2				41199-1	2021-01-01		
+AZA						Aztreonam/Avibactam	CLSI	X								510	30/20µg		Beta-lactam+inhibitors		BL+INH																2021-01-01		
+POP						Polymyxin B/Polysorbate 80	CLSI	X								509	300units	J01XB02	Lipopeptides	Polymyxin	LIPOPEP		16		X												2021-01-01		
+SUR						Surotomycin	CLSI	X								514			Lipopeptides		LIPOPEP																2021-01-01		
+COP						Colistin/Polysorbate	CLSI	X								508	10µg	J01XB01	Lipopeptides		LIPOPEP		16		X												2021-01-01		
+ERV						Eravacycline	CLSI	X								513	20µg	J01AA13	Fluorocyclines		OTHER		28														2021-01-01		
+DLM						Delamanid			X	X						512		J04AK06																			2021-01-01		
+BDQ						Bedaquiline			X	X						511		J04AK05																			2021-01-01		
+FOV						Cefovecin	CLSI	X								515		QJ01DD91	Cephems		CEPH3		04c			X											2021-01-01		
+GAM						Gamithromycin	CLSI	X								516		QJ01FA95	Macrolides		MACRO					X											2021-01-01		
+KAC						Kanamycin/Cephalexin	CLSI	X								517			Combinations		OTHER		28			X											2021-01-01		
+TIP						Tildipirosin	CLSI	X								519	60µg	QJ01FA96	Macrolides	16-Membered ring	MACRO					X											2021-01-01		
+PRA						Pradofloxacin	CLSI	X								518		QJ01MA97	Quinolones		FQ		11b			X											2021-01-01		
+TUL						Tulathromycin	CLSI	X								520	30µg	QJ01FA94	Macrolides	15-Membered ring	MACRO					X											2021-01-01		
+TVN						Tylvalosin	CLSI	X								521		QJ01FA92	Macrolides		MACRO					X											2021-01-01		
+AKF						Amikacin/Fosfomycin	CLSI	X								522			Combinations		OTHER		28														2021-01-01		
+CDZ						Cadazolid	CLSI	X								523			Quinolonyl oxazolidinones		OTHER		28														2021-01-01		
+FPT						Cefepime/Tazobactam	CLSI	X								524			Beta-lactam+Inhibitors		BL+INH		03c														2021-01-01		
+DFX						Delafloxacin	CLSI	X								525	5µg	J01MA23	Quinolones	Quinolone	QUIN		11a														2021-01-01		
+GEP						Gepotidacin	CLSI	X								526	10µg		Triazaacenaphylenes		OTHER		28														2021-01-01		
+IMR						Imipenem/Relebactam	CLSI	X								527	10/25µg	J01DH56	Beta-lactam+Inhibitors		BL+INH		03c		X												2021-01-01		
+LMU						Lefamulin	CLSI	X								528	20µg	J01XX12	Pleuromutilins		OTHER		28														2021-01-01		
+LND						Levonadifloxacin	CLSI	X								529	10µg	J01MA24	Quinolones	Benzoquinolizine	BQ		11c														2021-01-01		
+SEC						Secnidazole	CLSI	X								530		P01AB07	Nitroimidazoles		IMIDAZ																2021-01-01		
+ISV						Isavuconazole	EUCAST		X	X						531		J02AC05	Antifungals		FUNG																2021-01-01		
+MUP		MUP	MUP			Mupirocin	EUCAST		X	X						532	200µg	D06AX09	Pseudomonic acids		PSEUDOM		27		X			Mupirocin	20389-3	35822-6	35823-4	7033-4					2021-01-01		
+MEV						Meropenem/Vaborbactam	CLSI	X								533	20/10µg	J01DH52	Beta-lactam+Inhibitors				03c		X												2021-01-01		
+ZWK						Nafithromycin	CLSI	X								534	15µg		Macrolides	Ketolide	MACRO		17		X												2021-01-01		
+PEX						Pexiganan	CLSI	X								535			Peptsides		PEPTIDE				X												2021-01-01		
+RET						Retapamulin	CLSI	X								538			Pleuromutilins																		2021-01-01		
+RPT						Rifapentine	CLSI	X								539		J04AB05	Ansamycins																		2021-01-01		
+FDC						Cefiderocol	CLSI	X								537		J01DI04	Cephems																		2021-01-01		
+FPZ						Cefepime/Zidebactam	CLSI	X								536			Beta-lactam+Inhibitors																		2021-01-01		
+ZID						Zidebactam	CLSI									540			Beta-lactamase inhibitors						X												2021-01-01		
+RDZ						Ridinilazole	CLSI									541		J01DB02							X												2021-01-01		
+TBP						Tebipenem	CLSI	X									10µg	J01DH06	Penems	Carbapenems					X												2021-01-01		
+MNC						Meropenem/Nacubactam	CLSI	X											Beta-lactam+Inhibitors						X												2021-01-01		
+NAC						Nacubactam	CLSI	X											Beta-lactamase inhibitors						X												2021-01-01		
+TYL						Tylosin	CLSI,EUCAST	X	X							304	30µg	QJ01FA90	Macrolides	16-Membered ring			17														2021-01-01		
+ITR						Itraconazole	NEO	X						X		133	10µg	J02AC02	Antifungals		FUNG		29		X												2021-01-01		
+CZA						Ceftazidime/Avibactam	EUCAST		X							498	10/4µg		Beta-lactam+Inhibitors				03		X												2021-01-01		
+BPR						Ceftobiprole	CLSI,EUCAST	X	X							474	5µg	J01DI01	Cephems	Cephalosporin	CEPH		04e		X												2021-01-01		
+AMX						Amoxicillin				X						82	20µg	J01CA04	Penicillins	Aminopenicillin			01b		X												2021-01-01		
+ZFD						Zoliflodacin	CLSI	X								544			Spiropyrimidinetrione						X												2021-01-01		
+OZN						Ozenoxacin	CLSI	X								543		D06AX14	Quinolones		FQ				X												2021-01-01		
+EXE						Exebacase	CLSI	X								542			Antistaphylococcal lysin						X												2021-01-01		
+LIN	L	LIN	LCM			Lincomycin	CLSI	X								38	4µg	J01FF02	Lincosamides		LINCO		15					Lincomycin	18938-1	300-4	299-8	41700-6			301-2	298-0	2021-01-01		
+ANC						Aztreonam/Nacubactam	CLSI	X									30µg		Beta-lactam+inhibitors		BL+INH				X												2021-08-11		
+FNC						Cefepime/Nacubactam	CLSI	X											Beta-lactam+Inhibitors		BL+INH				X														
+IBX						Ibrexafungerp	CLSI	X											Antifungals		FUNG				X														
+MGX						Manogepix	CLSI	X									5µg		Antifungals		FUNG				X														
+RZF						Rezafungin	CLSI	X									5µg		Antifungals		FUNG				X														
+CLB						Ceftibuten/Ledaborbactam	CLSI	X									5/2.5µg								X												2023-04-11		
+CBA						Ceftibuten/Avibactam	CLSI	X																													2023-04-11		
+XEM						Meropenem/Xeruborbactam	CLSI	X											Beta-lactam+Inhibitors						X												2023-04-11		
+NTR	NI	NIT				Nitroxoline	EUCAST		X							89	30µg	J01XX07	Quinolones	Quinolone	QUIN		11a					Nitroxolin	25608-1		25723-8						2023-12-12		
+LMU						Lefamulin	EUCAST		X							528	5µg	J01XX12	Pleuromutilins		OTHER		28														2023-12-12		
+AMO						Amorolfine	EUCAST		X									D01AE16	Other antifungals for topical use		FUNG				X												2024-04-12		
+SUD						Sulbactam-durlobactam	CLSI	X									10/10µg								X												2024-04-16		
+FPE						Cefepime/Enmetazobactam	CLSI	X									30/20µg																				2024-08-21		
+FTB						Cefepime/Taniborbactam	CLSI	X									30/20µg																				2024-08-21		
+BPR						Ceftobiprole	CLSI	X								474	30µg	J01DI01	Cephems	Cephalosporin	CEPH		04e		X												2024-08-28		
+DUR						Durlobactam	CLSI	X																	X												2024-08-28		
