@@ -74,7 +74,7 @@ async def seed_super_user() -> None:
         await user_service.save(super_user)
 
     # initial user-preferences
-    preference = preference_service.get(user_uid=super_user.uid)
+    preference = await preference_service.get(user_uid=super_user.uid)
     if not preference:
         pref_in = schemas.UserPreferenceCreate(user_uid=super_user.uid, expanded_menu=False, theme="light")
         await preference_service.create(pref_in)

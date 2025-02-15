@@ -1,8 +1,8 @@
-"""add-amr-models
+"""add-microbiology
 
-Revision ID: d59ea1570cdc
+Revision ID: 88c6b27429bb
 Revises: cccb8d8adce5
-Create Date: 2025-02-15 15:56:30.957635
+Create Date: 2025-02-15 17:45:23.159999
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd59ea1570cdc'
+revision = '88c6b27429bb'
 down_revision = 'cccb8d8adce5'
 branch_labels = None
 depends_on = None
@@ -214,7 +214,7 @@ def upgrade():
     op.create_table('abx_breakpoint',
     sa.Column('guideline_uid', sa.String(), nullable=True),
     sa.Column('year', sa.Integer(), nullable=False),
-    sa.Column('test_method', sa.String(length=50), nullable=False),
+    sa.Column('test_method_uid', sa.String(), nullable=True),
     sa.Column('potency', sa.String(length=50), nullable=True),
     sa.Column('organism_code', sa.String(length=50), nullable=False),
     sa.Column('organism_code_type', sa.String(length=50), nullable=False),
@@ -241,6 +241,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['guideline_uid'], ['abx_guideline.uid'], ),
     sa.ForeignKeyConstraint(['host_uid'], ['abx_host.uid'], ),
     sa.ForeignKeyConstraint(['site_of_infection_uid'], ['abx_infection_site.uid'], ),
+    sa.ForeignKeyConstraint(['test_method_uid'], ['abx_test_method.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
@@ -427,7 +428,7 @@ def upgrade():
     sa.Column('o_antigens', sa.String(length=100), nullable=True),
     sa.Column('h_phase_1', sa.String(length=100), nullable=True),
     sa.Column('h_phase_2', sa.String(length=100), nullable=True),
-    sa.Column('x997_check', sa.Boolean(), nullable=True),
+    sa.Column('x997_check', sa.String(length=10), nullable=True),
     sa.Column('fate', sa.String(length=50), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),

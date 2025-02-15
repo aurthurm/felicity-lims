@@ -6,12 +6,13 @@ from felicity.apps.multiplex.microbiology.schemas import AbxGuidelineCreate, Abx
     AbxAntibioticGuidelineCreate, AbxKingdomCreate, AbxPhylumCreate, AbxClassCreate, AbxOrderCreate, AbxFamilyCreate, \
     AbxGenusCreate, AbxOrganismCreate, AbxBreakpointTypeCreate, AbxHostCreate, AbxBreakpointCreate, \
     AbxSiteOfInfectionCreate, AbxExpResPhenotypeCreate, AbxReferenceTableCreate, AbxExpertInterpretationRuleCreate, \
-    AbxMediumCreate, AbxQCRangeCreate
+    AbxMediumCreate, AbxQCRangeCreate, AbxTestMethodCreate, AbxOrganismSerotypeCreate
 from felicity.apps.multiplex.microbiology.services import AbxGuidelineService, AbxAntibioticService, \
     AbxAntibioticGuidelineService, AbxKingdomService, AbxPhylumService, AbxClassService, AbxOrderService, \
     AbxFamilyService, AbxGenusService, AbxOrganismService, AbxBreakpointTypeService, \
     AbxHostService, AbxSiteOfInfectionService, AbxBreakpointService, AbxExpResPhenotypeService, \
-    AbxReferenceTableService, AbxExpertInterpretationRuleService, AbxMediumService, AbxQCRangeService
+    AbxReferenceTableService, AbxExpertInterpretationRuleService, AbxMediumService, AbxQCRangeService, \
+    AbxTestMethodService, AbxOrganismSerotypeService
 from felicity.core.config import get_settings
 from felicity.lims.seeds.data import get_whonet_dataframes
 
@@ -142,6 +143,35 @@ async def seed_organisms():
                                     await AbxOrganismService().create(schema_in)
 
 
+async def seed_organism_serotypes():
+    logger.info("Setting up organism serotypes .....")
+    data = _clean_df(get_whonet_dataframes("Serotype"), {})
+    organisms = await AbxOrganismService().all()
+
+    for _, item in data.iterrows():
+        bp_in = {
+            key: item[key] \
+            for key in AbxOrganismSerotypeCreate.model_fields \
+            if key in item
+        }
+        org = [x for x in organisms if x and getattr(x, "whonet_org_code", None) == item["organism"]]
+        bp_in = {
+            **bp_in,
+            "organism_uid": org[0].uid if org else None,
+        }
+        bp_schema = AbxOrganismSerotypeCreate(**bp_in)
+
+        if not (await AbxOrganismSerotypeService().get(
+                organism_uid=bp_in["organism_uid"],
+                serotype=bp_in["serotype"],
+                subspecies=bp_in["subspecies"],
+                o_antigens=bp_in["o_antigens"],
+                h_phase_1=bp_in["h_phase_1"],
+                h_phase_2=bp_in["h_phase_2"]
+        )):
+            await AbxOrganismSerotypeService().create(bp_schema)
+
+
 async def seed_breakpoints():
     logger.info("Setting up breakpoints .....")
     data = _clean_df(get_whonet_dataframes("Breakpoints"), {})
@@ -171,6 +201,14 @@ async def seed_breakpoints():
             soi = await AbxSiteOfInfectionService().create(soi_in)
         site_of_infections.append(soi)
 
+    test_methods = []
+    for tm_name in data['test_method'].unique():
+        tm = await AbxTestMethodService().get(name=tm_name)
+        if tm is None and tm_name != '':
+            tm_in = AbxTestMethodCreate(name=tm_name)
+            tm = await AbxTestMethodService().create(tm_in)
+        test_methods.append(tm)
+
     for _, item in data.iterrows():
         bp_in = {
             key: item[key] \
@@ -181,19 +219,21 @@ async def seed_breakpoints():
         bpt = [x for x in breakpoint_types if x and getattr(x, "name", None) == item["breakpoint_type"]]
         hst = [x for x in hosts if x and getattr(x, "name", None) == item["host"]]
         soi = [x for x in site_of_infections if x and getattr(x, "name", None) == item["site_of_infection"]]
+        tm = [x for x in test_methods if x and getattr(x, "name", None) == item["test_method"]]
         bp_in = {
             **bp_in,
             "guideline_uid": gl[0].uid if gl else None,
             "breakpoint_type_uid": bpt[0].uid if bpt else None,
             "host_uid": hst[0].uid if hst else None,
             "site_of_infection_uid": soi[0].uid if soi else None,
+            "test_method_uid": tm[0].uid if tm else None,
         }
         bp_schema = AbxBreakpointCreate(**bp_in)
 
         if not (await AbxBreakpointService().get(
                 guideline_uid=bp_in["guideline_uid"],
                 year=bp_in["year"],
-                test_method=bp_in["test_method"],
+                test_method_uid=bp_in["test_method_uid"],
                 organism_code=bp_in["organism_code"],
                 organism_code_type=bp_in["organism_code_type"],
                 breakpoint_type_uid=bp_in["breakpoint_type_uid"],

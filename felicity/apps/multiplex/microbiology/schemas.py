@@ -299,14 +299,13 @@ class AbxOrganismUpdate(AbxOrganismBase):
 #
 class AbxOrganismSerotypeBase(BaseAuditModel):
     organism_uid: str
-    organism: AbxOrganism | None = None
     serotype: str
     serogroup: str | None = None
     subspecies: str | None = None
     o_antigens: str | None = None
     h_phase_1: str | None = None
     h_phase_2: str | None = None
-    x997_check: bool | None = None
+    x997_check: str | None = None
     fate: str | None = None
 
 
@@ -418,7 +417,7 @@ class AbxSiteOfInfectionUpdate(AbxSiteOfInfectionBase):
 class AbxBreakpointBase(BaseAuditModel):
     guideline_uid: str
     year: int | None = None
-    test_method: str
+    test_method_uid: str
     potency: str | None = None
     organism_code: str
     organism_code_type: str

@@ -153,7 +153,7 @@ class AbxOrganismSerotype(BaseEntity):
     o_antigens = Column(String(100), nullable=True)
     h_phase_1 = Column(String(100), nullable=True)
     h_phase_2 = Column(String(100), nullable=True)
-    x997_check = Column(Boolean, default=False)
+    x997_check = Column(String(10), default=False)
     fate = Column(String(50), nullable=True)
 
 
@@ -192,7 +192,8 @@ class AbxBreakpoint(BaseEntity):
     guideline_uid = Column(String, ForeignKey("abx_guideline.uid"))
     guideline = relationship(AbxGuideline, backref="breakpoints", lazy="selectin")
     year = Column(Integer, nullable=False)
-    test_method = Column(String(50), nullable=False)
+    test_method_uid = Column(String, ForeignKey("abx_test_method.uid"), nullable=True)
+    test_method = relationship(AbxTestMethod, backref="breakpoints", lazy="selectin")
     potency = Column(String(50), nullable=True)
     organism_code = Column(String(50), nullable=False)
     organism_code_type = Column(String(50), nullable=False)

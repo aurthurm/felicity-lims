@@ -19,7 +19,8 @@ from .setup_microbiology import (
     seed_breakpoints,
     seed_expected_resistance_phenotypes,
     seed_expert_interpretation_rules,
-    seed_qc_ranges
+    seed_qc_ranges,
+    seed_organism_serotypes
 )
 from .setup_person import seed_person
 from .superusers import seed_daemon_user, seed_super_user
@@ -60,6 +61,7 @@ async def default_setup() -> bool:
     await seed_person()
     await seed_antibiotics()
     await seed_organisms()
+    await seed_organism_serotypes()
     await seed_breakpoints()
     await seed_expected_resistance_phenotypes()
     await seed_expert_interpretation_rules()
