@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import field
 from typing import List, Optional
 
@@ -24,7 +26,9 @@ class AbxGuidelineType:
 @strawberry.type
 class AbxAntibioticGuidelineType:
     antibiotic_uid: str
+    antibiotic: AbxAntibioticType | None = None
     guideline_uid: str
+    guideline: AbxGuidelineType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -186,11 +190,17 @@ class AbxOrganismType:
     gbif_taxonomic_status: str | None = None
     # Foreign keys to taxonomic tables
     kingdom_uid: str | None = None
+    guideline: AbxGuidelineType | None = None
     phylum_uid: str | None = None
+    phylum: AbxPhylumType | None = None
     class_uid: str | None = None
+    class_: AbxClassType | None = None
     order_uid: str | None = None
+    order: AbxOrderType | None = None
     family_uid: str | None = None
+    family: AbxFamilyType | None = None
     genus_uid: str | None = None
+    genus: AbxGenusType | None = None
     comments: str | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
@@ -261,7 +271,7 @@ class AbxTestMethodType:
 
 
 @strawberry.type
-class AbxBreakpointTypeType:
+class AbxBreakpointTypeTyp:
     name: str
     description: str | None = None
     created_at: str | None = None
@@ -297,16 +307,20 @@ class AbxSiteOfInfectionType:
 
 
 @strawberry.type
-class AbxBreakpointType:
+class AbxBreakpointTyp:
     guideline_uid: str
+    guideline: AbxGuidelineType | None = None
     year: int | None = None
     test_method: str
     potency: str | None = None
     organism_code: str
     organism_code_type: str
     breakpoint_type_uid: str
+    breakpoint_type: AbxBreakpointTypeTyp | None = None
     host_uid: str | None = None
+    host: AbxHostType | None = None
     site_of_infection_uid: str | None = None
+    site_of_infection: AbxSiteOfInfectionType | None = None
     reference_table: str | None = None
     reference_sequence: str | None = None
     whonet_abx_code: str | None = None
@@ -326,16 +340,16 @@ class AbxBreakpointType:
 
 
 @strawberry.type
-class AbxBreakpointEdge:
+class AbxBreakpointTypEdge:
     cursor: str
-    node: AbxBreakpointType
+    node: AbxBreakpointTyp
 
 
 @strawberry.type
-class AbxBreakpointCursorPage:
+class AbxBreakpointTypCursorPage:
     page_info: PageInfo
-    edges: list[AbxBreakpointEdge] | None = None
-    items: list[AbxBreakpointType] | None = None
+    edges: list[AbxBreakpointTypEdge] | None = None
+    items: list[AbxBreakpointTyp] | None = None
     total_count: int
 
 
@@ -354,7 +368,9 @@ class AbxReferenceTableType:
 @strawberry.type
 class AbxExpResPhenotypeType:
     guideline_uid: str
+    guideline: AbxGuidelineType | None = None
     reference_table_uid: str
+    reference_table: AbxReferenceTableType | None = None
     organism_code: str
     organism_code_type: str
     exception_organism_code: str
@@ -431,6 +447,7 @@ class AbxMediumType:
 @strawberry.type
 class AbxQCRangeType:
     guideline_uid: str
+    guideline: AbxGuidelineType | None = None
     year: int
     strain: str
     reference_table: str
@@ -440,6 +457,7 @@ class AbxQCRangeType:
     whonet_abx_code: str
     method: str
     medium_uid: str | None = None
+    medium: AbxMediumType | None = None
     minimum: str | None = None
     maximum: str | None = None
     created_at: str | None = None
@@ -468,7 +486,7 @@ class AbxQCRangeCursorPage:
 class AbxASTPanelType:
     name: str
     description: str | None = None
-    breakpoints: Optional[List['AbxBreakpointType']] = field(default_factory=list)
+    breakpoints: Optional[List['AbxBreakpointTyp']] = field(default_factory=list)
     active: bool = True
     created_at: str | None = None
     created_by_uid: str | None = None

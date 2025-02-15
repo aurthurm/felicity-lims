@@ -29,7 +29,12 @@ class MicrobiologyQuery:
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
-            arg_list = ["name__ilike", "guideline___name__ilike"]
+            arg_list = [
+                "name__ilike", "whonet_abx_code__ilike",
+                "who_code__ilike", "din_code__ilike",
+                "jac_code__ilike", "eucast_code__ilike",
+                "user_code__ilike", "abx_number__ilike",
+            ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
 
@@ -204,11 +209,11 @@ class MicrobiologyQuery:
         return await AbxTestMethodService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_breakpoint_type_all(self, info) -> Optional[List[AbxBreakpointTypeType]]:
+    async def abx_breakpoint_type_all(self, info) -> Optional[List[AbxBreakpointTypeTyp]]:
         return await AbxBreakpointTypeService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_breakpoint_type_by_uid(self, info, uid: str) -> Optional[AbxBreakpointTypeType]:
+    async def abx_breakpoint_type_by_uid(self, info, uid: str) -> Optional[AbxBreakpointTypeTyp]:
         return await AbxBreakpointTypeService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -234,7 +239,7 @@ class MicrobiologyQuery:
                                  after_cursor: str | None = None,
                                  before_cursor: str | None = None,
                                  sort_by: list[str] | None = None
-                                 ) -> AbxBreakpointCursorPage:
+                                 ) -> AbxBreakpointTypCursorPage:
         filters = []
 
         _or_text_ = {}
@@ -261,16 +266,16 @@ class MicrobiologyQuery:
         )
 
         total_count: int = page.total_count
-        edges: List[AbxBreakpointEdge[AbxBreakpointType]] = page.edges
-        items: List[AbxBreakpointType] = page.items
+        edges: List[AbxBreakpointTypEdge[AbxBreakpointTyp]] = page.edges
+        items: List[AbxBreakpointTyp] = page.items
         page_info: PageInfo = page.page_info
 
-        return AbxBreakpointCursorPage(
+        return AbxBreakpointTypCursorPage(
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_breakpoint_by_uid(self, info, uid: str) -> Optional[AbxBreakpointType]:
+    async def abx_breakpoint_by_uid(self, info, uid: str) -> Optional[AbxBreakpointTyp]:
         return await AbxBreakpointService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])

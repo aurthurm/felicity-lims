@@ -24,6 +24,8 @@ from felicity.api.gql.inventory.query import InventoryQuery
 from felicity.api.gql.messaging import messaging_types
 from felicity.api.gql.messaging.mutations import MessageMutations
 from felicity.api.gql.messaging.query import MessageQuery
+from felicity.api.gql.multiplex.microbiology import microbiology_types
+from felicity.api.gql.multiplex.microbiology.query import MicrobiologyQuery
 from felicity.api.gql.noticeboard import noticeboard_types
 from felicity.api.gql.noticeboard.mutations import NoticeMutations
 from felicity.api.gql.noticeboard.query import NoticeQuery
@@ -54,25 +56,26 @@ from felicity.api.gql.worksheet.mutations import WorkSheetMutations
 from felicity.api.gql.worksheet.query import WorkSheetQuery
 
 types = (
-    generic_types
-    + analysis_types
-    + analytics_types
-    + audit_types
-    + client_types
-    + impress_types
-    + instrument_types
-    + inventory_types
-    + messaging_types
-    + noticeboard_types
-    + notification_types
-    + patient_types
-    + reflex_types
-    + setup_types
-    + shipment_types
-    + storage_types
-    + user_types
-    + worksheet_types
-    + billing_types
+        generic_types
+        + analysis_types
+        + analytics_types
+        + audit_types
+        + client_types
+        + impress_types
+        + instrument_types
+        + inventory_types
+        + messaging_types
+        + noticeboard_types
+        + notification_types
+        + patient_types
+        + reflex_types
+        + setup_types
+        + shipment_types
+        + storage_types
+        + user_types
+        + worksheet_types
+        + billing_types
+        + microbiology_types
 )
 
 
@@ -96,6 +99,7 @@ class Query(
     InstrumentQuery,
     ShipmentQuery,
     BillingQuery,
+    MicrobiologyQuery,
 ):
     pass
 
