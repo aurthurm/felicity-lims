@@ -1,7 +1,7 @@
 from dataclasses import field
 from typing import List, Optional
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, field_validator
 
 from felicity.apps.common.schemas import BaseAuditModel
 
@@ -74,16 +74,21 @@ class AbxAntibioticBase(BaseAuditModel):
     human: bool | None = None
     veterinary: bool | None = None
     animal_gp: str | None = None
-    loinccorp: str | None = None
+    loinccomp: str | None = None
     loincgen: str | None = None
-    loinccdisk: str | None = None
-    loinccmic: str | None = None
+    loincdisk: str | None = None
+    loincmic: str | None = None
     loincetest: str | None = None
     loincslow: str | None = None
     loincafb: str | None = None
     loincsbt: str | None = None
     loincmlc: str | None = None
     comments: str | None = None
+
+    @field_validator("abx_number", mode="before")
+    @classmethod
+    def convert_to_str(cls, value):
+        return str(value) if isinstance(value, (int, float)) else value
 
 
 class AbxAntibiotic(AbxAntibioticBase):
@@ -126,7 +131,7 @@ class AbxKingdomUpdate(AbxKingdomBase):
 #
 class AbxPhylumBase(BaseAuditModel):
     name: str
-    kingdom_uid: str
+    kingdom_uid: str | None = None
     kingdom: AbxKingdom | None = None
 
 
@@ -149,7 +154,7 @@ class AbxPhylumUpdate(AbxPhylumBase):
 #
 class AbxClassBase(BaseAuditModel):
     name: str
-    phylum_uid: str
+    phylum_uid: str | None = None
     phylum: AbxPhylum | None = None
 
 
@@ -172,7 +177,7 @@ class AbxClassUpdate(AbxClassBase):
 #
 class AbxOrderBase(BaseAuditModel):
     name: str
-    class_uid: str
+    class_uid: str | None = None
     class_: AbxClass | None = None
 
 
@@ -195,7 +200,7 @@ class AbxOrderUpdate(AbxOrderBase):
 #
 class AbxFamilyBase(BaseAuditModel):
     name: str
-    order_uid: str
+    order_uid: str | None = None
     order: AbxOrder | None = None
 
 
@@ -218,7 +223,7 @@ class AbxFamilyUpdate(AbxFamilyBase):
 #
 class AbxGenusBase(BaseAuditModel):
     name: str
-    family_uid: str
+    family_uid: str | None = None
     family: AbxFamily | None = None
 
 
@@ -246,7 +251,7 @@ class AbxOrganismBase(BaseAuditModel):
     taxonomic_status: str | None = None
     common: str | None = None
     organism_type: str | None = None
-    anaerobe: str | None = None
+    anaerobe: bool | None = None
     morphology: str | None = None
     subkingdom_code: str | None = None
     family_code: str | None = None
@@ -267,15 +272,12 @@ class AbxOrganismBase(BaseAuditModel):
     order_uid: str | None = None
     family_uid: str | None = None
     genus_uid: str | None = None
-    # Relationships
-    kingdom: AbxKingdom | None = None
-    phylum: AbxPhylum | None = None
-    class_: AbxClass | None = None
-    order: AbxOrder | None = None
-    family: AbxFamily | None = None
-    genus: AbxGenus | None = None
     comments: str | None = None
-    serotypes: Optional[List['AbxOrganismSerotype']] = field(default_factory=list)
+
+    @field_validator("sct_code", mode="before")
+    @classmethod
+    def convert_to_str(cls, value):
+        return str(value) if isinstance(value, (int, float)) else value
 
 
 class AbxOrganism(AbxOrganismBase):
@@ -415,28 +417,32 @@ class AbxSiteOfInfectionUpdate(AbxSiteOfInfectionBase):
 #
 class AbxBreakpointBase(BaseAuditModel):
     guideline_uid: str
-    guideline: AbxGuideline | None = None
-    guidelines_year: str
+    year: int | None = None
     test_method: str
     potency: str | None = None
     organism_code: str
     organism_code_type: str
     breakpoint_type_uid: str
-    breakpoint_type: AbxBreakpointType | None = None
     host_uid: str | None = None
-    host: str | None = None
     site_of_infection_uid: str | None = None
-    site_of_infection: AbxSiteOfInfection | None = None
     reference_table: str | None = None
     reference_sequence: str | None = None
     whonet_abx_code: str | None = None
     comments: str | None = None
-    r: float | None = None
-    i: float | None = None
-    sdd: float | None = None
-    s: float | None = None
-    ecv_ecoff: float | None = None
-    ecv_ecoff_tentative: float | None = None
+    r: str | None = None
+    i: str | None = None
+    sdd: str | None = None
+    s: str | None = None
+    ecv_ecoff: str | None = None
+    ecv_ecoff_tentative: str | None = None
+
+    @field_validator(
+        "reference_sequence", "r", "i", "s", "sdd", "ecv_ecoff", "ecv_ecoff_tentative",
+        mode="before"
+    )
+    @classmethod
+    def convert_to_str(cls, value):
+        return str(value) if isinstance(value, (int, float)) else value
 
 
 class AbxBreakpoint(AbxBreakpointBase):
@@ -480,9 +486,7 @@ class AbxReferenceTableUpdate(AbxReferenceTableBase):
 #
 class AbxExpResPhenotypeBase(BaseAuditModel):
     guideline_uid: str
-    guideline: AbxGuideline | None = None
     reference_table_uid: str
-    reference_table: AbxReferenceTable | None = None
     organism_code: str
     organism_code_type: str
     exception_organism_code: str
@@ -561,7 +565,6 @@ class AbxMediumUpdate(AbxMediumBase):
 #
 class AbxQCRangeBase(BaseAuditModel):
     guideline_uid: str
-    guideline: AbxGuideline | None = None
     year: int
     strain: str
     reference_table: str
@@ -570,10 +573,14 @@ class AbxQCRangeBase(BaseAuditModel):
     abx_test: str
     whonet_abx_code: str
     method: str
-    medium_uid: str
-    medium: AbxMedium | None = None
-    minimum: float
-    maximum: float
+    medium_uid: str | None = None
+    minimum: str | None = None
+    maximum: str | None = None
+
+    @field_validator("minimum", "maximum", mode="before")
+    @classmethod
+    def convert_to_str(cls, value):
+        return str(value) if isinstance(value, (int, float)) else value
 
 
 class AbxQCRange(AbxQCRangeBase):
@@ -596,7 +603,7 @@ class AbxQCRangeUpdate(AbxQCRangeBase):
 class AbxASTPanelBase(BaseAuditModel):
     name: str
     description: str | None = None
-    breakpoints = Optional[List['AbxBreakpoint']] = field(default_factory=list)
+    breakpoints: Optional[List['AbxBreakpoint']] = field(default_factory=list)
     active: bool = True
 
 

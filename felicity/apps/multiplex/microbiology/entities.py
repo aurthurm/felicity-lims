@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, String, Integer, Float, Table
+from sqlalchemy import Boolean, Column, ForeignKey, String, Integer, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
@@ -43,10 +43,10 @@ class AbxAntibiotic(BaseEntity):
     human = Column(Boolean, nullable=True)
     veterinary = Column(Boolean, nullable=True)
     animal_gp = Column(String, nullable=True)
-    loinccorp = Column(String, nullable=True)
+    loinccomp = Column(String, nullable=True)
     loincgen = Column(String, nullable=True)
-    loinccdisk = Column(String, nullable=True)
-    loinccmic = Column(String, nullable=True)
+    loincdisk = Column(String, nullable=True)
+    loincmic = Column(String, nullable=True)
     loincetest = Column(String, nullable=True)
     loincslow = Column(String, nullable=True)
     loincafb = Column(String, nullable=True)
@@ -65,7 +65,7 @@ class AbxPhylum(BaseEntity):
     __tablename__ = 'abx_phylum'
 
     name = Column(String(100), nullable=False, unique=True)
-    kingdom_uid = Column(Integer, ForeignKey('abx_kingdom.uid'))  # ForeignKey to Kingdom
+    kingdom_uid = Column(String, ForeignKey('abx_kingdom.uid'), nullable=True)  # ForeignKey to Kingdom
     kingdom = relationship('AbxKingdom', backref='abx_phyla')
 
 
@@ -73,7 +73,7 @@ class AbxClass(BaseEntity):
     __tablename__ = 'abx_class'
 
     name = Column(String(100), nullable=False, unique=True)
-    phylum_uid = Column(Integer, ForeignKey('abx_phylum.uid'))
+    phylum_uid = Column(String, ForeignKey('abx_phylum.uid'), nullable=True)
     phylum = relationship('AbxPhylum', backref='classes')
 
 
@@ -81,7 +81,7 @@ class AbxOrder(BaseEntity):
     __tablename__ = 'abx_order'
 
     name = Column(String(100), nullable=False, unique=True)
-    class_uid = Column(Integer, ForeignKey('abx_class.uid'))
+    class_uid = Column(String, ForeignKey('abx_class.uid'), nullable=True)
     class_ = relationship('AbxClass', backref='orders')
 
 
@@ -89,7 +89,7 @@ class AbxFamily(BaseEntity):
     __tablename__ = 'abx_family'
 
     name = Column(String(100), nullable=False, unique=True)
-    order_uid = Column(Integer, ForeignKey('abx_order.uid'))
+    order_uid = Column(String, ForeignKey('abx_order.uid'), nullable=True)
     order = relationship('AbxOrder', backref='families')
 
 
@@ -97,7 +97,7 @@ class AbxGenus(BaseEntity):
     __tablename__ = 'abx_genus'
 
     name = Column(String(100), nullable=False, unique=True)
-    family_uid = Column(Integer, ForeignKey('abx_family.uid'))
+    family_uid = Column(String, ForeignKey('abx_family.uid'), nullable=True)
     family = relationship('AbxFamily', backref='genera')
 
 
@@ -105,7 +105,7 @@ class AbxOrganism(BaseEntity):
     __tablename__ = 'abx_organism'
 
     name = Column(String(255))
-    whonet_org_code = Column(String(50), nullable=True, unique=True)
+    whonet_org_code = Column(String(50), nullable=True)
     replaced_by = Column(String(50), nullable=True)
     taxonomic_status = Column(String(50), nullable=True)
     common = Column(String(100), nullable=True)
@@ -125,12 +125,12 @@ class AbxOrganism(BaseEntity):
     gbif_dataset_id = Column(String(255), nullable=True)
     gbif_taxonomic_status = Column(String(50), nullable=True)
     # Foreign keys to taxonomic tables
-    kingdom_uid = Column(Integer, ForeignKey('abx_kingdom.uid'), nullable=True)
-    phylum_uid = Column(Integer, ForeignKey('abx_phylum.uid'), nullable=True)
-    class_uid = Column(Integer, ForeignKey('abx_class.uid'), nullable=True)
-    order_uid = Column(Integer, ForeignKey('abx_order.uid'), nullable=True)
-    family_uid = Column(Integer, ForeignKey('abx_family.uid'), nullable=True)
-    genus_uid = Column(Integer, ForeignKey('abx_genus.uid'), nullable=True)
+    kingdom_uid = Column(String, ForeignKey('abx_kingdom.uid'), nullable=True)
+    phylum_uid = Column(String, ForeignKey('abx_phylum.uid'), nullable=True)
+    class_uid = Column(String, ForeignKey('abx_class.uid'), nullable=True)
+    order_uid = Column(String, ForeignKey('abx_order.uid'), nullable=True)
+    family_uid = Column(String, ForeignKey('abx_family.uid'), nullable=True)
+    genus_uid = Column(String, ForeignKey('abx_genus.uid'), nullable=True)
     # Relationships
     kingdom = relationship('AbxKingdom', backref="kingdoms", lazy="selectin")
     phylum = relationship('AbxPhylum', backref="phyla", lazy="selectin")
@@ -145,7 +145,7 @@ class AbxOrganism(BaseEntity):
 class AbxOrganismSerotype(BaseEntity):
     __tablename__ = 'abx_organism_serotypes'
 
-    organism_uid = Column(Integer, ForeignKey('abx_organism.uid'), nullable=False)
+    organism_uid = Column(String, ForeignKey('abx_organism.uid'), nullable=False)
     organism = relationship("AbxOrganism", back_populates="serotypes")
     serotype = Column(String(100), nullable=False)
     serogroup = Column(String(100), nullable=True)
@@ -191,7 +191,7 @@ class AbxBreakpoint(BaseEntity):
     # Using a composite primary key of relevant fields
     guideline_uid = Column(String, ForeignKey("abx_guideline.uid"))
     guideline = relationship(AbxGuideline, backref="breakpoints", lazy="selectin")
-    guidelines_year = Column(Integer, nullable=False)
+    year = Column(Integer, nullable=False)
     test_method = Column(String(50), nullable=False)
     potency = Column(String(50), nullable=True)
     organism_code = Column(String(50), nullable=False)
@@ -208,14 +208,14 @@ class AbxBreakpoint(BaseEntity):
     comments = Column(String(500), nullable=True)
 
     # Breakpoint values
-    r = Column(Float)  # Resistant
-    i = Column(Float)  # Intermediate
-    sdd = Column(Float)  # Susceptible-Dose Dependent
-    s = Column(Float)  # Susceptible
+    r = Column(String(20))  # Resistant
+    i = Column(String(20))  # Intermediate
+    sdd = Column(String(20))  # Susceptible-Dose Dependent
+    s = Column(String(20))  # Susceptible
 
     # ECV/ECOFF values
-    ecv_ecoff = Column(Float)
-    ecv_ecoff_tentative = Column(Float)
+    ecv_ecoff = Column(String(20))
+    ecv_ecoff_tentative = Column(String(20))
 
 
 class AbxReferenceTable(BaseEntity):
@@ -285,8 +285,8 @@ class AbxQCRange(BaseEntity):
     method = Column(String(100), nullable=False)
     medium_uid = Column(String, ForeignKey("abx_medium.uid"), nullable=True)
     medium = relationship(AbxMedium, backref="qc_ranges", lazy="selectin")
-    minimum = Column(Float, nullable=False)
-    maximum = Column(Float, nullable=False)
+    minimum = Column(String(10), nullable=False)
+    maximum = Column(String(10), nullable=False)
 
     @property
     def range_display(self):
@@ -298,8 +298,8 @@ class AbxQCRange(BaseEntity):
 panel_breakpoints = Table(
     'abx_panel_antibiotics',
     BaseEntity.metadata,
-    Column('panel_uid', Integer, ForeignKey('abx_ast_panel.uid'), primary_key=True),
-    Column('breakpoint_uid', String(50), ForeignKey('abx_breakpoint.uid'), primary_key=True)
+    Column('panel_uid', String, ForeignKey('abx_ast_panel.uid'), primary_key=True),
+    Column('breakpoint_uid', String, ForeignKey('abx_breakpoint.uid'), primary_key=True)
 )
 
 
