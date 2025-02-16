@@ -25,6 +25,7 @@ from felicity.api.gql.messaging import messaging_types
 from felicity.api.gql.messaging.mutations import MessageMutations
 from felicity.api.gql.messaging.query import MessageQuery
 from felicity.api.gql.multiplex.microbiology import microbiology_types
+from felicity.api.gql.multiplex.microbiology.mutations import MicrobiologyMutations
 from felicity.api.gql.multiplex.microbiology.query import MicrobiologyQuery
 from felicity.api.gql.noticeboard import noticeboard_types
 from felicity.api.gql.noticeboard.mutations import NoticeMutations
@@ -120,6 +121,7 @@ class Mutation(
     InstrumentMutations,
     ShipmentMutations,
     BillingMutations,
+    MicrobiologyMutations
 ):
     pass
 

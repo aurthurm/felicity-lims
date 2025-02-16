@@ -42,7 +42,7 @@
       departmentUid: form.departmentUid,
       active: form.active 
     }
-    withClientMutation<EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables>(EditAnalysisCategoryDocument, { uid: form.uid, payload }, "updateAnalysisCategory")
+    withClientMutation<EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables>(EditAnalysisCategoryDocument, { uid: form.uid!, payload }, "updateAnalysisCategory")
     .then((result) => analysisStore.updateAnalysisCategory(result));
   }
 
