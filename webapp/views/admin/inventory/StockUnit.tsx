@@ -1,10 +1,16 @@
-import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
-import { ref, reactive, computed } from 'vue';
-import { AddStockUnitDocument, AddStockUnitMutation, AddStockUnitMutationVariables,
-  EditStockUnitDocument, EditStockUnitMutation, EditStockUnitMutationVariables } from '@/graphql/operations/inventory.mutations';
-import { useInventoryStore } from '@/stores/inventory';
-import  useApiUtil  from '@/composables/api_util';
-import { IStockUnit } from '@/models/inventory';
+import {computed, defineAsyncComponent, defineComponent, reactive, ref} from 'vue';
+import {
+    AddStockUnitDocument,
+    AddStockUnitMutation,
+    AddStockUnitMutationVariables,
+    EditStockUnitDocument,
+    EditStockUnitMutation,
+    EditStockUnitMutationVariables
+} from '@/graphql/operations/inventory.mutations';
+import {useInventoryStore} from '@/stores/inventory';
+import useApiUtil from '@/composables/api_util';
+import {IStockUnit} from '@/models/inventory';
+
 const Modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
 )
@@ -13,7 +19,7 @@ const StockUnit = defineComponent({
     name: 'stock-unit',
     setup(props, ctx) {
         const inventoryStore = useInventoryStore();
-        const { withClientMutation } = useApiUtil();
+        const {withClientMutation} = useApiUtil();
 
         let showModal = ref(false);
         let formTitle = ref('');
@@ -24,16 +30,19 @@ const StockUnit = defineComponent({
         const stockUnits = computed(() => inventoryStore.getUnits);
 
         function addStockUnit(): void {
-            const payload = { ...form };
-            withClientMutation<AddStockUnitMutation, AddStockUnitMutationVariables>(AddStockUnitDocument, { payload }, 'createStockUnit').then(result => inventoryStore.addUnit(result));
+            const payload = {...form};
+            withClientMutation<AddStockUnitMutation, AddStockUnitMutationVariables>(AddStockUnitDocument, {payload}, 'createStockUnit').then(result => inventoryStore.addUnit(result));
         }
 
         function editStockUnit(): void {
             const payload = {
                 name: form.name,
             };
-            withClientMutation<EditStockUnitMutation, EditStockUnitMutationVariables>(EditStockUnitDocument, { uid: form.uid, payload }, 'updateStockUnit').then(result =>
-                inventoryStore.updateUnit(result)
+            withClientMutation<EditStockUnitMutation, EditStockUnitMutationVariables>(EditStockUnitDocument, {
+                uid: form.uid,
+                payload
+            }, 'updateStockUnit').then(result =>
+                inventoryStore.updateUnit(result as any)
             );
         }
 
@@ -44,7 +53,7 @@ const StockUnit = defineComponent({
             if (create) {
                 Object.assign(form, {} as IStockUnit);
             } else {
-                Object.assign(form, { ...obj });
+                Object.assign(form, {...obj});
             }
         }
 
@@ -66,50 +75,51 @@ const StockUnit = defineComponent({
     render() {
         return (
             <div class="container w-full my-4">
-                <hr />
+                <hr/>
                 <button
                     onClick={() => this.FormManager(true, null)}
                     class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                 >
                     Add Stock Unit
                 </button>
-                <hr />
+                <hr/>
 
                 <div class="overflow-x-auto mt-4">
-                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                    <div
+                        class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                         <table class="min-w-full">
                             <thead>
-                                <tr>
-                                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
-                                        Unit Name
-                                    </th>
-                                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"></th>
-                                    <th class="px-1 py-1 border-b-2 border-gray-300"></th>
-                                </tr>
+                            <tr>
+                                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    Unit Name
+                                </th>
+                                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"></th>
+                                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                            </tr>
                             </thead>
                             <tbody class="bg-white">
-                                {this.stockUnits.map(unit => {
-                                    return (
-                                        <tr key={unit?.uid}>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                                                <div class="flex items-center">
-                                                    <div class="text-sm leading-5 text-gray-800">{unit?.name}</div>
-                                                </div>
-                                            </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                                                <div class="text-sm leading-5 text-sky-800"></div>
-                                            </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                                                <button
-                                                    onClick={() => this.FormManager(false, unit)}
-                                                    class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                                                >
-                                                    Edit
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                            {this.stockUnits.map(unit => {
+                                return (
+                                    <tr key={unit?.uid}>
+                                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <div class="flex items-center">
+                                                <div class="text-sm leading-5 text-gray-800">{unit?.name}</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <div class="text-sm leading-5 text-sky-800"></div>
+                                        </td>
+                                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                                            <button
+                                                onClick={() => this.FormManager(false, unit)}
+                                                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            >
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                             </tbody>
                         </table>
                     </div>
@@ -133,7 +143,7 @@ const StockUnit = defineComponent({
                                                 />
                                             </label>
                                         </div>
-                                        <hr />
+                                        <hr/>
                                         <button
                                             type="button"
                                             onClick={() => this.saveForm()}
@@ -152,5 +162,5 @@ const StockUnit = defineComponent({
     },
 });
 
-export { StockUnit };
+export {StockUnit};
 export default StockUnit

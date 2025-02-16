@@ -146,7 +146,8 @@
               v-model="form.value"
               placeholder="Value ..."
             />
-          </label>          <label class="block col-span-3 mb-2">
+          </label>      
+          <label class="block col-span-3 mb-2">
             <span class="text-gray-700">Sample Types</span>
             <VueMultiselect
             v-model="form.sampleTypes"

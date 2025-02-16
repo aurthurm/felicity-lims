@@ -219,21 +219,13 @@ class AbxBreakpoint(BaseEntity):
     ecv_ecoff_tentative = Column(String(20))
 
 
-class AbxReferenceTable(BaseEntity):
-    __tablename__ = "abx_reference_table"
-
-    name = Column(String)
-    description = Column(String, nullable=True)
-
-
 class AbxExpResPhenotype(BaseEntity):
     """Expected Resistance Phenotype"""
     __tablename__ = 'abx_expected_res_phenotype'
 
     guideline_uid = Column(String, ForeignKey("abx_guideline.uid"))
     guideline = relationship(AbxGuideline, backref="exp_res_phenotypes", lazy="selectin")
-    reference_table_uid = Column(String, ForeignKey("abx_reference_table.uid"), nullable=True)
-    reference_table = relationship(AbxReferenceTable, backref="exp_res_phenotypes", lazy="selectin")
+    reference_table = Column(String(100), nullable=True)
 
     # Organism related fields
     organism_code = Column(String(50), nullable=False)

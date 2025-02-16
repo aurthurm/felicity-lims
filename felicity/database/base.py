@@ -76,7 +76,6 @@ from felicity.apps.multiplex.microbiology.entities import AbxOrganism  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxOrganismSerotype  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxPhylum  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxQCRange  # noqa
-from felicity.apps.multiplex.microbiology.entities import AbxReferenceTable  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxSiteOfInfection  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxTestMethod  # noqa
 from felicity.apps.noticeboard.entities import Notice  # noqa

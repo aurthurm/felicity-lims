@@ -35,6 +35,744 @@ export type ArSampleInputType = {
   sampleType: Scalars['String']['input'];
 };
 
+export type AbxAstPanelCursorPage = {
+  __typename?: 'AbxASTPanelCursorPage';
+  edges?: Maybe<Array<AbxAstPanelEdge>>;
+  items?: Maybe<Array<AbxAstPanelType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxAstPanelEdge = {
+  __typename?: 'AbxASTPanelEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxAstPanelType;
+};
+
+export type AbxAstPanelInputType = {
+  active?: Scalars['Boolean']['input'];
+  breakpoints: Array<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxAstPanelResponse = AbxAstPanelType | OperationError;
+
+export type AbxAstPanelType = {
+  __typename?: 'AbxASTPanelType';
+  active: Scalars['Boolean']['output'];
+  breakpoints?: Maybe<Array<AbxBreakpointTyp>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxAntibioticCursorPage = {
+  __typename?: 'AbxAntibioticCursorPage';
+  edges?: Maybe<Array<AbxAntibioticEdge>>;
+  items?: Maybe<Array<AbxAntibioticType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxAntibioticEdge = {
+  __typename?: 'AbxAntibioticEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxAntibioticType;
+};
+
+export type AbxAntibioticGuidelineType = {
+  __typename?: 'AbxAntibioticGuidelineType';
+  antibiotic?: Maybe<AbxAntibioticType>;
+  antibioticUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxAntibioticInputType = {
+  abxNumber?: InputMaybe<Scalars['String']['input']>;
+  animalGp?: InputMaybe<Scalars['String']['input']>;
+  atcCode?: InputMaybe<Scalars['String']['input']>;
+  ciaCategory?: InputMaybe<Scalars['String']['input']>;
+  class_?: InputMaybe<Scalars['String']['input']>;
+  clsiOrder?: InputMaybe<Scalars['String']['input']>;
+  comments?: InputMaybe<Scalars['String']['input']>;
+  dinCode?: InputMaybe<Scalars['String']['input']>;
+  eucastCode?: InputMaybe<Scalars['String']['input']>;
+  eucastOrder?: InputMaybe<Scalars['String']['input']>;
+  guidelines: Array<Scalars['String']['input']>;
+  human?: InputMaybe<Scalars['Boolean']['input']>;
+  jacCode?: InputMaybe<Scalars['String']['input']>;
+  loincafb?: InputMaybe<Scalars['String']['input']>;
+  loinccomp?: InputMaybe<Scalars['String']['input']>;
+  loincdisk?: InputMaybe<Scalars['String']['input']>;
+  loincetest?: InputMaybe<Scalars['String']['input']>;
+  loincgen?: InputMaybe<Scalars['String']['input']>;
+  loincmic?: InputMaybe<Scalars['String']['input']>;
+  loincmlc?: InputMaybe<Scalars['String']['input']>;
+  loincsbt?: InputMaybe<Scalars['String']['input']>;
+  loincslow?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  potency?: InputMaybe<Scalars['String']['input']>;
+  profClass?: InputMaybe<Scalars['String']['input']>;
+  subclass?: InputMaybe<Scalars['String']['input']>;
+  userCode?: InputMaybe<Scalars['String']['input']>;
+  veterinary?: InputMaybe<Scalars['Boolean']['input']>;
+  whoCode?: InputMaybe<Scalars['String']['input']>;
+  whonetAbxCode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxAntibioticResponse = AbxAntibioticType | OperationError;
+
+export type AbxAntibioticType = {
+  __typename?: 'AbxAntibioticType';
+  abxNumber?: Maybe<Scalars['String']['output']>;
+  animalGp?: Maybe<Scalars['String']['output']>;
+  atcCode?: Maybe<Scalars['String']['output']>;
+  ciaCategory?: Maybe<Scalars['String']['output']>;
+  class_?: Maybe<Scalars['String']['output']>;
+  clsiOrder?: Maybe<Scalars['String']['output']>;
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  dinCode?: Maybe<Scalars['String']['output']>;
+  eucastCode?: Maybe<Scalars['String']['output']>;
+  eucastOrder?: Maybe<Scalars['String']['output']>;
+  guidelines: Array<AbxGuidelineType>;
+  human?: Maybe<Scalars['Boolean']['output']>;
+  jacCode?: Maybe<Scalars['String']['output']>;
+  loincafb?: Maybe<Scalars['String']['output']>;
+  loinccomp?: Maybe<Scalars['String']['output']>;
+  loincdisk?: Maybe<Scalars['String']['output']>;
+  loincetest?: Maybe<Scalars['String']['output']>;
+  loincgen?: Maybe<Scalars['String']['output']>;
+  loincmic?: Maybe<Scalars['String']['output']>;
+  loincmlc?: Maybe<Scalars['String']['output']>;
+  loincsbt?: Maybe<Scalars['String']['output']>;
+  loincslow?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  potency?: Maybe<Scalars['String']['output']>;
+  profClass?: Maybe<Scalars['String']['output']>;
+  subclass?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  userCode?: Maybe<Scalars['String']['output']>;
+  veterinary?: Maybe<Scalars['Boolean']['output']>;
+  whoCode?: Maybe<Scalars['String']['output']>;
+  whonetAbxCode?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxBreakpointInputType = {
+  breakpointTypeUid: Scalars['String']['input'];
+  comments?: InputMaybe<Scalars['String']['input']>;
+  ecvEcoff?: InputMaybe<Scalars['String']['input']>;
+  ecvEcoffTentative?: InputMaybe<Scalars['String']['input']>;
+  guidelineUid: Scalars['String']['input'];
+  hostUid?: InputMaybe<Scalars['String']['input']>;
+  i?: InputMaybe<Scalars['String']['input']>;
+  organismCode: Scalars['String']['input'];
+  organismCodeType: Scalars['String']['input'];
+  potency?: InputMaybe<Scalars['String']['input']>;
+  r?: InputMaybe<Scalars['String']['input']>;
+  referenceSequence?: InputMaybe<Scalars['String']['input']>;
+  referenceTable?: InputMaybe<Scalars['String']['input']>;
+  s?: InputMaybe<Scalars['String']['input']>;
+  sdd?: InputMaybe<Scalars['String']['input']>;
+  siteOfInfectionUid?: InputMaybe<Scalars['String']['input']>;
+  testMethod: Scalars['String']['input'];
+  whonetAbxCode?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type AbxBreakpointResponse = AbxBreakpointTyp | OperationError;
+
+export type AbxBreakpointTyp = {
+  __typename?: 'AbxBreakpointTyp';
+  breakpointType?: Maybe<AbxBreakpointTypeTyp>;
+  breakpointTypeUid: Scalars['String']['output'];
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  ecvEcoff?: Maybe<Scalars['String']['output']>;
+  ecvEcoffTentative?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  host?: Maybe<AbxHostType>;
+  hostUid?: Maybe<Scalars['String']['output']>;
+  i?: Maybe<Scalars['String']['output']>;
+  organismCode: Scalars['String']['output'];
+  organismCodeType: Scalars['String']['output'];
+  potency?: Maybe<Scalars['String']['output']>;
+  r?: Maybe<Scalars['String']['output']>;
+  referenceSequence?: Maybe<Scalars['String']['output']>;
+  referenceTable?: Maybe<Scalars['String']['output']>;
+  s?: Maybe<Scalars['String']['output']>;
+  sdd?: Maybe<Scalars['String']['output']>;
+  siteOfInfection?: Maybe<AbxSiteOfInfectionType>;
+  siteOfInfectionUid?: Maybe<Scalars['String']['output']>;
+  testMethod: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  whonetAbxCode?: Maybe<Scalars['String']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AbxBreakpointTypCursorPage = {
+  __typename?: 'AbxBreakpointTypCursorPage';
+  edges?: Maybe<Array<AbxBreakpointTypEdge>>;
+  items?: Maybe<Array<AbxBreakpointTyp>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxBreakpointTypEdge = {
+  __typename?: 'AbxBreakpointTypEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxBreakpointTyp;
+};
+
+export type AbxBreakpointTypeInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxBreakpointTypeResponse = AbxBreakpointTypeTyp | OperationError;
+
+export type AbxBreakpointTypeTyp = {
+  __typename?: 'AbxBreakpointTypeTyp';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxClassInputType = {
+  name: Scalars['String']['input'];
+  phylumUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxClassResponse = AbxClassType | OperationError;
+
+export type AbxClassType = {
+  __typename?: 'AbxClassType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  phylum?: Maybe<AbxPhylumType>;
+  phylumUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxExpResPhenotypeCursorPage = {
+  __typename?: 'AbxExpResPhenotypeCursorPage';
+  edges?: Maybe<Array<AbxExpResPhenotypeEdge>>;
+  items?: Maybe<Array<AbxExpResPhenotypeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxExpResPhenotypeEdge = {
+  __typename?: 'AbxExpResPhenotypeEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxExpResPhenotypeType;
+};
+
+export type AbxExpResPhenotypeInputType = {
+  abxCode: Scalars['String']['input'];
+  abxCodeType: Scalars['String']['input'];
+  antibioticExceptions: Scalars['String']['input'];
+  comments?: InputMaybe<Scalars['String']['input']>;
+  exceptionOrganismCode: Scalars['String']['input'];
+  exceptionOrganismCodeType: Scalars['String']['input'];
+  guidelineUid: Scalars['String']['input'];
+  organismCode: Scalars['String']['input'];
+  organismCodeType: Scalars['String']['input'];
+  referenceTable: Scalars['String']['input'];
+};
+
+export type AbxExpResPhenotypeResponse = AbxExpResPhenotypeType | OperationError;
+
+export type AbxExpResPhenotypeType = {
+  __typename?: 'AbxExpResPhenotypeType';
+  abxCode: Scalars['String']['output'];
+  abxCodeType: Scalars['String']['output'];
+  antibioticExceptions: Scalars['String']['output'];
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  exceptionOrganismCode: Scalars['String']['output'];
+  exceptionOrganismCodeType: Scalars['String']['output'];
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  organismCode: Scalars['String']['output'];
+  organismCodeType: Scalars['String']['output'];
+  referenceTable?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxExpertInterpretationRuleCursorPage = {
+  __typename?: 'AbxExpertInterpretationRuleCursorPage';
+  edges?: Maybe<Array<AbxExpertInterpretationRuleEdge>>;
+  items?: Maybe<Array<AbxExpertInterpretationRuleType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxExpertInterpretationRuleEdge = {
+  __typename?: 'AbxExpertInterpretationRuleEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxExpertInterpretationRuleType;
+};
+
+export type AbxExpertInterpretationRuleInputType = {
+  affectedAntibiotics: Scalars['String']['input'];
+  antibioticExceptions: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  organismCode: Scalars['String']['input'];
+  organismCodeType: Scalars['String']['input'];
+  ruleCode: Scalars['String']['input'];
+  ruleCriteria: Scalars['String']['input'];
+};
+
+export type AbxExpertInterpretationRuleResponse = AbxExpertInterpretationRuleType | OperationError;
+
+export type AbxExpertInterpretationRuleType = {
+  __typename?: 'AbxExpertInterpretationRuleType';
+  affectedAntibiotics: Scalars['String']['output'];
+  antibioticExceptions: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  organismCode: Scalars['String']['output'];
+  organismCodeType: Scalars['String']['output'];
+  ruleCode: Scalars['String']['output'];
+  ruleCriteria: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxFamilyInputType = {
+  name: Scalars['String']['input'];
+  orderUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxFamilyResponse = AbxFamilyType | OperationError;
+
+export type AbxFamilyType = {
+  __typename?: 'AbxFamilyType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  order?: Maybe<AbxOrderType>;
+  orderUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxGenusInputType = {
+  familyUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxGenusResponse = AbxGenusType | OperationError;
+
+export type AbxGenusType = {
+  __typename?: 'AbxGenusType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  family?: Maybe<AbxFamilyType>;
+  familyUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxGuidelineInputType = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxGuidelineResponse = AbxGuidelineType | OperationError;
+
+export type AbxGuidelineType = {
+  __typename?: 'AbxGuidelineType';
+  code?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxHostInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxHostResponse = AbxHostType | OperationError;
+
+export type AbxHostType = {
+  __typename?: 'AbxHostType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxKingdomInputType = {
+  name: Scalars['String']['input'];
+};
+
+export type AbxKingdomResponse = AbxKingdomType | OperationError;
+
+export type AbxKingdomType = {
+  __typename?: 'AbxKingdomType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxMediumInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxMediumResponse = AbxMediumType | OperationError;
+
+export type AbxMediumType = {
+  __typename?: 'AbxMediumType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxOrderInputType = {
+  classUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxOrderResponse = AbxOrderType | OperationError;
+
+export type AbxOrderType = {
+  __typename?: 'AbxOrderType';
+  classUid?: Maybe<Scalars['String']['output']>;
+  class_?: Maybe<AbxClassType>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxOrganismCursorPage = {
+  __typename?: 'AbxOrganismCursorPage';
+  edges?: Maybe<Array<AbxOrganismEdge>>;
+  items?: Maybe<Array<AbxOrganismType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxOrganismEdge = {
+  __typename?: 'AbxOrganismEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxOrganismType;
+};
+
+export type AbxOrganismInputType = {
+  anaerobe?: InputMaybe<Scalars['Boolean']['input']>;
+  classUid?: InputMaybe<Scalars['String']['input']>;
+  comments?: InputMaybe<Scalars['String']['input']>;
+  common?: InputMaybe<Scalars['String']['input']>;
+  familyUid?: InputMaybe<Scalars['String']['input']>;
+  genusUid?: InputMaybe<Scalars['String']['input']>;
+  kingdomUid?: InputMaybe<Scalars['String']['input']>;
+  morphology?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  orderUid?: InputMaybe<Scalars['String']['input']>;
+  organismType?: InputMaybe<Scalars['String']['input']>;
+  phylumUid?: InputMaybe<Scalars['String']['input']>;
+  replacedBy?: InputMaybe<Scalars['String']['input']>;
+  taxonomicStatus?: InputMaybe<Scalars['String']['input']>;
+  whonetOrgCode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxOrganismResponse = AbxOrganismType | OperationError;
+
+export type AbxOrganismSerotypeCursorPage = {
+  __typename?: 'AbxOrganismSerotypeCursorPage';
+  edges?: Maybe<Array<AbxOrganismSerotypeEdge>>;
+  items?: Maybe<Array<AbxOrganismSerotypeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxOrganismSerotypeEdge = {
+  __typename?: 'AbxOrganismSerotypeEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxOrganismSerotypeType;
+};
+
+export type AbxOrganismSerotypeInputType = {
+  fate?: InputMaybe<Scalars['String']['input']>;
+  hPhase1?: InputMaybe<Scalars['String']['input']>;
+  hPhase2?: InputMaybe<Scalars['String']['input']>;
+  oAntigens?: InputMaybe<Scalars['String']['input']>;
+  organismUid: Scalars['String']['input'];
+  serogroup?: InputMaybe<Scalars['String']['input']>;
+  serotype: Scalars['String']['input'];
+  subspecies?: InputMaybe<Scalars['String']['input']>;
+  x997Check?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AbxOrganismSerotypeResponse = AbxOrganismSerotypeType | OperationError;
+
+export type AbxOrganismSerotypeType = {
+  __typename?: 'AbxOrganismSerotypeType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  fate?: Maybe<Scalars['String']['output']>;
+  hPhase1?: Maybe<Scalars['String']['output']>;
+  hPhase2?: Maybe<Scalars['String']['output']>;
+  oAntigens?: Maybe<Scalars['String']['output']>;
+  organism?: Maybe<AbxOrganismType>;
+  organismUid: Scalars['String']['output'];
+  serogroup?: Maybe<Scalars['String']['output']>;
+  serotype: Scalars['String']['output'];
+  subspecies?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  x997Check?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type AbxOrganismType = {
+  __typename?: 'AbxOrganismType';
+  anaerobe?: Maybe<Scalars['Boolean']['output']>;
+  classUid?: Maybe<Scalars['String']['output']>;
+  class_?: Maybe<AbxClassType>;
+  comments?: Maybe<Scalars['String']['output']>;
+  common?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  family?: Maybe<AbxFamilyType>;
+  familyCode?: Maybe<Scalars['String']['output']>;
+  familyUid?: Maybe<Scalars['String']['output']>;
+  gbifDatasetId?: Maybe<Scalars['String']['output']>;
+  gbifTaxonId?: Maybe<Scalars['String']['output']>;
+  gbifTaxonomicStatus?: Maybe<Scalars['String']['output']>;
+  genus?: Maybe<AbxGenusType>;
+  genusCode?: Maybe<Scalars['String']['output']>;
+  genusGroup?: Maybe<Scalars['String']['output']>;
+  genusUid?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  kingdomUid?: Maybe<Scalars['String']['output']>;
+  morphology?: Maybe<Scalars['String']['output']>;
+  msfGrpClin?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  order?: Maybe<AbxOrderType>;
+  orderUid?: Maybe<Scalars['String']['output']>;
+  organismType?: Maybe<Scalars['String']['output']>;
+  phylum?: Maybe<AbxPhylumType>;
+  phylumUid?: Maybe<Scalars['String']['output']>;
+  replacedBy?: Maybe<Scalars['String']['output']>;
+  sctCode?: Maybe<Scalars['String']['output']>;
+  sctText?: Maybe<Scalars['String']['output']>;
+  serovarGroup?: Maybe<Scalars['String']['output']>;
+  speciesGroup?: Maybe<Scalars['String']['output']>;
+  subkingdomCode?: Maybe<Scalars['String']['output']>;
+  taxonomicStatus?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  whonetOrgCode?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxPhylumInputType = {
+  kingdomUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxPhylumResponse = AbxPhylumType | OperationError;
+
+export type AbxPhylumType = {
+  __typename?: 'AbxPhylumType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  kingdom?: Maybe<AbxKingdomType>;
+  kingdomUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxQcRangeCursorPage = {
+  __typename?: 'AbxQCRangeCursorPage';
+  edges?: Maybe<Array<AbxQcRangeEdge>>;
+  items?: Maybe<Array<AbxQcRangeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxQcRangeEdge = {
+  __typename?: 'AbxQCRangeEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxQcRangeType;
+};
+
+export type AbxQcRangeInputType = {
+  abxTest: Scalars['String']['input'];
+  antibiotic: Scalars['String']['input'];
+  guidelineUid: Scalars['String']['input'];
+  maximum?: InputMaybe<Scalars['String']['input']>;
+  mediumUid?: InputMaybe<Scalars['String']['input']>;
+  method: Scalars['String']['input'];
+  minimum?: InputMaybe<Scalars['String']['input']>;
+  referenceTable: Scalars['String']['input'];
+  strain: Scalars['String']['input'];
+  whonetAbxCode: Scalars['String']['input'];
+  whonetOrgCode: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+export type AbxQcRangeResponse = AbxQcRangeType | OperationError;
+
+export type AbxQcRangeType = {
+  __typename?: 'AbxQCRangeType';
+  abxTest: Scalars['String']['output'];
+  antibiotic: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  maximum?: Maybe<Scalars['String']['output']>;
+  medium?: Maybe<AbxMediumType>;
+  mediumUid?: Maybe<Scalars['String']['output']>;
+  method: Scalars['String']['output'];
+  minimum?: Maybe<Scalars['String']['output']>;
+  referenceTable: Scalars['String']['output'];
+  strain: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  whonetAbxCode: Scalars['String']['output'];
+  whonetOrgCode: Scalars['String']['output'];
+  year: Scalars['Int']['output'];
+};
+
+export type AbxSiteOfInfectionInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxSiteOfInfectionResponse = AbxSiteOfInfectionType | OperationError;
+
+export type AbxSiteOfInfectionType = {
+  __typename?: 'AbxSiteOfInfectionType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxTestMethodInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxTestMethodResponse = AbxTestMethodType | OperationError;
+
+export type AbxTestMethodType = {
+  __typename?: 'AbxTestMethodType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
 export type ActivityFeedType = {
   __typename?: 'ActivityFeedType';
   name: Scalars['String']['output'];
@@ -1377,6 +2115,26 @@ export type Mutation = {
   cancelSamples: ResultedSampleActionResponse;
   cloneSamples: SampleActionResponse;
   confirmTestBillTransaction: TestBillTransactionResponse;
+  createAbxAntibiotic: AbxAntibioticResponse;
+  createAbxAstPanel: AbxAstPanelResponse;
+  createAbxBreakpoint: AbxBreakpointResponse;
+  createAbxBreakpointType: AbxBreakpointTypeResponse;
+  createAbxClass: AbxClassResponse;
+  createAbxExpResPhenotype: AbxExpResPhenotypeResponse;
+  createAbxExpertInterpretationRule: AbxExpertInterpretationRuleResponse;
+  createAbxFamily: AbxFamilyResponse;
+  createAbxGenus: AbxGenusResponse;
+  createAbxGuideline: AbxGuidelineResponse;
+  createAbxHost: AbxHostResponse;
+  createAbxKingdom: AbxKingdomResponse;
+  createAbxMedium: AbxMediumResponse;
+  createAbxOrder: AbxOrderResponse;
+  createAbxOrganism: AbxOrganismResponse;
+  createAbxOrganismSerotype: AbxOrganismSerotypeResponse;
+  createAbxPhylum: AbxPhylumResponse;
+  createAbxQcRange: AbxQcRangeResponse;
+  createAbxSiteOfInfection: AbxSiteOfInfectionResponse;
+  createAbxTestMethod: AbxTestMethodResponse;
   createAnalysis: ProfilesServiceResponse;
   createAnalysisCategory: AnalysisCategoryResponse;
   createAnalysisCorrectionFactor: AnalysisCorrectionFactorResponse;
@@ -1468,6 +2226,26 @@ export type Mutation = {
   storeSamples: StoreSampleResponse;
   submitAnalysisResults: AnalysisResultSubmitResponse;
   submitStockOrder: StockOrderResponse;
+  updateAbxAntibiotic: AbxAntibioticResponse;
+  updateAbxAstPanel: AbxAstPanelResponse;
+  updateAbxBreakpoint: AbxBreakpointResponse;
+  updateAbxBreakpointType: AbxBreakpointTypeResponse;
+  updateAbxClass: AbxClassResponse;
+  updateAbxExpResPhenotype: AbxExpResPhenotypeResponse;
+  updateAbxExpertInterpretationRule: AbxExpertInterpretationRuleResponse;
+  updateAbxFamily: AbxFamilyResponse;
+  updateAbxGenus: AbxGenusResponse;
+  updateAbxGuideline: AbxGuidelineResponse;
+  updateAbxHost: AbxHostResponse;
+  updateAbxKingdom: AbxKingdomResponse;
+  updateAbxMedium: AbxMediumResponse;
+  updateAbxOrder: AbxOrderResponse;
+  updateAbxOrganism: AbxOrganismResponse;
+  updateAbxOrganismSerotype: AbxOrganismSerotypeResponse;
+  updateAbxPhylum: AbxPhylumResponse;
+  updateAbxQcRange: AbxQcRangeResponse;
+  updateAbxSiteOfInfection: AbxSiteOfInfectionResponse;
+  updateAbxTestMethod: AbxTestMethodResponse;
   updateAnalysis: ProfilesServiceResponse;
   updateAnalysisCategory: AnalysisCategoryResponse;
   updateAnalysisCorrectionFactor: AnalysisCorrectionFactorResponse;
@@ -1590,6 +2368,106 @@ export type MutationCloneSamplesArgs = {
 export type MutationConfirmTestBillTransactionArgs = {
   notes?: InputMaybe<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
+};
+
+
+export type MutationCreateAbxAntibioticArgs = {
+  payload: AbxAntibioticInputType;
+};
+
+
+export type MutationCreateAbxAstPanelArgs = {
+  payload: AbxAstPanelInputType;
+};
+
+
+export type MutationCreateAbxBreakpointArgs = {
+  payload: AbxBreakpointInputType;
+};
+
+
+export type MutationCreateAbxBreakpointTypeArgs = {
+  payload: AbxBreakpointTypeInputType;
+};
+
+
+export type MutationCreateAbxClassArgs = {
+  payload: AbxClassInputType;
+};
+
+
+export type MutationCreateAbxExpResPhenotypeArgs = {
+  payload: AbxExpResPhenotypeInputType;
+};
+
+
+export type MutationCreateAbxExpertInterpretationRuleArgs = {
+  payload: AbxExpertInterpretationRuleInputType;
+};
+
+
+export type MutationCreateAbxFamilyArgs = {
+  payload: AbxFamilyInputType;
+};
+
+
+export type MutationCreateAbxGenusArgs = {
+  payload: AbxGenusInputType;
+};
+
+
+export type MutationCreateAbxGuidelineArgs = {
+  payload: AbxGuidelineInputType;
+};
+
+
+export type MutationCreateAbxHostArgs = {
+  payload: AbxHostInputType;
+};
+
+
+export type MutationCreateAbxKingdomArgs = {
+  payload: AbxKingdomInputType;
+};
+
+
+export type MutationCreateAbxMediumArgs = {
+  payload: AbxMediumInputType;
+};
+
+
+export type MutationCreateAbxOrderArgs = {
+  payload: AbxOrderInputType;
+};
+
+
+export type MutationCreateAbxOrganismArgs = {
+  payload: AbxOrganismInputType;
+};
+
+
+export type MutationCreateAbxOrganismSerotypeArgs = {
+  payload: AbxOrganismSerotypeInputType;
+};
+
+
+export type MutationCreateAbxPhylumArgs = {
+  payload: AbxPhylumInputType;
+};
+
+
+export type MutationCreateAbxQcRangeArgs = {
+  payload: AbxQcRangeInputType;
+};
+
+
+export type MutationCreateAbxSiteOfInfectionArgs = {
+  payload: AbxSiteOfInfectionInputType;
+};
+
+
+export type MutationCreateAbxTestMethodArgs = {
+  payload: AbxTestMethodInputType;
 };
 
 
@@ -2064,6 +2942,126 @@ export type MutationSubmitAnalysisResultsArgs = {
 
 
 export type MutationSubmitStockOrderArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxAntibioticArgs = {
+  payload: AbxAntibioticInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxAstPanelArgs = {
+  payload: AbxAstPanelInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxBreakpointArgs = {
+  payload: AbxBreakpointInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxBreakpointTypeArgs = {
+  payload: AbxBreakpointTypeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxClassArgs = {
+  payload: AbxClassInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxExpResPhenotypeArgs = {
+  payload: AbxExpResPhenotypeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxExpertInterpretationRuleArgs = {
+  payload: AbxExpertInterpretationRuleInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxFamilyArgs = {
+  payload: AbxFamilyInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxGenusArgs = {
+  payload: AbxGenusInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxGuidelineArgs = {
+  payload: AbxGuidelineInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxHostArgs = {
+  payload: AbxHostInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxKingdomArgs = {
+  payload: AbxKingdomInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxMediumArgs = {
+  payload: AbxMediumInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxOrderArgs = {
+  payload: AbxOrderInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxOrganismArgs = {
+  payload: AbxOrganismInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxOrganismSerotypeArgs = {
+  payload: AbxOrganismSerotypeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxPhylumArgs = {
+  payload: AbxPhylumInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxQcRangeArgs = {
+  payload: AbxQcRangeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxSiteOfInfectionArgs = {
+  payload: AbxSiteOfInfectionInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxTestMethodArgs = {
+  payload: AbxTestMethodInputType;
   uid: Scalars['String']['input'];
 };
 
@@ -2968,6 +3966,46 @@ export type QcTemplateType = {
 
 export type Query = {
   __typename?: 'Query';
+  abxAntibioticAll: AbxAntibioticCursorPage;
+  abxAntibioticByUid?: Maybe<AbxAntibioticType>;
+  abxAstPanelAll?: Maybe<Array<AbxAstPanelType>>;
+  abxAstPanelByUid?: Maybe<AbxAstPanelType>;
+  abxBreakpointAll: AbxBreakpointTypCursorPage;
+  abxBreakpointByUid?: Maybe<AbxBreakpointTyp>;
+  abxBreakpointTypeAll?: Maybe<Array<AbxBreakpointTypeTyp>>;
+  abxBreakpointTypeByUid?: Maybe<AbxBreakpointTypeTyp>;
+  abxClassAll?: Maybe<Array<AbxClassType>>;
+  abxClassByUid?: Maybe<AbxClassType>;
+  abxExpectedResistancePhenotypeAll?: Maybe<Array<AbxExpResPhenotypeType>>;
+  abxExpectedResistancePhenotypeByUid?: Maybe<AbxExpResPhenotypeType>;
+  abxExpertInterpretationRuleAll?: Maybe<Array<AbxExpertInterpretationRuleType>>;
+  abxExpertInterpretationRuleByUid?: Maybe<AbxExpertInterpretationRuleType>;
+  abxFamilyAll?: Maybe<Array<AbxFamilyType>>;
+  abxFamilyByUid?: Maybe<AbxFamilyType>;
+  abxGenusAll?: Maybe<Array<AbxGenusType>>;
+  abxGenusByUid?: Maybe<AbxGenusType>;
+  abxGuidelineByUid?: Maybe<AbxGuidelineType>;
+  abxGuidelinesAll?: Maybe<Array<AbxGuidelineType>>;
+  abxHostAll?: Maybe<Array<AbxHostType>>;
+  abxHostByUid?: Maybe<AbxHostType>;
+  abxKingdomAll?: Maybe<Array<AbxKingdomType>>;
+  abxKingdomByUid?: Maybe<AbxKingdomType>;
+  abxMediumAll?: Maybe<Array<AbxMediumType>>;
+  abxMediumByUid?: Maybe<AbxMediumType>;
+  abxOrderAll?: Maybe<Array<AbxOrderType>>;
+  abxOrderByUid?: Maybe<AbxOrderType>;
+  abxOrganismAll: AbxOrganismCursorPage;
+  abxOrganismByUid?: Maybe<AbxOrganismType>;
+  abxOrganismSerotypeAll: AbxOrganismSerotypeCursorPage;
+  abxOrganismSerotypeByUid?: Maybe<AbxOrganismSerotypeType>;
+  abxPhylumAll?: Maybe<Array<AbxPhylumType>>;
+  abxPhylumByUid?: Maybe<AbxPhylumType>;
+  abxQcRangeAll?: Maybe<Array<AbxQcRangeType>>;
+  abxQcRangeByUid?: Maybe<AbxQcRangeType>;
+  abxSiteOfInfectionAll?: Maybe<Array<AbxSiteOfInfectionType>>;
+  abxSiteOfInfectionByUid?: Maybe<AbxSiteOfInfectionType>;
+  abxTestMethodAll?: Maybe<Array<AbxTestMethodType>>;
+  abxTestMethodByUid?: Maybe<AbxTestMethodType>;
   analysisAll: AnalysisCursorPage;
   analysisByUid: AnalysisType;
   analysisCategoryAll: Array<AnalysisCategoryType>;
@@ -3147,6 +4185,142 @@ export type Query = {
   worksheetByUid: WorkSheetType;
   worksheetTemplateAll: Array<WorkSheetTemplateType>;
   worksheetTemplateByUid: Array<WorkSheetType>;
+};
+
+
+export type QueryAbxAntibioticAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxAntibioticByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxAstPanelByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxBreakpointAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxBreakpointByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxBreakpointTypeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxClassByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxExpectedResistancePhenotypeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxExpertInterpretationRuleByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxFamilyByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxGenusByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxGuidelineByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxHostByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxKingdomByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxMediumByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrderByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismSerotypeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismSerotypeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxPhylumByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxQcRangeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxSiteOfInfectionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxTestMethodByUidArgs = {
+  uid: Scalars['String']['input'];
 };
 
 

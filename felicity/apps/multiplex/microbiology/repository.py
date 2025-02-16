@@ -2,7 +2,7 @@ from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.multiplex.microbiology.entities import (
     AbxGuideline, AbxAntibioticGuideline, AbxAntibiotic,
     AbxKingdom, AbxPhylum, AbxClass, AbxOrder, AbxFamily, AbxGenus, AbxOrganism, AbxOrganismSerotype, AbxTestMethod,
-    AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxReferenceTable, AbxExpResPhenotype,
+    AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxExpResPhenotype,
     AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel
 )
 
@@ -85,11 +85,6 @@ class AbxSiteOfInfectionRepository(BaseRepository[AbxSiteOfInfection]):
 class AbxBreakpointRepository(BaseRepository[AbxBreakpoint]):
     def __init__(self) -> None:
         super().__init__(AbxBreakpoint)
-
-
-class AbxReferenceTableRepository(BaseRepository[AbxReferenceTable]):
-    def __init__(self) -> None:
-        super().__init__(AbxReferenceTable)
 
 
 class AbxExpResPhenotypeRepository(BaseRepository[AbxExpResPhenotype]):

@@ -24,7 +24,6 @@ microbiology_types = [
     AbxBreakpointTyp,
     AbxBreakpointTypEdge,
     AbxBreakpointTypCursorPage,
-    AbxReferenceTableType,
     AbxExpResPhenotypeType,
     AbxExpResPhenotypeEdge,
     AbxExpResPhenotypeCursorPage,

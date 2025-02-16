@@ -10,9 +10,10 @@ from felicity.api.gql.multiplex.microbiology.mutations.medium_qc import create_a
     create_abx_qc_range, update_abx_qc_range
 from felicity.api.gql.multiplex.microbiology.mutations.organism import create_abx_kingdom, update_abx_kingdom, \
     create_abx_phylum, update_abx_phylum, create_abx_organism, update_abx_organism, create_abx_organism_serotype, \
-    update_abx_organism_serotype
-from felicity.api.gql.multiplex.microbiology.mutations.resistance_rules import create_abx_reference_table, \
-    update_abx_reference_table, create_abx_exp_res_phenotype, update_abx_exp_res_phenotype, \
+    update_abx_organism_serotype, create_abx_order, update_abx_order, create_abx_genus, update_abx_genus, \
+    create_abx_family, update_abx_family, create_abx_class, update_abx_class
+from felicity.api.gql.multiplex.microbiology.mutations.resistance_rules import create_abx_exp_res_phenotype, \
+    update_abx_exp_res_phenotype, \
     create_abx_expert_interpretation_rule, update_abx_expert_interpretation_rule
 
 MicrobiologyMutations = create_type(
@@ -42,12 +43,18 @@ MicrobiologyMutations = create_type(
         update_abx_kingdom,
         create_abx_phylum,
         update_abx_phylum,
+        create_abx_order,
+        update_abx_order,
+        create_abx_genus,
+        update_abx_genus,
+        create_abx_family,
+        update_abx_family,
+        create_abx_class,
+        update_abx_class,
         create_abx_organism,
         update_abx_organism,
         create_abx_organism_serotype,
         update_abx_organism_serotype,
-        create_abx_reference_table,
-        update_abx_reference_table,
         create_abx_exp_res_phenotype,
         update_abx_exp_res_phenotype,
         create_abx_expert_interpretation_rule,

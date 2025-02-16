@@ -2,7 +2,7 @@ from felicity.apps.abstract.service import BaseService
 from felicity.apps.multiplex.microbiology.entities import (
     AbxGuideline, AbxAntibioticGuideline, AbxAntibiotic,
     AbxKingdom, AbxPhylum, AbxClass, AbxOrder, AbxFamily, AbxGenus, AbxOrganism, AbxOrganismSerotype, AbxTestMethod,
-    AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxReferenceTable, AbxExpResPhenotype,
+    AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxExpResPhenotype,
     AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel
 )
 from felicity.apps.multiplex.microbiology.repository import (
@@ -10,7 +10,7 @@ from felicity.apps.multiplex.microbiology.repository import (
     AbxKingdomRepository, AbxPhylumRepository, AbxClassRepository, AbxOrderRepository,
     AbxFamilyRepository, AbxGenusRepository, AbxOrganismRepository, AbxOrganismSerotypeRepository,
     AbxTestMethodRepository, AbxBreakpointTypeRepository, AbxHostRepository, AbxSiteOfInfectionRepository,
-    AbxBreakpointRepository, AbxReferenceTableRepository, AbxExpResPhenotypeRepository,
+    AbxBreakpointRepository, AbxExpResPhenotypeRepository,
     AbxExpertInterpretationRuleRepository, AbxMediumRepository, AbxQCRangeRepository, AbxASTPanelRepository
 )
 
@@ -31,7 +31,6 @@ from felicity.apps.multiplex.microbiology.schemas import (
     AbxHostCreate, AbxHostUpdate,
     AbxSiteOfInfectionCreate, AbxSiteOfInfectionUpdate,
     AbxBreakpointCreate, AbxBreakpointUpdate,
-    AbxReferenceTableCreate, AbxReferenceTableUpdate,
     AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate,
     AbxExpertInterpretationRuleCreate, AbxExpertInterpretationRuleUpdate,
     AbxMediumCreate, AbxMediumUpdate,
@@ -120,11 +119,6 @@ class AbxSiteOfInfectionService(BaseService[AbxSiteOfInfection, AbxSiteOfInfecti
 class AbxBreakpointService(BaseService[AbxBreakpoint, AbxBreakpointCreate, AbxBreakpointUpdate]):
     def __init__(self):
         super().__init__(AbxBreakpointRepository())
-
-
-class AbxReferenceTableService(BaseService[AbxReferenceTable, AbxReferenceTableCreate, AbxReferenceTableUpdate]):
-    def __init__(self):
-        super().__init__(AbxReferenceTableRepository())
 
 
 class AbxExpResPhenotypeService(BaseService[AbxExpResPhenotype, AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate]):

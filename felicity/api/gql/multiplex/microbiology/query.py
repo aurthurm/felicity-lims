@@ -279,14 +279,6 @@ class MicrobiologyQuery:
         return await AbxBreakpointService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_reference_table_all(self, info) -> Optional[List[AbxReferenceTableType]]:
-        return await AbxReferenceTableService().all()
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_reference_table_by_uid(self, info, uid: str) -> Optional[AbxReferenceTableType]:
-        return await AbxReferenceTableService().get(uid=uid)
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_expected_resistance_phenotype_all(self, info) -> Optional[List[AbxExpResPhenotypeType]]:
         return await AbxExpResPhenotypeService().all()
 

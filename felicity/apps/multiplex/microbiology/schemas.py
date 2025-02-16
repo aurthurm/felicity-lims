@@ -459,33 +459,11 @@ class AbxBreakpointUpdate(AbxBreakpointBase):
 
 
 #
-# AbxReferenceTable Schemas
-#
-class AbxReferenceTableBase(BaseAuditModel):
-    name: str
-    description: str | None = None
-
-
-class AbxReferenceTable(AbxReferenceTableBase):
-    uid: str | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class AbxReferenceTableCreate(AbxReferenceTable):
-    pass
-
-
-class AbxReferenceTableUpdate(AbxReferenceTableBase):
-    pass
-
-
-#
 # AbxExpResPhenotype Schemas
 #
 class AbxExpResPhenotypeBase(BaseAuditModel):
     guideline_uid: str
-    reference_table_uid: str
+    reference_table: str
     organism_code: str
     organism_code_type: str
     exception_organism_code: str

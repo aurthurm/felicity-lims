@@ -1,21 +1,74 @@
-import { createApp, markRaw } from 'vue';
+import {createApp, markRaw} from 'vue';
 import urql from '@urql/vue';
-import { MotionPlugin } from '@vueuse/motion';
+import {MotionPlugin} from '@vueuse/motion';
 import VueSweetalert2 from 'vue-sweetalert2';
 import Notifications from '@kyvg/vue3-notification'
 import FloatingVue from 'floating-vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { 
-    faBell, faCog, faUser, faChevronDown, faBars, faMeteor, faTachometerAlt, faBullseye,
-    faUserInjured, faClinicMedical, faVial, faGripVertical, faDatabase, faTruck, faBoxesStacked,
-    faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
-    faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode, 
-    faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan,
-    faCartShopping, faInfo, faInfoCircle, faAnchor, faThList, faTh, faTrash, faAsterisk, faArrowUpWideShort,
-    faArrowDown, faLevelDownAlt, faArrowDownWideShort, faPen, faDeleteLeft, faEllipsisH
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {
+    faAnchor,
+    faArrowDown,
+    faArrowDownWideShort,
+    faArrowUpWideShort,
+    faAsterisk,
+    faBacteria,
+    faBan,
+    faBarcode,
+    faBars,
+    faBell,
+    faBoxesStacked,
+    faBullseye,
+    faCaravan,
+    faCartShopping,
+    faCheckCircle,
+    faChevronDown,
+    faCircleDot,
+    faClinicMedical,
+    faCodeBranch,
+    faCog,
+    faCopy,
+    faDatabase,
+    faDeleteLeft,
+    faDownload,
+    faEdit,
+    faEllipsis,
+    faEllipsisH,
+    faFileMedical,
+    faFill,
+    faFlag,
+    faGripHorizontal,
+    faGripVertical,
+    faInfo,
+    faInfoCircle,
+    faLaptopMedical,
+    faLeftRight,
+    faLevelDownAlt,
+    faLifeRing,
+    faMeteor,
+    faMicroscope,
+    faMoneyBill,
+    faPen,
+    faPills,
+    faQuestion,
+    faScaleBalanced,
+    faSort,
+    faTablets,
+    faTachometerAlt,
+    faTh,
+    faThList,
+    faThumbsDown,
+    faThumbsUp,
+    faTimes,
+    faTimesCircle,
+    faTrash,
+    faTruck,
+    faUser,
+    faUserInjured,
+    faUsers,
+    faVial
 } from '@fortawesome/free-solid-svg-icons';
-import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
+import {CkeditorPlugin} from '@ckeditor/ckeditor5-vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
@@ -32,8 +85,8 @@ import '@/assets/css/ckeditor.css';
 
 import App from './App.vue';
 import router from './router';
-import { createPinia } from 'pinia';
-import { urqlClient } from './urql';
+import {createPinia} from 'pinia';
+import {urqlClient} from './urql';
 
 const icons = [
     faBell, faCog, faUser, faChevronDown, faBars, faMeteor, faTachometerAlt, faBullseye,
@@ -42,12 +95,13 @@ const icons = [
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
-    faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH
+    faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH, faTablets, faScaleBalanced, faLifeRing,
+    faBacteria, faCircleDot, faPills
 ]
 library.add(...icons);
 
 const pinia = createPinia();
-pinia.use(({ store }) => {
+pinia.use(({store}) => {
     store.router = markRaw(router);
 });
 
@@ -67,7 +121,6 @@ app.use(pinia);
 app.use(router);
 app.use(urql, urqlClient);
 app.mount('#felicityApp');
-
 
 
 // https://enterprisevue.dev/blog/error-handling-in-vue-3/

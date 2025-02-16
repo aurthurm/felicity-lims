@@ -30,13 +30,13 @@ class BaseService(Generic[E, C, U]):
         self.repository: BaseRepository = repository
 
     async def paging_filter(
-        self,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        filters: list[dict] | dict | None = None,
-        sort_by: list[str] | None = None,
-        **kwargs,
+            self,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            filters: list[dict] | dict | None = None,
+            sort_by: list[str] | None = None,
+            **kwargs,
     ):
         """
         Perform paginated filtering of entities.
@@ -131,7 +131,7 @@ class BaseService(Generic[E, C, U]):
         return await self.get(related=related, uid=created.uid)
 
     async def bulk_create(
-        self, bulk: list[dict | C], related: list[str] | None = None
+            self, bulk: list[dict | C], related: list[str] | None = None
     ) -> list[E]:
         """
         Create multiple entities in bulk.
@@ -149,7 +149,7 @@ class BaseService(Generic[E, C, U]):
         return [(await self.get(related=related, uid=x.uid)) for x in created]
 
     async def update(
-        self, uid: str, update: U | dict, related: list[str] | None = None
+            self, uid: str, update: U | dict, related: list[str] | None = None
     ) -> E:
         """
         Update an existing entity.
@@ -208,6 +208,18 @@ class BaseService(Generic[E, C, U]):
             None
         """
         return await self.repository.delete(uid)
+
+    async def delete_where(self, **kwargs) -> None:
+        """
+        Delete an entity by its unique identifier.
+
+        Args:
+            uid: Unique identifier of the entity to delete
+
+        Returns:
+            None
+        """
+        return await self.repository.delete_where(**kwargs)
 
     @classmethod
     def _import(cls, schema_in: C | U | dict) -> dict:

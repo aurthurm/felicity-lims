@@ -1,4 +1,3 @@
-
 const adminRoutes = [
     {
         path: '',
@@ -149,6 +148,48 @@ const adminRoutes = [
     {
         path: 'billing-conf',
         component: () => import('@/views/admin/billing/BillingAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: 'antibiotics-conf',
+        component: () => import('@/views/admin/microbiology/antibiotics/AntibioticsAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: 'organisms-conf',
+        component: () => import('@/views/admin/microbiology/organism/OrganismAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: 'medium-qc-conf',
+        component: () => import('@/views/admin/microbiology/medium/AbxMediumAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: 'ast-panel-conf',
+        component: () => import('@/views/admin/microbiology/astpanel/AstPanelAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: 'resistance-rules-conf',
+        component: () => import('@/views/admin/microbiology/resistance/AbxResistanceAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
+        path: 'breakpoints-conf',
+        component: () => import('@/views/admin/microbiology/breakpoints/AbxBreakpointAdmin.vue'),
         meta: {
             requiresAdmin: true,
         },

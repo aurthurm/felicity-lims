@@ -5,13 +5,13 @@ import pandas as pd
 from felicity.apps.multiplex.microbiology.schemas import AbxGuidelineCreate, AbxAntibioticCreate, \
     AbxAntibioticGuidelineCreate, AbxKingdomCreate, AbxPhylumCreate, AbxClassCreate, AbxOrderCreate, AbxFamilyCreate, \
     AbxGenusCreate, AbxOrganismCreate, AbxBreakpointTypeCreate, AbxHostCreate, AbxBreakpointCreate, \
-    AbxSiteOfInfectionCreate, AbxExpResPhenotypeCreate, AbxReferenceTableCreate, AbxExpertInterpretationRuleCreate, \
+    AbxSiteOfInfectionCreate, AbxExpResPhenotypeCreate, AbxExpertInterpretationRuleCreate, \
     AbxMediumCreate, AbxQCRangeCreate, AbxTestMethodCreate, AbxOrganismSerotypeCreate
 from felicity.apps.multiplex.microbiology.services import AbxGuidelineService, AbxAntibioticService, \
     AbxAntibioticGuidelineService, AbxKingdomService, AbxPhylumService, AbxClassService, AbxOrderService, \
     AbxFamilyService, AbxGenusService, AbxOrganismService, AbxBreakpointTypeService, \
     AbxHostService, AbxSiteOfInfectionService, AbxBreakpointService, AbxExpResPhenotypeService, \
-    AbxReferenceTableService, AbxExpertInterpretationRuleService, AbxMediumService, AbxQCRangeService, \
+    AbxExpertInterpretationRuleService, AbxMediumService, AbxQCRangeService, \
     AbxTestMethodService, AbxOrganismSerotypeService
 from felicity.core.config import get_settings
 from felicity.lims.seeds.data import get_whonet_dataframes
@@ -258,14 +258,6 @@ async def seed_expected_resistance_phenotypes():
     data = _clean_df(get_whonet_dataframes("ExpectedResistancePhenotypes"), {})
     guidelines = await AbxGuidelineService().all()
 
-    reference_tables = []
-    for rt_name in data['reference_table'].unique():
-        ref_t = await AbxReferenceTableService().get(name=rt_name)
-        if ref_t is None and rt_name != '':
-            ref_t_in = AbxReferenceTableCreate(name=rt_name)
-            ref_t = await AbxReferenceTableService().create(ref_t_in)
-        reference_tables.append(ref_t)
-
     for _, item in data.iterrows():
         rt_in = {
             key: item[key] \
@@ -273,11 +265,9 @@ async def seed_expected_resistance_phenotypes():
             if key in item
         }
         gl = [x for x in guidelines if x and getattr(x, "name", None) == item["guideline"]]
-        rt = [x for x in reference_tables if x and getattr(x, "name", None) == item["reference_table"]]
         rt_in = {
             **rt_in,
             "guideline_uid": gl[0].uid if gl else None,
-            "reference_table_uid": rt[0].uid if rt else None
         }
         bp_schema = AbxExpResPhenotypeCreate(**rt_in)
 

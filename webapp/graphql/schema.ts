@@ -35,6 +35,744 @@ export type ArSampleInputType = {
   sampleType: Scalars['String']['input'];
 };
 
+export type AbxAstPanelCursorPage = {
+  __typename?: 'AbxASTPanelCursorPage';
+  edges?: Maybe<Array<AbxAstPanelEdge>>;
+  items?: Maybe<Array<AbxAstPanelType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxAstPanelEdge = {
+  __typename?: 'AbxASTPanelEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxAstPanelType;
+};
+
+export type AbxAstPanelInputType = {
+  active?: Scalars['Boolean']['input'];
+  breakpoints: Array<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxAstPanelResponse = AbxAstPanelType | OperationError;
+
+export type AbxAstPanelType = {
+  __typename?: 'AbxASTPanelType';
+  active: Scalars['Boolean']['output'];
+  breakpoints?: Maybe<Array<AbxBreakpointTyp>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxAntibioticCursorPage = {
+  __typename?: 'AbxAntibioticCursorPage';
+  edges?: Maybe<Array<AbxAntibioticEdge>>;
+  items?: Maybe<Array<AbxAntibioticType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxAntibioticEdge = {
+  __typename?: 'AbxAntibioticEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxAntibioticType;
+};
+
+export type AbxAntibioticGuidelineType = {
+  __typename?: 'AbxAntibioticGuidelineType';
+  antibiotic?: Maybe<AbxAntibioticType>;
+  antibioticUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxAntibioticInputType = {
+  abxNumber?: InputMaybe<Scalars['String']['input']>;
+  animalGp?: InputMaybe<Scalars['String']['input']>;
+  atcCode?: InputMaybe<Scalars['String']['input']>;
+  ciaCategory?: InputMaybe<Scalars['String']['input']>;
+  class_?: InputMaybe<Scalars['String']['input']>;
+  clsiOrder?: InputMaybe<Scalars['String']['input']>;
+  comments?: InputMaybe<Scalars['String']['input']>;
+  dinCode?: InputMaybe<Scalars['String']['input']>;
+  eucastCode?: InputMaybe<Scalars['String']['input']>;
+  eucastOrder?: InputMaybe<Scalars['String']['input']>;
+  guidelines: Array<Scalars['String']['input']>;
+  human?: InputMaybe<Scalars['Boolean']['input']>;
+  jacCode?: InputMaybe<Scalars['String']['input']>;
+  loincafb?: InputMaybe<Scalars['String']['input']>;
+  loinccomp?: InputMaybe<Scalars['String']['input']>;
+  loincdisk?: InputMaybe<Scalars['String']['input']>;
+  loincetest?: InputMaybe<Scalars['String']['input']>;
+  loincgen?: InputMaybe<Scalars['String']['input']>;
+  loincmic?: InputMaybe<Scalars['String']['input']>;
+  loincmlc?: InputMaybe<Scalars['String']['input']>;
+  loincsbt?: InputMaybe<Scalars['String']['input']>;
+  loincslow?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  potency?: InputMaybe<Scalars['String']['input']>;
+  profClass?: InputMaybe<Scalars['String']['input']>;
+  subclass?: InputMaybe<Scalars['String']['input']>;
+  userCode?: InputMaybe<Scalars['String']['input']>;
+  veterinary?: InputMaybe<Scalars['Boolean']['input']>;
+  whoCode?: InputMaybe<Scalars['String']['input']>;
+  whonetAbxCode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxAntibioticResponse = AbxAntibioticType | OperationError;
+
+export type AbxAntibioticType = {
+  __typename?: 'AbxAntibioticType';
+  abxNumber?: Maybe<Scalars['String']['output']>;
+  animalGp?: Maybe<Scalars['String']['output']>;
+  atcCode?: Maybe<Scalars['String']['output']>;
+  ciaCategory?: Maybe<Scalars['String']['output']>;
+  class_?: Maybe<Scalars['String']['output']>;
+  clsiOrder?: Maybe<Scalars['String']['output']>;
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  dinCode?: Maybe<Scalars['String']['output']>;
+  eucastCode?: Maybe<Scalars['String']['output']>;
+  eucastOrder?: Maybe<Scalars['String']['output']>;
+  guidelines: Array<AbxGuidelineType>;
+  human?: Maybe<Scalars['Boolean']['output']>;
+  jacCode?: Maybe<Scalars['String']['output']>;
+  loincafb?: Maybe<Scalars['String']['output']>;
+  loinccomp?: Maybe<Scalars['String']['output']>;
+  loincdisk?: Maybe<Scalars['String']['output']>;
+  loincetest?: Maybe<Scalars['String']['output']>;
+  loincgen?: Maybe<Scalars['String']['output']>;
+  loincmic?: Maybe<Scalars['String']['output']>;
+  loincmlc?: Maybe<Scalars['String']['output']>;
+  loincsbt?: Maybe<Scalars['String']['output']>;
+  loincslow?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  potency?: Maybe<Scalars['String']['output']>;
+  profClass?: Maybe<Scalars['String']['output']>;
+  subclass?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  userCode?: Maybe<Scalars['String']['output']>;
+  veterinary?: Maybe<Scalars['Boolean']['output']>;
+  whoCode?: Maybe<Scalars['String']['output']>;
+  whonetAbxCode?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxBreakpointInputType = {
+  breakpointTypeUid: Scalars['String']['input'];
+  comments?: InputMaybe<Scalars['String']['input']>;
+  ecvEcoff?: InputMaybe<Scalars['String']['input']>;
+  ecvEcoffTentative?: InputMaybe<Scalars['String']['input']>;
+  guidelineUid: Scalars['String']['input'];
+  hostUid?: InputMaybe<Scalars['String']['input']>;
+  i?: InputMaybe<Scalars['String']['input']>;
+  organismCode: Scalars['String']['input'];
+  organismCodeType: Scalars['String']['input'];
+  potency?: InputMaybe<Scalars['String']['input']>;
+  r?: InputMaybe<Scalars['String']['input']>;
+  referenceSequence?: InputMaybe<Scalars['String']['input']>;
+  referenceTable?: InputMaybe<Scalars['String']['input']>;
+  s?: InputMaybe<Scalars['String']['input']>;
+  sdd?: InputMaybe<Scalars['String']['input']>;
+  siteOfInfectionUid?: InputMaybe<Scalars['String']['input']>;
+  testMethod: Scalars['String']['input'];
+  whonetAbxCode?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type AbxBreakpointResponse = AbxBreakpointTyp | OperationError;
+
+export type AbxBreakpointTyp = {
+  __typename?: 'AbxBreakpointTyp';
+  breakpointType?: Maybe<AbxBreakpointTypeTyp>;
+  breakpointTypeUid: Scalars['String']['output'];
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  ecvEcoff?: Maybe<Scalars['String']['output']>;
+  ecvEcoffTentative?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  host?: Maybe<AbxHostType>;
+  hostUid?: Maybe<Scalars['String']['output']>;
+  i?: Maybe<Scalars['String']['output']>;
+  organismCode: Scalars['String']['output'];
+  organismCodeType: Scalars['String']['output'];
+  potency?: Maybe<Scalars['String']['output']>;
+  r?: Maybe<Scalars['String']['output']>;
+  referenceSequence?: Maybe<Scalars['String']['output']>;
+  referenceTable?: Maybe<Scalars['String']['output']>;
+  s?: Maybe<Scalars['String']['output']>;
+  sdd?: Maybe<Scalars['String']['output']>;
+  siteOfInfection?: Maybe<AbxSiteOfInfectionType>;
+  siteOfInfectionUid?: Maybe<Scalars['String']['output']>;
+  testMethod: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  whonetAbxCode?: Maybe<Scalars['String']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AbxBreakpointTypCursorPage = {
+  __typename?: 'AbxBreakpointTypCursorPage';
+  edges?: Maybe<Array<AbxBreakpointTypEdge>>;
+  items?: Maybe<Array<AbxBreakpointTyp>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxBreakpointTypEdge = {
+  __typename?: 'AbxBreakpointTypEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxBreakpointTyp;
+};
+
+export type AbxBreakpointTypeInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxBreakpointTypeResponse = AbxBreakpointTypeTyp | OperationError;
+
+export type AbxBreakpointTypeTyp = {
+  __typename?: 'AbxBreakpointTypeTyp';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxClassInputType = {
+  name: Scalars['String']['input'];
+  phylumUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxClassResponse = AbxClassType | OperationError;
+
+export type AbxClassType = {
+  __typename?: 'AbxClassType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  phylum?: Maybe<AbxPhylumType>;
+  phylumUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxExpResPhenotypeCursorPage = {
+  __typename?: 'AbxExpResPhenotypeCursorPage';
+  edges?: Maybe<Array<AbxExpResPhenotypeEdge>>;
+  items?: Maybe<Array<AbxExpResPhenotypeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxExpResPhenotypeEdge = {
+  __typename?: 'AbxExpResPhenotypeEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxExpResPhenotypeType;
+};
+
+export type AbxExpResPhenotypeInputType = {
+  abxCode: Scalars['String']['input'];
+  abxCodeType: Scalars['String']['input'];
+  antibioticExceptions: Scalars['String']['input'];
+  comments?: InputMaybe<Scalars['String']['input']>;
+  exceptionOrganismCode: Scalars['String']['input'];
+  exceptionOrganismCodeType: Scalars['String']['input'];
+  guidelineUid: Scalars['String']['input'];
+  organismCode: Scalars['String']['input'];
+  organismCodeType: Scalars['String']['input'];
+  referenceTable: Scalars['String']['input'];
+};
+
+export type AbxExpResPhenotypeResponse = AbxExpResPhenotypeType | OperationError;
+
+export type AbxExpResPhenotypeType = {
+  __typename?: 'AbxExpResPhenotypeType';
+  abxCode: Scalars['String']['output'];
+  abxCodeType: Scalars['String']['output'];
+  antibioticExceptions: Scalars['String']['output'];
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  exceptionOrganismCode: Scalars['String']['output'];
+  exceptionOrganismCodeType: Scalars['String']['output'];
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  organismCode: Scalars['String']['output'];
+  organismCodeType: Scalars['String']['output'];
+  referenceTable?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxExpertInterpretationRuleCursorPage = {
+  __typename?: 'AbxExpertInterpretationRuleCursorPage';
+  edges?: Maybe<Array<AbxExpertInterpretationRuleEdge>>;
+  items?: Maybe<Array<AbxExpertInterpretationRuleType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxExpertInterpretationRuleEdge = {
+  __typename?: 'AbxExpertInterpretationRuleEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxExpertInterpretationRuleType;
+};
+
+export type AbxExpertInterpretationRuleInputType = {
+  affectedAntibiotics: Scalars['String']['input'];
+  antibioticExceptions: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  organismCode: Scalars['String']['input'];
+  organismCodeType: Scalars['String']['input'];
+  ruleCode: Scalars['String']['input'];
+  ruleCriteria: Scalars['String']['input'];
+};
+
+export type AbxExpertInterpretationRuleResponse = AbxExpertInterpretationRuleType | OperationError;
+
+export type AbxExpertInterpretationRuleType = {
+  __typename?: 'AbxExpertInterpretationRuleType';
+  affectedAntibiotics: Scalars['String']['output'];
+  antibioticExceptions: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  organismCode: Scalars['String']['output'];
+  organismCodeType: Scalars['String']['output'];
+  ruleCode: Scalars['String']['output'];
+  ruleCriteria: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxFamilyInputType = {
+  name: Scalars['String']['input'];
+  orderUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxFamilyResponse = AbxFamilyType | OperationError;
+
+export type AbxFamilyType = {
+  __typename?: 'AbxFamilyType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  order?: Maybe<AbxOrderType>;
+  orderUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxGenusInputType = {
+  familyUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxGenusResponse = AbxGenusType | OperationError;
+
+export type AbxGenusType = {
+  __typename?: 'AbxGenusType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  family?: Maybe<AbxFamilyType>;
+  familyUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxGuidelineInputType = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxGuidelineResponse = AbxGuidelineType | OperationError;
+
+export type AbxGuidelineType = {
+  __typename?: 'AbxGuidelineType';
+  code?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxHostInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxHostResponse = AbxHostType | OperationError;
+
+export type AbxHostType = {
+  __typename?: 'AbxHostType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxKingdomInputType = {
+  name: Scalars['String']['input'];
+};
+
+export type AbxKingdomResponse = AbxKingdomType | OperationError;
+
+export type AbxKingdomType = {
+  __typename?: 'AbxKingdomType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxMediumInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxMediumResponse = AbxMediumType | OperationError;
+
+export type AbxMediumType = {
+  __typename?: 'AbxMediumType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxOrderInputType = {
+  classUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxOrderResponse = AbxOrderType | OperationError;
+
+export type AbxOrderType = {
+  __typename?: 'AbxOrderType';
+  classUid?: Maybe<Scalars['String']['output']>;
+  class_?: Maybe<AbxClassType>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxOrganismCursorPage = {
+  __typename?: 'AbxOrganismCursorPage';
+  edges?: Maybe<Array<AbxOrganismEdge>>;
+  items?: Maybe<Array<AbxOrganismType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxOrganismEdge = {
+  __typename?: 'AbxOrganismEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxOrganismType;
+};
+
+export type AbxOrganismInputType = {
+  anaerobe?: InputMaybe<Scalars['Boolean']['input']>;
+  classUid?: InputMaybe<Scalars['String']['input']>;
+  comments?: InputMaybe<Scalars['String']['input']>;
+  common?: InputMaybe<Scalars['String']['input']>;
+  familyUid?: InputMaybe<Scalars['String']['input']>;
+  genusUid?: InputMaybe<Scalars['String']['input']>;
+  kingdomUid?: InputMaybe<Scalars['String']['input']>;
+  morphology?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  orderUid?: InputMaybe<Scalars['String']['input']>;
+  organismType?: InputMaybe<Scalars['String']['input']>;
+  phylumUid?: InputMaybe<Scalars['String']['input']>;
+  replacedBy?: InputMaybe<Scalars['String']['input']>;
+  taxonomicStatus?: InputMaybe<Scalars['String']['input']>;
+  whonetOrgCode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AbxOrganismResponse = AbxOrganismType | OperationError;
+
+export type AbxOrganismSerotypeCursorPage = {
+  __typename?: 'AbxOrganismSerotypeCursorPage';
+  edges?: Maybe<Array<AbxOrganismSerotypeEdge>>;
+  items?: Maybe<Array<AbxOrganismSerotypeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxOrganismSerotypeEdge = {
+  __typename?: 'AbxOrganismSerotypeEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxOrganismSerotypeType;
+};
+
+export type AbxOrganismSerotypeInputType = {
+  fate?: InputMaybe<Scalars['String']['input']>;
+  hPhase1?: InputMaybe<Scalars['String']['input']>;
+  hPhase2?: InputMaybe<Scalars['String']['input']>;
+  oAntigens?: InputMaybe<Scalars['String']['input']>;
+  organismUid: Scalars['String']['input'];
+  serogroup?: InputMaybe<Scalars['String']['input']>;
+  serotype: Scalars['String']['input'];
+  subspecies?: InputMaybe<Scalars['String']['input']>;
+  x997Check?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AbxOrganismSerotypeResponse = AbxOrganismSerotypeType | OperationError;
+
+export type AbxOrganismSerotypeType = {
+  __typename?: 'AbxOrganismSerotypeType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  fate?: Maybe<Scalars['String']['output']>;
+  hPhase1?: Maybe<Scalars['String']['output']>;
+  hPhase2?: Maybe<Scalars['String']['output']>;
+  oAntigens?: Maybe<Scalars['String']['output']>;
+  organism?: Maybe<AbxOrganismType>;
+  organismUid: Scalars['String']['output'];
+  serogroup?: Maybe<Scalars['String']['output']>;
+  serotype: Scalars['String']['output'];
+  subspecies?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  x997Check?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type AbxOrganismType = {
+  __typename?: 'AbxOrganismType';
+  anaerobe?: Maybe<Scalars['Boolean']['output']>;
+  classUid?: Maybe<Scalars['String']['output']>;
+  class_?: Maybe<AbxClassType>;
+  comments?: Maybe<Scalars['String']['output']>;
+  common?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  family?: Maybe<AbxFamilyType>;
+  familyCode?: Maybe<Scalars['String']['output']>;
+  familyUid?: Maybe<Scalars['String']['output']>;
+  gbifDatasetId?: Maybe<Scalars['String']['output']>;
+  gbifTaxonId?: Maybe<Scalars['String']['output']>;
+  gbifTaxonomicStatus?: Maybe<Scalars['String']['output']>;
+  genus?: Maybe<AbxGenusType>;
+  genusCode?: Maybe<Scalars['String']['output']>;
+  genusGroup?: Maybe<Scalars['String']['output']>;
+  genusUid?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  kingdomUid?: Maybe<Scalars['String']['output']>;
+  morphology?: Maybe<Scalars['String']['output']>;
+  msfGrpClin?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  order?: Maybe<AbxOrderType>;
+  orderUid?: Maybe<Scalars['String']['output']>;
+  organismType?: Maybe<Scalars['String']['output']>;
+  phylum?: Maybe<AbxPhylumType>;
+  phylumUid?: Maybe<Scalars['String']['output']>;
+  replacedBy?: Maybe<Scalars['String']['output']>;
+  sctCode?: Maybe<Scalars['String']['output']>;
+  sctText?: Maybe<Scalars['String']['output']>;
+  serovarGroup?: Maybe<Scalars['String']['output']>;
+  speciesGroup?: Maybe<Scalars['String']['output']>;
+  subkingdomCode?: Maybe<Scalars['String']['output']>;
+  taxonomicStatus?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  whonetOrgCode?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxPhylumInputType = {
+  kingdomUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxPhylumResponse = AbxPhylumType | OperationError;
+
+export type AbxPhylumType = {
+  __typename?: 'AbxPhylumType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  kingdom?: Maybe<AbxKingdomType>;
+  kingdomUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxQcRangeCursorPage = {
+  __typename?: 'AbxQCRangeCursorPage';
+  edges?: Maybe<Array<AbxQcRangeEdge>>;
+  items?: Maybe<Array<AbxQcRangeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AbxQcRangeEdge = {
+  __typename?: 'AbxQCRangeEdge';
+  cursor: Scalars['String']['output'];
+  node: AbxQcRangeType;
+};
+
+export type AbxQcRangeInputType = {
+  abxTest: Scalars['String']['input'];
+  antibiotic: Scalars['String']['input'];
+  guidelineUid: Scalars['String']['input'];
+  maximum?: InputMaybe<Scalars['String']['input']>;
+  mediumUid?: InputMaybe<Scalars['String']['input']>;
+  method: Scalars['String']['input'];
+  minimum?: InputMaybe<Scalars['String']['input']>;
+  referenceTable: Scalars['String']['input'];
+  strain: Scalars['String']['input'];
+  whonetAbxCode: Scalars['String']['input'];
+  whonetOrgCode: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+export type AbxQcRangeResponse = AbxQcRangeType | OperationError;
+
+export type AbxQcRangeType = {
+  __typename?: 'AbxQCRangeType';
+  abxTest: Scalars['String']['output'];
+  antibiotic: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  maximum?: Maybe<Scalars['String']['output']>;
+  medium?: Maybe<AbxMediumType>;
+  mediumUid?: Maybe<Scalars['String']['output']>;
+  method: Scalars['String']['output'];
+  minimum?: Maybe<Scalars['String']['output']>;
+  referenceTable: Scalars['String']['output'];
+  strain: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  whonetAbxCode: Scalars['String']['output'];
+  whonetOrgCode: Scalars['String']['output'];
+  year: Scalars['Int']['output'];
+};
+
+export type AbxSiteOfInfectionInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxSiteOfInfectionResponse = AbxSiteOfInfectionType | OperationError;
+
+export type AbxSiteOfInfectionType = {
+  __typename?: 'AbxSiteOfInfectionType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxTestMethodInputType = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type AbxTestMethodResponse = AbxTestMethodType | OperationError;
+
+export type AbxTestMethodType = {
+  __typename?: 'AbxTestMethodType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
 export type ActivityFeedType = {
   __typename?: 'ActivityFeedType';
   name: Scalars['String']['output'];
@@ -1377,6 +2115,26 @@ export type Mutation = {
   cancelSamples: ResultedSampleActionResponse;
   cloneSamples: SampleActionResponse;
   confirmTestBillTransaction: TestBillTransactionResponse;
+  createAbxAntibiotic: AbxAntibioticResponse;
+  createAbxAstPanel: AbxAstPanelResponse;
+  createAbxBreakpoint: AbxBreakpointResponse;
+  createAbxBreakpointType: AbxBreakpointTypeResponse;
+  createAbxClass: AbxClassResponse;
+  createAbxExpResPhenotype: AbxExpResPhenotypeResponse;
+  createAbxExpertInterpretationRule: AbxExpertInterpretationRuleResponse;
+  createAbxFamily: AbxFamilyResponse;
+  createAbxGenus: AbxGenusResponse;
+  createAbxGuideline: AbxGuidelineResponse;
+  createAbxHost: AbxHostResponse;
+  createAbxKingdom: AbxKingdomResponse;
+  createAbxMedium: AbxMediumResponse;
+  createAbxOrder: AbxOrderResponse;
+  createAbxOrganism: AbxOrganismResponse;
+  createAbxOrganismSerotype: AbxOrganismSerotypeResponse;
+  createAbxPhylum: AbxPhylumResponse;
+  createAbxQcRange: AbxQcRangeResponse;
+  createAbxSiteOfInfection: AbxSiteOfInfectionResponse;
+  createAbxTestMethod: AbxTestMethodResponse;
   createAnalysis: ProfilesServiceResponse;
   createAnalysisCategory: AnalysisCategoryResponse;
   createAnalysisCorrectionFactor: AnalysisCorrectionFactorResponse;
@@ -1468,6 +2226,26 @@ export type Mutation = {
   storeSamples: StoreSampleResponse;
   submitAnalysisResults: AnalysisResultSubmitResponse;
   submitStockOrder: StockOrderResponse;
+  updateAbxAntibiotic: AbxAntibioticResponse;
+  updateAbxAstPanel: AbxAstPanelResponse;
+  updateAbxBreakpoint: AbxBreakpointResponse;
+  updateAbxBreakpointType: AbxBreakpointTypeResponse;
+  updateAbxClass: AbxClassResponse;
+  updateAbxExpResPhenotype: AbxExpResPhenotypeResponse;
+  updateAbxExpertInterpretationRule: AbxExpertInterpretationRuleResponse;
+  updateAbxFamily: AbxFamilyResponse;
+  updateAbxGenus: AbxGenusResponse;
+  updateAbxGuideline: AbxGuidelineResponse;
+  updateAbxHost: AbxHostResponse;
+  updateAbxKingdom: AbxKingdomResponse;
+  updateAbxMedium: AbxMediumResponse;
+  updateAbxOrder: AbxOrderResponse;
+  updateAbxOrganism: AbxOrganismResponse;
+  updateAbxOrganismSerotype: AbxOrganismSerotypeResponse;
+  updateAbxPhylum: AbxPhylumResponse;
+  updateAbxQcRange: AbxQcRangeResponse;
+  updateAbxSiteOfInfection: AbxSiteOfInfectionResponse;
+  updateAbxTestMethod: AbxTestMethodResponse;
   updateAnalysis: ProfilesServiceResponse;
   updateAnalysisCategory: AnalysisCategoryResponse;
   updateAnalysisCorrectionFactor: AnalysisCorrectionFactorResponse;
@@ -1590,6 +2368,106 @@ export type MutationCloneSamplesArgs = {
 export type MutationConfirmTestBillTransactionArgs = {
   notes?: InputMaybe<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
+};
+
+
+export type MutationCreateAbxAntibioticArgs = {
+  payload: AbxAntibioticInputType;
+};
+
+
+export type MutationCreateAbxAstPanelArgs = {
+  payload: AbxAstPanelInputType;
+};
+
+
+export type MutationCreateAbxBreakpointArgs = {
+  payload: AbxBreakpointInputType;
+};
+
+
+export type MutationCreateAbxBreakpointTypeArgs = {
+  payload: AbxBreakpointTypeInputType;
+};
+
+
+export type MutationCreateAbxClassArgs = {
+  payload: AbxClassInputType;
+};
+
+
+export type MutationCreateAbxExpResPhenotypeArgs = {
+  payload: AbxExpResPhenotypeInputType;
+};
+
+
+export type MutationCreateAbxExpertInterpretationRuleArgs = {
+  payload: AbxExpertInterpretationRuleInputType;
+};
+
+
+export type MutationCreateAbxFamilyArgs = {
+  payload: AbxFamilyInputType;
+};
+
+
+export type MutationCreateAbxGenusArgs = {
+  payload: AbxGenusInputType;
+};
+
+
+export type MutationCreateAbxGuidelineArgs = {
+  payload: AbxGuidelineInputType;
+};
+
+
+export type MutationCreateAbxHostArgs = {
+  payload: AbxHostInputType;
+};
+
+
+export type MutationCreateAbxKingdomArgs = {
+  payload: AbxKingdomInputType;
+};
+
+
+export type MutationCreateAbxMediumArgs = {
+  payload: AbxMediumInputType;
+};
+
+
+export type MutationCreateAbxOrderArgs = {
+  payload: AbxOrderInputType;
+};
+
+
+export type MutationCreateAbxOrganismArgs = {
+  payload: AbxOrganismInputType;
+};
+
+
+export type MutationCreateAbxOrganismSerotypeArgs = {
+  payload: AbxOrganismSerotypeInputType;
+};
+
+
+export type MutationCreateAbxPhylumArgs = {
+  payload: AbxPhylumInputType;
+};
+
+
+export type MutationCreateAbxQcRangeArgs = {
+  payload: AbxQcRangeInputType;
+};
+
+
+export type MutationCreateAbxSiteOfInfectionArgs = {
+  payload: AbxSiteOfInfectionInputType;
+};
+
+
+export type MutationCreateAbxTestMethodArgs = {
+  payload: AbxTestMethodInputType;
 };
 
 
@@ -2064,6 +2942,126 @@ export type MutationSubmitAnalysisResultsArgs = {
 
 
 export type MutationSubmitStockOrderArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxAntibioticArgs = {
+  payload: AbxAntibioticInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxAstPanelArgs = {
+  payload: AbxAstPanelInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxBreakpointArgs = {
+  payload: AbxBreakpointInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxBreakpointTypeArgs = {
+  payload: AbxBreakpointTypeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxClassArgs = {
+  payload: AbxClassInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxExpResPhenotypeArgs = {
+  payload: AbxExpResPhenotypeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxExpertInterpretationRuleArgs = {
+  payload: AbxExpertInterpretationRuleInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxFamilyArgs = {
+  payload: AbxFamilyInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxGenusArgs = {
+  payload: AbxGenusInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxGuidelineArgs = {
+  payload: AbxGuidelineInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxHostArgs = {
+  payload: AbxHostInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxKingdomArgs = {
+  payload: AbxKingdomInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxMediumArgs = {
+  payload: AbxMediumInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxOrderArgs = {
+  payload: AbxOrderInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxOrganismArgs = {
+  payload: AbxOrganismInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxOrganismSerotypeArgs = {
+  payload: AbxOrganismSerotypeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxPhylumArgs = {
+  payload: AbxPhylumInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxQcRangeArgs = {
+  payload: AbxQcRangeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxSiteOfInfectionArgs = {
+  payload: AbxSiteOfInfectionInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxTestMethodArgs = {
+  payload: AbxTestMethodInputType;
   uid: Scalars['String']['input'];
 };
 
@@ -2968,6 +3966,46 @@ export type QcTemplateType = {
 
 export type Query = {
   __typename?: 'Query';
+  abxAntibioticAll: AbxAntibioticCursorPage;
+  abxAntibioticByUid?: Maybe<AbxAntibioticType>;
+  abxAstPanelAll?: Maybe<Array<AbxAstPanelType>>;
+  abxAstPanelByUid?: Maybe<AbxAstPanelType>;
+  abxBreakpointAll: AbxBreakpointTypCursorPage;
+  abxBreakpointByUid?: Maybe<AbxBreakpointTyp>;
+  abxBreakpointTypeAll?: Maybe<Array<AbxBreakpointTypeTyp>>;
+  abxBreakpointTypeByUid?: Maybe<AbxBreakpointTypeTyp>;
+  abxClassAll?: Maybe<Array<AbxClassType>>;
+  abxClassByUid?: Maybe<AbxClassType>;
+  abxExpectedResistancePhenotypeAll?: Maybe<Array<AbxExpResPhenotypeType>>;
+  abxExpectedResistancePhenotypeByUid?: Maybe<AbxExpResPhenotypeType>;
+  abxExpertInterpretationRuleAll?: Maybe<Array<AbxExpertInterpretationRuleType>>;
+  abxExpertInterpretationRuleByUid?: Maybe<AbxExpertInterpretationRuleType>;
+  abxFamilyAll?: Maybe<Array<AbxFamilyType>>;
+  abxFamilyByUid?: Maybe<AbxFamilyType>;
+  abxGenusAll?: Maybe<Array<AbxGenusType>>;
+  abxGenusByUid?: Maybe<AbxGenusType>;
+  abxGuidelineByUid?: Maybe<AbxGuidelineType>;
+  abxGuidelinesAll?: Maybe<Array<AbxGuidelineType>>;
+  abxHostAll?: Maybe<Array<AbxHostType>>;
+  abxHostByUid?: Maybe<AbxHostType>;
+  abxKingdomAll?: Maybe<Array<AbxKingdomType>>;
+  abxKingdomByUid?: Maybe<AbxKingdomType>;
+  abxMediumAll?: Maybe<Array<AbxMediumType>>;
+  abxMediumByUid?: Maybe<AbxMediumType>;
+  abxOrderAll?: Maybe<Array<AbxOrderType>>;
+  abxOrderByUid?: Maybe<AbxOrderType>;
+  abxOrganismAll: AbxOrganismCursorPage;
+  abxOrganismByUid?: Maybe<AbxOrganismType>;
+  abxOrganismSerotypeAll: AbxOrganismSerotypeCursorPage;
+  abxOrganismSerotypeByUid?: Maybe<AbxOrganismSerotypeType>;
+  abxPhylumAll?: Maybe<Array<AbxPhylumType>>;
+  abxPhylumByUid?: Maybe<AbxPhylumType>;
+  abxQcRangeAll?: Maybe<Array<AbxQcRangeType>>;
+  abxQcRangeByUid?: Maybe<AbxQcRangeType>;
+  abxSiteOfInfectionAll?: Maybe<Array<AbxSiteOfInfectionType>>;
+  abxSiteOfInfectionByUid?: Maybe<AbxSiteOfInfectionType>;
+  abxTestMethodAll?: Maybe<Array<AbxTestMethodType>>;
+  abxTestMethodByUid?: Maybe<AbxTestMethodType>;
   analysisAll: AnalysisCursorPage;
   analysisByUid: AnalysisType;
   analysisCategoryAll: Array<AnalysisCategoryType>;
@@ -3147,6 +4185,142 @@ export type Query = {
   worksheetByUid: WorkSheetType;
   worksheetTemplateAll: Array<WorkSheetTemplateType>;
   worksheetTemplateByUid: Array<WorkSheetType>;
+};
+
+
+export type QueryAbxAntibioticAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxAntibioticByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxAstPanelByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxBreakpointAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxBreakpointByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxBreakpointTypeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxClassByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxExpectedResistancePhenotypeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxExpertInterpretationRuleByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxFamilyByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxGenusByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxGuidelineByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxHostByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxKingdomByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxMediumByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrderByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismSerotypeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismSerotypeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxPhylumByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxQcRangeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxSiteOfInfectionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxTestMethodByUidArgs = {
+  uid: Scalars['String']['input'];
 };
 
 
@@ -5480,6 +6654,43 @@ export type WorksheetTemplateInputType = {
 export type WithTypename<T extends { __typename?: any }> = Partial<T> & { __typename: NonNullable<T['__typename']> };
 
 export type GraphCacheKeysConfig = {
+  AbxASTPanelCursorPage?: (data: WithTypename<AbxAstPanelCursorPage>) => null | string,
+  AbxASTPanelEdge?: (data: WithTypename<AbxAstPanelEdge>) => null | string,
+  AbxASTPanelType?: (data: WithTypename<AbxAstPanelType>) => null | string,
+  AbxAntibioticCursorPage?: (data: WithTypename<AbxAntibioticCursorPage>) => null | string,
+  AbxAntibioticEdge?: (data: WithTypename<AbxAntibioticEdge>) => null | string,
+  AbxAntibioticGuidelineType?: (data: WithTypename<AbxAntibioticGuidelineType>) => null | string,
+  AbxAntibioticType?: (data: WithTypename<AbxAntibioticType>) => null | string,
+  AbxBreakpointTyp?: (data: WithTypename<AbxBreakpointTyp>) => null | string,
+  AbxBreakpointTypCursorPage?: (data: WithTypename<AbxBreakpointTypCursorPage>) => null | string,
+  AbxBreakpointTypEdge?: (data: WithTypename<AbxBreakpointTypEdge>) => null | string,
+  AbxBreakpointTypeTyp?: (data: WithTypename<AbxBreakpointTypeTyp>) => null | string,
+  AbxClassType?: (data: WithTypename<AbxClassType>) => null | string,
+  AbxExpResPhenotypeCursorPage?: (data: WithTypename<AbxExpResPhenotypeCursorPage>) => null | string,
+  AbxExpResPhenotypeEdge?: (data: WithTypename<AbxExpResPhenotypeEdge>) => null | string,
+  AbxExpResPhenotypeType?: (data: WithTypename<AbxExpResPhenotypeType>) => null | string,
+  AbxExpertInterpretationRuleCursorPage?: (data: WithTypename<AbxExpertInterpretationRuleCursorPage>) => null | string,
+  AbxExpertInterpretationRuleEdge?: (data: WithTypename<AbxExpertInterpretationRuleEdge>) => null | string,
+  AbxExpertInterpretationRuleType?: (data: WithTypename<AbxExpertInterpretationRuleType>) => null | string,
+  AbxFamilyType?: (data: WithTypename<AbxFamilyType>) => null | string,
+  AbxGenusType?: (data: WithTypename<AbxGenusType>) => null | string,
+  AbxGuidelineType?: (data: WithTypename<AbxGuidelineType>) => null | string,
+  AbxHostType?: (data: WithTypename<AbxHostType>) => null | string,
+  AbxKingdomType?: (data: WithTypename<AbxKingdomType>) => null | string,
+  AbxMediumType?: (data: WithTypename<AbxMediumType>) => null | string,
+  AbxOrderType?: (data: WithTypename<AbxOrderType>) => null | string,
+  AbxOrganismCursorPage?: (data: WithTypename<AbxOrganismCursorPage>) => null | string,
+  AbxOrganismEdge?: (data: WithTypename<AbxOrganismEdge>) => null | string,
+  AbxOrganismSerotypeCursorPage?: (data: WithTypename<AbxOrganismSerotypeCursorPage>) => null | string,
+  AbxOrganismSerotypeEdge?: (data: WithTypename<AbxOrganismSerotypeEdge>) => null | string,
+  AbxOrganismSerotypeType?: (data: WithTypename<AbxOrganismSerotypeType>) => null | string,
+  AbxOrganismType?: (data: WithTypename<AbxOrganismType>) => null | string,
+  AbxPhylumType?: (data: WithTypename<AbxPhylumType>) => null | string,
+  AbxQCRangeCursorPage?: (data: WithTypename<AbxQcRangeCursorPage>) => null | string,
+  AbxQCRangeEdge?: (data: WithTypename<AbxQcRangeEdge>) => null | string,
+  AbxQCRangeType?: (data: WithTypename<AbxQcRangeType>) => null | string,
+  AbxSiteOfInfectionType?: (data: WithTypename<AbxSiteOfInfectionType>) => null | string,
+  AbxTestMethodType?: (data: WithTypename<AbxTestMethodType>) => null | string,
   ActivityFeedType?: (data: WithTypename<ActivityFeedType>) => null | string,
   ActivityProcessType?: (data: WithTypename<ActivityProcessType>) => null | string,
   ActivityStreamType?: (data: WithTypename<ActivityStreamType>) => null | string,
@@ -5660,6 +6871,46 @@ export type GraphCacheKeysConfig = {
 
 export type GraphCacheResolvers = {
   Query?: {
+    abxAntibioticAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxAntibioticAllArgs, WithTypename<AbxAntibioticCursorPage> | string>,
+    abxAntibioticByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxAntibioticByUidArgs, WithTypename<AbxAntibioticType> | string>,
+    abxAstPanelAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxAstPanelType> | string>>,
+    abxAstPanelByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxAstPanelByUidArgs, WithTypename<AbxAstPanelType> | string>,
+    abxBreakpointAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxBreakpointAllArgs, WithTypename<AbxBreakpointTypCursorPage> | string>,
+    abxBreakpointByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxBreakpointByUidArgs, WithTypename<AbxBreakpointTyp> | string>,
+    abxBreakpointTypeAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxBreakpointTypeTyp> | string>>,
+    abxBreakpointTypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxBreakpointTypeByUidArgs, WithTypename<AbxBreakpointTypeTyp> | string>,
+    abxClassAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxClassType> | string>>,
+    abxClassByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxClassByUidArgs, WithTypename<AbxClassType> | string>,
+    abxExpectedResistancePhenotypeAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxExpResPhenotypeType> | string>>,
+    abxExpectedResistancePhenotypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxExpectedResistancePhenotypeByUidArgs, WithTypename<AbxExpResPhenotypeType> | string>,
+    abxExpertInterpretationRuleAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxExpertInterpretationRuleType> | string>>,
+    abxExpertInterpretationRuleByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxExpertInterpretationRuleByUidArgs, WithTypename<AbxExpertInterpretationRuleType> | string>,
+    abxFamilyAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxFamilyType> | string>>,
+    abxFamilyByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxFamilyByUidArgs, WithTypename<AbxFamilyType> | string>,
+    abxGenusAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxGenusType> | string>>,
+    abxGenusByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxGenusByUidArgs, WithTypename<AbxGenusType> | string>,
+    abxGuidelineByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxGuidelineByUidArgs, WithTypename<AbxGuidelineType> | string>,
+    abxGuidelinesAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxGuidelineType> | string>>,
+    abxHostAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxHostType> | string>>,
+    abxHostByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxHostByUidArgs, WithTypename<AbxHostType> | string>,
+    abxKingdomAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxKingdomType> | string>>,
+    abxKingdomByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxKingdomByUidArgs, WithTypename<AbxKingdomType> | string>,
+    abxMediumAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxMediumType> | string>>,
+    abxMediumByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxMediumByUidArgs, WithTypename<AbxMediumType> | string>,
+    abxOrderAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxOrderType> | string>>,
+    abxOrderByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxOrderByUidArgs, WithTypename<AbxOrderType> | string>,
+    abxOrganismAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxOrganismAllArgs, WithTypename<AbxOrganismCursorPage> | string>,
+    abxOrganismByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxOrganismByUidArgs, WithTypename<AbxOrganismType> | string>,
+    abxOrganismSerotypeAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxOrganismSerotypeAllArgs, WithTypename<AbxOrganismSerotypeCursorPage> | string>,
+    abxOrganismSerotypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxOrganismSerotypeByUidArgs, WithTypename<AbxOrganismSerotypeType> | string>,
+    abxPhylumAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxPhylumType> | string>>,
+    abxPhylumByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxPhylumByUidArgs, WithTypename<AbxPhylumType> | string>,
+    abxQcRangeAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxQcRangeType> | string>>,
+    abxQcRangeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxQcRangeByUidArgs, WithTypename<AbxQcRangeType> | string>,
+    abxSiteOfInfectionAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxSiteOfInfectionType> | string>>,
+    abxSiteOfInfectionByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxSiteOfInfectionByUidArgs, WithTypename<AbxSiteOfInfectionType> | string>,
+    abxTestMethodAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxTestMethodType> | string>>,
+    abxTestMethodByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxTestMethodByUidArgs, WithTypename<AbxTestMethodType> | string>,
     analysisAll?: GraphCacheResolver<WithTypename<Query>, QueryAnalysisAllArgs, WithTypename<AnalysisCursorPage> | string>,
     analysisByUid?: GraphCacheResolver<WithTypename<Query>, QueryAnalysisByUidArgs, WithTypename<AnalysisType> | string>,
     analysisCategoryAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AnalysisCategoryType> | string>>,
@@ -5839,6 +7090,440 @@ export type GraphCacheResolvers = {
     worksheetByUid?: GraphCacheResolver<WithTypename<Query>, QueryWorksheetByUidArgs, WithTypename<WorkSheetType> | string>,
     worksheetTemplateAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<WorkSheetTemplateType> | string>>,
     worksheetTemplateByUid?: GraphCacheResolver<WithTypename<Query>, QueryWorksheetTemplateByUidArgs, Array<WithTypename<WorkSheetType> | string>>
+  },
+  AbxASTPanelCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxAstPanelCursorPage>, Record<string, never>, Array<WithTypename<AbxAstPanelEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxAstPanelCursorPage>, Record<string, never>, Array<WithTypename<AbxAstPanelType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxAstPanelCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxAstPanelCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxASTPanelEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxAstPanelEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxAstPanelEdge>, Record<string, never>, WithTypename<AbxAstPanelType> | string>
+  },
+  AbxASTPanelType?: {
+    active?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['Boolean'] | string>,
+    breakpoints?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Array<WithTypename<AbxBreakpointTyp> | string>>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxAntibioticCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxAntibioticCursorPage>, Record<string, never>, Array<WithTypename<AbxAntibioticEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxAntibioticCursorPage>, Record<string, never>, Array<WithTypename<AbxAntibioticType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxAntibioticCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxAntibioticCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxAntibioticEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxAntibioticEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxAntibioticEdge>, Record<string, never>, WithTypename<AbxAntibioticType> | string>
+  },
+  AbxAntibioticGuidelineType?: {
+    antibiotic?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<AbxAntibioticType> | string>,
+    antibioticUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    guideline?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
+    guidelineUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxAntibioticType?: {
+    abxNumber?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    animalGp?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    atcCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    ciaCategory?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    class_?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    clsiOrder?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    comments?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    dinCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    eucastCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    eucastOrder?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    guidelines?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Array<WithTypename<AbxGuidelineType> | string>>,
+    human?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['Boolean'] | string>,
+    jacCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincafb?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loinccomp?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincdisk?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincetest?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincgen?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincmic?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincmlc?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincsbt?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    loincslow?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    potency?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    profClass?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    subclass?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    userCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    veterinary?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['Boolean'] | string>,
+    whoCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    whonetAbxCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxBreakpointTyp?: {
+    breakpointType?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxBreakpointTypeTyp> | string>,
+    breakpointTypeUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    comments?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    ecvEcoff?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    ecvEcoffTentative?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    guideline?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
+    guidelineUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    host?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxHostType> | string>,
+    hostUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    i?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    organismCode?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    organismCodeType?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    potency?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    r?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    referenceSequence?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    referenceTable?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    s?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    sdd?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    siteOfInfection?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxSiteOfInfectionType> | string>,
+    siteOfInfectionUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    testMethod?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    whonetAbxCode?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    year?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxBreakpointTypCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxBreakpointTypCursorPage>, Record<string, never>, Array<WithTypename<AbxBreakpointTypEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxBreakpointTypCursorPage>, Record<string, never>, Array<WithTypename<AbxBreakpointTyp> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxBreakpointTypCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxBreakpointTypCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxBreakpointTypEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxBreakpointTypEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxBreakpointTypEdge>, Record<string, never>, WithTypename<AbxBreakpointTyp> | string>
+  },
+  AbxBreakpointTypeTyp?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxClassType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    phylum?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, WithTypename<AbxPhylumType> | string>,
+    phylumUid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxExpResPhenotypeCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeCursorPage>, Record<string, never>, Array<WithTypename<AbxExpResPhenotypeEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeCursorPage>, Record<string, never>, Array<WithTypename<AbxExpResPhenotypeType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxExpResPhenotypeEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeEdge>, Record<string, never>, WithTypename<AbxExpResPhenotypeType> | string>
+  },
+  AbxExpResPhenotypeType?: {
+    abxCode?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    abxCodeType?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    antibioticExceptions?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    comments?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    exceptionOrganismCode?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    exceptionOrganismCodeType?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    guideline?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
+    guidelineUid?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    organismCode?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    organismCodeType?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    referenceTable?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxExpertInterpretationRuleCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleCursorPage>, Record<string, never>, Array<WithTypename<AbxExpertInterpretationRuleEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleCursorPage>, Record<string, never>, Array<WithTypename<AbxExpertInterpretationRuleType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxExpertInterpretationRuleEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleEdge>, Record<string, never>, WithTypename<AbxExpertInterpretationRuleType> | string>
+  },
+  AbxExpertInterpretationRuleType?: {
+    affectedAntibiotics?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    antibioticExceptions?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    organismCode?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    organismCodeType?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    ruleCode?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    ruleCriteria?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxFamilyType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    order?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, WithTypename<AbxOrderType> | string>,
+    orderUid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxGenusType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    family?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, WithTypename<AbxFamilyType> | string>,
+    familyUid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxGuidelineType?: {
+    code?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxHostType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxKingdomType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxMediumType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxOrderType?: {
+    classUid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    class_?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, WithTypename<AbxClassType> | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxOrganismCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxOrganismCursorPage>, Record<string, never>, Array<WithTypename<AbxOrganismEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxOrganismCursorPage>, Record<string, never>, Array<WithTypename<AbxOrganismType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxOrganismCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxOrganismCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxOrganismEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxOrganismEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxOrganismEdge>, Record<string, never>, WithTypename<AbxOrganismType> | string>
+  },
+  AbxOrganismSerotypeCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeCursorPage>, Record<string, never>, Array<WithTypename<AbxOrganismSerotypeEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeCursorPage>, Record<string, never>, Array<WithTypename<AbxOrganismSerotypeType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxOrganismSerotypeEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeEdge>, Record<string, never>, WithTypename<AbxOrganismSerotypeType> | string>
+  },
+  AbxOrganismSerotypeType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    fate?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    hPhase1?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    hPhase2?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    oAntigens?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    organism?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, WithTypename<AbxOrganismType> | string>,
+    organismUid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    serogroup?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    serotype?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    subspecies?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    x997Check?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['Boolean'] | string>
+  },
+  AbxOrganismType?: {
+    anaerobe?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['Boolean'] | string>,
+    classUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    class_?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxClassType> | string>,
+    comments?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    common?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    family?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxFamilyType> | string>,
+    familyCode?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    familyUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    gbifDatasetId?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    gbifTaxonId?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    gbifTaxonomicStatus?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    genus?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxGenusType> | string>,
+    genusCode?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    genusGroup?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    genusUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    guideline?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
+    kingdomUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    morphology?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    msfGrpClin?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    order?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxOrderType> | string>,
+    orderUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    organismType?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    phylum?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxPhylumType> | string>,
+    phylumUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    replacedBy?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    sctCode?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    sctText?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    serovarGroup?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    speciesGroup?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    subkingdomCode?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    taxonomicStatus?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    whonetOrgCode?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxPhylumType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    kingdom?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, WithTypename<AbxKingdomType> | string>,
+    kingdomUid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxQCRangeCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<AbxQcRangeCursorPage>, Record<string, never>, Array<WithTypename<AbxQcRangeEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<AbxQcRangeCursorPage>, Record<string, never>, Array<WithTypename<AbxQcRangeType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<AbxQcRangeCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<AbxQcRangeCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxQCRangeEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<AbxQcRangeEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<AbxQcRangeEdge>, Record<string, never>, WithTypename<AbxQcRangeType> | string>
+  },
+  AbxQCRangeType?: {
+    abxTest?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    antibiotic?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    guideline?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
+    guidelineUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    maximum?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    medium?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<AbxMediumType> | string>,
+    mediumUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    method?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    minimum?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    referenceTable?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    strain?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    whonetAbxCode?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    whonetOrgCode?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    year?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['Int'] | string>
+  },
+  AbxSiteOfInfectionType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>
+  },
+  AbxTestMethodType?: {
+    createdAt?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>
   },
   ActivityFeedType?: {
     name?: GraphCacheResolver<WithTypename<ActivityFeedType>, Record<string, never>, Scalars['String'] | string>,
@@ -7939,6 +9624,26 @@ export type GraphCacheOptimisticUpdaters = {
   cancelSamples?: GraphCacheOptimisticMutationResolver<MutationCancelSamplesArgs, WithTypename<ResultedSampleActionResponse>>,
   cloneSamples?: GraphCacheOptimisticMutationResolver<MutationCloneSamplesArgs, WithTypename<SampleActionResponse>>,
   confirmTestBillTransaction?: GraphCacheOptimisticMutationResolver<MutationConfirmTestBillTransactionArgs, WithTypename<TestBillTransactionResponse>>,
+  createAbxAntibiotic?: GraphCacheOptimisticMutationResolver<MutationCreateAbxAntibioticArgs, WithTypename<AbxAntibioticResponse>>,
+  createAbxAstPanel?: GraphCacheOptimisticMutationResolver<MutationCreateAbxAstPanelArgs, WithTypename<AbxAstPanelResponse>>,
+  createAbxBreakpoint?: GraphCacheOptimisticMutationResolver<MutationCreateAbxBreakpointArgs, WithTypename<AbxBreakpointResponse>>,
+  createAbxBreakpointType?: GraphCacheOptimisticMutationResolver<MutationCreateAbxBreakpointTypeArgs, WithTypename<AbxBreakpointTypeResponse>>,
+  createAbxClass?: GraphCacheOptimisticMutationResolver<MutationCreateAbxClassArgs, WithTypename<AbxClassResponse>>,
+  createAbxExpResPhenotype?: GraphCacheOptimisticMutationResolver<MutationCreateAbxExpResPhenotypeArgs, WithTypename<AbxExpResPhenotypeResponse>>,
+  createAbxExpertInterpretationRule?: GraphCacheOptimisticMutationResolver<MutationCreateAbxExpertInterpretationRuleArgs, WithTypename<AbxExpertInterpretationRuleResponse>>,
+  createAbxFamily?: GraphCacheOptimisticMutationResolver<MutationCreateAbxFamilyArgs, WithTypename<AbxFamilyResponse>>,
+  createAbxGenus?: GraphCacheOptimisticMutationResolver<MutationCreateAbxGenusArgs, WithTypename<AbxGenusResponse>>,
+  createAbxGuideline?: GraphCacheOptimisticMutationResolver<MutationCreateAbxGuidelineArgs, WithTypename<AbxGuidelineResponse>>,
+  createAbxHost?: GraphCacheOptimisticMutationResolver<MutationCreateAbxHostArgs, WithTypename<AbxHostResponse>>,
+  createAbxKingdom?: GraphCacheOptimisticMutationResolver<MutationCreateAbxKingdomArgs, WithTypename<AbxKingdomResponse>>,
+  createAbxMedium?: GraphCacheOptimisticMutationResolver<MutationCreateAbxMediumArgs, WithTypename<AbxMediumResponse>>,
+  createAbxOrder?: GraphCacheOptimisticMutationResolver<MutationCreateAbxOrderArgs, WithTypename<AbxOrderResponse>>,
+  createAbxOrganism?: GraphCacheOptimisticMutationResolver<MutationCreateAbxOrganismArgs, WithTypename<AbxOrganismResponse>>,
+  createAbxOrganismSerotype?: GraphCacheOptimisticMutationResolver<MutationCreateAbxOrganismSerotypeArgs, WithTypename<AbxOrganismSerotypeResponse>>,
+  createAbxPhylum?: GraphCacheOptimisticMutationResolver<MutationCreateAbxPhylumArgs, WithTypename<AbxPhylumResponse>>,
+  createAbxQcRange?: GraphCacheOptimisticMutationResolver<MutationCreateAbxQcRangeArgs, WithTypename<AbxQcRangeResponse>>,
+  createAbxSiteOfInfection?: GraphCacheOptimisticMutationResolver<MutationCreateAbxSiteOfInfectionArgs, WithTypename<AbxSiteOfInfectionResponse>>,
+  createAbxTestMethod?: GraphCacheOptimisticMutationResolver<MutationCreateAbxTestMethodArgs, WithTypename<AbxTestMethodResponse>>,
   createAnalysis?: GraphCacheOptimisticMutationResolver<MutationCreateAnalysisArgs, WithTypename<ProfilesServiceResponse>>,
   createAnalysisCategory?: GraphCacheOptimisticMutationResolver<MutationCreateAnalysisCategoryArgs, WithTypename<AnalysisCategoryResponse>>,
   createAnalysisCorrectionFactor?: GraphCacheOptimisticMutationResolver<MutationCreateAnalysisCorrectionFactorArgs, WithTypename<AnalysisCorrectionFactorResponse>>,
@@ -8030,6 +9735,26 @@ export type GraphCacheOptimisticUpdaters = {
   storeSamples?: GraphCacheOptimisticMutationResolver<MutationStoreSamplesArgs, WithTypename<StoreSampleResponse>>,
   submitAnalysisResults?: GraphCacheOptimisticMutationResolver<MutationSubmitAnalysisResultsArgs, WithTypename<AnalysisResultSubmitResponse>>,
   submitStockOrder?: GraphCacheOptimisticMutationResolver<MutationSubmitStockOrderArgs, WithTypename<StockOrderResponse>>,
+  updateAbxAntibiotic?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxAntibioticArgs, WithTypename<AbxAntibioticResponse>>,
+  updateAbxAstPanel?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxAstPanelArgs, WithTypename<AbxAstPanelResponse>>,
+  updateAbxBreakpoint?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxBreakpointArgs, WithTypename<AbxBreakpointResponse>>,
+  updateAbxBreakpointType?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxBreakpointTypeArgs, WithTypename<AbxBreakpointTypeResponse>>,
+  updateAbxClass?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxClassArgs, WithTypename<AbxClassResponse>>,
+  updateAbxExpResPhenotype?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxExpResPhenotypeArgs, WithTypename<AbxExpResPhenotypeResponse>>,
+  updateAbxExpertInterpretationRule?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxExpertInterpretationRuleArgs, WithTypename<AbxExpertInterpretationRuleResponse>>,
+  updateAbxFamily?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxFamilyArgs, WithTypename<AbxFamilyResponse>>,
+  updateAbxGenus?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxGenusArgs, WithTypename<AbxGenusResponse>>,
+  updateAbxGuideline?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxGuidelineArgs, WithTypename<AbxGuidelineResponse>>,
+  updateAbxHost?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxHostArgs, WithTypename<AbxHostResponse>>,
+  updateAbxKingdom?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxKingdomArgs, WithTypename<AbxKingdomResponse>>,
+  updateAbxMedium?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxMediumArgs, WithTypename<AbxMediumResponse>>,
+  updateAbxOrder?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxOrderArgs, WithTypename<AbxOrderResponse>>,
+  updateAbxOrganism?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxOrganismArgs, WithTypename<AbxOrganismResponse>>,
+  updateAbxOrganismSerotype?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxOrganismSerotypeArgs, WithTypename<AbxOrganismSerotypeResponse>>,
+  updateAbxPhylum?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxPhylumArgs, WithTypename<AbxPhylumResponse>>,
+  updateAbxQcRange?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxQcRangeArgs, WithTypename<AbxQcRangeResponse>>,
+  updateAbxSiteOfInfection?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxSiteOfInfectionArgs, WithTypename<AbxSiteOfInfectionResponse>>,
+  updateAbxTestMethod?: GraphCacheOptimisticMutationResolver<MutationUpdateAbxTestMethodArgs, WithTypename<AbxTestMethodResponse>>,
   updateAnalysis?: GraphCacheOptimisticMutationResolver<MutationUpdateAnalysisArgs, WithTypename<ProfilesServiceResponse>>,
   updateAnalysisCategory?: GraphCacheOptimisticMutationResolver<MutationUpdateAnalysisCategoryArgs, WithTypename<AnalysisCategoryResponse>>,
   updateAnalysisCorrectionFactor?: GraphCacheOptimisticMutationResolver<MutationUpdateAnalysisCorrectionFactorArgs, WithTypename<AnalysisCorrectionFactorResponse>>,
@@ -8106,6 +9831,46 @@ export type GraphCacheOptimisticUpdaters = {
 
 export type GraphCacheUpdaters = {
   Query?: {
+    abxAntibioticAll?: GraphCacheUpdateResolver<{ abxAntibioticAll: WithTypename<AbxAntibioticCursorPage> }, QueryAbxAntibioticAllArgs>,
+    abxAntibioticByUid?: GraphCacheUpdateResolver<{ abxAntibioticByUid: Maybe<WithTypename<AbxAntibioticType>> }, QueryAbxAntibioticByUidArgs>,
+    abxAstPanelAll?: GraphCacheUpdateResolver<{ abxAstPanelAll: Maybe<Array<WithTypename<AbxAstPanelType>>> }, Record<string, never>>,
+    abxAstPanelByUid?: GraphCacheUpdateResolver<{ abxAstPanelByUid: Maybe<WithTypename<AbxAstPanelType>> }, QueryAbxAstPanelByUidArgs>,
+    abxBreakpointAll?: GraphCacheUpdateResolver<{ abxBreakpointAll: WithTypename<AbxBreakpointTypCursorPage> }, QueryAbxBreakpointAllArgs>,
+    abxBreakpointByUid?: GraphCacheUpdateResolver<{ abxBreakpointByUid: Maybe<WithTypename<AbxBreakpointTyp>> }, QueryAbxBreakpointByUidArgs>,
+    abxBreakpointTypeAll?: GraphCacheUpdateResolver<{ abxBreakpointTypeAll: Maybe<Array<WithTypename<AbxBreakpointTypeTyp>>> }, Record<string, never>>,
+    abxBreakpointTypeByUid?: GraphCacheUpdateResolver<{ abxBreakpointTypeByUid: Maybe<WithTypename<AbxBreakpointTypeTyp>> }, QueryAbxBreakpointTypeByUidArgs>,
+    abxClassAll?: GraphCacheUpdateResolver<{ abxClassAll: Maybe<Array<WithTypename<AbxClassType>>> }, Record<string, never>>,
+    abxClassByUid?: GraphCacheUpdateResolver<{ abxClassByUid: Maybe<WithTypename<AbxClassType>> }, QueryAbxClassByUidArgs>,
+    abxExpectedResistancePhenotypeAll?: GraphCacheUpdateResolver<{ abxExpectedResistancePhenotypeAll: Maybe<Array<WithTypename<AbxExpResPhenotypeType>>> }, Record<string, never>>,
+    abxExpectedResistancePhenotypeByUid?: GraphCacheUpdateResolver<{ abxExpectedResistancePhenotypeByUid: Maybe<WithTypename<AbxExpResPhenotypeType>> }, QueryAbxExpectedResistancePhenotypeByUidArgs>,
+    abxExpertInterpretationRuleAll?: GraphCacheUpdateResolver<{ abxExpertInterpretationRuleAll: Maybe<Array<WithTypename<AbxExpertInterpretationRuleType>>> }, Record<string, never>>,
+    abxExpertInterpretationRuleByUid?: GraphCacheUpdateResolver<{ abxExpertInterpretationRuleByUid: Maybe<WithTypename<AbxExpertInterpretationRuleType>> }, QueryAbxExpertInterpretationRuleByUidArgs>,
+    abxFamilyAll?: GraphCacheUpdateResolver<{ abxFamilyAll: Maybe<Array<WithTypename<AbxFamilyType>>> }, Record<string, never>>,
+    abxFamilyByUid?: GraphCacheUpdateResolver<{ abxFamilyByUid: Maybe<WithTypename<AbxFamilyType>> }, QueryAbxFamilyByUidArgs>,
+    abxGenusAll?: GraphCacheUpdateResolver<{ abxGenusAll: Maybe<Array<WithTypename<AbxGenusType>>> }, Record<string, never>>,
+    abxGenusByUid?: GraphCacheUpdateResolver<{ abxGenusByUid: Maybe<WithTypename<AbxGenusType>> }, QueryAbxGenusByUidArgs>,
+    abxGuidelineByUid?: GraphCacheUpdateResolver<{ abxGuidelineByUid: Maybe<WithTypename<AbxGuidelineType>> }, QueryAbxGuidelineByUidArgs>,
+    abxGuidelinesAll?: GraphCacheUpdateResolver<{ abxGuidelinesAll: Maybe<Array<WithTypename<AbxGuidelineType>>> }, Record<string, never>>,
+    abxHostAll?: GraphCacheUpdateResolver<{ abxHostAll: Maybe<Array<WithTypename<AbxHostType>>> }, Record<string, never>>,
+    abxHostByUid?: GraphCacheUpdateResolver<{ abxHostByUid: Maybe<WithTypename<AbxHostType>> }, QueryAbxHostByUidArgs>,
+    abxKingdomAll?: GraphCacheUpdateResolver<{ abxKingdomAll: Maybe<Array<WithTypename<AbxKingdomType>>> }, Record<string, never>>,
+    abxKingdomByUid?: GraphCacheUpdateResolver<{ abxKingdomByUid: Maybe<WithTypename<AbxKingdomType>> }, QueryAbxKingdomByUidArgs>,
+    abxMediumAll?: GraphCacheUpdateResolver<{ abxMediumAll: Maybe<Array<WithTypename<AbxMediumType>>> }, Record<string, never>>,
+    abxMediumByUid?: GraphCacheUpdateResolver<{ abxMediumByUid: Maybe<WithTypename<AbxMediumType>> }, QueryAbxMediumByUidArgs>,
+    abxOrderAll?: GraphCacheUpdateResolver<{ abxOrderAll: Maybe<Array<WithTypename<AbxOrderType>>> }, Record<string, never>>,
+    abxOrderByUid?: GraphCacheUpdateResolver<{ abxOrderByUid: Maybe<WithTypename<AbxOrderType>> }, QueryAbxOrderByUidArgs>,
+    abxOrganismAll?: GraphCacheUpdateResolver<{ abxOrganismAll: WithTypename<AbxOrganismCursorPage> }, QueryAbxOrganismAllArgs>,
+    abxOrganismByUid?: GraphCacheUpdateResolver<{ abxOrganismByUid: Maybe<WithTypename<AbxOrganismType>> }, QueryAbxOrganismByUidArgs>,
+    abxOrganismSerotypeAll?: GraphCacheUpdateResolver<{ abxOrganismSerotypeAll: WithTypename<AbxOrganismSerotypeCursorPage> }, QueryAbxOrganismSerotypeAllArgs>,
+    abxOrganismSerotypeByUid?: GraphCacheUpdateResolver<{ abxOrganismSerotypeByUid: Maybe<WithTypename<AbxOrganismSerotypeType>> }, QueryAbxOrganismSerotypeByUidArgs>,
+    abxPhylumAll?: GraphCacheUpdateResolver<{ abxPhylumAll: Maybe<Array<WithTypename<AbxPhylumType>>> }, Record<string, never>>,
+    abxPhylumByUid?: GraphCacheUpdateResolver<{ abxPhylumByUid: Maybe<WithTypename<AbxPhylumType>> }, QueryAbxPhylumByUidArgs>,
+    abxQcRangeAll?: GraphCacheUpdateResolver<{ abxQcRangeAll: Maybe<Array<WithTypename<AbxQcRangeType>>> }, Record<string, never>>,
+    abxQcRangeByUid?: GraphCacheUpdateResolver<{ abxQcRangeByUid: Maybe<WithTypename<AbxQcRangeType>> }, QueryAbxQcRangeByUidArgs>,
+    abxSiteOfInfectionAll?: GraphCacheUpdateResolver<{ abxSiteOfInfectionAll: Maybe<Array<WithTypename<AbxSiteOfInfectionType>>> }, Record<string, never>>,
+    abxSiteOfInfectionByUid?: GraphCacheUpdateResolver<{ abxSiteOfInfectionByUid: Maybe<WithTypename<AbxSiteOfInfectionType>> }, QueryAbxSiteOfInfectionByUidArgs>,
+    abxTestMethodAll?: GraphCacheUpdateResolver<{ abxTestMethodAll: Maybe<Array<WithTypename<AbxTestMethodType>>> }, Record<string, never>>,
+    abxTestMethodByUid?: GraphCacheUpdateResolver<{ abxTestMethodByUid: Maybe<WithTypename<AbxTestMethodType>> }, QueryAbxTestMethodByUidArgs>,
     analysisAll?: GraphCacheUpdateResolver<{ analysisAll: WithTypename<AnalysisCursorPage> }, QueryAnalysisAllArgs>,
     analysisByUid?: GraphCacheUpdateResolver<{ analysisByUid: WithTypename<AnalysisType> }, QueryAnalysisByUidArgs>,
     analysisCategoryAll?: GraphCacheUpdateResolver<{ analysisCategoryAll: Array<WithTypename<AnalysisCategoryType>> }, Record<string, never>>,
@@ -8296,6 +10061,26 @@ export type GraphCacheUpdaters = {
     cancelSamples?: GraphCacheUpdateResolver<{ cancelSamples: WithTypename<ResultedSampleActionResponse> }, MutationCancelSamplesArgs>,
     cloneSamples?: GraphCacheUpdateResolver<{ cloneSamples: WithTypename<SampleActionResponse> }, MutationCloneSamplesArgs>,
     confirmTestBillTransaction?: GraphCacheUpdateResolver<{ confirmTestBillTransaction: WithTypename<TestBillTransactionResponse> }, MutationConfirmTestBillTransactionArgs>,
+    createAbxAntibiotic?: GraphCacheUpdateResolver<{ createAbxAntibiotic: WithTypename<AbxAntibioticResponse> }, MutationCreateAbxAntibioticArgs>,
+    createAbxAstPanel?: GraphCacheUpdateResolver<{ createAbxAstPanel: WithTypename<AbxAstPanelResponse> }, MutationCreateAbxAstPanelArgs>,
+    createAbxBreakpoint?: GraphCacheUpdateResolver<{ createAbxBreakpoint: WithTypename<AbxBreakpointResponse> }, MutationCreateAbxBreakpointArgs>,
+    createAbxBreakpointType?: GraphCacheUpdateResolver<{ createAbxBreakpointType: WithTypename<AbxBreakpointTypeResponse> }, MutationCreateAbxBreakpointTypeArgs>,
+    createAbxClass?: GraphCacheUpdateResolver<{ createAbxClass: WithTypename<AbxClassResponse> }, MutationCreateAbxClassArgs>,
+    createAbxExpResPhenotype?: GraphCacheUpdateResolver<{ createAbxExpResPhenotype: WithTypename<AbxExpResPhenotypeResponse> }, MutationCreateAbxExpResPhenotypeArgs>,
+    createAbxExpertInterpretationRule?: GraphCacheUpdateResolver<{ createAbxExpertInterpretationRule: WithTypename<AbxExpertInterpretationRuleResponse> }, MutationCreateAbxExpertInterpretationRuleArgs>,
+    createAbxFamily?: GraphCacheUpdateResolver<{ createAbxFamily: WithTypename<AbxFamilyResponse> }, MutationCreateAbxFamilyArgs>,
+    createAbxGenus?: GraphCacheUpdateResolver<{ createAbxGenus: WithTypename<AbxGenusResponse> }, MutationCreateAbxGenusArgs>,
+    createAbxGuideline?: GraphCacheUpdateResolver<{ createAbxGuideline: WithTypename<AbxGuidelineResponse> }, MutationCreateAbxGuidelineArgs>,
+    createAbxHost?: GraphCacheUpdateResolver<{ createAbxHost: WithTypename<AbxHostResponse> }, MutationCreateAbxHostArgs>,
+    createAbxKingdom?: GraphCacheUpdateResolver<{ createAbxKingdom: WithTypename<AbxKingdomResponse> }, MutationCreateAbxKingdomArgs>,
+    createAbxMedium?: GraphCacheUpdateResolver<{ createAbxMedium: WithTypename<AbxMediumResponse> }, MutationCreateAbxMediumArgs>,
+    createAbxOrder?: GraphCacheUpdateResolver<{ createAbxOrder: WithTypename<AbxOrderResponse> }, MutationCreateAbxOrderArgs>,
+    createAbxOrganism?: GraphCacheUpdateResolver<{ createAbxOrganism: WithTypename<AbxOrganismResponse> }, MutationCreateAbxOrganismArgs>,
+    createAbxOrganismSerotype?: GraphCacheUpdateResolver<{ createAbxOrganismSerotype: WithTypename<AbxOrganismSerotypeResponse> }, MutationCreateAbxOrganismSerotypeArgs>,
+    createAbxPhylum?: GraphCacheUpdateResolver<{ createAbxPhylum: WithTypename<AbxPhylumResponse> }, MutationCreateAbxPhylumArgs>,
+    createAbxQcRange?: GraphCacheUpdateResolver<{ createAbxQcRange: WithTypename<AbxQcRangeResponse> }, MutationCreateAbxQcRangeArgs>,
+    createAbxSiteOfInfection?: GraphCacheUpdateResolver<{ createAbxSiteOfInfection: WithTypename<AbxSiteOfInfectionResponse> }, MutationCreateAbxSiteOfInfectionArgs>,
+    createAbxTestMethod?: GraphCacheUpdateResolver<{ createAbxTestMethod: WithTypename<AbxTestMethodResponse> }, MutationCreateAbxTestMethodArgs>,
     createAnalysis?: GraphCacheUpdateResolver<{ createAnalysis: WithTypename<ProfilesServiceResponse> }, MutationCreateAnalysisArgs>,
     createAnalysisCategory?: GraphCacheUpdateResolver<{ createAnalysisCategory: WithTypename<AnalysisCategoryResponse> }, MutationCreateAnalysisCategoryArgs>,
     createAnalysisCorrectionFactor?: GraphCacheUpdateResolver<{ createAnalysisCorrectionFactor: WithTypename<AnalysisCorrectionFactorResponse> }, MutationCreateAnalysisCorrectionFactorArgs>,
@@ -8387,6 +10172,26 @@ export type GraphCacheUpdaters = {
     storeSamples?: GraphCacheUpdateResolver<{ storeSamples: WithTypename<StoreSampleResponse> }, MutationStoreSamplesArgs>,
     submitAnalysisResults?: GraphCacheUpdateResolver<{ submitAnalysisResults: WithTypename<AnalysisResultSubmitResponse> }, MutationSubmitAnalysisResultsArgs>,
     submitStockOrder?: GraphCacheUpdateResolver<{ submitStockOrder: WithTypename<StockOrderResponse> }, MutationSubmitStockOrderArgs>,
+    updateAbxAntibiotic?: GraphCacheUpdateResolver<{ updateAbxAntibiotic: WithTypename<AbxAntibioticResponse> }, MutationUpdateAbxAntibioticArgs>,
+    updateAbxAstPanel?: GraphCacheUpdateResolver<{ updateAbxAstPanel: WithTypename<AbxAstPanelResponse> }, MutationUpdateAbxAstPanelArgs>,
+    updateAbxBreakpoint?: GraphCacheUpdateResolver<{ updateAbxBreakpoint: WithTypename<AbxBreakpointResponse> }, MutationUpdateAbxBreakpointArgs>,
+    updateAbxBreakpointType?: GraphCacheUpdateResolver<{ updateAbxBreakpointType: WithTypename<AbxBreakpointTypeResponse> }, MutationUpdateAbxBreakpointTypeArgs>,
+    updateAbxClass?: GraphCacheUpdateResolver<{ updateAbxClass: WithTypename<AbxClassResponse> }, MutationUpdateAbxClassArgs>,
+    updateAbxExpResPhenotype?: GraphCacheUpdateResolver<{ updateAbxExpResPhenotype: WithTypename<AbxExpResPhenotypeResponse> }, MutationUpdateAbxExpResPhenotypeArgs>,
+    updateAbxExpertInterpretationRule?: GraphCacheUpdateResolver<{ updateAbxExpertInterpretationRule: WithTypename<AbxExpertInterpretationRuleResponse> }, MutationUpdateAbxExpertInterpretationRuleArgs>,
+    updateAbxFamily?: GraphCacheUpdateResolver<{ updateAbxFamily: WithTypename<AbxFamilyResponse> }, MutationUpdateAbxFamilyArgs>,
+    updateAbxGenus?: GraphCacheUpdateResolver<{ updateAbxGenus: WithTypename<AbxGenusResponse> }, MutationUpdateAbxGenusArgs>,
+    updateAbxGuideline?: GraphCacheUpdateResolver<{ updateAbxGuideline: WithTypename<AbxGuidelineResponse> }, MutationUpdateAbxGuidelineArgs>,
+    updateAbxHost?: GraphCacheUpdateResolver<{ updateAbxHost: WithTypename<AbxHostResponse> }, MutationUpdateAbxHostArgs>,
+    updateAbxKingdom?: GraphCacheUpdateResolver<{ updateAbxKingdom: WithTypename<AbxKingdomResponse> }, MutationUpdateAbxKingdomArgs>,
+    updateAbxMedium?: GraphCacheUpdateResolver<{ updateAbxMedium: WithTypename<AbxMediumResponse> }, MutationUpdateAbxMediumArgs>,
+    updateAbxOrder?: GraphCacheUpdateResolver<{ updateAbxOrder: WithTypename<AbxOrderResponse> }, MutationUpdateAbxOrderArgs>,
+    updateAbxOrganism?: GraphCacheUpdateResolver<{ updateAbxOrganism: WithTypename<AbxOrganismResponse> }, MutationUpdateAbxOrganismArgs>,
+    updateAbxOrganismSerotype?: GraphCacheUpdateResolver<{ updateAbxOrganismSerotype: WithTypename<AbxOrganismSerotypeResponse> }, MutationUpdateAbxOrganismSerotypeArgs>,
+    updateAbxPhylum?: GraphCacheUpdateResolver<{ updateAbxPhylum: WithTypename<AbxPhylumResponse> }, MutationUpdateAbxPhylumArgs>,
+    updateAbxQcRange?: GraphCacheUpdateResolver<{ updateAbxQcRange: WithTypename<AbxQcRangeResponse> }, MutationUpdateAbxQcRangeArgs>,
+    updateAbxSiteOfInfection?: GraphCacheUpdateResolver<{ updateAbxSiteOfInfection: WithTypename<AbxSiteOfInfectionResponse> }, MutationUpdateAbxSiteOfInfectionArgs>,
+    updateAbxTestMethod?: GraphCacheUpdateResolver<{ updateAbxTestMethod: WithTypename<AbxTestMethodResponse> }, MutationUpdateAbxTestMethodArgs>,
     updateAnalysis?: GraphCacheUpdateResolver<{ updateAnalysis: WithTypename<ProfilesServiceResponse> }, MutationUpdateAnalysisArgs>,
     updateAnalysisCategory?: GraphCacheUpdateResolver<{ updateAnalysisCategory: WithTypename<AnalysisCategoryResponse> }, MutationUpdateAnalysisCategoryArgs>,
     updateAnalysisCorrectionFactor?: GraphCacheUpdateResolver<{ updateAnalysisCorrectionFactor: WithTypename<AnalysisCorrectionFactorResponse> }, MutationUpdateAnalysisCorrectionFactorArgs>,
@@ -8464,6 +10269,440 @@ export type GraphCacheUpdaters = {
     latestActivity?: GraphCacheUpdateResolver<{ latestActivity: WithTypename<ActivityStreamType> }, Record<string, never>>,
     streamAll?: GraphCacheUpdateResolver<{ streamAll: WithTypename<ActivityStreamType> }, Record<string, never>>,
     streamProcesses?: GraphCacheUpdateResolver<{ streamProcesses: WithTypename<ActivityProcessType> }, Record<string, never>>
+  },
+  AbxASTPanelCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelCursorPage>>, Record<string, never>>
+  },
+  AbxASTPanelEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelEdge>>, Record<string, never>>
+  },
+  AbxASTPanelType?: {
+    active?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    breakpoints?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>
+  },
+  AbxAntibioticCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticCursorPage>>, Record<string, never>>
+  },
+  AbxAntibioticEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticEdge>>, Record<string, never>>
+  },
+  AbxAntibioticGuidelineType?: {
+    antibiotic?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    antibioticUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>
+  },
+  AbxAntibioticType?: {
+    abxNumber?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    animalGp?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    atcCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    ciaCategory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    class_?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    clsiOrder?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    comments?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    dinCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    eucastCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    eucastOrder?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    guidelines?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    human?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    jacCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincafb?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loinccomp?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincdisk?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincetest?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincgen?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincmic?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincmlc?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincsbt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    loincslow?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    potency?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    profClass?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    subclass?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    userCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    veterinary?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    whoCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    whonetAbxCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>
+  },
+  AbxBreakpointTyp?: {
+    breakpointType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    breakpointTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    comments?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    ecvEcoff?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    ecvEcoffTentative?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    host?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    hostUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    i?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    organismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    organismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    potency?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    r?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    referenceSequence?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    referenceTable?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    s?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    sdd?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    siteOfInfection?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    siteOfInfectionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    testMethod?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    whonetAbxCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    year?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>
+  },
+  AbxBreakpointTypCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypCursorPage>>, Record<string, never>>
+  },
+  AbxBreakpointTypEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypEdge>>, Record<string, never>>
+  },
+  AbxBreakpointTypeTyp?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>
+  },
+  AbxClassType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    phylum?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    phylumUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>
+  },
+  AbxExpResPhenotypeCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeCursorPage>>, Record<string, never>>
+  },
+  AbxExpResPhenotypeEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeEdge>>, Record<string, never>>
+  },
+  AbxExpResPhenotypeType?: {
+    abxCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    abxCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    antibioticExceptions?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    comments?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    exceptionOrganismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    exceptionOrganismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    organismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    organismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    referenceTable?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>
+  },
+  AbxExpertInterpretationRuleCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleCursorPage>>, Record<string, never>>
+  },
+  AbxExpertInterpretationRuleEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleEdge>>, Record<string, never>>
+  },
+  AbxExpertInterpretationRuleType?: {
+    affectedAntibiotics?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    antibioticExceptions?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    organismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    organismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    ruleCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    ruleCriteria?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>
+  },
+  AbxFamilyType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    order?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    orderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>
+  },
+  AbxGenusType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    family?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    familyUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>
+  },
+  AbxGuidelineType?: {
+    code?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>
+  },
+  AbxHostType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>
+  },
+  AbxKingdomType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>
+  },
+  AbxMediumType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>
+  },
+  AbxOrderType?: {
+    classUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    class_?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>
+  },
+  AbxOrganismCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismCursorPage>>, Record<string, never>>
+  },
+  AbxOrganismEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismEdge>>, Record<string, never>>
+  },
+  AbxOrganismSerotypeCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeCursorPage>>, Record<string, never>>
+  },
+  AbxOrganismSerotypeEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeEdge>>, Record<string, never>>
+  },
+  AbxOrganismSerotypeType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    fate?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    hPhase1?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    hPhase2?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    oAntigens?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    organism?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    organismUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    serogroup?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    serotype?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    subspecies?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    x997Check?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>
+  },
+  AbxOrganismType?: {
+    anaerobe?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    classUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    class_?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    comments?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    common?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    family?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    familyCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    familyUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    gbifDatasetId?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    gbifTaxonId?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    gbifTaxonomicStatus?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    genus?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    genusCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    genusGroup?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    genusUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    kingdomUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    morphology?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    msfGrpClin?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    order?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    orderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    organismType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    phylum?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    phylumUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    replacedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    sctCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    sctText?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    serovarGroup?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    speciesGroup?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    subkingdomCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    taxonomicStatus?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    whonetOrgCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>
+  },
+  AbxPhylumType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    kingdom?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    kingdomUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>
+  },
+  AbxQCRangeCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeCursorPage>>, Record<string, never>>
+  },
+  AbxQCRangeEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeEdge>>, Record<string, never>>
+  },
+  AbxQCRangeType?: {
+    abxTest?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    antibiotic?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    maximum?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    medium?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    mediumUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    method?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    minimum?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    referenceTable?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    strain?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    whonetAbxCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    whonetOrgCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    year?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>
+  },
+  AbxSiteOfInfectionType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>
+  },
+  AbxTestMethodType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>
   },
   ActivityFeedType?: {
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityFeedType>>, Record<string, never>>,

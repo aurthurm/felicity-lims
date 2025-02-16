@@ -4,15 +4,14 @@ import strawberry  # noqa
 import strawberry
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.multiplex.microbiology import AbxReferenceTableType, AbxExpResPhenotypeType, \
+from felicity.api.gql.multiplex.microbiology import AbxExpResPhenotypeType, \
     AbxExpertInterpretationRuleType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.multiplex.microbiology.schemas import AbxReferenceTableCreate, AbxReferenceTableUpdate, \
-    AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate, AbxExpertInterpretationRuleCreate, \
+from felicity.apps.multiplex.microbiology.schemas import AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate, \
+    AbxExpertInterpretationRuleCreate, \
     AbxExpertInterpretationRuleUpdate
-from felicity.apps.multiplex.microbiology.services import AbxReferenceTableService, AbxExpResPhenotypeService, \
-    AbxExpertInterpretationRuleService
+from felicity.apps.multiplex.microbiology.services import AbxExpResPhenotypeService, AbxExpertInterpretationRuleService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ class AbxReferenceTableInputType:
 @strawberry.input
 class AbxExpResPhenotypeInputType:
     guideline_uid: str
-    reference_table_uid: str
+    reference_table: str
     organism_code: str
     organism_code_type: str
     exception_organism_code: str
@@ -56,64 +55,11 @@ AbxExpertInterpretationRuleResponse = strawberry.union(
     description="",
 )
 
-# Response Unions
-AbxReferenceTableResponse = strawberry.union(
-    "AbxReferenceTableResponse",
-    (AbxReferenceTableType, OperationError),
-    description="",
-)
-
 AbxExpResPhenotypeResponse = strawberry.union(
     "AbxExpResPhenotypeResponse",
     (AbxExpResPhenotypeType, OperationError),
     description="",
 )
-
-
-# Reference Table Mutations
-@strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_reference_table(
-        info,
-        payload: AbxReferenceTableInputType
-) -> AbxReferenceTableResponse:
-    felicity_user = await auth_from_info(info)
-    incoming = {
-        "created_by_uid": felicity_user.uid,
-        "updated_by_uid": felicity_user.uid,
-    }
-    for k, v in payload.__dict__.items():
-        incoming[k] = v
-
-    obj_in = AbxReferenceTableCreate(**incoming)
-    abx_reference_table = await AbxReferenceTableService().create(obj_in)
-    return AbxReferenceTableType(**abx_reference_table.marshal_simple())
-
-
-@strawberry.mutation(permission_classes=[IsAuthenticated])
-async def update_abx_reference_table(
-        info,
-        uid: str,
-        payload: AbxReferenceTableInputType
-) -> AbxReferenceTableResponse:
-    felicity_user = await auth_from_info(info)
-    abx_reference_table = await AbxReferenceTableService().get(uid=uid)
-
-    reference_table_data = abx_reference_table.to_dict()
-    for field in reference_table_data:
-        if field in payload.__dict__:
-            try:
-                setattr(abx_reference_table, field, payload.__dict__[field])
-            except Exception as e:
-                logger.warning(e)
-
-    setattr(abx_reference_table, "updated_by_uid", felicity_user.uid)
-
-    reference_table_in = AbxReferenceTableUpdate(**abx_reference_table.to_dict())
-    abx_reference_table = await AbxReferenceTableService().update(
-        abx_reference_table.uid,
-        reference_table_in
-    )
-    return AbxReferenceTableType(**abx_reference_table.marshal_simple())
 
 
 # Expected Resistance Phenotype Mutations

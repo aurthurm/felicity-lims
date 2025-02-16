@@ -1,0 +1,637 @@
+query GetAbxGuidelinesAll {
+    abxGuidelinesAll {
+        uid
+        name
+        code
+        description
+    }
+}
+
+query GetAbxGuidelineByUid($uid: String!) {
+    abxGuidelineByUid(uid: $uid) {
+        uid
+        name
+        code
+        description
+    }
+}
+
+query GetAbxAntibioticAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+    abxAntibioticAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor,beforeCursor: $beforeCursor, sortBy: $sortBy) {
+        totalCount
+        items {
+          uid
+          name
+          guidelines { uid name }
+          whonetAbxCode
+          whoCode
+          dinCode
+          jacCode
+          eucastCode
+          userCode
+          abxNumber
+          potency
+          atcCode
+          class_
+          subclass
+          profClass
+          ciaCategory
+          clsiOrder
+          eucastOrder
+          human
+          veterinary
+          animalGp
+          loinccomp
+          loincgen
+          loincdisk
+          loincmic
+          loincetest
+          loincslow
+          loincafb
+          loincsbt
+          loincmlc
+          createdAt
+          createdByUid
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+  }
+}
+
+
+query GetAbxAntibioticByUid($uid: String!) {
+    abxAntibioticByUid(uid: $uid) {
+      uid
+      name
+      guidelines { uid name }
+      whonetAbxCode
+      whoCode
+      dinCode
+      jacCode
+      eucastCode
+      userCode
+      abxNumber
+      potency
+      atcCode
+      class_
+      subclass
+      profClass
+      ciaCategory
+      clsiOrder
+      eucastOrder
+      human
+      veterinary
+      animalGp
+      loinccomp
+      loincgen
+      loincdisk
+      loincmic
+      loincetest
+      loincslow
+      loincafb
+      loincsbt
+      loincmlc
+      comments
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxKingdomAll {
+    abxKingdomAll {
+        uid
+        name
+    }
+}
+
+query GetAbxKingdomByUid($uid: String!) {
+    abxKingdomByUid(uid: $uid) {
+        uid
+        name
+    }
+}
+
+query GetAbxPhylumAll {
+    abxPhylumAll {
+        uid
+        name
+        kingdomUid
+    }
+}
+
+query GetAbxPhylumByUid($uid: String!) {
+    abxPhylumByUid(uid: $uid) {
+        uid
+        name
+        kingdomUid
+    }
+}
+
+query GetAbxClassAll {
+    abxClassAll {
+        uid
+        name
+        phylumUid
+    }
+}
+
+query GetAbxClassByUid($uid: String!) {
+    abxClassByUid(uid: $uid) {
+        uid
+        name
+        phylumUid
+    }
+}
+
+query GetAbxOrderAll {
+    abxOrderAll {
+        uid
+        name
+        classUid
+    }
+}
+
+query GetAbxOrderByUid($uid: String!) {
+    abxOrderByUid(uid: $uid) {
+        uid
+        name
+        classUid
+    }
+}
+
+query GetAbxFamilyAll {
+    abxFamilyAll {
+        uid
+        name
+        orderUid
+    }
+}
+
+query GetAbxFamilyByUid($uid: String!) {
+    abxFamilyByUid(uid: $uid) {
+        uid
+        name
+        orderUid
+    }
+}
+
+query GetAbxGenusAll {
+    abxGenusAll {
+        uid
+        name
+        familyUid
+    }
+}
+
+query GetAbxGenusByUid($uid: String!) {
+    abxGenusByUid(uid: $uid) {
+        uid
+        name
+        familyUid
+    }
+}
+
+query GetAbxOrganismAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+    abxOrganismAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
+        totalCount
+        items {
+            uid
+            name
+            whonetOrgCode
+            replacedBy
+            taxonomicStatus
+            common
+            organismType
+            anaerobe
+            morphology
+            subkingdomCode
+            familyCode
+            genusGroup
+            genusCode
+            speciesGroup
+            serovarGroup
+            msfGrpClin
+            sctCode
+            sctText
+            gbifTaxonId
+            gbifDatasetId
+            gbifTaxonomicStatus
+            kingdomUid
+            guideline { name }
+            phylumUid
+            phylum { name }
+            classUid
+            class_ { name }
+            orderUid
+            order { name }
+            familyUid
+            family { name }
+            genusUid
+            genus { name }
+            comments
+            createdAt
+            createdByUid
+        }
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+        }
+    }
+}
+
+query GetAbxOrganismByUid($uid: String!) {
+    abxOrganismByUid(uid: $uid) {
+            uid
+            name
+            whonetOrgCode
+            replacedBy
+            taxonomicStatus
+            common
+            organismType
+            anaerobe
+            morphology
+            subkingdomCode
+            familyCode
+            genusGroup
+            genusCode
+            speciesGroup
+            serovarGroup
+            msfGrpClin
+            sctCode
+            sctText
+            gbifTaxonId
+            gbifDatasetId
+            gbifTaxonomicStatus
+            kingdomUid
+            guideline { name }
+            phylumUid
+            phylum { name }
+            classUid
+            class_ { name }
+            orderUid
+            order { name }
+            familyUid
+            family { name }
+            genusUid
+            genus { name }
+            comments
+            createdAt
+            createdByUid
+    }
+}
+
+query GetAbxOrganismSerotypeAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+   abxOrganismSerotypeAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
+       totalCount
+       items {
+             uid
+             organismUid
+             organism { name }
+             serotype
+             serogroup
+             subspecies
+             oAntigens
+             hPhase1
+             hPhase2
+             x997Check
+             fate
+             createdAt
+             createdByUid
+       }
+       pageInfo {
+           hasNextPage
+           hasPreviousPage
+       }
+   }
+}
+
+
+query GetAbxOrganismSerotypeByUid($uid: String!) {
+    abxOrganismSerotypeByUid(uid: $uid) {
+         uid
+         organismUid
+         organism { name }
+         serotype
+         serogroup
+         subspecies
+         oAntigens
+         hPhase1
+         hPhase2
+         x997Check
+         fate
+         createdAt
+         createdByUid
+    }
+}
+
+query GetAbxTestMethodAll {
+    abxTestMethodAll {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxTestMethodByUid($uid: String!) {
+    abxTestMethodByUid(uid: $uid) {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxBreakpointTypeAll {
+    abxBreakpointTypeAll {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxBreakpointTypeByUid($uid: String!) {
+    abxBreakpointTypeByUid(uid: $uid) {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxHostAll {
+    abxHostAll {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxHostUid($uid: String!) {
+    abxHostByUid(uid: $uid) {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxSiteOfInfectionAll {
+    abxSiteOfInfectionAll {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxSiteOfInfectionUid($uid: String!) {
+    abxSiteOfInfectionByUid(uid: $uid) {
+      uid
+      name
+      description
+      createdAt
+      createdByUid
+    }
+}
+
+query GetAbxBreakpointAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+    abxBreakpointAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
+        items {
+            uid
+            guidelineUid
+            guideline { name }
+            year
+            testMethod
+            potency
+            organismCode
+            organismCodeType
+            breakpointTypeUid
+            breakpointType { name }
+            hostUid
+            host { name }
+            siteOfInfectionUid
+            siteOfInfection { name }
+            referenceTable
+            referenceSequence
+            whonetAbxCode
+            comments
+            r
+            i
+            sdd
+            s
+            ecvEcoff
+            ecvEcoffTentative
+            createdAt
+            createdByUid
+        }
+        totalCount
+        pageInfo {
+           hasNextPage
+           hasPreviousPage
+        }
+    }
+}
+
+query GetAbxBreakpointUid($uid: String!) {
+    abxBreakpointByUid(uid: $uid) {
+        uid
+        guidelineUid
+        guideline { name }
+        year
+        testMethod
+        potency
+        organismCode
+        organismCodeType
+        breakpointTypeUid
+        breakpointType { name }
+        hostUid
+        host { name }
+        siteOfInfectionUid
+        siteOfInfection { name }
+        referenceTable
+        referenceSequence
+        whonetAbxCode
+        comments
+        r
+        i
+        sdd
+        s
+        ecvEcoff
+        ecvEcoffTentative
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxExpectedResistancePhenotypeAll {
+    abxExpectedResistancePhenotypeAll {
+        uid
+        guidelineUid
+        guideline { name }
+        referenceTable
+        organismCode
+        organismCodeType
+        exceptionOrganismCode
+        exceptionOrganismCodeType
+        abxCode
+        abxCodeType
+        antibioticExceptions
+        comments
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxExpectedResistancePhenotypeUid($uid: String!) {
+    abxExpectedResistancePhenotypeByUid(uid: $uid) {
+        uid
+        guidelineUid
+        guideline { name }
+        referenceTable
+        organismCode
+        organismCodeType
+        exceptionOrganismCode
+        exceptionOrganismCodeType
+        abxCode
+        abxCodeType
+        antibioticExceptions
+        comments
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxExpertInterpretationRuleAll {
+    abxExpertInterpretationRuleAll {
+        uid
+        ruleCode
+        description
+        organismCode
+        organismCodeType
+        ruleCriteria
+        affectedAntibiotics
+        antibioticExceptions
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxExpertInterpretationRuleUid($uid: String!) {
+    abxExpertInterpretationRuleByUid(uid: $uid) {
+        uid
+        ruleCode
+        description
+        organismCode
+        organismCodeType
+        ruleCriteria
+        affectedAntibiotics
+        antibioticExceptions
+        createdAt
+        createdByUid
+    }
+}
+
+
+query GetAbxMediumAll {
+    abxMediumAll {
+        uid
+        name
+        description
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxMediumUid($uid: String!) {
+    abxMediumByUid(uid: $uid) {
+        uid
+        name
+        description
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxQcRangeAll {
+    abxQcRangeAll {
+        uid
+        guidelineUid
+        guideline { name }
+        year
+        strain
+        referenceTable
+        whonetOrgCode
+        antibiotic
+        abxTest
+        whonetAbxCode
+        method
+        mediumUid
+        medium { name }
+        minimum
+        maximum
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxQcRangeUid($uid: String!) {
+    abxQcRangeByUid(uid: $uid) {
+        uid
+        guidelineUid
+        guideline { name }
+        year
+        strain
+        referenceTable
+        whonetOrgCode
+        antibiotic
+        abxTest
+        whonetAbxCode
+        method
+        mediumUid
+        medium { name }
+        minimum
+        maximum
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxAstPanelAll {
+    abxAstPanelAll {
+        uid
+        name
+        description
+        breakpoints {
+            uid
+        }
+        active
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxAstPanelUid($uid: String!) {
+    abxAstPanelByUid(uid: $uid) {
+        uid
+        name
+        description
+        breakpoints {
+            uid
+        }
+        active
+        createdAt
+        createdByUid
+    }
+}

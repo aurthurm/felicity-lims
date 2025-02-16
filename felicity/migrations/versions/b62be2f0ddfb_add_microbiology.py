@@ -1,8 +1,8 @@
 """add-microbiology
 
-Revision ID: 88c6b27429bb
+Revision ID: b62be2f0ddfb
 Revises: cccb8d8adce5
-Create Date: 2025-02-15 17:45:23.159999
+Create Date: 2025-02-16 19:59:34.454065
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '88c6b27429bb'
+revision = 'b62be2f0ddfb'
 down_revision = 'cccb8d8adce5'
 branch_labels = None
 depends_on = None
@@ -170,19 +170,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_medium_uid'), 'abx_medium', ['uid'], unique=False)
-    op.create_table('abx_reference_table',
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('description', sa.String(), nullable=True),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_abx_reference_table_uid'), 'abx_reference_table', ['uid'], unique=False)
     op.create_table('abx_test_method',
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
@@ -248,7 +235,7 @@ def upgrade():
     op.create_index(op.f('ix_abx_breakpoint_uid'), 'abx_breakpoint', ['uid'], unique=False)
     op.create_table('abx_expected_res_phenotype',
     sa.Column('guideline_uid', sa.String(), nullable=True),
-    sa.Column('reference_table_uid', sa.String(), nullable=True),
+    sa.Column('reference_table', sa.String(length=100), nullable=True),
     sa.Column('organism_code', sa.String(length=50), nullable=False),
     sa.Column('organism_code_type', sa.String(length=50), nullable=False),
     sa.Column('exception_organism_code', sa.String(length=50), nullable=True),
@@ -264,7 +251,6 @@ def upgrade():
     sa.Column('updated_by_uid', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['guideline_uid'], ['abx_guideline.uid'], ),
-    sa.ForeignKeyConstraint(['reference_table_uid'], ['abx_reference_table.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
@@ -507,8 +493,6 @@ def downgrade():
     op.drop_table('abx_antibiotic_guideline')
     op.drop_index(op.f('ix_abx_test_method_uid'), table_name='abx_test_method')
     op.drop_table('abx_test_method')
-    op.drop_index(op.f('ix_abx_reference_table_uid'), table_name='abx_reference_table')
-    op.drop_table('abx_reference_table')
     op.drop_index(op.f('ix_abx_medium_uid'), table_name='abx_medium')
     op.drop_table('abx_medium')
     op.drop_index(op.f('ix_abx_kingdom_uid'), table_name='abx_kingdom')

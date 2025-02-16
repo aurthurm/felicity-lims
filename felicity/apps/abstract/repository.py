@@ -406,6 +406,22 @@ class BaseRepository(Generic[M]):
             await session.flush()
             await session.commit()
 
+    async def delete_where(self, **kwargs) -> None:
+        """
+        Delete a model instance based on its provided conditions.
+        :param kwargs: The unique identifier of the model to delete.
+        :raises ValueError: If no uid is provided.
+        """
+        if not kwargs:
+            raise ValueError("No filter criteria provided to delete")
+
+        objs = await self.get_all(**kwargs)
+        async with self.async_session() as session:
+            for obj in objs:
+                await session.delete(obj)
+            await session.flush()
+            await session.commit()
+
     async def count_where(self, filters: dict) -> int:
         """
         Count the number of model instances that match the given filters.

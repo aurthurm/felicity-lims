@@ -1,0 +1,689 @@
+mutation  AddAbxGuideline($payload: AbxGuidelineInputType!) {
+    createAbxGuideline(payload: $payload) {
+        ...on AbxGuidelineType {
+            uid
+            name
+            code
+            description
+        }
+    }
+}
+
+mutation  EditAbxGuideline($uid: String!, $payload: AbxGuidelineInputType!) {
+    updateAbxGuideline(uid: $uid, payload: $payload) {
+        ...on AbxGuidelineType {
+            uid
+            name
+            code
+            description
+        }
+    }
+}
+
+mutation  AddAbxAntibiotic($payload: AbxAntibioticInputType!) {
+    createAbxAntibiotic(payload: $payload) {
+        ...on AbxAntibioticType {
+              uid
+              name
+              guidelines { uid name }
+              whonetAbxCode
+              whoCode
+              dinCode
+              jacCode
+              eucastCode
+              userCode
+              abxNumber
+              potency
+              atcCode
+              class_
+              subclass
+              profClass
+              ciaCategory
+              clsiOrder
+              eucastOrder
+              human
+              veterinary
+              animalGp
+              loinccomp
+              loincgen
+              loincdisk
+              loincmic
+              loincetest
+              loincslow
+              loincafb
+              loincsbt
+              loincmlc
+              createdAt
+              createdByUid
+        }
+    }
+}
+
+mutation  EditAbxAntibiotic($uid: String!, $payload: AbxAntibioticInputType!) {
+    updateAbxAntibiotic(uid: $uid, payload: $payload) {
+        ...on AbxAntibioticType {
+              uid
+              name
+              guidelines { uid name }
+              whonetAbxCode
+              whoCode
+              dinCode
+              jacCode
+              eucastCode
+              userCode
+              abxNumber
+              potency
+              atcCode
+              class_
+              subclass
+              profClass
+              ciaCategory
+              clsiOrder
+              eucastOrder
+              human
+              veterinary
+              animalGp
+              loinccomp
+              loincgen
+              loincdisk
+              loincmic
+              loincetest
+              loincslow
+              loincafb
+              loincsbt
+              loincmlc
+              createdAt
+              createdByUid
+        }
+    }
+}
+
+mutation  AddAbxAstPanel($payload: AbxASTPanelInputType!) {
+    createAbxAstPanel(payload: $payload) {
+        ...on AbxASTPanelType {
+            uid
+            name
+            description
+            breakpoints {
+                uid
+            }
+            active
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  EditAbxAstPanel($uid: String!, $payload: AbxASTPanelInputType!) {
+    updateAbxAstPanel(uid: $uid, payload: $payload) {
+        ...on AbxASTPanelType {
+            uid
+            name
+            description
+            breakpoints {
+                uid
+            }
+            active
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  AddAbxTestMethod($payload: AbxTestMethodInputType!) {
+    createAbxTestMethod(payload: $payload) {
+        ...on AbxTestMethodType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  EditAbxTestMethod($uid: String!, $payload: AbxTestMethodInputType!) {
+    updateAbxTestMethod(uid: $uid, payload: $payload) {
+        ...on AbxTestMethodType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  AddAbxBreakpointType($payload: AbxBreakpointTypeInputType!) {
+    createAbxBreakpointType(payload: $payload) {
+        ...on AbxBreakpointTypeTyp {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  EditAbxBreakpointType($uid: String!, $payload: AbxBreakpointTypeInputType!) {
+    updateAbxBreakpointType(uid: $uid, payload: $payload) {
+        ...on AbxBreakpointTypeTyp {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  AddAbxHost($payload: AbxHostInputType!) {
+    createAbxHost(payload: $payload) {
+        ...on AbxHostType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  EditAbxHost($uid: String!, $payload: AbxHostInputType!) {
+    updateAbxHost(uid: $uid, payload: $payload) {
+        ...on AbxHostType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  AddAbxSiteOfInfection($payload: AbxSiteOfInfectionInputType!) {
+    createAbxSiteOfInfection(payload: $payload) {
+        ...on AbxSiteOfInfectionType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  EditAbxSiteOfInfection($uid: String!, $payload: AbxSiteOfInfectionInputType!) {
+    updateAbxSiteOfInfection(uid: $uid, payload: $payload) {
+        ...on AbxSiteOfInfectionType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  AddAbxBreakpoint($payload: AbxBreakpointInputType!) {
+    createAbxBreakpoint(payload: $payload) {
+        ...on AbxBreakpointTyp {
+            uid
+            guidelineUid
+            guideline { name }
+            year
+            testMethod
+            potency
+            organismCode
+            organismCodeType
+            breakpointTypeUid
+            breakpointType { name }
+            hostUid
+            host { name }
+            siteOfInfectionUid
+            siteOfInfection { name }
+            referenceTable
+            referenceSequence
+            whonetAbxCode
+            comments
+            r
+            i
+            sdd
+            s
+            ecvEcoff
+            ecvEcoffTentative
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  EditAbxBreakpoint($uid: String!, $payload: AbxBreakpointInputType!) {
+    updateAbxBreakpoint(uid: $uid, payload: $payload) {
+        ...on AbxBreakpointTyp {
+            uid
+            guidelineUid
+            guideline { name }
+            year
+            testMethod
+            potency
+            organismCode
+            organismCodeType
+            breakpointTypeUid
+            breakpointType { name }
+            hostUid
+            host { name }
+            siteOfInfectionUid
+            siteOfInfection { name }
+            referenceTable
+            referenceSequence
+            whonetAbxCode
+            comments
+            r
+            i
+            sdd
+            s
+            ecvEcoff
+            ecvEcoffTentative
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  AddAbxMedium($payload: AbxMediumInputType!) {
+    createAbxMedium(payload: $payload) {
+        ...on AbxMediumType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  EditAbxMedium($uid: String!, $payload: AbxMediumInputType!) {
+    updateAbxMedium(uid: $uid, payload: $payload) {
+        ...on AbxMediumType {
+          uid
+          name
+          description
+          createdAt
+          createdByUid
+        }
+    }
+}
+
+mutation  AddAbxQcRange($payload: AbxQCRangeInputType!) {
+    createAbxQcRange(payload: $payload) {
+        ...on AbxQCRangeType {
+            uid
+            guidelineUid
+            guideline { name }
+            year
+            strain
+            referenceTable
+            whonetOrgCode
+            antibiotic
+            abxTest
+            whonetAbxCode
+            method
+            mediumUid
+            medium { name }
+            minimum
+            maximum
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  EditAbxQcRange($uid: String!, $payload: AbxQCRangeInputType!) {
+    updateAbxQcRange(uid: $uid, payload: $payload) {
+        ...on AbxQCRangeType {
+            uid
+            guidelineUid
+            guideline { name }
+            year
+            strain
+            referenceTable
+            whonetOrgCode
+            antibiotic
+            abxTest
+            whonetAbxCode
+            method
+            mediumUid
+            medium { name }
+            minimum
+            maximum
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  AddAbxKingdom($payload: AbxKingdomInputType!) {
+    createAbxKingdom(payload: $payload) {
+        ...on AbxKingdomType {
+            uid
+            name
+        }
+    }
+}
+
+mutation  EditAbxKingdom($uid: String!, $payload: AbxKingdomInputType!) {
+    updateAbxKingdom(uid: $uid, payload: $payload) {
+        ...on AbxKingdomType {
+            uid
+            name
+        }
+    }
+}
+
+mutation  AddAbxPhylum($payload: AbxPhylumInputType!) {
+    createAbxPhylum(payload: $payload) {
+        ...on AbxPhylumType {
+            uid
+            name
+            kingdomUid
+        }
+    }
+}
+
+mutation  EditAbxPhylum($uid: String!, $payload: AbxPhylumInputType!) {
+    updateAbxPhylum(uid: $uid, payload: $payload) {
+        ...on AbxPhylumType {
+            uid
+            name
+            kingdomUid
+        }
+    }
+}
+
+mutation  AddAbxClass($payload: AbxClassInputType!) {
+    createAbxClass(payload: $payload) {
+        ...on AbxClassType {
+            uid
+            name
+            phylumUid
+        }
+    }
+}
+
+mutation  EditAbxClass($uid: String!, $payload: AbxClassInputType!) {
+    updateAbxClass(uid: $uid, payload: $payload) {
+        ...on AbxClassType {
+            uid
+            name
+            phylumUid
+        }
+    }
+}
+
+mutation  AddAbxOrder($payload: AbxOrderInputType!) {
+    createAbxOrder(payload: $payload) {
+        ...on AbxOrderType {
+            uid
+            name
+            classUid
+        }
+    }
+}
+
+mutation  EditAbxOrder($uid: String!, $payload: AbxOrderInputType!) {
+    updateAbxOrder(uid: $uid, payload: $payload) {
+        ...on AbxOrderType {
+            uid
+            name
+            classUid
+        }
+    }
+}
+
+mutation  AddAbxFamily($payload: AbxFamilyInputType!) {
+    createAbxFamily(payload: $payload) {
+        ...on AbxFamilyType {
+            uid
+            name
+            orderUid
+        }
+    }
+}
+
+mutation  EditAbxFamily($uid: String!, $payload: AbxFamilyInputType!) {
+    updateAbxFamily(uid: $uid, payload: $payload) {
+        ...on AbxFamilyType {
+            uid
+            name
+            orderUid
+        }
+    }
+}
+
+
+mutation  AddAbxGenus($payload: AbxGenusInputType!) {
+    createAbxGenus(payload: $payload) {
+        ...on AbxGenusType {
+            uid
+            name
+            familyUid
+        }
+    }
+}
+
+mutation  EditAbxGenus($uid: String!, $payload: AbxGenusInputType!) {
+    updateAbxGenus(uid: $uid, payload: $payload) {
+        ...on AbxGenusType {
+            uid
+            name
+            familyUid
+        }
+    }
+}
+
+mutation  AddAbxOrganism($payload: AbxOrganismInputType!) {
+    createAbxOrganism(payload: $payload) {
+        ...on AbxOrganismType {
+            uid
+            name
+            whonetOrgCode
+            replacedBy
+            taxonomicStatus
+            common
+            organismType
+            anaerobe
+            morphology
+            subkingdomCode
+            familyCode
+            genusGroup
+            genusCode
+            speciesGroup
+            serovarGroup
+            msfGrpClin
+            sctCode
+            sctText
+            gbifTaxonId
+            gbifDatasetId
+            gbifTaxonomicStatus
+            kingdomUid
+            guideline { name }
+            phylumUid
+            phylum { name }
+            classUid
+            class_ { name }
+            orderUid
+            order { name }
+            familyUid
+            family { name }
+            genusUid
+            genus { name }
+            comments
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  EditAbxOrganism($uid: String!, $payload: AbxOrganismInputType!) {
+    updateAbxOrganism(uid: $uid, payload: $payload) {
+        ...on AbxOrganismType {
+            uid
+            name
+            whonetOrgCode
+            replacedBy
+            taxonomicStatus
+            common
+            organismType
+            anaerobe
+            morphology
+            subkingdomCode
+            familyCode
+            genusGroup
+            genusCode
+            speciesGroup
+            serovarGroup
+            msfGrpClin
+            sctCode
+            sctText
+            gbifTaxonId
+            gbifDatasetId
+            gbifTaxonomicStatus
+            kingdomUid
+            guideline { name }
+            phylumUid
+            phylum { name }
+            classUid
+            class_ { name }
+            orderUid
+            order { name }
+            familyUid
+            family { name }
+            genusUid
+            genus { name }
+            comments
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  AddAbxOrganismSerotype($payload: AbxOrganismSerotypeInputType!) {
+    createAbxOrganismSerotype(payload: $payload) {
+        ...on AbxOrganismSerotypeType {
+             uid
+             organismUid
+             organism { name }
+             serotype
+             serogroup
+             subspecies
+             oAntigens
+             hPhase1
+             hPhase2
+             x997Check
+             fate
+             createdAt
+             createdByUid
+        }
+    }
+}
+
+mutation  EditAbxOrganismSerotype($uid: String!, $payload: AbxOrganismSerotypeInputType!) {
+    updateAbxOrganismSerotype(uid: $uid, payload: $payload) {
+        ...on AbxOrganismSerotypeType {
+             uid
+             organismUid
+             organism { name }
+             serotype
+             serogroup
+             subspecies
+             oAntigens
+             hPhase1
+             hPhase2
+             x997Check
+             fate
+             createdAt
+             createdByUid
+        }
+    }
+}
+
+mutation  AddAbxExpResPhenotype($payload: AbxExpResPhenotypeInputType!) {
+    createAbxExpResPhenotype(payload: $payload) {
+        ...on AbxExpResPhenotypeType {
+            uid
+            guidelineUid
+            guideline  { name }
+            referenceTable
+            organismCode
+            organismCodeType
+            exceptionOrganismCode
+            exceptionOrganismCodeType
+            abxCode
+            abxCodeType
+            antibioticExceptions
+            comments
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  EditAbxExpResPhenotype($uid: String!, $payload: AbxExpResPhenotypeInputType!) {
+    updateAbxExpResPhenotype(uid: $uid, payload: $payload) {
+        ...on AbxExpResPhenotypeType {
+            uid
+            guidelineUid
+            guideline { name }
+            referenceTable
+            organismCode
+            organismCodeType
+            exceptionOrganismCode
+            exceptionOrganismCodeType
+            abxCode
+            abxCodeType
+            antibioticExceptions
+            comments
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  AddAbxExpertInterpretationRule($payload: AbxExpertInterpretationRuleInputType!) {
+    createAbxExpertInterpretationRule(payload: $payload) {
+        ...on AbxExpertInterpretationRuleType {
+            uid
+            ruleCode
+            description
+            organismCode
+            organismCodeType
+            ruleCriteria
+            affectedAntibiotics
+            antibioticExceptions
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation  EditAbxExpertInterpretationRule($uid: String!, $payload: AbxExpertInterpretationRuleInputType!) {
+    updateAbxExpertInterpretationRule(uid: $uid, payload: $payload) {
+        ...on AbxExpertInterpretationRuleType {
+            uid
+            ruleCode
+            description
+            organismCode
+            organismCodeType
+            ruleCriteria
+            affectedAntibiotics
+            antibioticExceptions
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+
+

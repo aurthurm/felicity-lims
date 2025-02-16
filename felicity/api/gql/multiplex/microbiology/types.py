@@ -7,11 +7,12 @@ import strawberry  # noqa
 
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
+from felicity.apps.multiplex.microbiology.services import AbxAntibioticGuidelineService
 
 
 @strawberry.type
 class AbxGuidelineType:
-    uid: str | None = None
+    uid: str
     name: str
     code: str | None = None
     description: str | None = None
@@ -25,6 +26,7 @@ class AbxGuidelineType:
 
 @strawberry.type
 class AbxAntibioticGuidelineType:
+    uid: str
     antibiotic_uid: str
     antibiotic: AbxAntibioticType | None = None
     guideline_uid: str
@@ -39,6 +41,7 @@ class AbxAntibioticGuidelineType:
 
 @strawberry.type
 class AbxAntibioticType:
+    uid: str
     name: str
     whonet_abx_code: str | None = None
     who_code: str | None = None
@@ -75,6 +78,14 @@ class AbxAntibioticType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
 
+    @strawberry.field
+    async def guidelines(self, info) -> List[AbxGuidelineType]:
+        abx_guides = await AbxAntibioticGuidelineService().get_all(
+            related=["guideline"],
+            antibiotic_uid=self.uid
+        )
+        return [abx.guideline for abx in abx_guides] if abx_guides else []
+
 
 @strawberry.type
 class AbxAntibioticEdge:
@@ -92,6 +103,7 @@ class AbxAntibioticCursorPage:
 
 @strawberry.type
 class AbxKingdomType:
+    uid: str
     name: str
     created_at: str | None = None
     created_by_uid: str | None = None
@@ -103,6 +115,7 @@ class AbxKingdomType:
 
 @strawberry.type
 class AbxPhylumType:
+    uid: str
     name: str
     kingdom_uid: str | None = None
     kingdom: AbxKingdomType | None = None
@@ -116,6 +129,7 @@ class AbxPhylumType:
 
 @strawberry.type
 class AbxClassType:
+    uid: str
     name: str
     phylum_uid: str | None = None
     phylum: AbxPhylumType | None = None
@@ -129,6 +143,7 @@ class AbxClassType:
 
 @strawberry.type
 class AbxOrderType:
+    uid: str
     name: str
     class_uid: str | None = None
     class_: AbxClassType | None = None
@@ -142,6 +157,7 @@ class AbxOrderType:
 
 @strawberry.type
 class AbxFamilyType:
+    uid: str
     name: str
     order_uid: str | None = None
     order: AbxOrderType | None = None
@@ -155,6 +171,7 @@ class AbxFamilyType:
 
 @strawberry.type
 class AbxGenusType:
+    uid: str
     name: str
     family_uid: str | None = None
     family: AbxFamilyType | None = None
@@ -168,6 +185,7 @@ class AbxGenusType:
 
 @strawberry.type
 class AbxOrganismType:
+    uid: str
     name: str
     whonet_org_code: str | None = None
     replaced_by: str | None = None
@@ -226,6 +244,7 @@ class AbxOrganismCursorPage:
 
 @strawberry.type
 class AbxOrganismSerotypeType:
+    uid: str
     organism_uid: str
     organism: AbxOrganismType | None = None
     serotype: str
@@ -260,6 +279,7 @@ class AbxOrganismSerotypeCursorPage:
 
 @strawberry.type
 class AbxTestMethodType:
+    uid: str
     name: str
     description: str | None = None
     created_at: str | None = None
@@ -272,6 +292,7 @@ class AbxTestMethodType:
 
 @strawberry.type
 class AbxBreakpointTypeTyp:
+    uid: str
     name: str
     description: str | None = None
     created_at: str | None = None
@@ -284,6 +305,7 @@ class AbxBreakpointTypeTyp:
 
 @strawberry.type
 class AbxHostType:
+    uid: str
     name: str
     description: str | None = None
     created_at: str | None = None
@@ -296,6 +318,7 @@ class AbxHostType:
 
 @strawberry.type
 class AbxSiteOfInfectionType:
+    uid: str
     name: str
     description: str | None = None
     created_at: str | None = None
@@ -308,6 +331,7 @@ class AbxSiteOfInfectionType:
 
 @strawberry.type
 class AbxBreakpointTyp:
+    uid: str
     guideline_uid: str
     guideline: AbxGuidelineType | None = None
     year: int | None = None
@@ -354,23 +378,11 @@ class AbxBreakpointTypCursorPage:
 
 
 @strawberry.type
-class AbxReferenceTableType:
-    name: str
-    description: str | None = None
-    created_at: str | None = None
-    created_by_uid: str | None = None
-    created_by: UserType | None = None
-    updated_at: str | None = None
-    updated_by_uid: str | None = None
-    updated_by: UserType | None = None
-
-
-@strawberry.type
 class AbxExpResPhenotypeType:
+    uid: str
     guideline_uid: str
     guideline: AbxGuidelineType | None = None
-    reference_table_uid: str
-    reference_table: AbxReferenceTableType | None = None
+    reference_table: str | None = None
     organism_code: str
     organism_code_type: str
     exception_organism_code: str
@@ -403,6 +415,7 @@ class AbxExpResPhenotypeCursorPage:
 
 @strawberry.type
 class AbxExpertInterpretationRuleType:
+    uid: str
     rule_code: str
     description: str | None = None
     organism_code: str
@@ -434,6 +447,7 @@ class AbxExpertInterpretationRuleCursorPage:
 
 @strawberry.type
 class AbxMediumType:
+    uid: str
     name: str
     description: str | None = None
     created_at: str | None = None
@@ -446,6 +460,7 @@ class AbxMediumType:
 
 @strawberry.type
 class AbxQCRangeType:
+    uid: str
     guideline_uid: str
     guideline: AbxGuidelineType | None = None
     year: int
@@ -484,6 +499,7 @@ class AbxQCRangeCursorPage:
 
 @strawberry.type
 class AbxASTPanelType:
+    uid: str
     name: str
     description: str | None = None
     breakpoints: Optional[List['AbxBreakpointTyp']] = field(default_factory=list)

@@ -8,9 +8,11 @@ from felicity.api.gql.multiplex.microbiology import AbxKingdomType, AbxPhylumTyp
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.multiplex.microbiology.schemas import AbxKingdomCreate, AbxKingdomUpdate, AbxPhylumCreate, \
-    AbxPhylumUpdate, AbxOrganismCreate, AbxOrganismUpdate, AbxOrganismSerotypeCreate, AbxOrganismSerotypeUpdate
+    AbxPhylumUpdate, AbxOrganismCreate, AbxOrganismUpdate, AbxOrganismSerotypeCreate, AbxOrganismSerotypeUpdate, \
+    AbxGenusCreate, AbxGenusUpdate, AbxClassUpdate, AbxClassCreate, AbxOrderUpdate, AbxOrderCreate, AbxFamilyCreate, \
+    AbxFamilyUpdate
 from felicity.apps.multiplex.microbiology.services import AbxKingdomService, AbxPhylumService, AbxOrganismService, \
-    AbxOrganismSerotypeService
+    AbxOrganismSerotypeService, AbxGenusService, AbxClassService, AbxOrderService, AbxFamilyService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -134,7 +136,6 @@ AbxOrganismSerotypeResponse = strawberry.union(
 )
 
 
-# Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_kingdom(info, payload: AbxKingdomInputType) -> AbxKingdomResponse:
     felicity_user = await auth_from_info(info)
@@ -172,7 +173,6 @@ async def update_abx_kingdom(
     return AbxKingdomType(**abx_kingdom.marshal_simple())
 
 
-# Similar patterns for Phylum
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_phylum(info, payload: AbxPhylumInputType) -> AbxPhylumResponse:
     felicity_user = await auth_from_info(info)
@@ -210,7 +210,154 @@ async def update_abx_phylum(
     return AbxPhylumType(**abx_phylum.marshal_simple())
 
 
-# Organism mutations (as an example of the most complex type)
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_abx_class(info, payload: AbxClassInputType) -> AbxClassResponse:
+    felicity_user = await auth_from_info(info)
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        incoming[k] = v
+
+    obj_in = AbxClassCreate(**incoming)
+    abx_class = await AbxClassService().create(obj_in)
+    return AbxClassType(**abx_class.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_abx_class(
+        info, uid: str, payload: AbxClassInputType
+) -> AbxClassResponse:
+    felicity_user = await auth_from_info(info)
+    abx_class = await AbxClassService().get(uid=uid)
+
+    class_data = abx_class.to_dict()
+    for field in class_data:
+        if field in payload.__dict__:
+            try:
+                setattr(abx_class, field, payload.__dict__[field])
+            except Exception as e:
+                logger.warning(e)
+
+    setattr(abx_class, "updated_by_uid", felicity_user.uid)
+
+    phylum_in = AbxClassUpdate(**abx_class.to_dict())
+    abx_phylum = await AbxClassService().update(abx_class.uid, phylum_in)
+    return AbxClassType(**abx_phylum.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_abx_order(info, payload: AbxOrderInputType) -> AbxOrderResponse:
+    felicity_user = await auth_from_info(info)
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        incoming[k] = v
+
+    obj_in = AbxOrderCreate(**incoming)
+    abx_order = await AbxOrderService().create(obj_in)
+    return AbxOrderType(**abx_order.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_abx_order(
+        info, uid: str, payload: AbxOrderInputType
+) -> AbxOrderResponse:
+    felicity_user = await auth_from_info(info)
+    abx_order = await AbxOrderService().get(uid=uid)
+
+    order_data = abx_order.to_dict()
+    for field in order_data:
+        if field in payload.__dict__:
+            try:
+                setattr(abx_order, field, payload.__dict__[field])
+            except Exception as e:
+                logger.warning(e)
+
+    setattr(abx_order, "updated_by_uid", felicity_user.uid)
+
+    order_in = AbxOrderUpdate(**abx_order.to_dict())
+    abx_order = await AbxOrderService().update(abx_order.uid, order_in)
+    return AbxOrderType(**abx_order.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_abx_family(info, payload: AbxFamilyInputType) -> AbxFamilyResponse:
+    felicity_user = await auth_from_info(info)
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        incoming[k] = v
+
+    obj_in = AbxFamilyCreate(**incoming)
+    abx_family = await AbxFamilyService().create(obj_in)
+    return AbxFamilyType(**abx_family.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_abx_family(
+        info, uid: str, payload: AbxFamilyInputType
+) -> AbxFamilyResponse:
+    felicity_user = await auth_from_info(info)
+    abx_family = await AbxFamilyService().get(uid=uid)
+
+    family_data = abx_family.to_dict()
+    for field in family_data:
+        if field in payload.__dict__:
+            try:
+                setattr(abx_family, field, payload.__dict__[field])
+            except Exception as e:
+                logger.warning(e)
+
+    setattr(abx_family, "updated_by_uid", felicity_user.uid)
+
+    phylum_in = AbxFamilyUpdate(**abx_family.to_dict())
+    abx_family = await AbxFamilyService().update(abx_family.uid, phylum_in)
+    return AbxFamilyType(**abx_family.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_abx_genus(info, payload: AbxGenusInputType) -> AbxGenusResponse:
+    felicity_user = await auth_from_info(info)
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        incoming[k] = v
+
+    obj_in = AbxGenusCreate(**incoming)
+    abx_genus = await AbxGenusService().create(obj_in)
+    return AbxGenusType(**abx_genus.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_abx_genus(
+        info, uid: str, payload: AbxGenusInputType
+) -> AbxGenusResponse:
+    felicity_user = await auth_from_info(info)
+    abx_genus = await AbxGenusService().get(uid=uid)
+
+    genus_data = abx_genus.to_dict()
+    for field in genus_data:
+        if field in payload.__dict__:
+            try:
+                setattr(abx_genus, field, payload.__dict__[field])
+            except Exception as e:
+                logger.warning(e)
+
+    setattr(abx_genus, "updated_by_uid", felicity_user.uid)
+
+    genus_in = AbxGenusUpdate(**abx_genus.to_dict())
+    abx_phylum = await AbxGenusService().update(abx_genus.uid, genus_in)
+    return AbxGenusType(**abx_phylum.marshal_simple())
+
+
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_organism(info, payload: AbxOrganismInputType) -> AbxOrganismResponse:
     felicity_user = await auth_from_info(info)

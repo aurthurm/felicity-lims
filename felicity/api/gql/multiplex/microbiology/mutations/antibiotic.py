@@ -2,7 +2,6 @@ import logging
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.multiplex.microbiology import AbxAntibioticType, AbxGuidelineType
 from felicity.api.gql.permissions import IsAuthenticated
@@ -89,7 +88,7 @@ async def create_abx_guideline(info, payload: AbxGuidelineInputType) -> AbxGuide
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_guideline(
         info, uid: str, payload: AbxGuidelineInputType
-) -> AbxAntibioticResponse:
+) -> AbxGuidelineResponse:
     felicity_user = await auth_from_info(info)
     abx_guideline = await AbxGuidelineService().get(uid=uid)
 
@@ -105,7 +104,7 @@ async def update_abx_guideline(
 
     abx_guideline_in = AbxGuidelineUpdate(**abx_guideline.to_dict())
     abx_guideline = await AbxGuidelineService().update(abx_guideline.uid, abx_guideline_in)
-    return a_types.SampleTypeTyp(**abx_guideline.marshal_simple())
+    return AbxGuidelineType(**abx_guideline.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -120,6 +119,12 @@ async def create_abx_antibiotic(info, payload: AbxAntibioticInputType) -> AbxAnt
 
     obj_in = AbxAntibioticCreate(**incoming)
     abx_antibiotic = await AbxAntibioticService().create(obj_in)
+
+    for guideline in payload.guidelines:
+        await AbxAntibioticGuidelineService().create({
+            "antibiotic_uid": abx_antibiotic.uid,
+            "guideline_uid": guideline
+        })
     return AbxAntibioticType(**abx_antibiotic.marshal_simple())
 
 
@@ -143,10 +148,14 @@ async def update_abx_antibiotic(
     abx_antibiotic_in = AbxAntibioticUpdate(**abx_antibiotic.to_dict())
     abx_antibiotic = await AbxAntibioticService().update(abx_antibiotic.uid, abx_antibiotic_in)
 
+    # remove previous association
+    await AbxAntibioticGuidelineService().delete_where(antibiotic_uid=abx_antibiotic.uid)
+
+    # add current association
     for guideline in payload.guidelines:
         await AbxAntibioticGuidelineService().create({
             "antibiotic_uid": abx_antibiotic.uid,
             "guideline_uid": guideline
         })
-    
+
     return AbxAntibioticType(**abx_antibiotic.marshal_simple())
