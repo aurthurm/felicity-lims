@@ -29,7 +29,7 @@ def _clean_df(df, rename):
 
 
 async def seed_antibiotics() -> None:
-    logger.info("Setting up person .....")
+    logger.info("Setting up antibiotics and guidelines .....")
     data = _clean_df(get_whonet_dataframes("Antibiotics"), rename={
         "antibiotic": "name",
         "class": "class_"
@@ -70,7 +70,7 @@ async def seed_antibiotics() -> None:
 
 
 async def seed_organisms():
-    logger.info("Setting up organisms .....")
+    logger.info("Setting up organisms and family tree .....")
     data = _clean_df(get_whonet_dataframes("Organisms"), rename={
         "organism": "name",
         "class": "class_"
@@ -144,7 +144,7 @@ async def seed_organisms():
 
 
 async def seed_organism_serotypes():
-    logger.info("Setting up organism serotypes .....")
+    logger.info("Setting up organism and their serotypes .....")
     data = _clean_df(get_whonet_dataframes("Serotype"), {})
     organisms = await AbxOrganismService().all()
 
@@ -273,7 +273,7 @@ async def seed_expected_resistance_phenotypes():
 
         if not (await AbxExpResPhenotypeService().get(
                 guideline_uid=rt_in["guideline_uid"],
-                reference_table_uid=rt_in["reference_table_uid"],
+                reference_table=rt_in["reference_table"],
                 organism_code=rt_in["organism_code"],
                 organism_code_type=rt_in["organism_code_type"],
                 exception_organism_code=rt_in["exception_organism_code"],

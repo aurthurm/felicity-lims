@@ -10,6 +10,7 @@ class AbxGuideline(BaseEntity):
     name = Column(String)
     code = Column(String, nullable=True)
     description = Column(String, nullable=True)
+    antibiotics = relationship("AbxAntibiotic", secondary="abx_antibiotic_guideline", back_populates="guidelines")
 
 
 class AbxAntibioticGuideline(BaseEntity):
@@ -53,6 +54,7 @@ class AbxAntibiotic(BaseEntity):
     loincsbt = Column(String, nullable=True)
     loincmlc = Column(String, nullable=True)
     comments = Column(String(500), nullable=True)
+    guidelines = relationship("AbxGuideline", secondary="abx_antibiotic_guideline", back_populates="antibiotics")
 
 
 class AbxKingdom(BaseEntity):

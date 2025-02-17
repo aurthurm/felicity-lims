@@ -34,6 +34,7 @@ class MicrobiologyQuery:
                 "who_code__ilike", "din_code__ilike",
                 "jac_code__ilike", "eucast_code__ilike",
                 "user_code__ilike", "abx_number__ilike",
+                "guidelines___name__ilike"
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"

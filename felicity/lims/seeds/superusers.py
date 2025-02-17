@@ -38,7 +38,7 @@ async def seed_daemon_user() -> None:
         await user_service.save(system_daemon)
 
     # initial user-preferences
-    preference = preference_service.get(user_uid=system_daemon.uid)
+    preference = await preference_service.get(user_uid=system_daemon.uid)
     if not preference:
         pref_in = schemas.UserPreferenceCreate(user_uid=system_daemon.uid, expanded_menu=False, theme="light")
         await preference_service.create(pref_in)
