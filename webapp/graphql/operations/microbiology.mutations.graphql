@@ -508,7 +508,7 @@ mutation  AddAbxOrganism($payload: AbxOrganismInputType!) {
             gbifDatasetId
             gbifTaxonomicStatus
             kingdomUid
-            guideline { name }
+            kingdom { name }
             phylumUid
             phylum { name }
             classUid
@@ -551,7 +551,7 @@ mutation  EditAbxOrganism($uid: String!, $payload: AbxOrganismInputType!) {
             gbifDatasetId
             gbifTaxonomicStatus
             kingdomUid
-            guideline { name }
+            kingdom { name }
             phylumUid
             phylum { name }
             classUid

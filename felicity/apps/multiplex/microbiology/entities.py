@@ -68,7 +68,7 @@ class AbxPhylum(BaseEntity):
 
     name = Column(String(100), nullable=False, unique=True)
     kingdom_uid = Column(String, ForeignKey('abx_kingdom.uid'), nullable=True)  # ForeignKey to Kingdom
-    kingdom = relationship('AbxKingdom', backref='abx_phyla')
+    kingdom = relationship('AbxKingdom', backref='abx_phyla', lazy="selectin")
 
 
 class AbxClass(BaseEntity):
@@ -76,7 +76,7 @@ class AbxClass(BaseEntity):
 
     name = Column(String(100), nullable=False, unique=True)
     phylum_uid = Column(String, ForeignKey('abx_phylum.uid'), nullable=True)
-    phylum = relationship('AbxPhylum', backref='classes')
+    phylum = relationship('AbxPhylum', backref='classes', lazy="selectin")
 
 
 class AbxOrder(BaseEntity):
@@ -84,7 +84,7 @@ class AbxOrder(BaseEntity):
 
     name = Column(String(100), nullable=False, unique=True)
     class_uid = Column(String, ForeignKey('abx_class.uid'), nullable=True)
-    class_ = relationship('AbxClass', backref='orders')
+    class_ = relationship('AbxClass', backref='orders', lazy="selectin")
 
 
 class AbxFamily(BaseEntity):
@@ -92,7 +92,7 @@ class AbxFamily(BaseEntity):
 
     name = Column(String(100), nullable=False, unique=True)
     order_uid = Column(String, ForeignKey('abx_order.uid'), nullable=True)
-    order = relationship('AbxOrder', backref='families')
+    order = relationship('AbxOrder', backref='families', lazy="selectin")
 
 
 class AbxGenus(BaseEntity):
@@ -100,7 +100,7 @@ class AbxGenus(BaseEntity):
 
     name = Column(String(100), nullable=False, unique=True)
     family_uid = Column(String, ForeignKey('abx_family.uid'), nullable=True)
-    family = relationship('AbxFamily', backref='genera')
+    family = relationship('AbxFamily', backref='genera', lazy="selectin")
 
 
 class AbxOrganism(BaseEntity):

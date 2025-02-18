@@ -3128,10 +3128,10 @@ export default {
             "args": []
           },
           {
-            "name": "guideline",
+            "name": "kingdom",
             "type": {
               "kind": "OBJECT",
-              "name": "AbxGuidelineType",
+              "name": "AbxKingdomType",
               "ofType": null
             },
             "args": []

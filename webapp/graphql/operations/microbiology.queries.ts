@@ -104,6 +104,10 @@ export type GetAbxPhylumAllQuery = (
   & { abxPhylumAll?: Types.Maybe<Array<(
     { __typename?: 'AbxPhylumType' }
     & Pick<Types.AbxPhylumType, 'uid' | 'name' | 'kingdomUid'>
+    & { kingdom?: Types.Maybe<(
+      { __typename?: 'AbxKingdomType' }
+      & Pick<Types.AbxKingdomType, 'name'>
+    )> }
   )>> }
 );
 
@@ -117,6 +121,10 @@ export type GetAbxPhylumByUidQuery = (
   & { abxPhylumByUid?: Types.Maybe<(
     { __typename?: 'AbxPhylumType' }
     & Pick<Types.AbxPhylumType, 'uid' | 'name' | 'kingdomUid'>
+    & { kingdom?: Types.Maybe<(
+      { __typename?: 'AbxKingdomType' }
+      & Pick<Types.AbxKingdomType, 'name'>
+    )> }
   )> }
 );
 
@@ -128,6 +136,10 @@ export type GetAbxClassAllQuery = (
   & { abxClassAll?: Types.Maybe<Array<(
     { __typename?: 'AbxClassType' }
     & Pick<Types.AbxClassType, 'uid' | 'name' | 'phylumUid'>
+    & { phylum?: Types.Maybe<(
+      { __typename?: 'AbxPhylumType' }
+      & Pick<Types.AbxPhylumType, 'name'>
+    )> }
   )>> }
 );
 
@@ -141,6 +153,10 @@ export type GetAbxClassByUidQuery = (
   & { abxClassByUid?: Types.Maybe<(
     { __typename?: 'AbxClassType' }
     & Pick<Types.AbxClassType, 'uid' | 'name' | 'phylumUid'>
+    & { phylum?: Types.Maybe<(
+      { __typename?: 'AbxPhylumType' }
+      & Pick<Types.AbxPhylumType, 'name'>
+    )> }
   )> }
 );
 
@@ -152,6 +168,10 @@ export type GetAbxOrderAllQuery = (
   & { abxOrderAll?: Types.Maybe<Array<(
     { __typename?: 'AbxOrderType' }
     & Pick<Types.AbxOrderType, 'uid' | 'name' | 'classUid'>
+    & { class_?: Types.Maybe<(
+      { __typename?: 'AbxClassType' }
+      & Pick<Types.AbxClassType, 'name'>
+    )> }
   )>> }
 );
 
@@ -165,6 +185,10 @@ export type GetAbxOrderByUidQuery = (
   & { abxOrderByUid?: Types.Maybe<(
     { __typename?: 'AbxOrderType' }
     & Pick<Types.AbxOrderType, 'uid' | 'name' | 'classUid'>
+    & { class_?: Types.Maybe<(
+      { __typename?: 'AbxClassType' }
+      & Pick<Types.AbxClassType, 'name'>
+    )> }
   )> }
 );
 
@@ -176,6 +200,10 @@ export type GetAbxFamilyAllQuery = (
   & { abxFamilyAll?: Types.Maybe<Array<(
     { __typename?: 'AbxFamilyType' }
     & Pick<Types.AbxFamilyType, 'uid' | 'name' | 'orderUid'>
+    & { order?: Types.Maybe<(
+      { __typename?: 'AbxOrderType' }
+      & Pick<Types.AbxOrderType, 'name'>
+    )> }
   )>> }
 );
 
@@ -189,6 +217,10 @@ export type GetAbxFamilyByUidQuery = (
   & { abxFamilyByUid?: Types.Maybe<(
     { __typename?: 'AbxFamilyType' }
     & Pick<Types.AbxFamilyType, 'uid' | 'name' | 'orderUid'>
+    & { order?: Types.Maybe<(
+      { __typename?: 'AbxOrderType' }
+      & Pick<Types.AbxOrderType, 'name'>
+    )> }
   )> }
 );
 
@@ -200,6 +232,10 @@ export type GetAbxGenusAllQuery = (
   & { abxGenusAll?: Types.Maybe<Array<(
     { __typename?: 'AbxGenusType' }
     & Pick<Types.AbxGenusType, 'uid' | 'name' | 'familyUid'>
+    & { family?: Types.Maybe<(
+      { __typename?: 'AbxFamilyType' }
+      & Pick<Types.AbxFamilyType, 'name'>
+    )> }
   )>> }
 );
 
@@ -213,6 +249,10 @@ export type GetAbxGenusByUidQuery = (
   & { abxGenusByUid?: Types.Maybe<(
     { __typename?: 'AbxGenusType' }
     & Pick<Types.AbxGenusType, 'uid' | 'name' | 'familyUid'>
+    & { family?: Types.Maybe<(
+      { __typename?: 'AbxFamilyType' }
+      & Pick<Types.AbxFamilyType, 'name'>
+    )> }
   )> }
 );
 
@@ -233,9 +273,9 @@ export type GetAbxOrganismAllQuery = (
     & { items?: Types.Maybe<Array<(
       { __typename?: 'AbxOrganismType' }
       & Pick<Types.AbxOrganismType, 'uid' | 'name' | 'whonetOrgCode' | 'replacedBy' | 'taxonomicStatus' | 'common' | 'organismType' | 'anaerobe' | 'morphology' | 'subkingdomCode' | 'familyCode' | 'genusGroup' | 'genusCode' | 'speciesGroup' | 'serovarGroup' | 'msfGrpClin' | 'sctCode' | 'sctText' | 'gbifTaxonId' | 'gbifDatasetId' | 'gbifTaxonomicStatus' | 'kingdomUid' | 'phylumUid' | 'classUid' | 'orderUid' | 'familyUid' | 'genusUid' | 'comments' | 'createdAt' | 'createdByUid'>
-      & { guideline?: Types.Maybe<(
-        { __typename?: 'AbxGuidelineType' }
-        & Pick<Types.AbxGuidelineType, 'name'>
+      & { kingdom?: Types.Maybe<(
+        { __typename?: 'AbxKingdomType' }
+        & Pick<Types.AbxKingdomType, 'name'>
       )>, phylum?: Types.Maybe<(
         { __typename?: 'AbxPhylumType' }
         & Pick<Types.AbxPhylumType, 'name'>
@@ -269,9 +309,9 @@ export type GetAbxOrganismByUidQuery = (
   & { abxOrganismByUid?: Types.Maybe<(
     { __typename?: 'AbxOrganismType' }
     & Pick<Types.AbxOrganismType, 'uid' | 'name' | 'whonetOrgCode' | 'replacedBy' | 'taxonomicStatus' | 'common' | 'organismType' | 'anaerobe' | 'morphology' | 'subkingdomCode' | 'familyCode' | 'genusGroup' | 'genusCode' | 'speciesGroup' | 'serovarGroup' | 'msfGrpClin' | 'sctCode' | 'sctText' | 'gbifTaxonId' | 'gbifDatasetId' | 'gbifTaxonomicStatus' | 'kingdomUid' | 'phylumUid' | 'classUid' | 'orderUid' | 'familyUid' | 'genusUid' | 'comments' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
+    & { kingdom?: Types.Maybe<(
+      { __typename?: 'AbxKingdomType' }
+      & Pick<Types.AbxKingdomType, 'name'>
     )>, phylum?: Types.Maybe<(
       { __typename?: 'AbxPhylumType' }
       & Pick<Types.AbxPhylumType, 'name'>
@@ -808,6 +848,9 @@ export const GetAbxPhylumAllDocument = gql`
     uid
     name
     kingdomUid
+    kingdom {
+      name
+    }
   }
 }
     `;
@@ -821,6 +864,9 @@ export const GetAbxPhylumByUidDocument = gql`
     uid
     name
     kingdomUid
+    kingdom {
+      name
+    }
   }
 }
     `;
@@ -834,6 +880,9 @@ export const GetAbxClassAllDocument = gql`
     uid
     name
     phylumUid
+    phylum {
+      name
+    }
   }
 }
     `;
@@ -847,6 +896,9 @@ export const GetAbxClassByUidDocument = gql`
     uid
     name
     phylumUid
+    phylum {
+      name
+    }
   }
 }
     `;
@@ -860,6 +912,9 @@ export const GetAbxOrderAllDocument = gql`
     uid
     name
     classUid
+    class_ {
+      name
+    }
   }
 }
     `;
@@ -873,6 +928,9 @@ export const GetAbxOrderByUidDocument = gql`
     uid
     name
     classUid
+    class_ {
+      name
+    }
   }
 }
     `;
@@ -886,6 +944,9 @@ export const GetAbxFamilyAllDocument = gql`
     uid
     name
     orderUid
+    order {
+      name
+    }
   }
 }
     `;
@@ -899,6 +960,9 @@ export const GetAbxFamilyByUidDocument = gql`
     uid
     name
     orderUid
+    order {
+      name
+    }
   }
 }
     `;
@@ -912,6 +976,9 @@ export const GetAbxGenusAllDocument = gql`
     uid
     name
     familyUid
+    family {
+      name
+    }
   }
 }
     `;
@@ -925,6 +992,9 @@ export const GetAbxGenusByUidDocument = gql`
     uid
     name
     familyUid
+    family {
+      name
+    }
   }
 }
     `;
@@ -965,7 +1035,7 @@ export const GetAbxOrganismAllDocument = gql`
       gbifDatasetId
       gbifTaxonomicStatus
       kingdomUid
-      guideline {
+      kingdom {
         name
       }
       phylumUid
@@ -1028,7 +1098,7 @@ export const GetAbxOrganismByUidDocument = gql`
     gbifDatasetId
     gbifTaxonomicStatus
     kingdomUid
-    guideline {
+    kingdom {
       name
     }
     phylumUid

@@ -25,7 +25,7 @@ LOGGING_CONFIG: dict[str, Any] = {
         "file_handler": {
             "formatter": "access_file",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "./app.log",
+            "filename": "./logs/app.log",
             "mode": "a+",
             "maxBytes": 10 * 1024 * 1024,
             "backupCount": 0,

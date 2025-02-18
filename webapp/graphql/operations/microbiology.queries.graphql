@@ -118,6 +118,9 @@ query GetAbxPhylumAll {
         uid
         name
         kingdomUid
+        kingdom {
+            name
+        }
     }
 }
 
@@ -126,6 +129,9 @@ query GetAbxPhylumByUid($uid: String!) {
         uid
         name
         kingdomUid
+        kingdom {
+            name
+        }
     }
 }
 
@@ -134,6 +140,9 @@ query GetAbxClassAll {
         uid
         name
         phylumUid
+        phylum {
+            name
+        }
     }
 }
 
@@ -142,6 +151,9 @@ query GetAbxClassByUid($uid: String!) {
         uid
         name
         phylumUid
+        phylum {
+            name
+        }
     }
 }
 
@@ -150,6 +162,9 @@ query GetAbxOrderAll {
         uid
         name
         classUid
+        class_ {
+            name
+        }
     }
 }
 
@@ -158,6 +173,9 @@ query GetAbxOrderByUid($uid: String!) {
         uid
         name
         classUid
+        class_ {
+            name
+        }
     }
 }
 
@@ -166,6 +184,9 @@ query GetAbxFamilyAll {
         uid
         name
         orderUid
+        order {
+            name
+        }
     }
 }
 
@@ -174,6 +195,9 @@ query GetAbxFamilyByUid($uid: String!) {
         uid
         name
         orderUid
+        order {
+            name
+        }
     }
 }
 
@@ -182,6 +206,9 @@ query GetAbxGenusAll {
         uid
         name
         familyUid
+        family {
+            name
+        }
     }
 }
 
@@ -190,6 +217,9 @@ query GetAbxGenusByUid($uid: String!) {
         uid
         name
         familyUid
+        family {
+            name
+        }
     }
 }
 
@@ -219,7 +249,7 @@ query GetAbxOrganismAll($text: String!, $pageSize: Int, $afterCursor: String, $b
             gbifDatasetId
             gbifTaxonomicStatus
             kingdomUid
-            guideline { name }
+            kingdom { name }
             phylumUid
             phylum { name }
             classUid
@@ -265,7 +295,7 @@ query GetAbxOrganismByUid($uid: String!) {
             gbifDatasetId
             gbifTaxonomicStatus
             kingdomUid
-            guideline { name }
+            kingdom { name }
             phylumUid
             phylum { name }
             classUid

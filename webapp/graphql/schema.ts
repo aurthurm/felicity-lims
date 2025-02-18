@@ -632,7 +632,7 @@ export type AbxOrganismType = {
   genusCode?: Maybe<Scalars['String']['output']>;
   genusGroup?: Maybe<Scalars['String']['output']>;
   genusUid?: Maybe<Scalars['String']['output']>;
-  guideline?: Maybe<AbxGuidelineType>;
+  kingdom?: Maybe<AbxKingdomType>;
   kingdomUid?: Maybe<Scalars['String']['output']>;
   morphology?: Maybe<Scalars['String']['output']>;
   msfGrpClin?: Maybe<Scalars['String']['output']>;
@@ -7435,7 +7435,7 @@ export type GraphCacheResolvers = {
     genusCode?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     genusGroup?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     genusUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
-    guideline?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
+    kingdom?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxKingdomType> | string>,
     kingdomUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     morphology?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     msfGrpClin?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
@@ -10614,7 +10614,7 @@ export type GraphCacheUpdaters = {
     genusCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     genusGroup?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     genusUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
-    guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    kingdom?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     kingdomUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     morphology?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     msfGrpClin?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,

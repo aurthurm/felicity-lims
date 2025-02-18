@@ -108,7 +108,7 @@ export interface IAbxOrder {
     uid: string;
     name: string;
     classUid?: string;
-    class?: IAbxClass;
+    class_?: IAbxClass;
     createdAt?: string;
     createdByUid?: string;
     createdBy?: IUser;
@@ -166,6 +166,7 @@ export interface IAbxOrganism {
     gbifDatasetId?: string;
     gbifTaxonomicStatus?: string;
     kingdomUid?: string;
+    kingdom?: IAbxKingdom;
     guideline?: IAbxGuideline;
     phylumUid?: string;
     phylum?: IAbxPhylum;

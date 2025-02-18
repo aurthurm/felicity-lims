@@ -632,7 +632,7 @@ export type AbxOrganismType = {
   genusCode?: Maybe<Scalars['String']['output']>;
   genusGroup?: Maybe<Scalars['String']['output']>;
   genusUid?: Maybe<Scalars['String']['output']>;
-  guideline?: Maybe<AbxGuidelineType>;
+  kingdom?: Maybe<AbxKingdomType>;
   kingdomUid?: Maybe<Scalars['String']['output']>;
   morphology?: Maybe<Scalars['String']['output']>;
   msfGrpClin?: Maybe<Scalars['String']['output']>;

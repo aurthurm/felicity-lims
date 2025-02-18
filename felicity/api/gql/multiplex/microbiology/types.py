@@ -208,7 +208,7 @@ class AbxOrganismType:
     gbif_taxonomic_status: str | None = None
     # Foreign keys to taxonomic tables
     kingdom_uid: str | None = None
-    guideline: AbxGuidelineType | None = None
+    kingdom: AbxKingdomType | None = None
     phylum_uid: str | None = None
     phylum: AbxPhylumType | None = None
     class_uid: str | None = None

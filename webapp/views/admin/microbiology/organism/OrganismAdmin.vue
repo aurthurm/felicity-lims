@@ -13,28 +13,28 @@ const tabs = computed(() => [
     component: defineAsyncComponent(() => import("./AbxOrganismSerotype.vue")),
   },
   {
-    id: "abx-class", label: "class",
-    component: defineAsyncComponent(() => import("./AbxClass.vue")),
-  },
-  {
-    id: "abx-family", label: "family",
-    component: defineAsyncComponent(() => import("./AbxFamily.vue")),
-  },
-  {
     id: "abx-kingdom", label: "kingdom",
     component: defineAsyncComponent(() => import("./AbxKingdom.vue")),
-  },
-  {
-    id: "abx-genus", label: "genus",
-    component: defineAsyncComponent(() => import("./AbxGenus.vue")),
   },
   {
     id: "abx-phylum", label: "phylum",
     component: defineAsyncComponent(() => import("./AbxPhylum.vue")),
   },
   {
+    id: "abx-class", label: "class",
+    component: defineAsyncComponent(() => import("./AbxClass.vue")),
+  },
+  {
     id: "abx-order", label: "order",
     component: defineAsyncComponent(() => import("./AbxOrder.vue")),
+  },
+  {
+    id: "abx-family", label: "family",
+    component: defineAsyncComponent(() => import("./AbxFamily.vue")),
+  },
+  {
+    id: "abx-genus", label: "genus",
+    component: defineAsyncComponent(() => import("./AbxGenus.vue")),
   },
 ]);
 </script>

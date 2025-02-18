@@ -501,9 +501,9 @@ export type AddAbxOrganismMutation = (
   & { createAbxOrganism: (
     { __typename?: 'AbxOrganismType' }
     & Pick<Types.AbxOrganismType, 'uid' | 'name' | 'whonetOrgCode' | 'replacedBy' | 'taxonomicStatus' | 'common' | 'organismType' | 'anaerobe' | 'morphology' | 'subkingdomCode' | 'familyCode' | 'genusGroup' | 'genusCode' | 'speciesGroup' | 'serovarGroup' | 'msfGrpClin' | 'sctCode' | 'sctText' | 'gbifTaxonId' | 'gbifDatasetId' | 'gbifTaxonomicStatus' | 'kingdomUid' | 'phylumUid' | 'classUid' | 'orderUid' | 'familyUid' | 'genusUid' | 'comments' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
+    & { kingdom?: Types.Maybe<(
+      { __typename?: 'AbxKingdomType' }
+      & Pick<Types.AbxKingdomType, 'name'>
     )>, phylum?: Types.Maybe<(
       { __typename?: 'AbxPhylumType' }
       & Pick<Types.AbxPhylumType, 'name'>
@@ -534,9 +534,9 @@ export type EditAbxOrganismMutation = (
   & { updateAbxOrganism: (
     { __typename?: 'AbxOrganismType' }
     & Pick<Types.AbxOrganismType, 'uid' | 'name' | 'whonetOrgCode' | 'replacedBy' | 'taxonomicStatus' | 'common' | 'organismType' | 'anaerobe' | 'morphology' | 'subkingdomCode' | 'familyCode' | 'genusGroup' | 'genusCode' | 'speciesGroup' | 'serovarGroup' | 'msfGrpClin' | 'sctCode' | 'sctText' | 'gbifTaxonId' | 'gbifDatasetId' | 'gbifTaxonomicStatus' | 'kingdomUid' | 'phylumUid' | 'classUid' | 'orderUid' | 'familyUid' | 'genusUid' | 'comments' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
+    & { kingdom?: Types.Maybe<(
+      { __typename?: 'AbxKingdomType' }
+      & Pick<Types.AbxKingdomType, 'name'>
     )>, phylum?: Types.Maybe<(
       { __typename?: 'AbxPhylumType' }
       & Pick<Types.AbxPhylumType, 'name'>
@@ -1354,7 +1354,7 @@ export const AddAbxOrganismDocument = gql`
       gbifDatasetId
       gbifTaxonomicStatus
       kingdomUid
-      guideline {
+      kingdom {
         name
       }
       phylumUid
@@ -1414,7 +1414,7 @@ export const EditAbxOrganismDocument = gql`
       gbifDatasetId
       gbifTaxonomicStatus
       kingdomUid
-      guideline {
+      kingdom {
         name
       }
       phylumUid
