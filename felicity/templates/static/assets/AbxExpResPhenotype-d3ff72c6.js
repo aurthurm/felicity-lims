@@ -1,1 +1,0 @@
-import{k as e,o as t,c as o}from"./index-ad4ed84b.js";const c={};function i(n,s){return t(),o("p",null,"Antibiotics Guidelines")}const l=e(c,[["render",i],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/microbiology/resistance/AbxExpResPhenotype.vue"]]);export{l as default};
