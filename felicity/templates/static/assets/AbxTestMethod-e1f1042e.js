@@ -1,0 +1,1 @@
+import{k as e,o as t,c as o}from"./index-ad4ed84b.js";const i={};function c(n,s){return t(),o("p",null,"Antibiotics Guidelines")}const l=e(i,[["render",c],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/microbiology/breakpoints/AbxTestMethod.vue"]]);export{l as default};

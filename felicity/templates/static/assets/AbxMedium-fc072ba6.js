@@ -1,0 +1,1 @@
+import{k as e,o as i,c as t}from"./index-ad4ed84b.js";const c={};function o(m,n){return i(),t("p",null,"Antibiotics management")}const a=e(c,[["render",o],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/microbiology/medium/AbxMedium.vue"]]);export{a as default};

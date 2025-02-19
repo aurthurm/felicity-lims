@@ -1,0 +1,1 @@
+import{k as e,o,c as t}from"./index-ad4ed84b.js";const c={};function n(r,i){return o(),t("p",null,"bp type")}const a=e(c,[["render",n],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/microbiology/breakpoints/AbxBreakpointType.vue"]]);export{a as default};

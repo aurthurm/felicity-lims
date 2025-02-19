@@ -1,0 +1,1 @@
+import{k as e,o,c as t}from"./index-ad4ed84b.js";const i={};function c(n,s){return o(),t("p",null,"Antibiotics Guidelines")}const l=e(i,[["render",c],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/microbiology/breakpoints/AbxHost.vue"]]);export{l as default};
