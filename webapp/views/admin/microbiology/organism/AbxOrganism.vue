@@ -42,7 +42,7 @@ let abxParams = reactive({
   first: 50,
   after: "",
   text: "",
-  sortBy: ["-name"],
+  sortBy: ["name"],
   filterAction: false,
 });
 
@@ -57,27 +57,6 @@ let organismPageInfo = ref({
 const countNone = computed(
   () => abxOrganisms?.value?.length + " of " + organismCount.value + " organisms"
 );
-
-// Helper functions for consistent styling
-function getOrganismColor(guideline: string): string {
-  const colors = {
-    'CLSI': '#E3F2FD',    // Light Blue
-    'EUCAST': '#F1F8E9',  // Light Green
-    'WHO': '#FFF3E0',     // Light Orange
-    'default': '#F5F5F5'  // Light Gray
-  };
-  return colors[guideline] || colors.default;
-}
-
-function getTextColor(guideline: string): string {
-  const colors = {
-    'CLSI': '#1565C0',    // Dark Blue
-    'EUCAST': '#2E7D32',  // Dark Green
-    'WHO': '#E65100',     // Dark Orange
-    'default': '#616161'  // Dark Gray
-  };
-  return colors[guideline] || colors.default;
-}
 
 const tableColumns = ref([
   {

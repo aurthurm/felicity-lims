@@ -586,7 +586,7 @@ export type AbxOrganismSerotypeInputType = {
   serogroup?: InputMaybe<Scalars['String']['input']>;
   serotype: Scalars['String']['input'];
   subspecies?: InputMaybe<Scalars['String']['input']>;
-  x997Check?: InputMaybe<Scalars['Boolean']['input']>;
+  x997Check?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AbxOrganismSerotypeResponse = AbxOrganismSerotypeType | OperationError;
@@ -609,7 +609,7 @@ export type AbxOrganismSerotypeType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
-  x997Check?: Maybe<Scalars['Boolean']['output']>;
+  x997Check?: Maybe<Scalars['String']['output']>;
 };
 
 export type AbxOrganismType = {
@@ -7414,7 +7414,7 @@ export type GraphCacheResolvers = {
     updatedAt?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
-    x997Check?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['Boolean'] | string>
+    x997Check?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>
   },
   AbxOrganismType?: {
     anaerobe?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['Boolean'] | string>,

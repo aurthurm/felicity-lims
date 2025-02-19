@@ -197,7 +197,7 @@ export interface IAbxOrganismSerotype {
     oAntigens?: string;
     hPhase1?: string;
     hPhase2?: string;
-    x997Check?: boolean;
+    x997Check?: string;
     fate?: string;
     createdAt?: string;
     createdByUid?: string;

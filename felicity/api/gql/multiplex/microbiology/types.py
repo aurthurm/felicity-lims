@@ -253,7 +253,7 @@ class AbxOrganismSerotypeType:
     o_antigens: str | None = None
     h_phase_1: str | None = None
     h_phase_2: str | None = None
-    x997_check: bool | None = None
+    x997_check: str | None = None
     fate: str | None = None
     created_at: str | None = None
     created_by_uid: str | None = None

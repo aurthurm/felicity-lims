@@ -14,12 +14,13 @@ class AbxGuideline(BaseEntity):
 
 
 class AbxAntibioticGuideline(BaseEntity):
+    """
+    Many to Many Link between Sample and Rejection Reason
+    """
     __tablename__ = "abx_antibiotic_guideline"
 
     antibiotic_uid = Column(String, ForeignKey("abx_antibiotic.uid"), nullable=False)
     guideline_uid = Column(String, ForeignKey("abx_guideline.uid"), nullable=False)
-    antibiotic = relationship("AbxAntibiotic", backref="antibiotic_guidelines")
-    guideline = relationship("AbxGuideline", backref="antibiotic_guidelines")
 
 
 class AbxAntibiotic(BaseEntity):
@@ -140,7 +141,7 @@ class AbxOrganism(BaseEntity):
     order = relationship('AbxOrder', backref="orders", lazy="selectin")
     family = relationship('AbxFamily', backref="families", lazy="selectin")
     genus = relationship('AbxGenus', backref="genera", lazy="selectin")
-    serotypes = relationship("AbxOrganismSerotype", back_populates="organism")
+    serotypes = relationship("AbxOrganismSerotype", back_populates="organism", lazy="selectin")
     comments = Column(String(500), nullable=True)
 
 
@@ -148,7 +149,7 @@ class AbxOrganismSerotype(BaseEntity):
     __tablename__ = 'abx_organism_serotypes'
 
     organism_uid = Column(String, ForeignKey('abx_organism.uid'), nullable=False)
-    organism = relationship("AbxOrganism", back_populates="serotypes")
+    organism = relationship("AbxOrganism", back_populates="serotypes", lazy="selectin")
     serotype = Column(String(100), nullable=False)
     serogroup = Column(String(100), nullable=True)
     subspecies = Column(String(100), nullable=True)
