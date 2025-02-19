@@ -152,7 +152,7 @@ export type AbxAntibioticType = {
   dinCode?: Maybe<Scalars['String']['output']>;
   eucastCode?: Maybe<Scalars['String']['output']>;
   eucastOrder?: Maybe<Scalars['String']['output']>;
-  guidelines: Array<AbxGuidelineType>;
+  guidelines?: Maybe<Array<AbxGuidelineType>>;
   human?: Maybe<Scalars['Boolean']['output']>;
   jacCode?: Maybe<Scalars['String']['output']>;
   loincafb?: Maybe<Scalars['String']['output']>;
@@ -227,7 +227,8 @@ export type AbxBreakpointTyp = {
   sdd?: Maybe<Scalars['String']['output']>;
   siteOfInfection?: Maybe<AbxSiteOfInfectionType>;
   siteOfInfectionUid?: Maybe<Scalars['String']['output']>;
-  testMethod: Scalars['String']['output'];
+  testMethod?: Maybe<AbxTestMethodType>;
+  testMethodUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -3976,9 +3977,9 @@ export type Query = {
   abxBreakpointTypeByUid?: Maybe<AbxBreakpointTypeTyp>;
   abxClassAll?: Maybe<Array<AbxClassType>>;
   abxClassByUid?: Maybe<AbxClassType>;
-  abxExpectedResistancePhenotypeAll?: Maybe<Array<AbxExpResPhenotypeType>>;
+  abxExpectedResistancePhenotypeAll: AbxExpResPhenotypeCursorPage;
   abxExpectedResistancePhenotypeByUid?: Maybe<AbxExpResPhenotypeType>;
-  abxExpertInterpretationRuleAll?: Maybe<Array<AbxExpertInterpretationRuleType>>;
+  abxExpertInterpretationRuleAll: AbxExpertInterpretationRuleCursorPage;
   abxExpertInterpretationRuleByUid?: Maybe<AbxExpertInterpretationRuleType>;
   abxFamilyAll?: Maybe<Array<AbxFamilyType>>;
   abxFamilyByUid?: Maybe<AbxFamilyType>;
@@ -4000,7 +4001,7 @@ export type Query = {
   abxOrganismSerotypeByUid?: Maybe<AbxOrganismSerotypeType>;
   abxPhylumAll?: Maybe<Array<AbxPhylumType>>;
   abxPhylumByUid?: Maybe<AbxPhylumType>;
-  abxQcRangeAll?: Maybe<Array<AbxQcRangeType>>;
+  abxQcRangeAll: AbxQcRangeCursorPage;
   abxQcRangeByUid?: Maybe<AbxQcRangeType>;
   abxSiteOfInfectionAll?: Maybe<Array<AbxSiteOfInfectionType>>;
   abxSiteOfInfectionByUid?: Maybe<AbxSiteOfInfectionType>;
@@ -4231,8 +4232,26 @@ export type QueryAbxClassByUidArgs = {
 };
 
 
+export type QueryAbxExpectedResistancePhenotypeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
 export type QueryAbxExpectedResistancePhenotypeByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxExpertInterpretationRuleAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
 };
 
 
@@ -4306,6 +4325,15 @@ export type QueryAbxOrganismSerotypeByUidArgs = {
 
 export type QueryAbxPhylumByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxQcRangeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
 };
 
 
@@ -6881,9 +6909,9 @@ export type GraphCacheResolvers = {
     abxBreakpointTypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxBreakpointTypeByUidArgs, WithTypename<AbxBreakpointTypeTyp> | string>,
     abxClassAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxClassType> | string>>,
     abxClassByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxClassByUidArgs, WithTypename<AbxClassType> | string>,
-    abxExpectedResistancePhenotypeAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxExpResPhenotypeType> | string>>,
+    abxExpectedResistancePhenotypeAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxExpectedResistancePhenotypeAllArgs, WithTypename<AbxExpResPhenotypeCursorPage> | string>,
     abxExpectedResistancePhenotypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxExpectedResistancePhenotypeByUidArgs, WithTypename<AbxExpResPhenotypeType> | string>,
-    abxExpertInterpretationRuleAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxExpertInterpretationRuleType> | string>>,
+    abxExpertInterpretationRuleAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxExpertInterpretationRuleAllArgs, WithTypename<AbxExpertInterpretationRuleCursorPage> | string>,
     abxExpertInterpretationRuleByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxExpertInterpretationRuleByUidArgs, WithTypename<AbxExpertInterpretationRuleType> | string>,
     abxFamilyAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxFamilyType> | string>>,
     abxFamilyByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxFamilyByUidArgs, WithTypename<AbxFamilyType> | string>,
@@ -6905,7 +6933,7 @@ export type GraphCacheResolvers = {
     abxOrganismSerotypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxOrganismSerotypeByUidArgs, WithTypename<AbxOrganismSerotypeType> | string>,
     abxPhylumAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxPhylumType> | string>>,
     abxPhylumByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxPhylumByUidArgs, WithTypename<AbxPhylumType> | string>,
-    abxQcRangeAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxQcRangeType> | string>>,
+    abxQcRangeAll?: GraphCacheResolver<WithTypename<Query>, QueryAbxQcRangeAllArgs, WithTypename<AbxQcRangeCursorPage> | string>,
     abxQcRangeByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxQcRangeByUidArgs, WithTypename<AbxQcRangeType> | string>,
     abxSiteOfInfectionAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxSiteOfInfectionType> | string>>,
     abxSiteOfInfectionByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxSiteOfInfectionByUidArgs, WithTypename<AbxSiteOfInfectionType> | string>,
@@ -7200,7 +7228,8 @@ export type GraphCacheResolvers = {
     sdd?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     siteOfInfection?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxSiteOfInfectionType> | string>,
     siteOfInfectionUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
-    testMethod?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    testMethod?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxTestMethodType> | string>,
+    testMethodUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<UserType> | string>,
@@ -9841,9 +9870,9 @@ export type GraphCacheUpdaters = {
     abxBreakpointTypeByUid?: GraphCacheUpdateResolver<{ abxBreakpointTypeByUid: Maybe<WithTypename<AbxBreakpointTypeTyp>> }, QueryAbxBreakpointTypeByUidArgs>,
     abxClassAll?: GraphCacheUpdateResolver<{ abxClassAll: Maybe<Array<WithTypename<AbxClassType>>> }, Record<string, never>>,
     abxClassByUid?: GraphCacheUpdateResolver<{ abxClassByUid: Maybe<WithTypename<AbxClassType>> }, QueryAbxClassByUidArgs>,
-    abxExpectedResistancePhenotypeAll?: GraphCacheUpdateResolver<{ abxExpectedResistancePhenotypeAll: Maybe<Array<WithTypename<AbxExpResPhenotypeType>>> }, Record<string, never>>,
+    abxExpectedResistancePhenotypeAll?: GraphCacheUpdateResolver<{ abxExpectedResistancePhenotypeAll: WithTypename<AbxExpResPhenotypeCursorPage> }, QueryAbxExpectedResistancePhenotypeAllArgs>,
     abxExpectedResistancePhenotypeByUid?: GraphCacheUpdateResolver<{ abxExpectedResistancePhenotypeByUid: Maybe<WithTypename<AbxExpResPhenotypeType>> }, QueryAbxExpectedResistancePhenotypeByUidArgs>,
-    abxExpertInterpretationRuleAll?: GraphCacheUpdateResolver<{ abxExpertInterpretationRuleAll: Maybe<Array<WithTypename<AbxExpertInterpretationRuleType>>> }, Record<string, never>>,
+    abxExpertInterpretationRuleAll?: GraphCacheUpdateResolver<{ abxExpertInterpretationRuleAll: WithTypename<AbxExpertInterpretationRuleCursorPage> }, QueryAbxExpertInterpretationRuleAllArgs>,
     abxExpertInterpretationRuleByUid?: GraphCacheUpdateResolver<{ abxExpertInterpretationRuleByUid: Maybe<WithTypename<AbxExpertInterpretationRuleType>> }, QueryAbxExpertInterpretationRuleByUidArgs>,
     abxFamilyAll?: GraphCacheUpdateResolver<{ abxFamilyAll: Maybe<Array<WithTypename<AbxFamilyType>>> }, Record<string, never>>,
     abxFamilyByUid?: GraphCacheUpdateResolver<{ abxFamilyByUid: Maybe<WithTypename<AbxFamilyType>> }, QueryAbxFamilyByUidArgs>,
@@ -9865,7 +9894,7 @@ export type GraphCacheUpdaters = {
     abxOrganismSerotypeByUid?: GraphCacheUpdateResolver<{ abxOrganismSerotypeByUid: Maybe<WithTypename<AbxOrganismSerotypeType>> }, QueryAbxOrganismSerotypeByUidArgs>,
     abxPhylumAll?: GraphCacheUpdateResolver<{ abxPhylumAll: Maybe<Array<WithTypename<AbxPhylumType>>> }, Record<string, never>>,
     abxPhylumByUid?: GraphCacheUpdateResolver<{ abxPhylumByUid: Maybe<WithTypename<AbxPhylumType>> }, QueryAbxPhylumByUidArgs>,
-    abxQcRangeAll?: GraphCacheUpdateResolver<{ abxQcRangeAll: Maybe<Array<WithTypename<AbxQcRangeType>>> }, Record<string, never>>,
+    abxQcRangeAll?: GraphCacheUpdateResolver<{ abxQcRangeAll: WithTypename<AbxQcRangeCursorPage> }, QueryAbxQcRangeAllArgs>,
     abxQcRangeByUid?: GraphCacheUpdateResolver<{ abxQcRangeByUid: Maybe<WithTypename<AbxQcRangeType>> }, QueryAbxQcRangeByUidArgs>,
     abxSiteOfInfectionAll?: GraphCacheUpdateResolver<{ abxSiteOfInfectionAll: Maybe<Array<WithTypename<AbxSiteOfInfectionType>>> }, Record<string, never>>,
     abxSiteOfInfectionByUid?: GraphCacheUpdateResolver<{ abxSiteOfInfectionByUid: Maybe<WithTypename<AbxSiteOfInfectionType>> }, QueryAbxSiteOfInfectionByUidArgs>,
@@ -10380,6 +10409,7 @@ export type GraphCacheUpdaters = {
     siteOfInfection?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     siteOfInfectionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     testMethod?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    testMethodUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,

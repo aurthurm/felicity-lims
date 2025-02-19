@@ -55,7 +55,12 @@ class AbxAntibiotic(BaseEntity):
     loincsbt = Column(String, nullable=True)
     loincmlc = Column(String, nullable=True)
     comments = Column(String(500), nullable=True)
-    guidelines = relationship("AbxGuideline", secondary="abx_antibiotic_guideline", back_populates="antibiotics")
+    guidelines = relationship(
+        "AbxGuideline",
+        secondary="abx_antibiotic_guideline",
+        back_populates="antibiotics",
+        lazy="selectin"
+    )
 
 
 class AbxKingdom(BaseEntity):

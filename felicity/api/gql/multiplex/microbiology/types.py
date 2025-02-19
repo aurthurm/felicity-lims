@@ -7,7 +7,6 @@ import strawberry  # noqa
 
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.multiplex.microbiology.services import AbxAntibioticGuidelineService
 
 
 @strawberry.type
@@ -71,20 +70,13 @@ class AbxAntibioticType:
     loincsbt: str | None = None
     loincmlc: str | None = None
     comments: str | None = None
+    guidelines: List[AbxGuidelineType] | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     updated_at: str | None = None
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
-
-    @strawberry.field
-    async def guidelines(self, info) -> List[AbxGuidelineType]:
-        abx_guides = await AbxAntibioticGuidelineService().get_all(
-            related=["guideline"],
-            antibiotic_uid=self.uid
-        )
-        return [abx.guideline for abx in abx_guides] if abx_guides else []
 
 
 @strawberry.type
@@ -335,7 +327,8 @@ class AbxBreakpointTyp:
     guideline_uid: str
     guideline: AbxGuidelineType | None = None
     year: int | None = None
-    test_method: str
+    test_method_uid: str
+    test_method: AbxTestMethodType | None = None
     potency: str | None = None
     organism_code: str
     organism_code_type: str

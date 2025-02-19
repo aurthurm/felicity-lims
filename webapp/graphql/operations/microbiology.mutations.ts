@@ -40,10 +40,10 @@ export type AddAbxAntibioticMutation = (
   & { createAbxAntibiotic: (
     { __typename?: 'AbxAntibioticType' }
     & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'whonetAbxCode' | 'whoCode' | 'dinCode' | 'jacCode' | 'eucastCode' | 'userCode' | 'abxNumber' | 'potency' | 'atcCode' | 'class_' | 'subclass' | 'profClass' | 'ciaCategory' | 'clsiOrder' | 'eucastOrder' | 'human' | 'veterinary' | 'animalGp' | 'loinccomp' | 'loincgen' | 'loincdisk' | 'loincmic' | 'loincetest' | 'loincslow' | 'loincafb' | 'loincsbt' | 'loincmlc' | 'createdAt' | 'createdByUid'>
-    & { guidelines: Array<(
+    & { guidelines?: Types.Maybe<Array<(
       { __typename?: 'AbxGuidelineType' }
       & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
-    )> }
+    )>> }
   ) | { __typename?: 'OperationError' } }
 );
 
@@ -58,10 +58,10 @@ export type EditAbxAntibioticMutation = (
   & { updateAbxAntibiotic: (
     { __typename?: 'AbxAntibioticType' }
     & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'whonetAbxCode' | 'whoCode' | 'dinCode' | 'jacCode' | 'eucastCode' | 'userCode' | 'abxNumber' | 'potency' | 'atcCode' | 'class_' | 'subclass' | 'profClass' | 'ciaCategory' | 'clsiOrder' | 'eucastOrder' | 'human' | 'veterinary' | 'animalGp' | 'loinccomp' | 'loincgen' | 'loincdisk' | 'loincmic' | 'loincetest' | 'loincslow' | 'loincafb' | 'loincsbt' | 'loincmlc' | 'createdAt' | 'createdByUid'>
-    & { guidelines: Array<(
+    & { guidelines?: Types.Maybe<Array<(
       { __typename?: 'AbxGuidelineType' }
       & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
-    )> }
+    )>> }
   ) | { __typename?: 'OperationError' } }
 );
 
@@ -217,10 +217,13 @@ export type AddAbxBreakpointMutation = (
   { __typename?: 'Mutation' }
   & { createAbxBreakpoint: (
     { __typename?: 'AbxBreakpointTyp' }
-    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethod' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
     & { guideline?: Types.Maybe<(
       { __typename?: 'AbxGuidelineType' }
       & Pick<Types.AbxGuidelineType, 'name'>
+    )>, testMethod?: Types.Maybe<(
+      { __typename?: 'AbxTestMethodType' }
+      & Pick<Types.AbxTestMethodType, 'name'>
     )>, breakpointType?: Types.Maybe<(
       { __typename?: 'AbxBreakpointTypeTyp' }
       & Pick<Types.AbxBreakpointTypeTyp, 'name'>
@@ -244,10 +247,13 @@ export type EditAbxBreakpointMutation = (
   { __typename?: 'Mutation' }
   & { updateAbxBreakpoint: (
     { __typename?: 'AbxBreakpointTyp' }
-    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethod' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
     & { guideline?: Types.Maybe<(
       { __typename?: 'AbxGuidelineType' }
       & Pick<Types.AbxGuidelineType, 'name'>
+    )>, testMethod?: Types.Maybe<(
+      { __typename?: 'AbxTestMethodType' }
+      & Pick<Types.AbxTestMethodType, 'name'>
     )>, breakpointType?: Types.Maybe<(
       { __typename?: 'AbxBreakpointTypeTyp' }
       & Pick<Types.AbxBreakpointTypeTyp, 'name'>
@@ -968,7 +974,10 @@ export const AddAbxBreakpointDocument = gql`
         name
       }
       year
-      testMethod
+      testMethodUid
+      testMethod {
+        name
+      }
       potency
       organismCode
       organismCodeType
@@ -1014,7 +1023,10 @@ export const EditAbxBreakpointDocument = gql`
         name
       }
       year
-      testMethod
+      testMethodUid
+      testMethod {
+        name
+      }
       potency
       organismCode
       organismCodeType

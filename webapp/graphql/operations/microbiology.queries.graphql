@@ -443,7 +443,8 @@ query GetAbxBreakpointAll($text: String!, $pageSize: Int, $afterCursor: String, 
             guidelineUid
             guideline { name }
             year
-            testMethod
+            testMethodUid
+            testMethod { name }
             potency
             organismCode
             organismCodeType
@@ -480,7 +481,8 @@ query GetAbxBreakpointUid($uid: String!) {
         guidelineUid
         guideline { name }
         year
-        testMethod
+        testMethodUid
+        testMethod { name }
         potency
         organismCode
         organismCodeType
@@ -505,26 +507,33 @@ query GetAbxBreakpointUid($uid: String!) {
     }
 }
 
-query GetAbxExpectedResistancePhenotypeAll {
-    abxExpectedResistancePhenotypeAll {
-        uid
-        guidelineUid
-        guideline { name }
-        referenceTable
-        organismCode
-        organismCodeType
-        exceptionOrganismCode
-        exceptionOrganismCodeType
-        abxCode
-        abxCodeType
-        antibioticExceptions
-        comments
-        createdAt
-        createdByUid
+query GetAbxExpResPhenotypeAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+    abxExpectedResistancePhenotypeAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
+        items {
+            uid
+            guidelineUid
+            guideline { name }
+            referenceTable
+            organismCode
+            organismCodeType
+            exceptionOrganismCode
+            exceptionOrganismCodeType
+            abxCode
+            abxCodeType
+            antibioticExceptions
+            comments
+            createdAt
+            createdByUid
+        }
+        totalCount
+        pageInfo {
+           hasNextPage
+           hasPreviousPage
+        }
     }
 }
 
-query GetAbxExpectedResistancePhenotypeUid($uid: String!) {
+query GetAbxExpResPhenotypeUid($uid: String!) {
     abxExpectedResistancePhenotypeByUid(uid: $uid) {
         uid
         guidelineUid
@@ -543,18 +552,25 @@ query GetAbxExpectedResistancePhenotypeUid($uid: String!) {
     }
 }
 
-query GetAbxExpertInterpretationRuleAll {
-    abxExpertInterpretationRuleAll {
-        uid
-        ruleCode
-        description
-        organismCode
-        organismCodeType
-        ruleCriteria
-        affectedAntibiotics
-        antibioticExceptions
-        createdAt
-        createdByUid
+query GetAbxExpertInterpretationRuleAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+    abxExpertInterpretationRuleAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
+        items {
+            uid
+            ruleCode
+            description
+            organismCode
+            organismCodeType
+            ruleCriteria
+            affectedAntibiotics
+            antibioticExceptions
+            createdAt
+            createdByUid
+        }
+        totalCount
+        pageInfo {
+           hasNextPage
+           hasPreviousPage
+        }
     }
 }
 
@@ -594,25 +610,32 @@ query GetAbxMediumUid($uid: String!) {
     }
 }
 
-query GetAbxQcRangeAll {
-    abxQcRangeAll {
-        uid
-        guidelineUid
-        guideline { name }
-        year
-        strain
-        referenceTable
-        whonetOrgCode
-        antibiotic
-        abxTest
-        whonetAbxCode
-        method
-        mediumUid
-        medium { name }
-        minimum
-        maximum
-        createdAt
-        createdByUid
+query GetAbxQcRangeAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+    abxQcRangeAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
+        items {
+            uid
+            guidelineUid
+            guideline { name }
+            year
+            strain
+            referenceTable
+            whonetOrgCode
+            antibiotic
+            abxTest
+            whonetAbxCode
+            method
+            mediumUid
+            medium { name }
+            minimum
+            maximum
+            createdAt
+            createdByUid
+        }
+        totalCount
+        pageInfo {
+           hasNextPage
+           hasPreviousPage
+        }
     }
 }
 

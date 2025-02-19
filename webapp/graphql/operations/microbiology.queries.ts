@@ -44,10 +44,10 @@ export type GetAbxAntibioticAllQuery = (
     & { items?: Types.Maybe<Array<(
       { __typename?: 'AbxAntibioticType' }
       & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'whonetAbxCode' | 'whoCode' | 'dinCode' | 'jacCode' | 'eucastCode' | 'userCode' | 'abxNumber' | 'potency' | 'atcCode' | 'class_' | 'subclass' | 'profClass' | 'ciaCategory' | 'clsiOrder' | 'eucastOrder' | 'human' | 'veterinary' | 'animalGp' | 'loinccomp' | 'loincgen' | 'loincdisk' | 'loincmic' | 'loincetest' | 'loincslow' | 'loincafb' | 'loincsbt' | 'loincmlc' | 'createdAt' | 'createdByUid'>
-      & { guidelines: Array<(
+      & { guidelines?: Types.Maybe<Array<(
         { __typename?: 'AbxGuidelineType' }
         & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
-      )> }
+      )>> }
     )>>, pageInfo: (
       { __typename?: 'PageInfo' }
       & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage'>
@@ -65,10 +65,10 @@ export type GetAbxAntibioticByUidQuery = (
   & { abxAntibioticByUid?: Types.Maybe<(
     { __typename?: 'AbxAntibioticType' }
     & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'whonetAbxCode' | 'whoCode' | 'dinCode' | 'jacCode' | 'eucastCode' | 'userCode' | 'abxNumber' | 'potency' | 'atcCode' | 'class_' | 'subclass' | 'profClass' | 'ciaCategory' | 'clsiOrder' | 'eucastOrder' | 'human' | 'veterinary' | 'animalGp' | 'loinccomp' | 'loincgen' | 'loincdisk' | 'loincmic' | 'loincetest' | 'loincslow' | 'loincafb' | 'loincsbt' | 'loincmlc' | 'comments' | 'createdAt' | 'createdByUid'>
-    & { guidelines: Array<(
+    & { guidelines?: Types.Maybe<Array<(
       { __typename?: 'AbxGuidelineType' }
       & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
-    )> }
+    )>> }
   )> }
 );
 
@@ -488,10 +488,13 @@ export type GetAbxBreakpointAllQuery = (
     & Pick<Types.AbxBreakpointTypCursorPage, 'totalCount'>
     & { items?: Types.Maybe<Array<(
       { __typename?: 'AbxBreakpointTyp' }
-      & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethod' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+      & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
       & { guideline?: Types.Maybe<(
         { __typename?: 'AbxGuidelineType' }
         & Pick<Types.AbxGuidelineType, 'name'>
+      )>, testMethod?: Types.Maybe<(
+        { __typename?: 'AbxTestMethodType' }
+        & Pick<Types.AbxTestMethodType, 'name'>
       )>, breakpointType?: Types.Maybe<(
         { __typename?: 'AbxBreakpointTypeTyp' }
         & Pick<Types.AbxBreakpointTypeTyp, 'name'>
@@ -518,10 +521,13 @@ export type GetAbxBreakpointUidQuery = (
   { __typename?: 'Query' }
   & { abxBreakpointByUid?: Types.Maybe<(
     { __typename?: 'AbxBreakpointTyp' }
-    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethod' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
     & { guideline?: Types.Maybe<(
       { __typename?: 'AbxGuidelineType' }
       & Pick<Types.AbxGuidelineType, 'name'>
+    )>, testMethod?: Types.Maybe<(
+      { __typename?: 'AbxTestMethodType' }
+      & Pick<Types.AbxTestMethodType, 'name'>
     )>, breakpointType?: Types.Maybe<(
       { __typename?: 'AbxBreakpointTypeTyp' }
       & Pick<Types.AbxBreakpointTypeTyp, 'name'>
@@ -535,27 +541,40 @@ export type GetAbxBreakpointUidQuery = (
   )> }
 );
 
-export type GetAbxExpectedResistancePhenotypeAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetAbxExpResPhenotypeAllQueryVariables = Types.Exact<{
+  text: Types.Scalars['String']['input'];
+  pageSize?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  afterCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  beforeCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+}>;
 
 
-export type GetAbxExpectedResistancePhenotypeAllQuery = (
+export type GetAbxExpResPhenotypeAllQuery = (
   { __typename?: 'Query' }
-  & { abxExpectedResistancePhenotypeAll?: Types.Maybe<Array<(
-    { __typename?: 'AbxExpResPhenotypeType' }
-    & Pick<Types.AbxExpResPhenotypeType, 'uid' | 'guidelineUid' | 'referenceTable' | 'organismCode' | 'organismCodeType' | 'exceptionOrganismCode' | 'exceptionOrganismCodeType' | 'abxCode' | 'abxCodeType' | 'antibioticExceptions' | 'comments' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
-    )> }
-  )>> }
+  & { abxExpectedResistancePhenotypeAll: (
+    { __typename?: 'AbxExpResPhenotypeCursorPage' }
+    & Pick<Types.AbxExpResPhenotypeCursorPage, 'totalCount'>
+    & { items?: Types.Maybe<Array<(
+      { __typename?: 'AbxExpResPhenotypeType' }
+      & Pick<Types.AbxExpResPhenotypeType, 'uid' | 'guidelineUid' | 'referenceTable' | 'organismCode' | 'organismCodeType' | 'exceptionOrganismCode' | 'exceptionOrganismCodeType' | 'abxCode' | 'abxCodeType' | 'antibioticExceptions' | 'comments' | 'createdAt' | 'createdByUid'>
+      & { guideline?: Types.Maybe<(
+        { __typename?: 'AbxGuidelineType' }
+        & Pick<Types.AbxGuidelineType, 'name'>
+      )> }
+    )>>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage'>
+    ) }
+  ) }
 );
 
-export type GetAbxExpectedResistancePhenotypeUidQueryVariables = Types.Exact<{
+export type GetAbxExpResPhenotypeUidQueryVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
 }>;
 
 
-export type GetAbxExpectedResistancePhenotypeUidQuery = (
+export type GetAbxExpResPhenotypeUidQuery = (
   { __typename?: 'Query' }
   & { abxExpectedResistancePhenotypeByUid?: Types.Maybe<(
     { __typename?: 'AbxExpResPhenotypeType' }
@@ -567,15 +586,28 @@ export type GetAbxExpectedResistancePhenotypeUidQuery = (
   )> }
 );
 
-export type GetAbxExpertInterpretationRuleAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetAbxExpertInterpretationRuleAllQueryVariables = Types.Exact<{
+  text: Types.Scalars['String']['input'];
+  pageSize?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  afterCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  beforeCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+}>;
 
 
 export type GetAbxExpertInterpretationRuleAllQuery = (
   { __typename?: 'Query' }
-  & { abxExpertInterpretationRuleAll?: Types.Maybe<Array<(
-    { __typename?: 'AbxExpertInterpretationRuleType' }
-    & Pick<Types.AbxExpertInterpretationRuleType, 'uid' | 'ruleCode' | 'description' | 'organismCode' | 'organismCodeType' | 'ruleCriteria' | 'affectedAntibiotics' | 'antibioticExceptions' | 'createdAt' | 'createdByUid'>
-  )>> }
+  & { abxExpertInterpretationRuleAll: (
+    { __typename?: 'AbxExpertInterpretationRuleCursorPage' }
+    & Pick<Types.AbxExpertInterpretationRuleCursorPage, 'totalCount'>
+    & { items?: Types.Maybe<Array<(
+      { __typename?: 'AbxExpertInterpretationRuleType' }
+      & Pick<Types.AbxExpertInterpretationRuleType, 'uid' | 'ruleCode' | 'description' | 'organismCode' | 'organismCodeType' | 'ruleCriteria' | 'affectedAntibiotics' | 'antibioticExceptions' | 'createdAt' | 'createdByUid'>
+    )>>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage'>
+    ) }
+  ) }
 );
 
 export type GetAbxExpertInterpretationRuleUidQueryVariables = Types.Exact<{
@@ -615,22 +647,35 @@ export type GetAbxMediumUidQuery = (
   )> }
 );
 
-export type GetAbxQcRangeAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetAbxQcRangeAllQueryVariables = Types.Exact<{
+  text: Types.Scalars['String']['input'];
+  pageSize?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  afterCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  beforeCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+}>;
 
 
 export type GetAbxQcRangeAllQuery = (
   { __typename?: 'Query' }
-  & { abxQcRangeAll?: Types.Maybe<Array<(
-    { __typename?: 'AbxQCRangeType' }
-    & Pick<Types.AbxQcRangeType, 'uid' | 'guidelineUid' | 'year' | 'strain' | 'referenceTable' | 'whonetOrgCode' | 'antibiotic' | 'abxTest' | 'whonetAbxCode' | 'method' | 'mediumUid' | 'minimum' | 'maximum' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
-    )>, medium?: Types.Maybe<(
-      { __typename?: 'AbxMediumType' }
-      & Pick<Types.AbxMediumType, 'name'>
-    )> }
-  )>> }
+  & { abxQcRangeAll: (
+    { __typename?: 'AbxQCRangeCursorPage' }
+    & Pick<Types.AbxQcRangeCursorPage, 'totalCount'>
+    & { items?: Types.Maybe<Array<(
+      { __typename?: 'AbxQCRangeType' }
+      & Pick<Types.AbxQcRangeType, 'uid' | 'guidelineUid' | 'year' | 'strain' | 'referenceTable' | 'whonetOrgCode' | 'antibiotic' | 'abxTest' | 'whonetAbxCode' | 'method' | 'mediumUid' | 'minimum' | 'maximum' | 'createdAt' | 'createdByUid'>
+      & { guideline?: Types.Maybe<(
+        { __typename?: 'AbxGuidelineType' }
+        & Pick<Types.AbxGuidelineType, 'name'>
+      )>, medium?: Types.Maybe<(
+        { __typename?: 'AbxMediumType' }
+        & Pick<Types.AbxMediumType, 'name'>
+      )> }
+    )>>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage'>
+    ) }
+  ) }
 );
 
 export type GetAbxQcRangeUidQueryVariables = Types.Exact<{
@@ -1330,7 +1375,10 @@ export const GetAbxBreakpointAllDocument = gql`
         name
       }
       year
-      testMethod
+      testMethodUid
+      testMethod {
+        name
+      }
       potency
       organismCode
       organismCodeType
@@ -1380,7 +1428,10 @@ export const GetAbxBreakpointUidDocument = gql`
       name
     }
     year
-    testMethod
+    testMethodUid
+    testMethod {
+      name
+    }
     potency
     organismCode
     organismCodeType
@@ -1415,34 +1466,47 @@ export const GetAbxBreakpointUidDocument = gql`
 export function useGetAbxBreakpointUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxBreakpointUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAbxBreakpointUidQuery>({ query: GetAbxBreakpointUidDocument, ...options });
 };
-export const GetAbxExpectedResistancePhenotypeAllDocument = gql`
-    query GetAbxExpectedResistancePhenotypeAll {
-  abxExpectedResistancePhenotypeAll {
-    uid
-    guidelineUid
-    guideline {
-      name
+export const GetAbxExpResPhenotypeAllDocument = gql`
+    query GetAbxExpResPhenotypeAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+  abxExpectedResistancePhenotypeAll(
+    text: $text
+    pageSize: $pageSize
+    afterCursor: $afterCursor
+    beforeCursor: $beforeCursor
+    sortBy: $sortBy
+  ) {
+    items {
+      uid
+      guidelineUid
+      guideline {
+        name
+      }
+      referenceTable
+      organismCode
+      organismCodeType
+      exceptionOrganismCode
+      exceptionOrganismCodeType
+      abxCode
+      abxCodeType
+      antibioticExceptions
+      comments
+      createdAt
+      createdByUid
     }
-    referenceTable
-    organismCode
-    organismCodeType
-    exceptionOrganismCode
-    exceptionOrganismCodeType
-    abxCode
-    abxCodeType
-    antibioticExceptions
-    comments
-    createdAt
-    createdByUid
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
   }
 }
     `;
 
-export function useGetAbxExpectedResistancePhenotypeAllQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxExpectedResistancePhenotypeAllQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetAbxExpectedResistancePhenotypeAllQuery>({ query: GetAbxExpectedResistancePhenotypeAllDocument, ...options });
+export function useGetAbxExpResPhenotypeAllQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxExpResPhenotypeAllQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxExpResPhenotypeAllQuery>({ query: GetAbxExpResPhenotypeAllDocument, ...options });
 };
-export const GetAbxExpectedResistancePhenotypeUidDocument = gql`
-    query GetAbxExpectedResistancePhenotypeUid($uid: String!) {
+export const GetAbxExpResPhenotypeUidDocument = gql`
+    query GetAbxExpResPhenotypeUid($uid: String!) {
   abxExpectedResistancePhenotypeByUid(uid: $uid) {
     uid
     guidelineUid
@@ -1464,22 +1528,35 @@ export const GetAbxExpectedResistancePhenotypeUidDocument = gql`
 }
     `;
 
-export function useGetAbxExpectedResistancePhenotypeUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxExpectedResistancePhenotypeUidQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetAbxExpectedResistancePhenotypeUidQuery>({ query: GetAbxExpectedResistancePhenotypeUidDocument, ...options });
+export function useGetAbxExpResPhenotypeUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxExpResPhenotypeUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxExpResPhenotypeUidQuery>({ query: GetAbxExpResPhenotypeUidDocument, ...options });
 };
 export const GetAbxExpertInterpretationRuleAllDocument = gql`
-    query GetAbxExpertInterpretationRuleAll {
-  abxExpertInterpretationRuleAll {
-    uid
-    ruleCode
-    description
-    organismCode
-    organismCodeType
-    ruleCriteria
-    affectedAntibiotics
-    antibioticExceptions
-    createdAt
-    createdByUid
+    query GetAbxExpertInterpretationRuleAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+  abxExpertInterpretationRuleAll(
+    text: $text
+    pageSize: $pageSize
+    afterCursor: $afterCursor
+    beforeCursor: $beforeCursor
+    sortBy: $sortBy
+  ) {
+    items {
+      uid
+      ruleCode
+      description
+      organismCode
+      organismCodeType
+      ruleCriteria
+      affectedAntibiotics
+      antibioticExceptions
+      createdAt
+      createdByUid
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
   }
 }
     `;
@@ -1538,29 +1615,42 @@ export function useGetAbxMediumUidQuery(options: Omit<Urql.UseQueryArgs<never, G
   return Urql.useQuery<GetAbxMediumUidQuery>({ query: GetAbxMediumUidDocument, ...options });
 };
 export const GetAbxQcRangeAllDocument = gql`
-    query GetAbxQcRangeAll {
-  abxQcRangeAll {
-    uid
-    guidelineUid
-    guideline {
-      name
+    query GetAbxQcRangeAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
+  abxQcRangeAll(
+    text: $text
+    pageSize: $pageSize
+    afterCursor: $afterCursor
+    beforeCursor: $beforeCursor
+    sortBy: $sortBy
+  ) {
+    items {
+      uid
+      guidelineUid
+      guideline {
+        name
+      }
+      year
+      strain
+      referenceTable
+      whonetOrgCode
+      antibiotic
+      abxTest
+      whonetAbxCode
+      method
+      mediumUid
+      medium {
+        name
+      }
+      minimum
+      maximum
+      createdAt
+      createdByUid
     }
-    year
-    strain
-    referenceTable
-    whonetOrgCode
-    antibiotic
-    abxTest
-    whonetAbxCode
-    method
-    mediumUid
-    medium {
-      name
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
     }
-    minimum
-    maximum
-    createdAt
-    createdByUid
   }
 }
     `;

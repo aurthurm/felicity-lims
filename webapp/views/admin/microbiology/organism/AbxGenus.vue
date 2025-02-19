@@ -104,12 +104,12 @@ function saveForm(): void {
 
 <template>
 
-  <div class="container w-full my-4">
-    <hr>
+  <div class="w-full my-4">
+    <!-- <hr>
     <button @click="FormManager(true)"
             class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
       Add Genus
-    </button>
+    </button> -->
     <hr>
 
     <div class="overflow-x-auto mt-4">
@@ -139,10 +139,10 @@ function saveForm(): void {
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-              <button @click="FormManager(false, guideline)"
+              <!-- <button @click="FormManager(false, guideline)"
                       class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
                 Edit
-              </button>
+              </button> -->
             </td>
           </tr>
           </tbody>

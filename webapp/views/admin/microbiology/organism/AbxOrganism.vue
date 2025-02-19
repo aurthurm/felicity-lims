@@ -250,25 +250,25 @@ const tableColumns = ref([
     sortBy: "asc",
     hidden: false,
   },
-  {
-    name: "",
-    value: "",
-    sortable: false,
-    sortBy: "asc",
-    hidden: false,
-    customRender: function (abx, column) {
-      return h(
-        "button",
-        {
-          type: "button",
-          class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
-          innerHTML: "Edit",
-          onClick: () => FormManager(false, abx),
-        },
-        []
-      );
-    },
-  },
+  // {
+  //   name: "",
+  //   value: "",
+  //   sortable: false,
+  //   sortBy: "asc",
+  //   hidden: false,
+  //   customRender: function (abx, column) {
+  //     return h(
+  //       "button",
+  //       {
+  //         type: "button",
+  //         class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+  //         innerHTML: "Edit",
+  //         onClick: () => FormManager(false, abx),
+  //       },
+  //       []
+  //     );
+  //   },
+  // },
 ]);
 
 function fetchOrganisms(params){
@@ -438,11 +438,11 @@ function saveForm(): void {
 <template>
 
   <div class="w-full my-4">
-    <hr>
+    <!-- <hr>
     <button @click="FormManager(true)"
             class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
       Add Organism
-    </button>
+    </button> -->
     <hr>
 
     <DataTable 

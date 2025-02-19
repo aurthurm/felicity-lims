@@ -233,7 +233,8 @@ mutation  AddAbxBreakpoint($payload: AbxBreakpointInputType!) {
             guidelineUid
             guideline { name }
             year
-            testMethod
+            testMethodUid
+            testMethod { name }
             potency
             organismCode
             organismCodeType
@@ -266,7 +267,8 @@ mutation  EditAbxBreakpoint($uid: String!, $payload: AbxBreakpointInputType!) {
             guidelineUid
             guideline { name }
             year
-            testMethod
+            testMethodUid
+            testMethod { name }
             potency
             organismCode
             organismCodeType

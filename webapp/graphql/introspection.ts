@@ -552,16 +552,13 @@ export default {
           {
             "name": "guidelines",
             "type": {
-              "kind": "NON_NULL",
+              "kind": "LIST",
               "ofType": {
-                "kind": "LIST",
+                "kind": "NON_NULL",
                 "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AbxGuidelineType",
-                    "ofType": null
-                  }
+                  "kind": "OBJECT",
+                  "name": "AbxGuidelineType",
+                  "ofType": null
                 }
               }
             },
@@ -982,6 +979,15 @@ export default {
           },
           {
             "name": "testMethod",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxTestMethodType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "testMethodUid",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -20676,17 +20682,59 @@ export default {
           {
             "name": "abxExpectedResistancePhenotypeAll",
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AbxExpResPhenotypeType",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "AbxExpResPhenotypeCursorPage",
+                "ofType": null
               }
             },
-            "args": []
+            "args": [
+              {
+                "name": "afterCursor",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "beforeCursor",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "pageSize",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "sortBy",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "text",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
             "name": "abxExpectedResistancePhenotypeByUid",
@@ -20711,17 +20759,59 @@ export default {
           {
             "name": "abxExpertInterpretationRuleAll",
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AbxExpertInterpretationRuleType",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "AbxExpertInterpretationRuleCursorPage",
+                "ofType": null
               }
             },
-            "args": []
+            "args": [
+              {
+                "name": "afterCursor",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "beforeCursor",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "pageSize",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "sortBy",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "text",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
             "name": "abxExpertInterpretationRuleByUid",
@@ -21180,17 +21270,59 @@ export default {
           {
             "name": "abxQcRangeAll",
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AbxQCRangeType",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "AbxQCRangeCursorPage",
+                "ofType": null
               }
             },
-            "args": []
+            "args": [
+              {
+                "name": "afterCursor",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "beforeCursor",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "pageSize",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "sortBy",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "text",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
             "name": "abxQcRangeByUid",

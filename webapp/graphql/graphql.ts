@@ -152,7 +152,7 @@ export type AbxAntibioticType = {
   dinCode?: Maybe<Scalars['String']['output']>;
   eucastCode?: Maybe<Scalars['String']['output']>;
   eucastOrder?: Maybe<Scalars['String']['output']>;
-  guidelines: Array<AbxGuidelineType>;
+  guidelines?: Maybe<Array<AbxGuidelineType>>;
   human?: Maybe<Scalars['Boolean']['output']>;
   jacCode?: Maybe<Scalars['String']['output']>;
   loincafb?: Maybe<Scalars['String']['output']>;
@@ -227,7 +227,8 @@ export type AbxBreakpointTyp = {
   sdd?: Maybe<Scalars['String']['output']>;
   siteOfInfection?: Maybe<AbxSiteOfInfectionType>;
   siteOfInfectionUid?: Maybe<Scalars['String']['output']>;
-  testMethod: Scalars['String']['output'];
+  testMethod?: Maybe<AbxTestMethodType>;
+  testMethodUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -3976,9 +3977,9 @@ export type Query = {
   abxBreakpointTypeByUid?: Maybe<AbxBreakpointTypeTyp>;
   abxClassAll?: Maybe<Array<AbxClassType>>;
   abxClassByUid?: Maybe<AbxClassType>;
-  abxExpectedResistancePhenotypeAll?: Maybe<Array<AbxExpResPhenotypeType>>;
+  abxExpectedResistancePhenotypeAll: AbxExpResPhenotypeCursorPage;
   abxExpectedResistancePhenotypeByUid?: Maybe<AbxExpResPhenotypeType>;
-  abxExpertInterpretationRuleAll?: Maybe<Array<AbxExpertInterpretationRuleType>>;
+  abxExpertInterpretationRuleAll: AbxExpertInterpretationRuleCursorPage;
   abxExpertInterpretationRuleByUid?: Maybe<AbxExpertInterpretationRuleType>;
   abxFamilyAll?: Maybe<Array<AbxFamilyType>>;
   abxFamilyByUid?: Maybe<AbxFamilyType>;
@@ -4000,7 +4001,7 @@ export type Query = {
   abxOrganismSerotypeByUid?: Maybe<AbxOrganismSerotypeType>;
   abxPhylumAll?: Maybe<Array<AbxPhylumType>>;
   abxPhylumByUid?: Maybe<AbxPhylumType>;
-  abxQcRangeAll?: Maybe<Array<AbxQcRangeType>>;
+  abxQcRangeAll: AbxQcRangeCursorPage;
   abxQcRangeByUid?: Maybe<AbxQcRangeType>;
   abxSiteOfInfectionAll?: Maybe<Array<AbxSiteOfInfectionType>>;
   abxSiteOfInfectionByUid?: Maybe<AbxSiteOfInfectionType>;
@@ -4231,8 +4232,26 @@ export type QueryAbxClassByUidArgs = {
 };
 
 
+export type QueryAbxExpectedResistancePhenotypeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
+};
+
+
 export type QueryAbxExpectedResistancePhenotypeByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxExpertInterpretationRuleAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
 };
 
 
@@ -4306,6 +4325,15 @@ export type QueryAbxOrganismSerotypeByUidArgs = {
 
 export type QueryAbxPhylumByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxQcRangeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text: Scalars['String']['input'];
 };
 
 

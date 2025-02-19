@@ -246,10 +246,10 @@ class MicrobiologyQuery:
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "guideline___name__ilike", "year__ilike",
-                "test_method__ilike", "potency__ilike",
+                "guideline___name__ilike",
+                "test_method___name__ilike", "potency__ilike",
                 "organism_code__ilike", "breakpoint_type___name__ilike",
-                "host__ilike", "site_of_infection___name__ilike",
+                "host___name__ilike", "site_of_infection___name__ilike",
                 "whonet_abx_code__ilike"
             ]
             for _arg in arg_list:
@@ -280,16 +280,87 @@ class MicrobiologyQuery:
         return await AbxBreakpointService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_expected_resistance_phenotype_all(self, info) -> Optional[List[AbxExpResPhenotypeType]]:
-        return await AbxExpResPhenotypeService().all()
+    async def abx_expected_resistance_phenotype_all(self, info,
+                                                    text: str,
+                                                    page_size: int | None = None,
+                                                    after_cursor: str | None = None,
+                                                    before_cursor: str | None = None,
+                                                    sort_by: list[str] | None = None
+                                                    ) -> AbxExpResPhenotypeCursorPage:
+        filters = []
+
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                "guideline___name__ilike", "reference_table__ilike",
+                "organism_code__ilike", "exception_organism_code__ilike",
+            ]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
+
+        text_filters = {sa.or_: _or_text_}
+        filters.append(text_filters)
+
+        page = await AbxExpResPhenotypeService().paging_filter(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+        )
+
+        total_count: int = page.total_count
+        edges: List[AbxExpResPhenotypeEdge[AbxExpResPhenotypeType]] = page.edges
+        items: List[AbxExpResPhenotypeType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return AbxExpResPhenotypeCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_expected_resistance_phenotype_by_uid(self, info, uid: str) -> Optional[AbxExpResPhenotypeType]:
         return await AbxExpResPhenotypeService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_expert_interpretation_rule_all(self, info) -> Optional[List[AbxExpertInterpretationRuleType]]:
-        return await AbxExpertInterpretationRuleService().all()
+    async def abx_expert_interpretation_rule_all(self, info,
+                                                 text: str,
+                                                 page_size: int | None = None,
+                                                 after_cursor: str | None = None,
+                                                 before_cursor: str | None = None,
+                                                 sort_by: list[str] | None = None
+                                                 ) -> AbxExpertInterpretationRuleCursorPage:
+        filters = []
+
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                "rule_code__ilike", "description__ilike",
+                "organism_code__ilike", "rule_criteria__ilike",
+                "affected_antibiotics__ilike", "antibiotic_exceptions__ilike",
+            ]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
+
+        text_filters = {sa.or_: _or_text_}
+        filters.append(text_filters)
+
+        page = await AbxExpertInterpretationRuleService().paging_filter(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+        )
+
+        total_count: int = page.total_count
+        edges: List[AbxExpertInterpretationRuleEdge[AbxExpertInterpretationRuleType]] = page.edges
+        items: List[AbxExpertInterpretationRuleType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return AbxExpertInterpretationRuleCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_expert_interpretation_rule_by_uid(self, info, uid: str) -> Optional[AbxExpertInterpretationRuleType]:
@@ -304,8 +375,44 @@ class MicrobiologyQuery:
         return await AbxMediumService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_qc_range_all(self, info) -> Optional[List[AbxQCRangeType]]:
-        return await AbxQCRangeService().all()
+    async def abx_qc_range_all(self, info,
+                               text: str,
+                               page_size: int | None = None,
+                               after_cursor: str | None = None,
+                               before_cursor: str | None = None,
+                               sort_by: list[str] | None = None
+                               ) -> AbxQCRangeCursorPage:
+        filters = []
+
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                "guideline___name__ilike", "medium___name__ilike",
+                "strain__ilike", "reference_table__ilike",
+                "antibiotic__ilike", "method___name__ilike",
+            ]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
+
+        text_filters = {sa.or_: _or_text_}
+        filters.append(text_filters)
+
+        page = await AbxQCRangeService().paging_filter(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+        )
+
+        total_count: int = page.total_count
+        edges: List[AbxQCRangeEdge[AbxQCRangeType]] = page.edges
+        items: List[AbxQCRangeType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return AbxQCRangeCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_qc_range_by_uid(self, info, uid: str) -> Optional[AbxQCRangeType]:
