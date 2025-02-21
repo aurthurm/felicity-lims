@@ -1,1 +1,0 @@
-import{k as e,o as t,c as n}from"./index-06e172a4.js";const c={};function i(o,s){return t(),n("p",null,"Antibiotics Guidelines")}const a=e(c,[["render",i],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/microbiology/astpanel/AstPanel.vue"]]);export{a as default};
