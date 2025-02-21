@@ -14024,6 +14024,29 @@ export default {
             ]
           },
           {
+            "name": "discardAbxAntibiotic",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "DeletedItem",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "invalidateSamples",
             "type": {
               "kind": "NON_NULL",
@@ -17675,6 +17698,29 @@ export default {
             ]
           },
           {
+            "name": "useAbxAntibiotic",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "AbxAntibioticResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "validatePasswordResetToken",
             "type": {
               "kind": "NON_NULL",
@@ -21007,6 +21053,21 @@ export default {
                 }
               }
             ]
+          },
+          {
+            "name": "abxLaboratoryAntibiotics",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AbxAntibioticType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
           },
           {
             "name": "abxMediumAll",

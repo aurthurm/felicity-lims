@@ -99,6 +99,20 @@ query GetAbxAntibioticByUid($uid: String!) {
     }
 }
 
+query GetAbxLaboratoryAntibiotics {
+    abxLaboratoryAntibiotics {
+      uid
+      name
+      guidelines { name }
+      potency
+      human
+      veterinary
+      loincdisk
+      loincmic
+      loincetest
+    }
+}
+
 query GetAbxKingdomAll {
     abxKingdomAll {
         uid

@@ -2205,6 +2205,7 @@ export type Mutation = {
   deleteReflexBrain: DeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
+  discardAbxAntibiotic: DeletedItem;
   invalidateSamples: SampleActionResponse;
   issueStockOrder: StockOrderResponse;
   manageAnalyses: ResultedSampleActionResponse;
@@ -2314,6 +2315,7 @@ export type Mutation = {
   updateWorksheetApplyTemplate: WorkSheetResponse;
   updateWorksheetManualAssign: WorkSheetResponse;
   updateWorksheetTemplate: WorkSheetTemplateResponse;
+  useAbxAntibiotic: AbxAntibioticResponse;
   validatePasswordResetToken: PasswordResetValidityResponse;
   verifyAnalysisResults: AnalysisResultSubmitResponse;
   verifySamples: SampleActionResponse;
@@ -2823,6 +2825,11 @@ export type MutationDeleteStockOrderArgs = {
 
 
 export type MutationDeleteThreadArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDiscardAbxAntibioticArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -3481,6 +3488,11 @@ export type MutationUpdateWorksheetTemplateArgs = {
 };
 
 
+export type MutationUseAbxAntibioticArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
 export type MutationValidatePasswordResetTokenArgs = {
   token: Scalars['String']['input'];
 };
@@ -3991,6 +4003,7 @@ export type Query = {
   abxHostByUid?: Maybe<AbxHostType>;
   abxKingdomAll?: Maybe<Array<AbxKingdomType>>;
   abxKingdomByUid?: Maybe<AbxKingdomType>;
+  abxLaboratoryAntibiotics?: Maybe<Array<AbxAntibioticType>>;
   abxMediumAll?: Maybe<Array<AbxMediumType>>;
   abxMediumByUid?: Maybe<AbxMediumType>;
   abxOrderAll?: Maybe<Array<AbxOrderType>>;

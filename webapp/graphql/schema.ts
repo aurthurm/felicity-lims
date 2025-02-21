@@ -2205,6 +2205,7 @@ export type Mutation = {
   deleteReflexBrain: DeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
+  discardAbxAntibiotic: DeletedItem;
   invalidateSamples: SampleActionResponse;
   issueStockOrder: StockOrderResponse;
   manageAnalyses: ResultedSampleActionResponse;
@@ -2314,6 +2315,7 @@ export type Mutation = {
   updateWorksheetApplyTemplate: WorkSheetResponse;
   updateWorksheetManualAssign: WorkSheetResponse;
   updateWorksheetTemplate: WorkSheetTemplateResponse;
+  useAbxAntibiotic: AbxAntibioticResponse;
   validatePasswordResetToken: PasswordResetValidityResponse;
   verifyAnalysisResults: AnalysisResultSubmitResponse;
   verifySamples: SampleActionResponse;
@@ -2823,6 +2825,11 @@ export type MutationDeleteStockOrderArgs = {
 
 
 export type MutationDeleteThreadArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDiscardAbxAntibioticArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -3481,6 +3488,11 @@ export type MutationUpdateWorksheetTemplateArgs = {
 };
 
 
+export type MutationUseAbxAntibioticArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
 export type MutationValidatePasswordResetTokenArgs = {
   token: Scalars['String']['input'];
 };
@@ -3991,6 +4003,7 @@ export type Query = {
   abxHostByUid?: Maybe<AbxHostType>;
   abxKingdomAll?: Maybe<Array<AbxKingdomType>>;
   abxKingdomByUid?: Maybe<AbxKingdomType>;
+  abxLaboratoryAntibiotics?: Maybe<Array<AbxAntibioticType>>;
   abxMediumAll?: Maybe<Array<AbxMediumType>>;
   abxMediumByUid?: Maybe<AbxMediumType>;
   abxOrderAll?: Maybe<Array<AbxOrderType>>;
@@ -6923,6 +6936,7 @@ export type GraphCacheResolvers = {
     abxHostByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxHostByUidArgs, WithTypename<AbxHostType> | string>,
     abxKingdomAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxKingdomType> | string>>,
     abxKingdomByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxKingdomByUidArgs, WithTypename<AbxKingdomType> | string>,
+    abxLaboratoryAntibiotics?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxAntibioticType> | string>>,
     abxMediumAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxMediumType> | string>>,
     abxMediumByUid?: GraphCacheResolver<WithTypename<Query>, QueryAbxMediumByUidArgs, WithTypename<AbxMediumType> | string>,
     abxOrderAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<AbxOrderType> | string>>,
@@ -9742,6 +9756,7 @@ export type GraphCacheOptimisticUpdaters = {
   deleteReflexBrain?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexBrainArgs, WithTypename<DeletedItem>>,
   deleteStockOrder?: GraphCacheOptimisticMutationResolver<MutationDeleteStockOrderArgs, WithTypename<StockOrderResponse>>,
   deleteThread?: GraphCacheOptimisticMutationResolver<MutationDeleteThreadArgs, WithTypename<DeleteResponse>>,
+  discardAbxAntibiotic?: GraphCacheOptimisticMutationResolver<MutationDiscardAbxAntibioticArgs, WithTypename<DeletedItem>>,
   invalidateSamples?: GraphCacheOptimisticMutationResolver<MutationInvalidateSamplesArgs, WithTypename<SampleActionResponse>>,
   issueStockOrder?: GraphCacheOptimisticMutationResolver<MutationIssueStockOrderArgs, WithTypename<StockOrderResponse>>,
   manageAnalyses?: GraphCacheOptimisticMutationResolver<MutationManageAnalysesArgs, WithTypename<ResultedSampleActionResponse>>,
@@ -9851,6 +9866,7 @@ export type GraphCacheOptimisticUpdaters = {
   updateWorksheetApplyTemplate?: GraphCacheOptimisticMutationResolver<MutationUpdateWorksheetApplyTemplateArgs, WithTypename<WorkSheetResponse>>,
   updateWorksheetManualAssign?: GraphCacheOptimisticMutationResolver<MutationUpdateWorksheetManualAssignArgs, WithTypename<WorkSheetResponse>>,
   updateWorksheetTemplate?: GraphCacheOptimisticMutationResolver<MutationUpdateWorksheetTemplateArgs, WithTypename<WorkSheetTemplateResponse>>,
+  useAbxAntibiotic?: GraphCacheOptimisticMutationResolver<MutationUseAbxAntibioticArgs, WithTypename<AbxAntibioticResponse>>,
   validatePasswordResetToken?: GraphCacheOptimisticMutationResolver<MutationValidatePasswordResetTokenArgs, WithTypename<PasswordResetValidityResponse>>,
   verifyAnalysisResults?: GraphCacheOptimisticMutationResolver<MutationVerifyAnalysisResultsArgs, WithTypename<AnalysisResultSubmitResponse>>,
   verifySamples?: GraphCacheOptimisticMutationResolver<MutationVerifySamplesArgs, WithTypename<SampleActionResponse>>,
@@ -9884,6 +9900,7 @@ export type GraphCacheUpdaters = {
     abxHostByUid?: GraphCacheUpdateResolver<{ abxHostByUid: Maybe<WithTypename<AbxHostType>> }, QueryAbxHostByUidArgs>,
     abxKingdomAll?: GraphCacheUpdateResolver<{ abxKingdomAll: Maybe<Array<WithTypename<AbxKingdomType>>> }, Record<string, never>>,
     abxKingdomByUid?: GraphCacheUpdateResolver<{ abxKingdomByUid: Maybe<WithTypename<AbxKingdomType>> }, QueryAbxKingdomByUidArgs>,
+    abxLaboratoryAntibiotics?: GraphCacheUpdateResolver<{ abxLaboratoryAntibiotics: Maybe<Array<WithTypename<AbxAntibioticType>>> }, Record<string, never>>,
     abxMediumAll?: GraphCacheUpdateResolver<{ abxMediumAll: Maybe<Array<WithTypename<AbxMediumType>>> }, Record<string, never>>,
     abxMediumByUid?: GraphCacheUpdateResolver<{ abxMediumByUid: Maybe<WithTypename<AbxMediumType>> }, QueryAbxMediumByUidArgs>,
     abxOrderAll?: GraphCacheUpdateResolver<{ abxOrderAll: Maybe<Array<WithTypename<AbxOrderType>>> }, Record<string, never>>,
@@ -10179,6 +10196,7 @@ export type GraphCacheUpdaters = {
     deleteReflexBrain?: GraphCacheUpdateResolver<{ deleteReflexBrain: WithTypename<DeletedItem> }, MutationDeleteReflexBrainArgs>,
     deleteStockOrder?: GraphCacheUpdateResolver<{ deleteStockOrder: WithTypename<StockOrderResponse> }, MutationDeleteStockOrderArgs>,
     deleteThread?: GraphCacheUpdateResolver<{ deleteThread: WithTypename<DeleteResponse> }, MutationDeleteThreadArgs>,
+    discardAbxAntibiotic?: GraphCacheUpdateResolver<{ discardAbxAntibiotic: WithTypename<DeletedItem> }, MutationDiscardAbxAntibioticArgs>,
     invalidateSamples?: GraphCacheUpdateResolver<{ invalidateSamples: WithTypename<SampleActionResponse> }, MutationInvalidateSamplesArgs>,
     issueStockOrder?: GraphCacheUpdateResolver<{ issueStockOrder: WithTypename<StockOrderResponse> }, MutationIssueStockOrderArgs>,
     manageAnalyses?: GraphCacheUpdateResolver<{ manageAnalyses: WithTypename<ResultedSampleActionResponse> }, MutationManageAnalysesArgs>,
@@ -10288,6 +10306,7 @@ export type GraphCacheUpdaters = {
     updateWorksheetApplyTemplate?: GraphCacheUpdateResolver<{ updateWorksheetApplyTemplate: WithTypename<WorkSheetResponse> }, MutationUpdateWorksheetApplyTemplateArgs>,
     updateWorksheetManualAssign?: GraphCacheUpdateResolver<{ updateWorksheetManualAssign: WithTypename<WorkSheetResponse> }, MutationUpdateWorksheetManualAssignArgs>,
     updateWorksheetTemplate?: GraphCacheUpdateResolver<{ updateWorksheetTemplate: WithTypename<WorkSheetTemplateResponse> }, MutationUpdateWorksheetTemplateArgs>,
+    useAbxAntibiotic?: GraphCacheUpdateResolver<{ useAbxAntibiotic: WithTypename<AbxAntibioticResponse> }, MutationUseAbxAntibioticArgs>,
     validatePasswordResetToken?: GraphCacheUpdateResolver<{ validatePasswordResetToken: WithTypename<PasswordResetValidityResponse> }, MutationValidatePasswordResetTokenArgs>,
     verifyAnalysisResults?: GraphCacheUpdateResolver<{ verifyAnalysisResults: WithTypename<AnalysisResultSubmitResponse> }, MutationVerifyAnalysisResultsArgs>,
     verifySamples?: GraphCacheUpdateResolver<{ verifySamples: WithTypename<SampleActionResponse> }, MutationVerifySamplesArgs>,

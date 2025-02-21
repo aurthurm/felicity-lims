@@ -3,7 +3,9 @@ import strawberry  # noqa
 
 from felicity.api.gql.multiplex.microbiology.types import *
 from felicity.api.gql.permissions import IsAuthenticated
+from felicity.apps.multiplex.microbiology.entities import laboratory_antibiotics
 from felicity.apps.multiplex.microbiology.services import *
+from felicity.apps.setup.services import LaboratoryService
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -62,6 +64,16 @@ class MicrobiologyQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_antibiotic_by_uid(self, info, uid: str) -> Optional[AbxAntibioticType]:
         return await AbxAntibioticService().get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def abx_laboratory_antibiotics(self, info) -> Optional[List[AbxAntibioticType]]:
+        laboratory = await LaboratoryService().get_by_setup_name("felicity")
+        antibiotic_uids = await AbxAntibioticService().repository.query_table(
+            table=laboratory_antibiotics,
+            columns=["antibiotic_uid"],
+            laboratory_uid=laboratory.uid
+        )
+        return await AbxAntibioticService().get_by_uids(antibiotic_uids) if antibiotic_uids else None
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_kingdom_all(self, info) -> Optional[List[AbxKingdomType]]:
@@ -389,7 +401,7 @@ class MicrobiologyQuery:
             arg_list = [
                 "guideline___name__ilike", "medium___name__ilike",
                 "strain__ilike", "reference_table__ilike",
-                "antibiotic__ilike", "method___name__ilike",
+                "antibiotic__ilike", "method__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"

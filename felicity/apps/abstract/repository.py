@@ -38,7 +38,7 @@ def apply_nested_loader_options(stmt, model, path):
         else:
             next_option = selectinload(getattr(current_model, attr))
             current_option = current_option.options(next_option)
-            current_option = next_option
+            # current_option = next_option
 
         # Update the current model to the next model in the relationship path
         current_model = inspect(current_model).relationships[attr].mapper.class_

@@ -1,7 +1,7 @@
 from strawberry.tools import create_type
 
 from felicity.api.gql.multiplex.microbiology.mutations.antibiotic import create_abx_guideline, update_abx_guideline, \
-    create_abx_antibiotic, update_abx_antibiotic
+    create_abx_antibiotic, update_abx_antibiotic, use_abx_antibiotic, discard_abx_antibiotic
 from felicity.api.gql.multiplex.microbiology.mutations.ast_panel import create_abx_ast_panel, update_abx_ast_panel
 from felicity.api.gql.multiplex.microbiology.mutations.breakpoint import create_abx_test_method, update_abx_test_method, \
     create_abx_breakpoint_type, update_abx_breakpoint_type, create_abx_host, update_abx_host, \
@@ -23,6 +23,8 @@ MicrobiologyMutations = create_type(
         update_abx_guideline,
         create_abx_antibiotic,
         update_abx_antibiotic,
+        use_abx_antibiotic,
+        discard_abx_antibiotic,
         create_abx_ast_panel,
         update_abx_ast_panel,
         create_abx_test_method,

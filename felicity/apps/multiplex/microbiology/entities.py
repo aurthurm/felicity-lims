@@ -63,6 +63,15 @@ class AbxAntibiotic(BaseEntity):
     )
 
 
+# Association table for laboratory and antibiotics
+laboratory_antibiotics = Table(
+    'abx_laboratory_antibiotic',
+    BaseEntity.metadata,
+    Column('laboratory_uid', String, ForeignKey('laboratory.uid'), primary_key=True),
+    Column('antibiotic_uid', String, ForeignKey('abx_antibiotic.uid'), primary_key=True)
+)
+
+
 class AbxKingdom(BaseEntity):
     __tablename__ = 'abx_kingdom'
 

@@ -3,8 +3,8 @@ import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils/helpers';
 import useApiUtil from '@/composables/api_util';
 import { IAbxAntibiotic, IAbxGuideline } from "@/models/microbiology";
-import { GetAbxAntibioticAllDocument, GetAbxAntibioticAllQuery, GetAbxAntibioticAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables } from "@/graphql/operations/microbiology.queries";
-import { AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables, AddAbxAntibioticDocument, EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables, EditAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
+import { GetAbxAntibioticAllDocument, GetAbxAntibioticAllQuery, GetAbxAntibioticAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxLaboratoryAntibioticsDocument, GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables } from "@/graphql/operations/microbiology.queries";
+import { AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables, AddAbxAntibioticDocument, EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables, EditAbxAntibioticDocument, UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables, UseAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
 
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
@@ -25,6 +25,7 @@ const formAction = ref<boolean>(true);
 
 const fetchingAntibiotics = ref<boolean>(false);
 const antibiotics = ref<IAbxAntibiotic[]>([]);
+const laboratoryAntibiotics = ref<IAbxAntibiotic[]>([]);
 
 const abxGuidelines = ref<IAbxGuideline[]>([]);
 
@@ -304,6 +305,33 @@ const tableColumns = ref([
     sortBy: "asc",
     hidden: true,
   },
+  {
+    name: "",
+    value: "",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+    customRender: function (abx, column) {
+      if(laboratoryAntibiotics.value.find(labAbx => labAbx.uid == abx.uid)) {
+        return h("button", {
+          type: "button",
+          class: "bg-red-800 text-white py-1 px-2 rounded-sm leading-none",
+          innerHTML: "in use",
+          disabled: true,
+        }, []);
+      }
+      return h(
+        "button",
+        {
+          type: "button",
+          class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+          innerHTML: "use",
+          onClick: () => useAntibiotic(abx),
+        },
+        []
+      );
+    },
+  },
   // {
   //   name: "",
   //   value: "",
@@ -324,6 +352,16 @@ const tableColumns = ref([
   //   },
   // },
 ]);
+
+function useAntibiotic(abx) {
+  withClientMutation<UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables>(
+        UseAbxAntibioticDocument, { uid: abx.uid }, "useAbxAntibiotic"
+    ).then((result) => {
+      if(result) {
+        laboratoryAntibiotics.value.push(result as IAbxAntibiotic);
+      }
+    });
+}
 
 function fetchAntibiotics(params){
   withClientQuery<GetAbxAntibioticAllQuery, GetAbxAntibioticAllQueryVariables>(
@@ -357,7 +395,16 @@ onMounted(() =>  {
         abxGuidelines.value = result as IAbxGuideline[]
       }
     })
+    //
     fetchAntibiotics(abxParams);
+    //
+    withClientQuery<GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables>(
+        GetAbxLaboratoryAntibioticsDocument, {}, "abxLaboratoryAntibiotics"
+    ).then((result) => {
+      if (result) {
+        laboratoryAntibiotics.value  = result as IAbxAntibiotic[]
+      }
+    })
   }
 )
 

@@ -5,11 +5,13 @@ import strawberry  # noqa
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.multiplex.microbiology import AbxAntibioticType, AbxGuidelineType
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import OperationError
+from felicity.api.gql.types import OperationError, DeletedItem
+from felicity.apps.multiplex.microbiology.entities import laboratory_antibiotics
 from felicity.apps.multiplex.microbiology.schemas import AbxGuidelineCreate, AbxGuidelineUpdate, AbxAntibioticCreate, \
     AbxAntibioticUpdate
 from felicity.apps.multiplex.microbiology.services import AbxAntibioticGuidelineService, AbxGuidelineService, \
     AbxAntibioticService
+from felicity.apps.setup.services import LaboratoryService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -159,3 +161,35 @@ async def update_abx_antibiotic(
         })
 
     return AbxAntibioticType(**abx_antibiotic.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def use_abx_antibiotic(info, uid: str) -> AbxAntibioticResponse:
+    laboratory = await LaboratoryService().get_by_setup_name("felicity")
+    exists = await AbxAntibioticService().repository.query_table(
+        table=laboratory_antibiotics,
+        columns=["antibiotic_uid"],
+        antibiotic_uid=uid,
+        laboratory_uid=laboratory.uid
+    )
+    if exists:
+        return OperationError(error="Antibiotic already used in this laboratory.")
+
+    await AbxAntibioticService().repository.table_insert(
+        laboratory_antibiotics,
+        [{"antibiotic_uid": uid, "laboratory_uid": laboratory.uid}]
+    )
+
+    antibiotic = await AbxAntibioticService().get(uid=uid)
+    return AbxAntibioticType(**antibiotic.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def discard_abx_antibiotic(info, uid: str) -> DeletedItem:
+    laboratory = await LaboratoryService().get_by_setup_name("felicity")
+    await AbxAntibioticService().repository.delete_table(
+        table=laboratory_antibiotics,
+        antibiotic_uid=uid,
+        laboratory_uid=laboratory.uid
+    )
+    return DeletedItem(uid=uid)

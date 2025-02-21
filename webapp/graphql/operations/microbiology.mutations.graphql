@@ -98,6 +98,30 @@ mutation  EditAbxAntibiotic($uid: String!, $payload: AbxAntibioticInputType!) {
     }
 }
 
+mutation UseAbxAntibiotic($uid: String!) {
+    useAbxAntibiotic(uid: $uid) {
+        ...on AbxAntibioticType {
+            uid
+            name
+            guidelines { name }
+            potency
+            human
+            veterinary
+            loincdisk
+            loincmic
+            loincetest
+        }
+    }
+}
+
+mutation DiscardAbxAntibiotic($uid: String!) {
+    discardAbxAntibiotic(uid: $uid) {
+        ...on DeletedItem {
+            uid
+        }
+    }
+}
+
 mutation  AddAbxAstPanel($payload: AbxASTPanelInputType!) {
     createAbxAstPanel(payload: $payload) {
         ...on AbxASTPanelType {

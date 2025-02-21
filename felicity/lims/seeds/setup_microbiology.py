@@ -48,9 +48,12 @@ async def seed_antibiotics() -> None:
 
     abx_antibiotic_service = AbxAntibioticService()
     for _, item in data.iterrows():
-
         antibiotic_in = {key: item[key] for key in AbxAntibioticCreate.model_fields if key in item}
-        antibiotic_in["human"] = True if antibiotic_in["human"] == 'X' else False
+        # only seed human abx
+        is_human = True if antibiotic_in["human"] == 'X' else False
+        if not is_human: continue
+
+        antibiotic_in["human"] = is_human
         antibiotic_in["veterinary"] = True if antibiotic_in["veterinary"] == 'X' else False
         antibiotic_in['guidelines'] = item.get('guidelines', [])
 
@@ -210,6 +213,9 @@ async def seed_breakpoints():
         test_methods.append(tm)
 
     for _, item in data.iterrows():
+        # only seed human hosts
+        if item["host"] and not item["host"].lower().strip() == "human": continue
+        
         bp_in = {
             key: item[key] \
             for key in AbxBreakpointCreate.model_fields \

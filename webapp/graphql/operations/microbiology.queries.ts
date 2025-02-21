@@ -72,6 +72,21 @@ export type GetAbxAntibioticByUidQuery = (
   )> }
 );
 
+export type GetAbxLaboratoryAntibioticsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAbxLaboratoryAntibioticsQuery = (
+  { __typename?: 'Query' }
+  & { abxLaboratoryAntibiotics?: Types.Maybe<Array<(
+    { __typename?: 'AbxAntibioticType' }
+    & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'potency' | 'human' | 'veterinary' | 'loincdisk' | 'loincmic' | 'loincetest'>
+    & { guidelines?: Types.Maybe<Array<(
+      { __typename?: 'AbxGuidelineType' }
+      & Pick<Types.AbxGuidelineType, 'name'>
+    )>> }
+  )>> }
+);
+
 export type GetAbxKingdomAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
@@ -862,6 +877,27 @@ export const GetAbxAntibioticByUidDocument = gql`
 
 export function useGetAbxAntibioticByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxAntibioticByUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAbxAntibioticByUidQuery>({ query: GetAbxAntibioticByUidDocument, ...options });
+};
+export const GetAbxLaboratoryAntibioticsDocument = gql`
+    query GetAbxLaboratoryAntibiotics {
+  abxLaboratoryAntibiotics {
+    uid
+    name
+    guidelines {
+      name
+    }
+    potency
+    human
+    veterinary
+    loincdisk
+    loincmic
+    loincetest
+  }
+}
+    `;
+
+export function useGetAbxLaboratoryAntibioticsQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxLaboratoryAntibioticsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxLaboratoryAntibioticsQuery>({ query: GetAbxLaboratoryAntibioticsDocument, ...options });
 };
 export const GetAbxKingdomAllDocument = gql`
     query GetAbxKingdomAll {

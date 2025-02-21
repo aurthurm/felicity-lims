@@ -65,6 +65,36 @@ export type EditAbxAntibioticMutation = (
   ) | { __typename?: 'OperationError' } }
 );
 
+export type UseAbxAntibioticMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type UseAbxAntibioticMutation = (
+  { __typename?: 'Mutation' }
+  & { useAbxAntibiotic: (
+    { __typename?: 'AbxAntibioticType' }
+    & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'potency' | 'human' | 'veterinary' | 'loincdisk' | 'loincmic' | 'loincetest'>
+    & { guidelines?: Types.Maybe<Array<(
+      { __typename?: 'AbxGuidelineType' }
+      & Pick<Types.AbxGuidelineType, 'name'>
+    )>> }
+  ) | { __typename?: 'OperationError' } }
+);
+
+export type DiscardAbxAntibioticMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type DiscardAbxAntibioticMutation = (
+  { __typename?: 'Mutation' }
+  & { discardAbxAntibiotic: (
+    { __typename?: 'DeletedItem' }
+    & Pick<Types.DeletedItem, 'uid'>
+  ) }
+);
+
 export type AddAbxAstPanelMutationVariables = Types.Exact<{
   payload: Types.AbxAstPanelInputType;
 }>;
@@ -785,6 +815,42 @@ export const EditAbxAntibioticDocument = gql`
 
 export function useEditAbxAntibioticMutation() {
   return Urql.useMutation<EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables>(EditAbxAntibioticDocument);
+};
+export const UseAbxAntibioticDocument = gql`
+    mutation UseAbxAntibiotic($uid: String!) {
+  useAbxAntibiotic(uid: $uid) {
+    ... on AbxAntibioticType {
+      uid
+      name
+      guidelines {
+        name
+      }
+      potency
+      human
+      veterinary
+      loincdisk
+      loincmic
+      loincetest
+    }
+  }
+}
+    `;
+
+export function useUseAbxAntibioticMutation() {
+  return Urql.useMutation<UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables>(UseAbxAntibioticDocument);
+};
+export const DiscardAbxAntibioticDocument = gql`
+    mutation DiscardAbxAntibiotic($uid: String!) {
+  discardAbxAntibiotic(uid: $uid) {
+    ... on DeletedItem {
+      uid
+    }
+  }
+}
+    `;
+
+export function useDiscardAbxAntibioticMutation() {
+  return Urql.useMutation<DiscardAbxAntibioticMutation, DiscardAbxAntibioticMutationVariables>(DiscardAbxAntibioticDocument);
 };
 export const AddAbxAstPanelDocument = gql`
     mutation AddAbxAstPanel($payload: AbxASTPanelInputType!) {

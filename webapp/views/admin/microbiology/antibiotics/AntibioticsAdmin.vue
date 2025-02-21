@@ -5,6 +5,10 @@ const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.
 
 const tabs = computed(() => [
   {
+    id: "abx-lab-antibiotics", label: "laboratory antibiotics",
+    component: defineAsyncComponent(() => import("./AbxLabAntibiotic.vue")),
+  },
+  {
     id: "abx-antibiotics", label: "antibiotics",
     component: defineAsyncComponent(() => import("./Antibiotics.vue")),
   },
@@ -16,5 +20,5 @@ const tabs = computed(() => [
 </script>
 
 <template>
-  <FelTabs :tabs="tabs" initial-tab="abx-antibiotics"/>
+  <FelTabs :tabs="tabs" initial-tab="abx-lab-antibiotics"/>
 </template>
