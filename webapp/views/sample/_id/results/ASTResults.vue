@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useSampleStore } from "@/stores/sample";
 import { computed, defineAsyncComponent, ref, onMounted, watch } from "vue";
 import type { PropType } from 'vue'
 import Swal from 'sweetalert2';
@@ -37,6 +38,8 @@ const {
     required: true,
   },
 });
+
+const sampleStore = useSampleStore();
 
 const { withClientMutation, withClientQuery } = useApiUtil()
 const organismResult = computed(() => organismAnalysisResults[0]);
@@ -131,7 +134,8 @@ function applyPanel(panel){
             } }, 'applyAbxAstPanel'
           ).then(resp => {
             if (resp) {
-              location.reload();
+              // location.reload();
+              sampleStore.fetchAnalysisResultsForSample(sample.uid)
             }
           });
       }
@@ -206,10 +210,6 @@ let {
   approveResults: approver_,
 } = useAnalysisComposable();
 
-const approveResults = () =>
-  approver_([analysisResult.value.uid!], "sample", sample?.uid!)
-    .then(console.log);
-
 // save 
 function canSave(organismUid: string) {
   const orgResults = organismResults.value[organismUid]
@@ -236,6 +236,7 @@ function saveAntibiotics(organismUid: string) {
   ).then(resp => {
     if (resp) {
       // location.reload();
+      sampleStore.fetchAnalysisResultsForSample(sample.uid)
     }
   });
 }
@@ -276,7 +277,35 @@ function submitAntibiotics(organismUid: string) {
     methodUid: "felicity_ast", 
     laboratoryInstrumentUid: "felicity_ast" 
   }))
-  submitter_(_prepared, "sample", sample?.uid!).then(console.log);
+  submitter_(_prepared, "sample", sample?.uid!).then(() => {
+      // location.reload();
+      sampleStore.fetchAnalysisResultsForSample(sample.uid)
+  });
+}
+
+// approve
+function canApprove(organismUid: string) {
+  const orgResults = organismResults.value[organismUid]
+  const is_any_dirty = Object.values(orgResults).some(ast => ast.dirty);
+    const some_resulted = Object.values(orgResults).some(
+      ast => ast.analResulState == "resulted"
+    );
+    return !is_any_dirty && some_resulted;
+}
+
+function getApprovable(organismUid: string) {
+  const orgResults = organismResults.value[organismUid];
+  const not_dirty = Object.values(orgResults).filter(ast => !ast.dirty);
+  return not_dirty.filter(ast => ast.analResulState == "resulted")
+}
+
+function approveAntibiotics(organismUid: string) {
+  const results = getApprovable(organismUid) as ASTData[];
+  const _prepared = results.map(r => r.analResultUid)
+  approver_(_prepared, "sample", sample?.uid!).then(() => {
+      // location.reload();
+      sampleStore.fetchAnalysisResultsForSample(sample.uid)
+  });
 }
 
 // Handle cell edit
@@ -419,15 +448,21 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
       <div class="mt-2">
         <FelButton 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
-        key="submit" 
+        key="button" 
         @click.prevent="saveAntibiotics(pickedOrg.uid)" 
         :color="'orange-600'">Save Antibiotics</FelButton>
 
         <FelButton 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 
-        key="submit" 
+        key="button" 
         @click.prevent="submitAntibiotics(pickedOrg.uid)" 
         :color="'orange-600'">Submit Antibiotics</FelButton>
+
+        <FelButton 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canApprove(pickedOrg.uid)" 
+        key="button" 
+        @click.prevent="approveAntibiotics(pickedOrg.uid)" 
+        :color="'orange-600'">Approve Antibiotics</FelButton>
       </div>
 
     </div>
