@@ -58,6 +58,7 @@ from felicity.apps.inventory.entities import StockUnit  # noqa
 from felicity.apps.job.entities import Job  # noqa
 from felicity.apps.messaging.entities import Message  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxASTPanel  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxASTResult  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxAntibiotic  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxAntibioticGuideline  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxBreakpoint  # noqa
@@ -68,11 +69,13 @@ from felicity.apps.multiplex.microbiology.entities import AbxExpertInterpretatio
 from felicity.apps.multiplex.microbiology.entities import AbxFamily  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxGenus  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxGuideline  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxGuidelineYear  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxHost  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxKingdom  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxMedium  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxOrder  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxOrganism  # noqa
+from felicity.apps.multiplex.microbiology.entities import AbxOrganismResult  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxOrganismSerotype  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxPhylum  # noqa
 from felicity.apps.multiplex.microbiology.entities import AbxQCRange  # noqa

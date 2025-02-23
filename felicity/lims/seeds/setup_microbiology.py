@@ -2,17 +2,20 @@ import logging
 
 import pandas as pd
 
+from felicity.apps.analysis import utils
+from felicity.apps.analysis.schemas import AnalysisCreate, AnalysisCategoryCreate
+from felicity.apps.analysis.services.analysis import AnalysisService, AnalysisCategoryService
 from felicity.apps.multiplex.microbiology.schemas import AbxGuidelineCreate, AbxAntibioticCreate, \
     AbxAntibioticGuidelineCreate, AbxKingdomCreate, AbxPhylumCreate, AbxClassCreate, AbxOrderCreate, AbxFamilyCreate, \
     AbxGenusCreate, AbxOrganismCreate, AbxBreakpointTypeCreate, AbxHostCreate, AbxBreakpointCreate, \
     AbxSiteOfInfectionCreate, AbxExpResPhenotypeCreate, AbxExpertInterpretationRuleCreate, \
-    AbxMediumCreate, AbxQCRangeCreate, AbxTestMethodCreate, AbxOrganismSerotypeCreate
+    AbxMediumCreate, AbxQCRangeCreate, AbxTestMethodCreate, AbxOrganismSerotypeCreate, AbxGuidelineYearCreate
 from felicity.apps.multiplex.microbiology.services import AbxGuidelineService, AbxAntibioticService, \
     AbxAntibioticGuidelineService, AbxKingdomService, AbxPhylumService, AbxClassService, AbxOrderService, \
     AbxFamilyService, AbxGenusService, AbxOrganismService, AbxBreakpointTypeService, \
     AbxHostService, AbxSiteOfInfectionService, AbxBreakpointService, AbxExpResPhenotypeService, \
     AbxExpertInterpretationRuleService, AbxMediumService, AbxQCRangeService, \
-    AbxTestMethodService, AbxOrganismSerotypeService
+    AbxTestMethodService, AbxOrganismSerotypeService, AbxGuidelineYearService
 from felicity.core.config import get_settings
 from felicity.lims.seeds.data import get_whonet_dataframes
 
@@ -180,6 +183,20 @@ async def seed_breakpoints():
     data = _clean_df(get_whonet_dataframes("Breakpoints"), {})
     guidelines = await AbxGuidelineService().all()
 
+    guideline_years = []
+    unique_gl_ys = data[['guidelines', 'year']].drop_duplicates().sort_values(by=['guidelines', 'year'])
+    for g_y in unique_gl_ys.itertuples(index=False):
+        gl = list(filter(lambda x: x.name == g_y.guidelines, guidelines))[0]
+        gl_year = await AbxGuidelineYearService().get(guideline_uid=gl.uid, year=g_y.year)
+        if not gl_year:
+            gl_year_in = AbxGuidelineYearCreate(
+                guideline_uid=gl.uid,
+                year=g_y.year,
+                code=f"{gl.name} {g_y.year}"
+            )
+            gl_year = await AbxGuidelineYearService().create(gl_year_in)
+        guideline_years.append(gl_year)
+
     breakpoint_types = []
     for bpt_name in data['breakpoint_type'].unique():
         bpt = await AbxBreakpointTypeService().get(name=bpt_name)
@@ -215,20 +232,20 @@ async def seed_breakpoints():
     for _, item in data.iterrows():
         # only seed human hosts
         if item["host"] and not item["host"].lower().strip() == "human": continue
-        
+
         bp_in = {
             key: item[key] \
             for key in AbxBreakpointCreate.model_fields \
             if key in item
         }
-        gl = [x for x in guidelines if x and getattr(x, "name", None) == item["guidelines"]]
+        gl = [x for x in guideline_years if x and getattr(x, "code", None) == f"{item['guidelines']} {item['year']}"]
         bpt = [x for x in breakpoint_types if x and getattr(x, "name", None) == item["breakpoint_type"]]
         hst = [x for x in hosts if x and getattr(x, "name", None) == item["host"]]
         soi = [x for x in site_of_infections if x and getattr(x, "name", None) == item["site_of_infection"]]
         tm = [x for x in test_methods if x and getattr(x, "name", None) == item["test_method"]]
         bp_in = {
             **bp_in,
-            "guideline_uid": gl[0].uid if gl else None,
+            "guideline_year_uid": gl[0].uid if gl else None,
             "breakpoint_type_uid": bpt[0].uid if bpt else None,
             "host_uid": hst[0].uid if hst else None,
             "site_of_infection_uid": soi[0].uid if soi else None,
@@ -237,8 +254,7 @@ async def seed_breakpoints():
         bp_schema = AbxBreakpointCreate(**bp_in)
 
         if not (await AbxBreakpointService().get(
-                guideline_uid=bp_in["guideline_uid"],
-                year=bp_in["year"],
+                guideline_year_uid=bp_in["guideline_year_uid"],
                 test_method_uid=bp_in["test_method_uid"],
                 organism_code=bp_in["organism_code"],
                 organism_code_type=bp_in["organism_code_type"],
@@ -353,3 +369,45 @@ async def seed_qc_ranges():
                 maximum=str(rt_in["maximum"])
         )):
             await AbxQCRangeService().create(bp_schema)
+
+
+async def seed_ast_services():
+    """!!!!!!!!!!!!do not change these services: never ever!!!!!!!!!!!!!!!!"""
+    logger.info("Setting up ast analysis services.....")
+    analysis_service = AnalysisService()
+
+    category_name = "Microbiology"
+    category = await AnalysisCategoryService().get(name=category_name)
+    if not category:
+        category_in = AnalysisCategoryCreate(name=category_name, description=category_name, active=True)
+        category = await AnalysisCategoryService().create(category_in)
+
+    analyses = [
+        {
+            "name": "Organisms", "description": "Isolated Organisms, There can be one or many organisms",
+            "category_uid": category.uid, "ucuum": "",
+            "keyword": "felicity_ast_abx_organism",
+            "sort_key": 1, "active": 1, "mappins": [{"loinc": ""}]
+        },
+        {
+            "name": "Antibiotic", "description": "Felicity Abx Antibiotics",
+            "category_uid": category.uid, "ucuum": "",
+            "keyword": "felicity_ast_abx_antibiotic",
+            "sort_key": 1, "active": 1, "mappins": [{"loinc": ""}]
+        },
+    ]
+
+    for _anal in analyses:
+        analyte = await analysis_service.get(name=_anal.get("name"))
+        if not analyte:
+            an_in = AnalysisCreate(
+                name=_anal.get("name"),
+                description=_anal.get("description"),
+                category_uid=category.uid if category else None,
+                unit_uid=None,
+                keyword=_anal.get("keyword"),
+                sort_key=_anal.get("sort_key"),
+                active=bool(_anal.get("active")),
+            )
+            analyte = await analysis_service.create(an_in)
+        await utils.billing_setup_analysis([analyte.uid])

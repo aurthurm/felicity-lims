@@ -3,7 +3,7 @@ from felicity.apps.multiplex.microbiology.entities import (
     AbxGuideline, AbxAntibioticGuideline, AbxAntibiotic,
     AbxKingdom, AbxPhylum, AbxClass, AbxOrder, AbxFamily, AbxGenus, AbxOrganism, AbxOrganismSerotype, AbxTestMethod,
     AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxExpResPhenotype,
-    AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel
+    AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel, AbxOrganismResult, AbxASTResult, AbxGuidelineYear
 )
 from felicity.apps.multiplex.microbiology.repository import (
     AbxGuidelineRepository, AbxAntibioticGuidelineRepository, AbxAntibioticRepository,
@@ -11,7 +11,8 @@ from felicity.apps.multiplex.microbiology.repository import (
     AbxFamilyRepository, AbxGenusRepository, AbxOrganismRepository, AbxOrganismSerotypeRepository,
     AbxTestMethodRepository, AbxBreakpointTypeRepository, AbxHostRepository, AbxSiteOfInfectionRepository,
     AbxBreakpointRepository, AbxExpResPhenotypeRepository,
-    AbxExpertInterpretationRuleRepository, AbxMediumRepository, AbxQCRangeRepository, AbxASTPanelRepository
+    AbxExpertInterpretationRuleRepository, AbxMediumRepository, AbxQCRangeRepository, AbxASTPanelRepository,
+    AbxOrganismResultRepository, AbxASTResultRepository, AbxGuidelineYearRepository
 )
 
 from felicity.apps.multiplex.microbiology.schemas import (
@@ -35,13 +36,18 @@ from felicity.apps.multiplex.microbiology.schemas import (
     AbxExpertInterpretationRuleCreate, AbxExpertInterpretationRuleUpdate,
     AbxMediumCreate, AbxMediumUpdate,
     AbxQCRangeCreate, AbxQCRangeUpdate,
-    AbxASTPanelCreate, AbxASTPanelUpdate,
-)
+    AbxASTPanelCreate, AbxASTPanelUpdate, AbxOrganismResultCreate, AbxOrganismResultUpdate, AbxASTResultCreate,
+    AbxASTResultUpdate, AbxGuidelineYearCreate, AbxGuidelineYearUpdate, )
 
 
 class AbxGuidelineService(BaseService[AbxGuideline, AbxGuidelineCreate, AbxGuidelineUpdate]):
     def __init__(self):
         super().__init__(AbxGuidelineRepository())
+
+
+class AbxGuidelineYearService(BaseService[AbxGuidelineYear, AbxGuidelineYearCreate, AbxGuidelineYearUpdate]):
+    def __init__(self):
+        super().__init__(AbxGuidelineYearRepository())
 
 
 class AbxAntibioticGuidelineService(
@@ -145,3 +151,13 @@ class AbxQCRangeService(BaseService[AbxQCRange, AbxQCRangeCreate, AbxQCRangeUpda
 class AbxASTPanelService(BaseService[AbxASTPanel, AbxASTPanelCreate, AbxASTPanelUpdate]):
     def __init__(self):
         super().__init__(AbxASTPanelRepository())
+
+
+class AbxASTResultService(BaseService[AbxASTResult, AbxASTResultCreate, AbxASTResultUpdate]):
+    def __init__(self):
+        super().__init__(AbxASTResultRepository())
+
+
+class AbxOrganismResultService(BaseService[AbxOrganismResult, AbxOrganismResultCreate, AbxOrganismResultUpdate]):
+    def __init__(self):
+        super().__init__(AbxOrganismResultRepository())

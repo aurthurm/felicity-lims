@@ -40,6 +40,8 @@ from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
+from felicity.apps.multiplex.microbiology.schemas import AbxOrganismResultCreate
+from felicity.apps.multiplex.microbiology.services import AbxOrganismResultService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
@@ -238,6 +240,7 @@ async def create_analysis_request(
 
         # link sample to provided services
         for _anal in analyses:
+            if _anal.keyword == "felicity_ast_abx_antibiotic": continue
             await SampleService().repository.table_insert(
                 table=sample_analysis,
                 mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
@@ -274,6 +277,14 @@ async def create_analysis_request(
         created = await AnalysisResultService().bulk_create(
             result_schemas, related=["sample", "analysis"]
         )
+        for _a in created:
+            if _a.keyword == "felicity_ast_abx_organism":
+                await AbxOrganismResultService().create(AbxOrganismResultCreate(
+                    analysis_result_uid=_a.uid,
+                    organism_uid=None,
+                    isolate_number=1
+                ))
+
         await AnalysisResultService().snapshot(created)
 
         # initialise reflex action if exist
@@ -571,9 +582,11 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
                     "sample_uid": copy.uid,
                     "analysis_uid": _service.uid,
                     "status": ResultState.PENDING,
+                    "metadata_snapshot": {}
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                await AnalysisResultService().create(a_result_schema)
+                created = await AnalysisResultService().create(a_result_schema, related=["sample", "analysis"])
+                await AnalysisResultService().snapshot([created])
 
     return SampleListingType(samples=return_samples)
 
@@ -612,6 +625,7 @@ async def samples_apply_template(
         due_date=None,
         created_by_uid=felicity_user.uid,
         updated_by_uid=felicity_user.uid,
+        metadata_snapshot={},
     )
     result_schemas = []
     for _service in template.analyses:
@@ -629,7 +643,8 @@ async def samples_apply_template(
                     }
                 )
             )
-    await AnalysisResultService().bulk_create(result_schemas)
+    created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
+    await AnalysisResultService().snapshot(created)
 
     if sample.status != SampleState.RECEIVED:
         await SampleService().change_status(
@@ -672,6 +687,7 @@ async def manage_analyses(
         due_date=None,
         created_by_uid=felicity_user.uid,
         updated_by_uid=felicity_user.uid,
+        metadata_snapshot={},
     )
     result_schemas = []
     for _service_uid in payload.add:
@@ -688,7 +704,8 @@ async def manage_analyses(
                 }
             )
         )
-    await AnalysisResultService().bulk_create(result_schemas)
+    created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
+    await AnalysisResultService().snapshot(created)
 
     if sample.status != SampleState.RECEIVED:
         await SampleService().change_status(

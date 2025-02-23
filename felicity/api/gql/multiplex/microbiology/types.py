@@ -5,6 +5,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
+from felicity.api.gql.analysis.types import AnalysisResultType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 
@@ -322,11 +323,19 @@ class AbxSiteOfInfectionType:
 
 
 @strawberry.type
-class AbxBreakpointTyp:
+class AbxGuidelineYearType:
     uid: str
     guideline_uid: str
     guideline: AbxGuidelineType | None = None
-    year: int | None = None
+    year: int
+    code: str
+
+
+@strawberry.type
+class AbxBreakpointTyp:
+    uid: str
+    guideline_year_uid: str
+    guideline_year: AbxGuidelineYearType | None = None
     test_method_uid: str
     test_method: AbxTestMethodType | None = None
     potency: str | None = None
@@ -495,7 +504,8 @@ class AbxASTPanelType:
     uid: str
     name: str
     description: str | None = None
-    breakpoints: Optional[List['AbxBreakpointTyp']] = field(default_factory=list)
+    organisms: Optional[List['AbxOrganismType']] = field(default_factory=list)
+    antibiotics: Optional[List['AbxAntibioticType']] = field(default_factory=list)
     active: bool = True
     created_at: str | None = None
     created_by_uid: str | None = None
@@ -517,3 +527,41 @@ class AbxASTPanelCursorPage:
     edges: list[AbxASTPanelEdge] | None = None
     items: list[AbxASTPanelType] | None = None
     total_count: int
+
+
+@strawberry.type
+class AbxASTResultType:
+    uid: str
+    organism_result_uid: str
+    analysis_result_uid: str
+    analysis_result: Optional['AnalysisResultType'] = None
+    antibiotic_uid: str
+    antibiotic: Optional['AbxAntibioticType'] = None
+    ast_method_uid: str | None = None
+    ast_method: Optional['AbxTestMethodType'] = None
+    guideline_year_uid: str | None = None
+    guideline_year: Optional['AbxGuidelineYearType'] = None
+    breakpoint_uid: str | None = None
+    breakpoint: Optional['AbxBreakpointTyp'] = None
+    ast_value: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+
+
+@strawberry.type
+class AbxOrganismResultType:
+    uid: str
+    analysis_result_uid: str
+    organism_uid: str | None = None
+    organism: Optional['AbxOrganismType'] = None
+    isolate_number: int | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None

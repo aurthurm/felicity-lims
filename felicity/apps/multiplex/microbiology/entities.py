@@ -6,6 +6,7 @@ from felicity.apps.abstract import BaseEntity
 
 class AbxGuideline(BaseEntity):
     __tablename__ = "abx_guideline"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     code = Column(String, nullable=True)
@@ -25,6 +26,7 @@ class AbxAntibioticGuideline(BaseEntity):
 
 class AbxAntibiotic(BaseEntity):
     __tablename__ = "abx_antibiotic"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     whonet_abx_code = Column(String, nullable=True)
@@ -74,12 +76,14 @@ laboratory_antibiotics = Table(
 
 class AbxKingdom(BaseEntity):
     __tablename__ = 'abx_kingdom'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
 
 
 class AbxPhylum(BaseEntity):
     __tablename__ = 'abx_phylum'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
     kingdom_uid = Column(String, ForeignKey('abx_kingdom.uid'), nullable=True)  # ForeignKey to Kingdom
@@ -88,6 +92,7 @@ class AbxPhylum(BaseEntity):
 
 class AbxClass(BaseEntity):
     __tablename__ = 'abx_class'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
     phylum_uid = Column(String, ForeignKey('abx_phylum.uid'), nullable=True)
@@ -96,6 +101,7 @@ class AbxClass(BaseEntity):
 
 class AbxOrder(BaseEntity):
     __tablename__ = 'abx_order'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
     class_uid = Column(String, ForeignKey('abx_class.uid'), nullable=True)
@@ -104,6 +110,7 @@ class AbxOrder(BaseEntity):
 
 class AbxFamily(BaseEntity):
     __tablename__ = 'abx_family'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
     order_uid = Column(String, ForeignKey('abx_order.uid'), nullable=True)
@@ -112,6 +119,7 @@ class AbxFamily(BaseEntity):
 
 class AbxGenus(BaseEntity):
     __tablename__ = 'abx_genus'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
     family_uid = Column(String, ForeignKey('abx_family.uid'), nullable=True)
@@ -120,6 +128,7 @@ class AbxGenus(BaseEntity):
 
 class AbxOrganism(BaseEntity):
     __tablename__ = 'abx_organism'
+    __repr_attrs__ = ['name']
 
     name = Column(String(255))
     whonet_org_code = Column(String(50), nullable=True)
@@ -176,6 +185,7 @@ class AbxOrganismSerotype(BaseEntity):
 
 class AbxTestMethod(BaseEntity):
     __tablename__ = "abx_test_method"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     description = Column(String, nullable=True)
@@ -183,6 +193,7 @@ class AbxTestMethod(BaseEntity):
 
 class AbxBreakpointType(BaseEntity):
     __tablename__ = "abx_breakpoint_type"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     description = Column(String, nullable=True)
@@ -190,6 +201,7 @@ class AbxBreakpointType(BaseEntity):
 
 class AbxHost(BaseEntity):
     __tablename__ = "abx_host"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     description = Column(String, nullable=True)
@@ -197,18 +209,29 @@ class AbxHost(BaseEntity):
 
 class AbxSiteOfInfection(BaseEntity):
     __tablename__ = "abx_infection_site"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     description = Column(String, nullable=True)
+
+
+class AbxGuidelineYear(BaseEntity):
+    __tablename__ = "abx_guideline_year"
+    __repr_attrs__ = ['code']
+
+    guideline_uid = Column(String, ForeignKey("abx_guideline.uid"))
+    guideline = relationship(AbxGuideline, backref="guideline_years", lazy="selectin")
+    year = Column(Integer, nullable=False)
+    code = Column(String(20), nullable=False)
+    breakpoints = relationship("AbxBreakpoint", back_populates="guideline_year", lazy="selectin")
 
 
 class AbxBreakpoint(BaseEntity):
     __tablename__ = 'abx_breakpoint'
 
     # Using a composite primary key of relevant fields
-    guideline_uid = Column(String, ForeignKey("abx_guideline.uid"))
-    guideline = relationship(AbxGuideline, backref="breakpoints", lazy="selectin")
-    year = Column(Integer, nullable=False)
+    guideline_year_uid = Column(String, ForeignKey("abx_guideline_year.uid"))
+    guideline_year = relationship(AbxGuidelineYear, back_populates="breakpoints", lazy="selectin")
     test_method_uid = Column(String, ForeignKey("abx_test_method.uid"), nullable=True)
     test_method = relationship(AbxTestMethod, backref="breakpoints", lazy="selectin")
     potency = Column(String(50), nullable=True)
@@ -275,6 +298,7 @@ class AbxExpertInterpretationRule(BaseEntity):
 
 class AbxMedium(BaseEntity):
     __tablename__ = "abx_medium"
+    __repr_attrs__ = ['name']
 
     name = Column(String)
     description = Column(String, nullable=True)
@@ -304,19 +328,57 @@ class AbxQCRange(BaseEntity):
         return f"{self.minimum} - {self.maximum}"
 
 
-# Association table for panels and antibiotics
-panel_breakpoints = Table(
-    'abx_panel_antibiotics',
+# Association table for panels and antibiotic
+panel_antibiotic = Table(
+    'abx_panel_antibiotic',
     BaseEntity.metadata,
     Column('panel_uid', String, ForeignKey('abx_ast_panel.uid'), primary_key=True),
-    Column('breakpoint_uid', String, ForeignKey('abx_breakpoint.uid'), primary_key=True)
+    Column('antibiotic_uid', String, ForeignKey('abx_antibiotic.uid'), primary_key=True)
+)
+
+# Association table for panels and organisms
+panel_organism = Table(
+    'abx_panel_organism',
+    BaseEntity.metadata,
+    Column('panel_uid', String, ForeignKey('abx_ast_panel.uid'), primary_key=True),
+    Column('organism_uid', String, ForeignKey('abx_organism.uid'), primary_key=True)
 )
 
 
 class AbxASTPanel(BaseEntity):
     __tablename__ = 'abx_ast_panel'
+    __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
     description = Column(String)
-    breakpoints = relationship("AbxBreakpoint", secondary=panel_breakpoints)
+    organisms = relationship("AbxOrganism", secondary=panel_organism, lazy="selectin")
+    antibiotics = relationship("AbxAntibiotic", secondary=panel_antibiotic, lazy="selectin")
     active = Column(Boolean, default=True)
+
+
+class AbxASTResult(BaseEntity):
+    __tablename__ = 'abx_ast_result'
+
+    # for which isolated org is this abx result
+    organism_result_uid = Column(String, ForeignKey("abx_organism_result.uid"))
+    organism_result = relationship("AbxOrganismResult", lazy="selectin")
+    analysis_result_uid = Column(String, ForeignKey("analysis_result.uid"))
+    analysis_result = relationship("AnalysisResult", lazy="selectin")
+    antibiotic_uid = Column(String, ForeignKey("abx_antibiotic.uid"))
+    antibiotic = relationship(AbxAntibiotic, lazy="selectin")
+    guideline_year_uid = Column(String, ForeignKey("abx_guideline_year.uid"))
+    guideline_year = relationship(AbxGuidelineYear, lazy="selectin")
+    breakpoint_uid = Column(String, ForeignKey("abx_breakpoint.uid"))
+    breakpoint = relationship(AbxBreakpoint, lazy="selectin")
+    ast_method_uid = Column(String, ForeignKey("abx_test_method.uid"), nullable=True)
+    ast_method = relationship(AbxTestMethod, lazy="selectin")
+    ast_value = Column(String(10), nullable=True)
+
+
+class AbxOrganismResult(BaseEntity):
+    __tablename__ = 'abx_organism_result'
+
+    analysis_result_uid = Column(String, ForeignKey("analysis_result.uid"))
+    organism_uid = Column(String, ForeignKey("abx_organism.uid"), nullable=True)
+    organism = relationship(AbxOrganism, lazy="selectin")
+    isolate_number = Column(Integer, default=1, nullable=True)

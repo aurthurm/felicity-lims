@@ -51,9 +51,10 @@ export type AbxAstPanelEdge = {
 
 export type AbxAstPanelInputType = {
   active?: Scalars['Boolean']['input'];
-  breakpoints: Array<Scalars['String']['input']>;
+  antibiotics: Array<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  organisms: Array<Scalars['String']['input']>;
 };
 
 export type AbxAstPanelResponse = AbxAstPanelType | OperationError;
@@ -61,16 +62,58 @@ export type AbxAstPanelResponse = AbxAstPanelType | OperationError;
 export type AbxAstPanelType = {
   __typename?: 'AbxASTPanelType';
   active: Scalars['Boolean']['output'];
-  breakpoints?: Maybe<Array<AbxBreakpointTyp>>;
+  antibiotics?: Maybe<Array<AbxAntibioticType>>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  organisms?: Maybe<Array<AbxOrganismType>>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxAstResultResponse = AbxAstResultsType | OperationError;
+
+export type AbxAstResultType = {
+  __typename?: 'AbxASTResultType';
+  analysisResult?: Maybe<AnalysisResultType>;
+  analysisResultUid: Scalars['String']['output'];
+  antibiotic?: Maybe<AbxAntibioticType>;
+  antibioticUid: Scalars['String']['output'];
+  astMethod?: Maybe<AbxTestMethodType>;
+  astMethodUid?: Maybe<Scalars['String']['output']>;
+  astValue?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  guidelineYear?: Maybe<AbxGuidelineYearType>;
+  guidelineYearUid?: Maybe<Scalars['String']['output']>;
+  organismResultUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type AbxAstResultUpdateInput = {
+  astMethodUid?: InputMaybe<Scalars['String']['input']>;
+  astValue?: InputMaybe<Scalars['String']['input']>;
+  guidelineYearUid?: InputMaybe<Scalars['String']['input']>;
+  reportable?: InputMaybe<Scalars['Boolean']['input']>;
+  result?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type AbxAstResultsType = {
+  __typename?: 'AbxASTResultsType';
+  astResults: Array<AbxAstResultType>;
+};
+
+export type AbxAstResultsUpdateInput = {
+  results: Array<AbxAstResultUpdateInput>;
 };
 
 export type AbxAntibioticCursorPage = {
@@ -178,6 +221,12 @@ export type AbxAntibioticType = {
   whonetAbxCode?: Maybe<Scalars['String']['output']>;
 };
 
+export type AbxApplyAstPanelInput = {
+  organismResultUid: Scalars['String']['input'];
+  panelUid: Scalars['String']['input'];
+  sampleUid: Scalars['String']['input'];
+};
+
 export type AbxBreakpointInputType = {
   breakpointTypeUid: Scalars['String']['input'];
   comments?: InputMaybe<Scalars['String']['input']>;
@@ -212,8 +261,8 @@ export type AbxBreakpointTyp = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   ecvEcoff?: Maybe<Scalars['String']['output']>;
   ecvEcoffTentative?: Maybe<Scalars['String']['output']>;
-  guideline?: Maybe<AbxGuidelineType>;
-  guidelineUid: Scalars['String']['output'];
+  guidelineYear?: Maybe<AbxGuidelineYearType>;
+  guidelineYearUid: Scalars['String']['output'];
   host?: Maybe<AbxHostType>;
   hostUid?: Maybe<Scalars['String']['output']>;
   i?: Maybe<Scalars['String']['output']>;
@@ -234,7 +283,6 @@ export type AbxBreakpointTyp = {
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
   whonetAbxCode?: Maybe<Scalars['String']['output']>;
-  year?: Maybe<Scalars['Int']['output']>;
 };
 
 export type AbxBreakpointTypCursorPage = {
@@ -451,6 +499,15 @@ export type AbxGuidelineType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type AbxGuidelineYearType = {
+  __typename?: 'AbxGuidelineYearType';
+  code: Scalars['String']['output'];
+  guideline?: Maybe<AbxGuidelineType>;
+  guidelineUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  year: Scalars['Int']['output'];
+};
+
 export type AbxHostInputType = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
@@ -563,6 +620,21 @@ export type AbxOrganismInputType = {
 };
 
 export type AbxOrganismResponse = AbxOrganismType | OperationError;
+
+export type AbxOrganismResultType = {
+  __typename?: 'AbxOrganismResultType';
+  analysisResultUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  isolateNumber?: Maybe<Scalars['Int']['output']>;
+  organism?: Maybe<AbxOrganismType>;
+  organismUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
 
 export type AbxOrganismSerotypeCursorPage = {
   __typename?: 'AbxOrganismSerotypeCursorPage';
@@ -2109,6 +2181,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   actionShipment: ShipmentResponse;
   actionWorksheets: WorkSheetsResponse;
+  applyAbxAstPanel: AbxAstResultResponse;
   applyVoucher: TestBillTransactionResponse;
   approveStockOrder: StockOrderResponse;
   authenticateUser: AuthenticatedDataResponse;
@@ -2131,6 +2204,7 @@ export type Mutation = {
   createAbxMedium: AbxMediumResponse;
   createAbxOrder: AbxOrderResponse;
   createAbxOrganism: AbxOrganismResponse;
+  createAbxOrganismResult: AbxOrganismResultType;
   createAbxOrganismSerotype: AbxOrganismSerotypeResponse;
   createAbxPhylum: AbxPhylumResponse;
   createAbxQcRange: AbxQcRangeResponse;
@@ -2217,12 +2291,14 @@ export type Mutation = {
   recoverSamples: StoreSampleResponse;
   refresh: AuthenticatedDataResponse;
   rejectSamples: SampleActionResponse;
+  removeAbxOrganismResult: DeleteResponse;
   replyMessage: MessageResponse;
   requestPasswordReset: MessageResponse;
   resetPassword: MessageResponse;
   retestAnalysisResults: AnalysisResultResponse;
   retractAnalysisResults: AnalysisResultResponse;
   samplesApplyTemplate: ResultedSampleActionResponse;
+  saveAbxOrganismResult: AbxOrganismResultType;
   sendMessage: MessageResponse;
   shipmentManageSamples: ShipmentResponse;
   storeSamples: StoreSampleResponse;
@@ -2230,6 +2306,7 @@ export type Mutation = {
   submitStockOrder: StockOrderResponse;
   updateAbxAntibiotic: AbxAntibioticResponse;
   updateAbxAstPanel: AbxAstPanelResponse;
+  updateAbxAstResults: AbxAstResultResponse;
   updateAbxBreakpoint: AbxBreakpointResponse;
   updateAbxBreakpointType: AbxBreakpointTypeResponse;
   updateAbxClass: AbxClassResponse;
@@ -2333,6 +2410,11 @@ export type MutationActionShipmentArgs = {
 export type MutationActionWorksheetsArgs = {
   action: Scalars['String']['input'];
   uids: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationApplyAbxAstPanelArgs = {
+  payload: AbxApplyAstPanelInput;
 };
 
 
@@ -2446,6 +2528,11 @@ export type MutationCreateAbxOrderArgs = {
 
 export type MutationCreateAbxOrganismArgs = {
   payload: AbxOrganismInputType;
+};
+
+
+export type MutationCreateAbxOrganismResultArgs = {
+  analysisResultUid: Scalars['String']['input'];
 };
 
 
@@ -2891,6 +2978,11 @@ export type MutationRejectSamplesArgs = {
 };
 
 
+export type MutationRemoveAbxOrganismResultArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
 export type MutationReplyMessageArgs = {
   body: Scalars['String']['input'];
   threadUid: Scalars['String']['input'];
@@ -2921,6 +3013,12 @@ export type MutationRetractAnalysisResultsArgs = {
 
 export type MutationSamplesApplyTemplateArgs = {
   analysisTemplateUid: Scalars['String']['input'];
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationSaveAbxOrganismResultArgs = {
+  organismUid: Scalars['String']['input'];
   uid: Scalars['String']['input'];
 };
 
@@ -2963,6 +3061,11 @@ export type MutationUpdateAbxAntibioticArgs = {
 export type MutationUpdateAbxAstPanelArgs = {
   payload: AbxAstPanelInputType;
   uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateAbxAstResultsArgs = {
+  payload: AbxAstResultsUpdateInput;
 };
 
 
@@ -3983,6 +4086,8 @@ export type Query = {
   abxAntibioticByUid?: Maybe<AbxAntibioticType>;
   abxAstPanelAll?: Maybe<Array<AbxAstPanelType>>;
   abxAstPanelByUid?: Maybe<AbxAstPanelType>;
+  abxAstPanelFilter?: Maybe<Array<AbxAstPanelType>>;
+  abxAstResultAll?: Maybe<Array<AbxAstResultType>>;
   abxBreakpointAll: AbxBreakpointTypCursorPage;
   abxBreakpointByUid?: Maybe<AbxBreakpointTyp>;
   abxBreakpointTypeAll?: Maybe<Array<AbxBreakpointTypeTyp>>;
@@ -3998,6 +4103,7 @@ export type Query = {
   abxGenusAll?: Maybe<Array<AbxGenusType>>;
   abxGenusByUid?: Maybe<AbxGenusType>;
   abxGuidelineByUid?: Maybe<AbxGuidelineType>;
+  abxGuidelineYearAll?: Maybe<Array<AbxGuidelineYearType>>;
   abxGuidelinesAll?: Maybe<Array<AbxGuidelineType>>;
   abxHostAll?: Maybe<Array<AbxHostType>>;
   abxHostByUid?: Maybe<AbxHostType>;
@@ -4010,6 +4116,7 @@ export type Query = {
   abxOrderByUid?: Maybe<AbxOrderType>;
   abxOrganismAll: AbxOrganismCursorPage;
   abxOrganismByUid?: Maybe<AbxOrganismType>;
+  abxOrganismResultAll?: Maybe<Array<AbxOrganismResultType>>;
   abxOrganismSerotypeAll: AbxOrganismSerotypeCursorPage;
   abxOrganismSerotypeByUid?: Maybe<AbxOrganismSerotypeType>;
   abxPhylumAll?: Maybe<Array<AbxPhylumType>>;
@@ -4221,6 +4328,17 @@ export type QueryAbxAstPanelByUidArgs = {
 };
 
 
+export type QueryAbxAstPanelFilterArgs = {
+  organismUid: Scalars['String']['input'];
+  text?: Scalars['String']['input'];
+};
+
+
+export type QueryAbxAstResultAllArgs = {
+  sampleUid: Scalars['String']['input'];
+};
+
+
 export type QueryAbxBreakpointAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
@@ -4319,6 +4437,11 @@ export type QueryAbxOrganismAllArgs = {
 
 export type QueryAbxOrganismByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryAbxOrganismResultAllArgs = {
+  analysisResultUid: Scalars['String']['input'];
 };
 
 

@@ -131,14 +131,14 @@ export default {
             "args": []
           },
           {
-            "name": "breakpoints",
+            "name": "antibiotics",
             "type": {
               "kind": "LIST",
               "ofType": {
                 "kind": "NON_NULL",
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "AbxBreakpointTyp",
+                  "name": "AbxAntibioticType",
                   "ofType": null
                 }
               }
@@ -190,6 +190,21 @@ export default {
             "args": []
           },
           {
+            "name": "organisms",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AbxOrganismType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -222,6 +237,206 @@ export default {
             "type": {
               "kind": "SCALAR",
               "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "UNION",
+        "name": "AbxASTResultResponse",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "AbxASTResultsType"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "OperationError"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AbxASTResultType",
+        "fields": [
+          {
+            "name": "analysisResult",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AnalysisResultType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "analysisResultUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "antibiotic",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxAntibioticType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "antibioticUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "astMethod",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxTestMethodType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "astMethodUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "astValue",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "guidelineYear",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxGuidelineYearType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "guidelineYearUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "organismResultUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AbxASTResultsType",
+        "fields": [
+          {
+            "name": "astResults",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AbxASTResultType",
+                    "ofType": null
+                  }
+                }
+              }
             },
             "args": []
           }
@@ -846,16 +1061,16 @@ export default {
             "args": []
           },
           {
-            "name": "guideline",
+            "name": "guidelineYear",
             "type": {
               "kind": "OBJECT",
-              "name": "AbxGuidelineType",
+              "name": "AbxGuidelineYearType",
               "ofType": null
             },
             "args": []
           },
           {
-            "name": "guidelineUid",
+            "name": "guidelineYearUid",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -1035,14 +1250,6 @@ export default {
           },
           {
             "name": "whonetAbxCode",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "year",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -2214,6 +2421,66 @@ export default {
         "interfaces": []
       },
       {
+        "kind": "OBJECT",
+        "name": "AbxGuidelineYearType",
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "guideline",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxGuidelineType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "guidelineUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "year",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
         "kind": "UNION",
         "name": "AbxHostResponse",
         "possibleTypes": [
@@ -2721,6 +2988,110 @@ export default {
             "name": "OperationError"
           }
         ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AbxOrganismResultType",
+        "fields": [
+          {
+            "name": "analysisResultUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "isolateNumber",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "organism",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxOrganismType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "organismUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
       },
       {
         "kind": "OBJECT",
@@ -11674,6 +12045,29 @@ export default {
             ]
           },
           {
+            "name": "applyAbxAstPanel",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "AbxASTResultResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "payload",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "applyVoucher",
             "type": {
               "kind": "NON_NULL",
@@ -12214,6 +12608,29 @@ export default {
             "args": [
               {
                 "name": "payload",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "createAbxOrganismResult",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AbxOrganismResultType",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "analysisResultUid",
                 "type": {
                   "kind": "NON_NULL",
                   "ofType": {
@@ -14374,6 +14791,29 @@ export default {
             ]
           },
           {
+            "name": "removeAbxOrganismResult",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "DeleteResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "replyMessage",
             "type": {
               "kind": "NON_NULL",
@@ -14543,6 +14983,39 @@ export default {
             "args": [
               {
                 "name": "analysisTemplateUid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              },
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "saveAbxOrganismResult",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AbxOrganismResultType",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "organismUid",
                 "type": {
                   "kind": "NON_NULL",
                   "ofType": {
@@ -14792,6 +15265,29 @@ export default {
               },
               {
                 "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "updateAbxAstResults",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "AbxASTResultResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "payload",
                 "type": {
                   "kind": "NON_NULL",
                   "ofType": {
@@ -20579,6 +21075,68 @@ export default {
             ]
           },
           {
+            "name": "abxAstPanelFilter",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AbxASTPanelType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "organismUid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              },
+              {
+                "name": "text",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "abxAstResultAll",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AbxASTResultType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "sampleUid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "abxBreakpointAll",
             "type": {
               "kind": "NON_NULL",
@@ -20970,6 +21528,21 @@ export default {
             ]
           },
           {
+            "name": "abxGuidelineYearAll",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AbxGuidelineYearType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
             "name": "abxGuidelinesAll",
             "type": {
               "kind": "LIST",
@@ -21206,6 +21779,32 @@ export default {
             "args": [
               {
                 "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "abxOrganismResultAll",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AbxOrganismResultType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "analysisResultUid",
                 "type": {
                   "kind": "NON_NULL",
                   "ofType": {

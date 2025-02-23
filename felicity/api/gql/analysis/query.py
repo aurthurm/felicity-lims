@@ -279,7 +279,7 @@ class AnalysisQuery:
 
             text_filters = {sa.or_: _or_text_}
             filters.append(text_filters)
-
+        
         if qc_only:
             filters.append({"category___name__exact": "Quality Control"})
 

@@ -169,6 +169,10 @@ class MicrobiologyQuery:
         return await AbxOrganismService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def abx_organism_result_all(self, info, analysis_result_uid: str) -> Optional[List[AbxOrganismResultType]]:
+        return await AbxOrganismResultService().get_all(analysis_result_uid=analysis_result_uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_organism_serotype_all(self, info,
                                         text: str,
                                         page_size: int | None = None,
@@ -246,6 +250,10 @@ class MicrobiologyQuery:
         return await AbxSiteOfInfectionService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def abx_guideline_year_all(self, info) -> Optional[List[AbxGuidelineYearType]]:
+        return await AbxGuidelineYearService().all()
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_breakpoint_all(self, info,
                                  text: str,
                                  page_size: int | None = None,
@@ -258,7 +266,7 @@ class MicrobiologyQuery:
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "guideline___name__ilike",
+                "guideline_year___code__ilike",
                 "test_method___name__ilike", "potency__ilike",
                 "organism_code__ilike", "breakpoint_type___name__ilike",
                 "host___name__ilike", "site_of_infection___name__ilike",
@@ -435,5 +443,24 @@ class MicrobiologyQuery:
         return await AbxASTPanelService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def abx_ast_panel_filter(self, info, organism_uid: str, text: str = "") -> Optional[List[AbxASTPanelType]]:
+        return await AbxASTPanelService().repository.filter(
+            filters=[
+                {"organisms___uid__exact": organism_uid},
+                {"name__ilike": f"%{text}%"},
+                {"description__ilike": f"%{text}%"}
+            ],
+            either=True
+        )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_ast_panel_by_uid(self, info, uid: str) -> Optional[AbxASTPanelType]:
         return await AbxASTPanelService().get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def abx_ast_result_all(self, info, analysis_result_uid: str) -> Optional[List[AbxASTResultType]]:
+        return await AbxASTResultService().get_all(analysis_result_uid=analysis_result_uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def abx_ast_result_all(self, info, sample_uid: str) -> Optional[List[AbxASTResultType]]:
+        return await AbxASTResultService().get_all(analysis_result___sample_uid__exact=sample_uid)

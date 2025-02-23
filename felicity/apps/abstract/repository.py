@@ -37,8 +37,10 @@ def apply_nested_loader_options(stmt, model, path):
             current_option = load_option
         else:
             next_option = selectinload(getattr(current_model, attr))
-            current_option = current_option.options(next_option)
-            # current_option = next_option
+            try:
+                current_option = current_option.options(next_option)
+            except Exception as e:
+                current_option = next_option
 
         # Update the current model to the next model in the relationship path
         current_model = inspect(current_model).relationships[attr].mapper.class_
@@ -482,7 +484,7 @@ class BaseRepository(Generic[M]):
         if limit:
             stmt = stmt.limit(limit)
         async with self.async_session() as session:
-            results = await session.execute(stmt)
+            results = await session.execute(stmt.distinct())
             found = results.scalars().all()
         return found
 
@@ -539,12 +541,13 @@ class BaseRepository(Generic[M]):
             stmt = stmt.limit(page_size)
 
         async with self.async_session() as session:
-            res = await session.execute(stmt)
+            res = await session.execute(stmt)  # .distinct()
 
         qs = res.scalars().all()
 
         if qs is not None:
-            items = qs
+            # Remove duplicates (using set) instead of .distinct() to allow order by relations not in distinct selection
+            items = list({item: item for item in qs}.values())
         else:
             qs = []
             items = []

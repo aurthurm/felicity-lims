@@ -20,9 +20,12 @@
     "Flow Cytometry",
     "Western Blot",
     "Microscopy",
-    "Culture"
+    "Culture",
+    "Manual",
+    "Automated"
   ],
   "instruments": [
-    "Manual"
+    "Manual",
+    "Automated"
   ]
 }

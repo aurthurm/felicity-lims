@@ -1,7 +1,7 @@
 import typer
 
 from felicity.cli.libs import AsyncTyper
-from felicity.lims.seeds import initialize_felicity, seed_organism_serotypes
+from felicity.lims.seeds import initialize_felicity, seed_breakpoints
 
 app = AsyncTyper()
 
@@ -18,5 +18,5 @@ async def all() -> None:
 async def microbiology() -> None:
     """Seed Requisite setup"""
     typer.echo(f"Seeding requisite setup...")
-    await seed_organism_serotypes()
+    await seed_breakpoints()
     typer.echo("Done seeding requisite setup:)")

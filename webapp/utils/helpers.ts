@@ -42,6 +42,8 @@ export const isNullOrWs = function (str: any) {
     return typeof str === 'undefined' || str === null || (typeof str === 'string' && str.trim().length === 0);
 };
 
+export const hasValue = (x) => [undefined, null, ''].includes(x)
+
 const isValidJson = function (str: any) {
     try {
         JSON.parse(str);
@@ -229,6 +231,7 @@ export const storgeSlotMapper = (colNum: number, rowNum: number, isColumn: boole
 
 export default {
     isNullOrWs,
+    hasValue,
     parseUrlParams,
     startsWith,
     mapOrder,

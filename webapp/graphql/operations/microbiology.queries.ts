@@ -487,6 +487,21 @@ export type GetAbxSiteOfInfectionUidQuery = (
   )> }
 );
 
+export type GetAbxGuidelineYearAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAbxGuidelineYearAllQuery = (
+  { __typename?: 'Query' }
+  & { abxGuidelineYearAll?: Types.Maybe<Array<(
+    { __typename?: 'AbxGuidelineYearType' }
+    & Pick<Types.AbxGuidelineYearType, 'uid' | 'guidelineUid' | 'year' | 'code'>
+    & { guideline?: Types.Maybe<(
+      { __typename?: 'AbxGuidelineType' }
+      & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
+    )> }
+  )>> }
+);
+
 export type GetAbxBreakpointAllQueryVariables = Types.Exact<{
   text: Types.Scalars['String']['input'];
   pageSize?: Types.InputMaybe<Types.Scalars['Int']['input']>;
@@ -503,10 +518,10 @@ export type GetAbxBreakpointAllQuery = (
     & Pick<Types.AbxBreakpointTypCursorPage, 'totalCount'>
     & { items?: Types.Maybe<Array<(
       { __typename?: 'AbxBreakpointTyp' }
-      & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
-      & { guideline?: Types.Maybe<(
-        { __typename?: 'AbxGuidelineType' }
-        & Pick<Types.AbxGuidelineType, 'name'>
+      & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineYearUid' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+      & { guidelineYear?: Types.Maybe<(
+        { __typename?: 'AbxGuidelineYearType' }
+        & Pick<Types.AbxGuidelineYearType, 'uid' | 'code'>
       )>, testMethod?: Types.Maybe<(
         { __typename?: 'AbxTestMethodType' }
         & Pick<Types.AbxTestMethodType, 'name'>
@@ -536,10 +551,10 @@ export type GetAbxBreakpointUidQuery = (
   { __typename?: 'Query' }
   & { abxBreakpointByUid?: Types.Maybe<(
     { __typename?: 'AbxBreakpointTyp' }
-    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
+    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineYearUid' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+    & { guidelineYear?: Types.Maybe<(
+      { __typename?: 'AbxGuidelineYearType' }
+      & Pick<Types.AbxGuidelineYearType, 'uid' | 'code'>
     )>, testMethod?: Types.Maybe<(
       { __typename?: 'AbxTestMethodType' }
       & Pick<Types.AbxTestMethodType, 'name'>
@@ -713,6 +728,27 @@ export type GetAbxQcRangeUidQuery = (
   )> }
 );
 
+export type GetAbxAstPanelFilterQueryVariables = Types.Exact<{
+  organismUid: Types.Scalars['String']['input'];
+  text?: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetAbxAstPanelFilterQuery = (
+  { __typename?: 'Query' }
+  & { abxAstPanelFilter?: Types.Maybe<Array<(
+    { __typename?: 'AbxASTPanelType' }
+    & Pick<Types.AbxAstPanelType, 'uid' | 'name' | 'description'>
+    & { organisms?: Types.Maybe<Array<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )>>, antibiotics?: Types.Maybe<Array<(
+      { __typename?: 'AbxAntibioticType' }
+      & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
+    )>> }
+  )>> }
+);
+
 export type GetAbxAstPanelAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
@@ -721,9 +757,12 @@ export type GetAbxAstPanelAllQuery = (
   & { abxAstPanelAll?: Types.Maybe<Array<(
     { __typename?: 'AbxASTPanelType' }
     & Pick<Types.AbxAstPanelType, 'uid' | 'name' | 'description' | 'active' | 'createdAt' | 'createdByUid'>
-    & { breakpoints?: Types.Maybe<Array<(
-      { __typename?: 'AbxBreakpointTyp' }
-      & Pick<Types.AbxBreakpointTyp, 'uid'>
+    & { organisms?: Types.Maybe<Array<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )>>, antibiotics?: Types.Maybe<Array<(
+      { __typename?: 'AbxAntibioticType' }
+      & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'potency'>
     )>> }
   )>> }
 );
@@ -738,11 +777,54 @@ export type GetAbxAstPanelUidQuery = (
   & { abxAstPanelByUid?: Types.Maybe<(
     { __typename?: 'AbxASTPanelType' }
     & Pick<Types.AbxAstPanelType, 'uid' | 'name' | 'description' | 'active' | 'createdAt' | 'createdByUid'>
-    & { breakpoints?: Types.Maybe<Array<(
-      { __typename?: 'AbxBreakpointTyp' }
-      & Pick<Types.AbxBreakpointTyp, 'uid'>
+    & { organisms?: Types.Maybe<Array<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )>>, antibiotics?: Types.Maybe<Array<(
+      { __typename?: 'AbxAntibioticType' }
+      & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'potency'>
     )>> }
   )> }
+);
+
+export type GetAbxAstResultAllQueryVariables = Types.Exact<{
+  sampleUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetAbxAstResultAllQuery = (
+  { __typename?: 'Query' }
+  & { abxAstResultAll?: Types.Maybe<Array<(
+    { __typename?: 'AbxASTResultType' }
+    & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'guidelineYearUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
+    & { antibiotic?: Types.Maybe<(
+      { __typename?: 'AbxAntibioticType' }
+      & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'potency'>
+    )>, guidelineYear?: Types.Maybe<(
+      { __typename?: 'AbxGuidelineYearType' }
+      & Pick<Types.AbxGuidelineYearType, 'uid' | 'code'>
+    )>, astMethod?: Types.Maybe<(
+      { __typename?: 'AbxTestMethodType' }
+      & Pick<Types.AbxTestMethodType, 'uid' | 'name'>
+    )> }
+  )>> }
+);
+
+export type GetAbxOrganismResultAllQueryVariables = Types.Exact<{
+  analysisResultUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetAbxOrganismResultAllQuery = (
+  { __typename?: 'Query' }
+  & { abxOrganismResultAll?: Types.Maybe<Array<(
+    { __typename?: 'AbxOrganismResultType' }
+    & Pick<Types.AbxOrganismResultType, 'uid' | 'analysisResultUid' | 'organismUid' | 'isolateNumber' | 'createdAt' | 'createdByUid'>
+    & { organism?: Types.Maybe<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )> }
+  )>> }
 );
 
 
@@ -1395,6 +1477,24 @@ export const GetAbxSiteOfInfectionUidDocument = gql`
 export function useGetAbxSiteOfInfectionUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxSiteOfInfectionUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAbxSiteOfInfectionUidQuery>({ query: GetAbxSiteOfInfectionUidDocument, ...options });
 };
+export const GetAbxGuidelineYearAllDocument = gql`
+    query GetAbxGuidelineYearAll {
+  abxGuidelineYearAll {
+    uid
+    guidelineUid
+    guideline {
+      uid
+      name
+    }
+    year
+    code
+  }
+}
+    `;
+
+export function useGetAbxGuidelineYearAllQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxGuidelineYearAllQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxGuidelineYearAllQuery>({ query: GetAbxGuidelineYearAllDocument, ...options });
+};
 export const GetAbxBreakpointAllDocument = gql`
     query GetAbxBreakpointAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
   abxBreakpointAll(
@@ -1406,11 +1506,11 @@ export const GetAbxBreakpointAllDocument = gql`
   ) {
     items {
       uid
-      guidelineUid
-      guideline {
-        name
+      guidelineYearUid
+      guidelineYear {
+        uid
+        code
       }
-      year
       testMethodUid
       testMethod {
         name
@@ -1459,11 +1559,11 @@ export const GetAbxBreakpointUidDocument = gql`
     query GetAbxBreakpointUid($uid: String!) {
   abxBreakpointByUid(uid: $uid) {
     uid
-    guidelineUid
-    guideline {
-      name
+    guidelineYearUid
+    guidelineYear {
+      uid
+      code
     }
-    year
     testMethodUid
     testMethod {
       name
@@ -1725,14 +1825,41 @@ export const GetAbxQcRangeUidDocument = gql`
 export function useGetAbxQcRangeUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxQcRangeUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAbxQcRangeUidQuery>({ query: GetAbxQcRangeUidDocument, ...options });
 };
+export const GetAbxAstPanelFilterDocument = gql`
+    query GetAbxAstPanelFilter($organismUid: String!, $text: String! = "") {
+  abxAstPanelFilter(organismUid: $organismUid, text: $text) {
+    uid
+    name
+    description
+    organisms {
+      uid
+      name
+    }
+    antibiotics {
+      uid
+      name
+    }
+  }
+}
+    `;
+
+export function useGetAbxAstPanelFilterQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxAstPanelFilterQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxAstPanelFilterQuery>({ query: GetAbxAstPanelFilterDocument, ...options });
+};
 export const GetAbxAstPanelAllDocument = gql`
     query GetAbxAstPanelAll {
   abxAstPanelAll {
     uid
     name
     description
-    breakpoints {
+    organisms {
       uid
+      name
+    }
+    antibiotics {
+      uid
+      name
+      potency
     }
     active
     createdAt
@@ -1750,8 +1877,14 @@ export const GetAbxAstPanelUidDocument = gql`
     uid
     name
     description
-    breakpoints {
+    organisms {
       uid
+      name
+    }
+    antibiotics {
+      uid
+      name
+      potency
     }
     active
     createdAt
@@ -1762,4 +1895,56 @@ export const GetAbxAstPanelUidDocument = gql`
 
 export function useGetAbxAstPanelUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxAstPanelUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAbxAstPanelUidQuery>({ query: GetAbxAstPanelUidDocument, ...options });
+};
+export const GetAbxAstResultAllDocument = gql`
+    query GetAbxAstResultAll($sampleUid: String!) {
+  abxAstResultAll(sampleUid: $sampleUid) {
+    uid
+    organismResultUid
+    analysisResultUid
+    antibioticUid
+    antibiotic {
+      uid
+      name
+      potency
+    }
+    guidelineYearUid
+    guidelineYear {
+      uid
+      code
+    }
+    astMethodUid
+    astMethod {
+      uid
+      name
+    }
+    astValue
+    createdAt
+    createdByUid
+  }
+}
+    `;
+
+export function useGetAbxAstResultAllQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxAstResultAllQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxAstResultAllQuery>({ query: GetAbxAstResultAllDocument, ...options });
+};
+export const GetAbxOrganismResultAllDocument = gql`
+    query GetAbxOrganismResultAll($analysisResultUid: String!) {
+  abxOrganismResultAll(analysisResultUid: $analysisResultUid) {
+    uid
+    analysisResultUid
+    organismUid
+    organism {
+      uid
+      name
+    }
+    isolateNumber
+    createdAt
+    createdByUid
+  }
+}
+    `;
+
+export function useGetAbxOrganismResultAllQuery(options: Omit<Urql.UseQueryArgs<never, GetAbxOrganismResultAllQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAbxOrganismResultAllQuery>({ query: GetAbxOrganismResultAllDocument, ...options });
 };

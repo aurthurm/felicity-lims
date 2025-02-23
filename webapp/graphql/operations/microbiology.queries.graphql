@@ -450,13 +450,22 @@ query GetAbxSiteOfInfectionUid($uid: String!) {
     }
 }
 
+query GetAbxGuidelineYearAll {
+    abxGuidelineYearAll {
+        uid
+        guidelineUid
+        guideline { uid name }
+        year
+        code
+    }
+}
+
 query GetAbxBreakpointAll($text: String!, $pageSize: Int, $afterCursor: String, $beforeCursor: String, $sortBy: [String!]) {
     abxBreakpointAll(text: $text, pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, sortBy: $sortBy) {
         items {
             uid
-            guidelineUid
-            guideline { name }
-            year
+            guidelineYearUid
+            guidelineYear { uid code }
             testMethodUid
             testMethod { name }
             potency
@@ -492,9 +501,8 @@ query GetAbxBreakpointAll($text: String!, $pageSize: Int, $afterCursor: String, 
 query GetAbxBreakpointUid($uid: String!) {
     abxBreakpointByUid(uid: $uid) {
         uid
-        guidelineUid
-        guideline { name }
-        year
+        guidelineYearUid
+        guidelineYear { uid code }
         testMethodUid
         testMethod { name }
         potency
@@ -675,14 +683,23 @@ query GetAbxQcRangeUid($uid: String!) {
     }
 }
 
+query GetAbxAstPanelFilter($organismUid: String!, $text: String! = "") {
+    abxAstPanelFilter(organismUid: $organismUid, text: $text) {
+        uid
+        name
+        description
+        organisms { uid name }
+        antibiotics { uid name }
+    }
+}
+
 query GetAbxAstPanelAll {
     abxAstPanelAll {
         uid
         name
         description
-        breakpoints {
-            uid
-        }
+        organisms { uid name }
+        antibiotics { uid name potency }
         active
         createdAt
         createdByUid
@@ -694,10 +711,38 @@ query GetAbxAstPanelUid($uid: String!) {
         uid
         name
         description
-        breakpoints {
-            uid
-        }
+        organisms { uid name }
+        antibiotics { uid name potency }
         active
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxAstResultAll($sampleUid: String!) {
+    abxAstResultAll(sampleUid: $sampleUid) {
+        uid
+        organismResultUid
+        analysisResultUid
+        antibioticUid
+        antibiotic { uid name potency }
+        guidelineYearUid
+        guidelineYear { uid code }
+        astMethodUid
+        astMethod { uid name }
+        astValue
+        createdAt
+        createdByUid
+    }
+}
+
+query GetAbxOrganismResultAll($analysisResultUid: String!) {
+    abxOrganismResultAll(analysisResultUid: $analysisResultUid) {
+        uid
+        analysisResultUid
+        organismUid
+        organism { uid, name }
+        isolateNumber
         createdAt
         createdByUid
     }

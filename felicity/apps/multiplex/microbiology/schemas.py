@@ -1,6 +1,3 @@
-from dataclasses import field
-from typing import List, Optional
-
 from pydantic import ConfigDict, field_validator
 
 from felicity.apps.common.schemas import BaseAuditModel
@@ -412,11 +409,33 @@ class AbxSiteOfInfectionUpdate(AbxSiteOfInfectionBase):
 
 
 #
+# AbxGuidelineYear Schemas
+#
+class AbxGuidelineYearBase(BaseAuditModel):
+    guideline_uid: str
+    year: int
+    code: str
+
+
+class AbxGuidelineYear(AbxGuidelineYearBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AbxGuidelineYearCreate(AbxGuidelineYear):
+    pass
+
+
+class AbxGuidelineYearUpdate(AbxGuidelineYearBase):
+    pass
+
+
+#
 # AbxBreakpoint Schemas
 #
 class AbxBreakpointBase(BaseAuditModel):
-    guideline_uid: str
-    year: int | None = None
+    guideline_year_uid: str
     test_method_uid: str
     potency: str | None = None
     organism_code: str
@@ -580,7 +599,6 @@ class AbxQCRangeUpdate(AbxQCRangeBase):
 class AbxASTPanelBase(BaseAuditModel):
     name: str
     description: str | None = None
-    breakpoints: Optional[List['AbxBreakpoint']] = field(default_factory=list)
     active: bool = True
 
 
@@ -595,4 +613,54 @@ class AbxASTPanelCreate(AbxASTPanel):
 
 
 class AbxASTPanelUpdate(AbxASTPanelBase):
+    pass
+
+
+#
+# AbxASTResult Schemas
+#
+class AbxASTResultBase(BaseAuditModel):
+    organism_result_uid: str
+    analysis_result_uid: str
+    antibiotic_uid: str
+    ast_method_uid: str | None = None
+    guideline_year_uid: str | None = None
+    breakpoint_uid: str | None = None
+    ast_value: str | None = None
+
+
+class AbxASTResult(AbxASTResultBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AbxASTResultCreate(AbxASTResult):
+    pass
+
+
+class AbxASTResultUpdate(AbxASTResultBase):
+    pass
+
+
+#
+# AbxOrganismResult Schemas
+#
+class AbxOrganismResultBase(BaseAuditModel):
+    analysis_result_uid: str
+    organism_uid: str | None = None
+    isolate_number: int | None = None
+
+
+class AbxOrganismResult(AbxOrganismResultBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AbxOrganismResultCreate(AbxOrganismResult):
+    pass
+
+
+class AbxOrganismResultUpdate(AbxOrganismResultBase):
     pass

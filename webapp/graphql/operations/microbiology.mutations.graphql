@@ -128,8 +128,13 @@ mutation  AddAbxAstPanel($payload: AbxASTPanelInputType!) {
             uid
             name
             description
-            breakpoints {
+            organisms {
                 uid
+                name
+            }
+            antibiotics {
+                uid
+                name
             }
             active
             createdAt
@@ -144,8 +149,13 @@ mutation  EditAbxAstPanel($uid: String!, $payload: AbxASTPanelInputType!) {
             uid
             name
             description
-            breakpoints {
+            organisms {
                 uid
+                name
+            }
+            antibiotics {
+                uid
+                name
             }
             active
             createdAt
@@ -254,9 +264,8 @@ mutation  AddAbxBreakpoint($payload: AbxBreakpointInputType!) {
     createAbxBreakpoint(payload: $payload) {
         ...on AbxBreakpointTyp {
             uid
-            guidelineUid
-            guideline { name }
-            year
+            guidelineYearUid
+            guidelineYear { uid code }
             testMethodUid
             testMethod { name }
             potency
@@ -288,9 +297,8 @@ mutation  EditAbxBreakpoint($uid: String!, $payload: AbxBreakpointInputType!) {
     updateAbxBreakpoint(uid: $uid, payload: $payload) {
         ...on AbxBreakpointTyp {
             uid
-            guidelineUid
-            guideline { name }
-            year
+            guidelineYearUid
+            guidelineYear { uid code }
             testMethodUid
             testMethod { name }
             potency
@@ -711,5 +719,102 @@ mutation  EditAbxExpertInterpretationRule($uid: String!, $payload: AbxExpertInte
     }
 }
 
+mutation AddAbxOrganismResult($analysisResultUid: String!) {
+    createAbxOrganismResult(analysisResultUid: $analysisResultUid) {
+        ...on AbxOrganismResultType {
+            uid
+            analysisResultUid
+            organismUid
+            organism { uid, name }
+            isolateNumber
+            createdAt
+            createdByUid
+        }
+    }
+}
 
 
+mutation SaveAbxOrganismResult($uid: String!, $organismUid: String!) {
+    saveAbxOrganismResult(uid: $uid, organismUid: $organismUid) {
+        ...on AbxOrganismResultType {
+            uid
+            analysisResultUid
+            organismUid
+            organism { uid, name }
+            isolateNumber
+            createdAt
+            createdByUid
+        }
+    }
+}
+
+mutation DeleteAbxOrganismResult($uid: String!) {
+    removeAbxOrganismResult(uid: $uid) {
+        ...on DeletedItem {
+            uid
+        }
+        ...on OperationError {
+            error
+            suggestion
+        }
+    }
+}
+
+mutation ApplyAbxAstPanel($payload: AbxApplyAstPanelInput!) {
+    applyAbxAstPanel(payload: $payload) {
+        ...on AbxASTResultsType {
+            astResults {
+                uid
+                analysisResult {
+                    uid
+                    result
+                    status
+                }
+                organismResultUid
+                analysisResultUid
+                analysisResult { uid result status }
+                antibioticUid
+                antibiotic { uid name guidelines { uid name } }
+                astMethodUid
+                astMethod { uid name }
+                astValue
+                createdAt
+                createdByUid
+            }
+        }
+        ...on OperationError {
+            error
+            suggestion
+        }
+    }
+}
+
+
+mutation  UpdateAbxAstResults($payload: AbxASTResultsUpdateInput!) {
+    updateAbxAstResults(payload: $payload) {
+        ...on AbxASTResultsType {
+            astResults {
+                uid
+                analysisResult {
+                    uid
+                    result
+                    status
+                }
+                organismResultUid
+                analysisResultUid
+                analysisResult { uid result status }
+                antibioticUid
+                antibiotic { uid name guidelines { uid name } }
+                astMethodUid
+                astMethod { uid name }
+                astValue
+                createdAt
+                createdByUid
+            }
+        }
+        ...on OperationError {
+            error
+            suggestion
+        }
+    }
+}

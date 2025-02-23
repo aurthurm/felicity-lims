@@ -105,9 +105,12 @@ export type AddAbxAstPanelMutation = (
   & { createAbxAstPanel: (
     { __typename?: 'AbxASTPanelType' }
     & Pick<Types.AbxAstPanelType, 'uid' | 'name' | 'description' | 'active' | 'createdAt' | 'createdByUid'>
-    & { breakpoints?: Types.Maybe<Array<(
-      { __typename?: 'AbxBreakpointTyp' }
-      & Pick<Types.AbxBreakpointTyp, 'uid'>
+    & { organisms?: Types.Maybe<Array<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )>>, antibiotics?: Types.Maybe<Array<(
+      { __typename?: 'AbxAntibioticType' }
+      & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
     )>> }
   ) | { __typename?: 'OperationError' } }
 );
@@ -123,9 +126,12 @@ export type EditAbxAstPanelMutation = (
   & { updateAbxAstPanel: (
     { __typename?: 'AbxASTPanelType' }
     & Pick<Types.AbxAstPanelType, 'uid' | 'name' | 'description' | 'active' | 'createdAt' | 'createdByUid'>
-    & { breakpoints?: Types.Maybe<Array<(
-      { __typename?: 'AbxBreakpointTyp' }
-      & Pick<Types.AbxBreakpointTyp, 'uid'>
+    & { organisms?: Types.Maybe<Array<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )>>, antibiotics?: Types.Maybe<Array<(
+      { __typename?: 'AbxAntibioticType' }
+      & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
     )>> }
   ) | { __typename?: 'OperationError' } }
 );
@@ -247,10 +253,10 @@ export type AddAbxBreakpointMutation = (
   { __typename?: 'Mutation' }
   & { createAbxBreakpoint: (
     { __typename?: 'AbxBreakpointTyp' }
-    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
+    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineYearUid' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+    & { guidelineYear?: Types.Maybe<(
+      { __typename?: 'AbxGuidelineYearType' }
+      & Pick<Types.AbxGuidelineYearType, 'uid' | 'code'>
     )>, testMethod?: Types.Maybe<(
       { __typename?: 'AbxTestMethodType' }
       & Pick<Types.AbxTestMethodType, 'name'>
@@ -277,10 +283,10 @@ export type EditAbxBreakpointMutation = (
   { __typename?: 'Mutation' }
   & { updateAbxBreakpoint: (
     { __typename?: 'AbxBreakpointTyp' }
-    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineUid' | 'year' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
-    & { guideline?: Types.Maybe<(
-      { __typename?: 'AbxGuidelineType' }
-      & Pick<Types.AbxGuidelineType, 'name'>
+    & Pick<Types.AbxBreakpointTyp, 'uid' | 'guidelineYearUid' | 'testMethodUid' | 'potency' | 'organismCode' | 'organismCodeType' | 'breakpointTypeUid' | 'hostUid' | 'siteOfInfectionUid' | 'referenceTable' | 'referenceSequence' | 'whonetAbxCode' | 'comments' | 'r' | 'i' | 'sdd' | 's' | 'ecvEcoff' | 'ecvEcoffTentative' | 'createdAt' | 'createdByUid'>
+    & { guidelineYear?: Types.Maybe<(
+      { __typename?: 'AbxGuidelineYearType' }
+      & Pick<Types.AbxGuidelineYearType, 'uid' | 'code'>
     )>, testMethod?: Types.Maybe<(
       { __typename?: 'AbxTestMethodType' }
       & Pick<Types.AbxTestMethodType, 'name'>
@@ -689,6 +695,123 @@ export type EditAbxExpertInterpretationRuleMutation = (
   ) | { __typename?: 'OperationError' } }
 );
 
+export type AddAbxOrganismResultMutationVariables = Types.Exact<{
+  analysisResultUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type AddAbxOrganismResultMutation = (
+  { __typename?: 'Mutation' }
+  & { createAbxOrganismResult: (
+    { __typename?: 'AbxOrganismResultType' }
+    & Pick<Types.AbxOrganismResultType, 'uid' | 'analysisResultUid' | 'organismUid' | 'isolateNumber' | 'createdAt' | 'createdByUid'>
+    & { organism?: Types.Maybe<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )> }
+  ) }
+);
+
+export type SaveAbxOrganismResultMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  organismUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type SaveAbxOrganismResultMutation = (
+  { __typename?: 'Mutation' }
+  & { saveAbxOrganismResult: (
+    { __typename?: 'AbxOrganismResultType' }
+    & Pick<Types.AbxOrganismResultType, 'uid' | 'analysisResultUid' | 'organismUid' | 'isolateNumber' | 'createdAt' | 'createdByUid'>
+    & { organism?: Types.Maybe<(
+      { __typename?: 'AbxOrganismType' }
+      & Pick<Types.AbxOrganismType, 'uid' | 'name'>
+    )> }
+  ) }
+);
+
+export type DeleteAbxOrganismResultMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type DeleteAbxOrganismResultMutation = (
+  { __typename?: 'Mutation' }
+  & { removeAbxOrganismResult: (
+    { __typename?: 'DeletedItem' }
+    & Pick<Types.DeletedItem, 'uid'>
+  ) | (
+    { __typename?: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
+export type ApplyAbxAstPanelMutationVariables = Types.Exact<{
+  payload: Types.AbxApplyAstPanelInput;
+}>;
+
+
+export type ApplyAbxAstPanelMutation = (
+  { __typename?: 'Mutation' }
+  & { applyAbxAstPanel: (
+    { __typename?: 'AbxASTResultsType' }
+    & { astResults: Array<(
+      { __typename?: 'AbxASTResultType' }
+      & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
+      & { analysisResult?: Types.Maybe<(
+        { __typename?: 'AnalysisResultType' }
+        & Pick<Types.AnalysisResultType, 'uid' | 'result' | 'status'>
+      )>, antibiotic?: Types.Maybe<(
+        { __typename?: 'AbxAntibioticType' }
+        & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
+        & { guidelines?: Types.Maybe<Array<(
+          { __typename?: 'AbxGuidelineType' }
+          & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
+        )>> }
+      )>, astMethod?: Types.Maybe<(
+        { __typename?: 'AbxTestMethodType' }
+        & Pick<Types.AbxTestMethodType, 'uid' | 'name'>
+      )> }
+    )> }
+  ) | (
+    { __typename?: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
+export type UpdateAbxAstResultsMutationVariables = Types.Exact<{
+  payload: Types.AbxAstResultsUpdateInput;
+}>;
+
+
+export type UpdateAbxAstResultsMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAbxAstResults: (
+    { __typename?: 'AbxASTResultsType' }
+    & { astResults: Array<(
+      { __typename?: 'AbxASTResultType' }
+      & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
+      & { analysisResult?: Types.Maybe<(
+        { __typename?: 'AnalysisResultType' }
+        & Pick<Types.AnalysisResultType, 'uid' | 'result' | 'status'>
+      )>, antibiotic?: Types.Maybe<(
+        { __typename?: 'AbxAntibioticType' }
+        & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
+        & { guidelines?: Types.Maybe<Array<(
+          { __typename?: 'AbxGuidelineType' }
+          & Pick<Types.AbxGuidelineType, 'uid' | 'name'>
+        )>> }
+      )>, astMethod?: Types.Maybe<(
+        { __typename?: 'AbxTestMethodType' }
+        & Pick<Types.AbxTestMethodType, 'uid' | 'name'>
+      )> }
+    )> }
+  ) | (
+    { __typename?: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
 
 export const AddAbxGuidelineDocument = gql`
     mutation AddAbxGuideline($payload: AbxGuidelineInputType!) {
@@ -859,8 +982,13 @@ export const AddAbxAstPanelDocument = gql`
       uid
       name
       description
-      breakpoints {
+      organisms {
         uid
+        name
+      }
+      antibiotics {
+        uid
+        name
       }
       active
       createdAt
@@ -880,8 +1008,13 @@ export const EditAbxAstPanelDocument = gql`
       uid
       name
       description
-      breakpoints {
+      organisms {
         uid
+        name
+      }
+      antibiotics {
+        uid
+        name
       }
       active
       createdAt
@@ -1035,11 +1168,11 @@ export const AddAbxBreakpointDocument = gql`
   createAbxBreakpoint(payload: $payload) {
     ... on AbxBreakpointTyp {
       uid
-      guidelineUid
-      guideline {
-        name
+      guidelineYearUid
+      guidelineYear {
+        uid
+        code
       }
-      year
       testMethodUid
       testMethod {
         name
@@ -1084,11 +1217,11 @@ export const EditAbxBreakpointDocument = gql`
   updateAbxBreakpoint(uid: $uid, payload: $payload) {
     ... on AbxBreakpointTyp {
       uid
-      guidelineUid
-      guideline {
-        name
+      guidelineYearUid
+      guidelineYear {
+        uid
+        code
       }
-      year
       testMethodUid
       testMethod {
         name
@@ -1679,4 +1812,161 @@ export const EditAbxExpertInterpretationRuleDocument = gql`
 
 export function useEditAbxExpertInterpretationRuleMutation() {
   return Urql.useMutation<EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables>(EditAbxExpertInterpretationRuleDocument);
+};
+export const AddAbxOrganismResultDocument = gql`
+    mutation AddAbxOrganismResult($analysisResultUid: String!) {
+  createAbxOrganismResult(analysisResultUid: $analysisResultUid) {
+    ... on AbxOrganismResultType {
+      uid
+      analysisResultUid
+      organismUid
+      organism {
+        uid
+        name
+      }
+      isolateNumber
+      createdAt
+      createdByUid
+    }
+  }
+}
+    `;
+
+export function useAddAbxOrganismResultMutation() {
+  return Urql.useMutation<AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables>(AddAbxOrganismResultDocument);
+};
+export const SaveAbxOrganismResultDocument = gql`
+    mutation SaveAbxOrganismResult($uid: String!, $organismUid: String!) {
+  saveAbxOrganismResult(uid: $uid, organismUid: $organismUid) {
+    ... on AbxOrganismResultType {
+      uid
+      analysisResultUid
+      organismUid
+      organism {
+        uid
+        name
+      }
+      isolateNumber
+      createdAt
+      createdByUid
+    }
+  }
+}
+    `;
+
+export function useSaveAbxOrganismResultMutation() {
+  return Urql.useMutation<SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables>(SaveAbxOrganismResultDocument);
+};
+export const DeleteAbxOrganismResultDocument = gql`
+    mutation DeleteAbxOrganismResult($uid: String!) {
+  removeAbxOrganismResult(uid: $uid) {
+    ... on DeletedItem {
+      uid
+    }
+    ... on OperationError {
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useDeleteAbxOrganismResultMutation() {
+  return Urql.useMutation<DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables>(DeleteAbxOrganismResultDocument);
+};
+export const ApplyAbxAstPanelDocument = gql`
+    mutation ApplyAbxAstPanel($payload: AbxApplyAstPanelInput!) {
+  applyAbxAstPanel(payload: $payload) {
+    ... on AbxASTResultsType {
+      astResults {
+        uid
+        analysisResult {
+          uid
+          result
+          status
+        }
+        organismResultUid
+        analysisResultUid
+        analysisResult {
+          uid
+          result
+          status
+        }
+        antibioticUid
+        antibiotic {
+          uid
+          name
+          guidelines {
+            uid
+            name
+          }
+        }
+        astMethodUid
+        astMethod {
+          uid
+          name
+        }
+        astValue
+        createdAt
+        createdByUid
+      }
+    }
+    ... on OperationError {
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useApplyAbxAstPanelMutation() {
+  return Urql.useMutation<ApplyAbxAstPanelMutation, ApplyAbxAstPanelMutationVariables>(ApplyAbxAstPanelDocument);
+};
+export const UpdateAbxAstResultsDocument = gql`
+    mutation UpdateAbxAstResults($payload: AbxASTResultsUpdateInput!) {
+  updateAbxAstResults(payload: $payload) {
+    ... on AbxASTResultsType {
+      astResults {
+        uid
+        analysisResult {
+          uid
+          result
+          status
+        }
+        organismResultUid
+        analysisResultUid
+        analysisResult {
+          uid
+          result
+          status
+        }
+        antibioticUid
+        antibiotic {
+          uid
+          name
+          guidelines {
+            uid
+            name
+          }
+        }
+        astMethodUid
+        astMethod {
+          uid
+          name
+        }
+        astValue
+        createdAt
+        createdByUid
+      }
+    }
+    ... on OperationError {
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useUpdateAbxAstResultsMutation() {
+  return Urql.useMutation<UpdateAbxAstResultsMutation, UpdateAbxAstResultsMutationVariables>(UpdateAbxAstResultsDocument);
 };

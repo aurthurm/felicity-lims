@@ -3,13 +3,18 @@ from felicity.apps.multiplex.microbiology.entities import (
     AbxGuideline, AbxAntibioticGuideline, AbxAntibiotic,
     AbxKingdom, AbxPhylum, AbxClass, AbxOrder, AbxFamily, AbxGenus, AbxOrganism, AbxOrganismSerotype, AbxTestMethod,
     AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxExpResPhenotype,
-    AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel
+    AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel, AbxASTResult, AbxOrganismResult, AbxGuidelineYear
 )
 
 
 class AbxGuidelineRepository(BaseRepository[AbxGuideline]):
     def __init__(self) -> None:
         super().__init__(AbxGuideline)
+
+
+class AbxGuidelineYearRepository(BaseRepository[AbxGuidelineYear]):
+    def __init__(self) -> None:
+        super().__init__(AbxGuidelineYear)
 
 
 class AbxAntibioticGuidelineRepository(BaseRepository[AbxAntibioticGuideline]):
@@ -110,3 +115,13 @@ class AbxQCRangeRepository(BaseRepository[AbxQCRange]):
 class AbxASTPanelRepository(BaseRepository[AbxASTPanel]):
     def __init__(self) -> None:
         super().__init__(AbxASTPanel)
+
+
+class AbxASTResultRepository(BaseRepository[AbxASTResult]):
+    def __init__(self) -> None:
+        super().__init__(AbxASTResult)
+
+
+class AbxOrganismResultRepository(BaseRepository[AbxOrganismResult]):
+    def __init__(self) -> None:
+        super().__init__(AbxOrganismResult)

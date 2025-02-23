@@ -15,7 +15,7 @@ const tabs = [
   {
     id: 'analysis-results',
     label: 'Analysis Results',
-    component: defineAsyncComponent(() => import('./Results.vue'))
+    component: defineAsyncComponent(() => import('./results/Results.vue'))
   },
   {
     id: 'manage-analyses',

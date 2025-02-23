@@ -20,7 +20,8 @@ from .setup_microbiology import (
     seed_expected_resistance_phenotypes,
     seed_expert_interpretation_rules,
     seed_qc_ranges,
-    seed_organism_serotypes
+    seed_organism_serotypes,
+    seed_ast_services
 )
 from .setup_person import seed_person
 from .superusers import seed_daemon_user, seed_super_user
@@ -66,6 +67,7 @@ async def default_setup() -> bool:
     await seed_expected_resistance_phenotypes()
     await seed_expert_interpretation_rules()
     await seed_qc_ranges()
+    await seed_ast_services()
     logger.info("Loading default setup complete.")
     return True
 

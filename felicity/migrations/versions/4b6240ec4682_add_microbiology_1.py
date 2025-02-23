@@ -1,8 +1,8 @@
-"""add-microbiology
+"""add-microbiology-1
 
-Revision ID: b62be2f0ddfb
+Revision ID: 4b6240ec4682
 Revises: cccb8d8adce5
-Create Date: 2025-02-16 19:59:34.454065
+Create Date: 2025-02-23 22:23:47.290039
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b62be2f0ddfb'
+revision = '4b6240ec4682'
 down_revision = 'cccb8d8adce5'
 branch_labels = None
 depends_on = None
@@ -198,41 +198,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_antibiotic_guideline_uid'), 'abx_antibiotic_guideline', ['uid'], unique=False)
-    op.create_table('abx_breakpoint',
-    sa.Column('guideline_uid', sa.String(), nullable=True),
-    sa.Column('year', sa.Integer(), nullable=False),
-    sa.Column('test_method_uid', sa.String(), nullable=True),
-    sa.Column('potency', sa.String(length=50), nullable=True),
-    sa.Column('organism_code', sa.String(length=50), nullable=False),
-    sa.Column('organism_code_type', sa.String(length=50), nullable=False),
-    sa.Column('breakpoint_type_uid', sa.String(), nullable=True),
-    sa.Column('host_uid', sa.String(), nullable=True),
-    sa.Column('site_of_infection_uid', sa.String(), nullable=True),
-    sa.Column('reference_table', sa.String(length=100), nullable=True),
-    sa.Column('reference_sequence', sa.String(length=100), nullable=True),
-    sa.Column('whonet_abx_code', sa.String(length=50), nullable=True),
-    sa.Column('comments', sa.String(length=500), nullable=True),
-    sa.Column('r', sa.String(length=20), nullable=True),
-    sa.Column('i', sa.String(length=20), nullable=True),
-    sa.Column('sdd', sa.String(length=20), nullable=True),
-    sa.Column('s', sa.String(length=20), nullable=True),
-    sa.Column('ecv_ecoff', sa.String(length=20), nullable=True),
-    sa.Column('ecv_ecoff_tentative', sa.String(length=20), nullable=True),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['breakpoint_type_uid'], ['abx_breakpoint_type.uid'], ),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['guideline_uid'], ['abx_guideline.uid'], ),
-    sa.ForeignKeyConstraint(['host_uid'], ['abx_host.uid'], ),
-    sa.ForeignKeyConstraint(['site_of_infection_uid'], ['abx_infection_site.uid'], ),
-    sa.ForeignKeyConstraint(['test_method_uid'], ['abx_test_method.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_abx_breakpoint_uid'), 'abx_breakpoint', ['uid'], unique=False)
     op.create_table('abx_expected_res_phenotype',
     sa.Column('guideline_uid', sa.String(), nullable=True),
     sa.Column('reference_table', sa.String(length=100), nullable=True),
@@ -255,6 +220,35 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_expected_res_phenotype_uid'), 'abx_expected_res_phenotype', ['uid'], unique=False)
+    op.create_table('abx_guideline_year',
+    sa.Column('guideline_uid', sa.String(), nullable=True),
+    sa.Column('year', sa.Integer(), nullable=False),
+    sa.Column('code', sa.String(length=20), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['guideline_uid'], ['abx_guideline.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_abx_guideline_year_uid'), 'abx_guideline_year', ['uid'], unique=False)
+    op.create_table('abx_laboratory_antibiotic',
+    sa.Column('laboratory_uid', sa.String(), nullable=False),
+    sa.Column('antibiotic_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['antibiotic_uid'], ['abx_antibiotic.uid'], ),
+    sa.ForeignKeyConstraint(['laboratory_uid'], ['laboratory.uid'], ),
+    sa.PrimaryKeyConstraint('laboratory_uid', 'antibiotic_uid')
+    )
+    op.create_table('abx_panel_antibiotic',
+    sa.Column('panel_uid', sa.String(), nullable=False),
+    sa.Column('antibiotic_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['antibiotic_uid'], ['abx_antibiotic.uid'], ),
+    sa.ForeignKeyConstraint(['panel_uid'], ['abx_ast_panel.uid'], ),
+    sa.PrimaryKeyConstraint('panel_uid', 'antibiotic_uid')
+    )
     op.create_table('abx_phylum',
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('kingdom_uid', sa.String(), nullable=True),
@@ -295,6 +289,40 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_qc_ranges_uid'), 'abx_qc_ranges', ['uid'], unique=False)
+    op.create_table('abx_breakpoint',
+    sa.Column('guideline_year_uid', sa.String(), nullable=True),
+    sa.Column('test_method_uid', sa.String(), nullable=True),
+    sa.Column('potency', sa.String(length=50), nullable=True),
+    sa.Column('organism_code', sa.String(length=50), nullable=False),
+    sa.Column('organism_code_type', sa.String(length=50), nullable=False),
+    sa.Column('breakpoint_type_uid', sa.String(), nullable=True),
+    sa.Column('host_uid', sa.String(), nullable=True),
+    sa.Column('site_of_infection_uid', sa.String(), nullable=True),
+    sa.Column('reference_table', sa.String(length=100), nullable=True),
+    sa.Column('reference_sequence', sa.String(length=100), nullable=True),
+    sa.Column('whonet_abx_code', sa.String(length=50), nullable=True),
+    sa.Column('comments', sa.String(length=500), nullable=True),
+    sa.Column('r', sa.String(length=20), nullable=True),
+    sa.Column('i', sa.String(length=20), nullable=True),
+    sa.Column('sdd', sa.String(length=20), nullable=True),
+    sa.Column('s', sa.String(length=20), nullable=True),
+    sa.Column('ecv_ecoff', sa.String(length=20), nullable=True),
+    sa.Column('ecv_ecoff_tentative', sa.String(length=20), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['breakpoint_type_uid'], ['abx_breakpoint_type.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['guideline_year_uid'], ['abx_guideline_year.uid'], ),
+    sa.ForeignKeyConstraint(['host_uid'], ['abx_host.uid'], ),
+    sa.ForeignKeyConstraint(['site_of_infection_uid'], ['abx_infection_site.uid'], ),
+    sa.ForeignKeyConstraint(['test_method_uid'], ['abx_test_method.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_abx_breakpoint_uid'), 'abx_breakpoint', ['uid'], unique=False)
     op.create_table('abx_class',
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('phylum_uid', sa.String(), nullable=True),
@@ -310,13 +338,6 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_abx_class_uid'), 'abx_class', ['uid'], unique=False)
-    op.create_table('abx_panel_antibiotics',
-    sa.Column('panel_uid', sa.String(), nullable=False),
-    sa.Column('breakpoint_uid', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['breakpoint_uid'], ['abx_breakpoint.uid'], ),
-    sa.ForeignKeyConstraint(['panel_uid'], ['abx_ast_panel.uid'], ),
-    sa.PrimaryKeyConstraint('panel_uid', 'breakpoint_uid')
-    )
     op.create_table('abx_order',
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('class_uid', sa.String(), nullable=True),
@@ -427,6 +448,53 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_organism_serotypes_uid'), 'abx_organism_serotypes', ['uid'], unique=False)
+    op.create_table('abx_panel_organism',
+    sa.Column('panel_uid', sa.String(), nullable=False),
+    sa.Column('organism_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['organism_uid'], ['abx_organism.uid'], ),
+    sa.ForeignKeyConstraint(['panel_uid'], ['abx_ast_panel.uid'], ),
+    sa.PrimaryKeyConstraint('panel_uid', 'organism_uid')
+    )
+    op.create_table('abx_organism_result',
+    sa.Column('analysis_result_uid', sa.String(), nullable=True),
+    sa.Column('organism_uid', sa.String(), nullable=True),
+    sa.Column('isolate_number', sa.Integer(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['analysis_result_uid'], ['analysis_result.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['organism_uid'], ['abx_organism.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_abx_organism_result_uid'), 'abx_organism_result', ['uid'], unique=False)
+    op.create_table('abx_ast_result',
+    sa.Column('organism_result_uid', sa.String(), nullable=True),
+    sa.Column('analysis_result_uid', sa.String(), nullable=True),
+    sa.Column('antibiotic_uid', sa.String(), nullable=True),
+    sa.Column('guideline_year_uid', sa.String(), nullable=True),
+    sa.Column('breakpoint_uid', sa.String(), nullable=True),
+    sa.Column('ast_method_uid', sa.String(), nullable=True),
+    sa.Column('ast_value', sa.String(length=10), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['analysis_result_uid'], ['analysis_result.uid'], ),
+    sa.ForeignKeyConstraint(['antibiotic_uid'], ['abx_antibiotic.uid'], ),
+    sa.ForeignKeyConstraint(['ast_method_uid'], ['abx_test_method.uid'], ),
+    sa.ForeignKeyConstraint(['breakpoint_uid'], ['abx_breakpoint.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['guideline_year_uid'], ['abx_guideline_year.uid'], ),
+    sa.ForeignKeyConstraint(['organism_result_uid'], ['abx_organism_result.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_abx_ast_result_uid'), 'abx_ast_result', ['uid'], unique=False)
     op.drop_index('analysis_result_level_idx', table_name='analysis_result')
     op.drop_index('analysis_result_lft_idx', table_name='analysis_result')
     op.drop_index('analysis_result_rgt_idx', table_name='analysis_result')
@@ -468,6 +536,11 @@ def downgrade():
     op.create_index('analysis_result_rgt_idx', 'analysis_result', ['rgt'], unique=False)
     op.create_index('analysis_result_lft_idx', 'analysis_result', ['lft'], unique=False)
     op.create_index('analysis_result_level_idx', 'analysis_result', ['level'], unique=False)
+    op.drop_index(op.f('ix_abx_ast_result_uid'), table_name='abx_ast_result')
+    op.drop_table('abx_ast_result')
+    op.drop_index(op.f('ix_abx_organism_result_uid'), table_name='abx_organism_result')
+    op.drop_table('abx_organism_result')
+    op.drop_table('abx_panel_organism')
     op.drop_index(op.f('ix_abx_organism_serotypes_uid'), table_name='abx_organism_serotypes')
     op.drop_table('abx_organism_serotypes')
     op.drop_index(op.f('ix_abx_organism_uid'), table_name='abx_organism')
@@ -478,17 +551,20 @@ def downgrade():
     op.drop_table('abx_family')
     op.drop_index(op.f('ix_abx_order_uid'), table_name='abx_order')
     op.drop_table('abx_order')
-    op.drop_table('abx_panel_antibiotics')
     op.drop_index(op.f('ix_abx_class_uid'), table_name='abx_class')
     op.drop_table('abx_class')
+    op.drop_index(op.f('ix_abx_breakpoint_uid'), table_name='abx_breakpoint')
+    op.drop_table('abx_breakpoint')
     op.drop_index(op.f('ix_abx_qc_ranges_uid'), table_name='abx_qc_ranges')
     op.drop_table('abx_qc_ranges')
     op.drop_index(op.f('ix_abx_phylum_uid'), table_name='abx_phylum')
     op.drop_table('abx_phylum')
+    op.drop_table('abx_panel_antibiotic')
+    op.drop_table('abx_laboratory_antibiotic')
+    op.drop_index(op.f('ix_abx_guideline_year_uid'), table_name='abx_guideline_year')
+    op.drop_table('abx_guideline_year')
     op.drop_index(op.f('ix_abx_expected_res_phenotype_uid'), table_name='abx_expected_res_phenotype')
     op.drop_table('abx_expected_res_phenotype')
-    op.drop_index(op.f('ix_abx_breakpoint_uid'), table_name='abx_breakpoint')
-    op.drop_table('abx_breakpoint')
     op.drop_index(op.f('ix_abx_antibiotic_guideline_uid'), table_name='abx_antibiotic_guideline')
     op.drop_table('abx_antibiotic_guideline')
     op.drop_index(op.f('ix_abx_test_method_uid'), table_name='abx_test_method')

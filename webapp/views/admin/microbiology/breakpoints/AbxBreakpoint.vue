@@ -36,7 +36,7 @@ let abxParams = reactive({
   first: 50,
   after: "",
   text: "",
-  sortBy: ["-year"],
+  sortBy: ["-guideline_year___year"],
   filterAction: false,
 });
 
@@ -64,14 +64,7 @@ const tableColumns = ref([
   },
   {
     name: "Guideline",
-    value: "guideline.name",
-    sortable: false,
-    sortBy: "asc",
-    hidden: false,
-  },
-  {
-    name: "Year",
-    value: "year",
+    value: "guidelineYear.code",
     sortable: false,
     sortBy: "asc",
     hidden: false,

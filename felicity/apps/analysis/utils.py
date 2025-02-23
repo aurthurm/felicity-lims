@@ -145,22 +145,24 @@ async def results_submitter(
         # mutate result
         await result_mutator(a_result)
 
-        # try to submit sample
-        try:
-            sample = await sample_wf.submit(a_result.sample_uid, submitted_by=submitter)
-            if sample.qc_set_uid:
-                await qc_set_workflow.submit(sample.qc_set_uid, submitter)
-        except Exception as e:
-            await sample_wf.revert(a_result.sample_uid, by_uid=submitter.uid)
-            logger.warning(e)
-
-        # try to submit associated worksheet
-        if a_result.worksheet_uid:
+        # if abx org service, dont submit sample :: pending ast testing
+        if a_result.analysis.keyword != "felicity_ast_abx_organism":
+            # try to submit sample
             try:
-                await worksheet_wf.submit(a_result.worksheet_uid, submitter=submitter)
+                sample = await sample_wf.submit(a_result.sample_uid, submitted_by=submitter)
+                if sample.qc_set_uid:
+                    await qc_set_workflow.submit(sample.qc_set_uid, submitter)
             except Exception as e:
-                await worksheet_wf.revert(a_result.worksheet_uid, by_uid=submitter.uid)
+                await sample_wf.revert(a_result.sample_uid, by_uid=submitter.uid)
                 logger.warning(e)
+
+            # try to submit associated worksheet
+            if a_result.worksheet_uid:
+                try:
+                    await worksheet_wf.submit(a_result.worksheet_uid, submitter=submitter)
+                except Exception as e:
+                    await worksheet_wf.revert(a_result.worksheet_uid, by_uid=submitter.uid)
+                    logger.warning(e)
 
         return_results.append(a_result)
     return return_results
@@ -183,33 +185,34 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         await ReflexEngineService().do_reflex(analysis_result=a_result, user=user)
         logger.info("ReflexUtil .... done")
 
-        # try to verify associated sample
+        # if abx org service, dont approve sample :: pending ast testing
         sample_verified = False
-        try:
-            sample_verified, sample = await sample_wf.approve(
-                a_result.sample_uid, approved_by=user
-            )
-            if sample_verified and sample.qc_set_uid:
-                await qc_set_workflow.approve(sample.qc_set_uid, user)
-                # auto publish QC samples without report generation
-                await sample_service.change_status(a_result.sample_uid, SampleState.PUBLISHED, user)
-        except Exception as e:
-            await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
-            logger.warning(e)
-
-        # try to submit associated worksheet
-        if a_result.worksheet_uid:
+        if a_result.analysis.keyword != "felicity_ast_abx_organism":
+            # try to verify associated sample
             try:
-                await worksheet_wf.approve(a_result.worksheet_uid, approved_by=user)
+                sample_verified, sample = await sample_wf.approve(
+                    a_result.sample_uid, approved_by=user
+                )
+                if sample_verified and sample.qc_set_uid:
+                    await qc_set_workflow.approve(sample.qc_set_uid, user)
+                    # auto publish QC samples without report generation
+                    await sample_service.change_status(a_result.sample_uid, SampleState.PUBLISHED, user)
             except Exception as e:
-                await worksheet_wf.revert(a_result.worksheet_uid, by_uid=user.uid)
+                await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
                 logger.warning(e)
+
+            # try to submit associated worksheet
+            if a_result.worksheet_uid:
+                try:
+                    await worksheet_wf.approve(a_result.worksheet_uid, approved_by=user)
+                except Exception as e:
+                    await worksheet_wf.revert(a_result.worksheet_uid, by_uid=user.uid)
+                    logger.warning(e)
 
         # If referral then send results and mark sample as published
         shipped = await shipped_sample_service.get(sample_uid=a_result.sample_uid)
 
         # TODO: decouple this and fire events that will trigger the shipment etc
-
         if shipped:
             # 1. create a Job to send the result
             job_schema = JobCreate(

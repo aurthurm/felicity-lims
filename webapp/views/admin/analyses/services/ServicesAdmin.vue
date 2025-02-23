@@ -435,7 +435,7 @@ function saveMappingForm(): void {
 
 
   <!-- AnaltsisService Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -445,27 +445,32 @@ function saveMappingForm(): void {
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-4 mb-2">
             <span class="text-gray-700">Analysis Service Name</span>
-            <input
-              class="form-input mt-4 block w-full"
+            <input v-if="!analysisService.keyword.includes('felicity')"
+              class="form-input mt-1 block w-full"
               v-model="analysisService.name"
               placeholder="Name ..."
             />
+            <span class="block mt-2 mb-4 font-bold text-xl" v-else>{{ analysisService.name }}</span>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">keyword</span>
-            <input
+            <input v-if="!analysisService.keyword.includes('felicity')"
               class="form-input mt-1 block w-full"
               v-model="analysisService.keyword"
               placeholder="Keyword ..."
             />
+            <span class="block mt-2 mb-4 italic font-semibold" v-else>{{ analysisService.keyword }}</span>
           </label>
-          <label class="block col-span-1 mb-2">
+          <label class="block col-span-1 mb-2" v-show="!analysisService.keyword.includes('felicity')">
             <span class="text-gray-700">Unit</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.unitUid">
                <option></option>
               <option v-for="unit in units" :key="unit.uid" :value="unit?.uid">{{ unit.name }}</option>
             </select>
           </label>
+        </div>
+    
+        <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-3 mb-2">
             <span class="text-gray-700">Sample Types</span>
             <VueMultiselect
@@ -490,13 +495,17 @@ function saveMappingForm(): void {
           </label>
           <label class="block col-span-6 mb-2">
             <span class="text-gray-700">Description</span>
-            <textarea
+            <textarea v-if="!analysisService.keyword.includes('felicity')"
             cols="2"
               class="form-input mt-1 block w-full"
               v-model="analysisService.description"
               placeholder="Description ..."
             />
+            <span class="block p-2 mt-2 mb-4 bg-gray-100" v-else>{{ analysisService.description }}</span>
           </label>
+        </div>
+    
+        <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Department</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.departmentUid">
@@ -543,29 +552,30 @@ function saveMappingForm(): void {
               v-model="analysisService.requiredVerifications"
             />
           </label>
-          <div class="col-span-2 flex justify-between">
-            <label class="block col-span-2 my-2">
-              <input
-                type="checkbox"
-                v-model="analysisService.active"
-              />
-              <span class="text-gray-700 ml-4">Is Active</span>
-            </label>
-            <label class="block col-span-2 my-2">
-              <input
-                type="checkbox"
-                v-model="analysisService.internalUse"
-              />
-              <span class="text-gray-700 ml-4">Internal Use</span>
-            </label>
-            <label class="block col-span-2 my-2">
-              <input
-                type="checkbox"
-                v-model="analysisService.selfVerification"
-              />
-              <span class="text-gray-700 ml-4">Allow Self Verifaction</span>
-            </label>
-          </div>
+        </div>
+    
+        <div class="col-span-4 flex justify-between">
+          <label class="block col-span-2 my-2">
+            <input
+              type="checkbox"
+              v-model="analysisService.active"
+            />
+            <span class="text-gray-700 ml-4">Is Active</span>
+          </label>
+          <label class="block col-span-2 my-2">
+            <input
+              type="checkbox"
+              v-model="analysisService.internalUse"
+            />
+            <span class="text-gray-700 ml-4">Internal Use</span>
+          </label>
+          <label class="block col-span-2 my-2">
+            <input
+              type="checkbox"
+              v-model="analysisService.selfVerification"
+            />
+            <span class="text-gray-700 ml-4">Allow Self Verifaction</span>
+          </label>
         </div>
         <hr />
         <button

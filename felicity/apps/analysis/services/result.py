@@ -16,6 +16,7 @@ from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultU
 from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.instrument.services import LaboratoryInstrumentService
+from felicity.apps.multiplex.microbiology.services import AbxOrganismResultService, AbxASTResultService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.user.entities import User, logger
 from felicity.core.dtz import timenow_dt
@@ -95,17 +96,25 @@ class AnalysisResultService(
         return await super().save(analysis_result)
 
     async def submit(self, uid: str, data: dict, submitter) -> AnalysisResult:
+        felicity_ast = "felicity_ast"
+
+        laboratory_instrument_uid = data.get("laboratory_instrument_uid")
+        if laboratory_instrument_uid == felicity_ast:
+            laboratory_instrument_uid = None
+
+        method_uid = data.get("method_uid")
+        if method_uid == felicity_ast:
+            method_uid = None
+
         analysis_result = await self.get(uid=uid)
         analysis_result.result = data.get("result")
         analysis_result.updated_by_uid = submitter.uid  # noqa
         analysis_result.submitted_by_uid = submitter.uid  # noqa
         analysis_result.status = ResultState.RESULTED
-        analysis_result.method_uid = data.get("method_uid")
-        analysis_result.laboratory_instrument_uid = data.get(
-            "laboratory_instrument_uid"
-        )
+        analysis_result.method_uid = method_uid
+        analysis_result.laboratory_instrument_uid = laboratory_instrument_uid
         analysis_result.date_submitted = timenow_dt()
-        final = await super().save(analysis_result)
+        final = await super().save(analysis_result, related=["analysis"])
         await self.streamer_service.stream(final, submitter, "submitted", "result")
         return final
 
@@ -114,7 +123,7 @@ class AnalysisResultService(
         analysis_result.updated_by_uid = verifier.uid  # noqa
         analysis_result.status = ResultState.APPROVED
         analysis_result.date_verified = timenow_dt()
-        final = await super().save(analysis_result)
+        final = await super().save(analysis_result, related=["analysis"])
         await self._verify(uid, verifier_uid=verifier.uid)
         await self.streamer_service.stream(final, verifier, "approved", "result")
         return final
@@ -207,6 +216,32 @@ class AnalysisResultService(
                         metadata[_field] = thing.snapshot() if thing else None
                 except Exception as e:
                     logger.error(f"Failed to snapshot field {_field}: {e}")
+
+            # AMR - AST snapshots
+            if analysis.keyword == "felicity_ast_abx_organism":
+                _orgs = await AbxOrganismResultService().get_all(
+                    analysis_result_uid=result.uid,
+                    related=["organism"]
+                )
+                metadata["organisms"] = [{
+                    **org.snapshot(), "organism": org.organism.snapshot() if org.organism else None
+                } for org in _orgs]
+
+            if analysis.keyword == "felicity_ast_abx_antibiotic":
+                ast_result = await AbxASTResultService().get(
+                    analysis_result_uid=result.uid,
+                    related=["antibiotic", "guideline_year", "breakpoint", "ast_method"]
+                )
+                metadata["ast_result"] = None
+                if ast_result:
+                    metadata["ast_result"] = {
+                        **ast_result.snapshot(),
+                        "antibiotic": ast_result.antibiotic.snapshot() if ast_result.antibiotic else None,
+                        "guideline_year": ast_result.guideline_year.snapshot() if ast_result.guideline_year else None,
+                        "breakpoint": ast_result.breakpoint.snapshot() if ast_result.breakpoint else None,
+                        "ast_method": ast_result.ast_method.snapshot() if ast_result.ast_method else None,
+                    }
+
             await self.update(result.uid, {"metadata_snapshot": marshaller(metadata, depth=4)})
         return None
 

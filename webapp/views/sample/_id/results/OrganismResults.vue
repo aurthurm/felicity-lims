@@ -1,0 +1,295 @@
+<script setup lang="ts">
+import {  computed, defineAsyncComponent, onMounted, reactive, ref } from "vue";
+import type { PropType } from 'vue'
+import {
+  IAnalysisResult,
+  ISample,
+} from "@/models/analysis";
+import * as shield from "@/guards";
+import useApiUtil from '@/composables/api_util';
+import useAnalysisComposable from "@/composables/analysis";
+import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismResultAllDocument, GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables } from "@/graphql/operations/microbiology.queries";
+import { IAbxOrganism, IAbxOrganismResult } from "@/models/microbiology";
+import { AbxOrganismCursorPage } from "@/graphql/schema";
+import { AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables, AddAbxOrganismResultDocument, DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables, DeleteAbxOrganismResultDocument, SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables, SaveAbxOrganismResultDocument } from "@/graphql/operations/microbiology.mutations";
+
+const modal = defineAsyncComponent(
+    () => import("@/components/ui/FelModal.vue")
+)
+const FelButton = defineAsyncComponent(
+  () => import("@/components/ui/buttons/FelButton.vue")
+)
+
+const { withClientMutation, withClientQuery } = useApiUtil()
+const organismResults = ref<IAbxOrganismResult[]>([]);
+
+const showModal = ref<boolean>(false);
+const searchOrgText = ref<string>('');
+const organisms = ref<IAbxOrganism[]>([]);
+const pickIndex = ref<number | undefined>(undefined);
+const addingOrganism = ref<boolean>(false);
+
+const {
+  sample,
+  analysisResults
+} = defineProps({
+  sample: {
+    type: Object as PropType<ISample>,
+    required: true,
+  },
+  analysisResults: {
+    type: Object as PropType<IAnalysisResult[]>,
+    required: true,
+  }
+});
+
+const analysisResult = computed(() => analysisResults[0]);
+
+onMounted(() => {
+  withClientQuery<GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables>(
+    GetAbxOrganismResultAllDocument, { analysisResultUid: analysisResult.value.uid! }, "abxOrganismResultAll"
+  ).then((result) => {
+    if (result) {
+      organismResults.value = (result as unknown || []) as IAbxOrganismResult[];
+    }
+  }).finally(() => resetAnalysesPermissions());
+});
+
+function addOrganism(){
+  addingOrganism.value = true;
+  withClientMutation<AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables>(
+      AddAbxOrganismResultDocument, { analysisResultUid: analysisResult.value.uid! }, "createAbxOrganismResult"
+    ).then((result) => {
+      if (result) {
+        organismResults.value.unshift(result as unknown as IAbxOrganismResult);
+      }
+    }).finally(() => (addingOrganism.value = false));
+}
+
+function saveOrgResult(orgResult: IAbxOrganismResult) { 
+  addingOrganism.value = true;
+  withClientMutation<SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables>(
+      SaveAbxOrganismResultDocument, 
+      { uid: orgResult.uid!, organismUid: orgResult.organism.uid }, 
+      "saveAbxOrganismResult"
+    ).then((result) => {
+      if (result) {
+        const idx = organismResults.value.findIndex(or => or.uid === orgResult.uid);
+        if (idx > -1) {
+          const organism = (result as unknown as IAbxOrganismResult).organism;
+          organismResults.value[idx].organismUid = organism?.uid;
+          organismResults.value[idx].organism = organism;
+        }
+      }
+      
+    }).finally(() => {
+      addingOrganism.value = false
+      resetAnalysesPermissions()
+    });
+}
+
+function removeOrgResult(orgResult: IAbxOrganismResult) {
+  addingOrganism.value = true;
+  withClientMutation<DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables>(
+      DeleteAbxOrganismResultDocument, { uid: orgResult.uid! }, "removeAbxOrganismResult"
+    ).then((result) => {
+      if (result) {
+        const idx = organismResults.value.findIndex((r) => r.uid === result?.uid);
+        if (idx > -1) {
+          organismResults.value.splice(idx, 1);
+        }
+      }
+    }).finally(() => {
+      addingOrganism.value = false
+      resetAnalysesPermissions()
+    });
+}
+
+function pickOrganism(index: number) {  
+  pickIndex.value = index;
+  showModal.value = true;
+}
+
+function selectOrganism(org: IAbxOrganism) {  
+  showModal.value = false;
+  organismResults.value[pickIndex.value!].organism = org;
+  pickIndex.value = undefined;
+  //
+  analysisResults[0].result = organismResults.value.map(r => r.organism?.name).join(', ');
+}
+
+function searchOrganisms() {
+  if(searchOrgText.value.length < 3) return;
+  withClientQuery<GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables>(
+      GetAbxOrganismAllDocument, {
+        text: searchOrgText.value,
+        pageSize: 25,
+        sortBy: ["name"],
+      }, "abxOrganismAll"
+  ).then((result) => {
+    organisms.value = (result as AbxOrganismCursorPage)?.items as IAbxOrganism[];
+  })
+}
+
+// submit and verify
+const state = reactive({
+  can_submit: false,
+  can_approve: false,
+}); 
+
+function resetAnalysesPermissions(): void {
+  // reset
+  state.can_submit = false;
+  state.can_approve = false;
+
+  // can submit
+  const allOrgsFinalized = organismResults.value.every(or => or.organismUid != undefined);
+  if (analysisResult.value.status == 'pending' && allOrgsFinalized) {
+    state.can_submit = true;
+  }
+
+  // can approve
+  if (analysisResult.value.status == 'resulted') {
+    state.can_approve = true;
+  }
+}
+
+let {
+  submitResults: submitter_,
+  approveResults: approver_,
+} = useAnalysisComposable();
+
+const submitResults = () =>
+  submitter_([
+  { 
+    uid: analysisResult.value.uid, 
+    result: analysisResult.value.result,
+    methodUid: "felicity_ast", 
+    laboratoryInstrumentUid: "felicity_ast" 
+  }
+  ], "sample", sample?.uid!)
+    .then(console.log);
+
+const approveResults = () =>
+  approver_([analysisResult.value.uid!], "sample", sample?.uid!)
+    .then(console.log);
+</script>
+
+<template>
+  <h3 class="flex justify-between items-center">
+    <span class="font-bold">Organisms</span>
+    <button @click="addOrganism()" v-if="analysisResult.status == 'pending'"
+    class="ml-2 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+    :disabled="addingOrganism">
+      add organism
+    </button>
+  </h3>
+
+  <hr class="mt-1" />
+
+  <div class="overflow-x-auto mt-2">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+      <table class="min-w-full">
+        <thead>
+          <tr>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Isolate Number</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Organism Name</th>
+            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-white">
+          <tr v-for="(orgResult, idx) in organismResults" :key="orgResult?.uid">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div class="text-sm leading-5 text-gray-800">#{{ orgResult?.isolateNumber }}</div>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div v-if="orgResult?.organism"
+              class="text-sm leading-5 text-sky-800">{{ orgResult?.organism?.name }}</div>
+              <button v-else
+                class="px-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                @click="pickOrganism(idx)">
+                pick organism
+              </button>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+              <span v-if="orgResult?.organism && !orgResult?.organismUid">
+                <button 
+                class="px-2 py-1 border-orange-800 border text-orange-800 rounded-sm transition duration-300 hover:bg-orange-800 hover:text-white focus:outline-none"
+                @click="pickOrganism(idx)">
+                  change
+                </button>
+                <button
+                class="ml-2 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                @click="saveOrgResult(orgResult)">
+                  save
+                </button>
+              </span>
+              <span v-if="analysisResult.status == 'pending' && organismResults.length > 1">
+                <button 
+                class="px-2 py-1 border-orange-800 border text-orange-800 rounded-sm transition duration-300 hover:bg-orange-800 hover:text-white focus:outline-none"
+                @click="removeOrgResult(orgResult)">
+                  delete
+                </button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <!-- <div>
+      <span class="font-semibold bg-slate-300 rounded-full h-4 w-4 p-1">{{ organismResults?.filter(or => or.organismUid != undefined)?.length }}</span>
+      <span class="font-semibold mx-1">organisms picked:</span> 
+      <span class="italic">{{ analysisResult.result }}</span>
+    </div>
+    <hr class="my-2">  -->
+    <!-- Submit and Verify Section -->
+    <FelButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
+    " key="submit" @click.prevent="submitResults" :color="'orange-600'">Submit organisms</FelButton>
+    <FelButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
+      state.can_approve
+    " key="verify" @click.prevent="approveResults" :color="'orange-600'">Verify organisms</FelButton>
+  </div>
+
+  <!-- Panel Form Modal -->
+  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+    <template v-slot:header>
+      <h3>Search Organism</h3>
+    </template>
+
+    <template v-slot:body>
+      <form class="">
+        <div class="w-full">
+          <label class="block mb-4">
+            <input
+                v-model="searchOrgText"
+                @input="searchOrganisms"
+                class="form-input mt-1 block w-full"
+                placeholder="Search organisms..."
+            />
+          </label>
+          <div class="border p-2 h-64 overflow-y-auto">
+              <table class="w-full">
+                <tr v-for="org in organisms" :key="org.uid">
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                    <div class="text-sm leading-5 text-gray-800">{{ org.name }}</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                    <button 
+                    @click="selectOrganism(org)"
+                    class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+                      pick
+                    </button>
+                  </td>
+                </tr>
+              </table>
+          </div>
+        </div>
+      </form>
+    </template>
+  </modal>
+</template>

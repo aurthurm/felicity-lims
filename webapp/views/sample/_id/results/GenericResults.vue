@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onMounted, watch, reactive, computed, defineAsyncComponent, ref } from "vue";
-import { useRoute } from "vue-router";
-import { storeToRefs } from "pinia";
+import { reactive, computed, defineAsyncComponent, ref } from "vue";
+import type { PropType } from 'vue'
 import { useSampleStore } from "@/stores/sample";
 import useAnalysisComposable from "@/composables/analysis";
 import {
   IAnalysisProfile,
   IAnalysisResult,
   IAnalysisService,
+  ISample,
 } from "@/models/analysis";
 import { isNullOrWs, parseDate } from "@/utils/helpers";
 
@@ -28,9 +28,17 @@ const ResultDetail = defineAsyncComponent(
   () => import("@/components/result/ResultDetail.vue")
 )
 
-const route = useRoute();
+const {
+  sample,
+  analysisResults,
+  fetchingResults,
+} = defineProps({
+  sample: Object as PropType<ISample>,
+  analysisResults: Object as PropType<IAnalysisResult[]>,
+  fetchingResults: Boolean,
+});
+
 const sampleStore = useSampleStore();
-const { sample, analysisResults, fetchingResults } = storeToRefs(sampleStore);
 
 const state = reactive({
   can_submit: false,
@@ -42,21 +50,9 @@ const state = reactive({
   allChecked: false,
 });
 
-onMounted(() => {
-  sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid)
-});
-
-watch(
-  () => route.params.sampleUid,
-  (sampleUid, prev) => {
-    sampleStore.resetSample();
-    sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid);
-  }
-);
-
 function getResultsChecked(): any {
   let results: IAnalysisResult[] = [];
-  analysisResults?.value?.forEach((result) => {
+  analysisResults?.forEach((result) => {
     if (result.checked) results.push(result);
   });
   return results;
@@ -101,19 +97,19 @@ function unCheck(result: IAnalysisResult): void {
 }
 
 async function toggleCheckAll() {
-  await analysisResults?.value?.forEach((result) =>
+  await analysisResults?.forEach((result) =>
     state.allChecked ? check(result) : unCheck(result)
   );
   resetAnalysesPermissions();
 }
 
 async function unCheckAll() {
-  await analysisResults?.value?.forEach((result) => unCheck(result));
+  await analysisResults?.forEach((result) => unCheck(result));
   resetAnalysesPermissions();
 }
 
 function areAllChecked(): Boolean {
-  return analysisResults?.value?.every((item: IAnalysisResult) => item.checked === true);
+  return analysisResults?.every((item: IAnalysisResult) => item.checked === true) || false;
 }
 
 function isDisabledRowCheckBox(result: any): boolean {
@@ -123,7 +119,7 @@ function isDisabledRowCheckBox(result: any): boolean {
     case "approved":
       return true;
     case "cancelled":
-      if (sample?.value?.status !== "received") return true;
+      if (sample?.status !== "received") return true;
       return false;
     default:
       return false;
@@ -136,7 +132,7 @@ function editResult(result: any): void {
 }
 
 function isEditable(result: IAnalysisResult): Boolean {
-  if (!["received", "paired"].includes(sample?.value?.status ?? "")) {
+  if (!["received", "paired"].includes(sample?.status ?? "")) {
     return false;
   }
   if (result.status !== "pending") {
@@ -209,7 +205,7 @@ function resetAnalysesPermissions(): void {
 const _updateSample = async () => {
   const sample = computed(() => sampleStore.getSample);
   if (sample.value) {
-    sampleStore.fetchSampleStatus(sample?.value?.uid);
+    sampleStore.fetchSampleStatus(sample?.uid);
   }
 };
 
@@ -242,7 +238,7 @@ let {
 } = useAnalysisComposable();
 
 const submitResults = () =>
-  submitter_(prepareResults(), "sample", sample?.value?.uid!)
+  submitter_(prepareResults(), "sample", sample?.uid!)
     .then(() => _updateSample())
     .finally(() => unCheckAll());
 
@@ -257,7 +253,7 @@ const reInstateResults = () =>
     .finally(() => unCheckAll());
 
 const approveResults = () =>
-  approver_(getResultsUids(), "sample", sample?.value?.uid!)
+  approver_(getResultsUids(), "sample", sample?.uid!)
     .then(() => _updateSample())
     .finally(() => unCheckAll());
 
@@ -413,7 +409,9 @@ const retestResults = () =>
                 {{ result?.result }}
               </div>
               <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block">
-                <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)" />
+                <input class="form-input mt-1 block w-full" 
+                v-model="result.result" 
+                @keyup="check(result)" />
               </label>
               <label v-else class="block col-span-2 mb-2">
                 <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">

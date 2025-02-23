@@ -8,7 +8,6 @@ from felicity.apps.instrument.services import (
     MethodService,
 )
 from felicity.core.config import get_settings
-
 from .data import get_seeds
 
 settings = get_settings()
@@ -53,5 +52,14 @@ async def seed_instrument_categories() -> None:
                         instrument_uid=instrument.uid,
                         lab_name=_inst,
                         serial_number="Man-001",
+                    )
+                    await laboratory_instrument_service.create(lab_inst_in)
+
+            if _inst == "Automated":
+                if not (await laboratory_instrument_service.get(lab_name=_inst)):
+                    lab_inst_in = schemas.LaboratoryInstrumentCreate(
+                        instrument_uid=instrument.uid,
+                        lab_name=_inst,
+                        serial_number="Auto-001",
                     )
                     await laboratory_instrument_service.create(lab_inst_in)

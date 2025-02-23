@@ -255,11 +255,25 @@ export interface IAbxSiteOfInfection {
     updatedBy?: IUser;
 }
 
-export interface IAbxBreakpoint {
+
+export interface IAbxGuidelineYear {
     uid: string;
     guidelineUid: string;
     guideline?: IAbxGuideline;
-    year?: number;
+    year: number;
+    code: string;
+    createdAt?: string;
+    createdByUid?: string;
+    createdBy?: IUser;
+    updatedAt?: string;
+    updatedByUid?: string;
+    updatedBy?: IUser;
+}
+
+export interface IAbxBreakpoint {
+    uid: string;
+    guidelineYearUid: string;
+    guidelineYear?: IAbxGuidelineYear;
     testMethod: string;
     potency?: string;
     organismCode: string;
@@ -366,7 +380,8 @@ export interface IAbxASTPanel {
     uid: string;
     name: string;
     description?: string;
-    breakpoints?: IAbxBreakpoint[];
+    organisms?: IAbxOrganism[];
+    antibiotics?: IAbxAntibiotic[];
     active: boolean;
     createdAt?: string;
     createdByUid?: string;
@@ -375,3 +390,29 @@ export interface IAbxASTPanel {
     updatedByUid?: string;
     updatedBy?: IUser;
 }
+
+export interface IAbxOrganismResult {
+    uid: string;
+    analysisResultUid: string;
+    organismUid: string;
+    organism: IAbxOrganism;
+    isolateNumber: number;
+    //
+    astResults?: IAbxASTResult[];
+  }
+
+  export interface IAbxASTResult {
+    uid: string;
+    organismResultUid: string;
+    analysisResultUid: string;
+    antibioticUid: string;
+    antibiotic: IAbxAntibiotic;
+    astMethodUid?: string;
+    guidelineYearUid?: string;
+    breakpointUid?: string;
+    astMethod?: IAbxTestMethod
+    astValue?: string;
+    guideline?: string;
+    createdAt: string;
+    createdByUid: string;
+  }
