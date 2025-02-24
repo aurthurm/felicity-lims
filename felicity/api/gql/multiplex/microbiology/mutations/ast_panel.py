@@ -250,7 +250,7 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
 
         ast_result_in = AbxASTResultUpdate(**ast_result.to_dict())
         ast_result = await AbxASTResultService().update(
-            ast_result.uid, ast_result_in, related=["antibiotic", "organism_result.organism"]
+            ast_result.uid, ast_result_in, related=["antibiotic", "organism_result.organism", "ast_method"]
         )
         outputs.append(ast_result)
 
