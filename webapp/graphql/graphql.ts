@@ -86,6 +86,8 @@ export type AbxAstResultType = {
   astMethod?: Maybe<AbxTestMethodType>;
   astMethodUid?: Maybe<Scalars['String']['output']>;
   astValue?: Maybe<Scalars['String']['output']>;
+  breakpoint?: Maybe<AbxBreakpointTyp>;
+  breakpointUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;

@@ -229,10 +229,19 @@ export const storgeSlotMapper = (colNum: number, rowNum: number, isColumn: boole
     }
 };
 
+export const resetForm = (form: any) => Object.keys(form).forEach(k => delete form[k])
+
+export const mutateForm = (form: any, payload: any, reset=true) => {
+    if(reset) resetForm(form);
+    if(isEmptyObject(payload) === false) Object.assign(form, { ...payload });
+};
+
 export default {
     isNullOrWs,
     hasValue,
     parseUrlParams,
     startsWith,
     mapOrder,
+    resetForm,
+    mutateForm
 };

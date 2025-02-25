@@ -1,3 +1,4 @@
+import { IAnalysisResult } from './analysis';
 import {IUser} from './auth';
 
 export interface IAbxGuideline {
@@ -405,6 +406,7 @@ export interface IAbxOrganismResult {
     uid: string;
     organismResultUid: string;
     analysisResultUid: string;
+    analysisResult: IAnalysisResult;
     antibioticUid: string;
     antibiotic: IAbxAntibiotic;
     astMethodUid?: string;

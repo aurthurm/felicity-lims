@@ -86,6 +86,8 @@ export type AbxAstResultType = {
   astMethod?: Maybe<AbxTestMethodType>;
   astMethodUid?: Maybe<Scalars['String']['output']>;
   astValue?: Maybe<Scalars['String']['output']>;
+  breakpoint?: Maybe<AbxBreakpointTyp>;
+  breakpointUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
@@ -7296,6 +7298,8 @@ export type GraphCacheResolvers = {
     astMethod?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, WithTypename<AbxTestMethodType> | string>,
     astMethodUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     astValue?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
+    breakpoint?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, WithTypename<AbxBreakpointTyp> | string>,
+    breakpointUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     createdAt?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
@@ -10537,6 +10541,8 @@ export type GraphCacheUpdaters = {
     astMethod?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     astMethodUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     astValue?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
+    breakpoint?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
+    breakpointUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,

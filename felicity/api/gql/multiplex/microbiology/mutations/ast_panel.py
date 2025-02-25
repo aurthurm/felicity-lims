@@ -17,7 +17,7 @@ from felicity.apps.multiplex.microbiology.schemas import AbxASTPanelCreate, AbxA
     AbxASTResultUpdate
 from felicity.apps.multiplex.microbiology.services import AbxASTPanelService, AbxBreakpointService, AbxASTResultService, \
     AbxBreakpointTypeService, AbxHostService
-from felicity.apps.multiplex.microbiology.utils import interpret_ast
+from felicity.apps.multiplex.microbiology.utils import interpret_ast, handle_ast_user_interpreted
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -224,7 +224,7 @@ async def apply_abx_ast_panel(
         )
 
     return AbxASTResultsType(
-        ast_results=[AbxASTResultType(**abx_r.marshal_simple()) for abx_r in abx_results]
+        ast_results=[AbxASTResultType(**abx_r.marshal_simple(exclude=["organism_result"])) for abx_r in abx_results]
     )
 
 
@@ -250,9 +250,9 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
 
         ast_result_in = AbxASTResultUpdate(**ast_result.to_dict())
         ast_result = await AbxASTResultService().update(
-            ast_result.uid, ast_result_in, related=["antibiotic", "organism_result.organism", "ast_method"]
+            ast_result.uid, ast_result_in,
+            related=["antibiotic", "organism_result.organism", "ast_method", "analysis_result"],
         )
-        outputs.append(ast_result)
 
         # Interpretations
         _org = ast_result.organism_result.organism
@@ -290,36 +290,43 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
             bpt for bpt in break_points_tables
             if (bpt.organism_code_type.lower(), bpt.organism_code.lower()) in code_filters
         ]
-        if len(filtered_break_points) != 1:
-            logger.info(f"===== ): {_abx.name} | {_abx.whonet_abx_code} <org> {code_filters} ")
-            logger.info(f"break_points: {[(bpt.organism_code_type.lower(), bpt.organism_code.lower()) \
-                                          for bpt in filtered_break_points]}")
-            for bp in filtered_break_points:
-                logger.info(f"==============::::::::::::: {bp.marshal_simple()}")
-            logger.info("=================================================================: end")
-            continue
 
-        interpretation = interpret_ast(filtered_break_points[0], ast_result)
+        if len(filtered_break_points) == 1:
+            interpretation = interpret_ast(filtered_break_points[0], ast_result)
+            # if breakpoint fails - use user defined
+            if not interpretation:
+                interpretation = handle_ast_user_interpreted(result_payload.result)
+        else:
+            # no breakpoint match found - use user defined
+            interpretation = handle_ast_user_interpreted(result_payload.result)
+
         if not interpretation:
+            outputs.append(ast_result)
             continue
 
         # save interpretation
-        await AbxASTResultService().update(
+        ast_result = await AbxASTResultService().update(
             ast_result.uid,
             {
                 "breakpoint_uid": None if interpretation["user_provided"] else interpretation["breakpoint_uid"],
-            }
+            },
+            related=["analysis_result"]
         )
 
         analysis_result = await AnalysisResultService().get(uid=ast_result.analysis_result_uid)
-        analysis_result.interpretation = interpretation
-        await AnalysisResultService().update(
+        analysis_result = await AnalysisResultService().update(
             analysis_result.uid, {
                 "result": interpretation["interpreted"],
                 "reportable": result_payload.reportable
             }, related=["sample", "analysis"]
         )
         await AnalysisResultService().snapshot([analysis_result])
+
+        ast_result = await AbxASTResultService().get(
+            uid=ast_result.uid,
+            related=["antibiotic", "organism_result.organism", "ast_method", "analysis_result"],
+        )
+        outputs.append(ast_result)
 
     return AbxASTResultsType(
         ast_results=[AbxASTResultType(**abx_r.marshal_simple(exclude=["organism_result"])) for abx_r in outputs]

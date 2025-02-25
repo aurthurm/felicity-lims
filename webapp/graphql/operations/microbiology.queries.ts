@@ -796,8 +796,11 @@ export type GetAbxAstResultAllQuery = (
   { __typename?: 'Query' }
   & { abxAstResultAll?: Types.Maybe<Array<(
     { __typename?: 'AbxASTResultType' }
-    & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'guidelineYearUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
-    & { antibiotic?: Types.Maybe<(
+    & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'guidelineYearUid' | 'breakpointUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
+    & { analysisResult?: Types.Maybe<(
+      { __typename?: 'AnalysisResultType' }
+      & Pick<Types.AnalysisResultType, 'result' | 'reportable' | 'status'>
+    )>, antibiotic?: Types.Maybe<(
       { __typename?: 'AbxAntibioticType' }
       & Pick<Types.AbxAntibioticType, 'uid' | 'name' | 'potency'>
     )>, guidelineYear?: Types.Maybe<(
@@ -1902,6 +1905,11 @@ export const GetAbxAstResultAllDocument = gql`
     uid
     organismResultUid
     analysisResultUid
+    analysisResult {
+      result
+      reportable
+      status
+    }
     antibioticUid
     antibiotic {
       uid
@@ -1913,6 +1921,7 @@ export const GetAbxAstResultAllDocument = gql`
       uid
       code
     }
+    breakpointUid
     astMethodUid
     astMethod {
       uid

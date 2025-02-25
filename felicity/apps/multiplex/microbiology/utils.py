@@ -6,6 +6,21 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+def handle_ast_user_interpreted(result: str) -> dict | None:
+    if not isinstance(result, str):
+        return None
+
+    result_value = result.strip().lower()
+    if result_value.startswith("r") or result_value == "r":
+        return {'interpreted': "R", "breakpoint_uid": None, "user_provided": True}
+    if result_value.startswith("s") or result_value == "s":
+        return {'interpreted': "S", "breakpoint_uid": None, "user_provided": True}
+    if result_value.startswith("i") or result_value == "i":
+        return {'interpreted': "I", "breakpoint_uid": None, "user_provided": True}
+
+    return None
+
+
 def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict | None:
     try:
         result_value = float(ast_result.ast_value)
@@ -16,18 +31,13 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
     if result_value is None:
         return None
 
+    # If the result is a string, assume user provides 'I', 'R', or 'S'
+    if isinstance(result_value, str):
+        return handle_ast_user_interpreted(result_value)
+
     # Ensure that at least one of the breakpoints (S or R) is provided when I is missing
     if not break_point.i and not (break_point.s or break_point.r):
         return None
-
-    # If the result is a string, assume user provides 'I', 'R', or 'S'
-    if isinstance(result_value, str):
-        result_value = result_value.strip().lower()  # Handle extra spaces and case insensitivity
-        if result_value.startswith("r"):
-            return {'interpreted': "R", "breakpoint_uid": break_point.uid, "user_provided": True}
-        if result_value.startswith("s"):
-            return {'interpreted': "S", "breakpoint_uid": break_point.uid, "user_provided": True}
-        return {'interpreted': "I", "breakpoint_uid": break_point.uid, "user_provided": True}
 
     if "disc" in ast_result.ast_method.name.lower():
         # Check for Susceptible (S) first

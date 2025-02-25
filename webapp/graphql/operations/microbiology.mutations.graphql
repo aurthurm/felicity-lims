@@ -772,9 +772,10 @@ mutation ApplyAbxAstPanel($payload: AbxApplyAstPanelInput!) {
                 }
                 organismResultUid
                 analysisResultUid
-                analysisResult { uid result status }
+                analysisResult { result reportable status }
                 antibioticUid
                 antibiotic { uid name guidelines { uid name } }
+                breakpointUid
                 astMethodUid
                 astMethod { uid name }
                 astValue
@@ -802,9 +803,10 @@ mutation  UpdateAbxAstResults($payload: AbxASTResultsUpdateInput!) {
                 }
                 organismResultUid
                 analysisResultUid
-                analysisResult { uid result status }
+                analysisResult { result reportable status }
                 antibioticUid
                 antibiotic { uid name guidelines { uid name } }
+                breakpointUid
                 astMethodUid
                 astMethod { uid name }
                 astValue

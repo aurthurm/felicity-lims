@@ -40,13 +40,10 @@ watch(
     <GenericResults :sample="sample" :analysisResults="genericResults" :fetchingResults="fetchingResults" />
     <!-- organism result -->
     <OrganismResults v-if="organismResults.length > 0"
-    :sample="sample" 
-    :analysisResults="organismResults" />
+    :sample="sample" :analysisResults="organismResults" />
     <!-- antibiotic result -->
     <ASTResults v-if="astResults.length > 0 || organismResults.length > 0"
-    :sample="sample" 
-    :organismAnalysisResults="organismResults" 
-    :astAnalysisResults="astResults" />
+    :sample="sample" :organismAnalysisResults="organismResults" />
   </div>
   <span v-else>No sample data</span>
 </template>

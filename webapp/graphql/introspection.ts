@@ -327,6 +327,23 @@ export default {
             "args": []
           },
           {
+            "name": "breakpoint",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AbxBreakpointTyp",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "breakpointUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "createdAt",
             "type": {
               "kind": "SCALAR",

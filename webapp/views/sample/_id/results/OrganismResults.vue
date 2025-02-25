@@ -115,7 +115,7 @@ function selectOrganism(org: IAbxOrganism) {
   organismResults.value[pickIndex.value!].organism = org;
   pickIndex.value = undefined;
   //
-  analysisResults[0].result = organismResults.value.map(r => r.organism?.name).join(', ');
+  analysisResults[0].result = organismResults.value?.map(r => r.organism?.name).join(', ');
 }
 
 function searchOrganisms() {
@@ -143,7 +143,7 @@ function resetAnalysesPermissions(): void {
   state.can_approve = false;
 
   // can submit
-  const allOrgsFinalized = organismResults.value.every(or => or.organismUid != undefined);
+  const allOrgsFinalized = organismResults.value?.every(or => or.organismUid != undefined);
   if (analysisResult.value.status == 'pending' && allOrgsFinalized) {
     state.can_submit = true;
   }
@@ -239,20 +239,34 @@ const approveResults = () =>
   </div>
 
   <div class="mt-4">
-    <!-- <div>
-      <span class="font-semibold bg-slate-300 rounded-full h-4 w-4 p-1">{{ organismResults?.filter(or => or.organismUid != undefined)?.length }}</span>
-      <span class="font-semibold mx-1">organisms picked:</span> 
-      <span class="italic">{{ analysisResult.result }}</span>
+    <div class="flex justify-start items-center">
+      <h4 class="font-semibold text-l flex-1 mb-2">Culture</h4>
+      <button type="button" class="bg-sky-800 text-white ml-4 px-2 py-1 rounded-sm leading-none">
+        {{ analysisResult.status }}
+      </button>
     </div>
-    <hr class="my-2">  -->
+    <hr>
+    <textarea 
+    v-if="analysisResult.status == 'pending'"
+    name="culture" 
+    id="culture" 
+    class="mt-2 p-2 w-full" 
+    rows="2"
+    v-model="analysisResult.result"></textarea>
+    <p v-else class="py-2 w-full leading italic bg-slate-50 p-2">{{ analysisResult.result }}</p>
+  </div>
+
+  <div class="mt-2">
     <!-- Submit and Verify Section -->
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
-    " key="submit" @click.prevent="submitResults" :color="'orange-600'">Submit organisms</FelButton>
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-      state.can_approve
-    " key="verify" @click.prevent="approveResults" :color="'orange-600'">Verify organisms</FelButton>
+    <FelButton 
+    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit && sample.status != 'submitting'" 
+    key="submit" 
+    @click.prevent="submitResults" :color="'orange-600'">Submit culture</FelButton>
+
+    <FelButton 
+    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve && sample.status != 'approving'" 
+    key="approve" 
+    @click.prevent="approveResults" :color="'orange-600'">Approve culture</FelButton>
   </div>
 
   <!-- Panel Form Modal -->

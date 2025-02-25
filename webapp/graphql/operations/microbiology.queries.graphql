@@ -724,10 +724,12 @@ query GetAbxAstResultAll($sampleUid: String!) {
         uid
         organismResultUid
         analysisResultUid
+        analysisResult { result reportable status }
         antibioticUid
         antibiotic { uid name potency }
         guidelineYearUid
         guidelineYear { uid code }
+        breakpointUid
         astMethodUid
         astMethod { uid name }
         astValue

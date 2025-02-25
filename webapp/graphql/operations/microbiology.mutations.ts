@@ -757,10 +757,10 @@ export type ApplyAbxAstPanelMutation = (
     { __typename?: 'AbxASTResultsType' }
     & { astResults: Array<(
       { __typename?: 'AbxASTResultType' }
-      & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
+      & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'breakpointUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
       & { analysisResult?: Types.Maybe<(
         { __typename?: 'AnalysisResultType' }
-        & Pick<Types.AnalysisResultType, 'uid' | 'result' | 'status'>
+        & Pick<Types.AnalysisResultType, 'uid' | 'result' | 'status' | 'reportable'>
       )>, antibiotic?: Types.Maybe<(
         { __typename?: 'AbxAntibioticType' }
         & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
@@ -790,10 +790,10 @@ export type UpdateAbxAstResultsMutation = (
     { __typename?: 'AbxASTResultsType' }
     & { astResults: Array<(
       { __typename?: 'AbxASTResultType' }
-      & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
+      & Pick<Types.AbxAstResultType, 'uid' | 'organismResultUid' | 'analysisResultUid' | 'antibioticUid' | 'breakpointUid' | 'astMethodUid' | 'astValue' | 'createdAt' | 'createdByUid'>
       & { analysisResult?: Types.Maybe<(
         { __typename?: 'AnalysisResultType' }
-        & Pick<Types.AnalysisResultType, 'uid' | 'result' | 'status'>
+        & Pick<Types.AnalysisResultType, 'uid' | 'result' | 'status' | 'reportable'>
       )>, antibiotic?: Types.Maybe<(
         { __typename?: 'AbxAntibioticType' }
         & Pick<Types.AbxAntibioticType, 'uid' | 'name'>
@@ -1888,8 +1888,8 @@ export const ApplyAbxAstPanelDocument = gql`
         organismResultUid
         analysisResultUid
         analysisResult {
-          uid
           result
+          reportable
           status
         }
         antibioticUid
@@ -1901,6 +1901,7 @@ export const ApplyAbxAstPanelDocument = gql`
             name
           }
         }
+        breakpointUid
         astMethodUid
         astMethod {
           uid
@@ -1936,8 +1937,8 @@ export const UpdateAbxAstResultsDocument = gql`
         organismResultUid
         analysisResultUid
         analysisResult {
-          uid
           result
+          reportable
           status
         }
         antibioticUid
@@ -1949,6 +1950,7 @@ export const UpdateAbxAstResultsDocument = gql`
             name
           }
         }
+        breakpointUid
         astMethodUid
         astMethod {
           uid

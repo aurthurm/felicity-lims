@@ -22,15 +22,10 @@ const FelButton = defineAsyncComponent(
 
 const {
   sample,
-  astAnalysisResults,
   organismAnalysisResults,
 } = defineProps({
   sample: {
     type: Object as PropType<ISample>,
-    required: true,
-  },
-  astAnalysisResults: { // ASTResults
-    type: Object as PropType<IAnalysisResult[]>,
     required: true,
   },
   organismAnalysisResults: { // OrganismResults
@@ -57,13 +52,7 @@ onMounted(() => {
     }
   }).finally(() => processASTResults())
 
-  withClientQuery<GetAbxAstResultAllQuery, GetAbxAstResultAllQueryVariables>(
-    GetAbxAstResultAllDocument, { sampleUid: sample.uid! }, "abxAstResultAll"
-  ).then((result) => {
-    if (result) {
-      astResults.value = (result as unknown || []) as IAbxASTResult[];
-    }
-  }).finally(() => processASTResults())
+  fetchAstResultAll()
 
   withClientQuery<GetAbxGuidelineYearAllQuery, GetAbxGuidelineYearAllQueryVariables>(
     GetAbxGuidelineYearAllDocument, {}, "abxGuidelineYearAll"
@@ -88,6 +77,16 @@ const searchPanelText = ref<string>('');
 const panels = ref<IAbxASTPanel[]>([]);
 const choiceOrganism = ref<IAbxOrganismResult>();
 
+function fetchAstResultAll() {
+  withClientQuery<GetAbxAstResultAllQuery, GetAbxAstResultAllQueryVariables>(
+    GetAbxAstResultAllDocument, { sampleUid: sample.uid! }, "abxAstResultAll"
+  ).then((result) => {
+    if (result) {
+      astResults.value = (result as unknown || []) as IAbxASTResult[];
+    }
+  }).finally(() => processASTResults())
+}
+
 function choosePanel(pickedOrg: IAbxOrganismResult) {
   choiceOrganism.value = pickedOrg;
   showModal.value = true;
@@ -95,7 +94,8 @@ function choosePanel(pickedOrg: IAbxOrganismResult) {
 
 function canAddPanel(pickedOrg: IAbxOrganismResult) {
   const orgResults = organismResults.value[pickedOrg.uid];
-  return Object.values(orgResults).every(ast => ast.analResulState == "pending");
+  if(!orgResults) return false;
+  return Object.values(orgResults)?.every(ast => ast.status == "pending");
 }
 
 function searchPanels() {
@@ -132,11 +132,9 @@ function applyPanel(panel){
               panelUid: panel.uid, 
               sampleUid: sample.uid!,
             } }, 'applyAbxAstPanel'
-          ).then(resp => {
-            if (resp) {
-              // location.reload();
-              sampleStore.fetchAnalysisResultsForSample(sample.uid)
-            }
+          ).then((res: any) => {
+            res?.astResults?.forEach(ast => (astResults.value.push(ast)));
+            processASTResults();
           });
       }
   });
@@ -151,7 +149,7 @@ interface ASTData {
   breakpointUid?: string;
   astValue?: string;
   result?: string;
-  analResulState: string;
+  status: string;
   reportable?: boolean;
   dirty: boolean;
 }
@@ -164,29 +162,28 @@ const organismResults = ref<OrganismASTResults>({});
 function processASTResults() {
   const results: OrganismASTResults = {};
   
-  pickedOrganisms.value.forEach(organism => {
+  pickedOrganisms.value?.forEach(organism => {
     // Initialize object for this organism
     results[organism.uid] = {};
     
     // Get all AST results for this organism
-    const orgASTResults = astResults.value.filter(ast => 
+    const orgASTResults = astResults.value?.filter(ast => 
       ast.organismResultUid === organism.uid
     );
     
     // Organize by antibiotic name
     orgASTResults.forEach(ast => {
-      const analResult = astAnalysisResults.find(a => a.uid === ast.analysisResultUid);
-      if (ast.antibiotic?.name && analResult?.uid) {
+      if (ast.antibiotic?.name) {
         results[organism.uid][ast.antibiotic.name + " " + ast.antibiotic.potency] = {
           uid: ast.uid,
-          analResultUid: analResult.uid,
-          analResulState: analResult.status!,
+          analResultUid: ast.analysisResultUid,
+          status: ast.analysisResult?.status!,
           astMethodUid: ast.astMethodUid,
           guidelineYearUid: ast.guidelineYearUid,
           breakpointUid: ast.breakpointUid,
           astValue: ast.astValue,
-          result: analResult.result,
-          reportable: analResult.reportable,
+          result: ast.analysisResult?.result,
+          reportable: ast.analysisResult?.reportable,
           dirty: false // mark as clean initially
         };
       }
@@ -213,8 +210,9 @@ let {
 // save 
 function canSave(organismUid: string) {
   const orgResults = organismResults.value[organismUid]
-  const is_any_dirty = Object.values(orgResults).some(ast => ast.dirty && ast.analResulState == "pending");
-    const has_all_fields_filled = Object.values(orgResults).some(
+  if(!orgResults) return false;
+  const is_any_dirty = Object.values(orgResults)?.some(ast => ast.dirty && ast.status == "pending");
+    const has_all_fields_filled = Object.values(orgResults)?.some(
       ast => ast.guidelineYearUid && ast.astMethodUid && ast.astValue
     );
     return is_any_dirty && has_all_fields_filled;
@@ -222,48 +220,49 @@ function canSave(organismUid: string) {
 
 function getSavable(organismUid: string) {
   const orgResults = organismResults.value[organismUid];
-  const dirty = Object.values(orgResults).filter(ast => ast.dirty && ast.analResulState == "pending");
+  const dirty = Object.values(orgResults)?.filter(ast => ast.dirty && ast.status == "pending");
   const complete = dirty
     .filter(ast => ast.guidelineYearUid && ast.astMethodUid && ast.astValue)
-    .map(({ dirty, breakpointUid, analResultUid, analResulState, ...rest }) => rest);
+    .map(({ dirty, breakpointUid, analResultUid, status, ...rest }) => rest);
   return complete;
 }
 
+const savingAntibiotics = ref(false);
 function saveAntibiotics(organismUid: string) {
+  savingAntibiotics.value = true;
   const results = getSavable(organismUid) as any;
   withClientMutation<UpdateAbxAstResultsMutation, UpdateAbxAstResultsMutationVariables>(
     UpdateAbxAstResultsDocument, { payload: { results } }, 'updateAbxAstResults'
-  ).then(resp => {
-    if (resp) {
-      // location.reload();
+  ).then(() => {
       sampleStore.fetchAnalysisResultsForSample(sample.uid)
-    }
-  });
+      fetchAstResultAll()
+  }).finally(() => (savingAntibiotics.value = false));
 }
 
 // submit
 function canSubmit(organismUid: string) {
   const orgResults = organismResults.value[organismUid]
-  const is_any_dirty = Object.values(orgResults).some(ast => ast.dirty);
-    const has_all_fields_filled = Object.values(orgResults).some(
+  if(!orgResults) return false;
+  const is_any_dirty = Object.values(orgResults)?.some(ast => ast.dirty);
+    const has_all_fields_filled = Object.values(orgResults)?.some(
       ast => ast.guidelineYearUid && 
       ast.astMethodUid && 
       ast.astValue && 
       ast.result && 
-      ast.analResulState == "pending"
+      ast.status == "pending"
     );
-    return !is_any_dirty && has_all_fields_filled;
+    return !is_any_dirty && has_all_fields_filled && sample.status != 'submitting';
 }
 
 function getSubmittable(organismUid: string) {
   const orgResults = organismResults.value[organismUid];
-  const not_dirty = Object.values(orgResults).filter(ast => !ast.dirty);
+  const not_dirty = Object.values(orgResults)?.filter(ast => !ast.dirty);
   const complete = not_dirty
     .filter(ast => ast.guidelineYearUid && 
     ast.astMethodUid && 
     ast.astValue && 
     ast.result && 
-    ast.analResulState == "pending")
+    ast.status == "pending")
     .map(({ dirty, breakpointUid, ...rest }) => rest);
   return complete;
 }
@@ -278,33 +277,34 @@ function submitAntibiotics(organismUid: string) {
     laboratoryInstrumentUid: "felicity_ast" 
   }))
   submitter_(_prepared, "sample", sample?.uid!).then(() => {
-      // location.reload();
       sampleStore.fetchAnalysisResultsForSample(sample.uid)
+      fetchAstResultAll()
   });
 }
 
 // approve
 function canApprove(organismUid: string) {
   const orgResults = organismResults.value[organismUid]
-  const is_any_dirty = Object.values(orgResults).some(ast => ast.dirty);
-    const some_resulted = Object.values(orgResults).some(
-      ast => ast.analResulState == "resulted"
+  if(!orgResults) return false;
+  const is_any_dirty = Object.values(orgResults)?.some(ast => ast.dirty);
+    const some_resulted = Object.values(orgResults)?.some(
+      ast => ast.status == "resulted"
     );
-    return !is_any_dirty && some_resulted;
+    return !is_any_dirty && some_resulted && sample.status != 'approving';
 }
 
 function getApprovable(organismUid: string) {
   const orgResults = organismResults.value[organismUid];
-  const not_dirty = Object.values(orgResults).filter(ast => !ast.dirty);
-  return not_dirty.filter(ast => ast.analResulState == "resulted")
+  const not_dirty = Object.values(orgResults)?.filter(ast => !ast.dirty);
+  return not_dirty.filter(ast => ast.status == "resulted")
 }
 
 function approveAntibiotics(organismUid: string) {
   const results = getApprovable(organismUid) as ASTData[];
   const _prepared = results.map(r => r.analResultUid)
   approver_(_prepared, "sample", sample?.uid!).then(() => {
-      // location.reload();
       sampleStore.fetchAnalysisResultsForSample(sample.uid)
+      fetchAstResultAll()
   });
 }
 
@@ -321,7 +321,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 </script>
 
 <template>
-  <h3 class="flex justify-between items-center">
+  <h3 class="flex justify-between items-center mt-4">
     <span class="font-bold">AST Panel</span>
   </h3>
 
@@ -361,7 +361,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 v-model="organismResults[pickedOrg.uid][antibiotic].guidelineYearUid"
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'guidelineYearUid', $event.target.value)"
                 class="w-32 px-2 py-1 border rounded"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].analResulState !== 'pending'"
+                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
               >
                 <option v-for="gly in guidelines" :key="gly.uid" :value="gly.uid">{{ gly.code }}</option>
               </select>
@@ -377,7 +377,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 v-model="organismResults[pickedOrg.uid][antibiotic].astMethodUid"
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astMethodUid', $event.target.value)"
                 class="w-32 px-2 py-1 border rounded"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].analResulState !== 'pending'"
+                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
               >
                 <option v-for="tm in testMethods" :key="tm.uid" :value="tm.uid">{{ tm.name }}</option>
               </select>
@@ -396,11 +396,8 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astValue', $event.target.value)"
                 class="w-32 px-2 py-1 border rounded"
                 step="0.1"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].analResulState !== 'pending'"
+                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
               />
-              <span class="ml-2 text-xs text-gray-400">
-                {{ organismResults[pickedOrg.uid][antibiotic].astValue === 'mic' ? 'mg/L' : 'mm' }}
-              </span>
             </td>
           </tr>
 
@@ -419,11 +416,16 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                   'text-yellow-600': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'I',
                   'text-red-600': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'R'
                 }"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].analResulState !== 'pending'">
+                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'">
                 <option value="S">S</option>
                 <option value="I">I</option>
                 <option value="R">R</option>
               </select>
+              <span class="ml-2 text-xs text-gray-400">
+                <span v-show="organismResults[pickedOrg.uid][antibiotic].breakpointUid">
+                  <font-awesome-icon icon="robot" class="text-md text-gray-400 mr-1"/>
+                </span>
+              </span>
             </td>
           </tr>
 
@@ -438,8 +440,11 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 v-model="organismResults[pickedOrg.uid][antibiotic].reportable"
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', $event.target.checked)"
                 class="form-checkbox h-4 w-4 text-sky-600"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].analResulState !== 'pending'"
+                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
               />
+              <button type="button" class="bg-sky-800 text-white ml-4 px-2 py-1 rounded-sm leading-none">
+                {{ organismResults[pickedOrg.uid][antibiotic].status }}
+              </button>
             </td>
           </tr>
         </tbody>
@@ -450,7 +455,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
         key="button" 
         @click.prevent="saveAntibiotics(pickedOrg.uid)" 
-        :color="'orange-600'">Save Antibiotics</FelButton>
+        :color="'orange-600'" :disabled="savingAntibiotics">Save Antibiotics</FelButton>
 
         <FelButton 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 

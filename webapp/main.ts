@@ -34,6 +34,7 @@ import {
     faEdit,
     faEllipsis,
     faEllipsisH,
+    faExclamationCircle,
     faFileMedical,
     faFill,
     faFlag,
@@ -51,6 +52,7 @@ import {
     faPen,
     faPills,
     faQuestion,
+    faRobot,
     faScaleBalanced,
     faSort,
     faTablets,
@@ -96,7 +98,7 @@ const icons = [
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
     faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH, faTablets, faScaleBalanced, faLifeRing,
-    faBacteria, faCircleDot, faPills
+    faBacteria, faCircleDot, faPills, faExclamationCircle, faRobot
 ]
 library.add(...icons);
 

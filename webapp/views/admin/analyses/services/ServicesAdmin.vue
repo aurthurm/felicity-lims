@@ -10,6 +10,7 @@
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSampleStore } from '@/stores/sample';
   import  useApiUtil  from '@/composables/api_util';
+import { mutateForm, resetForm } from '@/utils/helpers';
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -73,7 +74,7 @@
   (newQuery) => {
     if (newQuery.item) {
       const service = analysisStore.analysesServices.find(an => an.name === newQuery.item)
-      Object.assign(analysisService, { ...service });
+      mutateForm(analysisService, service)
     }
   },
   { immediate: true }
@@ -132,18 +133,15 @@
   }
 
   function selectAnalysisService(service: IAnalysisService):void {
-    Object.assign(analysisService, { ...service });
+    mutateForm(analysisService, service)
   }
 
-  function FormManager(create: boolean, obj = {} as IAnalysisService):void {
+  function FormManager(create: boolean):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";
-    if (create) {
-      Object.assign(analysisService, {} as IAnalysisService);
-    } else {
-      Object.assign(analysisService, { ...obj });
-    }
+
+    if (create) resetForm(analysisService);
   }
 
   function saveForm():void {
@@ -193,11 +191,7 @@ function MappingFormManager(create: boolean, obj = {} as any): void {
   mappingFormAction.value = create;
   showMappingModal.value = true;
   mappingFormTitle.value = (create ? "CREATE" : "EDIT") + " " + "CONCEPT MAPPING";
-  if (create) {
-    Object.assign(mappingForm, {} as any);
-  } else {
-    Object.assign(mappingForm, { ...obj });
-  }
+  if (create) { resetForm(mappingForm) } else { mutateForm(mappingForm, obj)}
 }
 
 function saveMappingForm(): void {
@@ -445,7 +439,7 @@ function saveMappingForm(): void {
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-4 mb-2">
             <span class="text-gray-700">Analysis Service Name</span>
-            <input v-if="!analysisService.keyword.includes('felicity')"
+            <input v-if="!analysisService.keyword?.includes('felicity')"
               class="form-input mt-1 block w-full"
               v-model="analysisService.name"
               placeholder="Name ..."
@@ -454,14 +448,14 @@ function saveMappingForm(): void {
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">keyword</span>
-            <input v-if="!analysisService.keyword.includes('felicity')"
+            <input v-if="!analysisService.keyword?.includes('felicity')"
               class="form-input mt-1 block w-full"
               v-model="analysisService.keyword"
               placeholder="Keyword ..."
             />
             <span class="block mt-2 mb-4 italic font-semibold" v-else>{{ analysisService.keyword }}</span>
           </label>
-          <label class="block col-span-1 mb-2" v-show="!analysisService.keyword.includes('felicity')">
+          <label class="block col-span-1 mb-2" v-show="!analysisService.keyword?.includes('felicity')">
             <span class="text-gray-700">Unit</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.unitUid">
                <option></option>
@@ -495,7 +489,7 @@ function saveMappingForm(): void {
           </label>
           <label class="block col-span-6 mb-2">
             <span class="text-gray-700">Description</span>
-            <textarea v-if="!analysisService.keyword.includes('felicity')"
+            <textarea v-if="!analysisService.keyword?.includes('felicity')"
             cols="2"
               class="form-input mt-1 block w-full"
               v-model="analysisService.description"
