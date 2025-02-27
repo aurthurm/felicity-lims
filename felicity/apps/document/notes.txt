@@ -1,0 +1,62 @@
+Here's the flow from folder creation to document lifecycle in your system:
+
+1. **Folder Creation**
+   - Create `DocumentFolder` records (can be nested with parent-child relationships)
+   - Folders provide organizational structure for documents
+
+2. **Template Setup**
+   - Create `DocumentTemplate` records with reusable content structures
+   - Link templates to `DocumentCategory` for organization
+
+3. **Document Creation**
+   - Create `Document` record linked to a folder and optional template
+   - Assign authors through `document_author` junction table
+   - Set initial permissions via `document_reader` junction table
+   - Add tags using `document_tagged` junction table
+
+4. **Version Management**
+   - Create initial `DocumentVersion` with content and version number
+   - Document.content property surfaces the latest version's content
+   - New versions are added as the document evolves
+
+5. **Document Status Workflow**
+   - Add `DocumentStatus` record with initial state (DRAFT)
+   - Document.status property surfaces the latest status
+   - Status changes are tracked in status history
+
+6. **Review Process**
+   - Create `DocumentReviewCycle` to initiate reviews
+   - Add `DocumentReviewStep` records for each reviewer in sequence
+   - Update document status based on review outcome
+
+7. **Publication & Access**
+   - Change document status to PUBLISHED or EFFECTED when approved
+   - `DocumentAudit` records track all user interactions
+   - Related documents linked via `document_relation` table
+
+8. **Subscriptions & Notifications**
+   - Users subscribe via `DocumentSubscription` records
+   - System notifies subscribers of relevant changes
+
+This flow ensures document integrity, tracks all changes, maintains proper versioning, and enables workflow management through the document lifecycle.
+
+
+
+
+
+#AI
+Integration Flow:
+
+Authoring: AI suggests content when drafting documents, tracking conversation history
+Compliance: Upload standards as ComplianceStandard records, run AIComplianceCheck against documents
+Review: During DocumentReviewStep, generate AIReviewFeedback with suggestions
+Analytics: After document updates, run analysis to provide insights on document quality
+
+This architecture allows your system to:
+
+Assist with document creation using AI
+Automatically check compliance against SOPs and standards
+Provide AI-generated review suggestions to human reviewers
+Analyze document quality and extract insights
+
+You can start with basic implementations and gradually add more advanced AI capabilities over time.

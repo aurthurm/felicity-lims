@@ -1,9 +1,9 @@
 import graphdoc
-from strawberry import Schema
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from strawberry import Schema
 
 from felicity.core import get_settings
 
@@ -27,7 +27,7 @@ def setup_webapp(app: FastAPI, serve_webapp: bool, schema: Schema) -> None:
 
     @app.get("/graphql-docs", response_class=HTMLResponse)
     async def graphql_docs() -> str:
-        return graphdoc.to_doc(schema)
+        return graphdoc.to_doc(schema._schema)
 
     @app.get(backends, response_class=HTMLResponse)
     def api_gql_view() -> str:

@@ -13,6 +13,12 @@ from felicity.api.gql.billing.query import BillingQuery
 from felicity.api.gql.client import client_types
 from felicity.api.gql.client.mutations import ClientMutations
 from felicity.api.gql.client.query import ClientQuery
+from felicity.api.gql.document import document_types
+from felicity.api.gql.document.mutations import DocumentMutations
+from felicity.api.gql.document.query import DocumentQuery
+from felicity.api.gql.grind import grind_types
+from felicity.api.gql.grind.mutation import GrindMutations
+from felicity.api.gql.grind.query import GrindQuery
 from felicity.api.gql.impress import impress_types
 from felicity.api.gql.impress.query import ReportImpressQuery
 from felicity.api.gql.instrument import instrument_types
@@ -77,6 +83,8 @@ types = (
         + worksheet_types
         + billing_types
         + microbiology_types
+        + grind_types
+        + document_types
 )
 
 
@@ -101,6 +109,8 @@ class Query(
     ShipmentQuery,
     BillingQuery,
     MicrobiologyQuery,
+    GrindQuery,
+    DocumentQuery
 ):
     pass
 
@@ -121,7 +131,9 @@ class Mutation(
     InstrumentMutations,
     ShipmentMutations,
     BillingMutations,
-    MicrobiologyMutations
+    MicrobiologyMutations,
+    GrindMutations,
+    DocumentMutations
 ):
     pass
 
