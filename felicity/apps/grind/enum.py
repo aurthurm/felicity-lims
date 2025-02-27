@@ -91,6 +91,7 @@ STAMP_CATEGORIES: List[str] = [
 ]
 
 
+@strawberry.enum
 class StampCategory(enum.Enum):
     PROJECT = 'project'
     TICKET = 'ticket'

@@ -3,7 +3,8 @@ from datetime import datetime
 from pydantic import ConfigDict
 
 from felicity.apps.common.schemas import BaseAuditModel
-from felicity.apps.grind.enum import PosterCategory, ErrandCategory, LabelCategory, MediaTarget, OccurrenceTarget
+from felicity.apps.grind.enum import PosterCategory, ErrandCategory, LabelCategory, MediaTarget, OccurrenceTarget, \
+    StampCategory
 
 
 #
@@ -210,7 +211,7 @@ class GrindLabelInDB(GrindLabelBaseInDB):
 # Shared properties
 class GrindStampBase(BaseAuditModel):
     title: str | None = None
-    category: LabelCategory | None = None
+    category: StampCategory | None = None
 
 
 class GrindStampBaseInDB(GrindStampBase):

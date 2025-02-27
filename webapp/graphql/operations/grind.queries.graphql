@@ -1,0 +1,300 @@
+query GetGrindErrands($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    grindErrandAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {      
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            title
+            description
+            category
+            priority
+            startDate
+            endDate
+            poster {
+                uid
+                title
+            }
+            stamps {
+                uid
+                title
+            }
+            label {
+                uid
+                title
+            }
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            assignee {
+                uid
+                firstName
+                lastName
+            }
+            reporter {
+                uid
+                firstName
+                lastName
+            }
+            members {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+        }
+    }
+}
+
+query GetGrindErrand($uid: String!) {
+    grindErrandByUid(uid: $uid) {
+        uid
+        title
+        description
+        category
+        priority
+        startDate
+        endDate
+        poster {
+            uid
+            category
+            description
+            status
+            title
+        }
+        stamps {
+            uid
+            title
+        }
+        label {
+            uid
+            title
+        }
+        assignee {
+            uid
+            firstName
+            lastName
+        }
+        reporter {
+            uid
+            firstName
+            lastName
+        }
+        members {
+            uid
+            firstName
+            lastName
+        }
+        createdBy {
+            uid
+            firstName
+            lastName
+        }
+        createdAt
+    }
+}
+
+query GetGrindOccurrenciesByTarget($target: String!, $targetUid: String!) {
+    grindOccurrencesByTarget(target: $target, targetUid: $targetUid) {
+        uid
+        description
+        target
+        targetUid
+        actor {
+            uid
+            firstName
+            lastName
+        }
+        createdAt
+    }
+}
+
+query GetGrindMilestonesByErrand($errandUid: String!) {
+    grindMilestonesByErrand(errandUid: $errandUid) {
+        uid
+        title
+        description
+        errand {
+            uid
+        }
+        createdBy {
+            uid
+            firstName
+            lastName
+        }
+        assignee {
+            uid
+            firstName
+            lastName
+        }
+        createdAt
+        complete
+    }
+}
+
+
+query GetGrindMedia($target: String!, $targetUid: String!) {
+    grindMediaByTarget(target: $target, targetUid: $targetUid) {
+        uid
+        target
+        targetUid
+        destination
+        encoding
+        filename
+        mimetype
+        originalName
+        path
+        size
+        createdBy {
+            uid
+            firstName
+            lastName
+        }
+        createdAt
+    }
+}
+
+query GetSchemes($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    grindSchemeAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            title
+            description
+            startDate
+            endDate
+            assignee {
+                uid
+                firstName
+                lastName
+            }
+            members {
+                uid
+                firstName
+                lastName
+            }
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+        }
+    }
+}
+
+query GetScheme($uid: String!) {
+    grindSchemeByUid(uid: $uid) {
+        uid
+        title
+        description
+        startDate
+        endDate
+        assignee {
+            uid
+            firstName
+            lastName
+        }
+        members {
+            uid
+            firstName
+            lastName
+        }
+        boards {
+            uid
+            title
+            description
+        }
+        createdBy {
+            uid
+            firstName
+            lastName
+        }
+        createdAt
+    }
+}
+
+query GetPostersByBoard($boardUid: String!) {
+    grindPostersByBoard(boardUid: $boardUid) {
+        uid
+        title
+        board {
+            uid
+        }
+        errands {
+            uid
+            title
+            description
+            priority
+            startDate
+            endDate
+            progress
+            poster {
+                uid
+            }
+            stamps {
+                uid
+                title
+            }
+            label {
+                uid
+            }
+            assignee {
+                uid
+                firstName
+                lastName
+            }
+            members {
+                uid
+                firstName
+                lastName
+            }        
+        }
+    }
+}
+
+query GetGrindStampAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    grindStampAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            title
+            category
+        }
+    }
+}
+
+query GetGrindLabelAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    grindLabelAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            title
+            category
+        }
+    }
+}

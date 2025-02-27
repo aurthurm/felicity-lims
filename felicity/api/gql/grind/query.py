@@ -14,7 +14,7 @@ from felicity.apps.grind.services import (
     GrindLabelService,
     GrindMediaService,
     GrindMilestoneService,
-    GrindOccurrenceService,
+    GrindOccurrenceService, GrindStampService,
 )
 from felicity.utils import has_value_or_is_truthy
 
@@ -250,21 +250,17 @@ class GrindQuery:
             after_cursor: str | None = None,
             before_cursor: str | None = None,
             text: str | None = None,
-            category: str | None = None,
             sort_by: list[str] | None = None,
     ) -> types.GrindLabelCursorPage:
         filters = {}
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = ["title__ilike"]
+            arg_list = ["title__ilike", "category__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
             filters = {sa.or_: _or_}
-
-        if category:
-            filters["category"] = category
 
         page = await GrindLabelService().paging_filter(
             page_size=page_size,
@@ -290,6 +286,52 @@ class GrindQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def grind_labels_by_category(self, info, category: str) -> List[types.GrindLabelType]:
         return await GrindLabelService().get_all(category=category)
+
+    # Label Queries
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def grind_stamp_all(
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
+    ) -> types.GrindStampCursorPage:
+        filters = {}
+
+        _or_ = dict()
+        if has_value_or_is_truthy(text):
+            arg_list = ["title__ilike", "category__ilike"]
+            for _arg in arg_list:
+                _or_[_arg] = f"%{text}%"
+
+            filters = {sa.or_: _or_}
+
+        page = await GrindStampService().paging_filter(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+        )
+
+        total_count: int = page.total_count
+        edges: List[types.GrindStampEdge[types.GrindStampType]] = page.edges
+        items: List[types.GrindStampType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return types.GrindStampCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def grind_stamp_by_uid(self, info, uid: str) -> Optional[types.GrindStampType]:
+        return await GrindStampService().get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def grind_stamp_by_category(self, info, category: str) -> List[types.GrindStampType]:
+        return await GrindStampService().get_all(category=category)
 
     # Media Queries
     @strawberry.field(permission_classes=[IsAuthenticated])

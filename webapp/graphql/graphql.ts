@@ -1688,6 +1688,1619 @@ export type DistrictType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type DocumentAiAuthoringSessionCursorPage = {
+  __typename?: 'DocumentAIAuthoringSessionCursorPage';
+  edges?: Maybe<Array<DocumentAiAuthoringSessionEdge>>;
+  items?: Maybe<Array<DocumentAiAuthoringSessionType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiAuthoringSessionEdge = {
+  __typename?: 'DocumentAIAuthoringSessionEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiAuthoringSessionType;
+};
+
+export type DocumentAiAuthoringSessionInputType = {
+  /** Conversation */
+  conversation: Scalars['String']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** AI Model UID */
+  model: Scalars['String']['input'];
+  /** Prompt */
+  prompt: Scalars['String']['input'];
+};
+
+/** Response for document AI authoring session operations */
+export type DocumentAiAuthoringSessionResponse = DocumentAiAuthoringSessionType | OperationError;
+
+export type DocumentAiAuthoringSessionType = {
+  __typename?: 'DocumentAIAuthoringSessionType';
+  conversation: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  model: DocumentAiModelType;
+  modelUid: Scalars['String']['output'];
+  prompt: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiAuthoringSessionUpdateInputType = {
+  /** Conversation */
+  conversation?: InputMaybe<Scalars['String']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** AI Model UID */
+  model?: InputMaybe<Scalars['String']['input']>;
+  /** Prompt */
+  prompt?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAiComplianceCheckCursorPage = {
+  __typename?: 'DocumentAIComplianceCheckCursorPage';
+  edges?: Maybe<Array<DocumentAiComplianceCheckEdge>>;
+  items?: Maybe<Array<DocumentAiComplianceCheckType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiComplianceCheckEdge = {
+  __typename?: 'DocumentAIComplianceCheckEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiComplianceCheckType;
+};
+
+export type DocumentAiComplianceCheckInputType = {
+  /** Compliance score */
+  complianceScore: Scalars['Float']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Compliance issues */
+  issues?: InputMaybe<Array<DocumentComplianceIssueInputType>>;
+  /** Check results */
+  results: Scalars['String']['input'];
+  /** Compliance standard UID */
+  standard: Scalars['String']['input'];
+};
+
+/** Response for document AI compliance check operations */
+export type DocumentAiComplianceCheckResponse = DocumentAiComplianceCheckType | OperationError;
+
+export type DocumentAiComplianceCheckType = {
+  __typename?: 'DocumentAIComplianceCheckType';
+  complianceScore: Scalars['Float']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  issues: Array<DocumentComplianceIssueType>;
+  results: Scalars['String']['output'];
+  standard: DocumentComplianceStandardType;
+  standardUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiComplianceCheckUpdateInputType = {
+  /** Compliance score */
+  complianceScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Check results */
+  results?: InputMaybe<Scalars['String']['input']>;
+  /** Compliance standard UID */
+  standard?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAiModelCursorPage = {
+  __typename?: 'DocumentAIModelCursorPage';
+  edges?: Maybe<Array<DocumentAiModelEdge>>;
+  items?: Maybe<Array<DocumentAiModelType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiModelEdge = {
+  __typename?: 'DocumentAIModelEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiModelType;
+};
+
+export type DocumentAiModelInputType = {
+  /** API endpoint */
+  apiEndpoint: Scalars['String']['input'];
+  /** Model capabilities */
+  capabilities: Scalars['String']['input'];
+  /** Model description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Is active */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Model name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document AI model operations */
+export type DocumentAiModelResponse = DocumentAiModelType | OperationError;
+
+export type DocumentAiModelType = {
+  __typename?: 'DocumentAIModelType';
+  apiEndpoint: Scalars['String']['output'];
+  capabilities: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiModelUpdateInputType = {
+  /** API endpoint */
+  apiEndpoint?: InputMaybe<Scalars['String']['input']>;
+  /** Model capabilities */
+  capabilities?: InputMaybe<Scalars['String']['input']>;
+  /** Model description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Is active */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Model name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAiReviewFeedbackCursorPage = {
+  __typename?: 'DocumentAIReviewFeedbackCursorPage';
+  edges?: Maybe<Array<DocumentAiReviewFeedbackEdge>>;
+  items?: Maybe<Array<DocumentAiReviewFeedbackType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiReviewFeedbackEdge = {
+  __typename?: 'DocumentAIReviewFeedbackEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiReviewFeedbackType;
+};
+
+export type DocumentAiReviewFeedbackInputType = {
+  /** AI Model UID */
+  model: Scalars['String']['input'];
+  /** Review step UID */
+  reviewStep: Scalars['String']['input'];
+  /** AI suggestions */
+  suggestions: Scalars['String']['input'];
+};
+
+/** Response for document AI review feedback operations */
+export type DocumentAiReviewFeedbackResponse = DocumentAiReviewFeedbackType | OperationError;
+
+export type DocumentAiReviewFeedbackType = {
+  __typename?: 'DocumentAIReviewFeedbackType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  model: DocumentAiModelType;
+  modelUid: Scalars['String']['output'];
+  reviewStep: DocumentReviewStepType;
+  reviewStepUid: Scalars['String']['output'];
+  suggestions: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiReviewFeedbackUpdateInputType = {
+  /** AI Model UID */
+  model?: InputMaybe<Scalars['String']['input']>;
+  /** Review step UID */
+  reviewStep?: InputMaybe<Scalars['String']['input']>;
+  /** AI suggestions */
+  suggestions?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAnalyticsCursorPage = {
+  __typename?: 'DocumentAnalyticsCursorPage';
+  edges?: Maybe<Array<DocumentAnalyticsEdge>>;
+  items?: Maybe<Array<DocumentAnalyticsType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAnalyticsEdge = {
+  __typename?: 'DocumentAnalyticsEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAnalyticsType;
+};
+
+export type DocumentAnalyticsInputType = {
+  /** Complexity score */
+  complexityScore: Scalars['Float']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Generated date */
+  generatedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Key topics */
+  keyTopics: Scalars['String']['input'];
+  /** Readability score */
+  readabilityScore: Scalars['Float']['input'];
+  /** Sentiment score */
+  sentimentScore: Scalars['Float']['input'];
+  /** Document summary */
+  summary: Scalars['String']['input'];
+};
+
+/** Response for document analytics operations */
+export type DocumentAnalyticsResponse = DocumentAnalyticsType | OperationError;
+
+export type DocumentAnalyticsType = {
+  __typename?: 'DocumentAnalyticsType';
+  complexityScore: Scalars['Float']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  generatedDate: Scalars['String']['output'];
+  keyTopics: Scalars['String']['output'];
+  readabilityScore: Scalars['Float']['output'];
+  sentimentScore: Scalars['Float']['output'];
+  summary: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAnalyticsUpdateInputType = {
+  /** Complexity score */
+  complexityScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Generated date */
+  generatedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Key topics */
+  keyTopics?: InputMaybe<Scalars['String']['input']>;
+  /** Readability score */
+  readabilityScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Sentiment score */
+  sentimentScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Document summary */
+  summary?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAuditCursorPage = {
+  __typename?: 'DocumentAuditCursorPage';
+  edges?: Maybe<Array<DocumentAuditEdge>>;
+  items?: Maybe<Array<DocumentAuditType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAuditEdge = {
+  __typename?: 'DocumentAuditEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAuditType;
+};
+
+export type DocumentAuditInputType = {
+  /** Audit action */
+  action: Scalars['String']['input'];
+  /** Action date */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** IP address */
+  ipAddress?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Response for document audit operations */
+export type DocumentAuditResponse = DocumentAuditType | OperationError;
+
+export type DocumentAuditType = {
+  __typename?: 'DocumentAuditType';
+  action: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  date: Scalars['String']['output'];
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  user: UserType;
+  userUid: Scalars['String']['output'];
+};
+
+export type DocumentCategoryInputType = {
+  /** Category name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document category operations */
+export type DocumentCategoryResponse = DocumentCategoryType | OperationError;
+
+export type DocumentCategoryType = {
+  __typename?: 'DocumentCategoryType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentCategoryUpdateInputType = {
+  /** Category name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentComplianceIssueCursorPage = {
+  __typename?: 'DocumentComplianceIssueCursorPage';
+  edges?: Maybe<Array<DocumentComplianceIssueEdge>>;
+  items?: Maybe<Array<DocumentComplianceIssueType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentComplianceIssueEdge = {
+  __typename?: 'DocumentComplianceIssueEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentComplianceIssueType;
+};
+
+export type DocumentComplianceIssueInputType = {
+  /** Compliance check UID */
+  check: Scalars['String']['input'];
+  /** Issue description */
+  description: Scalars['String']['input'];
+  /** Document section */
+  section: Scalars['String']['input'];
+  /** Issue severity */
+  severity: Scalars['String']['input'];
+  /** Suggestion */
+  suggestion: Scalars['String']['input'];
+};
+
+/** Response for document compliance issue operations */
+export type DocumentComplianceIssueResponse = DocumentComplianceIssueType | OperationError;
+
+export type DocumentComplianceIssueType = {
+  __typename?: 'DocumentComplianceIssueType';
+  check: DocumentAiComplianceCheckType;
+  checkUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  section: Scalars['String']['output'];
+  severity: Scalars['String']['output'];
+  suggestion: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentComplianceIssueUpdateInputType = {
+  /** Compliance check UID */
+  check?: InputMaybe<Scalars['String']['input']>;
+  /** Issue description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Document section */
+  section?: InputMaybe<Scalars['String']['input']>;
+  /** Issue severity */
+  severity?: InputMaybe<Scalars['String']['input']>;
+  /** Suggestion */
+  suggestion?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentComplianceStandardCursorPage = {
+  __typename?: 'DocumentComplianceStandardCursorPage';
+  edges?: Maybe<Array<DocumentComplianceStandardEdge>>;
+  items?: Maybe<Array<DocumentComplianceStandardType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentComplianceStandardEdge = {
+  __typename?: 'DocumentComplianceStandardEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentComplianceStandardType;
+};
+
+export type DocumentComplianceStandardInputType = {
+  /** Standard content */
+  content: Scalars['String']['input'];
+  /** Standard description */
+  description: Scalars['String']['input'];
+  /** Standard name */
+  name: Scalars['String']['input'];
+  /** Standard version */
+  version: Scalars['String']['input'];
+};
+
+/** Response for document compliance standard operations */
+export type DocumentComplianceStandardResponse = DocumentComplianceStandardType | OperationError;
+
+export type DocumentComplianceStandardType = {
+  __typename?: 'DocumentComplianceStandardType';
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  version: Scalars['String']['output'];
+};
+
+export type DocumentComplianceStandardUpdateInputType = {
+  /** Standard content */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Standard description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Standard name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+  /** Standard version */
+  version?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DocumentCursorPage = {
+  __typename?: 'DocumentCursorPage';
+  edges?: Maybe<Array<DocumentEdge>>;
+  items?: Maybe<Array<DocumentType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentEdge = {
+  __typename?: 'DocumentEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentType;
+};
+
+export type DocumentFolderCursorPage = {
+  __typename?: 'DocumentFolderCursorPage';
+  edges?: Maybe<Array<DocumentFolderEdge>>;
+  items?: Maybe<Array<DocumentFolderType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentFolderEdge = {
+  __typename?: 'DocumentFolderEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentFolderType;
+};
+
+export type DocumentFolderInputType = {
+  /** Folder description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Folder name */
+  name: Scalars['String']['input'];
+  /** Parent folder UID */
+  parent?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Response for document folder operations */
+export type DocumentFolderResponse = DocumentFolderType | OperationError;
+
+export type DocumentFolderType = {
+  __typename?: 'DocumentFolderType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  documents: Array<DocumentType>;
+  name: Scalars['String']['output'];
+  parent?: Maybe<DocumentFolderType>;
+  parentUid?: Maybe<Scalars['String']['output']>;
+  subfolders: Array<DocumentFolderType>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentFolderUpdateInputType = {
+  /** Folder description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Folder name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Parent folder UID */
+  parent?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentInputType = {
+  /** Author UIDs */
+  authors?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Department UID */
+  department?: InputMaybe<Scalars['String']['input']>;
+  /** Document ID */
+  documentId: Scalars['String']['input'];
+  /** Folder UID */
+  folder?: InputMaybe<Scalars['String']['input']>;
+  /** Initial document content */
+  initialContent?: InputMaybe<Scalars['String']['input']>;
+  /** Initial version number */
+  initialVersion?: InputMaybe<Scalars['String']['input']>;
+  /** Document name */
+  name: Scalars['String']['input'];
+  /** Reader UIDs */
+  readers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Document subtitle */
+  subtitle?: InputMaybe<Scalars['String']['input']>;
+  /** Tag UIDs */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Template UID */
+  template?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DocumentRelationInputType = {
+  /** Relation type */
+  relationType: Scalars['String']['input'];
+  /** Source document UID */
+  sourceDocument: Scalars['String']['input'];
+  /** Target document UID */
+  targetDocument: Scalars['String']['input'];
+};
+
+/** Response for document relation operations */
+export type DocumentRelationResponse = DocumentType | OperationError;
+
+/** Response for document operations */
+export type DocumentResponse = DocumentType | OperationError;
+
+export type DocumentReviewCycleCursorPage = {
+  __typename?: 'DocumentReviewCycleCursorPage';
+  edges?: Maybe<Array<DocumentReviewCycleEdge>>;
+  items?: Maybe<Array<DocumentReviewCycleType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentReviewCycleEdge = {
+  __typename?: 'DocumentReviewCycleEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentReviewCycleType;
+};
+
+export type DocumentReviewCycleInputType = {
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** End date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Reviewers UIDs */
+  reviewers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start date */
+  startDate: Scalars['DateTime']['input'];
+  /** Review cycle status */
+  status: Scalars['String']['input'];
+};
+
+/** Response for document review cycle operations */
+export type DocumentReviewCycleResponse = DocumentReviewCycleType | OperationError;
+
+export type DocumentReviewCycleType = {
+  __typename?: 'DocumentReviewCycleType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  endDate?: Maybe<Scalars['String']['output']>;
+  initiatedBy: UserType;
+  initiatedByUid: Scalars['String']['output'];
+  startDate: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  steps: Array<DocumentReviewStepType>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentReviewCycleUpdateInputType = {
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** End date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Reviewers UIDs */
+  reviewers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Review cycle status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentReviewStepCursorPage = {
+  __typename?: 'DocumentReviewStepCursorPage';
+  edges?: Maybe<Array<DocumentReviewStepEdge>>;
+  items?: Maybe<Array<DocumentReviewStepType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentReviewStepEdge = {
+  __typename?: 'DocumentReviewStepEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentReviewStepType;
+};
+
+/** Response for document review step operations */
+export type DocumentReviewStepResponse = DocumentReviewStepType | OperationError;
+
+export type DocumentReviewStepType = {
+  __typename?: 'DocumentReviewStepType';
+  actionDate?: Maybe<Scalars['String']['output']>;
+  aiFeedback: Array<DocumentAiReviewFeedbackType>;
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  reviewCycle: DocumentReviewCycleType;
+  reviewCycleUid: Scalars['String']['output'];
+  reviewer: UserType;
+  reviewerUid: Scalars['String']['output'];
+  sequence: Scalars['Int']['output'];
+  status: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentReviewStepUpdateInputType = {
+  /** Action date */
+  actionDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Review comments */
+  comments?: InputMaybe<Scalars['String']['input']>;
+  /** Review cycle UID */
+  reviewCycle?: InputMaybe<Scalars['String']['input']>;
+  /** Reviewer UID */
+  reviewer?: InputMaybe<Scalars['String']['input']>;
+  /** Review sequence */
+  sequence?: InputMaybe<Scalars['Int']['input']>;
+  /** Review status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentStatusCursorPage = {
+  __typename?: 'DocumentStatusCursorPage';
+  edges?: Maybe<Array<DocumentStatusEdge>>;
+  items?: Maybe<Array<DocumentStatusType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentStatusEdge = {
+  __typename?: 'DocumentStatusEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentStatusType;
+};
+
+export type DocumentStatusInputType = {
+  /** Status date */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Document status */
+  status: Scalars['String']['input'];
+};
+
+/** Response for document status operations */
+export type DocumentStatusResponse = DocumentStatusType | OperationError;
+
+export type DocumentStatusType = {
+  __typename?: 'DocumentStatusType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  date: Scalars['String']['output'];
+  document?: Maybe<DocumentType>;
+  documentUid: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  user: UserType;
+  userUid: Scalars['String']['output'];
+};
+
+export type DocumentStatusUpdateInputType = {
+  /** Status date */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Document status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentSubscriptionCursorPage = {
+  __typename?: 'DocumentSubscriptionCursorPage';
+  edges?: Maybe<Array<DocumentSubscriptionEdge>>;
+  items?: Maybe<Array<DocumentSubscriptionType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentSubscriptionEdge = {
+  __typename?: 'DocumentSubscriptionEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentSubscriptionType;
+};
+
+export type DocumentSubscriptionInputType = {
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Subscription type */
+  subscriptionType: Scalars['String']['input'];
+  /** User UID */
+  user: Scalars['String']['input'];
+};
+
+/** Response for document subscription operations */
+export type DocumentSubscriptionResponse = DocumentSubscriptionType | OperationError;
+
+export type DocumentSubscriptionType = {
+  __typename?: 'DocumentSubscriptionType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  subscriptionType: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  user: UserType;
+  userUid: Scalars['String']['output'];
+};
+
+export type DocumentSubscriptionUpdateInputType = {
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Subscription type */
+  subscriptionType?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+  /** User UID */
+  user?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DocumentTagCursorPage = {
+  __typename?: 'DocumentTagCursorPage';
+  edges?: Maybe<Array<DocumentTagEdge>>;
+  items?: Maybe<Array<DocumentTagType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentTagEdge = {
+  __typename?: 'DocumentTagEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentTagType;
+};
+
+export type DocumentTagInputType = {
+  /** Tag name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document tag operations */
+export type DocumentTagResponse = DocumentTagType | OperationError;
+
+export type DocumentTagType = {
+  __typename?: 'DocumentTagType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  documents: Array<DocumentType>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentTagUpdateInputType = {
+  /** Tag name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentTemplateCursorPage = {
+  __typename?: 'DocumentTemplateCursorPage';
+  edges?: Maybe<Array<DocumentTemplateEdge>>;
+  items?: Maybe<Array<DocumentTemplateType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentTemplateEdge = {
+  __typename?: 'DocumentTemplateEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentTemplateType;
+};
+
+export type DocumentTemplateInputType = {
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Template content */
+  content: Scalars['String']['input'];
+  /** Template description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Template name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document template operations */
+export type DocumentTemplateResponse = DocumentTemplateType | OperationError;
+
+export type DocumentTemplateType = {
+  __typename?: 'DocumentTemplateType';
+  category?: Maybe<DocumentCategoryType>;
+  categoryUid?: Maybe<Scalars['String']['output']>;
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  documents: Array<DocumentType>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentTemplateUpdateInputType = {
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Template content */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Template description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Template name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentType = {
+  __typename?: 'DocumentType';
+  aiAuthoringSessions: Array<DocumentAiAuthoringSessionType>;
+  analytics: Array<DocumentAnalyticsType>;
+  auditRecords: Array<DocumentAuditType>;
+  authors: Array<UserType>;
+  category?: Maybe<DocumentCategoryType>;
+  categoryUid?: Maybe<Scalars['String']['output']>;
+  complianceChecks: Array<DocumentAiComplianceCheckType>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  department?: Maybe<DepartmentType>;
+  departmentUid?: Maybe<Scalars['String']['output']>;
+  documentId: Scalars['String']['output'];
+  folder?: Maybe<DocumentFolderType>;
+  folderUid?: Maybe<Scalars['String']['output']>;
+  lastAccessed?: Maybe<Scalars['String']['output']>;
+  lastAccessedBy?: Maybe<UserType>;
+  lastAccessedByUid?: Maybe<Scalars['String']['output']>;
+  latestVersion?: Maybe<DocumentVersionType>;
+  name: Scalars['String']['output'];
+  readers: Array<UserType>;
+  relatedFrom: Array<DocumentType>;
+  relatedTo: Array<DocumentType>;
+  reviewCycles: Array<DocumentReviewCycleType>;
+  status?: Maybe<Scalars['String']['output']>;
+  statuses: Array<DocumentStatusType>;
+  subscriptions: Array<DocumentSubscriptionType>;
+  subtitle?: Maybe<Scalars['String']['output']>;
+  tags: Array<DocumentTagType>;
+  template?: Maybe<DocumentTemplateType>;
+  templateUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  versions: Array<DocumentVersionType>;
+};
+
+export type DocumentUpdateInputType = {
+  /** Author UIDs */
+  authors?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Department UID */
+  department?: InputMaybe<Scalars['String']['input']>;
+  /** Document ID */
+  documentId?: InputMaybe<Scalars['String']['input']>;
+  /** Folder UID */
+  folder?: InputMaybe<Scalars['String']['input']>;
+  /** Document name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Reader UIDs */
+  readers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Document subtitle */
+  subtitle?: InputMaybe<Scalars['String']['input']>;
+  /** Tag UIDs */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Template UID */
+  template?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentVersionCursorPage = {
+  __typename?: 'DocumentVersionCursorPage';
+  edges?: Maybe<Array<DocumentVersionEdge>>;
+  items?: Maybe<Array<DocumentVersionType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentVersionEdge = {
+  __typename?: 'DocumentVersionEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentVersionType;
+};
+
+export type DocumentVersionInputType = {
+  /** Change summary */
+  changeSummary?: InputMaybe<Scalars['String']['input']>;
+  /** Document content */
+  content: Scalars['String']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Version number */
+  versionNumber: Scalars['String']['input'];
+};
+
+/** Response for document version operations */
+export type DocumentVersionResponse = DocumentVersionType | OperationError;
+
+export type DocumentVersionType = {
+  __typename?: 'DocumentVersionType';
+  changeSummary?: Maybe<Scalars['String']['output']>;
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document?: Maybe<DocumentType>;
+  documentUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  versionNumber: Scalars['String']['output'];
+};
+
+export type DocumentVersionUpdateInputType = {
+  /** Change summary */
+  changeSummary?: InputMaybe<Scalars['String']['input']>;
+  /** Document content */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+  /** Version number */
+  versionNumber?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum ErrandCategory {
+  Engagement = 'ENGAGEMENT',
+  Message = 'MESSAGE',
+  Project = 'PROJECT',
+  Ticket = 'TICKET',
+  Todo = 'TODO'
+}
+
+export type GrindBoardCursorPage = {
+  __typename?: 'GrindBoardCursorPage';
+  edges?: Maybe<Array<GrindBoardEdge>>;
+  items?: Maybe<Array<GrindBoardType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindBoardEdge = {
+  __typename?: 'GrindBoardEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindBoardType;
+};
+
+export type GrindBoardResponse = GrindBoardType | OperationError;
+
+export type GrindBoardType = {
+  __typename?: 'GrindBoardType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  posters: Array<GrindPosterType>;
+  scheme?: Maybe<GrindSchemeType>;
+  schemeUid?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindCreateBoardInput = {
+  /** Board Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Board Scheme */
+  scheme?: InputMaybe<Scalars['String']['input']>;
+  /** Board Title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindCreateErrandInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Category */
+  category?: InputMaybe<ErrandCategory>;
+  /** Errand Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Label | Status */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Milestone */
+  milestones?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Poster */
+  poster?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Priority */
+  priority?: InputMaybe<Scalars['String']['input']>;
+  /** Assigned To */
+  reporter?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Stamps | Tags */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreateLabelInput = {
+  /** Label category */
+  category: Scalars['String']['input'];
+  /** Label title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindCreateMediaInput = {
+  /** Media description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Media destination */
+  destination?: InputMaybe<Scalars['String']['input']>;
+  /** Media encoding */
+  encoding?: InputMaybe<Scalars['String']['input']>;
+  /** Media filename */
+  filename?: InputMaybe<Scalars['String']['input']>;
+  /** Media mimetype */
+  mimetype?: InputMaybe<Scalars['String']['input']>;
+  /** Media original name */
+  originalName?: InputMaybe<Scalars['String']['input']>;
+  /** Media path */
+  path?: InputMaybe<Scalars['String']['input']>;
+  /** Media size */
+  size?: InputMaybe<Scalars['String']['input']>;
+  /** Media target */
+  target?: InputMaybe<Scalars['String']['input']>;
+  /** Media Target ID */
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreateMilestoneInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Status */
+  complete?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Milestone Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Milestone Errand */
+  errand: Scalars['String']['input'];
+  /** Milestone Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreatePosterInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Board */
+  board?: InputMaybe<Scalars['String']['input']>;
+  /** Poster category */
+  category?: InputMaybe<PosterCategory>;
+  /** Poster Communities */
+  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster label */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreateSchemeInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Scheme Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindCreateStampInput = {
+  /** Stamp category */
+  category: Scalars['String']['input'];
+  /** Stamp title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindErrandCursorPage = {
+  __typename?: 'GrindErrandCursorPage';
+  edges?: Maybe<Array<GrindErrandEdge>>;
+  items?: Maybe<Array<GrindErrandType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindErrandEdge = {
+  __typename?: 'GrindErrandEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindErrandType;
+};
+
+export type GrindErrandResponse = GrindErrandType | OperationError;
+
+export type GrindErrandType = {
+  __typename?: 'GrindErrandType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  endDate?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<GrindLabelType>;
+  labelUid?: Maybe<Scalars['String']['output']>;
+  media: Array<GrindMediaType>;
+  members: Array<UserType>;
+  milestones: Array<GrindMilestoneType>;
+  occurrences: Array<GrindOccurrenceType>;
+  poster?: Maybe<GrindPosterType>;
+  posterUid?: Maybe<Scalars['String']['output']>;
+  priority?: Maybe<Scalars['String']['output']>;
+  progress?: Maybe<Scalars['Int']['output']>;
+  reporter?: Maybe<UserType>;
+  reporterUid?: Maybe<Scalars['String']['output']>;
+  stamps: Array<GrindStampType>;
+  startDate?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindLabelCursorPage = {
+  __typename?: 'GrindLabelCursorPage';
+  edges?: Maybe<Array<GrindLabelEdge>>;
+  items?: Maybe<Array<GrindLabelType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindLabelEdge = {
+  __typename?: 'GrindLabelEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindLabelType;
+};
+
+export type GrindLabelResponse = GrindLabelType | OperationError;
+
+export type GrindLabelType = {
+  __typename?: 'GrindLabelType';
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindMediaCursorPage = {
+  __typename?: 'GrindMediaCursorPage';
+  edges?: Maybe<Array<GrindMediaEdge>>;
+  items?: Maybe<Array<GrindMediaType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindMediaEdge = {
+  __typename?: 'GrindMediaEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindMediaType;
+};
+
+export type GrindMediaResponse = GrindMediaType | OperationError;
+
+export type GrindMediaType = {
+  __typename?: 'GrindMediaType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  destination?: Maybe<Scalars['String']['output']>;
+  encoding?: Maybe<Scalars['String']['output']>;
+  filename?: Maybe<Scalars['String']['output']>;
+  mimetype?: Maybe<Scalars['String']['output']>;
+  originalName?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['String']['output']>;
+  target?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindMilestoneCursorPage = {
+  __typename?: 'GrindMilestoneCursorPage';
+  edges?: Maybe<Array<GrindMilestoneEdge>>;
+  items?: Maybe<Array<GrindMilestoneType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindMilestoneEdge = {
+  __typename?: 'GrindMilestoneEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindMilestoneType;
+};
+
+export type GrindMilestoneResponse = GrindMilestoneType | OperationError;
+
+export type GrindMilestoneType = {
+  __typename?: 'GrindMilestoneType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  complete?: Maybe<Scalars['Boolean']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  errand?: Maybe<GrindErrandType>;
+  errandUid?: Maybe<Scalars['String']['output']>;
+  occurrences: Array<GrindOccurrenceType>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindOccurrenceCursorPage = {
+  __typename?: 'GrindOccurrenceCursorPage';
+  edges?: Maybe<Array<GrindOccurrenceEdge>>;
+  items?: Maybe<Array<GrindOccurrenceType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindOccurrenceEdge = {
+  __typename?: 'GrindOccurrenceEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindOccurrenceType;
+};
+
+export type GrindOccurrenceType = {
+  __typename?: 'GrindOccurrenceType';
+  actor?: Maybe<UserType>;
+  actorUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  target?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindPosterCursorPage = {
+  __typename?: 'GrindPosterCursorPage';
+  edges?: Maybe<Array<GrindPosterEdge>>;
+  items?: Maybe<Array<GrindPosterType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindPosterEdge = {
+  __typename?: 'GrindPosterEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindPosterType;
+};
+
+export type GrindPosterResponse = GrindPosterType | OperationError;
+
+export type GrindPosterType = {
+  __typename?: 'GrindPosterType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  board?: Maybe<GrindBoardType>;
+  boardUid?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  errands: Array<GrindErrandType>;
+  members: Array<UserType>;
+  stamps: Array<GrindStampType>;
+  status?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindSchemeCursorPage = {
+  __typename?: 'GrindSchemeCursorPage';
+  edges?: Maybe<Array<GrindSchemeEdge>>;
+  items?: Maybe<Array<GrindSchemeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindSchemeEdge = {
+  __typename?: 'GrindSchemeEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindSchemeType;
+};
+
+export type GrindSchemeResponse = GrindSchemeType | OperationError;
+
+export type GrindSchemeType = {
+  __typename?: 'GrindSchemeType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  boards: Array<GrindBoardType>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  endDate?: Maybe<Scalars['String']['output']>;
+  members: Array<UserType>;
+  startDate?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindStampCursorPage = {
+  __typename?: 'GrindStampCursorPage';
+  edges?: Maybe<Array<GrindStampEdge>>;
+  items?: Maybe<Array<GrindStampType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindStampEdge = {
+  __typename?: 'GrindStampEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindStampType;
+};
+
+export type GrindStampResponse = GrindStampType | OperationError;
+
+export type GrindStampType = {
+  __typename?: 'GrindStampType';
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindUpdateBoardInput = {
+  /** Board Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Board Scheme */
+  scheme?: InputMaybe<Scalars['String']['input']>;
+  /** Board Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateErrandInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Category */
+  category?: InputMaybe<ErrandCategory>;
+  /** Errand Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Label | Status */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Milestone */
+  milestones?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Poster */
+  poster?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Priority */
+  priority?: InputMaybe<Scalars['String']['input']>;
+  /** Assigned To */
+  reporter?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Stamps | Tags */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateLabelInput = {
+  /** Label category */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Label title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateMediaInput = {
+  /** Media description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Media destination */
+  destination?: InputMaybe<Scalars['String']['input']>;
+  /** Media encoding */
+  encoding?: InputMaybe<Scalars['String']['input']>;
+  /** Media filename */
+  filename?: InputMaybe<Scalars['String']['input']>;
+  /** Media mimetype */
+  mimetype?: InputMaybe<Scalars['String']['input']>;
+  /** Media original name */
+  originalName?: InputMaybe<Scalars['String']['input']>;
+  /** Media path */
+  path?: InputMaybe<Scalars['String']['input']>;
+  /** Media size */
+  size?: InputMaybe<Scalars['String']['input']>;
+  /** Media target */
+  target?: InputMaybe<Scalars['String']['input']>;
+  /** Media Target ID */
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateMilestoneInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Status */
+  complete?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Milestone Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Milestone Errand */
+  errand?: InputMaybe<Scalars['String']['input']>;
+  /** Milestone Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdatePosterInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Board */
+  board?: InputMaybe<Scalars['String']['input']>;
+  /** Poster category */
+  category?: InputMaybe<PosterCategory>;
+  /** Poster Communities */
+  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster label */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateSchemeInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Scheme Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateStampInput = {
+  /** Stamp category */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Stamp title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
 export type GroupCount = {
   __typename?: 'GroupCount';
   count?: Maybe<Scalars['Int']['output']>;
@@ -2229,6 +3842,32 @@ export type Mutation = {
   createCountry: CountryResponse;
   createDepartment: DepartmentResponse;
   createDistrict: DistrictResponse;
+  createDocument: DocumentResponse;
+  createDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
+  createDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
+  createDocumentAiModel: DocumentAiModelResponse;
+  createDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
+  createDocumentAnalytics: DocumentAnalyticsResponse;
+  createDocumentAudit: DocumentAuditResponse;
+  createDocumentCategory: DocumentCategoryResponse;
+  createDocumentComplianceIssue: DocumentComplianceIssueResponse;
+  createDocumentComplianceStandard: DocumentComplianceStandardResponse;
+  createDocumentFolder: DocumentFolderResponse;
+  createDocumentRelation: DocumentRelationResponse;
+  createDocumentReviewCycle: DocumentReviewCycleResponse;
+  createDocumentStatus: DocumentStatusResponse;
+  createDocumentSubscription: DocumentSubscriptionResponse;
+  createDocumentTag: DocumentTagResponse;
+  createDocumentTemplate: DocumentTemplateResponse;
+  createDocumentVersion: DocumentVersionResponse;
+  createGrindBoard: GrindBoardResponse;
+  createGrindErrand: GrindErrandResponse;
+  createGrindLabel: GrindLabelResponse;
+  createGrindMedia: GrindMediaResponse;
+  createGrindMilestone: GrindMilestoneResponse;
+  createGrindPoster: GrindPosterResponse;
+  createGrindScheme: GrindSchemeResponse;
+  createGrindStamp: GrindStampResponse;
   createGroup: GroupResponse;
   createHazard: HazardResponse;
   createIdentification: IdentificationResponse;
@@ -2276,6 +3915,30 @@ export type Mutation = {
   createWorksheet: WorkSheetsResponse;
   createWorksheetTemplate: WorkSheetTemplateResponse;
   deleteClientContact: DeleteContactResponse;
+  deleteDocument: DocumentResponse;
+  deleteDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
+  deleteDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
+  deleteDocumentAiModel: DocumentAiModelResponse;
+  deleteDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
+  deleteDocumentAnalytics: DocumentAnalyticsResponse;
+  deleteDocumentCategory: DocumentCategoryResponse;
+  deleteDocumentComplianceIssue: DocumentComplianceIssueResponse;
+  deleteDocumentComplianceStandard: DocumentComplianceStandardResponse;
+  deleteDocumentFolder: DocumentFolderResponse;
+  deleteDocumentRelation: DocumentRelationResponse;
+  deleteDocumentReviewCycle: DocumentReviewCycleResponse;
+  deleteDocumentSubscription: DocumentSubscriptionResponse;
+  deleteDocumentTag: DocumentTagResponse;
+  deleteDocumentTemplate: DocumentTemplateResponse;
+  deleteDocumentVersion: DocumentVersionResponse;
+  deleteGrindBoard: GrindBoardResponse;
+  deleteGrindErrand: GrindErrandResponse;
+  deleteGrindLabel: GrindLabelResponse;
+  deleteGrindMedia: GrindMediaResponse;
+  deleteGrindMilestone: GrindMilestoneResponse;
+  deleteGrindPoster: GrindPosterResponse;
+  deleteGrindScheme: GrindSchemeResponse;
+  deleteGrindStamp: GrindStampResponse;
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
   deleteReflexBrain: DeletedItem;
@@ -2345,6 +4008,31 @@ export type Mutation = {
   updateCountry: CountryResponse;
   updateDepartment: DepartmentResponse;
   updateDistrict: DistrictResponse;
+  updateDocument: DocumentResponse;
+  updateDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
+  updateDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
+  updateDocumentAiModel: DocumentAiModelResponse;
+  updateDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
+  updateDocumentAnalytics: DocumentAnalyticsResponse;
+  updateDocumentCategory: DocumentCategoryResponse;
+  updateDocumentComplianceIssue: DocumentComplianceIssueResponse;
+  updateDocumentComplianceStandard: DocumentComplianceStandardResponse;
+  updateDocumentFolder: DocumentFolderResponse;
+  updateDocumentReviewCycle: DocumentReviewCycleResponse;
+  updateDocumentReviewStep: DocumentReviewStepResponse;
+  updateDocumentStatus: DocumentStatusResponse;
+  updateDocumentSubscription: DocumentSubscriptionResponse;
+  updateDocumentTag: DocumentTagResponse;
+  updateDocumentTemplate: DocumentTemplateResponse;
+  updateDocumentVersion: DocumentVersionResponse;
+  updateGrindBoard: GrindBoardResponse;
+  updateGrindErrand: GrindErrandResponse;
+  updateGrindLabel: GrindLabelResponse;
+  updateGrindMedia: GrindMediaResponse;
+  updateGrindMilestone: GrindMilestoneResponse;
+  updateGrindPoster: GrindPosterResponse;
+  updateGrindScheme: GrindSchemeResponse;
+  updateGrindStamp: GrindStampResponse;
   updateGroup: GroupResponse;
   updateGroupPermissions: UpdatedGroupPermsResponse;
   updateHazard: HazardResponse;
@@ -2648,6 +4336,136 @@ export type MutationCreateDistrictArgs = {
 };
 
 
+export type MutationCreateDocumentArgs = {
+  payload: DocumentInputType;
+};
+
+
+export type MutationCreateDocumentAiAuthoringSessionArgs = {
+  payload: DocumentAiAuthoringSessionInputType;
+};
+
+
+export type MutationCreateDocumentAiComplianceCheckArgs = {
+  payload: DocumentAiComplianceCheckInputType;
+};
+
+
+export type MutationCreateDocumentAiModelArgs = {
+  payload: DocumentAiModelInputType;
+};
+
+
+export type MutationCreateDocumentAiReviewFeedbackArgs = {
+  payload: DocumentAiReviewFeedbackInputType;
+};
+
+
+export type MutationCreateDocumentAnalyticsArgs = {
+  payload: DocumentAnalyticsInputType;
+};
+
+
+export type MutationCreateDocumentAuditArgs = {
+  payload: DocumentAuditInputType;
+};
+
+
+export type MutationCreateDocumentCategoryArgs = {
+  payload: DocumentCategoryInputType;
+};
+
+
+export type MutationCreateDocumentComplianceIssueArgs = {
+  payload: DocumentComplianceIssueInputType;
+};
+
+
+export type MutationCreateDocumentComplianceStandardArgs = {
+  payload: DocumentComplianceStandardInputType;
+};
+
+
+export type MutationCreateDocumentFolderArgs = {
+  payload: DocumentFolderInputType;
+};
+
+
+export type MutationCreateDocumentRelationArgs = {
+  payload: DocumentRelationInputType;
+};
+
+
+export type MutationCreateDocumentReviewCycleArgs = {
+  payload: DocumentReviewCycleInputType;
+};
+
+
+export type MutationCreateDocumentStatusArgs = {
+  payload: DocumentStatusInputType;
+};
+
+
+export type MutationCreateDocumentSubscriptionArgs = {
+  payload: DocumentSubscriptionInputType;
+};
+
+
+export type MutationCreateDocumentTagArgs = {
+  payload: DocumentTagInputType;
+};
+
+
+export type MutationCreateDocumentTemplateArgs = {
+  payload: DocumentTemplateInputType;
+};
+
+
+export type MutationCreateDocumentVersionArgs = {
+  payload: DocumentVersionInputType;
+};
+
+
+export type MutationCreateGrindBoardArgs = {
+  payload: GrindCreateBoardInput;
+};
+
+
+export type MutationCreateGrindErrandArgs = {
+  payload: GrindCreateErrandInput;
+};
+
+
+export type MutationCreateGrindLabelArgs = {
+  payload: GrindCreateLabelInput;
+};
+
+
+export type MutationCreateGrindMediaArgs = {
+  payload: GrindCreateMediaInput;
+};
+
+
+export type MutationCreateGrindMilestoneArgs = {
+  payload: GrindCreateMilestoneInput;
+};
+
+
+export type MutationCreateGrindPosterArgs = {
+  payload: GrindCreatePosterInput;
+};
+
+
+export type MutationCreateGrindSchemeArgs = {
+  payload: GrindCreateSchemeInput;
+};
+
+
+export type MutationCreateGrindStampArgs = {
+  payload: GrindCreateStampInput;
+};
+
+
 export type MutationCreateGroupArgs = {
   payload: GroupInputType;
 };
@@ -2889,6 +4707,126 @@ export type MutationCreateWorksheetTemplateArgs = {
 
 
 export type MutationDeleteClientContactArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiAuthoringSessionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiComplianceCheckArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiModelArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiReviewFeedbackArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAnalyticsArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentCategoryArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentComplianceIssueArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentComplianceStandardArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentFolderArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentRelationArgs = {
+  payload: DocumentRelationInputType;
+};
+
+
+export type MutationDeleteDocumentReviewCycleArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentSubscriptionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentTagArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentTemplateArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentVersionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindBoardArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindErrandArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindLabelArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindMediaArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindMilestoneArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindPosterArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindSchemeArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindStampArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -3283,6 +5221,156 @@ export type MutationUpdateDepartmentArgs = {
 
 export type MutationUpdateDistrictArgs = {
   payload: DistrictInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentArgs = {
+  payload: DocumentUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiAuthoringSessionArgs = {
+  payload: DocumentAiAuthoringSessionUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiComplianceCheckArgs = {
+  payload: DocumentAiComplianceCheckUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiModelArgs = {
+  payload: DocumentAiModelUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiReviewFeedbackArgs = {
+  payload: DocumentAiReviewFeedbackUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAnalyticsArgs = {
+  payload: DocumentAnalyticsUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentCategoryArgs = {
+  payload: DocumentCategoryUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentComplianceIssueArgs = {
+  payload: DocumentComplianceIssueUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentComplianceStandardArgs = {
+  payload: DocumentComplianceStandardUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentFolderArgs = {
+  payload: DocumentFolderUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentReviewCycleArgs = {
+  payload: DocumentReviewCycleUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentReviewStepArgs = {
+  payload: DocumentReviewStepUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentStatusArgs = {
+  payload: DocumentStatusUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentSubscriptionArgs = {
+  payload: DocumentSubscriptionUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentTagArgs = {
+  payload: DocumentTagUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentTemplateArgs = {
+  payload: DocumentTemplateUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentVersionArgs = {
+  payload: DocumentVersionUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindBoardArgs = {
+  payload: GrindUpdateBoardInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindErrandArgs = {
+  payload: GrindUpdateErrandInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindLabelArgs = {
+  payload: GrindUpdateLabelInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindMediaArgs = {
+  payload: GrindUpdateMediaInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindMilestoneArgs = {
+  payload: GrindUpdateMilestoneInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindPosterArgs = {
+  payload: GrindUpdatePosterInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindSchemeArgs = {
+  payload: GrindUpdateSchemeInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindStampArgs = {
+  payload: GrindUpdateStampInput;
   uid: Scalars['String']['input'];
 };
 
@@ -3804,6 +5892,13 @@ export type PermissionType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export enum PosterCategory {
+  Engagement = 'ENGAGEMENT',
+  Listing = 'LISTING',
+  Message = 'MESSAGE',
+  Todo = 'TODO'
+}
+
 export type PriceDiscountInput = {
   discountType: Scalars['String']['input'];
   endDate: Scalars['DateTime']['input'];
@@ -4189,6 +6284,86 @@ export type Query = {
   districtAll: DistrictCursorPage;
   districtByUid: DistrictType;
   districtsByProvinceUid: Array<DistrictType>;
+  documentAiAuthoringSessionAll: DocumentAiAuthoringSessionCursorPage;
+  documentAiAuthoringSessionByUid?: Maybe<DocumentAiAuthoringSessionType>;
+  documentAiAuthoringSessionsByDocument: Array<DocumentAiAuthoringSessionType>;
+  documentAiComplianceCheckAll: DocumentAiComplianceCheckCursorPage;
+  documentAiComplianceCheckByUid?: Maybe<DocumentAiComplianceCheckType>;
+  documentAiComplianceChecksByDocument: Array<DocumentAiComplianceCheckType>;
+  documentAiModelAll: DocumentAiModelCursorPage;
+  documentAiModelByUid?: Maybe<DocumentAiModelType>;
+  documentAiModelsActive: Array<DocumentAiModelType>;
+  documentAiReviewFeedbackAll: DocumentAiReviewFeedbackCursorPage;
+  documentAiReviewFeedbackByStep: Array<DocumentAiReviewFeedbackType>;
+  documentAiReviewFeedbackByUid?: Maybe<DocumentAiReviewFeedbackType>;
+  documentAll: DocumentCursorPage;
+  documentAnalyticsAll: DocumentAnalyticsCursorPage;
+  documentAnalyticsByDocument: Array<DocumentAnalyticsType>;
+  documentAnalyticsByUid?: Maybe<DocumentAnalyticsType>;
+  documentAuditAll: DocumentAuditCursorPage;
+  documentAuditByUid?: Maybe<DocumentAuditType>;
+  documentAuditsByDocument: Array<DocumentAuditType>;
+  documentByDocumentId?: Maybe<DocumentType>;
+  documentByUid?: Maybe<DocumentType>;
+  documentCategoryByUid?: Maybe<DocumentCategoryType>;
+  documentComplianceIssueAll: DocumentComplianceIssueCursorPage;
+  documentComplianceIssueByUid?: Maybe<DocumentComplianceIssueType>;
+  documentComplianceIssuesByCheck: Array<DocumentComplianceIssueType>;
+  documentComplianceStandardAll: DocumentComplianceStandardCursorPage;
+  documentComplianceStandardByUid?: Maybe<DocumentComplianceStandardType>;
+  documentFolderAll: DocumentFolderCursorPage;
+  documentFolderByUid?: Maybe<DocumentFolderType>;
+  documentReviewCycleAll: DocumentReviewCycleCursorPage;
+  documentReviewCycleByUid?: Maybe<DocumentReviewCycleType>;
+  documentReviewCyclesByDocument: Array<DocumentReviewCycleType>;
+  documentReviewStepAll: DocumentReviewStepCursorPage;
+  documentReviewStepByUid?: Maybe<DocumentReviewStepType>;
+  documentReviewStepsByCycle: Array<DocumentReviewStepType>;
+  documentReviewStepsByReviewer: Array<DocumentReviewStepType>;
+  documentRootFolders: Array<DocumentFolderType>;
+  documentStatusAll: DocumentStatusCursorPage;
+  documentStatusByUid?: Maybe<DocumentStatusType>;
+  documentStatusesByDocument: Array<DocumentStatusType>;
+  documentSubscriptionAll: DocumentSubscriptionCursorPage;
+  documentSubscriptionByUid?: Maybe<DocumentSubscriptionType>;
+  documentSubscriptionsByDocument: Array<DocumentSubscriptionType>;
+  documentSubscriptionsByUser: Array<DocumentSubscriptionType>;
+  documentTagAll: DocumentTagCursorPage;
+  documentTagByUid?: Maybe<DocumentTagType>;
+  documentTemplateAll: DocumentTemplateCursorPage;
+  documentTemplateByUid?: Maybe<DocumentTemplateType>;
+  documentVersionAll: DocumentVersionCursorPage;
+  documentVersionByUid?: Maybe<DocumentVersionType>;
+  documentVersionsByDocument: Array<DocumentVersionType>;
+  grindBoardAll: GrindBoardCursorPage;
+  grindBoardByUid?: Maybe<GrindBoardType>;
+  grindBoardsByScheme: Array<GrindBoardType>;
+  grindErrandAll: GrindErrandCursorPage;
+  grindErrandByUid?: Maybe<GrindErrandType>;
+  grindErrandsByAssignee: Array<GrindErrandType>;
+  grindErrandsByPoster: Array<GrindErrandType>;
+  grindLabelAll: GrindLabelCursorPage;
+  grindLabelByUid?: Maybe<GrindLabelType>;
+  grindLabelsByCategory: Array<GrindLabelType>;
+  grindMediaAll: GrindMediaCursorPage;
+  grindMediaByTarget: Array<GrindMediaType>;
+  grindMediaByUid?: Maybe<GrindMediaType>;
+  grindMilestoneAll: GrindMilestoneCursorPage;
+  grindMilestoneByUid?: Maybe<GrindMilestoneType>;
+  grindMilestonesByAssignee: Array<GrindMilestoneType>;
+  grindMilestonesByErrand: Array<GrindMilestoneType>;
+  grindOccurrenceAll: GrindOccurrenceCursorPage;
+  grindOccurrenceByUid?: Maybe<GrindOccurrenceType>;
+  grindOccurrencesByActor: Array<GrindOccurrenceType>;
+  grindOccurrencesByTarget: Array<GrindOccurrenceType>;
+  grindPosterAll: GrindPosterCursorPage;
+  grindPosterByUid?: Maybe<GrindPosterType>;
+  grindPostersByBoard: Array<GrindPosterType>;
+  grindSchemeAll: GrindSchemeCursorPage;
+  grindSchemeByUid?: Maybe<GrindSchemeType>;
+  grindStampAll: GrindStampCursorPage;
+  grindStampByCategory: Array<GrindStampType>;
+  grindStampByUid?: Maybe<GrindStampType>;
   groupAll: Array<GroupType>;
   groupByUid?: Maybe<GroupType>;
   hazardAll: Array<HazardType>;
@@ -4741,6 +6916,551 @@ export type QueryDistrictByUidArgs = {
 
 
 export type QueryDistrictsByProvinceUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiAuthoringSessionAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  modelUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentAiAuthoringSessionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiAuthoringSessionsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiComplianceCheckAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  maxScore?: InputMaybe<Scalars['Float']['input']>;
+  minScore?: InputMaybe<Scalars['Float']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  standardUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAiComplianceCheckByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiComplianceChecksByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiModelAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAiModelByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiReviewFeedbackAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  modelUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  reviewStepUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentAiReviewFeedbackByStepArgs = {
+  reviewStepUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiReviewFeedbackByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  authorUid?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
+  departmentUid?: InputMaybe<Scalars['String']['input']>;
+  folderUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  readerUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  tagUid?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAnalyticsAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  maxComplexity?: InputMaybe<Scalars['Float']['input']>;
+  maxReadability?: InputMaybe<Scalars['Float']['input']>;
+  maxSentiment?: InputMaybe<Scalars['Float']['input']>;
+  minComplexity?: InputMaybe<Scalars['Float']['input']>;
+  minReadability?: InputMaybe<Scalars['Float']['input']>;
+  minSentiment?: InputMaybe<Scalars['Float']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentAnalyticsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAnalyticsByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAuditAllArgs = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  userUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAuditByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAuditsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentByDocumentIdArgs = {
+  documentId: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentCategoryByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentComplianceIssueAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  checkUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  severity?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentComplianceIssueByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentComplianceIssuesByCheckArgs = {
+  checkUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentComplianceStandardAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  version?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentComplianceStandardByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentFolderAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  parentUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentFolderByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewCycleAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  initiatedByUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentReviewCycleByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewCyclesByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewStepAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  reviewCycleUid?: InputMaybe<Scalars['String']['input']>;
+  reviewerUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentReviewStepByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewStepsByCycleArgs = {
+  reviewCycleUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewStepsByReviewerArgs = {
+  reviewerUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentStatusAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentStatusByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentStatusesByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentSubscriptionAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  subscriptionType?: InputMaybe<Scalars['String']['input']>;
+  userUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentSubscriptionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentSubscriptionsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentSubscriptionsByUserArgs = {
+  userUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentTagAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentTagByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentTemplateAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentTemplateByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentVersionAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentVersionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentVersionsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindBoardAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  schemeUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindBoardByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindBoardsBySchemeArgs = {
+  schemeUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  posterUid?: InputMaybe<Scalars['String']['input']>;
+  priority?: InputMaybe<Scalars['String']['input']>;
+  reporterUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindErrandByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandsByAssigneeArgs = {
+  assigneeUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandsByPosterArgs = {
+  posterUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindLabelAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindLabelByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindLabelsByCategoryArgs = {
+  category: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMediaAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  target?: InputMaybe<Scalars['String']['input']>;
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindMediaByTargetArgs = {
+  target: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMediaByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMilestoneAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  complete?: InputMaybe<Scalars['Boolean']['input']>;
+  errandUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindMilestoneByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMilestonesByAssigneeArgs = {
+  assigneeUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMilestonesByErrandArgs = {
+  errandUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindOccurrenceAllArgs = {
+  actorUid?: InputMaybe<Scalars['String']['input']>;
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  target?: InputMaybe<Scalars['String']['input']>;
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindOccurrenceByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindOccurrencesByActorArgs = {
+  actorUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindOccurrencesByTargetArgs = {
+  target: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindPosterAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  boardUid?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindPosterByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindPostersByBoardArgs = {
+  boardUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindSchemeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindSchemeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindStampAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindStampByCategoryArgs = {
+  category: Scalars['String']['input'];
+};
+
+
+export type QueryGrindStampByUidArgs = {
   uid: Scalars['String']['input'];
 };
 

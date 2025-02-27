@@ -1688,6 +1688,1619 @@ export type DistrictType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type DocumentAiAuthoringSessionCursorPage = {
+  __typename?: 'DocumentAIAuthoringSessionCursorPage';
+  edges?: Maybe<Array<DocumentAiAuthoringSessionEdge>>;
+  items?: Maybe<Array<DocumentAiAuthoringSessionType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiAuthoringSessionEdge = {
+  __typename?: 'DocumentAIAuthoringSessionEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiAuthoringSessionType;
+};
+
+export type DocumentAiAuthoringSessionInputType = {
+  /** Conversation */
+  conversation: Scalars['String']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** AI Model UID */
+  model: Scalars['String']['input'];
+  /** Prompt */
+  prompt: Scalars['String']['input'];
+};
+
+/** Response for document AI authoring session operations */
+export type DocumentAiAuthoringSessionResponse = DocumentAiAuthoringSessionType | OperationError;
+
+export type DocumentAiAuthoringSessionType = {
+  __typename?: 'DocumentAIAuthoringSessionType';
+  conversation: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  model: DocumentAiModelType;
+  modelUid: Scalars['String']['output'];
+  prompt: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiAuthoringSessionUpdateInputType = {
+  /** Conversation */
+  conversation?: InputMaybe<Scalars['String']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** AI Model UID */
+  model?: InputMaybe<Scalars['String']['input']>;
+  /** Prompt */
+  prompt?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAiComplianceCheckCursorPage = {
+  __typename?: 'DocumentAIComplianceCheckCursorPage';
+  edges?: Maybe<Array<DocumentAiComplianceCheckEdge>>;
+  items?: Maybe<Array<DocumentAiComplianceCheckType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiComplianceCheckEdge = {
+  __typename?: 'DocumentAIComplianceCheckEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiComplianceCheckType;
+};
+
+export type DocumentAiComplianceCheckInputType = {
+  /** Compliance score */
+  complianceScore: Scalars['Float']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Compliance issues */
+  issues?: InputMaybe<Array<DocumentComplianceIssueInputType>>;
+  /** Check results */
+  results: Scalars['String']['input'];
+  /** Compliance standard UID */
+  standard: Scalars['String']['input'];
+};
+
+/** Response for document AI compliance check operations */
+export type DocumentAiComplianceCheckResponse = DocumentAiComplianceCheckType | OperationError;
+
+export type DocumentAiComplianceCheckType = {
+  __typename?: 'DocumentAIComplianceCheckType';
+  complianceScore: Scalars['Float']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  issues: Array<DocumentComplianceIssueType>;
+  results: Scalars['String']['output'];
+  standard: DocumentComplianceStandardType;
+  standardUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiComplianceCheckUpdateInputType = {
+  /** Compliance score */
+  complianceScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Check results */
+  results?: InputMaybe<Scalars['String']['input']>;
+  /** Compliance standard UID */
+  standard?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAiModelCursorPage = {
+  __typename?: 'DocumentAIModelCursorPage';
+  edges?: Maybe<Array<DocumentAiModelEdge>>;
+  items?: Maybe<Array<DocumentAiModelType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiModelEdge = {
+  __typename?: 'DocumentAIModelEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiModelType;
+};
+
+export type DocumentAiModelInputType = {
+  /** API endpoint */
+  apiEndpoint: Scalars['String']['input'];
+  /** Model capabilities */
+  capabilities: Scalars['String']['input'];
+  /** Model description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Is active */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Model name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document AI model operations */
+export type DocumentAiModelResponse = DocumentAiModelType | OperationError;
+
+export type DocumentAiModelType = {
+  __typename?: 'DocumentAIModelType';
+  apiEndpoint: Scalars['String']['output'];
+  capabilities: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiModelUpdateInputType = {
+  /** API endpoint */
+  apiEndpoint?: InputMaybe<Scalars['String']['input']>;
+  /** Model capabilities */
+  capabilities?: InputMaybe<Scalars['String']['input']>;
+  /** Model description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Is active */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Model name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAiReviewFeedbackCursorPage = {
+  __typename?: 'DocumentAIReviewFeedbackCursorPage';
+  edges?: Maybe<Array<DocumentAiReviewFeedbackEdge>>;
+  items?: Maybe<Array<DocumentAiReviewFeedbackType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAiReviewFeedbackEdge = {
+  __typename?: 'DocumentAIReviewFeedbackEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAiReviewFeedbackType;
+};
+
+export type DocumentAiReviewFeedbackInputType = {
+  /** AI Model UID */
+  model: Scalars['String']['input'];
+  /** Review step UID */
+  reviewStep: Scalars['String']['input'];
+  /** AI suggestions */
+  suggestions: Scalars['String']['input'];
+};
+
+/** Response for document AI review feedback operations */
+export type DocumentAiReviewFeedbackResponse = DocumentAiReviewFeedbackType | OperationError;
+
+export type DocumentAiReviewFeedbackType = {
+  __typename?: 'DocumentAIReviewFeedbackType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  model: DocumentAiModelType;
+  modelUid: Scalars['String']['output'];
+  reviewStep: DocumentReviewStepType;
+  reviewStepUid: Scalars['String']['output'];
+  suggestions: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAiReviewFeedbackUpdateInputType = {
+  /** AI Model UID */
+  model?: InputMaybe<Scalars['String']['input']>;
+  /** Review step UID */
+  reviewStep?: InputMaybe<Scalars['String']['input']>;
+  /** AI suggestions */
+  suggestions?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAnalyticsCursorPage = {
+  __typename?: 'DocumentAnalyticsCursorPage';
+  edges?: Maybe<Array<DocumentAnalyticsEdge>>;
+  items?: Maybe<Array<DocumentAnalyticsType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAnalyticsEdge = {
+  __typename?: 'DocumentAnalyticsEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAnalyticsType;
+};
+
+export type DocumentAnalyticsInputType = {
+  /** Complexity score */
+  complexityScore: Scalars['Float']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Generated date */
+  generatedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Key topics */
+  keyTopics: Scalars['String']['input'];
+  /** Readability score */
+  readabilityScore: Scalars['Float']['input'];
+  /** Sentiment score */
+  sentimentScore: Scalars['Float']['input'];
+  /** Document summary */
+  summary: Scalars['String']['input'];
+};
+
+/** Response for document analytics operations */
+export type DocumentAnalyticsResponse = DocumentAnalyticsType | OperationError;
+
+export type DocumentAnalyticsType = {
+  __typename?: 'DocumentAnalyticsType';
+  complexityScore: Scalars['Float']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  generatedDate: Scalars['String']['output'];
+  keyTopics: Scalars['String']['output'];
+  readabilityScore: Scalars['Float']['output'];
+  sentimentScore: Scalars['Float']['output'];
+  summary: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentAnalyticsUpdateInputType = {
+  /** Complexity score */
+  complexityScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Generated date */
+  generatedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Key topics */
+  keyTopics?: InputMaybe<Scalars['String']['input']>;
+  /** Readability score */
+  readabilityScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Sentiment score */
+  sentimentScore?: InputMaybe<Scalars['Float']['input']>;
+  /** Document summary */
+  summary?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentAuditCursorPage = {
+  __typename?: 'DocumentAuditCursorPage';
+  edges?: Maybe<Array<DocumentAuditEdge>>;
+  items?: Maybe<Array<DocumentAuditType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentAuditEdge = {
+  __typename?: 'DocumentAuditEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentAuditType;
+};
+
+export type DocumentAuditInputType = {
+  /** Audit action */
+  action: Scalars['String']['input'];
+  /** Action date */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** IP address */
+  ipAddress?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Response for document audit operations */
+export type DocumentAuditResponse = DocumentAuditType | OperationError;
+
+export type DocumentAuditType = {
+  __typename?: 'DocumentAuditType';
+  action: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  date: Scalars['String']['output'];
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  user: UserType;
+  userUid: Scalars['String']['output'];
+};
+
+export type DocumentCategoryInputType = {
+  /** Category name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document category operations */
+export type DocumentCategoryResponse = DocumentCategoryType | OperationError;
+
+export type DocumentCategoryType = {
+  __typename?: 'DocumentCategoryType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentCategoryUpdateInputType = {
+  /** Category name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentComplianceIssueCursorPage = {
+  __typename?: 'DocumentComplianceIssueCursorPage';
+  edges?: Maybe<Array<DocumentComplianceIssueEdge>>;
+  items?: Maybe<Array<DocumentComplianceIssueType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentComplianceIssueEdge = {
+  __typename?: 'DocumentComplianceIssueEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentComplianceIssueType;
+};
+
+export type DocumentComplianceIssueInputType = {
+  /** Compliance check UID */
+  check: Scalars['String']['input'];
+  /** Issue description */
+  description: Scalars['String']['input'];
+  /** Document section */
+  section: Scalars['String']['input'];
+  /** Issue severity */
+  severity: Scalars['String']['input'];
+  /** Suggestion */
+  suggestion: Scalars['String']['input'];
+};
+
+/** Response for document compliance issue operations */
+export type DocumentComplianceIssueResponse = DocumentComplianceIssueType | OperationError;
+
+export type DocumentComplianceIssueType = {
+  __typename?: 'DocumentComplianceIssueType';
+  check: DocumentAiComplianceCheckType;
+  checkUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  section: Scalars['String']['output'];
+  severity: Scalars['String']['output'];
+  suggestion: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentComplianceIssueUpdateInputType = {
+  /** Compliance check UID */
+  check?: InputMaybe<Scalars['String']['input']>;
+  /** Issue description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Document section */
+  section?: InputMaybe<Scalars['String']['input']>;
+  /** Issue severity */
+  severity?: InputMaybe<Scalars['String']['input']>;
+  /** Suggestion */
+  suggestion?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentComplianceStandardCursorPage = {
+  __typename?: 'DocumentComplianceStandardCursorPage';
+  edges?: Maybe<Array<DocumentComplianceStandardEdge>>;
+  items?: Maybe<Array<DocumentComplianceStandardType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentComplianceStandardEdge = {
+  __typename?: 'DocumentComplianceStandardEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentComplianceStandardType;
+};
+
+export type DocumentComplianceStandardInputType = {
+  /** Standard content */
+  content: Scalars['String']['input'];
+  /** Standard description */
+  description: Scalars['String']['input'];
+  /** Standard name */
+  name: Scalars['String']['input'];
+  /** Standard version */
+  version: Scalars['String']['input'];
+};
+
+/** Response for document compliance standard operations */
+export type DocumentComplianceStandardResponse = DocumentComplianceStandardType | OperationError;
+
+export type DocumentComplianceStandardType = {
+  __typename?: 'DocumentComplianceStandardType';
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  version: Scalars['String']['output'];
+};
+
+export type DocumentComplianceStandardUpdateInputType = {
+  /** Standard content */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Standard description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Standard name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+  /** Standard version */
+  version?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DocumentCursorPage = {
+  __typename?: 'DocumentCursorPage';
+  edges?: Maybe<Array<DocumentEdge>>;
+  items?: Maybe<Array<DocumentType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentEdge = {
+  __typename?: 'DocumentEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentType;
+};
+
+export type DocumentFolderCursorPage = {
+  __typename?: 'DocumentFolderCursorPage';
+  edges?: Maybe<Array<DocumentFolderEdge>>;
+  items?: Maybe<Array<DocumentFolderType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentFolderEdge = {
+  __typename?: 'DocumentFolderEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentFolderType;
+};
+
+export type DocumentFolderInputType = {
+  /** Folder description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Folder name */
+  name: Scalars['String']['input'];
+  /** Parent folder UID */
+  parent?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Response for document folder operations */
+export type DocumentFolderResponse = DocumentFolderType | OperationError;
+
+export type DocumentFolderType = {
+  __typename?: 'DocumentFolderType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  documents: Array<DocumentType>;
+  name: Scalars['String']['output'];
+  parent?: Maybe<DocumentFolderType>;
+  parentUid?: Maybe<Scalars['String']['output']>;
+  subfolders: Array<DocumentFolderType>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentFolderUpdateInputType = {
+  /** Folder description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Folder name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Parent folder UID */
+  parent?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentInputType = {
+  /** Author UIDs */
+  authors?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Department UID */
+  department?: InputMaybe<Scalars['String']['input']>;
+  /** Document ID */
+  documentId: Scalars['String']['input'];
+  /** Folder UID */
+  folder?: InputMaybe<Scalars['String']['input']>;
+  /** Initial document content */
+  initialContent?: InputMaybe<Scalars['String']['input']>;
+  /** Initial version number */
+  initialVersion?: InputMaybe<Scalars['String']['input']>;
+  /** Document name */
+  name: Scalars['String']['input'];
+  /** Reader UIDs */
+  readers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Document subtitle */
+  subtitle?: InputMaybe<Scalars['String']['input']>;
+  /** Tag UIDs */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Template UID */
+  template?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DocumentRelationInputType = {
+  /** Relation type */
+  relationType: Scalars['String']['input'];
+  /** Source document UID */
+  sourceDocument: Scalars['String']['input'];
+  /** Target document UID */
+  targetDocument: Scalars['String']['input'];
+};
+
+/** Response for document relation operations */
+export type DocumentRelationResponse = DocumentType | OperationError;
+
+/** Response for document operations */
+export type DocumentResponse = DocumentType | OperationError;
+
+export type DocumentReviewCycleCursorPage = {
+  __typename?: 'DocumentReviewCycleCursorPage';
+  edges?: Maybe<Array<DocumentReviewCycleEdge>>;
+  items?: Maybe<Array<DocumentReviewCycleType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentReviewCycleEdge = {
+  __typename?: 'DocumentReviewCycleEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentReviewCycleType;
+};
+
+export type DocumentReviewCycleInputType = {
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** End date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Reviewers UIDs */
+  reviewers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start date */
+  startDate: Scalars['DateTime']['input'];
+  /** Review cycle status */
+  status: Scalars['String']['input'];
+};
+
+/** Response for document review cycle operations */
+export type DocumentReviewCycleResponse = DocumentReviewCycleType | OperationError;
+
+export type DocumentReviewCycleType = {
+  __typename?: 'DocumentReviewCycleType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  endDate?: Maybe<Scalars['String']['output']>;
+  initiatedBy: UserType;
+  initiatedByUid: Scalars['String']['output'];
+  startDate: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  steps: Array<DocumentReviewStepType>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentReviewCycleUpdateInputType = {
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** End date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Reviewers UIDs */
+  reviewers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Review cycle status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentReviewStepCursorPage = {
+  __typename?: 'DocumentReviewStepCursorPage';
+  edges?: Maybe<Array<DocumentReviewStepEdge>>;
+  items?: Maybe<Array<DocumentReviewStepType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentReviewStepEdge = {
+  __typename?: 'DocumentReviewStepEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentReviewStepType;
+};
+
+/** Response for document review step operations */
+export type DocumentReviewStepResponse = DocumentReviewStepType | OperationError;
+
+export type DocumentReviewStepType = {
+  __typename?: 'DocumentReviewStepType';
+  actionDate?: Maybe<Scalars['String']['output']>;
+  aiFeedback: Array<DocumentAiReviewFeedbackType>;
+  comments?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  reviewCycle: DocumentReviewCycleType;
+  reviewCycleUid: Scalars['String']['output'];
+  reviewer: UserType;
+  reviewerUid: Scalars['String']['output'];
+  sequence: Scalars['Int']['output'];
+  status: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentReviewStepUpdateInputType = {
+  /** Action date */
+  actionDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Review comments */
+  comments?: InputMaybe<Scalars['String']['input']>;
+  /** Review cycle UID */
+  reviewCycle?: InputMaybe<Scalars['String']['input']>;
+  /** Reviewer UID */
+  reviewer?: InputMaybe<Scalars['String']['input']>;
+  /** Review sequence */
+  sequence?: InputMaybe<Scalars['Int']['input']>;
+  /** Review status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentStatusCursorPage = {
+  __typename?: 'DocumentStatusCursorPage';
+  edges?: Maybe<Array<DocumentStatusEdge>>;
+  items?: Maybe<Array<DocumentStatusType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentStatusEdge = {
+  __typename?: 'DocumentStatusEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentStatusType;
+};
+
+export type DocumentStatusInputType = {
+  /** Status date */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Document status */
+  status: Scalars['String']['input'];
+};
+
+/** Response for document status operations */
+export type DocumentStatusResponse = DocumentStatusType | OperationError;
+
+export type DocumentStatusType = {
+  __typename?: 'DocumentStatusType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  date: Scalars['String']['output'];
+  document?: Maybe<DocumentType>;
+  documentUid: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  user: UserType;
+  userUid: Scalars['String']['output'];
+};
+
+export type DocumentStatusUpdateInputType = {
+  /** Status date */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Document status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentSubscriptionCursorPage = {
+  __typename?: 'DocumentSubscriptionCursorPage';
+  edges?: Maybe<Array<DocumentSubscriptionEdge>>;
+  items?: Maybe<Array<DocumentSubscriptionType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentSubscriptionEdge = {
+  __typename?: 'DocumentSubscriptionEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentSubscriptionType;
+};
+
+export type DocumentSubscriptionInputType = {
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Subscription type */
+  subscriptionType: Scalars['String']['input'];
+  /** User UID */
+  user: Scalars['String']['input'];
+};
+
+/** Response for document subscription operations */
+export type DocumentSubscriptionResponse = DocumentSubscriptionType | OperationError;
+
+export type DocumentSubscriptionType = {
+  __typename?: 'DocumentSubscriptionType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document: DocumentType;
+  documentUid: Scalars['String']['output'];
+  subscriptionType: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  user: UserType;
+  userUid: Scalars['String']['output'];
+};
+
+export type DocumentSubscriptionUpdateInputType = {
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  /** Subscription type */
+  subscriptionType?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+  /** User UID */
+  user?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DocumentTagCursorPage = {
+  __typename?: 'DocumentTagCursorPage';
+  edges?: Maybe<Array<DocumentTagEdge>>;
+  items?: Maybe<Array<DocumentTagType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentTagEdge = {
+  __typename?: 'DocumentTagEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentTagType;
+};
+
+export type DocumentTagInputType = {
+  /** Tag name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document tag operations */
+export type DocumentTagResponse = DocumentTagType | OperationError;
+
+export type DocumentTagType = {
+  __typename?: 'DocumentTagType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  documents: Array<DocumentType>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentTagUpdateInputType = {
+  /** Tag name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentTemplateCursorPage = {
+  __typename?: 'DocumentTemplateCursorPage';
+  edges?: Maybe<Array<DocumentTemplateEdge>>;
+  items?: Maybe<Array<DocumentTemplateType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentTemplateEdge = {
+  __typename?: 'DocumentTemplateEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentTemplateType;
+};
+
+export type DocumentTemplateInputType = {
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Template content */
+  content: Scalars['String']['input'];
+  /** Template description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Template name */
+  name: Scalars['String']['input'];
+};
+
+/** Response for document template operations */
+export type DocumentTemplateResponse = DocumentTemplateType | OperationError;
+
+export type DocumentTemplateType = {
+  __typename?: 'DocumentTemplateType';
+  category?: Maybe<DocumentCategoryType>;
+  categoryUid?: Maybe<Scalars['String']['output']>;
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  documents: Array<DocumentType>;
+  name: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DocumentTemplateUpdateInputType = {
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Template content */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Template description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Template name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentType = {
+  __typename?: 'DocumentType';
+  aiAuthoringSessions: Array<DocumentAiAuthoringSessionType>;
+  analytics: Array<DocumentAnalyticsType>;
+  auditRecords: Array<DocumentAuditType>;
+  authors: Array<UserType>;
+  category?: Maybe<DocumentCategoryType>;
+  categoryUid?: Maybe<Scalars['String']['output']>;
+  complianceChecks: Array<DocumentAiComplianceCheckType>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  department?: Maybe<DepartmentType>;
+  departmentUid?: Maybe<Scalars['String']['output']>;
+  documentId: Scalars['String']['output'];
+  folder?: Maybe<DocumentFolderType>;
+  folderUid?: Maybe<Scalars['String']['output']>;
+  lastAccessed?: Maybe<Scalars['String']['output']>;
+  lastAccessedBy?: Maybe<UserType>;
+  lastAccessedByUid?: Maybe<Scalars['String']['output']>;
+  latestVersion?: Maybe<DocumentVersionType>;
+  name: Scalars['String']['output'];
+  readers: Array<UserType>;
+  relatedFrom: Array<DocumentType>;
+  relatedTo: Array<DocumentType>;
+  reviewCycles: Array<DocumentReviewCycleType>;
+  status?: Maybe<Scalars['String']['output']>;
+  statuses: Array<DocumentStatusType>;
+  subscriptions: Array<DocumentSubscriptionType>;
+  subtitle?: Maybe<Scalars['String']['output']>;
+  tags: Array<DocumentTagType>;
+  template?: Maybe<DocumentTemplateType>;
+  templateUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  versions: Array<DocumentVersionType>;
+};
+
+export type DocumentUpdateInputType = {
+  /** Author UIDs */
+  authors?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Category UID */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Department UID */
+  department?: InputMaybe<Scalars['String']['input']>;
+  /** Document ID */
+  documentId?: InputMaybe<Scalars['String']['input']>;
+  /** Folder UID */
+  folder?: InputMaybe<Scalars['String']['input']>;
+  /** Document name */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Reader UIDs */
+  readers?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Document subtitle */
+  subtitle?: InputMaybe<Scalars['String']['input']>;
+  /** Tag UIDs */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Template UID */
+  template?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type DocumentVersionCursorPage = {
+  __typename?: 'DocumentVersionCursorPage';
+  edges?: Maybe<Array<DocumentVersionEdge>>;
+  items?: Maybe<Array<DocumentVersionType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type DocumentVersionEdge = {
+  __typename?: 'DocumentVersionEdge';
+  cursor: Scalars['String']['output'];
+  node: DocumentVersionType;
+};
+
+export type DocumentVersionInputType = {
+  /** Change summary */
+  changeSummary?: InputMaybe<Scalars['String']['input']>;
+  /** Document content */
+  content: Scalars['String']['input'];
+  /** Document UID */
+  document: Scalars['String']['input'];
+  /** Version number */
+  versionNumber: Scalars['String']['input'];
+};
+
+/** Response for document version operations */
+export type DocumentVersionResponse = DocumentVersionType | OperationError;
+
+export type DocumentVersionType = {
+  __typename?: 'DocumentVersionType';
+  changeSummary?: Maybe<Scalars['String']['output']>;
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  document?: Maybe<DocumentType>;
+  documentUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  versionNumber: Scalars['String']['output'];
+};
+
+export type DocumentVersionUpdateInputType = {
+  /** Change summary */
+  changeSummary?: InputMaybe<Scalars['String']['input']>;
+  /** Document content */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Document UID */
+  document?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+  /** Version number */
+  versionNumber?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum ErrandCategory {
+  Engagement = 'ENGAGEMENT',
+  Message = 'MESSAGE',
+  Project = 'PROJECT',
+  Ticket = 'TICKET',
+  Todo = 'TODO'
+}
+
+export type GrindBoardCursorPage = {
+  __typename?: 'GrindBoardCursorPage';
+  edges?: Maybe<Array<GrindBoardEdge>>;
+  items?: Maybe<Array<GrindBoardType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindBoardEdge = {
+  __typename?: 'GrindBoardEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindBoardType;
+};
+
+export type GrindBoardResponse = GrindBoardType | OperationError;
+
+export type GrindBoardType = {
+  __typename?: 'GrindBoardType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  posters: Array<GrindPosterType>;
+  scheme?: Maybe<GrindSchemeType>;
+  schemeUid?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindCreateBoardInput = {
+  /** Board Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Board Scheme */
+  scheme?: InputMaybe<Scalars['String']['input']>;
+  /** Board Title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindCreateErrandInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Category */
+  category?: InputMaybe<ErrandCategory>;
+  /** Errand Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Label | Status */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Milestone */
+  milestones?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Poster */
+  poster?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Priority */
+  priority?: InputMaybe<Scalars['String']['input']>;
+  /** Assigned To */
+  reporter?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Stamps | Tags */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreateLabelInput = {
+  /** Label category */
+  category: Scalars['String']['input'];
+  /** Label title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindCreateMediaInput = {
+  /** Media description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Media destination */
+  destination?: InputMaybe<Scalars['String']['input']>;
+  /** Media encoding */
+  encoding?: InputMaybe<Scalars['String']['input']>;
+  /** Media filename */
+  filename?: InputMaybe<Scalars['String']['input']>;
+  /** Media mimetype */
+  mimetype?: InputMaybe<Scalars['String']['input']>;
+  /** Media original name */
+  originalName?: InputMaybe<Scalars['String']['input']>;
+  /** Media path */
+  path?: InputMaybe<Scalars['String']['input']>;
+  /** Media size */
+  size?: InputMaybe<Scalars['String']['input']>;
+  /** Media target */
+  target?: InputMaybe<Scalars['String']['input']>;
+  /** Media Target ID */
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreateMilestoneInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Status */
+  complete?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Milestone Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Milestone Errand */
+  errand: Scalars['String']['input'];
+  /** Milestone Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreatePosterInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Board */
+  board?: InputMaybe<Scalars['String']['input']>;
+  /** Poster category */
+  category?: InputMaybe<PosterCategory>;
+  /** Poster Communities */
+  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster label */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GrindCreateSchemeInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Scheme Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindCreateStampInput = {
+  /** Stamp category */
+  category: Scalars['String']['input'];
+  /** Stamp title */
+  title: Scalars['String']['input'];
+};
+
+export type GrindErrandCursorPage = {
+  __typename?: 'GrindErrandCursorPage';
+  edges?: Maybe<Array<GrindErrandEdge>>;
+  items?: Maybe<Array<GrindErrandType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindErrandEdge = {
+  __typename?: 'GrindErrandEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindErrandType;
+};
+
+export type GrindErrandResponse = GrindErrandType | OperationError;
+
+export type GrindErrandType = {
+  __typename?: 'GrindErrandType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  endDate?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<GrindLabelType>;
+  labelUid?: Maybe<Scalars['String']['output']>;
+  media: Array<GrindMediaType>;
+  members: Array<UserType>;
+  milestones: Array<GrindMilestoneType>;
+  occurrences: Array<GrindOccurrenceType>;
+  poster?: Maybe<GrindPosterType>;
+  posterUid?: Maybe<Scalars['String']['output']>;
+  priority?: Maybe<Scalars['String']['output']>;
+  progress?: Maybe<Scalars['Int']['output']>;
+  reporter?: Maybe<UserType>;
+  reporterUid?: Maybe<Scalars['String']['output']>;
+  stamps: Array<GrindStampType>;
+  startDate?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindLabelCursorPage = {
+  __typename?: 'GrindLabelCursorPage';
+  edges?: Maybe<Array<GrindLabelEdge>>;
+  items?: Maybe<Array<GrindLabelType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindLabelEdge = {
+  __typename?: 'GrindLabelEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindLabelType;
+};
+
+export type GrindLabelResponse = GrindLabelType | OperationError;
+
+export type GrindLabelType = {
+  __typename?: 'GrindLabelType';
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindMediaCursorPage = {
+  __typename?: 'GrindMediaCursorPage';
+  edges?: Maybe<Array<GrindMediaEdge>>;
+  items?: Maybe<Array<GrindMediaType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindMediaEdge = {
+  __typename?: 'GrindMediaEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindMediaType;
+};
+
+export type GrindMediaResponse = GrindMediaType | OperationError;
+
+export type GrindMediaType = {
+  __typename?: 'GrindMediaType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  destination?: Maybe<Scalars['String']['output']>;
+  encoding?: Maybe<Scalars['String']['output']>;
+  filename?: Maybe<Scalars['String']['output']>;
+  mimetype?: Maybe<Scalars['String']['output']>;
+  originalName?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+  size?: Maybe<Scalars['String']['output']>;
+  target?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindMilestoneCursorPage = {
+  __typename?: 'GrindMilestoneCursorPage';
+  edges?: Maybe<Array<GrindMilestoneEdge>>;
+  items?: Maybe<Array<GrindMilestoneType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindMilestoneEdge = {
+  __typename?: 'GrindMilestoneEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindMilestoneType;
+};
+
+export type GrindMilestoneResponse = GrindMilestoneType | OperationError;
+
+export type GrindMilestoneType = {
+  __typename?: 'GrindMilestoneType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  complete?: Maybe<Scalars['Boolean']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  errand?: Maybe<GrindErrandType>;
+  errandUid?: Maybe<Scalars['String']['output']>;
+  occurrences: Array<GrindOccurrenceType>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindOccurrenceCursorPage = {
+  __typename?: 'GrindOccurrenceCursorPage';
+  edges?: Maybe<Array<GrindOccurrenceEdge>>;
+  items?: Maybe<Array<GrindOccurrenceType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindOccurrenceEdge = {
+  __typename?: 'GrindOccurrenceEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindOccurrenceType;
+};
+
+export type GrindOccurrenceType = {
+  __typename?: 'GrindOccurrenceType';
+  actor?: Maybe<UserType>;
+  actorUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  target?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindPosterCursorPage = {
+  __typename?: 'GrindPosterCursorPage';
+  edges?: Maybe<Array<GrindPosterEdge>>;
+  items?: Maybe<Array<GrindPosterType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindPosterEdge = {
+  __typename?: 'GrindPosterEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindPosterType;
+};
+
+export type GrindPosterResponse = GrindPosterType | OperationError;
+
+export type GrindPosterType = {
+  __typename?: 'GrindPosterType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  board?: Maybe<GrindBoardType>;
+  boardUid?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  errands: Array<GrindErrandType>;
+  members: Array<UserType>;
+  stamps: Array<GrindStampType>;
+  status?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindSchemeCursorPage = {
+  __typename?: 'GrindSchemeCursorPage';
+  edges?: Maybe<Array<GrindSchemeEdge>>;
+  items?: Maybe<Array<GrindSchemeType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindSchemeEdge = {
+  __typename?: 'GrindSchemeEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindSchemeType;
+};
+
+export type GrindSchemeResponse = GrindSchemeType | OperationError;
+
+export type GrindSchemeType = {
+  __typename?: 'GrindSchemeType';
+  assignee?: Maybe<UserType>;
+  assigneeUid?: Maybe<Scalars['String']['output']>;
+  boards: Array<GrindBoardType>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  endDate?: Maybe<Scalars['String']['output']>;
+  members: Array<UserType>;
+  startDate?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindStampCursorPage = {
+  __typename?: 'GrindStampCursorPage';
+  edges?: Maybe<Array<GrindStampEdge>>;
+  items?: Maybe<Array<GrindStampType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type GrindStampEdge = {
+  __typename?: 'GrindStampEdge';
+  cursor: Scalars['String']['output'];
+  node: GrindStampType;
+};
+
+export type GrindStampResponse = GrindStampType | OperationError;
+
+export type GrindStampType = {
+  __typename?: 'GrindStampType';
+  category?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type GrindUpdateBoardInput = {
+  /** Board Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Board Scheme */
+  scheme?: InputMaybe<Scalars['String']['input']>;
+  /** Board Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateErrandInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Category */
+  category?: InputMaybe<ErrandCategory>;
+  /** Errand Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Label | Status */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Milestone */
+  milestones?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Errand Poster */
+  poster?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Priority */
+  priority?: InputMaybe<Scalars['String']['input']>;
+  /** Assigned To */
+  reporter?: InputMaybe<Scalars['String']['input']>;
+  /** Errand Stamps | Tags */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Errand Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateLabelInput = {
+  /** Label category */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Label title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateMediaInput = {
+  /** Media description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Media destination */
+  destination?: InputMaybe<Scalars['String']['input']>;
+  /** Media encoding */
+  encoding?: InputMaybe<Scalars['String']['input']>;
+  /** Media filename */
+  filename?: InputMaybe<Scalars['String']['input']>;
+  /** Media mimetype */
+  mimetype?: InputMaybe<Scalars['String']['input']>;
+  /** Media original name */
+  originalName?: InputMaybe<Scalars['String']['input']>;
+  /** Media path */
+  path?: InputMaybe<Scalars['String']['input']>;
+  /** Media size */
+  size?: InputMaybe<Scalars['String']['input']>;
+  /** Media target */
+  target?: InputMaybe<Scalars['String']['input']>;
+  /** Media Target ID */
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateMilestoneInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Status */
+  complete?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Milestone Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Milestone Errand */
+  errand?: InputMaybe<Scalars['String']['input']>;
+  /** Milestone Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdatePosterInput = {
+  /** Assigned To */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Board */
+  board?: InputMaybe<Scalars['String']['input']>;
+  /** Poster category */
+  category?: InputMaybe<PosterCategory>;
+  /** Poster Communities */
+  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster label */
+  stamps?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Poster status */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Poster Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateSchemeInput = {
+  /** Assigned to */
+  assignee?: InputMaybe<Scalars['String']['input']>;
+  /** Scheme Description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** End Date */
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Members */
+  members?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Start Date */
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Scheme Title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateStampInput = {
+  /** Stamp category */
+  category?: InputMaybe<Scalars['String']['input']>;
+  /** Stamp title */
+  title?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
 export type GroupCount = {
   __typename?: 'GroupCount';
   count?: Maybe<Scalars['Int']['output']>;
@@ -2229,6 +3842,32 @@ export type Mutation = {
   createCountry: CountryResponse;
   createDepartment: DepartmentResponse;
   createDistrict: DistrictResponse;
+  createDocument: DocumentResponse;
+  createDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
+  createDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
+  createDocumentAiModel: DocumentAiModelResponse;
+  createDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
+  createDocumentAnalytics: DocumentAnalyticsResponse;
+  createDocumentAudit: DocumentAuditResponse;
+  createDocumentCategory: DocumentCategoryResponse;
+  createDocumentComplianceIssue: DocumentComplianceIssueResponse;
+  createDocumentComplianceStandard: DocumentComplianceStandardResponse;
+  createDocumentFolder: DocumentFolderResponse;
+  createDocumentRelation: DocumentRelationResponse;
+  createDocumentReviewCycle: DocumentReviewCycleResponse;
+  createDocumentStatus: DocumentStatusResponse;
+  createDocumentSubscription: DocumentSubscriptionResponse;
+  createDocumentTag: DocumentTagResponse;
+  createDocumentTemplate: DocumentTemplateResponse;
+  createDocumentVersion: DocumentVersionResponse;
+  createGrindBoard: GrindBoardResponse;
+  createGrindErrand: GrindErrandResponse;
+  createGrindLabel: GrindLabelResponse;
+  createGrindMedia: GrindMediaResponse;
+  createGrindMilestone: GrindMilestoneResponse;
+  createGrindPoster: GrindPosterResponse;
+  createGrindScheme: GrindSchemeResponse;
+  createGrindStamp: GrindStampResponse;
   createGroup: GroupResponse;
   createHazard: HazardResponse;
   createIdentification: IdentificationResponse;
@@ -2276,6 +3915,30 @@ export type Mutation = {
   createWorksheet: WorkSheetsResponse;
   createWorksheetTemplate: WorkSheetTemplateResponse;
   deleteClientContact: DeleteContactResponse;
+  deleteDocument: DocumentResponse;
+  deleteDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
+  deleteDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
+  deleteDocumentAiModel: DocumentAiModelResponse;
+  deleteDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
+  deleteDocumentAnalytics: DocumentAnalyticsResponse;
+  deleteDocumentCategory: DocumentCategoryResponse;
+  deleteDocumentComplianceIssue: DocumentComplianceIssueResponse;
+  deleteDocumentComplianceStandard: DocumentComplianceStandardResponse;
+  deleteDocumentFolder: DocumentFolderResponse;
+  deleteDocumentRelation: DocumentRelationResponse;
+  deleteDocumentReviewCycle: DocumentReviewCycleResponse;
+  deleteDocumentSubscription: DocumentSubscriptionResponse;
+  deleteDocumentTag: DocumentTagResponse;
+  deleteDocumentTemplate: DocumentTemplateResponse;
+  deleteDocumentVersion: DocumentVersionResponse;
+  deleteGrindBoard: GrindBoardResponse;
+  deleteGrindErrand: GrindErrandResponse;
+  deleteGrindLabel: GrindLabelResponse;
+  deleteGrindMedia: GrindMediaResponse;
+  deleteGrindMilestone: GrindMilestoneResponse;
+  deleteGrindPoster: GrindPosterResponse;
+  deleteGrindScheme: GrindSchemeResponse;
+  deleteGrindStamp: GrindStampResponse;
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
   deleteReflexBrain: DeletedItem;
@@ -2345,6 +4008,31 @@ export type Mutation = {
   updateCountry: CountryResponse;
   updateDepartment: DepartmentResponse;
   updateDistrict: DistrictResponse;
+  updateDocument: DocumentResponse;
+  updateDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
+  updateDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
+  updateDocumentAiModel: DocumentAiModelResponse;
+  updateDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
+  updateDocumentAnalytics: DocumentAnalyticsResponse;
+  updateDocumentCategory: DocumentCategoryResponse;
+  updateDocumentComplianceIssue: DocumentComplianceIssueResponse;
+  updateDocumentComplianceStandard: DocumentComplianceStandardResponse;
+  updateDocumentFolder: DocumentFolderResponse;
+  updateDocumentReviewCycle: DocumentReviewCycleResponse;
+  updateDocumentReviewStep: DocumentReviewStepResponse;
+  updateDocumentStatus: DocumentStatusResponse;
+  updateDocumentSubscription: DocumentSubscriptionResponse;
+  updateDocumentTag: DocumentTagResponse;
+  updateDocumentTemplate: DocumentTemplateResponse;
+  updateDocumentVersion: DocumentVersionResponse;
+  updateGrindBoard: GrindBoardResponse;
+  updateGrindErrand: GrindErrandResponse;
+  updateGrindLabel: GrindLabelResponse;
+  updateGrindMedia: GrindMediaResponse;
+  updateGrindMilestone: GrindMilestoneResponse;
+  updateGrindPoster: GrindPosterResponse;
+  updateGrindScheme: GrindSchemeResponse;
+  updateGrindStamp: GrindStampResponse;
   updateGroup: GroupResponse;
   updateGroupPermissions: UpdatedGroupPermsResponse;
   updateHazard: HazardResponse;
@@ -2648,6 +4336,136 @@ export type MutationCreateDistrictArgs = {
 };
 
 
+export type MutationCreateDocumentArgs = {
+  payload: DocumentInputType;
+};
+
+
+export type MutationCreateDocumentAiAuthoringSessionArgs = {
+  payload: DocumentAiAuthoringSessionInputType;
+};
+
+
+export type MutationCreateDocumentAiComplianceCheckArgs = {
+  payload: DocumentAiComplianceCheckInputType;
+};
+
+
+export type MutationCreateDocumentAiModelArgs = {
+  payload: DocumentAiModelInputType;
+};
+
+
+export type MutationCreateDocumentAiReviewFeedbackArgs = {
+  payload: DocumentAiReviewFeedbackInputType;
+};
+
+
+export type MutationCreateDocumentAnalyticsArgs = {
+  payload: DocumentAnalyticsInputType;
+};
+
+
+export type MutationCreateDocumentAuditArgs = {
+  payload: DocumentAuditInputType;
+};
+
+
+export type MutationCreateDocumentCategoryArgs = {
+  payload: DocumentCategoryInputType;
+};
+
+
+export type MutationCreateDocumentComplianceIssueArgs = {
+  payload: DocumentComplianceIssueInputType;
+};
+
+
+export type MutationCreateDocumentComplianceStandardArgs = {
+  payload: DocumentComplianceStandardInputType;
+};
+
+
+export type MutationCreateDocumentFolderArgs = {
+  payload: DocumentFolderInputType;
+};
+
+
+export type MutationCreateDocumentRelationArgs = {
+  payload: DocumentRelationInputType;
+};
+
+
+export type MutationCreateDocumentReviewCycleArgs = {
+  payload: DocumentReviewCycleInputType;
+};
+
+
+export type MutationCreateDocumentStatusArgs = {
+  payload: DocumentStatusInputType;
+};
+
+
+export type MutationCreateDocumentSubscriptionArgs = {
+  payload: DocumentSubscriptionInputType;
+};
+
+
+export type MutationCreateDocumentTagArgs = {
+  payload: DocumentTagInputType;
+};
+
+
+export type MutationCreateDocumentTemplateArgs = {
+  payload: DocumentTemplateInputType;
+};
+
+
+export type MutationCreateDocumentVersionArgs = {
+  payload: DocumentVersionInputType;
+};
+
+
+export type MutationCreateGrindBoardArgs = {
+  payload: GrindCreateBoardInput;
+};
+
+
+export type MutationCreateGrindErrandArgs = {
+  payload: GrindCreateErrandInput;
+};
+
+
+export type MutationCreateGrindLabelArgs = {
+  payload: GrindCreateLabelInput;
+};
+
+
+export type MutationCreateGrindMediaArgs = {
+  payload: GrindCreateMediaInput;
+};
+
+
+export type MutationCreateGrindMilestoneArgs = {
+  payload: GrindCreateMilestoneInput;
+};
+
+
+export type MutationCreateGrindPosterArgs = {
+  payload: GrindCreatePosterInput;
+};
+
+
+export type MutationCreateGrindSchemeArgs = {
+  payload: GrindCreateSchemeInput;
+};
+
+
+export type MutationCreateGrindStampArgs = {
+  payload: GrindCreateStampInput;
+};
+
+
 export type MutationCreateGroupArgs = {
   payload: GroupInputType;
 };
@@ -2889,6 +4707,126 @@ export type MutationCreateWorksheetTemplateArgs = {
 
 
 export type MutationDeleteClientContactArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiAuthoringSessionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiComplianceCheckArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiModelArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAiReviewFeedbackArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentAnalyticsArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentCategoryArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentComplianceIssueArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentComplianceStandardArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentFolderArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentRelationArgs = {
+  payload: DocumentRelationInputType;
+};
+
+
+export type MutationDeleteDocumentReviewCycleArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentSubscriptionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentTagArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentTemplateArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDocumentVersionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindBoardArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindErrandArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindLabelArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindMediaArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindMilestoneArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindPosterArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindSchemeArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteGrindStampArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -3283,6 +5221,156 @@ export type MutationUpdateDepartmentArgs = {
 
 export type MutationUpdateDistrictArgs = {
   payload: DistrictInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentArgs = {
+  payload: DocumentUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiAuthoringSessionArgs = {
+  payload: DocumentAiAuthoringSessionUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiComplianceCheckArgs = {
+  payload: DocumentAiComplianceCheckUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiModelArgs = {
+  payload: DocumentAiModelUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAiReviewFeedbackArgs = {
+  payload: DocumentAiReviewFeedbackUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentAnalyticsArgs = {
+  payload: DocumentAnalyticsUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentCategoryArgs = {
+  payload: DocumentCategoryUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentComplianceIssueArgs = {
+  payload: DocumentComplianceIssueUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentComplianceStandardArgs = {
+  payload: DocumentComplianceStandardUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentFolderArgs = {
+  payload: DocumentFolderUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentReviewCycleArgs = {
+  payload: DocumentReviewCycleUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentReviewStepArgs = {
+  payload: DocumentReviewStepUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentStatusArgs = {
+  payload: DocumentStatusUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentSubscriptionArgs = {
+  payload: DocumentSubscriptionUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentTagArgs = {
+  payload: DocumentTagUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentTemplateArgs = {
+  payload: DocumentTemplateUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateDocumentVersionArgs = {
+  payload: DocumentVersionUpdateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindBoardArgs = {
+  payload: GrindUpdateBoardInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindErrandArgs = {
+  payload: GrindUpdateErrandInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindLabelArgs = {
+  payload: GrindUpdateLabelInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindMediaArgs = {
+  payload: GrindUpdateMediaInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindMilestoneArgs = {
+  payload: GrindUpdateMilestoneInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindPosterArgs = {
+  payload: GrindUpdatePosterInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindSchemeArgs = {
+  payload: GrindUpdateSchemeInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateGrindStampArgs = {
+  payload: GrindUpdateStampInput;
   uid: Scalars['String']['input'];
 };
 
@@ -3804,6 +5892,13 @@ export type PermissionType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export enum PosterCategory {
+  Engagement = 'ENGAGEMENT',
+  Listing = 'LISTING',
+  Message = 'MESSAGE',
+  Todo = 'TODO'
+}
+
 export type PriceDiscountInput = {
   discountType: Scalars['String']['input'];
   endDate: Scalars['DateTime']['input'];
@@ -4189,6 +6284,86 @@ export type Query = {
   districtAll: DistrictCursorPage;
   districtByUid: DistrictType;
   districtsByProvinceUid: Array<DistrictType>;
+  documentAiAuthoringSessionAll: DocumentAiAuthoringSessionCursorPage;
+  documentAiAuthoringSessionByUid?: Maybe<DocumentAiAuthoringSessionType>;
+  documentAiAuthoringSessionsByDocument: Array<DocumentAiAuthoringSessionType>;
+  documentAiComplianceCheckAll: DocumentAiComplianceCheckCursorPage;
+  documentAiComplianceCheckByUid?: Maybe<DocumentAiComplianceCheckType>;
+  documentAiComplianceChecksByDocument: Array<DocumentAiComplianceCheckType>;
+  documentAiModelAll: DocumentAiModelCursorPage;
+  documentAiModelByUid?: Maybe<DocumentAiModelType>;
+  documentAiModelsActive: Array<DocumentAiModelType>;
+  documentAiReviewFeedbackAll: DocumentAiReviewFeedbackCursorPage;
+  documentAiReviewFeedbackByStep: Array<DocumentAiReviewFeedbackType>;
+  documentAiReviewFeedbackByUid?: Maybe<DocumentAiReviewFeedbackType>;
+  documentAll: DocumentCursorPage;
+  documentAnalyticsAll: DocumentAnalyticsCursorPage;
+  documentAnalyticsByDocument: Array<DocumentAnalyticsType>;
+  documentAnalyticsByUid?: Maybe<DocumentAnalyticsType>;
+  documentAuditAll: DocumentAuditCursorPage;
+  documentAuditByUid?: Maybe<DocumentAuditType>;
+  documentAuditsByDocument: Array<DocumentAuditType>;
+  documentByDocumentId?: Maybe<DocumentType>;
+  documentByUid?: Maybe<DocumentType>;
+  documentCategoryByUid?: Maybe<DocumentCategoryType>;
+  documentComplianceIssueAll: DocumentComplianceIssueCursorPage;
+  documentComplianceIssueByUid?: Maybe<DocumentComplianceIssueType>;
+  documentComplianceIssuesByCheck: Array<DocumentComplianceIssueType>;
+  documentComplianceStandardAll: DocumentComplianceStandardCursorPage;
+  documentComplianceStandardByUid?: Maybe<DocumentComplianceStandardType>;
+  documentFolderAll: DocumentFolderCursorPage;
+  documentFolderByUid?: Maybe<DocumentFolderType>;
+  documentReviewCycleAll: DocumentReviewCycleCursorPage;
+  documentReviewCycleByUid?: Maybe<DocumentReviewCycleType>;
+  documentReviewCyclesByDocument: Array<DocumentReviewCycleType>;
+  documentReviewStepAll: DocumentReviewStepCursorPage;
+  documentReviewStepByUid?: Maybe<DocumentReviewStepType>;
+  documentReviewStepsByCycle: Array<DocumentReviewStepType>;
+  documentReviewStepsByReviewer: Array<DocumentReviewStepType>;
+  documentRootFolders: Array<DocumentFolderType>;
+  documentStatusAll: DocumentStatusCursorPage;
+  documentStatusByUid?: Maybe<DocumentStatusType>;
+  documentStatusesByDocument: Array<DocumentStatusType>;
+  documentSubscriptionAll: DocumentSubscriptionCursorPage;
+  documentSubscriptionByUid?: Maybe<DocumentSubscriptionType>;
+  documentSubscriptionsByDocument: Array<DocumentSubscriptionType>;
+  documentSubscriptionsByUser: Array<DocumentSubscriptionType>;
+  documentTagAll: DocumentTagCursorPage;
+  documentTagByUid?: Maybe<DocumentTagType>;
+  documentTemplateAll: DocumentTemplateCursorPage;
+  documentTemplateByUid?: Maybe<DocumentTemplateType>;
+  documentVersionAll: DocumentVersionCursorPage;
+  documentVersionByUid?: Maybe<DocumentVersionType>;
+  documentVersionsByDocument: Array<DocumentVersionType>;
+  grindBoardAll: GrindBoardCursorPage;
+  grindBoardByUid?: Maybe<GrindBoardType>;
+  grindBoardsByScheme: Array<GrindBoardType>;
+  grindErrandAll: GrindErrandCursorPage;
+  grindErrandByUid?: Maybe<GrindErrandType>;
+  grindErrandsByAssignee: Array<GrindErrandType>;
+  grindErrandsByPoster: Array<GrindErrandType>;
+  grindLabelAll: GrindLabelCursorPage;
+  grindLabelByUid?: Maybe<GrindLabelType>;
+  grindLabelsByCategory: Array<GrindLabelType>;
+  grindMediaAll: GrindMediaCursorPage;
+  grindMediaByTarget: Array<GrindMediaType>;
+  grindMediaByUid?: Maybe<GrindMediaType>;
+  grindMilestoneAll: GrindMilestoneCursorPage;
+  grindMilestoneByUid?: Maybe<GrindMilestoneType>;
+  grindMilestonesByAssignee: Array<GrindMilestoneType>;
+  grindMilestonesByErrand: Array<GrindMilestoneType>;
+  grindOccurrenceAll: GrindOccurrenceCursorPage;
+  grindOccurrenceByUid?: Maybe<GrindOccurrenceType>;
+  grindOccurrencesByActor: Array<GrindOccurrenceType>;
+  grindOccurrencesByTarget: Array<GrindOccurrenceType>;
+  grindPosterAll: GrindPosterCursorPage;
+  grindPosterByUid?: Maybe<GrindPosterType>;
+  grindPostersByBoard: Array<GrindPosterType>;
+  grindSchemeAll: GrindSchemeCursorPage;
+  grindSchemeByUid?: Maybe<GrindSchemeType>;
+  grindStampAll: GrindStampCursorPage;
+  grindStampByCategory: Array<GrindStampType>;
+  grindStampByUid?: Maybe<GrindStampType>;
   groupAll: Array<GroupType>;
   groupByUid?: Maybe<GroupType>;
   hazardAll: Array<HazardType>;
@@ -4741,6 +6916,551 @@ export type QueryDistrictByUidArgs = {
 
 
 export type QueryDistrictsByProvinceUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiAuthoringSessionAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  modelUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentAiAuthoringSessionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiAuthoringSessionsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiComplianceCheckAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  maxScore?: InputMaybe<Scalars['Float']['input']>;
+  minScore?: InputMaybe<Scalars['Float']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  standardUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAiComplianceCheckByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiComplianceChecksByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiModelAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAiModelByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiReviewFeedbackAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  modelUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  reviewStepUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentAiReviewFeedbackByStepArgs = {
+  reviewStepUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAiReviewFeedbackByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  authorUid?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
+  departmentUid?: InputMaybe<Scalars['String']['input']>;
+  folderUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  readerUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  tagUid?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAnalyticsAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  maxComplexity?: InputMaybe<Scalars['Float']['input']>;
+  maxReadability?: InputMaybe<Scalars['Float']['input']>;
+  maxSentiment?: InputMaybe<Scalars['Float']['input']>;
+  minComplexity?: InputMaybe<Scalars['Float']['input']>;
+  minReadability?: InputMaybe<Scalars['Float']['input']>;
+  minSentiment?: InputMaybe<Scalars['Float']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentAnalyticsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAnalyticsByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAuditAllArgs = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  userUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentAuditByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentAuditsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentByDocumentIdArgs = {
+  documentId: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentCategoryByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentComplianceIssueAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  checkUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  severity?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentComplianceIssueByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentComplianceIssuesByCheckArgs = {
+  checkUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentComplianceStandardAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  version?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentComplianceStandardByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentFolderAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  parentUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentFolderByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewCycleAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  initiatedByUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentReviewCycleByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewCyclesByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewStepAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  reviewCycleUid?: InputMaybe<Scalars['String']['input']>;
+  reviewerUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentReviewStepByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewStepsByCycleArgs = {
+  reviewCycleUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentReviewStepsByReviewerArgs = {
+  reviewerUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentStatusAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentStatusByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentStatusesByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentSubscriptionAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  subscriptionType?: InputMaybe<Scalars['String']['input']>;
+  userUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentSubscriptionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentSubscriptionsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentSubscriptionsByUserArgs = {
+  userUid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentTagAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentTagByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentTemplateAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryDocumentTemplateByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentVersionAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  documentUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type QueryDocumentVersionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDocumentVersionsByDocumentArgs = {
+  documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindBoardAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  schemeUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindBoardByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindBoardsBySchemeArgs = {
+  schemeUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  posterUid?: InputMaybe<Scalars['String']['input']>;
+  priority?: InputMaybe<Scalars['String']['input']>;
+  reporterUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindErrandByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandsByAssigneeArgs = {
+  assigneeUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandsByPosterArgs = {
+  posterUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindLabelAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindLabelByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindLabelsByCategoryArgs = {
+  category: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMediaAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  target?: InputMaybe<Scalars['String']['input']>;
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindMediaByTargetArgs = {
+  target: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMediaByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMilestoneAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  complete?: InputMaybe<Scalars['Boolean']['input']>;
+  errandUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindMilestoneByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMilestonesByAssigneeArgs = {
+  assigneeUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindMilestonesByErrandArgs = {
+  errandUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindOccurrenceAllArgs = {
+  actorUid?: InputMaybe<Scalars['String']['input']>;
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  target?: InputMaybe<Scalars['String']['input']>;
+  targetUid?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindOccurrenceByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindOccurrencesByActorArgs = {
+  actorUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindOccurrencesByTargetArgs = {
+  target: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindPosterAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  boardUid?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindPosterByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindPostersByBoardArgs = {
+  boardUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindSchemeAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindSchemeByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindStampAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGrindStampByCategoryArgs = {
+  category: Scalars['String']['input'];
+};
+
+
+export type QueryGrindStampByUidArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -6900,6 +9620,85 @@ export type GraphCacheKeysConfig = {
   DistrictCursorPage?: (data: WithTypename<DistrictCursorPage>) => null | string,
   DistrictEdge?: (data: WithTypename<DistrictEdge>) => null | string,
   DistrictType?: (data: WithTypename<DistrictType>) => null | string,
+  DocumentAIAuthoringSessionCursorPage?: (data: WithTypename<DocumentAiAuthoringSessionCursorPage>) => null | string,
+  DocumentAIAuthoringSessionEdge?: (data: WithTypename<DocumentAiAuthoringSessionEdge>) => null | string,
+  DocumentAIAuthoringSessionType?: (data: WithTypename<DocumentAiAuthoringSessionType>) => null | string,
+  DocumentAIComplianceCheckCursorPage?: (data: WithTypename<DocumentAiComplianceCheckCursorPage>) => null | string,
+  DocumentAIComplianceCheckEdge?: (data: WithTypename<DocumentAiComplianceCheckEdge>) => null | string,
+  DocumentAIComplianceCheckType?: (data: WithTypename<DocumentAiComplianceCheckType>) => null | string,
+  DocumentAIModelCursorPage?: (data: WithTypename<DocumentAiModelCursorPage>) => null | string,
+  DocumentAIModelEdge?: (data: WithTypename<DocumentAiModelEdge>) => null | string,
+  DocumentAIModelType?: (data: WithTypename<DocumentAiModelType>) => null | string,
+  DocumentAIReviewFeedbackCursorPage?: (data: WithTypename<DocumentAiReviewFeedbackCursorPage>) => null | string,
+  DocumentAIReviewFeedbackEdge?: (data: WithTypename<DocumentAiReviewFeedbackEdge>) => null | string,
+  DocumentAIReviewFeedbackType?: (data: WithTypename<DocumentAiReviewFeedbackType>) => null | string,
+  DocumentAnalyticsCursorPage?: (data: WithTypename<DocumentAnalyticsCursorPage>) => null | string,
+  DocumentAnalyticsEdge?: (data: WithTypename<DocumentAnalyticsEdge>) => null | string,
+  DocumentAnalyticsType?: (data: WithTypename<DocumentAnalyticsType>) => null | string,
+  DocumentAuditCursorPage?: (data: WithTypename<DocumentAuditCursorPage>) => null | string,
+  DocumentAuditEdge?: (data: WithTypename<DocumentAuditEdge>) => null | string,
+  DocumentAuditType?: (data: WithTypename<DocumentAuditType>) => null | string,
+  DocumentCategoryType?: (data: WithTypename<DocumentCategoryType>) => null | string,
+  DocumentComplianceIssueCursorPage?: (data: WithTypename<DocumentComplianceIssueCursorPage>) => null | string,
+  DocumentComplianceIssueEdge?: (data: WithTypename<DocumentComplianceIssueEdge>) => null | string,
+  DocumentComplianceIssueType?: (data: WithTypename<DocumentComplianceIssueType>) => null | string,
+  DocumentComplianceStandardCursorPage?: (data: WithTypename<DocumentComplianceStandardCursorPage>) => null | string,
+  DocumentComplianceStandardEdge?: (data: WithTypename<DocumentComplianceStandardEdge>) => null | string,
+  DocumentComplianceStandardType?: (data: WithTypename<DocumentComplianceStandardType>) => null | string,
+  DocumentCursorPage?: (data: WithTypename<DocumentCursorPage>) => null | string,
+  DocumentEdge?: (data: WithTypename<DocumentEdge>) => null | string,
+  DocumentFolderCursorPage?: (data: WithTypename<DocumentFolderCursorPage>) => null | string,
+  DocumentFolderEdge?: (data: WithTypename<DocumentFolderEdge>) => null | string,
+  DocumentFolderType?: (data: WithTypename<DocumentFolderType>) => null | string,
+  DocumentReviewCycleCursorPage?: (data: WithTypename<DocumentReviewCycleCursorPage>) => null | string,
+  DocumentReviewCycleEdge?: (data: WithTypename<DocumentReviewCycleEdge>) => null | string,
+  DocumentReviewCycleType?: (data: WithTypename<DocumentReviewCycleType>) => null | string,
+  DocumentReviewStepCursorPage?: (data: WithTypename<DocumentReviewStepCursorPage>) => null | string,
+  DocumentReviewStepEdge?: (data: WithTypename<DocumentReviewStepEdge>) => null | string,
+  DocumentReviewStepType?: (data: WithTypename<DocumentReviewStepType>) => null | string,
+  DocumentStatusCursorPage?: (data: WithTypename<DocumentStatusCursorPage>) => null | string,
+  DocumentStatusEdge?: (data: WithTypename<DocumentStatusEdge>) => null | string,
+  DocumentStatusType?: (data: WithTypename<DocumentStatusType>) => null | string,
+  DocumentSubscriptionCursorPage?: (data: WithTypename<DocumentSubscriptionCursorPage>) => null | string,
+  DocumentSubscriptionEdge?: (data: WithTypename<DocumentSubscriptionEdge>) => null | string,
+  DocumentSubscriptionType?: (data: WithTypename<DocumentSubscriptionType>) => null | string,
+  DocumentTagCursorPage?: (data: WithTypename<DocumentTagCursorPage>) => null | string,
+  DocumentTagEdge?: (data: WithTypename<DocumentTagEdge>) => null | string,
+  DocumentTagType?: (data: WithTypename<DocumentTagType>) => null | string,
+  DocumentTemplateCursorPage?: (data: WithTypename<DocumentTemplateCursorPage>) => null | string,
+  DocumentTemplateEdge?: (data: WithTypename<DocumentTemplateEdge>) => null | string,
+  DocumentTemplateType?: (data: WithTypename<DocumentTemplateType>) => null | string,
+  DocumentType?: (data: WithTypename<DocumentType>) => null | string,
+  DocumentVersionCursorPage?: (data: WithTypename<DocumentVersionCursorPage>) => null | string,
+  DocumentVersionEdge?: (data: WithTypename<DocumentVersionEdge>) => null | string,
+  DocumentVersionType?: (data: WithTypename<DocumentVersionType>) => null | string,
+  GrindBoardCursorPage?: (data: WithTypename<GrindBoardCursorPage>) => null | string,
+  GrindBoardEdge?: (data: WithTypename<GrindBoardEdge>) => null | string,
+  GrindBoardType?: (data: WithTypename<GrindBoardType>) => null | string,
+  GrindErrandCursorPage?: (data: WithTypename<GrindErrandCursorPage>) => null | string,
+  GrindErrandEdge?: (data: WithTypename<GrindErrandEdge>) => null | string,
+  GrindErrandType?: (data: WithTypename<GrindErrandType>) => null | string,
+  GrindLabelCursorPage?: (data: WithTypename<GrindLabelCursorPage>) => null | string,
+  GrindLabelEdge?: (data: WithTypename<GrindLabelEdge>) => null | string,
+  GrindLabelType?: (data: WithTypename<GrindLabelType>) => null | string,
+  GrindMediaCursorPage?: (data: WithTypename<GrindMediaCursorPage>) => null | string,
+  GrindMediaEdge?: (data: WithTypename<GrindMediaEdge>) => null | string,
+  GrindMediaType?: (data: WithTypename<GrindMediaType>) => null | string,
+  GrindMilestoneCursorPage?: (data: WithTypename<GrindMilestoneCursorPage>) => null | string,
+  GrindMilestoneEdge?: (data: WithTypename<GrindMilestoneEdge>) => null | string,
+  GrindMilestoneType?: (data: WithTypename<GrindMilestoneType>) => null | string,
+  GrindOccurrenceCursorPage?: (data: WithTypename<GrindOccurrenceCursorPage>) => null | string,
+  GrindOccurrenceEdge?: (data: WithTypename<GrindOccurrenceEdge>) => null | string,
+  GrindOccurrenceType?: (data: WithTypename<GrindOccurrenceType>) => null | string,
+  GrindPosterCursorPage?: (data: WithTypename<GrindPosterCursorPage>) => null | string,
+  GrindPosterEdge?: (data: WithTypename<GrindPosterEdge>) => null | string,
+  GrindPosterType?: (data: WithTypename<GrindPosterType>) => null | string,
+  GrindSchemeCursorPage?: (data: WithTypename<GrindSchemeCursorPage>) => null | string,
+  GrindSchemeEdge?: (data: WithTypename<GrindSchemeEdge>) => null | string,
+  GrindSchemeType?: (data: WithTypename<GrindSchemeType>) => null | string,
+  GrindStampCursorPage?: (data: WithTypename<GrindStampCursorPage>) => null | string,
+  GrindStampEdge?: (data: WithTypename<GrindStampEdge>) => null | string,
+  GrindStampType?: (data: WithTypename<GrindStampType>) => null | string,
   GroupCount?: (data: WithTypename<GroupCount>) => null | string,
   GroupData?: (data: WithTypename<GroupData>) => null | string,
   GroupType?: (data: WithTypename<GroupType>) => null | string,
@@ -7146,6 +9945,86 @@ export type GraphCacheResolvers = {
     districtAll?: GraphCacheResolver<WithTypename<Query>, QueryDistrictAllArgs, WithTypename<DistrictCursorPage> | string>,
     districtByUid?: GraphCacheResolver<WithTypename<Query>, QueryDistrictByUidArgs, WithTypename<DistrictType> | string>,
     districtsByProvinceUid?: GraphCacheResolver<WithTypename<Query>, QueryDistrictsByProvinceUidArgs, Array<WithTypename<DistrictType> | string>>,
+    documentAiAuthoringSessionAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiAuthoringSessionAllArgs, WithTypename<DocumentAiAuthoringSessionCursorPage> | string>,
+    documentAiAuthoringSessionByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiAuthoringSessionByUidArgs, WithTypename<DocumentAiAuthoringSessionType> | string>,
+    documentAiAuthoringSessionsByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiAuthoringSessionsByDocumentArgs, Array<WithTypename<DocumentAiAuthoringSessionType> | string>>,
+    documentAiComplianceCheckAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiComplianceCheckAllArgs, WithTypename<DocumentAiComplianceCheckCursorPage> | string>,
+    documentAiComplianceCheckByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiComplianceCheckByUidArgs, WithTypename<DocumentAiComplianceCheckType> | string>,
+    documentAiComplianceChecksByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiComplianceChecksByDocumentArgs, Array<WithTypename<DocumentAiComplianceCheckType> | string>>,
+    documentAiModelAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiModelAllArgs, WithTypename<DocumentAiModelCursorPage> | string>,
+    documentAiModelByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiModelByUidArgs, WithTypename<DocumentAiModelType> | string>,
+    documentAiModelsActive?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<DocumentAiModelType> | string>>,
+    documentAiReviewFeedbackAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiReviewFeedbackAllArgs, WithTypename<DocumentAiReviewFeedbackCursorPage> | string>,
+    documentAiReviewFeedbackByStep?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiReviewFeedbackByStepArgs, Array<WithTypename<DocumentAiReviewFeedbackType> | string>>,
+    documentAiReviewFeedbackByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAiReviewFeedbackByUidArgs, WithTypename<DocumentAiReviewFeedbackType> | string>,
+    documentAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAllArgs, WithTypename<DocumentCursorPage> | string>,
+    documentAnalyticsAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAnalyticsAllArgs, WithTypename<DocumentAnalyticsCursorPage> | string>,
+    documentAnalyticsByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAnalyticsByDocumentArgs, Array<WithTypename<DocumentAnalyticsType> | string>>,
+    documentAnalyticsByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAnalyticsByUidArgs, WithTypename<DocumentAnalyticsType> | string>,
+    documentAuditAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAuditAllArgs, WithTypename<DocumentAuditCursorPage> | string>,
+    documentAuditByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAuditByUidArgs, WithTypename<DocumentAuditType> | string>,
+    documentAuditsByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentAuditsByDocumentArgs, Array<WithTypename<DocumentAuditType> | string>>,
+    documentByDocumentId?: GraphCacheResolver<WithTypename<Query>, QueryDocumentByDocumentIdArgs, WithTypename<DocumentType> | string>,
+    documentByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentByUidArgs, WithTypename<DocumentType> | string>,
+    documentCategoryByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentCategoryByUidArgs, WithTypename<DocumentCategoryType> | string>,
+    documentComplianceIssueAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentComplianceIssueAllArgs, WithTypename<DocumentComplianceIssueCursorPage> | string>,
+    documentComplianceIssueByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentComplianceIssueByUidArgs, WithTypename<DocumentComplianceIssueType> | string>,
+    documentComplianceIssuesByCheck?: GraphCacheResolver<WithTypename<Query>, QueryDocumentComplianceIssuesByCheckArgs, Array<WithTypename<DocumentComplianceIssueType> | string>>,
+    documentComplianceStandardAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentComplianceStandardAllArgs, WithTypename<DocumentComplianceStandardCursorPage> | string>,
+    documentComplianceStandardByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentComplianceStandardByUidArgs, WithTypename<DocumentComplianceStandardType> | string>,
+    documentFolderAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentFolderAllArgs, WithTypename<DocumentFolderCursorPage> | string>,
+    documentFolderByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentFolderByUidArgs, WithTypename<DocumentFolderType> | string>,
+    documentReviewCycleAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewCycleAllArgs, WithTypename<DocumentReviewCycleCursorPage> | string>,
+    documentReviewCycleByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewCycleByUidArgs, WithTypename<DocumentReviewCycleType> | string>,
+    documentReviewCyclesByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewCyclesByDocumentArgs, Array<WithTypename<DocumentReviewCycleType> | string>>,
+    documentReviewStepAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewStepAllArgs, WithTypename<DocumentReviewStepCursorPage> | string>,
+    documentReviewStepByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewStepByUidArgs, WithTypename<DocumentReviewStepType> | string>,
+    documentReviewStepsByCycle?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewStepsByCycleArgs, Array<WithTypename<DocumentReviewStepType> | string>>,
+    documentReviewStepsByReviewer?: GraphCacheResolver<WithTypename<Query>, QueryDocumentReviewStepsByReviewerArgs, Array<WithTypename<DocumentReviewStepType> | string>>,
+    documentRootFolders?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<DocumentFolderType> | string>>,
+    documentStatusAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentStatusAllArgs, WithTypename<DocumentStatusCursorPage> | string>,
+    documentStatusByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentStatusByUidArgs, WithTypename<DocumentStatusType> | string>,
+    documentStatusesByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentStatusesByDocumentArgs, Array<WithTypename<DocumentStatusType> | string>>,
+    documentSubscriptionAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentSubscriptionAllArgs, WithTypename<DocumentSubscriptionCursorPage> | string>,
+    documentSubscriptionByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentSubscriptionByUidArgs, WithTypename<DocumentSubscriptionType> | string>,
+    documentSubscriptionsByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentSubscriptionsByDocumentArgs, Array<WithTypename<DocumentSubscriptionType> | string>>,
+    documentSubscriptionsByUser?: GraphCacheResolver<WithTypename<Query>, QueryDocumentSubscriptionsByUserArgs, Array<WithTypename<DocumentSubscriptionType> | string>>,
+    documentTagAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentTagAllArgs, WithTypename<DocumentTagCursorPage> | string>,
+    documentTagByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentTagByUidArgs, WithTypename<DocumentTagType> | string>,
+    documentTemplateAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentTemplateAllArgs, WithTypename<DocumentTemplateCursorPage> | string>,
+    documentTemplateByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentTemplateByUidArgs, WithTypename<DocumentTemplateType> | string>,
+    documentVersionAll?: GraphCacheResolver<WithTypename<Query>, QueryDocumentVersionAllArgs, WithTypename<DocumentVersionCursorPage> | string>,
+    documentVersionByUid?: GraphCacheResolver<WithTypename<Query>, QueryDocumentVersionByUidArgs, WithTypename<DocumentVersionType> | string>,
+    documentVersionsByDocument?: GraphCacheResolver<WithTypename<Query>, QueryDocumentVersionsByDocumentArgs, Array<WithTypename<DocumentVersionType> | string>>,
+    grindBoardAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindBoardAllArgs, WithTypename<GrindBoardCursorPage> | string>,
+    grindBoardByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindBoardByUidArgs, WithTypename<GrindBoardType> | string>,
+    grindBoardsByScheme?: GraphCacheResolver<WithTypename<Query>, QueryGrindBoardsBySchemeArgs, Array<WithTypename<GrindBoardType> | string>>,
+    grindErrandAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandAllArgs, WithTypename<GrindErrandCursorPage> | string>,
+    grindErrandByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandByUidArgs, WithTypename<GrindErrandType> | string>,
+    grindErrandsByAssignee?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandsByAssigneeArgs, Array<WithTypename<GrindErrandType> | string>>,
+    grindErrandsByPoster?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandsByPosterArgs, Array<WithTypename<GrindErrandType> | string>>,
+    grindLabelAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindLabelAllArgs, WithTypename<GrindLabelCursorPage> | string>,
+    grindLabelByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindLabelByUidArgs, WithTypename<GrindLabelType> | string>,
+    grindLabelsByCategory?: GraphCacheResolver<WithTypename<Query>, QueryGrindLabelsByCategoryArgs, Array<WithTypename<GrindLabelType> | string>>,
+    grindMediaAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindMediaAllArgs, WithTypename<GrindMediaCursorPage> | string>,
+    grindMediaByTarget?: GraphCacheResolver<WithTypename<Query>, QueryGrindMediaByTargetArgs, Array<WithTypename<GrindMediaType> | string>>,
+    grindMediaByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindMediaByUidArgs, WithTypename<GrindMediaType> | string>,
+    grindMilestoneAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindMilestoneAllArgs, WithTypename<GrindMilestoneCursorPage> | string>,
+    grindMilestoneByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindMilestoneByUidArgs, WithTypename<GrindMilestoneType> | string>,
+    grindMilestonesByAssignee?: GraphCacheResolver<WithTypename<Query>, QueryGrindMilestonesByAssigneeArgs, Array<WithTypename<GrindMilestoneType> | string>>,
+    grindMilestonesByErrand?: GraphCacheResolver<WithTypename<Query>, QueryGrindMilestonesByErrandArgs, Array<WithTypename<GrindMilestoneType> | string>>,
+    grindOccurrenceAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindOccurrenceAllArgs, WithTypename<GrindOccurrenceCursorPage> | string>,
+    grindOccurrenceByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindOccurrenceByUidArgs, WithTypename<GrindOccurrenceType> | string>,
+    grindOccurrencesByActor?: GraphCacheResolver<WithTypename<Query>, QueryGrindOccurrencesByActorArgs, Array<WithTypename<GrindOccurrenceType> | string>>,
+    grindOccurrencesByTarget?: GraphCacheResolver<WithTypename<Query>, QueryGrindOccurrencesByTargetArgs, Array<WithTypename<GrindOccurrenceType> | string>>,
+    grindPosterAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindPosterAllArgs, WithTypename<GrindPosterCursorPage> | string>,
+    grindPosterByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindPosterByUidArgs, WithTypename<GrindPosterType> | string>,
+    grindPostersByBoard?: GraphCacheResolver<WithTypename<Query>, QueryGrindPostersByBoardArgs, Array<WithTypename<GrindPosterType> | string>>,
+    grindSchemeAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindSchemeAllArgs, WithTypename<GrindSchemeCursorPage> | string>,
+    grindSchemeByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindSchemeByUidArgs, WithTypename<GrindSchemeType> | string>,
+    grindStampAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindStampAllArgs, WithTypename<GrindStampCursorPage> | string>,
+    grindStampByCategory?: GraphCacheResolver<WithTypename<Query>, QueryGrindStampByCategoryArgs, Array<WithTypename<GrindStampType> | string>>,
+    grindStampByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindStampByUidArgs, WithTypename<GrindStampType> | string>,
     groupAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<GroupType> | string>>,
     groupByUid?: GraphCacheResolver<WithTypename<Query>, QueryGroupByUidArgs, WithTypename<GroupType> | string>,
     hazardAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<HazardType> | string>>,
@@ -8272,6 +11151,706 @@ export type GraphCacheResolvers = {
     updatedAt?: GraphCacheResolver<WithTypename<DistrictType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<DistrictType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<DistrictType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentAIAuthoringSessionCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiAuthoringSessionEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiAuthoringSessionType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentAIAuthoringSessionEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionEdge>, Record<string, never>, WithTypename<DocumentAiAuthoringSessionType> | string>
+  },
+  DocumentAIAuthoringSessionType?: {
+    conversation?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    model?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, WithTypename<DocumentAiModelType> | string>,
+    modelUid?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    prompt?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentAiAuthoringSessionType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentAIComplianceCheckCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiComplianceCheckEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiComplianceCheckType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentAIComplianceCheckEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckEdge>, Record<string, never>, WithTypename<DocumentAiComplianceCheckType> | string>
+  },
+  DocumentAIComplianceCheckType?: {
+    complianceScore?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['Float'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    issues?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Array<WithTypename<DocumentComplianceIssueType> | string>>,
+    results?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    standard?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, WithTypename<DocumentComplianceStandardType> | string>,
+    standardUid?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentAiComplianceCheckType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentAIModelCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentAiModelCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiModelEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentAiModelCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiModelType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentAiModelCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentAiModelCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentAIModelEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentAiModelEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentAiModelEdge>, Record<string, never>, WithTypename<DocumentAiModelType> | string>
+  },
+  DocumentAIModelType?: {
+    apiEndpoint?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    capabilities?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    isActive?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['Boolean'] | string>,
+    name?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentAiModelType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentAIReviewFeedbackCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiReviewFeedbackEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackCursorPage>, Record<string, never>, Array<WithTypename<DocumentAiReviewFeedbackType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentAIReviewFeedbackEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackEdge>, Record<string, never>, WithTypename<DocumentAiReviewFeedbackType> | string>
+  },
+  DocumentAIReviewFeedbackType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    model?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, WithTypename<DocumentAiModelType> | string>,
+    modelUid?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    reviewStep?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, WithTypename<DocumentReviewStepType> | string>,
+    reviewStepUid?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    suggestions?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentAiReviewFeedbackType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentAnalyticsCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentAnalyticsCursorPage>, Record<string, never>, Array<WithTypename<DocumentAnalyticsEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentAnalyticsCursorPage>, Record<string, never>, Array<WithTypename<DocumentAnalyticsType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentAnalyticsCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentAnalyticsCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentAnalyticsEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentAnalyticsEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentAnalyticsEdge>, Record<string, never>, WithTypename<DocumentAnalyticsType> | string>
+  },
+  DocumentAnalyticsType?: {
+    complexityScore?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['Float'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    generatedDate?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    keyTopics?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    readabilityScore?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['Float'] | string>,
+    sentimentScore?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['Float'] | string>,
+    summary?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentAnalyticsType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentAuditCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentAuditCursorPage>, Record<string, never>, Array<WithTypename<DocumentAuditEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentAuditCursorPage>, Record<string, never>, Array<WithTypename<DocumentAuditType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentAuditCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentAuditCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentAuditEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentAuditEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentAuditEdge>, Record<string, never>, WithTypename<DocumentAuditType> | string>
+  },
+  DocumentAuditType?: {
+    action?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    date?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    ipAddress?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    user?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<UserType> | string>,
+    userUid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentCategoryType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentComplianceIssueCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentComplianceIssueCursorPage>, Record<string, never>, Array<WithTypename<DocumentComplianceIssueEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentComplianceIssueCursorPage>, Record<string, never>, Array<WithTypename<DocumentComplianceIssueType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentComplianceIssueCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentComplianceIssueCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentComplianceIssueEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentComplianceIssueEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentComplianceIssueEdge>, Record<string, never>, WithTypename<DocumentComplianceIssueType> | string>
+  },
+  DocumentComplianceIssueType?: {
+    check?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, WithTypename<DocumentAiComplianceCheckType> | string>,
+    checkUid?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    section?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    severity?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    suggestion?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentComplianceIssueType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentComplianceStandardCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentComplianceStandardCursorPage>, Record<string, never>, Array<WithTypename<DocumentComplianceStandardEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentComplianceStandardCursorPage>, Record<string, never>, Array<WithTypename<DocumentComplianceStandardType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentComplianceStandardCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentComplianceStandardCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentComplianceStandardEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentComplianceStandardEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentComplianceStandardEdge>, Record<string, never>, WithTypename<DocumentComplianceStandardType> | string>
+  },
+  DocumentComplianceStandardType?: {
+    content?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>,
+    version?: GraphCacheResolver<WithTypename<DocumentComplianceStandardType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentCursorPage>, Record<string, never>, Array<WithTypename<DocumentEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentCursorPage>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentEdge>, Record<string, never>, WithTypename<DocumentType> | string>
+  },
+  DocumentFolderCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentFolderCursorPage>, Record<string, never>, Array<WithTypename<DocumentFolderEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentFolderCursorPage>, Record<string, never>, Array<WithTypename<DocumentFolderType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentFolderCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentFolderCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentFolderEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentFolderEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentFolderEdge>, Record<string, never>, WithTypename<DocumentFolderType> | string>
+  },
+  DocumentFolderType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    documents?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    name?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    parent?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, WithTypename<DocumentFolderType> | string>,
+    parentUid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    subfolders?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Array<WithTypename<DocumentFolderType> | string>>,
+    uid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentReviewCycleCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentReviewCycleCursorPage>, Record<string, never>, Array<WithTypename<DocumentReviewCycleEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentReviewCycleCursorPage>, Record<string, never>, Array<WithTypename<DocumentReviewCycleType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentReviewCycleCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentReviewCycleCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentReviewCycleEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentReviewCycleEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentReviewCycleEdge>, Record<string, never>, WithTypename<DocumentReviewCycleType> | string>
+  },
+  DocumentReviewCycleType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    endDate?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    initiatedBy?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, WithTypename<UserType> | string>,
+    initiatedByUid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    startDate?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    status?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    steps?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Array<WithTypename<DocumentReviewStepType> | string>>,
+    uid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentReviewStepCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentReviewStepCursorPage>, Record<string, never>, Array<WithTypename<DocumentReviewStepEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentReviewStepCursorPage>, Record<string, never>, Array<WithTypename<DocumentReviewStepType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentReviewStepCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentReviewStepCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentReviewStepEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentReviewStepEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentReviewStepEdge>, Record<string, never>, WithTypename<DocumentReviewStepType> | string>
+  },
+  DocumentReviewStepType?: {
+    actionDate?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    aiFeedback?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Array<WithTypename<DocumentAiReviewFeedbackType> | string>>,
+    comments?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    reviewCycle?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<DocumentReviewCycleType> | string>,
+    reviewCycleUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    reviewer?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<UserType> | string>,
+    reviewerUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    sequence?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['Int'] | string>,
+    status?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentStatusCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentStatusCursorPage>, Record<string, never>, Array<WithTypename<DocumentStatusEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentStatusCursorPage>, Record<string, never>, Array<WithTypename<DocumentStatusType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentStatusCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentStatusCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentStatusEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentStatusEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentStatusEdge>, Record<string, never>, WithTypename<DocumentStatusType> | string>
+  },
+  DocumentStatusType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    date?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    status?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    user?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, WithTypename<UserType> | string>,
+    userUid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentSubscriptionCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentSubscriptionCursorPage>, Record<string, never>, Array<WithTypename<DocumentSubscriptionEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentSubscriptionCursorPage>, Record<string, never>, Array<WithTypename<DocumentSubscriptionType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentSubscriptionCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentSubscriptionCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentSubscriptionEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentSubscriptionEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentSubscriptionEdge>, Record<string, never>, WithTypename<DocumentSubscriptionType> | string>
+  },
+  DocumentSubscriptionType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    subscriptionType?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    user?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, WithTypename<UserType> | string>,
+    userUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentTagCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentTagCursorPage>, Record<string, never>, Array<WithTypename<DocumentTagEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentTagCursorPage>, Record<string, never>, Array<WithTypename<DocumentTagType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentTagCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentTagCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentTagEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentTagEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentTagEdge>, Record<string, never>, WithTypename<DocumentTagType> | string>
+  },
+  DocumentTagType?: {
+    createdAt?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
+    documents?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    name?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentTemplateCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentTemplateCursorPage>, Record<string, never>, Array<WithTypename<DocumentTemplateEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentTemplateCursorPage>, Record<string, never>, Array<WithTypename<DocumentTemplateType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentTemplateCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentTemplateCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentTemplateEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentTemplateEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentTemplateEdge>, Record<string, never>, WithTypename<DocumentTemplateType> | string>
+  },
+  DocumentTemplateType?: {
+    category?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, WithTypename<DocumentCategoryType> | string>,
+    categoryUid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    content?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    documents?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    name?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>
+  },
+  DocumentType?: {
+    aiAuthoringSessions?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentAiAuthoringSessionType> | string>>,
+    analytics?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentAnalyticsType> | string>>,
+    auditRecords?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentAuditType> | string>>,
+    authors?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    category?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DocumentCategoryType> | string>,
+    categoryUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    complianceChecks?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentAiComplianceCheckType> | string>>,
+    content?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    department?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DepartmentType> | string>,
+    departmentUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    documentId?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    folder?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DocumentFolderType> | string>,
+    folderUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    lastAccessed?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    lastAccessedBy?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<UserType> | string>,
+    lastAccessedByUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    latestVersion?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DocumentVersionType> | string>,
+    name?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    readers?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    relatedFrom?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    relatedTo?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    reviewCycles?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentReviewCycleType> | string>>,
+    status?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    statuses?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentStatusType> | string>>,
+    subscriptions?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentSubscriptionType> | string>>,
+    subtitle?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    tags?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentTagType> | string>>,
+    template?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DocumentTemplateType> | string>,
+    templateUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    versions?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Array<WithTypename<DocumentVersionType> | string>>
+  },
+  DocumentVersionCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<DocumentVersionCursorPage>, Record<string, never>, Array<WithTypename<DocumentVersionEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<DocumentVersionCursorPage>, Record<string, never>, Array<WithTypename<DocumentVersionType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<DocumentVersionCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<DocumentVersionCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  DocumentVersionEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<DocumentVersionEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<DocumentVersionEdge>, Record<string, never>, WithTypename<DocumentVersionType> | string>
+  },
+  DocumentVersionType?: {
+    changeSummary?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    content?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    document?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<DocumentType> | string>,
+    documentUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    versionNumber?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindBoardCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindBoardCursorPage>, Record<string, never>, Array<WithTypename<GrindBoardEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindBoardCursorPage>, Record<string, never>, Array<WithTypename<GrindBoardType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindBoardCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindBoardCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindBoardEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindBoardEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindBoardEdge>, Record<string, never>, WithTypename<GrindBoardType> | string>
+  },
+  GrindBoardType?: {
+    createdAt?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    posters?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Array<WithTypename<GrindPosterType> | string>>,
+    scheme?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, WithTypename<GrindSchemeType> | string>,
+    schemeUid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    title?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindErrandCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindErrandCursorPage>, Record<string, never>, Array<WithTypename<GrindErrandEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindErrandCursorPage>, Record<string, never>, Array<WithTypename<GrindErrandType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindErrandCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindErrandCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindErrandEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindErrandEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindErrandEdge>, Record<string, never>, WithTypename<GrindErrandType> | string>
+  },
+  GrindErrandType?: {
+    assignee?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<UserType> | string>,
+    assigneeUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    category?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    endDate?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    label?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<GrindLabelType> | string>,
+    labelUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    media?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindMediaType> | string>>,
+    members?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    milestones?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindMilestoneType> | string>>,
+    occurrences?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindOccurrenceType> | string>>,
+    poster?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<GrindPosterType> | string>,
+    posterUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    priority?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    progress?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['Int'] | string>,
+    reporter?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<UserType> | string>,
+    reporterUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    stamps?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindStampType> | string>>,
+    startDate?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    title?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindLabelCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindLabelCursorPage>, Record<string, never>, Array<WithTypename<GrindLabelEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindLabelCursorPage>, Record<string, never>, Array<WithTypename<GrindLabelType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindLabelCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindLabelCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindLabelEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindLabelEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindLabelEdge>, Record<string, never>, WithTypename<GrindLabelType> | string>
+  },
+  GrindLabelType?: {
+    category?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    title?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindMediaCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindMediaCursorPage>, Record<string, never>, Array<WithTypename<GrindMediaEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindMediaCursorPage>, Record<string, never>, Array<WithTypename<GrindMediaType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindMediaCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindMediaCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindMediaEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindMediaEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindMediaEdge>, Record<string, never>, WithTypename<GrindMediaType> | string>
+  },
+  GrindMediaType?: {
+    createdAt?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    destination?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    encoding?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    filename?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    mimetype?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    originalName?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    path?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    size?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    target?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    targetUid?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindMilestoneCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindMilestoneCursorPage>, Record<string, never>, Array<WithTypename<GrindMilestoneEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindMilestoneCursorPage>, Record<string, never>, Array<WithTypename<GrindMilestoneType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindMilestoneCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindMilestoneCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindMilestoneEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindMilestoneEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindMilestoneEdge>, Record<string, never>, WithTypename<GrindMilestoneType> | string>
+  },
+  GrindMilestoneType?: {
+    assignee?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, WithTypename<UserType> | string>,
+    assigneeUid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    complete?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['Boolean'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    errand?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, WithTypename<GrindErrandType> | string>,
+    errandUid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    occurrences?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Array<WithTypename<GrindOccurrenceType> | string>>,
+    title?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindOccurrenceCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindOccurrenceCursorPage>, Record<string, never>, Array<WithTypename<GrindOccurrenceEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindOccurrenceCursorPage>, Record<string, never>, Array<WithTypename<GrindOccurrenceType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindOccurrenceCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindOccurrenceCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindOccurrenceEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindOccurrenceEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindOccurrenceEdge>, Record<string, never>, WithTypename<GrindOccurrenceType> | string>
+  },
+  GrindOccurrenceType?: {
+    actor?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, WithTypename<UserType> | string>,
+    actorUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    target?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    targetUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindPosterCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindPosterCursorPage>, Record<string, never>, Array<WithTypename<GrindPosterEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindPosterCursorPage>, Record<string, never>, Array<WithTypename<GrindPosterType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindPosterCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindPosterCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindPosterEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindPosterEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindPosterEdge>, Record<string, never>, WithTypename<GrindPosterType> | string>
+  },
+  GrindPosterType?: {
+    assignee?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, WithTypename<UserType> | string>,
+    assigneeUid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    board?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, WithTypename<GrindBoardType> | string>,
+    boardUid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    category?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    errands?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Array<WithTypename<GrindErrandType> | string>>,
+    members?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    stamps?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Array<WithTypename<GrindStampType> | string>>,
+    status?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    title?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindSchemeCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindSchemeCursorPage>, Record<string, never>, Array<WithTypename<GrindSchemeEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindSchemeCursorPage>, Record<string, never>, Array<WithTypename<GrindSchemeType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindSchemeCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindSchemeCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindSchemeEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindSchemeEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindSchemeEdge>, Record<string, never>, WithTypename<GrindSchemeType> | string>
+  },
+  GrindSchemeType?: {
+    assignee?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, WithTypename<UserType> | string>,
+    assigneeUid?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    boards?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Array<WithTypename<GrindBoardType> | string>>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    endDate?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    members?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    startDate?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    title?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>
+  },
+  GrindStampCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<GrindStampCursorPage>, Record<string, never>, Array<WithTypename<GrindStampEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<GrindStampCursorPage>, Record<string, never>, Array<WithTypename<GrindStampType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<GrindStampCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<GrindStampCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  GrindStampEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<GrindStampEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<GrindStampEdge>, Record<string, never>, WithTypename<GrindStampType> | string>
+  },
+  GrindStampType?: {
+    category?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    title?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>
   },
   GroupCount?: {
     count?: GraphCacheResolver<WithTypename<GroupCount>, Record<string, never>, Scalars['Int'] | string>,
@@ -9883,6 +13462,32 @@ export type GraphCacheOptimisticUpdaters = {
   createCountry?: GraphCacheOptimisticMutationResolver<MutationCreateCountryArgs, WithTypename<CountryResponse>>,
   createDepartment?: GraphCacheOptimisticMutationResolver<MutationCreateDepartmentArgs, WithTypename<DepartmentResponse>>,
   createDistrict?: GraphCacheOptimisticMutationResolver<MutationCreateDistrictArgs, WithTypename<DistrictResponse>>,
+  createDocument?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentArgs, WithTypename<DocumentResponse>>,
+  createDocumentAiAuthoringSession?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentAiAuthoringSessionArgs, WithTypename<DocumentAiAuthoringSessionResponse>>,
+  createDocumentAiComplianceCheck?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentAiComplianceCheckArgs, WithTypename<DocumentAiComplianceCheckResponse>>,
+  createDocumentAiModel?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentAiModelArgs, WithTypename<DocumentAiModelResponse>>,
+  createDocumentAiReviewFeedback?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentAiReviewFeedbackArgs, WithTypename<DocumentAiReviewFeedbackResponse>>,
+  createDocumentAnalytics?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentAnalyticsArgs, WithTypename<DocumentAnalyticsResponse>>,
+  createDocumentAudit?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentAuditArgs, WithTypename<DocumentAuditResponse>>,
+  createDocumentCategory?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentCategoryArgs, WithTypename<DocumentCategoryResponse>>,
+  createDocumentComplianceIssue?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentComplianceIssueArgs, WithTypename<DocumentComplianceIssueResponse>>,
+  createDocumentComplianceStandard?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentComplianceStandardArgs, WithTypename<DocumentComplianceStandardResponse>>,
+  createDocumentFolder?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentFolderArgs, WithTypename<DocumentFolderResponse>>,
+  createDocumentRelation?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentRelationArgs, WithTypename<DocumentRelationResponse>>,
+  createDocumentReviewCycle?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentReviewCycleArgs, WithTypename<DocumentReviewCycleResponse>>,
+  createDocumentStatus?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentStatusArgs, WithTypename<DocumentStatusResponse>>,
+  createDocumentSubscription?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentSubscriptionArgs, WithTypename<DocumentSubscriptionResponse>>,
+  createDocumentTag?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentTagArgs, WithTypename<DocumentTagResponse>>,
+  createDocumentTemplate?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentTemplateArgs, WithTypename<DocumentTemplateResponse>>,
+  createDocumentVersion?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentVersionArgs, WithTypename<DocumentVersionResponse>>,
+  createGrindBoard?: GraphCacheOptimisticMutationResolver<MutationCreateGrindBoardArgs, WithTypename<GrindBoardResponse>>,
+  createGrindErrand?: GraphCacheOptimisticMutationResolver<MutationCreateGrindErrandArgs, WithTypename<GrindErrandResponse>>,
+  createGrindLabel?: GraphCacheOptimisticMutationResolver<MutationCreateGrindLabelArgs, WithTypename<GrindLabelResponse>>,
+  createGrindMedia?: GraphCacheOptimisticMutationResolver<MutationCreateGrindMediaArgs, WithTypename<GrindMediaResponse>>,
+  createGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationCreateGrindMilestoneArgs, WithTypename<GrindMilestoneResponse>>,
+  createGrindPoster?: GraphCacheOptimisticMutationResolver<MutationCreateGrindPosterArgs, WithTypename<GrindPosterResponse>>,
+  createGrindScheme?: GraphCacheOptimisticMutationResolver<MutationCreateGrindSchemeArgs, WithTypename<GrindSchemeResponse>>,
+  createGrindStamp?: GraphCacheOptimisticMutationResolver<MutationCreateGrindStampArgs, WithTypename<GrindStampResponse>>,
   createGroup?: GraphCacheOptimisticMutationResolver<MutationCreateGroupArgs, WithTypename<GroupResponse>>,
   createHazard?: GraphCacheOptimisticMutationResolver<MutationCreateHazardArgs, WithTypename<HazardResponse>>,
   createIdentification?: GraphCacheOptimisticMutationResolver<MutationCreateIdentificationArgs, WithTypename<IdentificationResponse>>,
@@ -9930,6 +13535,30 @@ export type GraphCacheOptimisticUpdaters = {
   createWorksheet?: GraphCacheOptimisticMutationResolver<MutationCreateWorksheetArgs, WithTypename<WorkSheetsResponse>>,
   createWorksheetTemplate?: GraphCacheOptimisticMutationResolver<MutationCreateWorksheetTemplateArgs, WithTypename<WorkSheetTemplateResponse>>,
   deleteClientContact?: GraphCacheOptimisticMutationResolver<MutationDeleteClientContactArgs, WithTypename<DeleteContactResponse>>,
+  deleteDocument?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentArgs, WithTypename<DocumentResponse>>,
+  deleteDocumentAiAuthoringSession?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentAiAuthoringSessionArgs, WithTypename<DocumentAiAuthoringSessionResponse>>,
+  deleteDocumentAiComplianceCheck?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentAiComplianceCheckArgs, WithTypename<DocumentAiComplianceCheckResponse>>,
+  deleteDocumentAiModel?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentAiModelArgs, WithTypename<DocumentAiModelResponse>>,
+  deleteDocumentAiReviewFeedback?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentAiReviewFeedbackArgs, WithTypename<DocumentAiReviewFeedbackResponse>>,
+  deleteDocumentAnalytics?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentAnalyticsArgs, WithTypename<DocumentAnalyticsResponse>>,
+  deleteDocumentCategory?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentCategoryArgs, WithTypename<DocumentCategoryResponse>>,
+  deleteDocumentComplianceIssue?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentComplianceIssueArgs, WithTypename<DocumentComplianceIssueResponse>>,
+  deleteDocumentComplianceStandard?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentComplianceStandardArgs, WithTypename<DocumentComplianceStandardResponse>>,
+  deleteDocumentFolder?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentFolderArgs, WithTypename<DocumentFolderResponse>>,
+  deleteDocumentRelation?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentRelationArgs, WithTypename<DocumentRelationResponse>>,
+  deleteDocumentReviewCycle?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentReviewCycleArgs, WithTypename<DocumentReviewCycleResponse>>,
+  deleteDocumentSubscription?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentSubscriptionArgs, WithTypename<DocumentSubscriptionResponse>>,
+  deleteDocumentTag?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentTagArgs, WithTypename<DocumentTagResponse>>,
+  deleteDocumentTemplate?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentTemplateArgs, WithTypename<DocumentTemplateResponse>>,
+  deleteDocumentVersion?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentVersionArgs, WithTypename<DocumentVersionResponse>>,
+  deleteGrindBoard?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindBoardArgs, WithTypename<GrindBoardResponse>>,
+  deleteGrindErrand?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindErrandArgs, WithTypename<GrindErrandResponse>>,
+  deleteGrindLabel?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindLabelArgs, WithTypename<GrindLabelResponse>>,
+  deleteGrindMedia?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindMediaArgs, WithTypename<GrindMediaResponse>>,
+  deleteGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindMilestoneArgs, WithTypename<GrindMilestoneResponse>>,
+  deleteGrindPoster?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindPosterArgs, WithTypename<GrindPosterResponse>>,
+  deleteGrindScheme?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindSchemeArgs, WithTypename<GrindSchemeResponse>>,
+  deleteGrindStamp?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindStampArgs, WithTypename<GrindStampResponse>>,
   deleteMessage?: GraphCacheOptimisticMutationResolver<MutationDeleteMessageArgs, WithTypename<DeleteResponse>>,
   deleteNotice?: GraphCacheOptimisticMutationResolver<MutationDeleteNoticeArgs, WithTypename<DeleteResponse>>,
   deleteReflexBrain?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexBrainArgs, WithTypename<DeletedItem>>,
@@ -9999,6 +13628,31 @@ export type GraphCacheOptimisticUpdaters = {
   updateCountry?: GraphCacheOptimisticMutationResolver<MutationUpdateCountryArgs, WithTypename<CountryResponse>>,
   updateDepartment?: GraphCacheOptimisticMutationResolver<MutationUpdateDepartmentArgs, WithTypename<DepartmentResponse>>,
   updateDistrict?: GraphCacheOptimisticMutationResolver<MutationUpdateDistrictArgs, WithTypename<DistrictResponse>>,
+  updateDocument?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentArgs, WithTypename<DocumentResponse>>,
+  updateDocumentAiAuthoringSession?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentAiAuthoringSessionArgs, WithTypename<DocumentAiAuthoringSessionResponse>>,
+  updateDocumentAiComplianceCheck?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentAiComplianceCheckArgs, WithTypename<DocumentAiComplianceCheckResponse>>,
+  updateDocumentAiModel?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentAiModelArgs, WithTypename<DocumentAiModelResponse>>,
+  updateDocumentAiReviewFeedback?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentAiReviewFeedbackArgs, WithTypename<DocumentAiReviewFeedbackResponse>>,
+  updateDocumentAnalytics?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentAnalyticsArgs, WithTypename<DocumentAnalyticsResponse>>,
+  updateDocumentCategory?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentCategoryArgs, WithTypename<DocumentCategoryResponse>>,
+  updateDocumentComplianceIssue?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentComplianceIssueArgs, WithTypename<DocumentComplianceIssueResponse>>,
+  updateDocumentComplianceStandard?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentComplianceStandardArgs, WithTypename<DocumentComplianceStandardResponse>>,
+  updateDocumentFolder?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentFolderArgs, WithTypename<DocumentFolderResponse>>,
+  updateDocumentReviewCycle?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentReviewCycleArgs, WithTypename<DocumentReviewCycleResponse>>,
+  updateDocumentReviewStep?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentReviewStepArgs, WithTypename<DocumentReviewStepResponse>>,
+  updateDocumentStatus?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentStatusArgs, WithTypename<DocumentStatusResponse>>,
+  updateDocumentSubscription?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentSubscriptionArgs, WithTypename<DocumentSubscriptionResponse>>,
+  updateDocumentTag?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentTagArgs, WithTypename<DocumentTagResponse>>,
+  updateDocumentTemplate?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentTemplateArgs, WithTypename<DocumentTemplateResponse>>,
+  updateDocumentVersion?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentVersionArgs, WithTypename<DocumentVersionResponse>>,
+  updateGrindBoard?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindBoardArgs, WithTypename<GrindBoardResponse>>,
+  updateGrindErrand?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindErrandArgs, WithTypename<GrindErrandResponse>>,
+  updateGrindLabel?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindLabelArgs, WithTypename<GrindLabelResponse>>,
+  updateGrindMedia?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindMediaArgs, WithTypename<GrindMediaResponse>>,
+  updateGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindMilestoneArgs, WithTypename<GrindMilestoneResponse>>,
+  updateGrindPoster?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindPosterArgs, WithTypename<GrindPosterResponse>>,
+  updateGrindScheme?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindSchemeArgs, WithTypename<GrindSchemeResponse>>,
+  updateGrindStamp?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindStampArgs, WithTypename<GrindStampResponse>>,
   updateGroup?: GraphCacheOptimisticMutationResolver<MutationUpdateGroupArgs, WithTypename<GroupResponse>>,
   updateGroupPermissions?: GraphCacheOptimisticMutationResolver<MutationUpdateGroupPermissionsArgs, WithTypename<UpdatedGroupPermsResponse>>,
   updateHazard?: GraphCacheOptimisticMutationResolver<MutationUpdateHazardArgs, WithTypename<HazardResponse>>,
@@ -10163,6 +13817,86 @@ export type GraphCacheUpdaters = {
     districtAll?: GraphCacheUpdateResolver<{ districtAll: WithTypename<DistrictCursorPage> }, QueryDistrictAllArgs>,
     districtByUid?: GraphCacheUpdateResolver<{ districtByUid: WithTypename<DistrictType> }, QueryDistrictByUidArgs>,
     districtsByProvinceUid?: GraphCacheUpdateResolver<{ districtsByProvinceUid: Array<WithTypename<DistrictType>> }, QueryDistrictsByProvinceUidArgs>,
+    documentAiAuthoringSessionAll?: GraphCacheUpdateResolver<{ documentAiAuthoringSessionAll: WithTypename<DocumentAiAuthoringSessionCursorPage> }, QueryDocumentAiAuthoringSessionAllArgs>,
+    documentAiAuthoringSessionByUid?: GraphCacheUpdateResolver<{ documentAiAuthoringSessionByUid: Maybe<WithTypename<DocumentAiAuthoringSessionType>> }, QueryDocumentAiAuthoringSessionByUidArgs>,
+    documentAiAuthoringSessionsByDocument?: GraphCacheUpdateResolver<{ documentAiAuthoringSessionsByDocument: Array<WithTypename<DocumentAiAuthoringSessionType>> }, QueryDocumentAiAuthoringSessionsByDocumentArgs>,
+    documentAiComplianceCheckAll?: GraphCacheUpdateResolver<{ documentAiComplianceCheckAll: WithTypename<DocumentAiComplianceCheckCursorPage> }, QueryDocumentAiComplianceCheckAllArgs>,
+    documentAiComplianceCheckByUid?: GraphCacheUpdateResolver<{ documentAiComplianceCheckByUid: Maybe<WithTypename<DocumentAiComplianceCheckType>> }, QueryDocumentAiComplianceCheckByUidArgs>,
+    documentAiComplianceChecksByDocument?: GraphCacheUpdateResolver<{ documentAiComplianceChecksByDocument: Array<WithTypename<DocumentAiComplianceCheckType>> }, QueryDocumentAiComplianceChecksByDocumentArgs>,
+    documentAiModelAll?: GraphCacheUpdateResolver<{ documentAiModelAll: WithTypename<DocumentAiModelCursorPage> }, QueryDocumentAiModelAllArgs>,
+    documentAiModelByUid?: GraphCacheUpdateResolver<{ documentAiModelByUid: Maybe<WithTypename<DocumentAiModelType>> }, QueryDocumentAiModelByUidArgs>,
+    documentAiModelsActive?: GraphCacheUpdateResolver<{ documentAiModelsActive: Array<WithTypename<DocumentAiModelType>> }, Record<string, never>>,
+    documentAiReviewFeedbackAll?: GraphCacheUpdateResolver<{ documentAiReviewFeedbackAll: WithTypename<DocumentAiReviewFeedbackCursorPage> }, QueryDocumentAiReviewFeedbackAllArgs>,
+    documentAiReviewFeedbackByStep?: GraphCacheUpdateResolver<{ documentAiReviewFeedbackByStep: Array<WithTypename<DocumentAiReviewFeedbackType>> }, QueryDocumentAiReviewFeedbackByStepArgs>,
+    documentAiReviewFeedbackByUid?: GraphCacheUpdateResolver<{ documentAiReviewFeedbackByUid: Maybe<WithTypename<DocumentAiReviewFeedbackType>> }, QueryDocumentAiReviewFeedbackByUidArgs>,
+    documentAll?: GraphCacheUpdateResolver<{ documentAll: WithTypename<DocumentCursorPage> }, QueryDocumentAllArgs>,
+    documentAnalyticsAll?: GraphCacheUpdateResolver<{ documentAnalyticsAll: WithTypename<DocumentAnalyticsCursorPage> }, QueryDocumentAnalyticsAllArgs>,
+    documentAnalyticsByDocument?: GraphCacheUpdateResolver<{ documentAnalyticsByDocument: Array<WithTypename<DocumentAnalyticsType>> }, QueryDocumentAnalyticsByDocumentArgs>,
+    documentAnalyticsByUid?: GraphCacheUpdateResolver<{ documentAnalyticsByUid: Maybe<WithTypename<DocumentAnalyticsType>> }, QueryDocumentAnalyticsByUidArgs>,
+    documentAuditAll?: GraphCacheUpdateResolver<{ documentAuditAll: WithTypename<DocumentAuditCursorPage> }, QueryDocumentAuditAllArgs>,
+    documentAuditByUid?: GraphCacheUpdateResolver<{ documentAuditByUid: Maybe<WithTypename<DocumentAuditType>> }, QueryDocumentAuditByUidArgs>,
+    documentAuditsByDocument?: GraphCacheUpdateResolver<{ documentAuditsByDocument: Array<WithTypename<DocumentAuditType>> }, QueryDocumentAuditsByDocumentArgs>,
+    documentByDocumentId?: GraphCacheUpdateResolver<{ documentByDocumentId: Maybe<WithTypename<DocumentType>> }, QueryDocumentByDocumentIdArgs>,
+    documentByUid?: GraphCacheUpdateResolver<{ documentByUid: Maybe<WithTypename<DocumentType>> }, QueryDocumentByUidArgs>,
+    documentCategoryByUid?: GraphCacheUpdateResolver<{ documentCategoryByUid: Maybe<WithTypename<DocumentCategoryType>> }, QueryDocumentCategoryByUidArgs>,
+    documentComplianceIssueAll?: GraphCacheUpdateResolver<{ documentComplianceIssueAll: WithTypename<DocumentComplianceIssueCursorPage> }, QueryDocumentComplianceIssueAllArgs>,
+    documentComplianceIssueByUid?: GraphCacheUpdateResolver<{ documentComplianceIssueByUid: Maybe<WithTypename<DocumentComplianceIssueType>> }, QueryDocumentComplianceIssueByUidArgs>,
+    documentComplianceIssuesByCheck?: GraphCacheUpdateResolver<{ documentComplianceIssuesByCheck: Array<WithTypename<DocumentComplianceIssueType>> }, QueryDocumentComplianceIssuesByCheckArgs>,
+    documentComplianceStandardAll?: GraphCacheUpdateResolver<{ documentComplianceStandardAll: WithTypename<DocumentComplianceStandardCursorPage> }, QueryDocumentComplianceStandardAllArgs>,
+    documentComplianceStandardByUid?: GraphCacheUpdateResolver<{ documentComplianceStandardByUid: Maybe<WithTypename<DocumentComplianceStandardType>> }, QueryDocumentComplianceStandardByUidArgs>,
+    documentFolderAll?: GraphCacheUpdateResolver<{ documentFolderAll: WithTypename<DocumentFolderCursorPage> }, QueryDocumentFolderAllArgs>,
+    documentFolderByUid?: GraphCacheUpdateResolver<{ documentFolderByUid: Maybe<WithTypename<DocumentFolderType>> }, QueryDocumentFolderByUidArgs>,
+    documentReviewCycleAll?: GraphCacheUpdateResolver<{ documentReviewCycleAll: WithTypename<DocumentReviewCycleCursorPage> }, QueryDocumentReviewCycleAllArgs>,
+    documentReviewCycleByUid?: GraphCacheUpdateResolver<{ documentReviewCycleByUid: Maybe<WithTypename<DocumentReviewCycleType>> }, QueryDocumentReviewCycleByUidArgs>,
+    documentReviewCyclesByDocument?: GraphCacheUpdateResolver<{ documentReviewCyclesByDocument: Array<WithTypename<DocumentReviewCycleType>> }, QueryDocumentReviewCyclesByDocumentArgs>,
+    documentReviewStepAll?: GraphCacheUpdateResolver<{ documentReviewStepAll: WithTypename<DocumentReviewStepCursorPage> }, QueryDocumentReviewStepAllArgs>,
+    documentReviewStepByUid?: GraphCacheUpdateResolver<{ documentReviewStepByUid: Maybe<WithTypename<DocumentReviewStepType>> }, QueryDocumentReviewStepByUidArgs>,
+    documentReviewStepsByCycle?: GraphCacheUpdateResolver<{ documentReviewStepsByCycle: Array<WithTypename<DocumentReviewStepType>> }, QueryDocumentReviewStepsByCycleArgs>,
+    documentReviewStepsByReviewer?: GraphCacheUpdateResolver<{ documentReviewStepsByReviewer: Array<WithTypename<DocumentReviewStepType>> }, QueryDocumentReviewStepsByReviewerArgs>,
+    documentRootFolders?: GraphCacheUpdateResolver<{ documentRootFolders: Array<WithTypename<DocumentFolderType>> }, Record<string, never>>,
+    documentStatusAll?: GraphCacheUpdateResolver<{ documentStatusAll: WithTypename<DocumentStatusCursorPage> }, QueryDocumentStatusAllArgs>,
+    documentStatusByUid?: GraphCacheUpdateResolver<{ documentStatusByUid: Maybe<WithTypename<DocumentStatusType>> }, QueryDocumentStatusByUidArgs>,
+    documentStatusesByDocument?: GraphCacheUpdateResolver<{ documentStatusesByDocument: Array<WithTypename<DocumentStatusType>> }, QueryDocumentStatusesByDocumentArgs>,
+    documentSubscriptionAll?: GraphCacheUpdateResolver<{ documentSubscriptionAll: WithTypename<DocumentSubscriptionCursorPage> }, QueryDocumentSubscriptionAllArgs>,
+    documentSubscriptionByUid?: GraphCacheUpdateResolver<{ documentSubscriptionByUid: Maybe<WithTypename<DocumentSubscriptionType>> }, QueryDocumentSubscriptionByUidArgs>,
+    documentSubscriptionsByDocument?: GraphCacheUpdateResolver<{ documentSubscriptionsByDocument: Array<WithTypename<DocumentSubscriptionType>> }, QueryDocumentSubscriptionsByDocumentArgs>,
+    documentSubscriptionsByUser?: GraphCacheUpdateResolver<{ documentSubscriptionsByUser: Array<WithTypename<DocumentSubscriptionType>> }, QueryDocumentSubscriptionsByUserArgs>,
+    documentTagAll?: GraphCacheUpdateResolver<{ documentTagAll: WithTypename<DocumentTagCursorPage> }, QueryDocumentTagAllArgs>,
+    documentTagByUid?: GraphCacheUpdateResolver<{ documentTagByUid: Maybe<WithTypename<DocumentTagType>> }, QueryDocumentTagByUidArgs>,
+    documentTemplateAll?: GraphCacheUpdateResolver<{ documentTemplateAll: WithTypename<DocumentTemplateCursorPage> }, QueryDocumentTemplateAllArgs>,
+    documentTemplateByUid?: GraphCacheUpdateResolver<{ documentTemplateByUid: Maybe<WithTypename<DocumentTemplateType>> }, QueryDocumentTemplateByUidArgs>,
+    documentVersionAll?: GraphCacheUpdateResolver<{ documentVersionAll: WithTypename<DocumentVersionCursorPage> }, QueryDocumentVersionAllArgs>,
+    documentVersionByUid?: GraphCacheUpdateResolver<{ documentVersionByUid: Maybe<WithTypename<DocumentVersionType>> }, QueryDocumentVersionByUidArgs>,
+    documentVersionsByDocument?: GraphCacheUpdateResolver<{ documentVersionsByDocument: Array<WithTypename<DocumentVersionType>> }, QueryDocumentVersionsByDocumentArgs>,
+    grindBoardAll?: GraphCacheUpdateResolver<{ grindBoardAll: WithTypename<GrindBoardCursorPage> }, QueryGrindBoardAllArgs>,
+    grindBoardByUid?: GraphCacheUpdateResolver<{ grindBoardByUid: Maybe<WithTypename<GrindBoardType>> }, QueryGrindBoardByUidArgs>,
+    grindBoardsByScheme?: GraphCacheUpdateResolver<{ grindBoardsByScheme: Array<WithTypename<GrindBoardType>> }, QueryGrindBoardsBySchemeArgs>,
+    grindErrandAll?: GraphCacheUpdateResolver<{ grindErrandAll: WithTypename<GrindErrandCursorPage> }, QueryGrindErrandAllArgs>,
+    grindErrandByUid?: GraphCacheUpdateResolver<{ grindErrandByUid: Maybe<WithTypename<GrindErrandType>> }, QueryGrindErrandByUidArgs>,
+    grindErrandsByAssignee?: GraphCacheUpdateResolver<{ grindErrandsByAssignee: Array<WithTypename<GrindErrandType>> }, QueryGrindErrandsByAssigneeArgs>,
+    grindErrandsByPoster?: GraphCacheUpdateResolver<{ grindErrandsByPoster: Array<WithTypename<GrindErrandType>> }, QueryGrindErrandsByPosterArgs>,
+    grindLabelAll?: GraphCacheUpdateResolver<{ grindLabelAll: WithTypename<GrindLabelCursorPage> }, QueryGrindLabelAllArgs>,
+    grindLabelByUid?: GraphCacheUpdateResolver<{ grindLabelByUid: Maybe<WithTypename<GrindLabelType>> }, QueryGrindLabelByUidArgs>,
+    grindLabelsByCategory?: GraphCacheUpdateResolver<{ grindLabelsByCategory: Array<WithTypename<GrindLabelType>> }, QueryGrindLabelsByCategoryArgs>,
+    grindMediaAll?: GraphCacheUpdateResolver<{ grindMediaAll: WithTypename<GrindMediaCursorPage> }, QueryGrindMediaAllArgs>,
+    grindMediaByTarget?: GraphCacheUpdateResolver<{ grindMediaByTarget: Array<WithTypename<GrindMediaType>> }, QueryGrindMediaByTargetArgs>,
+    grindMediaByUid?: GraphCacheUpdateResolver<{ grindMediaByUid: Maybe<WithTypename<GrindMediaType>> }, QueryGrindMediaByUidArgs>,
+    grindMilestoneAll?: GraphCacheUpdateResolver<{ grindMilestoneAll: WithTypename<GrindMilestoneCursorPage> }, QueryGrindMilestoneAllArgs>,
+    grindMilestoneByUid?: GraphCacheUpdateResolver<{ grindMilestoneByUid: Maybe<WithTypename<GrindMilestoneType>> }, QueryGrindMilestoneByUidArgs>,
+    grindMilestonesByAssignee?: GraphCacheUpdateResolver<{ grindMilestonesByAssignee: Array<WithTypename<GrindMilestoneType>> }, QueryGrindMilestonesByAssigneeArgs>,
+    grindMilestonesByErrand?: GraphCacheUpdateResolver<{ grindMilestonesByErrand: Array<WithTypename<GrindMilestoneType>> }, QueryGrindMilestonesByErrandArgs>,
+    grindOccurrenceAll?: GraphCacheUpdateResolver<{ grindOccurrenceAll: WithTypename<GrindOccurrenceCursorPage> }, QueryGrindOccurrenceAllArgs>,
+    grindOccurrenceByUid?: GraphCacheUpdateResolver<{ grindOccurrenceByUid: Maybe<WithTypename<GrindOccurrenceType>> }, QueryGrindOccurrenceByUidArgs>,
+    grindOccurrencesByActor?: GraphCacheUpdateResolver<{ grindOccurrencesByActor: Array<WithTypename<GrindOccurrenceType>> }, QueryGrindOccurrencesByActorArgs>,
+    grindOccurrencesByTarget?: GraphCacheUpdateResolver<{ grindOccurrencesByTarget: Array<WithTypename<GrindOccurrenceType>> }, QueryGrindOccurrencesByTargetArgs>,
+    grindPosterAll?: GraphCacheUpdateResolver<{ grindPosterAll: WithTypename<GrindPosterCursorPage> }, QueryGrindPosterAllArgs>,
+    grindPosterByUid?: GraphCacheUpdateResolver<{ grindPosterByUid: Maybe<WithTypename<GrindPosterType>> }, QueryGrindPosterByUidArgs>,
+    grindPostersByBoard?: GraphCacheUpdateResolver<{ grindPostersByBoard: Array<WithTypename<GrindPosterType>> }, QueryGrindPostersByBoardArgs>,
+    grindSchemeAll?: GraphCacheUpdateResolver<{ grindSchemeAll: WithTypename<GrindSchemeCursorPage> }, QueryGrindSchemeAllArgs>,
+    grindSchemeByUid?: GraphCacheUpdateResolver<{ grindSchemeByUid: Maybe<WithTypename<GrindSchemeType>> }, QueryGrindSchemeByUidArgs>,
+    grindStampAll?: GraphCacheUpdateResolver<{ grindStampAll: WithTypename<GrindStampCursorPage> }, QueryGrindStampAllArgs>,
+    grindStampByCategory?: GraphCacheUpdateResolver<{ grindStampByCategory: Array<WithTypename<GrindStampType>> }, QueryGrindStampByCategoryArgs>,
+    grindStampByUid?: GraphCacheUpdateResolver<{ grindStampByUid: Maybe<WithTypename<GrindStampType>> }, QueryGrindStampByUidArgs>,
     groupAll?: GraphCacheUpdateResolver<{ groupAll: Array<WithTypename<GroupType>> }, Record<string, never>>,
     groupByUid?: GraphCacheUpdateResolver<{ groupByUid: Maybe<WithTypename<GroupType>> }, QueryGroupByUidArgs>,
     hazardAll?: GraphCacheUpdateResolver<{ hazardAll: Array<WithTypename<HazardType>> }, Record<string, never>>,
@@ -10332,6 +14066,32 @@ export type GraphCacheUpdaters = {
     createCountry?: GraphCacheUpdateResolver<{ createCountry: WithTypename<CountryResponse> }, MutationCreateCountryArgs>,
     createDepartment?: GraphCacheUpdateResolver<{ createDepartment: WithTypename<DepartmentResponse> }, MutationCreateDepartmentArgs>,
     createDistrict?: GraphCacheUpdateResolver<{ createDistrict: WithTypename<DistrictResponse> }, MutationCreateDistrictArgs>,
+    createDocument?: GraphCacheUpdateResolver<{ createDocument: WithTypename<DocumentResponse> }, MutationCreateDocumentArgs>,
+    createDocumentAiAuthoringSession?: GraphCacheUpdateResolver<{ createDocumentAiAuthoringSession: WithTypename<DocumentAiAuthoringSessionResponse> }, MutationCreateDocumentAiAuthoringSessionArgs>,
+    createDocumentAiComplianceCheck?: GraphCacheUpdateResolver<{ createDocumentAiComplianceCheck: WithTypename<DocumentAiComplianceCheckResponse> }, MutationCreateDocumentAiComplianceCheckArgs>,
+    createDocumentAiModel?: GraphCacheUpdateResolver<{ createDocumentAiModel: WithTypename<DocumentAiModelResponse> }, MutationCreateDocumentAiModelArgs>,
+    createDocumentAiReviewFeedback?: GraphCacheUpdateResolver<{ createDocumentAiReviewFeedback: WithTypename<DocumentAiReviewFeedbackResponse> }, MutationCreateDocumentAiReviewFeedbackArgs>,
+    createDocumentAnalytics?: GraphCacheUpdateResolver<{ createDocumentAnalytics: WithTypename<DocumentAnalyticsResponse> }, MutationCreateDocumentAnalyticsArgs>,
+    createDocumentAudit?: GraphCacheUpdateResolver<{ createDocumentAudit: WithTypename<DocumentAuditResponse> }, MutationCreateDocumentAuditArgs>,
+    createDocumentCategory?: GraphCacheUpdateResolver<{ createDocumentCategory: WithTypename<DocumentCategoryResponse> }, MutationCreateDocumentCategoryArgs>,
+    createDocumentComplianceIssue?: GraphCacheUpdateResolver<{ createDocumentComplianceIssue: WithTypename<DocumentComplianceIssueResponse> }, MutationCreateDocumentComplianceIssueArgs>,
+    createDocumentComplianceStandard?: GraphCacheUpdateResolver<{ createDocumentComplianceStandard: WithTypename<DocumentComplianceStandardResponse> }, MutationCreateDocumentComplianceStandardArgs>,
+    createDocumentFolder?: GraphCacheUpdateResolver<{ createDocumentFolder: WithTypename<DocumentFolderResponse> }, MutationCreateDocumentFolderArgs>,
+    createDocumentRelation?: GraphCacheUpdateResolver<{ createDocumentRelation: WithTypename<DocumentRelationResponse> }, MutationCreateDocumentRelationArgs>,
+    createDocumentReviewCycle?: GraphCacheUpdateResolver<{ createDocumentReviewCycle: WithTypename<DocumentReviewCycleResponse> }, MutationCreateDocumentReviewCycleArgs>,
+    createDocumentStatus?: GraphCacheUpdateResolver<{ createDocumentStatus: WithTypename<DocumentStatusResponse> }, MutationCreateDocumentStatusArgs>,
+    createDocumentSubscription?: GraphCacheUpdateResolver<{ createDocumentSubscription: WithTypename<DocumentSubscriptionResponse> }, MutationCreateDocumentSubscriptionArgs>,
+    createDocumentTag?: GraphCacheUpdateResolver<{ createDocumentTag: WithTypename<DocumentTagResponse> }, MutationCreateDocumentTagArgs>,
+    createDocumentTemplate?: GraphCacheUpdateResolver<{ createDocumentTemplate: WithTypename<DocumentTemplateResponse> }, MutationCreateDocumentTemplateArgs>,
+    createDocumentVersion?: GraphCacheUpdateResolver<{ createDocumentVersion: WithTypename<DocumentVersionResponse> }, MutationCreateDocumentVersionArgs>,
+    createGrindBoard?: GraphCacheUpdateResolver<{ createGrindBoard: WithTypename<GrindBoardResponse> }, MutationCreateGrindBoardArgs>,
+    createGrindErrand?: GraphCacheUpdateResolver<{ createGrindErrand: WithTypename<GrindErrandResponse> }, MutationCreateGrindErrandArgs>,
+    createGrindLabel?: GraphCacheUpdateResolver<{ createGrindLabel: WithTypename<GrindLabelResponse> }, MutationCreateGrindLabelArgs>,
+    createGrindMedia?: GraphCacheUpdateResolver<{ createGrindMedia: WithTypename<GrindMediaResponse> }, MutationCreateGrindMediaArgs>,
+    createGrindMilestone?: GraphCacheUpdateResolver<{ createGrindMilestone: WithTypename<GrindMilestoneResponse> }, MutationCreateGrindMilestoneArgs>,
+    createGrindPoster?: GraphCacheUpdateResolver<{ createGrindPoster: WithTypename<GrindPosterResponse> }, MutationCreateGrindPosterArgs>,
+    createGrindScheme?: GraphCacheUpdateResolver<{ createGrindScheme: WithTypename<GrindSchemeResponse> }, MutationCreateGrindSchemeArgs>,
+    createGrindStamp?: GraphCacheUpdateResolver<{ createGrindStamp: WithTypename<GrindStampResponse> }, MutationCreateGrindStampArgs>,
     createGroup?: GraphCacheUpdateResolver<{ createGroup: WithTypename<GroupResponse> }, MutationCreateGroupArgs>,
     createHazard?: GraphCacheUpdateResolver<{ createHazard: WithTypename<HazardResponse> }, MutationCreateHazardArgs>,
     createIdentification?: GraphCacheUpdateResolver<{ createIdentification: WithTypename<IdentificationResponse> }, MutationCreateIdentificationArgs>,
@@ -10379,6 +14139,30 @@ export type GraphCacheUpdaters = {
     createWorksheet?: GraphCacheUpdateResolver<{ createWorksheet: WithTypename<WorkSheetsResponse> }, MutationCreateWorksheetArgs>,
     createWorksheetTemplate?: GraphCacheUpdateResolver<{ createWorksheetTemplate: WithTypename<WorkSheetTemplateResponse> }, MutationCreateWorksheetTemplateArgs>,
     deleteClientContact?: GraphCacheUpdateResolver<{ deleteClientContact: WithTypename<DeleteContactResponse> }, MutationDeleteClientContactArgs>,
+    deleteDocument?: GraphCacheUpdateResolver<{ deleteDocument: WithTypename<DocumentResponse> }, MutationDeleteDocumentArgs>,
+    deleteDocumentAiAuthoringSession?: GraphCacheUpdateResolver<{ deleteDocumentAiAuthoringSession: WithTypename<DocumentAiAuthoringSessionResponse> }, MutationDeleteDocumentAiAuthoringSessionArgs>,
+    deleteDocumentAiComplianceCheck?: GraphCacheUpdateResolver<{ deleteDocumentAiComplianceCheck: WithTypename<DocumentAiComplianceCheckResponse> }, MutationDeleteDocumentAiComplianceCheckArgs>,
+    deleteDocumentAiModel?: GraphCacheUpdateResolver<{ deleteDocumentAiModel: WithTypename<DocumentAiModelResponse> }, MutationDeleteDocumentAiModelArgs>,
+    deleteDocumentAiReviewFeedback?: GraphCacheUpdateResolver<{ deleteDocumentAiReviewFeedback: WithTypename<DocumentAiReviewFeedbackResponse> }, MutationDeleteDocumentAiReviewFeedbackArgs>,
+    deleteDocumentAnalytics?: GraphCacheUpdateResolver<{ deleteDocumentAnalytics: WithTypename<DocumentAnalyticsResponse> }, MutationDeleteDocumentAnalyticsArgs>,
+    deleteDocumentCategory?: GraphCacheUpdateResolver<{ deleteDocumentCategory: WithTypename<DocumentCategoryResponse> }, MutationDeleteDocumentCategoryArgs>,
+    deleteDocumentComplianceIssue?: GraphCacheUpdateResolver<{ deleteDocumentComplianceIssue: WithTypename<DocumentComplianceIssueResponse> }, MutationDeleteDocumentComplianceIssueArgs>,
+    deleteDocumentComplianceStandard?: GraphCacheUpdateResolver<{ deleteDocumentComplianceStandard: WithTypename<DocumentComplianceStandardResponse> }, MutationDeleteDocumentComplianceStandardArgs>,
+    deleteDocumentFolder?: GraphCacheUpdateResolver<{ deleteDocumentFolder: WithTypename<DocumentFolderResponse> }, MutationDeleteDocumentFolderArgs>,
+    deleteDocumentRelation?: GraphCacheUpdateResolver<{ deleteDocumentRelation: WithTypename<DocumentRelationResponse> }, MutationDeleteDocumentRelationArgs>,
+    deleteDocumentReviewCycle?: GraphCacheUpdateResolver<{ deleteDocumentReviewCycle: WithTypename<DocumentReviewCycleResponse> }, MutationDeleteDocumentReviewCycleArgs>,
+    deleteDocumentSubscription?: GraphCacheUpdateResolver<{ deleteDocumentSubscription: WithTypename<DocumentSubscriptionResponse> }, MutationDeleteDocumentSubscriptionArgs>,
+    deleteDocumentTag?: GraphCacheUpdateResolver<{ deleteDocumentTag: WithTypename<DocumentTagResponse> }, MutationDeleteDocumentTagArgs>,
+    deleteDocumentTemplate?: GraphCacheUpdateResolver<{ deleteDocumentTemplate: WithTypename<DocumentTemplateResponse> }, MutationDeleteDocumentTemplateArgs>,
+    deleteDocumentVersion?: GraphCacheUpdateResolver<{ deleteDocumentVersion: WithTypename<DocumentVersionResponse> }, MutationDeleteDocumentVersionArgs>,
+    deleteGrindBoard?: GraphCacheUpdateResolver<{ deleteGrindBoard: WithTypename<GrindBoardResponse> }, MutationDeleteGrindBoardArgs>,
+    deleteGrindErrand?: GraphCacheUpdateResolver<{ deleteGrindErrand: WithTypename<GrindErrandResponse> }, MutationDeleteGrindErrandArgs>,
+    deleteGrindLabel?: GraphCacheUpdateResolver<{ deleteGrindLabel: WithTypename<GrindLabelResponse> }, MutationDeleteGrindLabelArgs>,
+    deleteGrindMedia?: GraphCacheUpdateResolver<{ deleteGrindMedia: WithTypename<GrindMediaResponse> }, MutationDeleteGrindMediaArgs>,
+    deleteGrindMilestone?: GraphCacheUpdateResolver<{ deleteGrindMilestone: WithTypename<GrindMilestoneResponse> }, MutationDeleteGrindMilestoneArgs>,
+    deleteGrindPoster?: GraphCacheUpdateResolver<{ deleteGrindPoster: WithTypename<GrindPosterResponse> }, MutationDeleteGrindPosterArgs>,
+    deleteGrindScheme?: GraphCacheUpdateResolver<{ deleteGrindScheme: WithTypename<GrindSchemeResponse> }, MutationDeleteGrindSchemeArgs>,
+    deleteGrindStamp?: GraphCacheUpdateResolver<{ deleteGrindStamp: WithTypename<GrindStampResponse> }, MutationDeleteGrindStampArgs>,
     deleteMessage?: GraphCacheUpdateResolver<{ deleteMessage: WithTypename<DeleteResponse> }, MutationDeleteMessageArgs>,
     deleteNotice?: GraphCacheUpdateResolver<{ deleteNotice: WithTypename<DeleteResponse> }, MutationDeleteNoticeArgs>,
     deleteReflexBrain?: GraphCacheUpdateResolver<{ deleteReflexBrain: WithTypename<DeletedItem> }, MutationDeleteReflexBrainArgs>,
@@ -10448,6 +14232,31 @@ export type GraphCacheUpdaters = {
     updateCountry?: GraphCacheUpdateResolver<{ updateCountry: WithTypename<CountryResponse> }, MutationUpdateCountryArgs>,
     updateDepartment?: GraphCacheUpdateResolver<{ updateDepartment: WithTypename<DepartmentResponse> }, MutationUpdateDepartmentArgs>,
     updateDistrict?: GraphCacheUpdateResolver<{ updateDistrict: WithTypename<DistrictResponse> }, MutationUpdateDistrictArgs>,
+    updateDocument?: GraphCacheUpdateResolver<{ updateDocument: WithTypename<DocumentResponse> }, MutationUpdateDocumentArgs>,
+    updateDocumentAiAuthoringSession?: GraphCacheUpdateResolver<{ updateDocumentAiAuthoringSession: WithTypename<DocumentAiAuthoringSessionResponse> }, MutationUpdateDocumentAiAuthoringSessionArgs>,
+    updateDocumentAiComplianceCheck?: GraphCacheUpdateResolver<{ updateDocumentAiComplianceCheck: WithTypename<DocumentAiComplianceCheckResponse> }, MutationUpdateDocumentAiComplianceCheckArgs>,
+    updateDocumentAiModel?: GraphCacheUpdateResolver<{ updateDocumentAiModel: WithTypename<DocumentAiModelResponse> }, MutationUpdateDocumentAiModelArgs>,
+    updateDocumentAiReviewFeedback?: GraphCacheUpdateResolver<{ updateDocumentAiReviewFeedback: WithTypename<DocumentAiReviewFeedbackResponse> }, MutationUpdateDocumentAiReviewFeedbackArgs>,
+    updateDocumentAnalytics?: GraphCacheUpdateResolver<{ updateDocumentAnalytics: WithTypename<DocumentAnalyticsResponse> }, MutationUpdateDocumentAnalyticsArgs>,
+    updateDocumentCategory?: GraphCacheUpdateResolver<{ updateDocumentCategory: WithTypename<DocumentCategoryResponse> }, MutationUpdateDocumentCategoryArgs>,
+    updateDocumentComplianceIssue?: GraphCacheUpdateResolver<{ updateDocumentComplianceIssue: WithTypename<DocumentComplianceIssueResponse> }, MutationUpdateDocumentComplianceIssueArgs>,
+    updateDocumentComplianceStandard?: GraphCacheUpdateResolver<{ updateDocumentComplianceStandard: WithTypename<DocumentComplianceStandardResponse> }, MutationUpdateDocumentComplianceStandardArgs>,
+    updateDocumentFolder?: GraphCacheUpdateResolver<{ updateDocumentFolder: WithTypename<DocumentFolderResponse> }, MutationUpdateDocumentFolderArgs>,
+    updateDocumentReviewCycle?: GraphCacheUpdateResolver<{ updateDocumentReviewCycle: WithTypename<DocumentReviewCycleResponse> }, MutationUpdateDocumentReviewCycleArgs>,
+    updateDocumentReviewStep?: GraphCacheUpdateResolver<{ updateDocumentReviewStep: WithTypename<DocumentReviewStepResponse> }, MutationUpdateDocumentReviewStepArgs>,
+    updateDocumentStatus?: GraphCacheUpdateResolver<{ updateDocumentStatus: WithTypename<DocumentStatusResponse> }, MutationUpdateDocumentStatusArgs>,
+    updateDocumentSubscription?: GraphCacheUpdateResolver<{ updateDocumentSubscription: WithTypename<DocumentSubscriptionResponse> }, MutationUpdateDocumentSubscriptionArgs>,
+    updateDocumentTag?: GraphCacheUpdateResolver<{ updateDocumentTag: WithTypename<DocumentTagResponse> }, MutationUpdateDocumentTagArgs>,
+    updateDocumentTemplate?: GraphCacheUpdateResolver<{ updateDocumentTemplate: WithTypename<DocumentTemplateResponse> }, MutationUpdateDocumentTemplateArgs>,
+    updateDocumentVersion?: GraphCacheUpdateResolver<{ updateDocumentVersion: WithTypename<DocumentVersionResponse> }, MutationUpdateDocumentVersionArgs>,
+    updateGrindBoard?: GraphCacheUpdateResolver<{ updateGrindBoard: WithTypename<GrindBoardResponse> }, MutationUpdateGrindBoardArgs>,
+    updateGrindErrand?: GraphCacheUpdateResolver<{ updateGrindErrand: WithTypename<GrindErrandResponse> }, MutationUpdateGrindErrandArgs>,
+    updateGrindLabel?: GraphCacheUpdateResolver<{ updateGrindLabel: WithTypename<GrindLabelResponse> }, MutationUpdateGrindLabelArgs>,
+    updateGrindMedia?: GraphCacheUpdateResolver<{ updateGrindMedia: WithTypename<GrindMediaResponse> }, MutationUpdateGrindMediaArgs>,
+    updateGrindMilestone?: GraphCacheUpdateResolver<{ updateGrindMilestone: WithTypename<GrindMilestoneResponse> }, MutationUpdateGrindMilestoneArgs>,
+    updateGrindPoster?: GraphCacheUpdateResolver<{ updateGrindPoster: WithTypename<GrindPosterResponse> }, MutationUpdateGrindPosterArgs>,
+    updateGrindScheme?: GraphCacheUpdateResolver<{ updateGrindScheme: WithTypename<GrindSchemeResponse> }, MutationUpdateGrindSchemeArgs>,
+    updateGrindStamp?: GraphCacheUpdateResolver<{ updateGrindStamp: WithTypename<GrindStampResponse> }, MutationUpdateGrindStampArgs>,
     updateGroup?: GraphCacheUpdateResolver<{ updateGroup: WithTypename<GroupResponse> }, MutationUpdateGroupArgs>,
     updateGroupPermissions?: GraphCacheUpdateResolver<{ updateGroupPermissions: WithTypename<UpdatedGroupPermsResponse> }, MutationUpdateGroupPermissionsArgs>,
     updateHazard?: GraphCacheUpdateResolver<{ updateHazard: WithTypename<HazardResponse> }, MutationUpdateHazardArgs>,
@@ -11515,6 +15324,706 @@ export type GraphCacheUpdaters = {
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DistrictType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DistrictType>>, Record<string, never>>,
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DistrictType>>, Record<string, never>>
+  },
+  DocumentAIAuthoringSessionCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionCursorPage>>, Record<string, never>>
+  },
+  DocumentAIAuthoringSessionEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionEdge>>, Record<string, never>>
+  },
+  DocumentAIAuthoringSessionType?: {
+    conversation?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    model?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    modelUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    prompt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiAuthoringSessionType>>, Record<string, never>>
+  },
+  DocumentAIComplianceCheckCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckCursorPage>>, Record<string, never>>
+  },
+  DocumentAIComplianceCheckEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckEdge>>, Record<string, never>>
+  },
+  DocumentAIComplianceCheckType?: {
+    complianceScore?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    issues?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    results?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    standard?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    standardUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiComplianceCheckType>>, Record<string, never>>
+  },
+  DocumentAIModelCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelCursorPage>>, Record<string, never>>
+  },
+  DocumentAIModelEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelEdge>>, Record<string, never>>
+  },
+  DocumentAIModelType?: {
+    apiEndpoint?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    capabilities?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiModelType>>, Record<string, never>>
+  },
+  DocumentAIReviewFeedbackCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackCursorPage>>, Record<string, never>>
+  },
+  DocumentAIReviewFeedbackEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackEdge>>, Record<string, never>>
+  },
+  DocumentAIReviewFeedbackType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    model?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    modelUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    reviewStep?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    reviewStepUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    suggestions?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAiReviewFeedbackType>>, Record<string, never>>
+  },
+  DocumentAnalyticsCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsCursorPage>>, Record<string, never>>
+  },
+  DocumentAnalyticsEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsEdge>>, Record<string, never>>
+  },
+  DocumentAnalyticsType?: {
+    complexityScore?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    generatedDate?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    keyTopics?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    readabilityScore?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    sentimentScore?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    summary?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAnalyticsType>>, Record<string, never>>
+  },
+  DocumentAuditCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditCursorPage>>, Record<string, never>>
+  },
+  DocumentAuditEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditEdge>>, Record<string, never>>
+  },
+  DocumentAuditType?: {
+    action?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    date?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    ipAddress?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    user?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    userUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>
+  },
+  DocumentCategoryType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>
+  },
+  DocumentComplianceIssueCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueCursorPage>>, Record<string, never>>
+  },
+  DocumentComplianceIssueEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueEdge>>, Record<string, never>>
+  },
+  DocumentComplianceIssueType?: {
+    check?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    checkUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    section?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    severity?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    suggestion?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceIssueType>>, Record<string, never>>
+  },
+  DocumentComplianceStandardCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardCursorPage>>, Record<string, never>>
+  },
+  DocumentComplianceStandardEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardEdge>>, Record<string, never>>
+  },
+  DocumentComplianceStandardType?: {
+    content?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>,
+    version?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentComplianceStandardType>>, Record<string, never>>
+  },
+  DocumentCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCursorPage>>, Record<string, never>>
+  },
+  DocumentEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentEdge>>, Record<string, never>>
+  },
+  DocumentFolderCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderCursorPage>>, Record<string, never>>
+  },
+  DocumentFolderEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderEdge>>, Record<string, never>>
+  },
+  DocumentFolderType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    documents?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    parent?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    parentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    subfolders?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>
+  },
+  DocumentReviewCycleCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleCursorPage>>, Record<string, never>>
+  },
+  DocumentReviewCycleEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleEdge>>, Record<string, never>>
+  },
+  DocumentReviewCycleType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    initiatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    initiatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    startDate?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    steps?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>
+  },
+  DocumentReviewStepCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepCursorPage>>, Record<string, never>>
+  },
+  DocumentReviewStepEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepEdge>>, Record<string, never>>
+  },
+  DocumentReviewStepType?: {
+    actionDate?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    aiFeedback?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    comments?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    reviewCycle?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    reviewCycleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    reviewer?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    reviewerUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    sequence?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>
+  },
+  DocumentStatusCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusCursorPage>>, Record<string, never>>
+  },
+  DocumentStatusEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusEdge>>, Record<string, never>>
+  },
+  DocumentStatusType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    date?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    user?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    userUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>
+  },
+  DocumentSubscriptionCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionCursorPage>>, Record<string, never>>
+  },
+  DocumentSubscriptionEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionEdge>>, Record<string, never>>
+  },
+  DocumentSubscriptionType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    subscriptionType?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    user?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    userUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>
+  },
+  DocumentTagCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagCursorPage>>, Record<string, never>>
+  },
+  DocumentTagEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagEdge>>, Record<string, never>>
+  },
+  DocumentTagType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    documents?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>
+  },
+  DocumentTemplateCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateCursorPage>>, Record<string, never>>
+  },
+  DocumentTemplateEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateEdge>>, Record<string, never>>
+  },
+  DocumentTemplateType?: {
+    category?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    categoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    content?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    documents?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>
+  },
+  DocumentType?: {
+    aiAuthoringSessions?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    analytics?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    auditRecords?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    authors?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    category?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    categoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    complianceChecks?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    content?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    department?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    departmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    documentId?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    folder?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    folderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    lastAccessed?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    lastAccessedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    lastAccessedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    latestVersion?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    readers?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    relatedFrom?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    relatedTo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    reviewCycles?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    statuses?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    subscriptions?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    subtitle?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    tags?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    template?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    templateUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    versions?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>
+  },
+  DocumentVersionCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionCursorPage>>, Record<string, never>>
+  },
+  DocumentVersionEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionEdge>>, Record<string, never>>
+  },
+  DocumentVersionType?: {
+    changeSummary?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    content?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    versionNumber?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>
+  },
+  GrindBoardCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardCursorPage>>, Record<string, never>>
+  },
+  GrindBoardEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardEdge>>, Record<string, never>>
+  },
+  GrindBoardType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    posters?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    scheme?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    schemeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>
+  },
+  GrindErrandCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandCursorPage>>, Record<string, never>>
+  },
+  GrindErrandEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandEdge>>, Record<string, never>>
+  },
+  GrindErrandType?: {
+    assignee?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    assigneeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    category?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    label?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    labelUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    media?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    milestones?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    occurrences?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    poster?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    posterUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    progress?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    reporter?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    reporterUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    stamps?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    startDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>
+  },
+  GrindLabelCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelCursorPage>>, Record<string, never>>
+  },
+  GrindLabelEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelEdge>>, Record<string, never>>
+  },
+  GrindLabelType?: {
+    category?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>
+  },
+  GrindMediaCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaCursorPage>>, Record<string, never>>
+  },
+  GrindMediaEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaEdge>>, Record<string, never>>
+  },
+  GrindMediaType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    destination?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    encoding?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    filename?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    mimetype?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    originalName?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    path?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    size?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    target?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    targetUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>
+  },
+  GrindMilestoneCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneCursorPage>>, Record<string, never>>
+  },
+  GrindMilestoneEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneEdge>>, Record<string, never>>
+  },
+  GrindMilestoneType?: {
+    assignee?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    assigneeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    complete?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    errand?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    errandUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    occurrences?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>
+  },
+  GrindOccurrenceCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceCursorPage>>, Record<string, never>>
+  },
+  GrindOccurrenceEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceEdge>>, Record<string, never>>
+  },
+  GrindOccurrenceType?: {
+    actor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    actorUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    target?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    targetUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>
+  },
+  GrindPosterCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterCursorPage>>, Record<string, never>>
+  },
+  GrindPosterEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterEdge>>, Record<string, never>>
+  },
+  GrindPosterType?: {
+    assignee?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    assigneeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    board?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    boardUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    category?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    errands?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    stamps?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>
+  },
+  GrindSchemeCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeCursorPage>>, Record<string, never>>
+  },
+  GrindSchemeEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeEdge>>, Record<string, never>>
+  },
+  GrindSchemeType?: {
+    assignee?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    assigneeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    boards?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    startDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>
+  },
+  GrindStampCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampCursorPage>>, Record<string, never>>
+  },
+  GrindStampEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampEdge>>, Record<string, never>>
+  },
+  GrindStampType?: {
+    category?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>
   },
   GroupCount?: {
     count?: GraphCacheUpdateResolver<Maybe<WithTypename<GroupCount>>, Record<string, never>>,

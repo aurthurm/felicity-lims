@@ -142,14 +142,28 @@ class GrindPosterCursorPage:
 @strawberry.type
 class GrindStampType:
     uid: str
-    name: str | None = None
-    description: str | None = None
+    title: str | None = None
+    category: str | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     updated_at: str | None = None
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
+
+
+@strawberry.type
+class GrindStampEdge:
+    cursor: str
+    node: GrindStampType
+
+
+@strawberry.type
+class GrindStampCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[GrindStampEdge]] = None
+    items: Optional[List[GrindStampType]] = None
+    total_count: int
 
 
 # Errand Types

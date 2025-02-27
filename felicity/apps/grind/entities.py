@@ -4,7 +4,8 @@ from sqlalchemy import Column, String, ForeignKey, Table, DateTime, Boolean, Enu
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity
-from felicity.apps.grind.enum import MediaTarget, LabelCategory, ErrandCategory, PosterCategory, OccurrenceTarget
+from felicity.apps.grind.enum import MediaTarget, LabelCategory, ErrandCategory, PosterCategory, OccurrenceTarget, \
+    StampCategory
 
 # Association table for many-to-many relationship between Scheme and User (members)
 grind_scheme_member = Table(
@@ -199,4 +200,4 @@ class GrindStamp(BaseEntity):
     __tablename__ = 'grind_stamp'
 
     title = Column(String, nullable=False)
-    category = Column(Enum(LabelCategory), nullable=True)
+    category = Column(Enum(StampCategory), nullable=True)
