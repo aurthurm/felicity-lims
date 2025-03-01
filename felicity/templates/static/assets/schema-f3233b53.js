@@ -1,0 +1,1 @@
+var T=(E=>(E.Engagement="ENGAGEMENT",E.Message="MESSAGE",E.Project="PROJECT",E.Ticket="TICKET",E.Todo="TODO",E))(T||{}),G=(E=>(E.Errand="ERRAND",E))(G||{}),M=(E=>(E.Engagement="ENGAGEMENT",E.Listing="LISTING",E.Message="MESSAGE",E.Todo="TODO",E))(M||{}),e=(E=>(E.Project="PROJECT",E.Ticket="TICKET",E))(e||{});export{T as E,G as M,M as P,e as S};
