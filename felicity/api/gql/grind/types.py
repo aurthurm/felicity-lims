@@ -4,6 +4,7 @@ from typing import List, Optional
 
 import strawberry
 
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.grind.enum import MediaTarget, OccurrenceTarget
@@ -29,7 +30,7 @@ class GrindSchemeType:
     @strawberry.field
     async def members(self, info) -> List["UserType"]:
         from felicity.apps.grind.services import GrindSchemeService
-        scheme = await GrindSchemeService().get(uid=self.uid)
+        scheme = await GrindSchemeService().get(uid=self.uid, related=["members"])
         return scheme.members if scheme else []
 
     @strawberry.field
@@ -115,7 +116,7 @@ class GrindPosterType:
     @strawberry.field
     async def stamps(self, info) -> List["GrindStampType"]:
         from felicity.apps.grind.services import GrindPosterService
-        poster = await GrindPosterService().get(uid=self.uid)
+        poster = await GrindPosterService().get(uid=self.uid, related=["stamps"])
         return poster.stamps if poster else []
 
     @strawberry.field
@@ -195,19 +196,26 @@ class GrindErrandType:
     @strawberry.field
     async def members(self, info) -> List[UserType]:
         from felicity.apps.grind.services import GrindErrandService
-        errand = await GrindErrandService().get(uid=self.uid)
+        errand = await GrindErrandService().get(uid=self.uid, related=["members"])
         return errand.members if errand else []
 
     @strawberry.field
     async def stamps(self, info) -> List[GrindStampType]:
         from felicity.apps.grind.services import GrindErrandService
-        errand = await GrindErrandService().get(uid=self.uid)
+        errand = await GrindErrandService().get(uid=self.uid, related=["stamps"])
         return errand.stamps if errand else []
 
     @strawberry.field
     async def milestones(self, info) -> List["GrindMilestoneType"]:
         from felicity.apps.grind.services import GrindMilestoneService
         return await GrindMilestoneService().get_all(errand_uid=self.uid)
+
+    @strawberry.field
+    async def milestones_at(self, info) -> float:
+        from felicity.apps.grind.services import GrindMilestoneService
+        milestones = await GrindMilestoneService().get_all(errand_uid=self.uid)
+        complete = list(filter(lambda x: x.complete, milestones))
+        return round((len(complete) / len(milestones) * 100), 2) if milestones else 0
 
     @strawberry.field
     async def occurrences(self, info) -> List["GrindOccurrenceType"]:
@@ -231,6 +239,50 @@ class GrindErrandCursorPage:
     page_info: PageInfo
     edges: Optional[List[GrindErrandEdge]] = None
     items: Optional[List[GrindErrandType]] = None
+    total_count: int
+
+
+@strawberry.type
+class GrindErrandDiscussionType:
+    uid: str
+    comment: str
+    errand_uid: str | None = None
+    errand: GrindErrandType | None = None
+    parent_uid: str | None = None
+    parent: GrindErrandDiscussionType | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+
+    @strawberry.field
+    async def subdiscussions(self) -> List["GrindErrandDiscussionType"]:
+        from felicity.apps.grind.services import GrindErrandDiscussionService
+        return await GrindErrandDiscussionService().get_all(parent_uid=self.uid)
+
+    @strawberry.field
+    async def can_edit(self, info) -> bool:
+        felicity_user = await auth_from_info(info)
+        from felicity.apps.grind.services import GrindErrandDiscussionService
+        if felicity_user and felicity_user.uid != self.created_by_uid: return False
+        subs = await GrindErrandDiscussionService().get_all(parent_uid=self.uid)
+        if subs: return False
+        return True
+
+
+@strawberry.type
+class GrindErrandDiscussionEdge:
+    cursor: str
+    node: GrindErrandDiscussionType
+
+
+@strawberry.type
+class GrindErrandDiscussionCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[GrindErrandDiscussionEdge]] = None
+    items: Optional[List[GrindErrandDiscussionType]] = None
     total_count: int
 
 

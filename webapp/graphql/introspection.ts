@@ -14070,6 +14070,162 @@ export default {
         "interfaces": []
       },
       {
+        "kind": "UNION",
+        "name": "GrindErrandDiscussionResponse",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "GrindErrandDiscussionType"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "OperationError"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GrindErrandDiscussionType",
+        "fields": [
+          {
+            "name": "canEdit",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "comment",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "errand",
+            "type": {
+              "kind": "OBJECT",
+              "name": "GrindErrandType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "errandUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "parent",
+            "type": {
+              "kind": "OBJECT",
+              "name": "GrindErrandDiscussionType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "parentUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "subdiscussions",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "GrindErrandDiscussionType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
         "kind": "OBJECT",
         "name": "GrindErrandEdge",
         "fields": [
@@ -14250,6 +14406,17 @@ export default {
                     "ofType": null
                   }
                 }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "milestonesAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
               }
             },
             "args": []
@@ -20353,6 +20520,29 @@ export default {
             ]
           },
           {
+            "name": "createGrindErrandDiscussion",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "GrindErrandDiscussionResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "payload",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "createGrindLabel",
             "type": {
               "kind": "NON_NULL",
@@ -25009,12 +25199,12 @@ export default {
             ]
           },
           {
-            "name": "updateGrindLabel",
+            "name": "updateGrindErrandDiscussion",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindLabelResponse",
+                "name": "GrindErrandDiscussionResponse",
                 "ofType": null
               }
             },
@@ -25042,12 +25232,12 @@ export default {
             ]
           },
           {
-            "name": "updateGrindMedia",
+            "name": "updateGrindLabel",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindMediaResponse",
+                "name": "GrindLabelResponse",
                 "ofType": null
               }
             },
@@ -34542,6 +34732,64 @@ export default {
             "args": [
               {
                 "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "grindErrandDiscussions",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "GrindErrandDiscussionType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "errandUid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "grindErrandDiscussionsByParent",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "GrindErrandDiscussionType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "parentUid",
                 "type": {
                   "kind": "NON_NULL",
                   "ofType": {

@@ -15,7 +15,7 @@ from felicity.apps.grind.enum import PosterCategory, ErrandCategory, LabelCatego
 class GrindSchemeBase(BaseAuditModel):
     title: str | None = None
     description: str | None = None
-    assignee_uid: int | None = None
+    assignee_uid: str | None = None
     start_date: datetime | None = None
     end_date: datetime | None = None
 
@@ -54,7 +54,7 @@ class GrindSchemeInDB(GrindSchemeBaseInDB):
 class GrindBoardBase(BaseAuditModel):
     title: str | None = None
     description: str | None = None
-    scheme_uid: int | None = None
+    scheme_uid: str | None = None
 
 
 class GrindBoardBaseInDB(GrindBoardBase):
@@ -92,8 +92,8 @@ class GrindPosterBase(BaseAuditModel):
     category: PosterCategory | None = None
     title: str | None = None
     description: str | None = None
-    board_uid: int | None = None
-    assignee_uid: int | None = None
+    board_uid: str | None = None
+    assignee_uid: str | None = None
     status: str | None = None
 
 
@@ -132,11 +132,11 @@ class GrindErrandBase(BaseAuditModel):
     category: ErrandCategory | None = None
     title: str | None = None
     description: str | None = None
-    label_uid: int | None = None
+    label_uid: str | None = None
     priority: str | None = "normal"
-    poster_uid: int | None = None
-    reporter_uid: int | None = None
-    assignee_uid: int | None = None
+    poster_uid: str | None = None
+    reporter_uid: str | None = None
+    assignee_uid: str | None = None
     start_date: datetime | None = None
     end_date: datetime | None = None
     progress: int | None = None
@@ -165,6 +165,44 @@ class GrindErrand(GrindErrandBaseInDB):
 
 # Properties stored in DB
 class GrindErrandInDB(GrindErrandBaseInDB):
+    pass
+
+
+#
+# GrindErrandDiscussion Schemas
+#
+
+# Shared properties
+class GrindErrandDiscussionBase(BaseAuditModel):
+    comment: str | None = None
+    errand_uid: str | None = None
+    parent_uid: str | None = None
+
+
+class GrindErrandDiscussionBaseInDB(GrindErrandDiscussionBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Properties to receive via API on creation
+class GrindErrandDiscussionCreate(GrindErrandDiscussionBase):
+    comment: str
+    errand_uid: str
+
+
+# Properties to receive via API on update
+class GrindErrandDiscussionUpdate(GrindErrandDiscussionBase):
+    pass
+
+
+# Properties to return via API
+class GrindErrandDiscussion(GrindErrandDiscussionBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class GrindErrandDiscussionInDB(GrindErrandDiscussionBaseInDB):
     pass
 
 

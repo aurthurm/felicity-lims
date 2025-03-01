@@ -7,6 +7,7 @@ import sampleRoutes from './samples';
 import qualityRoutes from './quality';
 import worksheetRoutes from './worksheet';
 import shipmentRoutes from './referral';
+import schemeRoutes from './scheme';
 import { isTokenValid } from './checks';
 import { useAuthStore } from '@/stores/auth';
 
@@ -127,6 +128,15 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/schemes',
+        name: guards.pages.SCHEMES,
+        component: () => import('@/views/grind/Schemes.vue'),
+        children: schemeRoutes,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         name: guards.pages.ADMINISTRATION,
         path: '/admin',
         component: () => import('@/views/admin/Admin.vue'),
@@ -238,6 +248,9 @@ function hasAccess(page: any) {
 
         case guards.pages.NOTICE_MANAGER:
             return guards.canAccessPage(guards.pages.NOTICE_MANAGER);
+
+        case guards.pages.SCHEMES:
+            return guards.canAccessPage(guards.pages.SCHEMES);
 
         case guards.pages.BIO_BANKING:
             return guards.canAccessPage(guards.pages.BIO_BANKING);

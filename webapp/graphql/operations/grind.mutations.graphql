@@ -66,6 +66,48 @@ mutation EditGrindErrand($uid: String!, $payload: GrindUpdateErrandInput!) {
     }
 }
 
+mutation AddGrindErrandDiscussion($payload: GrindCreateErrandDiscussionInput!) {
+    createGrindErrandDiscussion(payload: $payload){
+        ...on GrindErrandDiscussionType {
+            uid
+            comment
+            errandUid
+            parentUid
+            canEdit
+            createdAt
+            createdByUid
+            createdBy { uid, firstName lastName}
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditGrindErrandDiscussion($uid: String!, $payload: GrindUpdateErrandDiscussionInput!) {
+    updateGrindErrandDiscussion(uid: $uid, payload: $payload){
+        ...on GrindErrandDiscussionType {
+            uid
+            comment
+            errandUid
+            parentUid
+            canEdit
+            createdAt
+            createdByUid
+            createdBy { uid, firstName lastName}
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
 mutation AddGrindMilestone($payload: GrindCreateMilestoneInput!) {
     createGrindMilestone(payload: $payload) {
         ...on GrindMilestoneType {
@@ -270,6 +312,26 @@ mutation AddGrindStamp($payload: GrindCreateStampInput!) {
             uid
             title
             category
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddGrindMedia($payload: GrindCreateMediaInput!) {
+    createGrindMedia(payload: $payload) {
+        ...on GrindMediaType {
+            uid
+            target
+            targetUid
+            filename
+            path
+            size
+            mimetype
         }
 
         ... on OperationError {

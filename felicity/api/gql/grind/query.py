@@ -6,6 +6,7 @@ import strawberry
 from felicity.api.gql.grind import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
+from felicity.apps.grind.enum import StampCategory
 from felicity.apps.grind.services import (
     GrindSchemeService,
     GrindBoardService,
@@ -14,7 +15,7 @@ from felicity.apps.grind.services import (
     GrindLabelService,
     GrindMediaService,
     GrindMilestoneService,
-    GrindOccurrenceService, GrindStampService,
+    GrindOccurrenceService, GrindStampService, GrindErrandDiscussionService,
 )
 from felicity.utils import has_value_or_is_truthy
 
@@ -330,7 +331,7 @@ class GrindQuery:
         return await GrindStampService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def grind_stamp_by_category(self, info, category: str) -> List[types.GrindStampType]:
+    async def grind_stamp_by_category(self, info, category: StampCategory) -> List[types.GrindStampType]:
         return await GrindStampService().get_all(category=category)
 
     # Media Queries
@@ -501,3 +502,11 @@ class GrindQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def grind_occurrences_by_actor(self, info, actor_uid: str) -> List[types.GrindOccurrenceType]:
         return await GrindOccurrenceService().get_all(actor_uid=actor_uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def grind_errand_discussions(self, info, errand_uid: str) -> List[types.GrindErrandDiscussionType]:
+        return await GrindErrandDiscussionService().get_all(errand_uid=errand_uid, parent_uid=None)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def grind_errand_discussions_by_parent(self, info, parent_uid: str) -> List[types.GrindErrandDiscussionType]:
+        return await GrindErrandDiscussionService().get_all(parent_uid=parent_uid)

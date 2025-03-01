@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, String, ForeignKey, Table, DateTime, Boolean, Enum, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from felicity.apps.abstract import BaseEntity
 from felicity.apps.grind.enum import MediaTarget, LabelCategory, ErrandCategory, PosterCategory, OccurrenceTarget, \
@@ -24,13 +24,13 @@ class GrindScheme(BaseEntity):
 
     # Foreign key relationship to User (assignee)
     assignee_uid = Column(String, ForeignKey('user.uid'), nullable=True)
-    assignee = relationship("User", foreign_keys=[assignee_uid])
+    assignee = relationship("User", foreign_keys=[assignee_uid], lazy='selectin')
 
     # Many-to-many relationship with User (members)
-    members = relationship("User", secondary=grind_scheme_member, backref="scheme_memberships")
+    members = relationship("User", secondary=grind_scheme_member, backref="scheme_memberships", lazy='selectin')
 
     # One-to-many relationship with Board
-    boards = relationship("GrindBoard", back_populates="scheme")
+    boards = relationship("GrindBoard", back_populates="scheme", lazy='selectin')
 
     start_date = Column(DateTime, nullable=True)
     end_date = Column(DateTime, nullable=True)
@@ -44,7 +44,7 @@ class GrindBoard(BaseEntity):
 
     # Foreign key relationship to Scheme
     scheme_uid = Column(String, ForeignKey('grind_scheme.uid'), nullable=True, unique=False)
-    scheme = relationship("GrindScheme", back_populates="boards")
+    scheme = relationship("GrindScheme", back_populates="boards", lazy='selectin')
 
 
 # Association table for many-to-many relationship between Poster and User (members)
@@ -73,22 +73,22 @@ class GrindPoster(BaseEntity):
 
     # Foreign key relationship to Board
     board_uid = Column(String, ForeignKey('grind_board.uid'), nullable=True)
-    board = relationship("GrindBoard")
+    board = relationship("GrindBoard", lazy='selectin')
 
     # Many-to-many relationship with Stamp
-    stamps = relationship("GrindStamp", secondary=grind_poster_stamp, backref="posters")
+    stamps = relationship("GrindStamp", secondary=grind_poster_stamp, backref="posters", lazy='selectin')
 
     # Foreign key relationship to User (assignee)
     assignee_uid = Column(String, ForeignKey('user.uid'), nullable=True)
-    assignee = relationship("User", foreign_keys=[assignee_uid])
+    assignee = relationship("User", foreign_keys=[assignee_uid], lazy='selectin')
 
     # Many-to-many relationship with User (members)
-    members = relationship("User", secondary=grind_poster_member, backref="poster_memberships")
+    members = relationship("User", secondary=grind_poster_member, backref="poster_memberships", lazy='selectin')
 
     status = Column(String, nullable=True)
 
     # One-to-many relationship with Errand
-    errands = relationship("GrindErrand", back_populates="poster")
+    errands = relationship("GrindErrand", back_populates="poster", lazy='selectin')
 
 
 # Association table for many-to-many relationship between Errand and User (members)
@@ -116,33 +116,45 @@ class GrindErrand(BaseEntity):
     description = Column(String, nullable=True)
 
     # Many-to-many relationship with Stamp
-    stamps = relationship("GrindStamp", secondary=grind_errand_stamp, backref="errands")
+    stamps = relationship("GrindStamp", secondary=grind_errand_stamp, backref="errands", lazy='selectin')
 
     # Foreign key relationship to Label
     label_uid = Column(String, ForeignKey('grind_label.uid'), nullable=True)
-    label = relationship("GrindLabel")
+    label = relationship("GrindLabel", lazy='selectin')
 
     priority = Column(String, default="normal", nullable=True)
 
     # Foreign key relationship to Poster
     poster_uid = Column(String, ForeignKey('grind_poster.uid'), nullable=True)
-    poster = relationship("GrindPoster", back_populates="errands")
+    poster = relationship("GrindPoster", back_populates="errands", lazy='selectin')
 
     # Foreign key relationship to User (reporter)
     reporter_uid = Column(String, ForeignKey('user.uid'), nullable=True)
-    reporter = relationship("User", foreign_keys=[reporter_uid])
+    reporter = relationship("User", foreign_keys=[reporter_uid], lazy='selectin')
 
     # Foreign key relationship to User (assignee)
     assignee_uid = Column(String, ForeignKey('user.uid'), nullable=True)
-    assignee = relationship("User", foreign_keys=[assignee_uid])
+    assignee = relationship("User", foreign_keys=[assignee_uid], lazy='selectin')
 
     # Many-to-many relationship with User (members)
-    members = relationship("User", secondary=grind_errand_member, backref="errand_memberships")
+    members = relationship("User", secondary=grind_errand_member, backref="errand_memberships", lazy='selectin')
 
     start_date = Column(DateTime, nullable=True)
     end_date = Column(DateTime, nullable=True)
 
     progress = Column(Integer, nullable=True)
+
+
+class GrindErrandDiscussion(BaseEntity):
+    __tablename__ = 'grind_errand_discussion'
+
+    comment = Column(String)
+    errand_uid = Column(String, ForeignKey('grind_errand.uid'), nullable=True)
+    errand = relationship("GrindErrand", backref="discussions", lazy='selectin')
+    parent_uid = Column(String, ForeignKey('grind_errand_discussion.uid'), nullable=True)
+    parent = relationship("GrindErrandDiscussion",
+                          remote_side="GrindErrandDiscussion.uid",
+                          backref=backref("subdiscussions", lazy='select'))
 
 
 class GrindLabel(BaseEntity):
@@ -172,7 +184,7 @@ class GrindMilestone(BaseEntity):
 
     # Foreign key relationship to Errand
     errand_uid = Column(String, ForeignKey('grind_errand.uid'), nullable=True)
-    errand = relationship("GrindErrand", backref="milestones")
+    errand = relationship("GrindErrand", backref="milestones", lazy='selectin')
 
     title = Column(String, nullable=True)
     description = Column(String, nullable=True)
@@ -180,7 +192,7 @@ class GrindMilestone(BaseEntity):
 
     # Foreign key relationship to User (assignee)
     assignee_uid = Column(String, ForeignKey('user.uid'), nullable=True)
-    assignee = relationship("User", foreign_keys=[assignee_uid])
+    assignee = relationship("User", foreign_keys=[assignee_uid], lazy='selectin')
 
 
 class GrindOccurrence(BaseEntity):
@@ -191,7 +203,7 @@ class GrindOccurrence(BaseEntity):
 
     # Foreign key relationship to User (actor)
     actor_uid = Column(String, ForeignKey('user.uid'), nullable=True)
-    actor = relationship("User", foreign_keys=[actor_uid])
+    actor = relationship("User", foreign_keys=[actor_uid], lazy='selectin')
 
     description = Column(String, nullable=True)
 

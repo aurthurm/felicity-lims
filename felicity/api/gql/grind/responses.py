@@ -27,6 +27,12 @@ GrindErrandResponse = strawberry.union(
     description="",  # noqa
 )
 
+GrindErrandDiscussionResponse = strawberry.union(
+    "GrindErrandDiscussionResponse",
+    (types.GrindErrandDiscussionType, OperationError),
+    description="",  # noqa
+)
+
 GrindLabelResponse = strawberry.union(
     "GrindLabelResponse",
     (types.GrindLabelType, OperationError),

@@ -131,7 +131,7 @@ onMounted(( )=>{
     };
 
 		isLayoutReady.value = true;
-	})
+})
 
 
 const props = defineProps({

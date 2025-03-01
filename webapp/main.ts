@@ -51,6 +51,7 @@ import {
     faMoneyBill,
     faPen,
     faPills,
+    faProjectDiagram,
     faQuestion,
     faRobot,
     faScaleBalanced,
@@ -75,6 +76,8 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
 import LayoutMobile from '@/views/layouts/LayoutMobile.vue';
+import PageHeading from '@/components/common/FelPageHeading.vue';
+import FelModal from "@/components/ui/FelModal.vue";
 
 import 'vue-multiselect/dist/vue-multiselect.css';
 import 'floating-vue/dist/style.css';
@@ -98,7 +101,7 @@ const icons = [
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
     faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH, faTablets, faScaleBalanced, faLifeRing,
-    faBacteria, faCircleDot, faPills, faExclamationCircle, faRobot
+    faBacteria, faCircleDot, faPills, faExclamationCircle, faRobot, faProjectDiagram
 ]
 library.add(...icons);
 
@@ -113,6 +116,8 @@ app.component('VueDatePicker', VueDatePicker);
 app.component('default-layout', LayoutDashboard);
 app.component('empty-layout', LayoutEmpty);
 app.component('mobile-layout', LayoutMobile);
+app.component('page-heading', PageHeading);
+app.component('modal', FelModal);
 
 app.use(VueSweetalert2);
 app.use(Notifications)

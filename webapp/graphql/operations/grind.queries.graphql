@@ -15,6 +15,7 @@ query GetGrindErrands($first: Int!, $after: String, $text: String!, $sortBy: [St
             priority
             startDate
             endDate
+            milestonesAt
             poster {
                 uid
                 title
@@ -61,17 +62,17 @@ query GetGrindErrand($uid: String!) {
         priority
         startDate
         endDate
+        posterUid
+        milestonesAt
         poster {
             uid
-            category
-            description
-            status
             title
         }
         stamps {
             uid
             title
         }
+        labelUid
         label {
             uid
             title
@@ -97,6 +98,35 @@ query GetGrindErrand($uid: String!) {
             lastName
         }
         createdAt
+    }
+}
+
+query GetGrindErrandDiscussions($errandUid: String!){
+    grindErrandDiscussions(errandUid: $errandUid) {
+        uid
+        comment
+        errandUid
+        parentUid
+        subdiscussions { uid comment errandUid parentUid }
+        canEdit
+        createdAt
+        createdByUid
+        createdBy { uid, firstName lastName}
+    }
+}
+
+
+query GetGrindErrandDiscussionsByParent($parentUid: String!){
+    grindErrandDiscussionsByParent(parentUid: $parentUid) {
+        uid
+        comment
+        errandUid
+        parentUid
+        subdiscussions { uid comment errandUid parentUid }
+        canEdit
+        createdAt
+        createdByUid
+        createdBy { uid, firstName lastName}
     }
 }
 
@@ -160,7 +190,7 @@ query GetGrindMedia($target: String!, $targetUid: String!) {
     }
 }
 
-query GetSchemes($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+query GetGrindSchemeAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
     grindSchemeAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
         totalCount
         pageInfo {
@@ -195,7 +225,7 @@ query GetSchemes($first: Int!, $after: String, $text: String!, $sortBy: [String!
     }
 }
 
-query GetScheme($uid: String!) {
+query GetGrindScheme($uid: String!) {
     grindSchemeByUid(uid: $uid) {
         uid
         title
@@ -226,13 +256,11 @@ query GetScheme($uid: String!) {
     }
 }
 
-query GetPostersByBoard($boardUid: String!) {
+query GetGrindPostersByBoard($boardUid: String!) {
     grindPostersByBoard(boardUid: $boardUid) {
         uid
         title
-        board {
-            uid
-        }
+        boardUid
         errands {
             uid
             title
@@ -241,16 +269,13 @@ query GetPostersByBoard($boardUid: String!) {
             startDate
             endDate
             progress
-            poster {
-                uid
-            }
+            posterUid
+            milestonesAt
             stamps {
                 uid
                 title
             }
-            label {
-                uid
-            }
+            labelUid
             assignee {
                 uid
                 firstName
@@ -279,6 +304,14 @@ query GetGrindStampAll($first: Int!, $after: String, $text: String!, $sortBy: [S
             title
             category
         }
+    }
+}
+
+query GetGrindStampByCategory($category: StampCategory!) {
+    grindStampByCategory(category: $category) {
+        uid
+        title
+        category
     }
 }
 

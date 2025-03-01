@@ -2,7 +2,6 @@
 import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
-import modal from "@/components/ui/FelModal.vue";
 import { IClient } from "@/models/client";
 import { 
   AddClientDocument, AddClientMutation, AddClientMutationVariables,

@@ -58,6 +58,47 @@ export type EditGrindErrandMutation = (
   ) }
 );
 
+export type AddGrindErrandDiscussionMutationVariables = Types.Exact<{
+  payload: Types.GrindCreateErrandDiscussionInput;
+}>;
+
+
+export type AddGrindErrandDiscussionMutation = (
+  { __typename?: 'Mutation' }
+  & { createGrindErrandDiscussion: (
+    { __typename?: 'GrindErrandDiscussionType' }
+    & Pick<Types.GrindErrandDiscussionType, 'uid' | 'comment' | 'errandUid' | 'parentUid' | 'canEdit' | 'createdAt' | 'createdByUid'>
+    & { createdBy?: Types.Maybe<(
+      { __typename?: 'UserType' }
+      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+    )> }
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
+export type EditGrindErrandDiscussionMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  payload: Types.GrindUpdateErrandDiscussionInput;
+}>;
+
+
+export type EditGrindErrandDiscussionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateGrindErrandDiscussion: (
+    { __typename?: 'GrindErrandDiscussionType' }
+    & Pick<Types.GrindErrandDiscussionType, 'uid' | 'comment' | 'errandUid' | 'parentUid' | 'canEdit' | 'createdAt' | 'createdByUid'>
+    & { createdBy?: Types.Maybe<(
+      { __typename?: 'UserType' }
+      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+    )> }
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
 export type AddGrindMilestoneMutationVariables = Types.Exact<{
   payload: Types.GrindCreateMilestoneInput;
 }>;
@@ -252,6 +293,22 @@ export type AddGrindStampMutation = (
   ) }
 );
 
+export type AddGrindMediaMutationVariables = Types.Exact<{
+  payload: Types.GrindCreateMediaInput;
+}>;
+
+
+export type AddGrindMediaMutation = (
+  { __typename?: 'Mutation' }
+  & { createGrindMedia: (
+    { __typename?: 'GrindMediaType' }
+    & Pick<Types.GrindMediaType, 'uid' | 'target' | 'targetUid' | 'filename' | 'path' | 'size' | 'mimetype'>
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
 
 export const AddGrindErrandDocument = gql`
     mutation AddGrindErrand($payload: GrindCreateErrandInput!) {
@@ -328,6 +385,64 @@ export const EditGrindErrandDocument = gql`
 
 export function useEditGrindErrandMutation() {
   return Urql.useMutation<EditGrindErrandMutation, EditGrindErrandMutationVariables>(EditGrindErrandDocument);
+};
+export const AddGrindErrandDiscussionDocument = gql`
+    mutation AddGrindErrandDiscussion($payload: GrindCreateErrandDiscussionInput!) {
+  createGrindErrandDiscussion(payload: $payload) {
+    ... on GrindErrandDiscussionType {
+      uid
+      comment
+      errandUid
+      parentUid
+      canEdit
+      createdAt
+      createdByUid
+      createdBy {
+        uid
+        firstName
+        lastName
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddGrindErrandDiscussionMutation() {
+  return Urql.useMutation<AddGrindErrandDiscussionMutation, AddGrindErrandDiscussionMutationVariables>(AddGrindErrandDiscussionDocument);
+};
+export const EditGrindErrandDiscussionDocument = gql`
+    mutation EditGrindErrandDiscussion($uid: String!, $payload: GrindUpdateErrandDiscussionInput!) {
+  updateGrindErrandDiscussion(uid: $uid, payload: $payload) {
+    ... on GrindErrandDiscussionType {
+      uid
+      comment
+      errandUid
+      parentUid
+      canEdit
+      createdAt
+      createdByUid
+      createdBy {
+        uid
+        firstName
+        lastName
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditGrindErrandDiscussionMutation() {
+  return Urql.useMutation<EditGrindErrandDiscussionMutation, EditGrindErrandDiscussionMutationVariables>(EditGrindErrandDiscussionDocument);
 };
 export const AddGrindMilestoneDocument = gql`
     mutation AddGrindMilestone($payload: GrindCreateMilestoneInput!) {
@@ -579,4 +694,28 @@ export const AddGrindStampDocument = gql`
 
 export function useAddGrindStampMutation() {
   return Urql.useMutation<AddGrindStampMutation, AddGrindStampMutationVariables>(AddGrindStampDocument);
+};
+export const AddGrindMediaDocument = gql`
+    mutation AddGrindMedia($payload: GrindCreateMediaInput!) {
+  createGrindMedia(payload: $payload) {
+    ... on GrindMediaType {
+      uid
+      target
+      targetUid
+      filename
+      path
+      size
+      mimetype
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddGrindMediaMutation() {
+  return Urql.useMutation<AddGrindMediaMutation, AddGrindMediaMutationVariables>(AddGrindMediaDocument);
 };

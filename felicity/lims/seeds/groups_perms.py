@@ -30,6 +30,7 @@ class FObject:
     STORAGE = "STORAGE"
     NOTICE = "NOTICE"
     BILLING = "BILLING"
+    SCHEMES = "SCHEMES"
 
 
 class FAction:
@@ -72,6 +73,13 @@ permissions = {
         fo.PRODUCT: [fg.STORES],
         fo.SHIPMENT: [fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.STORAGE: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ],
+        fo.SCHEMES: [
             fg.ADMINISTRATOR,
             fg.STORES,
             fg.LAB_HAND,
@@ -143,6 +151,13 @@ permissions = {
             fg.GUEST,
             fg.STORES,
         ],
+        fo.SCHEMES: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ],
     },
     fa.UPDATE: {
         fo.CLIENT: [fg.ADMINISTRATOR],
@@ -165,6 +180,13 @@ permissions = {
             fg.STORES,
         ],
         fo.BILLING: [fg.ACCOUNTING],
+        fo.SCHEMES: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ],
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],

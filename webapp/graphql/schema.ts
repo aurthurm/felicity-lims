@@ -18,6 +18,7 @@ export type Scalars = {
   BytesScalar: { input: never; output: never; }
   DateTime: { input: never; output: never; }
   JSONScalar: { input: never; output: never; }
+  Upload: { input: never; output: never; }
 };
 
 export type ArResultInputType = {
@@ -2769,14 +2770,23 @@ export type GrindCreateBoardInput = {
   /** Board Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Board Scheme */
-  scheme?: InputMaybe<Scalars['String']['input']>;
+  schemeUid?: InputMaybe<Scalars['String']['input']>;
   /** Board Title */
   title: Scalars['String']['input'];
 };
 
+export type GrindCreateErrandDiscussionInput = {
+  /** Comment */
+  comment: Scalars['String']['input'];
+  /** Errand uid */
+  errandUid: Scalars['String']['input'];
+  /** Parent comment uid */
+  parentUid?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type GrindCreateErrandInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Category */
   category?: InputMaybe<ErrandCategory>;
   /** Errand Description */
@@ -2784,17 +2794,17 @@ export type GrindCreateErrandInput = {
   /** End Date */
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Errand Label | Status */
-  label?: InputMaybe<Scalars['String']['input']>;
+  labelUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Members */
   members?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Milestone */
   milestones?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Poster */
-  poster?: InputMaybe<Scalars['String']['input']>;
+  posterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Priority */
   priority?: InputMaybe<Scalars['String']['input']>;
   /** Assigned To */
-  reporter?: InputMaybe<Scalars['String']['input']>;
+  reporterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Stamps | Tags */
   stamps?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Start Date */
@@ -2805,56 +2815,39 @@ export type GrindCreateErrandInput = {
 
 export type GrindCreateLabelInput = {
   /** Label category */
-  category: Scalars['String']['input'];
+  category: LabelCategory;
   /** Label title */
   title: Scalars['String']['input'];
 };
 
 export type GrindCreateMediaInput = {
-  /** Media description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Media destination */
-  destination?: InputMaybe<Scalars['String']['input']>;
-  /** Media encoding */
-  encoding?: InputMaybe<Scalars['String']['input']>;
-  /** Media filename */
-  filename?: InputMaybe<Scalars['String']['input']>;
-  /** Media mimetype */
-  mimetype?: InputMaybe<Scalars['String']['input']>;
-  /** Media original name */
-  originalName?: InputMaybe<Scalars['String']['input']>;
-  /** Media path */
-  path?: InputMaybe<Scalars['String']['input']>;
-  /** Media size */
-  size?: InputMaybe<Scalars['String']['input']>;
+  file: Scalars['Upload']['input'];
   /** Media target */
-  target?: InputMaybe<Scalars['String']['input']>;
+  target: MediaTarget;
   /** Media Target ID */
-  targetUid?: InputMaybe<Scalars['String']['input']>;
+  targetUid: Scalars['String']['input'];
 };
 
 export type GrindCreateMilestoneInput = {
   /** Assigned to */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Status */
   complete?: InputMaybe<Scalars['Boolean']['input']>;
   /** Milestone Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Milestone Errand */
-  errand: Scalars['String']['input'];
+  errandUid: Scalars['String']['input'];
   /** Milestone Title */
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GrindCreatePosterInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster Board */
-  board?: InputMaybe<Scalars['String']['input']>;
+  boardUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster category */
-  category?: InputMaybe<PosterCategory>;
-  /** Poster Communities */
-  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  category: PosterCategory;
   /** Poster description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Poster Members */
@@ -2864,7 +2857,7 @@ export type GrindCreatePosterInput = {
   /** Poster status */
   status?: InputMaybe<Scalars['String']['input']>;
   /** Poster Title */
-  title?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
 };
 
 export type GrindCreateSchemeInput = {
@@ -2884,7 +2877,7 @@ export type GrindCreateSchemeInput = {
 
 export type GrindCreateStampInput = {
   /** Stamp category */
-  category: Scalars['String']['input'];
+  category: StampCategory;
   /** Stamp title */
   title: Scalars['String']['input'];
 };
@@ -2895,6 +2888,26 @@ export type GrindErrandCursorPage = {
   items?: Maybe<Array<GrindErrandType>>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
+};
+
+export type GrindErrandDiscussionResponse = GrindErrandDiscussionType | OperationError;
+
+export type GrindErrandDiscussionType = {
+  __typename?: 'GrindErrandDiscussionType';
+  canEdit: Scalars['Boolean']['output'];
+  comment: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  errand?: Maybe<GrindErrandType>;
+  errandUid?: Maybe<Scalars['String']['output']>;
+  parent?: Maybe<GrindErrandDiscussionType>;
+  parentUid?: Maybe<Scalars['String']['output']>;
+  subdiscussions: Array<GrindErrandDiscussionType>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type GrindErrandEdge = {
@@ -2920,6 +2933,7 @@ export type GrindErrandType = {
   media: Array<GrindMediaType>;
   members: Array<UserType>;
   milestones: Array<GrindMilestoneType>;
+  milestonesAt: Scalars['Float']['output'];
   occurrences: Array<GrindOccurrenceType>;
   poster?: Maybe<GrindPosterType>;
   posterUid?: Maybe<Scalars['String']['output']>;
@@ -3173,15 +3187,23 @@ export type GrindUpdateBoardInput = {
   /** Board Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Board Scheme */
-  scheme?: InputMaybe<Scalars['String']['input']>;
+  schemeUid?: InputMaybe<Scalars['String']['input']>;
   /** Board Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateErrandDiscussionInput = {
+  /** Comment */
+  comment: Scalars['String']['input'];
+  /** Errand uid */
+  errandUid: Scalars['String']['input'];
+  /** Parent comment uid */
+  parentUid?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GrindUpdateErrandInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Category */
   category?: InputMaybe<ErrandCategory>;
   /** Errand Description */
@@ -3189,24 +3211,23 @@ export type GrindUpdateErrandInput = {
   /** End Date */
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Errand Label | Status */
-  label?: InputMaybe<Scalars['String']['input']>;
+  labelUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Members */
   members?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Milestone */
   milestones?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Poster */
-  poster?: InputMaybe<Scalars['String']['input']>;
+  posterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Priority */
   priority?: InputMaybe<Scalars['String']['input']>;
   /** Assigned To */
-  reporter?: InputMaybe<Scalars['String']['input']>;
+  reporterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Stamps | Tags */
   stamps?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Start Date */
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Errand Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdateLabelInput = {
@@ -3214,56 +3235,28 @@ export type GrindUpdateLabelInput = {
   category?: InputMaybe<Scalars['String']['input']>;
   /** Label title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type GrindUpdateMediaInput = {
-  /** Media description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Media destination */
-  destination?: InputMaybe<Scalars['String']['input']>;
-  /** Media encoding */
-  encoding?: InputMaybe<Scalars['String']['input']>;
-  /** Media filename */
-  filename?: InputMaybe<Scalars['String']['input']>;
-  /** Media mimetype */
-  mimetype?: InputMaybe<Scalars['String']['input']>;
-  /** Media original name */
-  originalName?: InputMaybe<Scalars['String']['input']>;
-  /** Media path */
-  path?: InputMaybe<Scalars['String']['input']>;
-  /** Media size */
-  size?: InputMaybe<Scalars['String']['input']>;
-  /** Media target */
-  target?: InputMaybe<Scalars['String']['input']>;
-  /** Media Target ID */
-  targetUid?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdateMilestoneInput = {
   /** Assigned to */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Status */
   complete?: InputMaybe<Scalars['Boolean']['input']>;
   /** Milestone Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Milestone Errand */
-  errand?: InputMaybe<Scalars['String']['input']>;
+  errandUid: Scalars['String']['input'];
   /** Milestone Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdatePosterInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster Board */
-  board?: InputMaybe<Scalars['String']['input']>;
+  boardUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster category */
-  category?: InputMaybe<PosterCategory>;
-  /** Poster Communities */
-  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  category: PosterCategory;
   /** Poster description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Poster Members */
@@ -3273,8 +3266,7 @@ export type GrindUpdatePosterInput = {
   /** Poster status */
   status?: InputMaybe<Scalars['String']['input']>;
   /** Poster Title */
-  title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type GrindUpdateSchemeInput = {
@@ -3290,7 +3282,6 @@ export type GrindUpdateSchemeInput = {
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Scheme Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdateStampInput = {
@@ -3298,7 +3289,6 @@ export type GrindUpdateStampInput = {
   category?: InputMaybe<Scalars['String']['input']>;
   /** Stamp title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GroupCount = {
@@ -3532,6 +3522,10 @@ export type InstrumentTypeType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export enum LabelCategory {
+  Ticket = 'TICKET'
+}
+
 export type LaboratoryInputType = {
   address?: InputMaybe<Scalars['String']['input']>;
   banking?: InputMaybe<Scalars['String']['input']>;
@@ -3710,6 +3704,10 @@ export type ManufacturerType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export enum MediaTarget {
+  Errand = 'ERRAND'
+}
+
 /** Union of possible outcomes when deleting some object */
 export type MessageResponse = MessagesType | OperationError;
 
@@ -3862,6 +3860,7 @@ export type Mutation = {
   createDocumentVersion: DocumentVersionResponse;
   createGrindBoard: GrindBoardResponse;
   createGrindErrand: GrindErrandResponse;
+  createGrindErrandDiscussion: GrindErrandDiscussionResponse;
   createGrindLabel: GrindLabelResponse;
   createGrindMedia: GrindMediaResponse;
   createGrindMilestone: GrindMilestoneResponse;
@@ -4027,8 +4026,8 @@ export type Mutation = {
   updateDocumentVersion: DocumentVersionResponse;
   updateGrindBoard: GrindBoardResponse;
   updateGrindErrand: GrindErrandResponse;
+  updateGrindErrandDiscussion: GrindErrandDiscussionResponse;
   updateGrindLabel: GrindLabelResponse;
-  updateGrindMedia: GrindMediaResponse;
   updateGrindMilestone: GrindMilestoneResponse;
   updateGrindPoster: GrindPosterResponse;
   updateGrindScheme: GrindSchemeResponse;
@@ -4433,6 +4432,11 @@ export type MutationCreateGrindBoardArgs = {
 
 export type MutationCreateGrindErrandArgs = {
   payload: GrindCreateErrandInput;
+};
+
+
+export type MutationCreateGrindErrandDiscussionArgs = {
+  payload: GrindCreateErrandDiscussionInput;
 };
 
 
@@ -5339,14 +5343,14 @@ export type MutationUpdateGrindErrandArgs = {
 };
 
 
-export type MutationUpdateGrindLabelArgs = {
-  payload: GrindUpdateLabelInput;
+export type MutationUpdateGrindErrandDiscussionArgs = {
+  payload: GrindUpdateErrandDiscussionInput;
   uid: Scalars['String']['input'];
 };
 
 
-export type MutationUpdateGrindMediaArgs = {
-  payload: GrindUpdateMediaInput;
+export type MutationUpdateGrindLabelArgs = {
+  payload: GrindUpdateLabelInput;
   uid: Scalars['String']['input'];
 };
 
@@ -6340,6 +6344,8 @@ export type Query = {
   grindBoardsByScheme: Array<GrindBoardType>;
   grindErrandAll: GrindErrandCursorPage;
   grindErrandByUid?: Maybe<GrindErrandType>;
+  grindErrandDiscussions: Array<GrindErrandDiscussionType>;
+  grindErrandDiscussionsByParent: Array<GrindErrandDiscussionType>;
   grindErrandsByAssignee: Array<GrindErrandType>;
   grindErrandsByPoster: Array<GrindErrandType>;
   grindLabelAll: GrindLabelCursorPage;
@@ -7305,6 +7311,16 @@ export type QueryGrindErrandByUidArgs = {
 };
 
 
+export type QueryGrindErrandDiscussionsArgs = {
+  errandUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandDiscussionsByParentArgs = {
+  parentUid: Scalars['String']['input'];
+};
+
+
 export type QueryGrindErrandsByAssigneeArgs = {
   assigneeUid: Scalars['String']['input'];
 };
@@ -7456,7 +7472,7 @@ export type QueryGrindStampAllArgs = {
 
 
 export type QueryGrindStampByCategoryArgs = {
-  category: Scalars['String']['input'];
+  category: StampCategory;
 };
 
 
@@ -8681,6 +8697,11 @@ export type ShippedSampleType = {
   shipmentUid: Scalars['String']['output'];
 };
 
+export enum StampCategory {
+  Project = 'PROJECT',
+  Ticket = 'TICKET'
+}
+
 export type StockAdjustmentCursorPage = {
   __typename?: 'StockAdjustmentCursorPage';
   edges?: Maybe<Array<StockAdjustmentEdge>>;
@@ -9676,6 +9697,7 @@ export type GraphCacheKeysConfig = {
   GrindBoardEdge?: (data: WithTypename<GrindBoardEdge>) => null | string,
   GrindBoardType?: (data: WithTypename<GrindBoardType>) => null | string,
   GrindErrandCursorPage?: (data: WithTypename<GrindErrandCursorPage>) => null | string,
+  GrindErrandDiscussionType?: (data: WithTypename<GrindErrandDiscussionType>) => null | string,
   GrindErrandEdge?: (data: WithTypename<GrindErrandEdge>) => null | string,
   GrindErrandType?: (data: WithTypename<GrindErrandType>) => null | string,
   GrindLabelCursorPage?: (data: WithTypename<GrindLabelCursorPage>) => null | string,
@@ -10001,6 +10023,8 @@ export type GraphCacheResolvers = {
     grindBoardsByScheme?: GraphCacheResolver<WithTypename<Query>, QueryGrindBoardsBySchemeArgs, Array<WithTypename<GrindBoardType> | string>>,
     grindErrandAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandAllArgs, WithTypename<GrindErrandCursorPage> | string>,
     grindErrandByUid?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandByUidArgs, WithTypename<GrindErrandType> | string>,
+    grindErrandDiscussions?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandDiscussionsArgs, Array<WithTypename<GrindErrandDiscussionType> | string>>,
+    grindErrandDiscussionsByParent?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandDiscussionsByParentArgs, Array<WithTypename<GrindErrandDiscussionType> | string>>,
     grindErrandsByAssignee?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandsByAssigneeArgs, Array<WithTypename<GrindErrandType> | string>>,
     grindErrandsByPoster?: GraphCacheResolver<WithTypename<Query>, QueryGrindErrandsByPosterArgs, Array<WithTypename<GrindErrandType> | string>>,
     grindLabelAll?: GraphCacheResolver<WithTypename<Query>, QueryGrindLabelAllArgs, WithTypename<GrindLabelCursorPage> | string>,
@@ -11640,6 +11664,22 @@ export type GraphCacheResolvers = {
     pageInfo?: GraphCacheResolver<WithTypename<GrindErrandCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
     totalCount?: GraphCacheResolver<WithTypename<GrindErrandCursorPage>, Record<string, never>, Scalars['Int'] | string>
   },
+  GrindErrandDiscussionType?: {
+    canEdit?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['Boolean'] | string>,
+    comment?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    errand?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<GrindErrandType> | string>,
+    errandUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    parent?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<GrindErrandDiscussionType> | string>,
+    parentUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    subdiscussions?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Array<WithTypename<GrindErrandDiscussionType> | string>>,
+    uid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>
+  },
   GrindErrandEdge?: {
     cursor?: GraphCacheResolver<WithTypename<GrindErrandEdge>, Record<string, never>, Scalars['String'] | string>,
     node?: GraphCacheResolver<WithTypename<GrindErrandEdge>, Record<string, never>, WithTypename<GrindErrandType> | string>
@@ -11658,6 +11698,7 @@ export type GraphCacheResolvers = {
     media?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindMediaType> | string>>,
     members?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
     milestones?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindMilestoneType> | string>>,
+    milestonesAt?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['Float'] | string>,
     occurrences?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindOccurrenceType> | string>>,
     poster?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<GrindPosterType> | string>,
     posterUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
@@ -13482,6 +13523,7 @@ export type GraphCacheOptimisticUpdaters = {
   createDocumentVersion?: GraphCacheOptimisticMutationResolver<MutationCreateDocumentVersionArgs, WithTypename<DocumentVersionResponse>>,
   createGrindBoard?: GraphCacheOptimisticMutationResolver<MutationCreateGrindBoardArgs, WithTypename<GrindBoardResponse>>,
   createGrindErrand?: GraphCacheOptimisticMutationResolver<MutationCreateGrindErrandArgs, WithTypename<GrindErrandResponse>>,
+  createGrindErrandDiscussion?: GraphCacheOptimisticMutationResolver<MutationCreateGrindErrandDiscussionArgs, WithTypename<GrindErrandDiscussionResponse>>,
   createGrindLabel?: GraphCacheOptimisticMutationResolver<MutationCreateGrindLabelArgs, WithTypename<GrindLabelResponse>>,
   createGrindMedia?: GraphCacheOptimisticMutationResolver<MutationCreateGrindMediaArgs, WithTypename<GrindMediaResponse>>,
   createGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationCreateGrindMilestoneArgs, WithTypename<GrindMilestoneResponse>>,
@@ -13647,8 +13689,8 @@ export type GraphCacheOptimisticUpdaters = {
   updateDocumentVersion?: GraphCacheOptimisticMutationResolver<MutationUpdateDocumentVersionArgs, WithTypename<DocumentVersionResponse>>,
   updateGrindBoard?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindBoardArgs, WithTypename<GrindBoardResponse>>,
   updateGrindErrand?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindErrandArgs, WithTypename<GrindErrandResponse>>,
+  updateGrindErrandDiscussion?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindErrandDiscussionArgs, WithTypename<GrindErrandDiscussionResponse>>,
   updateGrindLabel?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindLabelArgs, WithTypename<GrindLabelResponse>>,
-  updateGrindMedia?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindMediaArgs, WithTypename<GrindMediaResponse>>,
   updateGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindMilestoneArgs, WithTypename<GrindMilestoneResponse>>,
   updateGrindPoster?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindPosterArgs, WithTypename<GrindPosterResponse>>,
   updateGrindScheme?: GraphCacheOptimisticMutationResolver<MutationUpdateGrindSchemeArgs, WithTypename<GrindSchemeResponse>>,
@@ -13873,6 +13915,8 @@ export type GraphCacheUpdaters = {
     grindBoardsByScheme?: GraphCacheUpdateResolver<{ grindBoardsByScheme: Array<WithTypename<GrindBoardType>> }, QueryGrindBoardsBySchemeArgs>,
     grindErrandAll?: GraphCacheUpdateResolver<{ grindErrandAll: WithTypename<GrindErrandCursorPage> }, QueryGrindErrandAllArgs>,
     grindErrandByUid?: GraphCacheUpdateResolver<{ grindErrandByUid: Maybe<WithTypename<GrindErrandType>> }, QueryGrindErrandByUidArgs>,
+    grindErrandDiscussions?: GraphCacheUpdateResolver<{ grindErrandDiscussions: Array<WithTypename<GrindErrandDiscussionType>> }, QueryGrindErrandDiscussionsArgs>,
+    grindErrandDiscussionsByParent?: GraphCacheUpdateResolver<{ grindErrandDiscussionsByParent: Array<WithTypename<GrindErrandDiscussionType>> }, QueryGrindErrandDiscussionsByParentArgs>,
     grindErrandsByAssignee?: GraphCacheUpdateResolver<{ grindErrandsByAssignee: Array<WithTypename<GrindErrandType>> }, QueryGrindErrandsByAssigneeArgs>,
     grindErrandsByPoster?: GraphCacheUpdateResolver<{ grindErrandsByPoster: Array<WithTypename<GrindErrandType>> }, QueryGrindErrandsByPosterArgs>,
     grindLabelAll?: GraphCacheUpdateResolver<{ grindLabelAll: WithTypename<GrindLabelCursorPage> }, QueryGrindLabelAllArgs>,
@@ -14086,6 +14130,7 @@ export type GraphCacheUpdaters = {
     createDocumentVersion?: GraphCacheUpdateResolver<{ createDocumentVersion: WithTypename<DocumentVersionResponse> }, MutationCreateDocumentVersionArgs>,
     createGrindBoard?: GraphCacheUpdateResolver<{ createGrindBoard: WithTypename<GrindBoardResponse> }, MutationCreateGrindBoardArgs>,
     createGrindErrand?: GraphCacheUpdateResolver<{ createGrindErrand: WithTypename<GrindErrandResponse> }, MutationCreateGrindErrandArgs>,
+    createGrindErrandDiscussion?: GraphCacheUpdateResolver<{ createGrindErrandDiscussion: WithTypename<GrindErrandDiscussionResponse> }, MutationCreateGrindErrandDiscussionArgs>,
     createGrindLabel?: GraphCacheUpdateResolver<{ createGrindLabel: WithTypename<GrindLabelResponse> }, MutationCreateGrindLabelArgs>,
     createGrindMedia?: GraphCacheUpdateResolver<{ createGrindMedia: WithTypename<GrindMediaResponse> }, MutationCreateGrindMediaArgs>,
     createGrindMilestone?: GraphCacheUpdateResolver<{ createGrindMilestone: WithTypename<GrindMilestoneResponse> }, MutationCreateGrindMilestoneArgs>,
@@ -14251,8 +14296,8 @@ export type GraphCacheUpdaters = {
     updateDocumentVersion?: GraphCacheUpdateResolver<{ updateDocumentVersion: WithTypename<DocumentVersionResponse> }, MutationUpdateDocumentVersionArgs>,
     updateGrindBoard?: GraphCacheUpdateResolver<{ updateGrindBoard: WithTypename<GrindBoardResponse> }, MutationUpdateGrindBoardArgs>,
     updateGrindErrand?: GraphCacheUpdateResolver<{ updateGrindErrand: WithTypename<GrindErrandResponse> }, MutationUpdateGrindErrandArgs>,
+    updateGrindErrandDiscussion?: GraphCacheUpdateResolver<{ updateGrindErrandDiscussion: WithTypename<GrindErrandDiscussionResponse> }, MutationUpdateGrindErrandDiscussionArgs>,
     updateGrindLabel?: GraphCacheUpdateResolver<{ updateGrindLabel: WithTypename<GrindLabelResponse> }, MutationUpdateGrindLabelArgs>,
-    updateGrindMedia?: GraphCacheUpdateResolver<{ updateGrindMedia: WithTypename<GrindMediaResponse> }, MutationUpdateGrindMediaArgs>,
     updateGrindMilestone?: GraphCacheUpdateResolver<{ updateGrindMilestone: WithTypename<GrindMilestoneResponse> }, MutationUpdateGrindMilestoneArgs>,
     updateGrindPoster?: GraphCacheUpdateResolver<{ updateGrindPoster: WithTypename<GrindPosterResponse> }, MutationUpdateGrindPosterArgs>,
     updateGrindScheme?: GraphCacheUpdateResolver<{ updateGrindScheme: WithTypename<GrindSchemeResponse> }, MutationUpdateGrindSchemeArgs>,
@@ -15813,6 +15858,22 @@ export type GraphCacheUpdaters = {
     pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandCursorPage>>, Record<string, never>>,
     totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandCursorPage>>, Record<string, never>>
   },
+  GrindErrandDiscussionType?: {
+    canEdit?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    comment?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    errand?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    errandUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    parent?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    parentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    subdiscussions?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>
+  },
   GrindErrandEdge?: {
     cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandEdge>>, Record<string, never>>,
     node?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandEdge>>, Record<string, never>>
@@ -15831,6 +15892,7 @@ export type GraphCacheUpdaters = {
     media?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     milestones?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    milestonesAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     occurrences?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     poster?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     posterUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,

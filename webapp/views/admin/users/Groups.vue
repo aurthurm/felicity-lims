@@ -28,7 +28,8 @@
     shield.pages.NOTICE_MANAGER,
     shield.pages.BIO_BANKING,
     shield.pages.INVENTORY,
-    shield.pages.REFERRAL
+    shield.pages.REFERRAL,
+    shield.pages.SCHEMES,
   ]
 
   let userStore = useUserStore()

@@ -56,6 +56,7 @@ MEDIA_TARGET: List[str] = [
 ]
 
 
+@strawberry.enum
 class MediaTarget(enum.Enum):
     ERRAND = 'errand'
 
@@ -80,6 +81,7 @@ LABEL_CATEGORIES: List[str] = [
 ]
 
 
+@strawberry.enum
 class LabelCategory(enum.Enum):
     TICKET = 'ticket'
 

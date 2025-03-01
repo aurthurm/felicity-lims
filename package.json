@@ -90,6 +90,7 @@
     "vee-validate": "^4.12.4",
     "vite-tsconfig-paths": "^4.3.1",
     "vue": "^3.4.15",
+    "vue-draggable-plus": "^0.6.0",
     "vue-multiselect": "3.0.0-alpha.2",
     "vue-router": "^4.2.5",
     "vue-sweetalert2": "^5.0.5",

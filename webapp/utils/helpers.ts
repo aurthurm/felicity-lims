@@ -236,10 +236,38 @@ export const mutateForm = (form: any, payload: any, reset=true) => {
     if(isEmptyObject(payload) === false) Object.assign(form, { ...payload });
 };
 
+
+export function stringToColor(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    const h = Math.abs(hash) % 360;
+    return `hsl(${h}, 70%, 60%)`;
+  }
+
+  export function getUserInitials(firstName?: string, lastName?: string): string {
+    if (!firstName && !lastName) return '?';
+    
+    let initials = '';
+    
+    if (firstName) {
+      initials += firstName.charAt(0).toUpperCase();
+    }
+    
+    if (lastName) {
+      initials += lastName.charAt(0).toUpperCase();
+    }
+    
+    return initials;
+  }
+
 export default {
     isNullOrWs,
     hasValue,
     parseUrlParams,
+    stringToColor,
     startsWith,
     mapOrder,
     resetForm,

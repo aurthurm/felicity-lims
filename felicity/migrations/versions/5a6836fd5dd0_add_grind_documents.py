@@ -1,8 +1,8 @@
 """add-grind-documents
 
-Revision ID: 5250318822af
+Revision ID: 5a6836fd5dd0
 Revises: 4b6240ec4682
-Create Date: 2025-02-27 11:54:45.261198
+Create Date: 2025-02-28 06:54:05.216705
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5250318822af'
+revision = '5a6836fd5dd0'
 down_revision = '4b6240ec4682'
 branch_labels = None
 depends_on = None
@@ -157,7 +157,7 @@ def upgrade():
     op.create_index(op.f('ix_grind_scheme_uid'), 'grind_scheme', ['uid'], unique=False)
     op.create_table('grind_stamp',
     sa.Column('title', sa.String(), nullable=False),
-    sa.Column('category', sa.Enum('TICKET', name='labelcategory'), nullable=True),
+    sa.Column('category', sa.Enum('PROJECT', 'TICKET', name='stampcategory'), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -252,7 +252,7 @@ def upgrade():
     op.create_index(op.f('ix_grind_poster_uid'), 'grind_poster', ['uid'], unique=False)
     op.create_table('document_ai_authoring_session',
     sa.Column('document_uid', sa.String(), nullable=True),
-    sa.Column('model_uid', sa.String(), nullable=True),
+    sa.Column('ai_model_uid', sa.String(), nullable=True),
     sa.Column('prompt', sa.Text(), nullable=True),
     sa.Column('conversation', sa.Text(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
@@ -260,9 +260,9 @@ def upgrade():
     sa.Column('created_by_uid', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['ai_model_uid'], ['document_ai_model.uid'], ),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
-    sa.ForeignKeyConstraint(['model_uid'], ['document_ai_model.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
@@ -523,15 +523,15 @@ def upgrade():
     op.create_index(op.f('ix_grind_milestone_uid'), 'grind_milestone', ['uid'], unique=False)
     op.create_table('document_ai_review_feedback',
     sa.Column('review_step_uid', sa.String(), nullable=True),
-    sa.Column('model_uid', sa.String(), nullable=True),
+    sa.Column('ai_model_uid', sa.String(), nullable=True),
     sa.Column('suggestions', sa.Text(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['ai_model_uid'], ['document_ai_model.uid'], ),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['model_uid'], ['document_ai_model.uid'], ),
     sa.ForeignKeyConstraint(['review_step_uid'], ['document_review_step.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')

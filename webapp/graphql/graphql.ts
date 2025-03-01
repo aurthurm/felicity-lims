@@ -18,6 +18,7 @@ export type Scalars = {
   DateTime: { input: never; output: never; }
   /** json field */
   JSONScalar: { input: never; output: never; }
+  Upload: { input: never; output: never; }
 };
 
 export type ArResultInputType = {
@@ -2769,14 +2770,23 @@ export type GrindCreateBoardInput = {
   /** Board Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Board Scheme */
-  scheme?: InputMaybe<Scalars['String']['input']>;
+  schemeUid?: InputMaybe<Scalars['String']['input']>;
   /** Board Title */
   title: Scalars['String']['input'];
 };
 
+export type GrindCreateErrandDiscussionInput = {
+  /** Comment */
+  comment: Scalars['String']['input'];
+  /** Errand uid */
+  errandUid: Scalars['String']['input'];
+  /** Parent comment uid */
+  parentUid?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type GrindCreateErrandInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Category */
   category?: InputMaybe<ErrandCategory>;
   /** Errand Description */
@@ -2784,17 +2794,17 @@ export type GrindCreateErrandInput = {
   /** End Date */
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Errand Label | Status */
-  label?: InputMaybe<Scalars['String']['input']>;
+  labelUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Members */
   members?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Milestone */
   milestones?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Poster */
-  poster?: InputMaybe<Scalars['String']['input']>;
+  posterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Priority */
   priority?: InputMaybe<Scalars['String']['input']>;
   /** Assigned To */
-  reporter?: InputMaybe<Scalars['String']['input']>;
+  reporterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Stamps | Tags */
   stamps?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Start Date */
@@ -2805,56 +2815,39 @@ export type GrindCreateErrandInput = {
 
 export type GrindCreateLabelInput = {
   /** Label category */
-  category: Scalars['String']['input'];
+  category: LabelCategory;
   /** Label title */
   title: Scalars['String']['input'];
 };
 
 export type GrindCreateMediaInput = {
-  /** Media description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Media destination */
-  destination?: InputMaybe<Scalars['String']['input']>;
-  /** Media encoding */
-  encoding?: InputMaybe<Scalars['String']['input']>;
-  /** Media filename */
-  filename?: InputMaybe<Scalars['String']['input']>;
-  /** Media mimetype */
-  mimetype?: InputMaybe<Scalars['String']['input']>;
-  /** Media original name */
-  originalName?: InputMaybe<Scalars['String']['input']>;
-  /** Media path */
-  path?: InputMaybe<Scalars['String']['input']>;
-  /** Media size */
-  size?: InputMaybe<Scalars['String']['input']>;
+  file: Scalars['Upload']['input'];
   /** Media target */
-  target?: InputMaybe<Scalars['String']['input']>;
+  target: MediaTarget;
   /** Media Target ID */
-  targetUid?: InputMaybe<Scalars['String']['input']>;
+  targetUid: Scalars['String']['input'];
 };
 
 export type GrindCreateMilestoneInput = {
   /** Assigned to */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Status */
   complete?: InputMaybe<Scalars['Boolean']['input']>;
   /** Milestone Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Milestone Errand */
-  errand: Scalars['String']['input'];
+  errandUid: Scalars['String']['input'];
   /** Milestone Title */
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GrindCreatePosterInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster Board */
-  board?: InputMaybe<Scalars['String']['input']>;
+  boardUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster category */
-  category?: InputMaybe<PosterCategory>;
-  /** Poster Communities */
-  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  category: PosterCategory;
   /** Poster description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Poster Members */
@@ -2864,7 +2857,7 @@ export type GrindCreatePosterInput = {
   /** Poster status */
   status?: InputMaybe<Scalars['String']['input']>;
   /** Poster Title */
-  title?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
 };
 
 export type GrindCreateSchemeInput = {
@@ -2884,7 +2877,7 @@ export type GrindCreateSchemeInput = {
 
 export type GrindCreateStampInput = {
   /** Stamp category */
-  category: Scalars['String']['input'];
+  category: StampCategory;
   /** Stamp title */
   title: Scalars['String']['input'];
 };
@@ -2895,6 +2888,26 @@ export type GrindErrandCursorPage = {
   items?: Maybe<Array<GrindErrandType>>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
+};
+
+export type GrindErrandDiscussionResponse = GrindErrandDiscussionType | OperationError;
+
+export type GrindErrandDiscussionType = {
+  __typename?: 'GrindErrandDiscussionType';
+  canEdit: Scalars['Boolean']['output'];
+  comment: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  errand?: Maybe<GrindErrandType>;
+  errandUid?: Maybe<Scalars['String']['output']>;
+  parent?: Maybe<GrindErrandDiscussionType>;
+  parentUid?: Maybe<Scalars['String']['output']>;
+  subdiscussions: Array<GrindErrandDiscussionType>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type GrindErrandEdge = {
@@ -2920,6 +2933,7 @@ export type GrindErrandType = {
   media: Array<GrindMediaType>;
   members: Array<UserType>;
   milestones: Array<GrindMilestoneType>;
+  milestonesAt: Scalars['Float']['output'];
   occurrences: Array<GrindOccurrenceType>;
   poster?: Maybe<GrindPosterType>;
   posterUid?: Maybe<Scalars['String']['output']>;
@@ -3173,15 +3187,23 @@ export type GrindUpdateBoardInput = {
   /** Board Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Board Scheme */
-  scheme?: InputMaybe<Scalars['String']['input']>;
+  schemeUid?: InputMaybe<Scalars['String']['input']>;
   /** Board Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
+};
+
+export type GrindUpdateErrandDiscussionInput = {
+  /** Comment */
+  comment: Scalars['String']['input'];
+  /** Errand uid */
+  errandUid: Scalars['String']['input'];
+  /** Parent comment uid */
+  parentUid?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GrindUpdateErrandInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Category */
   category?: InputMaybe<ErrandCategory>;
   /** Errand Description */
@@ -3189,24 +3211,23 @@ export type GrindUpdateErrandInput = {
   /** End Date */
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Errand Label | Status */
-  label?: InputMaybe<Scalars['String']['input']>;
+  labelUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Members */
   members?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Milestone */
   milestones?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Errand Poster */
-  poster?: InputMaybe<Scalars['String']['input']>;
+  posterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Priority */
   priority?: InputMaybe<Scalars['String']['input']>;
   /** Assigned To */
-  reporter?: InputMaybe<Scalars['String']['input']>;
+  reporterUid?: InputMaybe<Scalars['String']['input']>;
   /** Errand Stamps | Tags */
   stamps?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Start Date */
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Errand Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdateLabelInput = {
@@ -3214,56 +3235,28 @@ export type GrindUpdateLabelInput = {
   category?: InputMaybe<Scalars['String']['input']>;
   /** Label title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type GrindUpdateMediaInput = {
-  /** Media description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Media destination */
-  destination?: InputMaybe<Scalars['String']['input']>;
-  /** Media encoding */
-  encoding?: InputMaybe<Scalars['String']['input']>;
-  /** Media filename */
-  filename?: InputMaybe<Scalars['String']['input']>;
-  /** Media mimetype */
-  mimetype?: InputMaybe<Scalars['String']['input']>;
-  /** Media original name */
-  originalName?: InputMaybe<Scalars['String']['input']>;
-  /** Media path */
-  path?: InputMaybe<Scalars['String']['input']>;
-  /** Media size */
-  size?: InputMaybe<Scalars['String']['input']>;
-  /** Media target */
-  target?: InputMaybe<Scalars['String']['input']>;
-  /** Media Target ID */
-  targetUid?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdateMilestoneInput = {
   /** Assigned to */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Status */
   complete?: InputMaybe<Scalars['Boolean']['input']>;
   /** Milestone Description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Milestone Errand */
-  errand?: InputMaybe<Scalars['String']['input']>;
+  errandUid: Scalars['String']['input'];
   /** Milestone Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdatePosterInput = {
   /** Assigned To */
-  assignee?: InputMaybe<Scalars['String']['input']>;
+  assigneeUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster Board */
-  board?: InputMaybe<Scalars['String']['input']>;
+  boardUid?: InputMaybe<Scalars['String']['input']>;
   /** Poster category */
-  category?: InputMaybe<PosterCategory>;
-  /** Poster Communities */
-  communities?: InputMaybe<Array<Scalars['String']['input']>>;
+  category: PosterCategory;
   /** Poster description */
   description?: InputMaybe<Scalars['String']['input']>;
   /** Poster Members */
@@ -3273,8 +3266,7 @@ export type GrindUpdatePosterInput = {
   /** Poster status */
   status?: InputMaybe<Scalars['String']['input']>;
   /** Poster Title */
-  title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type GrindUpdateSchemeInput = {
@@ -3290,7 +3282,6 @@ export type GrindUpdateSchemeInput = {
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Scheme Title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GrindUpdateStampInput = {
@@ -3298,7 +3289,6 @@ export type GrindUpdateStampInput = {
   category?: InputMaybe<Scalars['String']['input']>;
   /** Stamp title */
   title?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
 };
 
 export type GroupCount = {
@@ -3532,6 +3522,10 @@ export type InstrumentTypeType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export enum LabelCategory {
+  Ticket = 'TICKET'
+}
+
 export type LaboratoryInputType = {
   address?: InputMaybe<Scalars['String']['input']>;
   banking?: InputMaybe<Scalars['String']['input']>;
@@ -3710,6 +3704,10 @@ export type ManufacturerType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export enum MediaTarget {
+  Errand = 'ERRAND'
+}
+
 /** Union of possible outcomes when deleting some object */
 export type MessageResponse = MessagesType | OperationError;
 
@@ -3862,6 +3860,7 @@ export type Mutation = {
   createDocumentVersion: DocumentVersionResponse;
   createGrindBoard: GrindBoardResponse;
   createGrindErrand: GrindErrandResponse;
+  createGrindErrandDiscussion: GrindErrandDiscussionResponse;
   createGrindLabel: GrindLabelResponse;
   createGrindMedia: GrindMediaResponse;
   createGrindMilestone: GrindMilestoneResponse;
@@ -4027,8 +4026,8 @@ export type Mutation = {
   updateDocumentVersion: DocumentVersionResponse;
   updateGrindBoard: GrindBoardResponse;
   updateGrindErrand: GrindErrandResponse;
+  updateGrindErrandDiscussion: GrindErrandDiscussionResponse;
   updateGrindLabel: GrindLabelResponse;
-  updateGrindMedia: GrindMediaResponse;
   updateGrindMilestone: GrindMilestoneResponse;
   updateGrindPoster: GrindPosterResponse;
   updateGrindScheme: GrindSchemeResponse;
@@ -4433,6 +4432,11 @@ export type MutationCreateGrindBoardArgs = {
 
 export type MutationCreateGrindErrandArgs = {
   payload: GrindCreateErrandInput;
+};
+
+
+export type MutationCreateGrindErrandDiscussionArgs = {
+  payload: GrindCreateErrandDiscussionInput;
 };
 
 
@@ -5339,14 +5343,14 @@ export type MutationUpdateGrindErrandArgs = {
 };
 
 
-export type MutationUpdateGrindLabelArgs = {
-  payload: GrindUpdateLabelInput;
+export type MutationUpdateGrindErrandDiscussionArgs = {
+  payload: GrindUpdateErrandDiscussionInput;
   uid: Scalars['String']['input'];
 };
 
 
-export type MutationUpdateGrindMediaArgs = {
-  payload: GrindUpdateMediaInput;
+export type MutationUpdateGrindLabelArgs = {
+  payload: GrindUpdateLabelInput;
   uid: Scalars['String']['input'];
 };
 
@@ -6340,6 +6344,8 @@ export type Query = {
   grindBoardsByScheme: Array<GrindBoardType>;
   grindErrandAll: GrindErrandCursorPage;
   grindErrandByUid?: Maybe<GrindErrandType>;
+  grindErrandDiscussions: Array<GrindErrandDiscussionType>;
+  grindErrandDiscussionsByParent: Array<GrindErrandDiscussionType>;
   grindErrandsByAssignee: Array<GrindErrandType>;
   grindErrandsByPoster: Array<GrindErrandType>;
   grindLabelAll: GrindLabelCursorPage;
@@ -7305,6 +7311,16 @@ export type QueryGrindErrandByUidArgs = {
 };
 
 
+export type QueryGrindErrandDiscussionsArgs = {
+  errandUid: Scalars['String']['input'];
+};
+
+
+export type QueryGrindErrandDiscussionsByParentArgs = {
+  parentUid: Scalars['String']['input'];
+};
+
+
 export type QueryGrindErrandsByAssigneeArgs = {
   assigneeUid: Scalars['String']['input'];
 };
@@ -7456,7 +7472,7 @@ export type QueryGrindStampAllArgs = {
 
 
 export type QueryGrindStampByCategoryArgs = {
-  category: Scalars['String']['input'];
+  category: StampCategory;
 };
 
 
@@ -8680,6 +8696,11 @@ export type ShippedSampleType = {
   shipment: ShipmentType;
   shipmentUid: Scalars['String']['output'];
 };
+
+export enum StampCategory {
+  Project = 'PROJECT',
+  Ticket = 'TICKET'
+}
 
 export type StockAdjustmentCursorPage = {
   __typename?: 'StockAdjustmentCursorPage';

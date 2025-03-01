@@ -21,7 +21,7 @@ export type GetGrindErrandsQuery = (
       & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
     ), items?: Types.Maybe<Array<(
       { __typename?: 'GrindErrandType' }
-      & Pick<Types.GrindErrandType, 'uid' | 'title' | 'description' | 'category' | 'priority' | 'startDate' | 'endDate' | 'createdAt'>
+      & Pick<Types.GrindErrandType, 'uid' | 'title' | 'description' | 'category' | 'priority' | 'startDate' | 'endDate' | 'milestonesAt' | 'createdAt'>
       & { poster?: Types.Maybe<(
         { __typename?: 'GrindPosterType' }
         & Pick<Types.GrindPosterType, 'uid' | 'title'>
@@ -57,10 +57,10 @@ export type GetGrindErrandQuery = (
   { __typename?: 'Query' }
   & { grindErrandByUid?: Types.Maybe<(
     { __typename?: 'GrindErrandType' }
-    & Pick<Types.GrindErrandType, 'uid' | 'title' | 'description' | 'category' | 'priority' | 'startDate' | 'endDate' | 'createdAt'>
+    & Pick<Types.GrindErrandType, 'uid' | 'title' | 'description' | 'category' | 'priority' | 'startDate' | 'endDate' | 'posterUid' | 'milestonesAt' | 'labelUid' | 'createdAt'>
     & { poster?: Types.Maybe<(
       { __typename?: 'GrindPosterType' }
-      & Pick<Types.GrindPosterType, 'uid' | 'category' | 'description' | 'status' | 'title'>
+      & Pick<Types.GrindPosterType, 'uid' | 'title'>
     )>, stamps: Array<(
       { __typename?: 'GrindStampType' }
       & Pick<Types.GrindStampType, 'uid' | 'title'>
@@ -76,6 +76,46 @@ export type GetGrindErrandQuery = (
     )>, members: Array<(
       { __typename?: 'UserType' }
       & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+    )>, createdBy?: Types.Maybe<(
+      { __typename?: 'UserType' }
+      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+    )> }
+  )> }
+);
+
+export type GetGrindErrandDiscussionsQueryVariables = Types.Exact<{
+  errandUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetGrindErrandDiscussionsQuery = (
+  { __typename?: 'Query' }
+  & { grindErrandDiscussions: Array<(
+    { __typename?: 'GrindErrandDiscussionType' }
+    & Pick<Types.GrindErrandDiscussionType, 'uid' | 'comment' | 'errandUid' | 'parentUid' | 'canEdit' | 'createdAt' | 'createdByUid'>
+    & { subdiscussions: Array<(
+      { __typename?: 'GrindErrandDiscussionType' }
+      & Pick<Types.GrindErrandDiscussionType, 'uid' | 'comment' | 'errandUid' | 'parentUid'>
+    )>, createdBy?: Types.Maybe<(
+      { __typename?: 'UserType' }
+      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+    )> }
+  )> }
+);
+
+export type GetGrindErrandDiscussionsByParentQueryVariables = Types.Exact<{
+  parentUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetGrindErrandDiscussionsByParentQuery = (
+  { __typename?: 'Query' }
+  & { grindErrandDiscussionsByParent: Array<(
+    { __typename?: 'GrindErrandDiscussionType' }
+    & Pick<Types.GrindErrandDiscussionType, 'uid' | 'comment' | 'errandUid' | 'parentUid' | 'canEdit' | 'createdAt' | 'createdByUid'>
+    & { subdiscussions: Array<(
+      { __typename?: 'GrindErrandDiscussionType' }
+      & Pick<Types.GrindErrandDiscussionType, 'uid' | 'comment' | 'errandUid' | 'parentUid'>
     )>, createdBy?: Types.Maybe<(
       { __typename?: 'UserType' }
       & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
@@ -142,7 +182,7 @@ export type GetGrindMediaQuery = (
   )> }
 );
 
-export type GetSchemesQueryVariables = Types.Exact<{
+export type GetGrindSchemeAllQueryVariables = Types.Exact<{
   first: Types.Scalars['Int']['input'];
   after?: Types.InputMaybe<Types.Scalars['String']['input']>;
   text: Types.Scalars['String']['input'];
@@ -150,7 +190,7 @@ export type GetSchemesQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetSchemesQuery = (
+export type GetGrindSchemeAllQuery = (
   { __typename?: 'Query' }
   & { grindSchemeAll: (
     { __typename?: 'GrindSchemeCursorPage' }
@@ -175,12 +215,12 @@ export type GetSchemesQuery = (
   ) }
 );
 
-export type GetSchemeQueryVariables = Types.Exact<{
+export type GetGrindSchemeQueryVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
 }>;
 
 
-export type GetSchemeQuery = (
+export type GetGrindSchemeQuery = (
   { __typename?: 'Query' }
   & { grindSchemeByUid?: Types.Maybe<(
     { __typename?: 'GrindSchemeType' }
@@ -201,31 +241,22 @@ export type GetSchemeQuery = (
   )> }
 );
 
-export type GetPostersByBoardQueryVariables = Types.Exact<{
+export type GetGrindPostersByBoardQueryVariables = Types.Exact<{
   boardUid: Types.Scalars['String']['input'];
 }>;
 
 
-export type GetPostersByBoardQuery = (
+export type GetGrindPostersByBoardQuery = (
   { __typename?: 'Query' }
   & { grindPostersByBoard: Array<(
     { __typename?: 'GrindPosterType' }
-    & Pick<Types.GrindPosterType, 'uid' | 'title'>
-    & { board?: Types.Maybe<(
-      { __typename?: 'GrindBoardType' }
-      & Pick<Types.GrindBoardType, 'uid'>
-    )>, errands: Array<(
+    & Pick<Types.GrindPosterType, 'uid' | 'title' | 'boardUid'>
+    & { errands: Array<(
       { __typename?: 'GrindErrandType' }
-      & Pick<Types.GrindErrandType, 'uid' | 'title' | 'description' | 'priority' | 'startDate' | 'endDate' | 'progress'>
-      & { poster?: Types.Maybe<(
-        { __typename?: 'GrindPosterType' }
-        & Pick<Types.GrindPosterType, 'uid'>
-      )>, stamps: Array<(
+      & Pick<Types.GrindErrandType, 'uid' | 'title' | 'description' | 'priority' | 'startDate' | 'endDate' | 'progress' | 'posterUid' | 'milestonesAt' | 'labelUid'>
+      & { stamps: Array<(
         { __typename?: 'GrindStampType' }
         & Pick<Types.GrindStampType, 'uid' | 'title'>
-      )>, label?: Types.Maybe<(
-        { __typename?: 'GrindLabelType' }
-        & Pick<Types.GrindLabelType, 'uid'>
       )>, assignee?: Types.Maybe<(
         { __typename?: 'UserType' }
         & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
@@ -258,6 +289,19 @@ export type GetGrindStampAllQuery = (
       & Pick<Types.GrindStampType, 'uid' | 'title' | 'category'>
     )>> }
   ) }
+);
+
+export type GetGrindStampByCategoryQueryVariables = Types.Exact<{
+  category: Types.StampCategory;
+}>;
+
+
+export type GetGrindStampByCategoryQuery = (
+  { __typename?: 'Query' }
+  & { grindStampByCategory: Array<(
+    { __typename?: 'GrindStampType' }
+    & Pick<Types.GrindStampType, 'uid' | 'title' | 'category'>
+  )> }
 );
 
 export type GetGrindLabelAllQueryVariables = Types.Exact<{
@@ -307,6 +351,7 @@ export const GetGrindErrandsDocument = gql`
       priority
       startDate
       endDate
+      milestonesAt
       poster {
         uid
         title
@@ -358,17 +403,17 @@ export const GetGrindErrandDocument = gql`
     priority
     startDate
     endDate
+    posterUid
+    milestonesAt
     poster {
       uid
-      category
-      description
-      status
       title
     }
     stamps {
       uid
       title
     }
+    labelUid
     label {
       uid
       title
@@ -400,6 +445,62 @@ export const GetGrindErrandDocument = gql`
 
 export function useGetGrindErrandQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindErrandQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetGrindErrandQuery>({ query: GetGrindErrandDocument, ...options });
+};
+export const GetGrindErrandDiscussionsDocument = gql`
+    query GetGrindErrandDiscussions($errandUid: String!) {
+  grindErrandDiscussions(errandUid: $errandUid) {
+    uid
+    comment
+    errandUid
+    parentUid
+    subdiscussions {
+      uid
+      comment
+      errandUid
+      parentUid
+    }
+    canEdit
+    createdAt
+    createdByUid
+    createdBy {
+      uid
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+export function useGetGrindErrandDiscussionsQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindErrandDiscussionsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGrindErrandDiscussionsQuery>({ query: GetGrindErrandDiscussionsDocument, ...options });
+};
+export const GetGrindErrandDiscussionsByParentDocument = gql`
+    query GetGrindErrandDiscussionsByParent($parentUid: String!) {
+  grindErrandDiscussionsByParent(parentUid: $parentUid) {
+    uid
+    comment
+    errandUid
+    parentUid
+    subdiscussions {
+      uid
+      comment
+      errandUid
+      parentUid
+    }
+    canEdit
+    createdAt
+    createdByUid
+    createdBy {
+      uid
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+export function useGetGrindErrandDiscussionsByParentQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindErrandDiscussionsByParentQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGrindErrandDiscussionsByParentQuery>({ query: GetGrindErrandDiscussionsByParentDocument, ...options });
 };
 export const GetGrindOccurrenciesByTargetDocument = gql`
     query GetGrindOccurrenciesByTarget($target: String!, $targetUid: String!) {
@@ -475,8 +576,8 @@ export const GetGrindMediaDocument = gql`
 export function useGetGrindMediaQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindMediaQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetGrindMediaQuery>({ query: GetGrindMediaDocument, ...options });
 };
-export const GetSchemesDocument = gql`
-    query GetSchemes($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+export const GetGrindSchemeAllDocument = gql`
+    query GetGrindSchemeAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
   grindSchemeAll(
     pageSize: $first
     afterCursor: $after
@@ -517,11 +618,11 @@ export const GetSchemesDocument = gql`
 }
     `;
 
-export function useGetSchemesQuery(options: Omit<Urql.UseQueryArgs<never, GetSchemesQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetSchemesQuery>({ query: GetSchemesDocument, ...options });
+export function useGetGrindSchemeAllQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindSchemeAllQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGrindSchemeAllQuery>({ query: GetGrindSchemeAllDocument, ...options });
 };
-export const GetSchemeDocument = gql`
-    query GetScheme($uid: String!) {
+export const GetGrindSchemeDocument = gql`
+    query GetGrindScheme($uid: String!) {
   grindSchemeByUid(uid: $uid) {
     uid
     title
@@ -553,17 +654,15 @@ export const GetSchemeDocument = gql`
 }
     `;
 
-export function useGetSchemeQuery(options: Omit<Urql.UseQueryArgs<never, GetSchemeQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetSchemeQuery>({ query: GetSchemeDocument, ...options });
+export function useGetGrindSchemeQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindSchemeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGrindSchemeQuery>({ query: GetGrindSchemeDocument, ...options });
 };
-export const GetPostersByBoardDocument = gql`
-    query GetPostersByBoard($boardUid: String!) {
+export const GetGrindPostersByBoardDocument = gql`
+    query GetGrindPostersByBoard($boardUid: String!) {
   grindPostersByBoard(boardUid: $boardUid) {
     uid
     title
-    board {
-      uid
-    }
+    boardUid
     errands {
       uid
       title
@@ -572,16 +671,13 @@ export const GetPostersByBoardDocument = gql`
       startDate
       endDate
       progress
-      poster {
-        uid
-      }
+      posterUid
+      milestonesAt
       stamps {
         uid
         title
       }
-      label {
-        uid
-      }
+      labelUid
       assignee {
         uid
         firstName
@@ -597,8 +693,8 @@ export const GetPostersByBoardDocument = gql`
 }
     `;
 
-export function useGetPostersByBoardQuery(options: Omit<Urql.UseQueryArgs<never, GetPostersByBoardQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetPostersByBoardQuery>({ query: GetPostersByBoardDocument, ...options });
+export function useGetGrindPostersByBoardQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindPostersByBoardQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGrindPostersByBoardQuery>({ query: GetGrindPostersByBoardDocument, ...options });
 };
 export const GetGrindStampAllDocument = gql`
     query GetGrindStampAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -626,6 +722,19 @@ export const GetGrindStampAllDocument = gql`
 
 export function useGetGrindStampAllQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindStampAllQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetGrindStampAllQuery>({ query: GetGrindStampAllDocument, ...options });
+};
+export const GetGrindStampByCategoryDocument = gql`
+    query GetGrindStampByCategory($category: StampCategory!) {
+  grindStampByCategory(category: $category) {
+    uid
+    title
+    category
+  }
+}
+    `;
+
+export function useGetGrindStampByCategoryQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindStampByCategoryQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGrindStampByCategoryQuery>({ query: GetGrindStampByCategoryDocument, ...options });
 };
 export const GetGrindLabelAllDocument = gql`
     query GetGrindLabelAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {

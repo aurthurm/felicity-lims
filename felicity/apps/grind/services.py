@@ -1,14 +1,14 @@
 from felicity.apps.abstract import BaseService
 from felicity.apps.grind.entities import GrindScheme, GrindBoard, GrindPoster, GrindErrand, GrindLabel, GrindMedia, \
     GrindMilestone, GrindOccurrence, GrindStamp, grind_errand_member, grind_errand_stamp, grind_poster_stamp, \
-    grind_poster_member, grind_scheme_member
+    grind_poster_member, grind_scheme_member, GrindErrandDiscussion
 from felicity.apps.grind.repositories import GrindSchemeRepository, GrindBoardRepository, GrindPosterRepository, \
     GrindErrandRepository, GrindLabelRepository, GrindMediaRepository, GrindMilestoneRepository, \
-    GrindOccurrenceRepository, GrindStampRepository
+    GrindOccurrenceRepository, GrindStampRepository, GrindErrandDiscussionRepository
 from felicity.apps.grind.schema import GrindSchemeCreate, GrindSchemeUpdate, GrindBoardCreate, GrindBoardUpdate, \
     GrindPosterCreate, GrindPosterUpdate, GrindErrandCreate, GrindErrandUpdate, GrindLabelCreate, GrindLabelUpdate, \
     GrindMediaCreate, GrindMediaUpdate, GrindMilestoneCreate, GrindMilestoneUpdate, GrindOccurrenceCreate, \
-    GrindOccurrenceUpdate, GrindStampCreate, GrindStampUpdate
+    GrindOccurrenceUpdate, GrindStampCreate, GrindStampUpdate, GrindErrandDiscussionCreate, GrindErrandDiscussionUpdate
 
 
 class GrindSchemeService(BaseService[GrindScheme, GrindSchemeCreate, GrindSchemeUpdate]):
@@ -79,6 +79,12 @@ class GrindErrandService(BaseService[GrindErrand, GrindErrandCreate, GrindErrand
             grind_errand_stamp,
             mappings=[{"grind_errand_uid": uid, "grind_stamp_uid": stamp} for stamp in stamps]
         )
+
+
+class GrindErrandDiscussionService(
+    BaseService[GrindErrandDiscussion, GrindErrandDiscussionCreate, GrindErrandDiscussionUpdate]):
+    def __init__(self):
+        super().__init__(GrindErrandDiscussionRepository())
 
 
 class GrindLabelService(BaseService[GrindLabel, GrindLabelCreate, GrindLabelUpdate]):

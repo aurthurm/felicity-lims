@@ -1,6 +1,6 @@
 from felicity.apps.abstract import BaseRepository
 from felicity.apps.grind.entities import GrindScheme, GrindBoard, GrindPoster, GrindErrand, GrindLabel, GrindMedia, \
-    GrindMilestone, GrindOccurrence, GrindStamp
+    GrindMilestone, GrindOccurrence, GrindStamp, GrindErrandDiscussion
 
 
 class GrindSchemeRepository(BaseRepository[GrindScheme]):
@@ -21,6 +21,11 @@ class GrindPosterRepository(BaseRepository[GrindPoster]):
 class GrindErrandRepository(BaseRepository[GrindErrand]):
     def __init__(self) -> None:
         super().__init__(GrindErrand)
+
+
+class GrindErrandDiscussionRepository(BaseRepository[GrindErrandDiscussion]):
+    def __init__(self) -> None:
+        super().__init__(GrindErrandDiscussion)
 
 
 class GrindLabelRepository(BaseRepository[GrindLabel]):

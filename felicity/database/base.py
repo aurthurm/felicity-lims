@@ -55,6 +55,7 @@ from felicity.apps.document.entities import DocumentTemplate  # noqa
 from felicity.apps.document.entities import DocumentVersion  # noqa
 from felicity.apps.grind.entities import GrindBoard  # noqa
 from felicity.apps.grind.entities import GrindErrand  # noqa
+from felicity.apps.grind.entities import GrindErrandDiscussion  # noqa
 from felicity.apps.grind.entities import GrindLabel  # noqa
 from felicity.apps.grind.entities import GrindMedia  # noqa
 from felicity.apps.grind.entities import GrindMilestone  # noqa
