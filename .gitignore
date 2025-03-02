@@ -16,7 +16,7 @@ dbgate-data
 
 # General
 media/reports/
-media/errands/
+media/errand/
 deploy/tracing/signoz
 
 # Python
