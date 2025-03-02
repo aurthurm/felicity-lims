@@ -1,1 +1,0 @@
-import{k as o,m as t,o as c,c as s,g as r}from"./index-68ba4247.js";const n={},i={class:""};function _(a,m){const e=t("router-view");return c(),s("div",i,[r(e)])}const f=o(n,[["render",_],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/grind/Schemes.vue"]]);export{f as default};

@@ -101,17 +101,19 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get_by_uids(uids)
 
-    async def get_all(self, related: list[str] | None = None, **kwargs) -> list[E]:
+    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None, **kwargs) -> list[E]:
         """
         Get all entities matching the given criteria.
 
         Args:
+            related: Related model to lazy load
+            sort_attrs: columns to sort by
             **kwargs: Criteria for fetching entities
 
         Returns:
             List of matching entities
         """
-        return await self.repository.get_all(related=related, **kwargs)
+        return await self.repository.get_all(related=related, sort_attrs=sort_attrs, **kwargs)
 
     async def create(self, c: C | dict, related: list[str] | None = None) -> E:
         """

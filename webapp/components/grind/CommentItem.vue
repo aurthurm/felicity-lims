@@ -220,3 +220,12 @@ function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
         />
     </div>
 </template>
+
+<style scoped>
+.ml-12 {
+    margin-left: 3rem;
+}
+.ml-14 {
+    margin-left: 3.5rem;
+}
+</style>

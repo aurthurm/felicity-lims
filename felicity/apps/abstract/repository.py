@@ -285,26 +285,29 @@ class BaseRepository(Generic[M]):
             found = results.scalars().first()
         return found
 
-    async def get_all(self, related: list[str] | None = None, **kwargs) -> list[M]:
+    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None, **kwargs) -> list[M]:
         """
         Get all model instances that match the given filters.
 
         :param related: A list of related fields to load.
+        :param sort_attrs: A list of fields to sort by.
         :param kwargs: Filter conditions.
         :return: A list of model instances.
         :raises ValueError: If no arguments are provided.
         """
         if not kwargs:
             raise ValueError("No arguments provided to get all")
-        stmt = self.model.where(**kwargs)
 
+        # smart query
+        stmt = self.model.smart_query(kwargs, sort_attrs)
         if related:
             for key in related:
                 stmt = apply_nested_loader_options(stmt, self.model, key)
 
         async with self.async_session() as session:
-            results = await session.execute(stmt)
+            results = await session.execute(stmt.distinct())
             found = results.scalars().all()
+
         return found
 
     async def all(self) -> list[M]:

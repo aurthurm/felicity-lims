@@ -505,8 +505,10 @@ class GrindQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def grind_errand_discussions(self, info, errand_uid: str) -> List[types.GrindErrandDiscussionType]:
-        return await GrindErrandDiscussionService().get_all(errand_uid=errand_uid, parent_uid=None)
+        return await GrindErrandDiscussionService().get_all(
+            errand_uid=errand_uid, parent_uid=None, sort_attrs=["-created_at"]
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def grind_errand_discussions_by_parent(self, info, parent_uid: str) -> List[types.GrindErrandDiscussionType]:
-        return await GrindErrandDiscussionService().get_all(parent_uid=parent_uid)
+        return await GrindErrandDiscussionService().get_all(parent_uid=parent_uid, sort_attrs=["-created_at"])
