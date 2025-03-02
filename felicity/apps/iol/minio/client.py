@@ -30,12 +30,12 @@ class MinioClient:
             self.client.make_bucket(bucket)
 
     def put_object(
-        self,
-        bucket: MinioBucket,
-        object_name: str,
-        data,
-        metadata,
-        content_type="application/pdf",
+            self,
+            bucket: MinioBucket,
+            object_name: str,
+            data,
+            metadata,
+            content_type="application/pdf",
     ):
         logger.info(f"minio -- put {bucket} object --")
         self.make_bucket(bucket)
@@ -65,3 +65,10 @@ class MinioClient:
             return objects
         except S3Error as e:
             raise Exception(f"File not found: {str(e)}")
+
+    def remove_object(self, bucket: MinioBucket, object_name: str):
+        logger.info(f"minio -- removing {bucket} object --")
+        try:
+            self.client.remove_object(bucket, f"{object_name}")
+        except S3Error as e:
+            raise Exception(f"Failed to remove file: {str(e)}")

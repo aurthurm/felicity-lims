@@ -54,7 +54,6 @@ function editMilestone(milestone: IGrindMilestone){
 }
 
 function saveForm(){
-    console.log(form);
     showForm.value = false;
 
     const payload = {

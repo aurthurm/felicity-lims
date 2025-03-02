@@ -160,8 +160,8 @@ export type DeleteMilestoneMutationVariables = Types.Exact<{
 export type DeleteMilestoneMutation = (
   { __typename?: 'Mutation' }
   & { deleteGrindMilestone: (
-    { __typename?: 'GrindMilestoneType' }
-    & Pick<Types.GrindMilestoneType, 'uid'>
+    { __typename?: 'DeletedItem' }
+    & Pick<Types.DeletedItem, 'uid'>
   ) | { __typename?: 'OperationError' } }
 );
 
@@ -307,6 +307,19 @@ export type AddGrindMediaMutation = (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) }
+);
+
+export type DeleteGrindMediaMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type DeleteGrindMediaMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteGrindMedia: (
+    { __typename?: 'DeletedItem' }
+    & Pick<Types.DeletedItem, 'uid'>
+  ) | { __typename?: 'OperationError' } }
 );
 
 
@@ -517,7 +530,7 @@ export function useEditGrindMilestoneMutation() {
 export const DeleteMilestoneDocument = gql`
     mutation DeleteMilestone($uid: String!) {
   deleteGrindMilestone(uid: $uid) {
-    ... on GrindMilestoneType {
+    ... on DeletedItem {
       uid
     }
   }
@@ -718,4 +731,17 @@ export const AddGrindMediaDocument = gql`
 
 export function useAddGrindMediaMutation() {
   return Urql.useMutation<AddGrindMediaMutation, AddGrindMediaMutationVariables>(AddGrindMediaDocument);
+};
+export const DeleteGrindMediaDocument = gql`
+    mutation DeleteGrindMedia($uid: String!) {
+  deleteGrindMedia(uid: $uid) {
+    ... on DeletedItem {
+      uid
+    }
+  }
+}
+    `;
+
+export function useDeleteGrindMediaMutation() {
+  return Urql.useMutation<DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables>(DeleteGrindMediaDocument);
 };

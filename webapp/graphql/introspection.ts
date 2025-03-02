@@ -22232,7 +22232,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindBoardResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22255,7 +22255,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindErrandResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22278,7 +22278,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindLabelResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22301,7 +22301,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindMediaResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22324,7 +22324,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindMilestoneResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22347,7 +22347,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindPosterResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22370,7 +22370,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindSchemeResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -22393,7 +22393,7 @@ export default {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "GrindStampResponse",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },

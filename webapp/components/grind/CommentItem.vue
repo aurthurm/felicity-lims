@@ -28,7 +28,6 @@ const props = defineProps({
 });
 
 onMounted(() => {
-    console.log('CommentItem mounted ::: comment', props.comment);
     getReplies(props.comment.uid)
 });
 
@@ -130,10 +129,12 @@ function updateDiscussion() {
 
 function handleCommentAdded() {
     emit('commentAdded');
+    getReplies(props.comment.uid);
 }
 
 function handleCommentUpdated() {
     emit('commentUpdated');
+    getReplies(props.comment.uid);
 }
 
 function handleSetReplyingTo(discussion: IGrindErrandDiscussion | null) {

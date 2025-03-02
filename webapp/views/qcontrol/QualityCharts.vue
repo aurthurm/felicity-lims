@@ -79,7 +79,6 @@
   const groupedChartData = computed(() => {
     if (!rawData.value) return [];
     const converted = convertToChartSeries(groupQCDataByLevel(rawData.value));
-    console.log("converted: ", converted)
     return converted;
   });
 

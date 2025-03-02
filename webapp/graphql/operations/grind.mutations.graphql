@@ -172,7 +172,7 @@ mutation EditGrindMilestone($uid: String!, $payload: GrindUpdateMilestoneInput!)
 
 mutation DeleteMilestone($uid: String!) {
     deleteGrindMilestone(uid: $uid) {
-        ...on GrindMilestoneType {
+        ...on DeletedItem {
             uid
         }
     }
@@ -338,6 +338,14 @@ mutation AddGrindMedia($payload: GrindCreateMediaInput!) {
             __typename
             error
             suggestion
+        }
+    }
+}
+
+mutation DeleteGrindMedia($uid: String!) {
+    deleteGrindMedia(uid: $uid) {
+        ...on DeletedItem {
+            uid
         }
     }
 }

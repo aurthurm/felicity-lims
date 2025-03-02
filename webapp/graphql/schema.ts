@@ -3930,14 +3930,14 @@ export type Mutation = {
   deleteDocumentTag: DocumentTagResponse;
   deleteDocumentTemplate: DocumentTemplateResponse;
   deleteDocumentVersion: DocumentVersionResponse;
-  deleteGrindBoard: GrindBoardResponse;
-  deleteGrindErrand: GrindErrandResponse;
-  deleteGrindLabel: GrindLabelResponse;
-  deleteGrindMedia: GrindMediaResponse;
-  deleteGrindMilestone: GrindMilestoneResponse;
-  deleteGrindPoster: GrindPosterResponse;
-  deleteGrindScheme: GrindSchemeResponse;
-  deleteGrindStamp: GrindStampResponse;
+  deleteGrindBoard: DeleteResponse;
+  deleteGrindErrand: DeleteResponse;
+  deleteGrindLabel: DeleteResponse;
+  deleteGrindMedia: DeleteResponse;
+  deleteGrindMilestone: DeleteResponse;
+  deleteGrindPoster: DeleteResponse;
+  deleteGrindScheme: DeleteResponse;
+  deleteGrindStamp: DeleteResponse;
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
   deleteReflexBrain: DeletedItem;
@@ -13593,14 +13593,14 @@ export type GraphCacheOptimisticUpdaters = {
   deleteDocumentTag?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentTagArgs, WithTypename<DocumentTagResponse>>,
   deleteDocumentTemplate?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentTemplateArgs, WithTypename<DocumentTemplateResponse>>,
   deleteDocumentVersion?: GraphCacheOptimisticMutationResolver<MutationDeleteDocumentVersionArgs, WithTypename<DocumentVersionResponse>>,
-  deleteGrindBoard?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindBoardArgs, WithTypename<GrindBoardResponse>>,
-  deleteGrindErrand?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindErrandArgs, WithTypename<GrindErrandResponse>>,
-  deleteGrindLabel?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindLabelArgs, WithTypename<GrindLabelResponse>>,
-  deleteGrindMedia?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindMediaArgs, WithTypename<GrindMediaResponse>>,
-  deleteGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindMilestoneArgs, WithTypename<GrindMilestoneResponse>>,
-  deleteGrindPoster?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindPosterArgs, WithTypename<GrindPosterResponse>>,
-  deleteGrindScheme?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindSchemeArgs, WithTypename<GrindSchemeResponse>>,
-  deleteGrindStamp?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindStampArgs, WithTypename<GrindStampResponse>>,
+  deleteGrindBoard?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindBoardArgs, WithTypename<DeleteResponse>>,
+  deleteGrindErrand?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindErrandArgs, WithTypename<DeleteResponse>>,
+  deleteGrindLabel?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindLabelArgs, WithTypename<DeleteResponse>>,
+  deleteGrindMedia?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindMediaArgs, WithTypename<DeleteResponse>>,
+  deleteGrindMilestone?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindMilestoneArgs, WithTypename<DeleteResponse>>,
+  deleteGrindPoster?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindPosterArgs, WithTypename<DeleteResponse>>,
+  deleteGrindScheme?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindSchemeArgs, WithTypename<DeleteResponse>>,
+  deleteGrindStamp?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindStampArgs, WithTypename<DeleteResponse>>,
   deleteMessage?: GraphCacheOptimisticMutationResolver<MutationDeleteMessageArgs, WithTypename<DeleteResponse>>,
   deleteNotice?: GraphCacheOptimisticMutationResolver<MutationDeleteNoticeArgs, WithTypename<DeleteResponse>>,
   deleteReflexBrain?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexBrainArgs, WithTypename<DeletedItem>>,
@@ -14200,14 +14200,14 @@ export type GraphCacheUpdaters = {
     deleteDocumentTag?: GraphCacheUpdateResolver<{ deleteDocumentTag: WithTypename<DocumentTagResponse> }, MutationDeleteDocumentTagArgs>,
     deleteDocumentTemplate?: GraphCacheUpdateResolver<{ deleteDocumentTemplate: WithTypename<DocumentTemplateResponse> }, MutationDeleteDocumentTemplateArgs>,
     deleteDocumentVersion?: GraphCacheUpdateResolver<{ deleteDocumentVersion: WithTypename<DocumentVersionResponse> }, MutationDeleteDocumentVersionArgs>,
-    deleteGrindBoard?: GraphCacheUpdateResolver<{ deleteGrindBoard: WithTypename<GrindBoardResponse> }, MutationDeleteGrindBoardArgs>,
-    deleteGrindErrand?: GraphCacheUpdateResolver<{ deleteGrindErrand: WithTypename<GrindErrandResponse> }, MutationDeleteGrindErrandArgs>,
-    deleteGrindLabel?: GraphCacheUpdateResolver<{ deleteGrindLabel: WithTypename<GrindLabelResponse> }, MutationDeleteGrindLabelArgs>,
-    deleteGrindMedia?: GraphCacheUpdateResolver<{ deleteGrindMedia: WithTypename<GrindMediaResponse> }, MutationDeleteGrindMediaArgs>,
-    deleteGrindMilestone?: GraphCacheUpdateResolver<{ deleteGrindMilestone: WithTypename<GrindMilestoneResponse> }, MutationDeleteGrindMilestoneArgs>,
-    deleteGrindPoster?: GraphCacheUpdateResolver<{ deleteGrindPoster: WithTypename<GrindPosterResponse> }, MutationDeleteGrindPosterArgs>,
-    deleteGrindScheme?: GraphCacheUpdateResolver<{ deleteGrindScheme: WithTypename<GrindSchemeResponse> }, MutationDeleteGrindSchemeArgs>,
-    deleteGrindStamp?: GraphCacheUpdateResolver<{ deleteGrindStamp: WithTypename<GrindStampResponse> }, MutationDeleteGrindStampArgs>,
+    deleteGrindBoard?: GraphCacheUpdateResolver<{ deleteGrindBoard: WithTypename<DeleteResponse> }, MutationDeleteGrindBoardArgs>,
+    deleteGrindErrand?: GraphCacheUpdateResolver<{ deleteGrindErrand: WithTypename<DeleteResponse> }, MutationDeleteGrindErrandArgs>,
+    deleteGrindLabel?: GraphCacheUpdateResolver<{ deleteGrindLabel: WithTypename<DeleteResponse> }, MutationDeleteGrindLabelArgs>,
+    deleteGrindMedia?: GraphCacheUpdateResolver<{ deleteGrindMedia: WithTypename<DeleteResponse> }, MutationDeleteGrindMediaArgs>,
+    deleteGrindMilestone?: GraphCacheUpdateResolver<{ deleteGrindMilestone: WithTypename<DeleteResponse> }, MutationDeleteGrindMilestoneArgs>,
+    deleteGrindPoster?: GraphCacheUpdateResolver<{ deleteGrindPoster: WithTypename<DeleteResponse> }, MutationDeleteGrindPosterArgs>,
+    deleteGrindScheme?: GraphCacheUpdateResolver<{ deleteGrindScheme: WithTypename<DeleteResponse> }, MutationDeleteGrindSchemeArgs>,
+    deleteGrindStamp?: GraphCacheUpdateResolver<{ deleteGrindStamp: WithTypename<DeleteResponse> }, MutationDeleteGrindStampArgs>,
     deleteMessage?: GraphCacheUpdateResolver<{ deleteMessage: WithTypename<DeleteResponse> }, MutationDeleteMessageArgs>,
     deleteNotice?: GraphCacheUpdateResolver<{ deleteNotice: WithTypename<DeleteResponse> }, MutationDeleteNoticeArgs>,
     deleteReflexBrain?: GraphCacheUpdateResolver<{ deleteReflexBrain: WithTypename<DeletedItem> }, MutationDeleteReflexBrainArgs>,

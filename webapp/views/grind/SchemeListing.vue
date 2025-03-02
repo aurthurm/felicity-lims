@@ -69,7 +69,6 @@ function fetchSchemes(params: any) {
       schemes.value = result?.items;
       schemesCount.value = result?.totalCount || 0;
       schemesPageInfo.value = result?.pageInfo;
-      console.log(schemes.value)
     }
   }).finally(() => {
     fetchingSchemes.value = false;
@@ -138,7 +137,6 @@ function openCreateForm() {
 }
 
 function openEditForm(scheme: IGrindScheme) {
-  console.log(scheme)
   formAction.value = false;
   showModal.value = true;
   formTitle.value = 'Edit Scheme';

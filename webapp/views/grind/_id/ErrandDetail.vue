@@ -34,7 +34,6 @@ import { IUser } from '@/models/auth'
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries'
 
 const ErrandActivity = defineAsyncComponent(() => import("./ErrandActivity.vue"))
-// const ErrandDiscussion = defineAsyncComponent(() => import("./ErrandDiscussion.vue"))
 const ErrandDiscussion = defineAsyncComponent(() => import("@/components/grind/CommentSystem.vue"))
 const ErrandFile = defineAsyncComponent(() => import("./ErrandFile.vue"))
 const ErrandMilestone = defineAsyncComponent(() => import("./ErrandMilestone.vue"))

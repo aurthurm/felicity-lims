@@ -37,7 +37,6 @@ export const useUserStore = defineStore('user', {
     },
     actions: {
         async fetchUsers(params) {
-            console.log("Fetch user")
             this.fetchingUsers = true;
             await withClientQuery<UserAllQuery,UserAllQueryVariables>(UserAllDocument, params, 'userAll')
                 .then((resp) => {
@@ -48,7 +47,6 @@ export const useUserStore = defineStore('user', {
                 })
                 .catch(err => {
                     this.fetchingUsers = false
-                    console.log("Fetch user error: ",err)
                 });
         },
         addUser(payload: IUser): void {

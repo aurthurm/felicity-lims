@@ -46,7 +46,6 @@ const hideTab = (tab) => {
 
 // Define emits at the component level
 const handleTabChange = (tabId: string) => {
-  console.log(`Tab changed to: ${tabId}`);
 };
 </script>
 

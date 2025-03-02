@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useApiUtil from '@/composables/api_util';
-import { AddGrindMediaMutation, AddGrindMediaMutationVariables, AddGrindMediaDocument } from '@/graphql/operations/grind.mutations';
+import { AddGrindMediaMutation, AddGrindMediaMutationVariables, AddGrindMediaDocument, DeleteGrindMediaDocument, DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindMediaQuery, GetGrindMediaQueryVariables, GetGrindMediaDocument } from '@/graphql/operations/grind.queries';
 import { IGrindMedia } from '@/models/grind';
 import { ref, computed, onMounted } from 'vue';
@@ -53,19 +53,17 @@ const uploadFile = (payload: any) => {
 const deleteFile = (uid: string) => {
     isDeleting.value = uid;
     deleteError.value = null;
-    // withClientMutation<DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables>(
-    //     DeleteGrindMediaDocument, {uid}, "deleteGrindMedia"
-    // ).then((res) => {
-    //     if(res && res.success) {
-    //         errandFiles.value = errandFiles.value.filter(file => file.uid !== uid);
-    //     } else {
-    //         deleteError.value = "Failed to delete file";
-    //     }
-    // }).catch((err) => {
-    //     deleteError.value = err?.message || "Failed to delete file";
-    // }).finally(() => {
-    //     isDeleting.value = null;
-    // });
+    withClientMutation<DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables>(
+        DeleteGrindMediaDocument, {uid}, "deleteGrindMedia"
+    ).then((res) => {
+        if(res) {
+            errandFiles.value = errandFiles.value.filter(file => file.uid !== uid);
+        }
+    }).catch((err) => {
+        deleteError.value = err?.message || "Failed to delete file";
+    }).finally(() => {
+        isDeleting.value = null;
+    });
 };
 
 // Format file size

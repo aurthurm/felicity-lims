@@ -82,7 +82,6 @@ function receiveStockProduct(payload: IStockReceive) {
    delete receivable["stockItemVariant"];
   withClientMutation<ReceiveStockProductMutation, ReceiveStockProductMutationVariables>(ReceiveStockProductDocument, { payload: receivable },  "createStockReceipt").then((result) => {
     // inventoryStore.addStockProduct(result);
-    console.log(result)
   }).finally(() => {
     addingProduct.value = false;
     emit("close")

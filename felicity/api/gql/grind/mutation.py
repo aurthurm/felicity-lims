@@ -9,7 +9,7 @@ import strawberry
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.grind import inputs, responses, types
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import OperationError
+from felicity.api.gql.types import OperationError, DeletedItem, DeleteResponse
 from felicity.apps.grind import schema
 from felicity.apps.grind.enum import OccurrenceTarget
 from felicity.apps.grind.services import (
@@ -23,7 +23,10 @@ from felicity.apps.grind.services import (
     GrindOccurrenceService,
     GrindStampService, GrindErrandDiscussionService,
 )
-from felicity.utils.dirs import resolve_media_dirs_for
+from felicity.apps.iol.minio import MinioClient
+from felicity.apps.iol.minio.enum import MinioBucket
+from felicity.core.config import settings
+from felicity.utils.dirs import resolve_media_dirs_for, delete_file
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -105,7 +108,7 @@ class GrindMutations:
         return types.GrindSchemeType(**scheme.marshal_simple(exclude=["members", "boards"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_scheme(self, info, uid: str) -> responses.GrindSchemeResponse:
+    async def delete_grind_scheme(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         scheme = await GrindSchemeService().get(uid=uid)
@@ -120,7 +123,7 @@ class GrindMutations:
             )
 
         await GrindSchemeService().delete(uid)
-        return types.GrindSchemeType(**scheme.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Board Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -196,7 +199,7 @@ class GrindMutations:
         return types.GrindBoardType(**board.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_board(self, info, uid: str) -> responses.GrindBoardResponse:
+    async def delete_grind_board(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         board = await GrindBoardService().get(uid=uid)
@@ -211,7 +214,7 @@ class GrindMutations:
             )
 
         await GrindBoardService().delete(uid)
-        return types.GrindBoardType(**board.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Poster Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -307,7 +310,7 @@ class GrindMutations:
         return types.GrindPosterType(**poster.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_poster(self, info, uid: str) -> responses.GrindPosterResponse:
+    async def delete_grind_poster(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         poster = await GrindPosterService().get(uid=uid)
@@ -322,7 +325,7 @@ class GrindMutations:
             )
 
         await GrindPosterService().delete(uid)
-        return types.GrindPosterType(**poster.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Errand Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -452,7 +455,7 @@ class GrindMutations:
         ))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_errand(self, info, uid: str) -> responses.GrindErrandResponse:
+    async def delete_grind_errand(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         errand = await GrindErrandService().get(uid=uid)
@@ -470,7 +473,7 @@ class GrindMutations:
             await GrindOccurrenceService().delete(occurrence.uid)
 
         await GrindErrandService().delete(uid)
-        return types.GrindErrandType(**errand.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Label Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -530,7 +533,7 @@ class GrindMutations:
         return types.GrindLabelType(**label.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_label(self, info, uid: str) -> responses.GrindLabelResponse:
+    async def delete_grind_label(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         label = await GrindLabelService().get(uid=uid)
@@ -545,7 +548,7 @@ class GrindMutations:
             )
 
         await GrindLabelService().delete(uid)
-        return types.GrindLabelType(**label.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Media Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -554,54 +557,107 @@ class GrindMutations:
     ) -> responses.GrindMediaResponse:
         felicity_user = await auth_from_info(info)
 
-        destination = resolve_media_dirs_for(payload.target.value)
-
         file = payload.file
-        # Generate a unique filename to avoid collisions
         filename = f"{uuid.uuid4()}_{file.filename}"
-        path = os.path.join(destination, filename)
-
-        with open(path, 'wb') as dest_file:
-            await file.seek(0)
-            shutil.copyfileobj(io.BytesIO(await file.read()), dest_file)
-
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
             "filename": filename,
-            "path": path,
-            "destination": destination,
             "mimetype": file.content_type,
             "original_name": file.filename,
-            "size": str(os.path.getsize(path)),
-            'encoding': file.headers.get("Content-Encoding", "")
+            "encoding": file.headers.get("Content-Encoding", ""),
+            "target": payload.target.value,
         }
-
-        # Map target_uid from input
-        if payload.target_uid:
-            incoming["target_uid"] = payload.target_uid
 
         # Process fields from the input
         for k, v in payload.__dict__.items():
-            if k not in ["file", "target_uid"]:  # Skip file and already handled fields
+            if k not in ["file", "target"]:  # Skip file and already handled fields
                 incoming[k] = v
+
+        await file.seek(0)
+        if not settings.OBJECT_STORAGE:
+            destination = resolve_media_dirs_for(payload.target.value)
+            path = os.path.join(destination, filename)
+
+            with open(path, 'wb') as dest_file:
+                shutil.copyfileobj(io.BytesIO(await file.read()), dest_file)  # type: ignore
+
+            incoming: dict = {
+                **incoming,
+                "path": path,
+                "destination": destination,
+                "size": str(os.path.getsize(path)),
+            }
+        else:
+            incoming: dict = {
+                **incoming,
+                "destination": "minio",
+                "size": file.size,
+            }
 
         # Create the media
         obj_in = schema.GrindMediaCreate(**incoming)
         media = await GrindMediaService().create(obj_in)
 
+        # save file to minio
+        if settings.OBJECT_STORAGE:
+            # Use the media's uid in the object name for easier retrieval and deletion
+            object_name = f"{media.uid}/{media.original_name}"
+
+            # Update the media record with the MinIO object path
+            await GrindMediaService().update(
+                uid=media.uid,
+                update={"path": object_name}
+            )
+
+            # Store file in MinIO
+            MinioClient().put_object(
+                bucket=MinioBucket.GRIND_MEDIA,
+                object_name=object_name,
+                data=file,
+                content_type=media.mimetype,  # Add content type
+                metadata={
+                    "mimetype": media.mimetype,
+                    "original_name": media.original_name,
+                    "media_uid": media.uid,
+                    "target": payload.target.value,
+                    "target_uid": payload.target_uid,
+                },
+            )
+
+            # Refresh the media object after update
+            media = await GrindMediaService().get(uid=media.uid)
+
         return types.GrindMediaType(**media.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_media(self, info, uid: str) -> responses.GrindMediaResponse:
+    async def delete_grind_media(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         media = await GrindMediaService().get(uid=uid)
         if not media:
             return OperationError(error=f"Media with uid {uid} not found.")
 
+        try:
+            # Determine storage type and delete accordingly
+            if getattr(media, "destination", "local") == "minio" or settings.OBJECT_STORAGE:
+                # Delete from MinIO
+                object_name = media.path
+                bucket = MinioBucket.GRIND_MEDIA
+
+                try:
+                    MinioClient().remove_object(bucket=bucket, object_name=object_name)
+                except Exception as e:
+                    logging.error(f"Failed to delete object from MinIO: {str(e)}")
+                    # Continue with deletion even if MinIO fails
+            else:
+                # Delete from local filesystem
+                delete_file(media.path)
+        except OSError as e:
+            return OperationError(error=f"Failed to delete associated file to media {uid}.")
+
         await GrindMediaService().delete(uid)
-        return types.GrindMediaType(**media.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Milestone Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -700,7 +756,7 @@ class GrindMutations:
         return types.GrindMilestoneType(**milestone.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_milestone(self, info, uid: str) -> responses.GrindMilestoneResponse:
+    async def delete_grind_milestone(self, info, uid: str) -> DeleteResponse:
         felicity_user = await auth_from_info(info)
 
         milestone = await GrindMilestoneService().get(uid=uid)
@@ -725,7 +781,7 @@ class GrindMutations:
             await GrindOccurrenceService().create(occurrence_in)
 
         await GrindMilestoneService().delete(uid)
-        return types.GrindMilestoneType(**milestone.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Stamp Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -785,7 +841,7 @@ class GrindMutations:
         return types.GrindStampType(**stamp.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_grind_stamp(self, info, uid: str) -> responses.GrindStampResponse:
+    async def delete_grind_stamp(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 
         stamp = await GrindStampService().get(uid=uid)
@@ -802,7 +858,7 @@ class GrindMutations:
             )
 
         await GrindStampService().delete(uid)
-        return types.GrindStampType(**stamp.marshal_simple())
+        return DeletedItem(uid=uid)
 
     # Stamp Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])

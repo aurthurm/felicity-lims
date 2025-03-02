@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-
 const props = defineProps(["errandUid"]);
-
-onMounted(() => {
-    console.log('ErrandMilestone.vue');
-});
 </script>
 
 <template>

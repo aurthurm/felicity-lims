@@ -168,11 +168,11 @@ const submitResults = () =>
     laboratoryInstrumentUid: "felicity_ast" 
   }
   ], "sample", sample?.uid!)
-    .then(console.log);
+    .then(() => {});
 
 const approveResults = () =>
   approver_([analysisResult.value.uid!], "sample", sample?.uid!)
-    .then(console.log);
+    .then(() => {});
 </script>
 
 <template>

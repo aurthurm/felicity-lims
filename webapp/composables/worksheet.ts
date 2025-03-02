@@ -43,7 +43,6 @@ export default function useWorkSheetComposable() {
                 if (result.isConfirmed) {
                     await withClientMutation<ActionAssignWorsheetMutation, ActionAssignWorsheetMutationVariables>(ActionAssignWorsheetDocument, {uids, action}, 'actionWorksheets')
                     .then(payload => {
-                        console.log(payload);
                         // location.reload();
                     });
                 }

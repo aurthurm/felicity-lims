@@ -25,7 +25,6 @@ const increment = (add: boolean = true) => {
 
 const originalData = ref<string[]>([])
 onMounted(async () => {
-    console.log(sampleUids)
     originalData.value = await barcodeSamples(sampleUids)
 })
 const barcodes = computed(() => {

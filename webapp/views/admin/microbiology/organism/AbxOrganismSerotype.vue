@@ -179,7 +179,6 @@ function organismSearch(searchQuery, id) {
         abxOrganisms.value = (result?.items  ?? [])
       }
   });
-  console.log(searchQuery, id)
 }
 
 onMounted(() =>  {

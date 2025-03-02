@@ -16,7 +16,6 @@ onMounted(() => {
 const notices = computed(() => noticeStore.getActiveNotices)
 
 const handleNoticeSelect = (notice) => {
-  console.log('Selected notice:', notice)
 }
 </script>
 

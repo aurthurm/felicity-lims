@@ -21,7 +21,6 @@ const route = useRoute();
 
 const clientStore = useClientStore()
 onMounted(() => {
-  console.log("route.query.clientUid!", route.query.clientUid!)
   clientStore.fetchClientByUid(route.query.clientUid!)
   locationStore.fetchCountries();
 })

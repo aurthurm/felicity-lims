@@ -18,7 +18,6 @@ const StockItemDetail = defineComponent({
     },
     setup(props, ctx) {
         const { stockItem } = toRefs(props);
-        console.log(stockItem.value)
         const inventoryStore = useInventoryStore();
         const { withClientMutation } = useApiUtil();
 
