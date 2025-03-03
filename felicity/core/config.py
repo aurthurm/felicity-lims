@@ -123,8 +123,12 @@ class Settings(BaseSettings):
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", None)  # xxx:4317
+    SENTRY_DSN: str | None = getenv_value("SENTRY_DSN", None)
     RUN_OPEN_TRACING: bool = bool(OTLP_SPAN_EXPORT_URL)
     REDIS_SERVER: str | None = getenv_value("REDIS_SERVER", None)
+    RATE_LIMIT: bool = getenv_boolean("RATE_LIMIT", True)
+    RATE_LIMIT_PER_MINUTE: int = getenv_value("RATE_LIMIT_PER_MINUTE", 100)
+    RATE_LIMIT_PER_HOUR: int = getenv_value("RATE_LIMIT_PER_HOUR", 2000)
     MONGODB_SERVER: str | None = getenv_value("MONGODB_SERVER", None)
     MONGODB_USER: str = getenv_value("MONGODB_USER", "felicity")
     MONGODB_PASS: str = getenv_value("MONGODB_PASS", "felicity")

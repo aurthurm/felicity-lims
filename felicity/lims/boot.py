@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator
 
+import sentry_sdk
 from fastapi import FastAPI, Request
+from limits.aio.storage import MemoryStorage
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -9,6 +11,9 @@ from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
@@ -19,17 +24,23 @@ from felicity.api.gql.schema import schema
 from felicity.api.rest.api_v1 import api
 from felicity.apps.common.channel import broadcast
 from felicity.apps.events import observe_events
+from felicity.apps.iol.redis import create_redis_pool
 from felicity.apps.job.sched import felicity_workforce_init
-from felicity.core import get_settings
+from felicity.core.config import settings
 from felicity.database.session import async_engine
+from felicity.lims.middleware.appactivity import APIActivityLogMiddleware
+from felicity.lims.middleware.ratelimit import RateLimitMiddleware
 from felicity.lims.seeds import initialize_felicity
 from felicity.views import setup_webapp
 
-settings = get_settings()
+redis_pool = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
+    global redis_pool
+    if settings.REDIS_SERVER:
+        redis_pool = await create_redis_pool()
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
     felicity_workforce_init()
@@ -39,9 +50,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     yield
     #
     await broadcast.disconnect()
+    if redis_pool:
+        redis_pool.close()
+        await redis_pool.wait_closed()
 
 
-def register_cors(app: FastAPI) -> None:
+def register_middlewares(app: FastAPI) -> None:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.CORS_ORIGINS,
@@ -49,6 +63,29 @@ def register_cors(app: FastAPI) -> None:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(APIActivityLogMiddleware)
+    if redis_pool and settings.RATE_LIMIT:
+        print(f"Connected to Redis at {settings.REDIS_SERVER}")
+        # Register the rate limit middleware with the app
+        app.add_middleware(
+            RateLimitMiddleware,
+            redis_pool=redis_pool,
+            minute_limit=settings.RATE_LIMIT_PER_MINUTE,
+            hour_limit=settings.RATE_LIMIT_PER_HOUR,
+            exclude_paths=["/docs", "/redoc", "/openapi.json"]
+        )
+
+
+async def register_rate_limit(app: FastAPI) -> None:
+    # Configure rate limiter
+    if settings.settings.RATE_LIMIT:
+        limiter = Limiter(
+            key_func=get_remote_address,
+            storage=MemoryStorage(),
+            default_limits=[f"{settings.RATE_LIMIT_PER_MINUTE}/minute", f"{settings.RATE_LIMIT_PER_HOUR}/hour"]
+        )
+        app.state.limiter = limiter
+        app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 def register_routes(app: FastAPI) -> None:
@@ -72,6 +109,23 @@ def register_graphql(app: FastAPI) -> None:
     )
     app.include_router(graphql_app, prefix="/felicity-gql")
     # app.add_websocket_route("/felicity-gql", graphql_app)
+
+
+def init_sentry(app: FastAPI):
+    if bool(settings.SENTRY_DSN):
+        sentry_sdk.init(
+            dsn=settings.SENTRY_DSN,
+            # Add data like request headers and IP for users, if applicable;
+            # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+            send_default_pii=True,
+            # Set traces_sample_rate to 1.0 to capture 100%
+            # of transactions for tracing.
+            traces_sample_rate=1.0,
+            # Set profiles_sample_rate to 1.0 to profile 100%
+            # of sampled transactions.
+            # We recommend adjusting this value in production.
+            profiles_sample_rate=1.0,
+        )
 
 
 def register_tracer(app: FastAPI) -> None:
@@ -100,8 +154,10 @@ def register_tracer(app: FastAPI) -> None:
 def factory(config: dict) -> FastAPI:
     config["lifespan"] = lifespan
     app = FastAPI(**config)
-    register_cors(app)
+    register_rate_limit(app)
+    register_middlewares(app)
     register_routes(app)
     register_graphql(app)
+    init_sentry(app)
     register_tracer(app)
     return app

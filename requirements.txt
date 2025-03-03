@@ -45,5 +45,7 @@ redis[hiredis]==5.0.8
 asyncio_redis==0.16.0
 typer==0.12.3
 asyncer==0.0.8
- GitPython==3.1.43
- docker==7.1.0
+GitPython==3.1.43
+docker==7.1.0
+sentry-sdk[fastapi]==2.22.0
+ slowapi==0.1.9

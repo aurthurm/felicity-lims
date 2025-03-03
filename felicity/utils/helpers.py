@@ -1,4 +1,5 @@
 from typing import Any, Union
+from urllib.parse import urlsplit
 
 
 def get_passed_args(inspection: Any) -> dict:
@@ -146,3 +147,27 @@ def remove_circular_refs(ob: dict, _seen: set = None) -> dict:
 
     _seen.remove(id(ob))
     return res
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip
+
+
+def base_host(request, is_admin=False, is_space=False, is_app=False):
+    """Utility function to return host / origin from the request"""
+    # Calculate the base origin from request
+    base_origin = str(
+        request.META.get("HTTP_ORIGIN")
+        or f"{urlsplit(request.META.get('HTTP_REFERER')).scheme}://{urlsplit(request.META.get('HTTP_REFERER')).netloc}"
+        or f"""{"https" if request.is_secure() else "http"}://{request.get_host()}"""
+    )
+    return base_origin
+
+
+def user_ip(request):
+    return str(request.META.get("REMOTE_ADDR"))
