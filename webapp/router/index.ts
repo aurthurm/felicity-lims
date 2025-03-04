@@ -10,6 +10,7 @@ import shipmentRoutes from './referral';
 import schemeRoutes from './scheme';
 import { isTokenValid } from './checks';
 import { useAuthStore } from '@/stores/auth';
+import documentRoutes from './document';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -137,6 +138,15 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/documents',
+        name: guards.pages.DOCUMENT,
+        component: () => import('@/views/document/Documents.vue'),
+        children: documentRoutes,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         name: guards.pages.ADMINISTRATION,
         path: '/admin',
         component: () => import('@/views/admin/Admin.vue'),
@@ -251,6 +261,9 @@ function hasAccess(page: any) {
 
         case guards.pages.SCHEMES:
             return guards.canAccessPage(guards.pages.SCHEMES);
+
+        case guards.pages.DOCUMENT:
+            return true;
 
         case guards.pages.BIO_BANKING:
             return guards.canAccessPage(guards.pages.BIO_BANKING);

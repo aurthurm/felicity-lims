@@ -70,9 +70,21 @@
 @layer components {
     /* Your custom component classes go here */
     .btn-primary {
-      @apply px-4 py-2 text-sm border border-sky-800 text-dark-800 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150;
+      @apply px-4 py-2 text-sm border border-sky-800 text-gray-800 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150;
     }
     /* More component classes... */
+
+    .btn {
+      @apply px-4 py-2 rounded-md font-medium transition-colors;
+    }
+    
+    .btn-secondary {
+      @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+    }
+    
+    .card {
+      @apply bg-white rounded-lg shadow-md p-4;
+    }
 }
 
 

@@ -1,0 +1,9 @@
+query GetDocumentFolderAll{
+    documentFolderAll {
+        items {
+            uid
+            name
+            parentUid
+        }
+    }
+}

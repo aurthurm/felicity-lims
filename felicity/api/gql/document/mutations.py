@@ -172,10 +172,10 @@ class DocumentMutations:
         felicity_user = await auth_from_info(info)
 
         # Check if parent folder exists if provided
-        if payload.parent:
-            parent_folder = await DocumentFolderService().get(uid=payload.parent)
+        if payload.parent_uid:
+            parent_folder = await DocumentFolderService().get(uid=payload.parent_uid)
             if not parent_folder:
-                return OperationError(error=f"Parent folder with uid {payload.parent} not found.")
+                return OperationError(error=f"Parent folder with uid {payload.parent_uid} not found.")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -183,8 +183,8 @@ class DocumentMutations:
         }
 
         # Map parent to parent_uid
-        if payload.parent:
-            incoming["parent_uid"] = payload.parent
+        if payload.parent_uid:
+            incoming["parent_uid"] = payload.parent_uid
 
         for k, v in payload.__dict__.items():
             if k != "parent":  # Skip parent as we've handled it
@@ -210,19 +210,19 @@ class DocumentMutations:
             )
 
         # Check if parent folder exists if provided
-        if payload.parent:
-            parent_folder = await DocumentFolderService().get(uid=payload.parent)
+        if payload.parent_uid:
+            parent_folder = await DocumentFolderService().get(uid=payload.parent_uid)
             if not parent_folder:
-                return OperationError(error=f"Parent folder with uid {payload.parent} not found.")
+                return OperationError(error=f"Parent folder with uid {payload.parent_uid} not found.")
             # Prevent creating circular references
-            if payload.parent == uid:
+            if payload.parent_uid == uid:
                 return OperationError(error="Folder cannot be its own parent.")
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
         # Map parent to parent_uid
-        if payload.parent is not None:
-            update_data["parent_uid"] = payload.parent
+        if payload.parent_uid is not None:
+            update_data["parent_uid"] = payload.parent_uid
 
         for field in folder.to_dict():
             if field in payload.__dict__ and field != "parent":

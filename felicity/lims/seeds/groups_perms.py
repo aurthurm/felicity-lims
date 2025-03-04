@@ -31,6 +31,7 @@ class FObject:
     NOTICE = "NOTICE"
     BILLING = "BILLING"
     SCHEMES = "SCHEMES"
+    DOCUMENT = "DOCUMENT"
 
 
 class FAction:
@@ -86,6 +87,13 @@ permissions = {
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
         ],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ]
     },
     fa.READ: {
         fo.ANALYTICS: [
@@ -158,6 +166,13 @@ permissions = {
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
         ],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ]
     },
     fa.UPDATE: {
         fo.CLIENT: [fg.ADMINISTRATOR],
@@ -187,16 +202,37 @@ permissions = {
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
         ],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ]
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ]
     },
     fa.VERIFY: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ]
     },
     fa.CANCEL: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
@@ -211,6 +247,13 @@ permissions = {
     fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST]},
     fa.ISSUE: {
         fo.PRODUCT: [fg.STORES],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ]
     },
     fa.ORDER: {
         fo.PRODUCT: [

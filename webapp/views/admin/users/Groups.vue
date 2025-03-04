@@ -30,6 +30,7 @@
     shield.pages.INVENTORY,
     shield.pages.REFERRAL,
     shield.pages.SCHEMES,
+    shield.pages.DOCUMENT,
   ]
 
   let userStore = useUserStore()

@@ -126,8 +126,15 @@ function toggleNavText(): void {
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">
           <span class="mr-4"><font-awesome-icon icon="project-diagram" /></span>
           <span
-            :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">Inventory</span>
+            :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">Projects</span>
           <span v-show="!viewNavText" class="tooltip">Projects</span>
+        </router-link>
+        <router-link v-show="guards.canAccessPage(guards.pages.DOCUMENT)" to="/documents" id="documents-link"
+          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">
+          <span class="mr-4"><font-awesome-icon icon="file" /></span>
+          <span
+            :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">Documents</span>
+          <span v-show="!viewNavText" class="tooltip">Documents</span>
         </router-link>
       </nav>
     </div>

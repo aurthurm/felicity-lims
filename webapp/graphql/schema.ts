@@ -2211,7 +2211,7 @@ export type DocumentFolderInputType = {
   /** Folder name */
   name: Scalars['String']['input'];
   /** Parent folder UID */
-  parent?: InputMaybe<Scalars['String']['input']>;
+  parentUid?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Response for document folder operations */
@@ -2240,7 +2240,7 @@ export type DocumentFolderUpdateInputType = {
   /** Folder name */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Parent folder UID */
-  parent?: InputMaybe<Scalars['String']['input']>;
+  parentUid?: InputMaybe<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
 };
 

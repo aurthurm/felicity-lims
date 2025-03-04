@@ -1,0 +1,14 @@
+mutation AddDocumentFolder($payload: DocumentFolderInputType!){
+    createDocumentFolder(payload: $payload){
+        ...on DocumentFolderType {
+            uid
+            name
+            parentUid
+        }
+
+        ...on OperationError {
+            error
+            suggestion
+        }
+    }
+}

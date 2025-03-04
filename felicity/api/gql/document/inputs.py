@@ -33,7 +33,7 @@ class DocumentTagUpdateInputType(DocumentTagInputType):
 class DocumentFolderInputType:
     name: str = strawberry.field(description="Folder name")
     description: Optional[str] = strawberry.field(description="Folder description", default=None)
-    parent: Optional[str] = strawberry.field(description="Parent folder UID", default=None)
+    parent_uid: Optional[str] = strawberry.field(description="Parent folder UID", default=None)
 
 
 @strawberry.input
