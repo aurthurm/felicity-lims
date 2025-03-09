@@ -1,3 +1,105 @@
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import { ChevronDown, Check } from 'lucide-vue-next'
+import { useDocumentStore, createDocument } from '@/stores/documentStore'
+import useApiUtil from '@/composables/api_util';
+import { AddDocumentDocument, AddDocumentMutation, AddDocumentMutationVariables } from '@/graphql/operations/document.mutations';
+
+
+const {withClientMutation} = useApiUtil()
+
+const props = defineProps<{
+  isOpen: boolean
+  initialFolderId?: string | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:isOpen', value: boolean): void
+}>()
+
+const store = useDocumentStore()
+const name = ref('')
+const folderUid = ref('')
+const documentId = ref('')
+const isFolderSelectOpen = ref(false)
+const folderSearchQuery = ref('')
+
+
+// Initialize folderUid from prop if available
+watch(() => props.initialFolderId, (newValue) => {
+  if (newValue) {
+    folderUid.value = newValue
+  }
+}, { immediate: true })
+
+const filteredFolders = computed(() => {
+  if (!folderSearchQuery.value) {
+    return store.folders
+  }
+  
+  const query = folderSearchQuery.value.toLowerCase()
+  return store.folders.filter(folder => 
+    folder.name.toLowerCase().includes(query)
+  )
+})
+
+const selectedFolderName = computed(() => {
+  const folder = store.folders.find(f => f.uid === folderUid.value)
+  return folder ? folder.name : 'Select folder'
+})
+
+const isFormValid = computed(() => {
+  return name.value.trim() !== '' && folderUid.value !== ''
+})
+
+function selectFolder(uid: string) {
+  folderUid.value = uid
+  isFolderSelectOpen.value = false
+}
+
+function handleCreateDocument() {
+  if (isFormValid.value) {
+    withClientMutation<AddDocumentMutation, AddDocumentMutationVariables>(
+      AddDocumentDocument, 
+      {payload: {name: name.value, folderUid: folderUid.value, documentId: documentId.value}},
+      "createDocument"
+    ).then((newDocument: any) => {
+      store.addDocument(newDocument)
+    })
+    // Reset form and close dialog
+    resetForm()
+    closeDialog()
+  }
+}
+
+function closeDialog() {
+  resetForm()
+  emit('update:isOpen', false)
+}
+
+function resetForm() {
+  name.value = ''
+  // Keep the folder selected for convenience
+  isFolderSelectOpen.value = false
+  folderSearchQuery.value = ''
+}
+
+// Close folder select when clicking outside
+const vClickOutside = {
+  mounted(el: any, binding: any) {
+    el._clickOutside = (event: Event) => {
+      if (!(el === event.target || el.contains(event.target as Node))) {
+        binding.value(event)
+      }
+    }
+    document.addEventListener('click', el._clickOutside)
+  },
+  unmounted(el: any) {
+    document.removeEventListener('click', el._clickOutside)
+  }
+}
+</script>
+
 <template>
   <teleport to="body">
     <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
@@ -15,6 +117,16 @@
             />
           </div>
           
+          <div>
+            <label for="name" class="block text-sm font-medium mb-1">Document ID</label>
+            <input
+              id="docu"
+              v-model="documentId"
+              class="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="Enter document id"
+            />
+          </div>
+
           <div>
             <label for="folder" class="block text-sm font-medium mb-1">Folder X</label>
             <div class="relative">
@@ -70,97 +182,3 @@
     </div>
   </teleport>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { ChevronDown, Check } from 'lucide-vue-next'
-import { useDocumentStore, createDocument } from '@/stores/documentStore'
-
-const props = defineProps<{
-  isOpen: boolean
-  initialFolderId?: string | null
-}>()
-
-const emit = defineEmits<{
-  (e: 'update:isOpen', value: boolean): void
-}>()
-
-const store = useDocumentStore()
-const name = ref('')
-const folderUid = ref('')
-const isFolderSelectOpen = ref(false)
-const folderSearchQuery = ref('')
-
-// Initialize folderUid from prop if available
-watch(() => props.initialFolderId, (newValue) => {
-  if (newValue) {
-    folderUid.value = newValue
-  }
-}, { immediate: true })
-
-const filteredFolders = computed(() => {
-  if (!folderSearchQuery.value) {
-    return store.folders
-  }
-  
-  const query = folderSearchQuery.value.toLowerCase()
-  return store.folders.filter(folder => 
-    folder.name.toLowerCase().includes(query)
-  )
-})
-
-const selectedFolderName = computed(() => {
-  const folder = store.folders.find(f => f.uid === folderUid.value)
-  return folder ? folder.name : 'Select folder'
-})
-
-const isFormValid = computed(() => {
-  return name.value.trim() !== '' && folderUid.value !== ''
-})
-
-function selectFolder(uid: string) {
-  folderUid.value = uid
-  isFolderSelectOpen.value = false
-}
-
-function handleCreateDocument() {
-  if (isFormValid.value) {
-    const newDocument = createDocument(
-      name.value, 
-      folderUid.value
-    )
-    store.addDocument(newDocument)
-    
-    // Reset form and close dialog
-    resetForm()
-    closeDialog()
-  }
-}
-
-function closeDialog() {
-  resetForm()
-  emit('update:isOpen', false)
-}
-
-function resetForm() {
-  name.value = ''
-  // Keep the folder selected for convenience
-  isFolderSelectOpen.value = false
-  folderSearchQuery.value = ''
-}
-
-// Close folder select when clicking outside
-const vClickOutside = {
-  mounted(el: HTMLElement, binding: any) {
-    el._clickOutside = (event: Event) => {
-      if (!(el === event.target || el.contains(event.target as Node))) {
-        binding.value(event)
-      }
-    }
-    document.addEventListener('click', el._clickOutside)
-  },
-  unmounted(el: HTMLElement) {
-    document.removeEventListener('click', el._clickOutside)
-  }
-}
-</script>

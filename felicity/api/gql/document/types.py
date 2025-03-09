@@ -150,6 +150,8 @@ class DocumentVersionType:
     document: Optional["DocumentType"] = None
     version_number: str
     content: str
+    editor: str
+    thumbnail: str | None = None
     change_summary: str | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
@@ -680,6 +682,11 @@ class DocumentType:
     async def content(self, info) -> Optional[str]:
         latest_version = await self.latest_version(info)
         return latest_version.content if latest_version else None
+
+    @strawberry.field
+    async def editor(self, info) -> Optional[str]:
+        latest_version = await self.latest_version(info)
+        return latest_version.editor if latest_version else "unknown-editor"
 
     @strawberry.field
     async def status(self, info) -> Optional[str]:

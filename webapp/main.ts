@@ -79,6 +79,7 @@ import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
 import LayoutMobile from '@/views/layouts/LayoutMobile.vue';
 import PageHeading from '@/components/common/FelPageHeading.vue';
 import FelModal from "@/components/ui/FelModal.vue";
+import { registerLicense } from '@syncfusion/ej2-base';
 
 import 'vue-multiselect/dist/vue-multiselect.css';
 import 'floating-vue/dist/style.css';
@@ -111,6 +112,7 @@ pinia.use(({store}) => {
     store.router = markRaw(router);
 });
 
+registerLicense("ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU");
 const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.component('VueDatePicker', VueDatePicker);

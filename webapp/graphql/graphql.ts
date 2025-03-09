@@ -2248,15 +2248,13 @@ export type DocumentInputType = {
   /** Author UIDs */
   authors?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Category UID */
-  category?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
   /** Department UID */
-  department?: InputMaybe<Scalars['String']['input']>;
+  departmentUid?: InputMaybe<Scalars['String']['input']>;
   /** Document ID */
   documentId: Scalars['String']['input'];
   /** Folder UID */
-  folder?: InputMaybe<Scalars['String']['input']>;
-  /** Initial document content */
-  initialContent?: InputMaybe<Scalars['String']['input']>;
+  folderUid?: InputMaybe<Scalars['String']['input']>;
   /** Initial version number */
   initialVersion?: InputMaybe<Scalars['String']['input']>;
   /** Document name */
@@ -2268,7 +2266,7 @@ export type DocumentInputType = {
   /** Tag UIDs */
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Template UID */
-  template?: InputMaybe<Scalars['String']['input']>;
+  templateUid?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentRelationInputType = {
@@ -2621,6 +2619,7 @@ export type DocumentType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   documentId: Scalars['String']['output'];
+  editor?: Maybe<Scalars['String']['output']>;
   folder?: Maybe<DocumentFolderType>;
   folderUid?: Maybe<Scalars['String']['output']>;
   lastAccessed?: Maybe<Scalars['String']['output']>;
@@ -2650,13 +2649,13 @@ export type DocumentUpdateInputType = {
   /** Author UIDs */
   authors?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Category UID */
-  category?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
   /** Department UID */
-  department?: InputMaybe<Scalars['String']['input']>;
+  departmentUid?: InputMaybe<Scalars['String']['input']>;
   /** Document ID */
   documentId?: InputMaybe<Scalars['String']['input']>;
   /** Folder UID */
-  folder?: InputMaybe<Scalars['String']['input']>;
+  folderUid?: InputMaybe<Scalars['String']['input']>;
   /** Document name */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Reader UIDs */
@@ -2665,8 +2664,6 @@ export type DocumentUpdateInputType = {
   subtitle?: InputMaybe<Scalars['String']['input']>;
   /** Tag UIDs */
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** Template UID */
-  template?: InputMaybe<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
 };
 
@@ -2707,6 +2704,8 @@ export type DocumentVersionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   document?: Maybe<DocumentType>;
   documentUid: Scalars['String']['output'];
+  editor: Scalars['String']['output'];
+  thumbnail?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -2715,15 +2714,8 @@ export type DocumentVersionType = {
 };
 
 export type DocumentVersionUpdateInputType = {
-  /** Change summary */
-  changeSummary?: InputMaybe<Scalars['String']['input']>;
   /** Document content */
-  content?: InputMaybe<Scalars['String']['input']>;
-  /** Document UID */
-  document?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-  /** Version number */
-  versionNumber?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['String']['input'];
 };
 
 export enum ErrandCategory {

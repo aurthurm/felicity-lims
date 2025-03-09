@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { Plus } from 'lucide-vue-next'
+import { useDocumentStore } from '@/stores/documentStore'
+import DocumentCard from './DocumentCard.vue'
+import CreateDocumentDialog from './CreateDocumentDialog.vue'
+
+const store = useDocumentStore()
+const isDialogOpen = ref(false)
+
+function openCreateDocumentDialog() {
+  isDialogOpen.value = true
+}
+
+onMounted(() => store.fetchDocuments({first:25, sortBy:["-updated_at"]},true))
+</script>
 
 <template>
   <div class="animate-fade-in">
@@ -33,17 +49,4 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import { Plus } from 'lucide-vue-next'
-import { useDocumentStore } from '@/stores/documentStore'
-import DocumentCard from './DocumentCard.vue'
-import CreateDocumentDialog from './CreateDocumentDialog.vue'
 
-const store = useDocumentStore()
-const isDialogOpen = ref(false)
-
-function openCreateDocumentDialog() {
-  isDialogOpen.value = true
-}
-</script>

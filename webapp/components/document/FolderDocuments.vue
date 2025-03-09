@@ -1,3 +1,26 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { Folder, Plus } from 'lucide-vue-next'
+import { useDocumentStore } from '@/stores/documentStore'
+import DocumentCard from './DocumentCard.vue'
+import CreateDocumentDialog from './CreateDocumentDialog.vue'
+
+const store = useDocumentStore()
+const isDialogOpen = ref(false)
+
+const documents = computed(() => {
+  if (!store.currentFolder) return []
+  return store.getDocumentsInFolder(store.currentFolder)
+})
+
+const currentFolder = computed(() => {
+  return store.folders.find(folder => folder.uid === store.currentFolder)
+})
+
+function openCreateDocumentDialog() {
+  isDialogOpen.value = true
+}
+</script>
 
 <template>
   <div class="animate-fade-in">
@@ -41,26 +64,4 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Folder, Plus } from 'lucide-vue-next'
-import { useDocumentStore } from '@/stores/documentStore'
-import DocumentCard from './DocumentCard.vue'
-import CreateDocumentDialog from './CreateDocumentDialog.vue'
 
-const store = useDocumentStore()
-const isDialogOpen = ref(false)
-
-const documents = computed(() => {
-  if (!store.currentFolder) return []
-  return store.getDocumentsInFolder(store.currentFolder)
-})
-
-const currentFolder = computed(() => {
-  return store.folders.find(folder => folder.uid === store.currentFolder)
-})
-
-function openCreateDocumentDialog() {
-  isDialogOpen.value = true
-}
-</script>

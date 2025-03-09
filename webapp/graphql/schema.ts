@@ -2248,15 +2248,13 @@ export type DocumentInputType = {
   /** Author UIDs */
   authors?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Category UID */
-  category?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
   /** Department UID */
-  department?: InputMaybe<Scalars['String']['input']>;
+  departmentUid?: InputMaybe<Scalars['String']['input']>;
   /** Document ID */
   documentId: Scalars['String']['input'];
   /** Folder UID */
-  folder?: InputMaybe<Scalars['String']['input']>;
-  /** Initial document content */
-  initialContent?: InputMaybe<Scalars['String']['input']>;
+  folderUid?: InputMaybe<Scalars['String']['input']>;
   /** Initial version number */
   initialVersion?: InputMaybe<Scalars['String']['input']>;
   /** Document name */
@@ -2268,7 +2266,7 @@ export type DocumentInputType = {
   /** Tag UIDs */
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Template UID */
-  template?: InputMaybe<Scalars['String']['input']>;
+  templateUid?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentRelationInputType = {
@@ -2621,6 +2619,7 @@ export type DocumentType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   documentId: Scalars['String']['output'];
+  editor?: Maybe<Scalars['String']['output']>;
   folder?: Maybe<DocumentFolderType>;
   folderUid?: Maybe<Scalars['String']['output']>;
   lastAccessed?: Maybe<Scalars['String']['output']>;
@@ -2650,13 +2649,13 @@ export type DocumentUpdateInputType = {
   /** Author UIDs */
   authors?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Category UID */
-  category?: InputMaybe<Scalars['String']['input']>;
+  categoryUid?: InputMaybe<Scalars['String']['input']>;
   /** Department UID */
-  department?: InputMaybe<Scalars['String']['input']>;
+  departmentUid?: InputMaybe<Scalars['String']['input']>;
   /** Document ID */
   documentId?: InputMaybe<Scalars['String']['input']>;
   /** Folder UID */
-  folder?: InputMaybe<Scalars['String']['input']>;
+  folderUid?: InputMaybe<Scalars['String']['input']>;
   /** Document name */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Reader UIDs */
@@ -2665,8 +2664,6 @@ export type DocumentUpdateInputType = {
   subtitle?: InputMaybe<Scalars['String']['input']>;
   /** Tag UIDs */
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** Template UID */
-  template?: InputMaybe<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
 };
 
@@ -2707,6 +2704,8 @@ export type DocumentVersionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   document?: Maybe<DocumentType>;
   documentUid: Scalars['String']['output'];
+  editor: Scalars['String']['output'];
+  thumbnail?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -2715,15 +2714,8 @@ export type DocumentVersionType = {
 };
 
 export type DocumentVersionUpdateInputType = {
-  /** Change summary */
-  changeSummary?: InputMaybe<Scalars['String']['input']>;
   /** Document content */
-  content?: InputMaybe<Scalars['String']['input']>;
-  /** Document UID */
-  document?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-  /** Version number */
-  versionNumber?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['String']['input'];
 };
 
 export enum ErrandCategory {
@@ -11586,6 +11578,7 @@ export type GraphCacheResolvers = {
     department?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DepartmentType> | string>,
     departmentUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
     documentId?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    editor?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
     folder?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DocumentFolderType> | string>,
     folderUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
     lastAccessed?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
@@ -11628,6 +11621,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     document?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<DocumentType> | string>,
     documentUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    editor?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    thumbnail?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -15780,6 +15775,7 @@ export type GraphCacheUpdaters = {
     department?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     departmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     documentId?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    editor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     folder?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     folderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     lastAccessed?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
@@ -15822,6 +15818,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    editor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    thumbnail?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,

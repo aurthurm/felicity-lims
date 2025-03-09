@@ -225,7 +225,7 @@ class DocumentVersionCreate(DocumentVersionBase):
 
 # Properties to receive via API on update
 class DocumentVersionUpdate(DocumentVersionBase):
-    pass
+    thumbnail: str | None = None
 
 
 # Properties to return via API

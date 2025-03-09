@@ -3,7 +3,7 @@ from typing import Any, AsyncGenerator
 
 import sentry_sdk
 from fastapi import FastAPI, Request
-from limits.aio.storage import MemoryStorage
+from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -14,7 +14,6 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
-from starlette.middleware.cors import CORSMiddleware
 from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
@@ -57,18 +56,18 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
 
 def register_middlewares(app: FastAPI) -> None:
     app.add_middleware(
-        CORSMiddleware,
+        CORSMiddleware,  # noqa
         allow_origins=settings.CORS_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    app.add_middleware(APIActivityLogMiddleware)
+    app.add_middleware(APIActivityLogMiddleware)  # noqa
     if redis_pool and settings.RATE_LIMIT:
         print(f"Connected to Redis at {settings.REDIS_SERVER}")
         # Register the rate limit middleware with the app
         app.add_middleware(
-            RateLimitMiddleware,
+            RateLimitMiddleware,  # noqa
             redis_pool=redis_pool,
             minute_limit=settings.RATE_LIMIT_PER_MINUTE,
             hour_limit=settings.RATE_LIMIT_PER_HOUR,
@@ -76,16 +75,15 @@ def register_middlewares(app: FastAPI) -> None:
         )
 
 
-async def register_rate_limit(app: FastAPI) -> None:
+def register_rate_limit(app: FastAPI) -> None:
     # Configure rate limiter
-    if settings.settings.RATE_LIMIT:
+    if settings.RATE_LIMIT:
         limiter = Limiter(
             key_func=get_remote_address,
-            storage=MemoryStorage(),
             default_limits=[f"{settings.RATE_LIMIT_PER_MINUTE}/minute", f"{settings.RATE_LIMIT_PER_HOUR}/hour"]
         )
-        app.state.limiter = limiter
-        app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+        app.state.limiter = limiter  # noqa
+        app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # noqa
 
 
 def register_routes(app: FastAPI) -> None:

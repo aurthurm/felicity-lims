@@ -28,6 +28,7 @@ from felicity.apps.document.services import (
     DocumentAIReviewFeedbackService,
     DocumentAnalyticsService,
 )
+from felicity.apps.document.utils import get_thumbnail
 from felicity.apps.setup.services import DepartmentService
 from felicity.core.dtz import timenow_dt
 
@@ -351,26 +352,26 @@ class DocumentMutations:
             return OperationError(error=f"Document with ID {payload.document_id} already exists")
 
         # Validate foreign keys
-        if payload.folder:
-            folder = await DocumentFolderService().get(uid=payload.folder)
+        if payload.folderUid:
+            folder = await DocumentFolderService().get(uid=payload.folderUid)
             if not folder:
-                return OperationError(error=f"Folder with uid {payload.folder} not found.")
+                return OperationError(error=f"Folder with uid {payload.folderUid} not found.")
 
-        if payload.category:
-            category = await DocumentCategoryService().get(uid=payload.category)
+        if payload.categoryUid:
+            category = await DocumentCategoryService().get(uid=payload.categoryUid)
             if not category:
-                return OperationError(error=f"Category with uid {payload.category} not found.")
+                return OperationError(error=f"Category with uid {payload.categoryUid} not found.")
 
-        if payload.department:
+        if payload.departmentUid:
             # Assuming you have a DepartmentService
-            department = await DepartmentService().get(uid=payload.department)
+            department = await DepartmentService().get(uid=payload.departmentUid)
             if not department:
-                return OperationError(error=f"Department with uid {payload.department} not found.")
+                return OperationError(error=f"Department with uid {payload.departmentUid} not found.")
 
-        if payload.template:
-            template = await DocumentTemplateService().get(uid=payload.template)
+        if payload.templateUid:
+            template = await DocumentTemplateService().get(uid=payload.templateUid)
             if not template:
-                return OperationError(error=f"Template with uid {payload.template} not found.")
+                return OperationError(error=f"Template with uid {payload.templateUid} not found.")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -378,17 +379,17 @@ class DocumentMutations:
         }
 
         # Map fields to their corresponding database fields
-        if payload.folder:
-            incoming["folder_uid"] = payload.folder
-        if payload.department:
-            incoming["department_uid"] = payload.department
-        if payload.category:
-            incoming["category_uid"] = payload.category
-        if payload.template:
-            incoming["template_uid"] = payload.template
+        if payload.folderUid:
+            incoming["folder_uid"] = payload.folderUid
+        if payload.departmentUid:
+            incoming["department_uid"] = payload.departmentUid
+        if payload.categoryUid:
+            incoming["category_uid"] = payload.categoryUid
+        if payload.templateUid:
+            incoming["template_uid"] = payload.templateUid
 
         for k, v in payload.__dict__.items():
-            if k not in ["folder", "department", "category", "template", "tags", "authors", "readers",
+            if k not in ["folderUid", "departmentUid", "categoryUid", "templateUid", "tags", "authors", "readers",
                          "initial_content",
                          "initial_version"]:
                 incoming[k] = v
@@ -417,15 +418,14 @@ class DocumentMutations:
                 await DocumentService().add_reader(document.uid, reader_uid)
 
         # Create initial version if content provided
-        if payload.initial_content:
-            version_in = schemas.DocumentVersionCreate(
-                document_uid=document.uid,
-                version_number=payload.initial_version or "1.0",
-                content=payload.initial_content,
-                created_by_uid=felicity_user.uid,
-                updated_by_uid=felicity_user.uid,
-            )
-            await DocumentVersionService().create(version_in)
+        version_in = schemas.DocumentVersionCreate(
+            document_uid=document.uid,
+            version_number=payload.initial_version or "1.0",
+            content="",
+            created_by_uid=felicity_user.uid,
+            updated_by_uid=felicity_user.uid,
+        )
+        await DocumentVersionService().create(version_in)
 
         # Create initial draft status
         status_in = schemas.DocumentStatusCreate(
@@ -449,7 +449,13 @@ class DocumentMutations:
         )
         await DocumentAuditService().create(audit_in)
 
-        return types.DocumentType(**document.marshal_simple())
+        document = await DocumentService().get(uid=document.uid)
+        return types.DocumentType(**document.marshal_simple(
+            exclude=["tags", "authors", "readers", "related_to", "related_from", "versions", "statuses"
+                                                                                             "review_cycles",
+                     "subscriptions", "audit_records", "ai_authoring_sessions", "compliance_checks",
+                     "analytics", "latest_version", "content", "editor", "status"]
+        ))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_document(
@@ -473,41 +479,34 @@ class DocumentMutations:
                 return OperationError(error=f"Document with ID {payload.document_id} already exists")
 
         # Validate foreign keys
-        if payload.folder:
-            folder = await DocumentFolderService().get(uid=payload.folder)
+        if payload.folderUid:
+            folder = await DocumentFolderService().get(uid=payload.folderUid)
             if not folder:
-                return OperationError(error=f"Folder with uid {payload.folder} not found.")
+                return OperationError(error=f"Folder with uid {payload.folderUid} not found.")
 
-        if payload.category:
-            category = await DocumentCategoryService().get(uid=payload.category)
+        if payload.categoryUid:
+            category = await DocumentCategoryService().get(uid=payload.categoryUid)
             if not category:
-                return OperationError(error=f"Category with uid {payload.category} not found.")
+                return OperationError(error=f"Category with uid {payload.categoryUid} not found.")
 
-        if payload.department:
+        if payload.departmentUid:
             # Assuming you have a DepartmentService
-            department = await DepartmentService().get(uid=payload.department)
+            department = await DepartmentService().get(uid=payload.departmentUid)
             if not department:
-                return OperationError(error=f"Department with uid {payload.department} not found.")
-
-        if payload.template:
-            template = await DocumentTemplateService().get(uid=payload.template)
-            if not template:
-                return OperationError(error=f"Template with uid {payload.template} not found.")
+                return OperationError(error=f"Department with uid {payload.departmentUid} not found.")
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
         # Map fields to their corresponding database fields
-        if payload.folder is not None:
-            update_data["folder_uid"] = payload.folder
-        if payload.department is not None:
-            update_data["department_uid"] = payload.department
-        if payload.category is not None:
-            update_data["category_uid"] = payload.category
-        if payload.template is not None:
-            update_data["template_uid"] = payload.template
+        if payload.folderUid is not None:
+            update_data["folder_uid"] = payload.folderUid
+        if payload.departmentUid is not None:
+            update_data["department_uid"] = payload.departmentUid
+        if payload.categoryUid is not None:
+            update_data["category_uid"] = payload.categoryUid
 
         for field in document.to_dict():
-            if field in payload.__dict__ and field not in ["folder", "department", "category", "template", "tags",
+            if field in payload.__dict__ and field not in ["folderUid", "departmentUid", "categoryUid", "tags",
                                                            "authors", "readers"]:
                 if payload.__dict__[field] is not None:
                     update_data[field] = payload.__dict__[field]
@@ -652,22 +651,20 @@ class DocumentMutations:
                 error=f"Document version with uid {uid} not found. Cannot update object..."
             )
 
-        # Check if document exists if changing
-        if payload.document and payload.document != version.document_uid:
-            document = await DocumentService().get(uid=payload.document)
-            if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
+        thumbnail = None
+        try:
+            thumbnail = get_thumbnail(payload.content)
+        except Exception as e:
+            ...
 
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        # Map document to document_uid
-        if payload.document is not None:
-            update_data["document_uid"] = payload.document
+        update_data = {
+            "thumbnail": thumbnail,
+            "updated_by_uid": felicity_user.uid
+        }
 
         for field in version.to_dict():
-            if field in payload.__dict__ and field != "document":
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
+            if field in payload.__dict__:
+                update_data[field] = payload.__dict__[field]
 
         obj_in = schemas.DocumentVersionUpdate(**update_data)
         version = await DocumentVersionService().update(version.uid, obj_in)

@@ -12,3 +12,45 @@ mutation AddDocumentFolder($payload: DocumentFolderInputType!){
         }
     }
 }
+
+mutation AddDocument($payload: DocumentInputType!){
+    createDocument(payload: $payload){
+        ...on DocumentType {
+            uid
+            name
+            documentId
+            folderUid
+            createdAt
+            latestVersion{
+                uid
+                content
+                editor
+                thumbnail
+            }
+            createdBy {
+                firstName
+                lastName
+            }
+            updatedAt
+        }
+
+        ...on OperationError {
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditDocumentVersion($uid: String!, $payload: DocumentVersionUpdateInputType!){
+    updateDocumentVersion(uid: $uid, payload: $payload){
+        ...on DocumentVersionType {
+            uid
+            thumbnail
+        }
+
+        ...on OperationError {
+            error
+            suggestion
+        }
+    }
+}

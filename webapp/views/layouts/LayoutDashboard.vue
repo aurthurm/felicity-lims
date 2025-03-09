@@ -19,7 +19,7 @@ const FelNotification = defineAsyncComponent(
       </div>
       <div class="flex-1">
         <header-main />
-        <main class="px-8 pt-4 overflow-y-scroll overscroll-contain">
+        <main class="px-8 pt-4">
           <slot />
         </main>
       </div>

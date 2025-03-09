@@ -8,7 +8,7 @@ const documentRoutes = [
         },
     },
     {
-      path: ':documentId',
+      path: ':documentVersionUid',
       name: 'document-single',
       component: () => import('@/views/document/_id/Document.vue'),
       props: true,

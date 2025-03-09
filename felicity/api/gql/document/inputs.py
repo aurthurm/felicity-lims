@@ -68,11 +68,8 @@ class DocumentVersionInputType:
 
 
 @strawberry.input
-class DocumentVersionUpdateInputType(DocumentVersionInputType):
-    uid: str
-    document: Optional[str] = strawberry.field(description="Document UID", default=None)
-    version_number: Optional[str] = strawberry.field(description="Version number", default=None)
-    content: Optional[str] = strawberry.field(description="Document content", default=None)
+class DocumentVersionUpdateInputType:
+    content: str = strawberry.field(description="Document content", default=None)
 
 
 # Document Status Inputs
@@ -300,14 +297,13 @@ class DocumentInputType:
     name: str = strawberry.field(description="Document name")
     subtitle: Optional[str] = strawberry.field(description="Document subtitle", default=None)
     document_id: str = strawberry.field(description="Document ID")
-    folder: Optional[str] = strawberry.field(description="Folder UID", default=None)
-    department: Optional[str] = strawberry.field(description="Department UID", default=None)
-    category: Optional[str] = strawberry.field(description="Category UID", default=None)
-    template: Optional[str] = strawberry.field(description="Template UID", default=None)
+    folderUid: Optional[str] = strawberry.field(description="Folder UID", default=None)
+    departmentUid: Optional[str] = strawberry.field(description="Department UID", default=None)
+    categoryUid: Optional[str] = strawberry.field(description="Category UID", default=None)
+    templateUid: Optional[str] = strawberry.field(description="Template UID", default=None)
     tags: Optional[List[str]] = strawberry.field(description="Tag UIDs", default_factory=list)
     authors: Optional[List[str]] = strawberry.field(description="Author UIDs", default_factory=list)
     readers: Optional[List[str]] = strawberry.field(description="Reader UIDs", default_factory=list)
-    initial_content: Optional[str] = strawberry.field(description="Initial document content", default=None)
     initial_version: Optional[str] = strawberry.field(description="Initial version number", default="1.0")
 
 
@@ -317,10 +313,9 @@ class DocumentUpdateInputType:
     name: Optional[str] = strawberry.field(description="Document name", default=None)
     subtitle: Optional[str] = strawberry.field(description="Document subtitle", default=None)
     document_id: Optional[str] = strawberry.field(description="Document ID", default=None)
-    folder: Optional[str] = strawberry.field(description="Folder UID", default=None)
-    department: Optional[str] = strawberry.field(description="Department UID", default=None)
-    category: Optional[str] = strawberry.field(description="Category UID", default=None)
-    template: Optional[str] = strawberry.field(description="Template UID", default=None)
+    folderUid: Optional[str] = strawberry.field(description="Folder UID", default=None)
+    departmentUid: Optional[str] = strawberry.field(description="Department UID", default=None)
+    categoryUid: Optional[str] = strawberry.field(description="Category UID", default=None)
     tags: Optional[List[str]] = strawberry.field(description="Tag UIDs", default_factory=list)
     authors: Optional[List[str]] = strawberry.field(description="Author UIDs", default_factory=list)
     readers: Optional[List[str]] = strawberry.field(description="Reader UIDs", default_factory=list)

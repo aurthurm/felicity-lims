@@ -151,6 +151,12 @@ class Settings(BaseSettings):
         "client",
         "patient",
     ]
+    # Document Editor
+    DEFAULT_DOCUMENT_EDITOR: str = 'umo'  # "umo", "syncfusion"
+    SYNCFUSION_LICENSE: str = getenv_value(
+        "SYNCFUSION_LICENSE",
+        "ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU"
+    )
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",

@@ -1,3 +1,4 @@
+import { GetDocumentAllQuery, GetDocumentAllQueryVariables, GetDocumentAllDocument } from './../graphql/operations/document.queries';
 
 import useApiUtil from '@/composables/api_util';
 import { GetDocumentFolderAllDocument, GetDocumentFolderAllQuery, GetDocumentFolderAllQueryVariables } from '@/graphql/operations/document.queries';
@@ -17,10 +18,26 @@ export const useDocumentStore = defineStore('documents', {
     isPreviewOpen: false,
     recentDocuments: ([] as IDocument[])
       .sort((a, b) => b.updatedAt?.getTime() - a.updatedAt?.getTime())
-      .slice(0, 5)
+      .slice(0, 25)
   }),
   
   actions: {
+    fetchDocuments(params, recent=false) {
+      withClientQuery<GetDocumentAllQuery, GetDocumentAllQueryVariables>(
+        GetDocumentAllDocument, {
+          "first": 100,
+          "text": "",
+          "sortBy": ["-created_at"],
+          ...params
+        }, "documentAll"
+      ).then((payload) => {
+        this.documents = payload?.items as IDocument[]
+        if(recent) {
+          this.recentDocuments = this.documents.slice(0, 25)
+        }
+      })
+    },
+
     addDocument(document: IDocument) {
       this.documents.push(document)
       this.recentDocuments = [document, ...this.recentDocuments].slice(0, 5)
@@ -62,6 +79,7 @@ export const useDocumentStore = defineStore('documents', {
     
     setCurrentFolder(id: string | null) {
       this.currentFolder = id
+      this.fetchDocuments({ folderUid: id })
     },
 
     getFolders() {

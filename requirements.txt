@@ -48,4 +48,5 @@ asyncer==0.0.8
 GitPython==3.1.43
 docker==7.1.0
 sentry-sdk[fastapi]==2.22.0
- slowapi==0.1.9
+slowapi==0.1.9
+xhtml2pdf==0.2.1

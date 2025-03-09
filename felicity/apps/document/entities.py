@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract.entity import BaseEntity
 from felicity.apps.document.enum import DocumentState
+from felicity.core.config import settings
 
 
 class DocumentCategory(BaseEntity):
@@ -125,10 +126,12 @@ class DocumentVersion(BaseEntity):
     __tablename__ = 'document_version'
 
     document_uid = Column(String, ForeignKey('document.uid'))
-    document = relationship("Document", backref="versions")
+    document = relationship("Document", backref="versions", lazy="selectin")
     version_number = Column(String)  # e.g., "1.0", "1.1", etc.
     content = Column(Text)
+    editor = Column(String(20), default=settings.DEFAULT_DOCUMENT_EDITOR)
     change_summary = Column(String, nullable=True)
+    thumbnail = Column(Text, nullable=True)
 
 
 class DocumentReviewCycle(BaseEntity):
