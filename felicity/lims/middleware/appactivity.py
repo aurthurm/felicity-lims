@@ -30,7 +30,7 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
         # Get the Bearer token from Authorization header
         auth_header = request.headers.get(self.auth_header, "")
-        token = None
+        token = "No token found in Authorization header"
 
         # Extract token if it's in Bearer format
         if auth_header.startswith("Bearer "):
@@ -200,8 +200,8 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                 query_params=str(request.query_params),
                 # Don't log full headers as they may contain auth data
                 headers=self._redact_sensitive_headers(request.headers),
-                body=enhanced_body,
-                response_body=enhanced_response,
+                body=enhanced_body if enhanced_body else "No body",
+                response_body=enhanced_response if enhanced_response else "No response body",
                 response_code=int(response.status_code) if response and response.status_code else 0,
                 ip_address=request.client.host if request.client else None,
                 user_agent=request.headers.get("user-agent"),
