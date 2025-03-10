@@ -352,8 +352,8 @@ const addStamp = (newTag: string) => {
                     <span class="text-sm text-gray-600">on {{ formatDate(errand.createdAt, 'D MMMM YYYY') }}</span>
                 </div>
                 
-                <div class="mt-6" @click="startEditingBody" v-if="!editingBody">
-                    <div v-if="errand.description" class="text-lg text-gray-800" v-html="errand.description"></div>
+                <div class="mt-6 prose" @click="startEditingBody" v-if="!editingBody">
+                    <article v-if="errand.description" class="text-lg text-gray-800" v-html="errand.description"></article>
                 </div>
                 
                 <div class="mt-6" v-else>
