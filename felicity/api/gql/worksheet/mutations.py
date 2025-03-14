@@ -14,7 +14,7 @@ from felicity.apps.analysis.services.quality_control import (
     QCTemplateService,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.guard import FAction, FObject
+from felicity.apps.guard import FAction, FObject, has_perm
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
 from felicity.apps.job import schemas as job_schemas
@@ -449,14 +449,13 @@ class WorkSheetMutations:
 
         return WorkSheetType(**ws.marshal_simple())
 
-    @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.SAMPLE)]
-        )]
-    )
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def action_worksheets(self, info, uids: list[str], action: str) -> WorkSheetsResponse:
         felicity_user = await auth_from_info(info)
         worksheet_wf = WorkSheetWorkFlow()
+
+        if not has_perm(felicity_user.uid, action, FObject.SAMPLE):
+            return OperationError(error=f"You are not authorised to {action} Worksheet")
 
         worksheets = []
         for ws_uid in uids:

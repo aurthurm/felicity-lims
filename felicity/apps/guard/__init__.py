@@ -12,7 +12,7 @@ async def _get_user_permissions(user_uid: str) -> list[Permission]:
     return await UserService().get_user_permissions(user_uid)
 
 
-async def has_perm(user_uid: str, action: FAction, target: FObject):
+async def has_perm(user_uid: str, action: FAction | str, target: FObject):
     """
     Check if a user has permission to perform a specific action on an object.
 
