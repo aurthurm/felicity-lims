@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.exceptions import AlreadyExistsError, ValidationError
-from felicity.apps.user.entities import Group, Permission, User, UserPreference
+from felicity.apps.user.entities import Group, Permission, User, UserPreference, user_groups, permission_groups
 from felicity.apps.user.repository import (
     GroupRepository,
     PermissionRepository,
@@ -118,6 +120,17 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         user_obj = marshaller(user)
         user_in = UserUpdate(**{**user_obj, "is_active": False})
         await super().update(user_uid, user_in)
+
+    async def get_user_permissions(self, user_uid: str) -> list[Permission]:
+        user_groups_uid = await self.repository.query_table(user_groups, ["group_uid"], user_uid=user_uid)
+        permissions_uid = set()
+        for user_group_uid in user_groups_uid:
+            groups_permissions = await self.repository.query_table(
+                permission_groups, ["permission_uid"], group_uid=user_group_uid
+            )
+            for permission_uid in groups_permissions:
+                permissions_uid.add(permission_uid)
+        return await PermissionService().get_by_uids(list(permissions_uid))
 
 
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):

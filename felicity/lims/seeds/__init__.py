@@ -1,6 +1,6 @@
 import logging
 
-from .groups_perms import seed_group_permissions_defaults, seed_groups, seed_permissions
+from .groups_perms import seed_groups_perms
 from .setup_analyses import (
     seed_analyses_services_and_profiles,
     seed_categories,
@@ -34,9 +34,7 @@ async def requisite_setup(lab_name: str = "Felicity Labs") -> bool:
     logger.info("Loading requisite setup ...")
 
     await seed_laboratory(lab_name)
-    await seed_groups()
-    await seed_permissions()
-    await seed_group_permissions_defaults()
+    await seed_groups_perms()
     await seed_id_sequence()
     await seed_coding_standards()
     await seed_daemon_user()

@@ -1,9 +1,9 @@
 import logging
 
+from felicity.apps.guard.definitions import FGroup
 from felicity.apps.user import schemas
 from felicity.apps.user.services import GroupService, UserPreferenceService, UserService
 from felicity.core.config import get_settings
-from .groups_perms import FGroup
 
 settings = get_settings()
 

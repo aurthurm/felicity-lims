@@ -1,0 +1,8 @@
+{
+    "client": {
+      "service": {
+        "name": "felicity-gql",
+        "url": "http://127.0.0.1:8000/felicity-gql"
+      }
+    }
+}

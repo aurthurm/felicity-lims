@@ -9,7 +9,7 @@ class WorksheetWorkFlowException(Exception): ...
 
 class WorkSheetWorkFlow:
     """WorksheetWorkFlow
-    Defines a set of guards that allow or prevent actions taken on Worksheet
+    Defines a set of guard that allow or prevent actions taken on Worksheet
     """
 
     def __init__(self):

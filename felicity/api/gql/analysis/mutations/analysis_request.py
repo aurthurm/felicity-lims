@@ -5,10 +5,11 @@ from typing import List
 
 import strawberry  # noqa
 
+from felicity.api.gql.analysis.permissions import CanVerifySample
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.permissions import CanVerifySample, IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import (
     OperationError,
     OperationSuccess,
@@ -405,7 +406,7 @@ async def receive_samples(info, samples: List[str]) -> ResultedSampleActionRespo
     return ResultedSampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[CanVerifySample])
+@strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifySample])
 async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 

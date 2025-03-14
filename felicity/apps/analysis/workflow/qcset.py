@@ -9,7 +9,7 @@ class CQSetWorkFlowException(Exception): ...
 
 class CQSetWorkFlow:
     """CQSetWorkFlow
-    Defines a set of guards that allow or prevent actions taken on Quality Control Sets
+    Defines a set of guard that allow or prevent actions taken on Quality Control Sets
 
         methods:
             cancel: cancels a quality control set iff all quality control samples are cancelled

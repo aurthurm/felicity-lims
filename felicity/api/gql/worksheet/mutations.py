@@ -2,9 +2,10 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError
 from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.apps.analysis.services.analysis import SampleTypeService
@@ -13,6 +14,7 @@ from felicity.apps.analysis.services.quality_control import (
     QCTemplateService,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
 from felicity.apps.job import schemas as job_schemas
@@ -191,7 +193,11 @@ class WorkSheetMutations:
 
         return WorkSheetTemplateType(**ws_template.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.WORKSHEET)]
+        )]
+    )
     async def create_worksheet(
             self,
             info,
@@ -267,7 +273,11 @@ class WorkSheetMutations:
 
         return WorksheetListingType(worksheets=to_send)
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.WORKSHEET)]
+        )]
+    )
     async def update_worksheet(
             self,
             info,
@@ -336,7 +346,11 @@ class WorkSheetMutations:
 
         return WorkSheetType(**worksheet.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.WORKSHEET)]
+        )]
+    )
     async def update_worksheet_apply_template(
             self, info, template_uid: str, worksheet_uid: str
     ) -> WorkSheetResponse:
@@ -393,7 +407,11 @@ class WorkSheetMutations:
 
         return WorkSheetType(**ws.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.WORKSHEET)]
+        )]
+    )
     async def update_worksheet_manual_assign(
             self,
             info,
@@ -431,7 +449,11 @@ class WorkSheetMutations:
 
         return WorkSheetType(**ws.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.SAMPLE)]
+        )]
+    )
     async def action_worksheets(self, info, uids: list[str], action: str) -> WorkSheetsResponse:
         felicity_user = await auth_from_info(info)
         worksheet_wf = WorkSheetWorkFlow()

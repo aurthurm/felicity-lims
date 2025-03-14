@@ -3,9 +3,10 @@ from typing import List
 
 import strawberry  # noqa
 
+from felicity.api.gql.analysis.permissions import CanVerifyAnalysisResult
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.permissions import CanVerifyAnalysisResult, IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError, OperationSuccess
 from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.analysis.services.result import AnalysisResultService
@@ -94,7 +95,7 @@ async def submit_analysis_results(
     )
 
 
-@strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
+@strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifyAnalysisResult])
 async def verify_analysis_results(
         info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:

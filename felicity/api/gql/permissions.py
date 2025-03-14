@@ -4,10 +4,8 @@ import typing
 from strawberry.permission import BasePermission
 
 from felicity.api.deps import Info
-from felicity.apps.analysis.permissions import (
-    check_result_verification,
-    check_sample_verification,
-)
+from felicity.api.gql.types.generic import PermissionsError
+from felicity.apps.guard import FAction, FObject, has_perm
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,6 +13,8 @@ logger = logging.getLogger(__name__)
 
 class IsAuthenticated(BasePermission):
     message = "Only accessible to authenticated users"
+    error_class = PermissionsError
+    error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
@@ -23,6 +23,8 @@ class IsAuthenticated(BasePermission):
 
 class IsActiveUser(BasePermission):
     message = "You must be an active user"
+    error_class = PermissionsError
+    error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
@@ -33,6 +35,8 @@ class IsActiveUser(BasePermission):
 
 class IsSuperUser(BasePermission):
     message = "You dont have enough privileges"
+    error_class = PermissionsError
+    error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
@@ -45,56 +49,21 @@ class IsSuperUser(BasePermission):
         return user.is_superuser
 
 
-class CanVerifySample(BasePermission):
-    message = "You have no privileges to verify this sample"
+class HasPermission(BasePermission):
+    """
+    Permission class for checking if a user has permission to perform actions on objects.
+    """
+    error_class = PermissionsError
+    error_extensions = {"code": "UNAUTHORIZED"}
+
+    def __init__(self, action: FAction, target: FObject):
+        super().__init__()
+        self.action = action
+        self.target = target
+        self.message = f"You are not authorized to {action} {target}"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
-        if not user:
-            return False
-
-        if not user.is_active:
-            return False
-
-        try:
-            samples = kwargs.get("samples", [])
-        except KeyError:
-            samples = []
-
-        _, restricted, message, suggestion = await check_sample_verification(
-            samples, user
-        )
-
-        if restricted:
-            self.message = message + " " + suggestion
-            return False
-
-        return True
-
-
-class CanVerifyAnalysisResult(BasePermission):
-    message = "You have no privileges to verify these analyses"
-
-    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = await info.context.user()
-
-        if not user:
-            return False
-
-        if not user.is_active:
-            return False
-
-        try:
-            analyses = kwargs.get("analyses", [])
-        except KeyError:
-            analyses = []
-
-        _, restricted, message, suggestion = await check_result_verification(
-            analyses, user
-        )
-
-        if restricted:
-            self.message = message + " " + suggestion
-            return False
-
-        return True
+        if not user: return False
+        if not user.is_active:  return False
+        return await has_perm(user.uid, self.action, self.target)

@@ -135,5 +135,6 @@
     "prettier": "^2.8.8",
     "typescript": "^5.3.3",
     "vite": "^4.5.2"
-  }
+  },
+  "packageManager": "pnpm@7.33.6+sha256.f0c52b41f8128da92160f6826b53a105aad31c6c7cdc00b907fde507c5ca09b5"
 }

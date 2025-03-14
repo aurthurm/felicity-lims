@@ -8,7 +8,7 @@ class SampleWorkFlowException(Exception): ...
 
 class SampleWorkFlow:
     """SampleWorkFlow
-    Defines a set of guards that allow or prevent actions taken on Samples
+    Defines a set of guard that allow or prevent actions taken on Samples
     """
 
     def __init__(self):

@@ -11,6 +11,12 @@ config:
   defaultScalarType: never
   useTypeImports: true
 generates:
+  types/gql.d.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      useTypeImports: true
   webapp/graphql/:
     preset: client
     config:
