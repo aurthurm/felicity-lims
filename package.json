@@ -1,6 +1,6 @@
 {
   "name": "felicity-lims",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "webapp/main.ts",
   "license": "Public",
   "scripts": {
@@ -67,8 +67,9 @@
     "@syncfusion/ej2-vue-splitbuttons": "^28.2.3",
     "@types/lodash-es": "^4.17.12",
     "@umoteam/editor": "^5.0.0",
-    "@urql/core": "^3.2.2",
+    "@urql/core": "^5.1.1",
     "@urql/exchange-auth": "^1.0.0",
+    "@urql/exchange-graphcache": "6.0.0",
     "@urql/vue": "^1.1.2",
     "@vueform/multiselect": "^2.6.6",
     "@vuepic/vue-datepicker": "^10.0.0",
@@ -91,6 +92,7 @@
     "lucide-vue-next": "^0.477.0",
     "mitt": "^3.0.1",
     "moment": "^2.30.1",
+    "monaco-editor": "^0.43.0",
     "notyf": "^3.10.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",
