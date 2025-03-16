@@ -4,7 +4,7 @@ import typing
 from strawberry.permission import BasePermission
 
 from felicity.api.deps import Info
-from felicity.apps.guard import FAction, FObject, has_perm
+from felicity.apps.guard import FAction, FObject, has_perm, FGroup, has_group
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -62,3 +62,21 @@ class HasPermission(BasePermission):
         if not user: return False
         if not user.is_active:  return False
         return await has_perm(user.uid, self.action, self.target)
+
+
+class HasGroup(BasePermission):
+    """
+    Permission class for checking if a user belongs to a given group.
+    """
+    error_extensions = {"code": "UNAUTHORIZED"}
+
+    def __init__(self, group: FGroup):
+        super().__init__()
+        self.group = group
+        self.message = f"You are not authorized: Contact an {group} for help!"
+
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
+        user = await info.context.user()
+        if not user: return False
+        if not user.is_active:  return False
+        return await has_group(user.uid, self.group)

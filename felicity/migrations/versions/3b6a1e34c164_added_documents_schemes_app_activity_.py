@@ -1,8 +1,8 @@
-"""add-microbiology-1
+"""added documents, schemes, app activity tracker
 
-Revision ID: 4b6240ec4682
+Revision ID: 3b6a1e34c164
 Revises: cccb8d8adce5
-Create Date: 2025-02-23 22:23:47.290039
+Create Date: 2025-03-16 17:36:18.285084
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4b6240ec4682'
+revision = '3b6a1e34c164'
 down_revision = 'cccb8d8adce5'
 branch_labels = None
 depends_on = None
@@ -183,6 +183,147 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_test_method_uid'), 'abx_test_method', ['uid'], unique=False)
+    op.create_table('app_activity_logs',
+    sa.Column('token_identifier', sa.String(length=255), nullable=False),
+    sa.Column('path', sa.String(length=255), nullable=False),
+    sa.Column('method', sa.String(length=10), nullable=False),
+    sa.Column('query_params', sa.Text(), nullable=True),
+    sa.Column('headers', sa.Text(), nullable=True),
+    sa.Column('body', sa.Text(), nullable=True),
+    sa.Column('response_code', sa.Integer(), nullable=False),
+    sa.Column('response_body', sa.Text(), nullable=True),
+    sa.Column('ip_address', sa.String(length=39), nullable=True),
+    sa.Column('user_agent', sa.String(length=512), nullable=True),
+    sa.Column('duration', sa.Float(), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_app_activity_logs_uid'), 'app_activity_logs', ['uid'], unique=False)
+    op.create_table('document_category',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_category_uid'), 'document_category', ['uid'], unique=False)
+    op.create_table('document_folder',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('parent_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['parent_uid'], ['document_folder.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_folder_uid'), 'document_folder', ['uid'], unique=False)
+    op.create_table('document_tag',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_tag_uid'), 'document_tag', ['uid'], unique=False)
+    op.create_table('grind_label',
+    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('category', sa.Enum('TICKET', name='labelcategory'), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_label_uid'), 'grind_label', ['uid'], unique=False)
+    op.create_table('grind_media',
+    sa.Column('target', sa.Enum('ERRAND', name='mediatarget'), nullable=True),
+    sa.Column('target_uid', sa.String(), nullable=True),
+    sa.Column('destination', sa.String(), nullable=True),
+    sa.Column('encoding', sa.String(), nullable=True),
+    sa.Column('filename', sa.String(), nullable=True),
+    sa.Column('mimetype', sa.String(), nullable=True),
+    sa.Column('original_name', sa.String(), nullable=True),
+    sa.Column('path', sa.String(), nullable=True),
+    sa.Column('size', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_media_uid'), 'grind_media', ['uid'], unique=False)
+    op.create_table('grind_occurrence',
+    sa.Column('target', sa.Enum('ERRAND', 'MILESTONE', name='occurrencetarget'), nullable=True),
+    sa.Column('target_uid', sa.String(), nullable=True),
+    sa.Column('actor_uid', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['actor_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_occurrence_uid'), 'grind_occurrence', ['uid'], unique=False)
+    op.create_table('grind_scheme',
+    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('assignee_uid', sa.String(), nullable=True),
+    sa.Column('start_date', sa.DateTime(), nullable=True),
+    sa.Column('end_date', sa.DateTime(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['assignee_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_scheme_uid'), 'grind_scheme', ['uid'], unique=False)
+    op.create_table('grind_stamp',
+    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('category', sa.Enum('PROJECT', 'TICKET', name='stampcategory'), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_stamp_uid'), 'grind_stamp', ['uid'], unique=False)
     op.create_table('abx_antibiotic_guideline',
     sa.Column('antibiotic_uid', sa.String(), nullable=False),
     sa.Column('guideline_uid', sa.String(), nullable=False),
@@ -289,6 +430,43 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_abx_qc_ranges_uid'), 'abx_qc_ranges', ['uid'], unique=False)
+    op.create_table('document_template',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('content', sa.Text(), nullable=True),
+    sa.Column('category_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['category_uid'], ['document_category.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_template_uid'), 'document_template', ['uid'], unique=False)
+    op.create_table('grind_board',
+    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('scheme_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['scheme_uid'], ['grind_scheme.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_board_uid'), 'grind_board', ['uid'], unique=False)
+    op.create_table('grind_scheme_member',
+    sa.Column('grind_scheme_uid', sa.String(), nullable=True),
+    sa.Column('user_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['grind_scheme_uid'], ['grind_scheme.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], )
+    )
     op.create_table('abx_breakpoint',
     sa.Column('guideline_year_uid', sa.String(), nullable=True),
     sa.Column('test_method_uid', sa.String(), nullable=True),
@@ -338,6 +516,51 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_abx_class_uid'), 'abx_class', ['uid'], unique=False)
+    op.create_table('document',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('subtitle', sa.String(), nullable=True),
+    sa.Column('document_id', sa.String(), nullable=True),
+    sa.Column('folder_uid', sa.String(), nullable=True),
+    sa.Column('department_uid', sa.String(), nullable=True),
+    sa.Column('category_uid', sa.String(), nullable=True),
+    sa.Column('template_uid', sa.String(), nullable=True),
+    sa.Column('last_accessed', sa.DateTime(), nullable=True),
+    sa.Column('last_accessed_by_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['category_uid'], ['document_category.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['department_uid'], ['department.uid'], ),
+    sa.ForeignKeyConstraint(['folder_uid'], ['document_folder.uid'], ),
+    sa.ForeignKeyConstraint(['last_accessed_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['template_uid'], ['document_template.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid'),
+    sa.UniqueConstraint('document_id')
+    )
+    op.create_index(op.f('ix_document_uid'), 'document', ['uid'], unique=False)
+    op.create_table('grind_poster',
+    sa.Column('category', sa.Enum('LISTING', 'ENGAGEMENT', 'TODO', 'MESSAGE', name='postercategory'), nullable=True),
+    sa.Column('title', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('board_uid', sa.String(), nullable=True),
+    sa.Column('assignee_uid', sa.String(), nullable=True),
+    sa.Column('status', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['assignee_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['board_uid'], ['grind_board.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_poster_uid'), 'grind_poster', ['uid'], unique=False)
     op.create_table('abx_order',
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('class_uid', sa.String(), nullable=True),
@@ -353,6 +576,160 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_abx_order_uid'), 'abx_order', ['uid'], unique=False)
+    op.create_table('document_audit',
+    sa.Column('document_uid', sa.String(), nullable=True),
+    sa.Column('action', sa.String(), nullable=True),
+    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('user_uid', sa.String(), nullable=True),
+    sa.Column('ip_address', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_audit_uid'), 'document_audit', ['uid'], unique=False)
+    op.create_table('document_author',
+    sa.Column('document_uid', sa.String(), nullable=False),
+    sa.Column('user_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('document_uid', 'user_uid')
+    )
+    op.create_table('document_reader',
+    sa.Column('document_uid', sa.String(), nullable=False),
+    sa.Column('user_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('document_uid', 'user_uid')
+    )
+    op.create_table('document_relation',
+    sa.Column('source_document_uid', sa.String(), nullable=False),
+    sa.Column('target_document_uid', sa.String(), nullable=False),
+    sa.Column('relation_type', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['source_document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['target_document_uid'], ['document.uid'], ),
+    sa.PrimaryKeyConstraint('source_document_uid', 'target_document_uid')
+    )
+    op.create_table('document_review_cycle',
+    sa.Column('document_uid', sa.String(), nullable=True),
+    sa.Column('start_date', sa.DateTime(), nullable=True),
+    sa.Column('end_date', sa.DateTime(), nullable=True),
+    sa.Column('initiated_by_uid', sa.String(), nullable=True),
+    sa.Column('status', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['initiated_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_review_cycle_uid'), 'document_review_cycle', ['uid'], unique=False)
+    op.create_table('document_status',
+    sa.Column('document_uid', sa.String(), nullable=True),
+    sa.Column('status', sa.Enum('DRAFT', 'IN_REVIEW', 'APPROVED', 'PUBLISHED', 'ARCHIVED', 'RECALLED', 'EFFECTED', name='documentstate'), nullable=True),
+    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('user_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_status_uid'), 'document_status', ['uid'], unique=False)
+    op.create_table('document_subscription',
+    sa.Column('document_uid', sa.String(), nullable=True),
+    sa.Column('user_uid', sa.String(), nullable=True),
+    sa.Column('subscription_type', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_subscription_uid'), 'document_subscription', ['uid'], unique=False)
+    op.create_table('document_tagged',
+    sa.Column('document_uid', sa.String(), nullable=False),
+    sa.Column('document_tag_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['document_tag_uid'], ['document_tag.uid'], ),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.PrimaryKeyConstraint('document_uid', 'document_tag_uid')
+    )
+    op.create_table('document_version',
+    sa.Column('document_uid', sa.String(), nullable=True),
+    sa.Column('version_number', sa.String(), nullable=True),
+    sa.Column('content', sa.Text(), nullable=True),
+    sa.Column('editor', sa.String(length=20), nullable=True),
+    sa.Column('change_summary', sa.String(), nullable=True),
+    sa.Column('thumbnail', sa.Text(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['document_uid'], ['document.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_version_uid'), 'document_version', ['uid'], unique=False)
+    op.create_table('grind_errand',
+    sa.Column('category', sa.Enum('MESSAGE', 'ENGAGEMENT', 'TICKET', 'TODO', 'PROJECT', name='errandcategory'), nullable=True),
+    sa.Column('title', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('label_uid', sa.String(), nullable=True),
+    sa.Column('priority', sa.String(), nullable=True),
+    sa.Column('poster_uid', sa.String(), nullable=True),
+    sa.Column('reporter_uid', sa.String(), nullable=True),
+    sa.Column('assignee_uid', sa.String(), nullable=True),
+    sa.Column('start_date', sa.DateTime(), nullable=True),
+    sa.Column('end_date', sa.DateTime(), nullable=True),
+    sa.Column('progress', sa.Integer(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['assignee_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['label_uid'], ['grind_label.uid'], ),
+    sa.ForeignKeyConstraint(['poster_uid'], ['grind_poster.uid'], ),
+    sa.ForeignKeyConstraint(['reporter_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_errand_uid'), 'grind_errand', ['uid'], unique=False)
+    op.create_table('grind_poster_member',
+    sa.Column('grind_poster_uid', sa.String(), nullable=True),
+    sa.Column('user_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['grind_poster_uid'], ['grind_poster.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], )
+    )
+    op.create_table('grind_poster_stamp',
+    sa.Column('grind_poster_uid', sa.String(), nullable=True),
+    sa.Column('grind_stamp_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['grind_poster_uid'], ['grind_poster.uid'], ),
+    sa.ForeignKeyConstraint(['grind_stamp_uid'], ['grind_stamp.uid'], )
+    )
     op.create_table('abx_family',
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('order_uid', sa.String(), nullable=True),
@@ -368,6 +745,71 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_abx_family_uid'), 'abx_family', ['uid'], unique=False)
+    op.create_table('document_review_step',
+    sa.Column('review_cycle_uid', sa.String(), nullable=True),
+    sa.Column('reviewer_uid', sa.String(), nullable=True),
+    sa.Column('sequence', sa.Integer(), nullable=True),
+    sa.Column('status', sa.String(), nullable=True),
+    sa.Column('comments', sa.Text(), nullable=True),
+    sa.Column('action_date', sa.DateTime(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['review_cycle_uid'], ['document_review_cycle.uid'], ),
+    sa.ForeignKeyConstraint(['reviewer_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_document_review_step_uid'), 'document_review_step', ['uid'], unique=False)
+    op.create_table('grind_errand_discussion',
+    sa.Column('comment', sa.String(), nullable=True),
+    sa.Column('errand_uid', sa.String(), nullable=True),
+    sa.Column('parent_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['errand_uid'], ['grind_errand.uid'], ),
+    sa.ForeignKeyConstraint(['parent_uid'], ['grind_errand_discussion.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_errand_discussion_uid'), 'grind_errand_discussion', ['uid'], unique=False)
+    op.create_table('grind_errand_member',
+    sa.Column('grind_errand_uid', sa.String(), nullable=True),
+    sa.Column('grind_user_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['grind_errand_uid'], ['grind_errand.uid'], ),
+    sa.ForeignKeyConstraint(['grind_user_uid'], ['user.uid'], )
+    )
+    op.create_table('grind_errand_stamp',
+    sa.Column('grind_errand_uid', sa.String(), nullable=True),
+    sa.Column('grind_stamp_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['grind_errand_uid'], ['grind_errand.uid'], ),
+    sa.ForeignKeyConstraint(['grind_stamp_uid'], ['grind_stamp.uid'], )
+    )
+    op.create_table('grind_milestone',
+    sa.Column('errand_uid', sa.String(), nullable=True),
+    sa.Column('title', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('complete', sa.Boolean(), nullable=True),
+    sa.Column('assignee_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['assignee_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['errand_uid'], ['grind_errand.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_grind_milestone_uid'), 'grind_milestone', ['uid'], unique=False)
     op.create_table('abx_genus',
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('family_uid', sa.String(), nullable=True),
@@ -547,14 +989,49 @@ def downgrade():
     op.drop_table('abx_organism')
     op.drop_index(op.f('ix_abx_genus_uid'), table_name='abx_genus')
     op.drop_table('abx_genus')
+    op.drop_index(op.f('ix_grind_milestone_uid'), table_name='grind_milestone')
+    op.drop_table('grind_milestone')
+    op.drop_table('grind_errand_stamp')
+    op.drop_table('grind_errand_member')
+    op.drop_index(op.f('ix_grind_errand_discussion_uid'), table_name='grind_errand_discussion')
+    op.drop_table('grind_errand_discussion')
+    op.drop_index(op.f('ix_document_review_step_uid'), table_name='document_review_step')
+    op.drop_table('document_review_step')
     op.drop_index(op.f('ix_abx_family_uid'), table_name='abx_family')
     op.drop_table('abx_family')
+    op.drop_table('grind_poster_stamp')
+    op.drop_table('grind_poster_member')
+    op.drop_index(op.f('ix_grind_errand_uid'), table_name='grind_errand')
+    op.drop_table('grind_errand')
+    op.drop_index(op.f('ix_document_version_uid'), table_name='document_version')
+    op.drop_table('document_version')
+    op.drop_table('document_tagged')
+    op.drop_index(op.f('ix_document_subscription_uid'), table_name='document_subscription')
+    op.drop_table('document_subscription')
+    op.drop_index(op.f('ix_document_status_uid'), table_name='document_status')
+    op.drop_table('document_status')
+    op.drop_index(op.f('ix_document_review_cycle_uid'), table_name='document_review_cycle')
+    op.drop_table('document_review_cycle')
+    op.drop_table('document_relation')
+    op.drop_table('document_reader')
+    op.drop_table('document_author')
+    op.drop_index(op.f('ix_document_audit_uid'), table_name='document_audit')
+    op.drop_table('document_audit')
     op.drop_index(op.f('ix_abx_order_uid'), table_name='abx_order')
     op.drop_table('abx_order')
+    op.drop_index(op.f('ix_grind_poster_uid'), table_name='grind_poster')
+    op.drop_table('grind_poster')
+    op.drop_index(op.f('ix_document_uid'), table_name='document')
+    op.drop_table('document')
     op.drop_index(op.f('ix_abx_class_uid'), table_name='abx_class')
     op.drop_table('abx_class')
     op.drop_index(op.f('ix_abx_breakpoint_uid'), table_name='abx_breakpoint')
     op.drop_table('abx_breakpoint')
+    op.drop_table('grind_scheme_member')
+    op.drop_index(op.f('ix_grind_board_uid'), table_name='grind_board')
+    op.drop_table('grind_board')
+    op.drop_index(op.f('ix_document_template_uid'), table_name='document_template')
+    op.drop_table('document_template')
     op.drop_index(op.f('ix_abx_qc_ranges_uid'), table_name='abx_qc_ranges')
     op.drop_table('abx_qc_ranges')
     op.drop_index(op.f('ix_abx_phylum_uid'), table_name='abx_phylum')
@@ -567,6 +1044,24 @@ def downgrade():
     op.drop_table('abx_expected_res_phenotype')
     op.drop_index(op.f('ix_abx_antibiotic_guideline_uid'), table_name='abx_antibiotic_guideline')
     op.drop_table('abx_antibiotic_guideline')
+    op.drop_index(op.f('ix_grind_stamp_uid'), table_name='grind_stamp')
+    op.drop_table('grind_stamp')
+    op.drop_index(op.f('ix_grind_scheme_uid'), table_name='grind_scheme')
+    op.drop_table('grind_scheme')
+    op.drop_index(op.f('ix_grind_occurrence_uid'), table_name='grind_occurrence')
+    op.drop_table('grind_occurrence')
+    op.drop_index(op.f('ix_grind_media_uid'), table_name='grind_media')
+    op.drop_table('grind_media')
+    op.drop_index(op.f('ix_grind_label_uid'), table_name='grind_label')
+    op.drop_table('grind_label')
+    op.drop_index(op.f('ix_document_tag_uid'), table_name='document_tag')
+    op.drop_table('document_tag')
+    op.drop_index(op.f('ix_document_folder_uid'), table_name='document_folder')
+    op.drop_table('document_folder')
+    op.drop_index(op.f('ix_document_category_uid'), table_name='document_category')
+    op.drop_table('document_category')
+    op.drop_index(op.f('ix_app_activity_logs_uid'), table_name='app_activity_logs')
+    op.drop_table('app_activity_logs')
     op.drop_index(op.f('ix_abx_test_method_uid'), table_name='abx_test_method')
     op.drop_table('abx_test_method')
     op.drop_index(op.f('ix_abx_medium_uid'), table_name='abx_medium')

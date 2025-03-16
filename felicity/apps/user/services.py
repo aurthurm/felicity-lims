@@ -132,6 +132,10 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
                 permissions_uid.add(permission_uid)
         return await PermissionService().get_by_uids(list(permissions_uid))
 
+    async def get_user_groups(self, user_uid: str) -> list[Group]:
+        user_groups_uid = await self.repository.query_table(user_groups, ["group_uid"], user_uid=user_uid)
+        return await GroupService().get_by_uids(user_groups_uid) if user_groups_uid else []
+
 
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
     def __init__(self):
