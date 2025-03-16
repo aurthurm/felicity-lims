@@ -2,16 +2,18 @@ import logging
 from typing import List
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.analysis.permissions import CanVerifyAnalysisResult
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError, OperationSuccess
 from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.utils import retest_from_result_uids
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
@@ -50,7 +52,11 @@ AnalysisResultOperationResponse = strawberry.union(
 )
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.SUBMIT, FObject.RESULT)]
+    )]
+)
 async def submit_analysis_results(
         info,
         analysis_results: List[ARResultInputType],
@@ -105,7 +111,7 @@ async def verify_analysis_results(
         return OperationError(error="No analyses to verify are provided!")
 
     job_schema = job_schemas.JobCreate(  # noqa
-        action=JobAction.RESULT_VERIFY,
+        action=JobAction.RESULT_APPROVE,
         category=JobCategory.RESULT,
         priority=JobPriority.MEDIUM,
         job_id="0",
@@ -133,7 +139,11 @@ async def verify_analysis_results(
     )
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.RESULT)]
+    )]
+)
 async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -172,7 +182,11 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
     return ResultListingType(results=return_results)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.RETEST, FObject.RESULT)]
+    )]
+)
 async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -194,7 +208,11 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     return ResultListingType(results=_all)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.RESULT)]
+    )]
+)
 async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -225,7 +243,11 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     return ResultListingType(results=_all)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.RESULT)]
+    )]
+)
 async def re_instate_analysis_results(
         info, analyses: list[str]
 ) -> AnalysisResultResponse:

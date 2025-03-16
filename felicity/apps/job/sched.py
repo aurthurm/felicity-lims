@@ -59,7 +59,7 @@ async def run_jobs_if_exists():
             },
             JobCategory.RESULT: {
                 JobAction.RESULT_SUBMIT: submit_results,
-                JobAction.RESULT_VERIFY: verify_results,
+                JobAction.RESULT_APPROVE: verify_results,
             },
             JobCategory.SHIPMENT: {
                 JobAction.SHIPMENT_MANUAL_ASSIGN: populate_shipment_manually,

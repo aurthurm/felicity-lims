@@ -4,12 +4,13 @@ from datetime import timedelta
 from typing import List
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.analysis.permissions import CanVerifySample
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import (
     OperationError,
     OperationSuccess,
@@ -36,6 +37,7 @@ from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFl
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
@@ -123,7 +125,11 @@ class ManageAnalysisInputType:
     add: list[str] | None = None
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SAMPLE)]
+    )]
+)
 async def create_analysis_request(
         info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
@@ -306,7 +312,11 @@ async def create_analysis_request(
     return a_types.AnalysisRequestWithSamples(**_ar)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SAMPLE)]
+    )]
+)
 async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -355,14 +365,22 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=clones)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.SAMPLE)]
+    )]
+)
 async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
     cancelled = await SampleWorkFlow().cancel(samples, cancelled_by=felicity_user)
     return ResultedSampleListingType(samples=cancelled)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.SAMPLE)]
+    )]
+)
 async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -385,7 +403,11 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
     return ResultedSampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SAMPLE)]
+    )]
+)
 async def receive_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -429,7 +451,11 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.REJECT, FObject.SAMPLE)]
+    )]
+)
 async def reject_samples(
         info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
@@ -473,7 +499,11 @@ async def reject_samples(
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.PUBLISH, FObject.SAMPLE)]
+    )]
+)
 async def publish_samples(
         info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
@@ -519,7 +549,11 @@ async def publish_samples(
     )
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.PRINT, FObject.SAMPLE)]
+    )]
+)
 async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -540,7 +574,11 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.INVALIDATE, FObject.SAMPLE)]
+    )]
+)
 async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -592,7 +630,11 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.ASSIGN, FObject.SAMPLE)]
+    )]
+)
 async def samples_apply_template(
         info, uid: str, analysis_template_uid: str
 ) -> ResultedSampleActionResponse:
@@ -656,7 +698,11 @@ async def samples_apply_template(
     return ResultedSampleListingType(samples=[sample])
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(
+    extensions=[PermissionExtension(
+        permissions=[IsAuthenticated(), HasPermission(FAction.ASSIGN, FObject.SAMPLE)]
+    )]
+)
 async def manage_analyses(
         info, sample_uid: str, payload: ManageAnalysisInputType
 ) -> ResultedSampleActionResponse:

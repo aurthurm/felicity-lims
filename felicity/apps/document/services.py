@@ -5,11 +5,7 @@ from felicity.apps.document.schemas import DocumentCategoryCreate, DocumentCateg
     DocumentFolderUpdate, DocumentVersionCreate, DocumentVersionUpdate, DocumentReviewCycleCreate, \
     DocumentReviewCycleUpdate, DocumentReviewStepCreate, DocumentReviewStepUpdate, DocumentTemplateCreate, \
     DocumentTemplateUpdate, DocumentSubscriptionCreate, DocumentSubscriptionUpdate, DocumentAuditCreate, \
-    DocumentAuditUpdate, DocumentAIModelCreate, DocumentAIModelUpdate, DocumentAIAuthoringSessionCreate, \
-    DocumentAIAuthoringSessionUpdate, DocumentComplianceStandardCreate, DocumentComplianceStandardUpdate, \
-    DocumentAIComplianceCheckCreate, DocumentAIComplianceCheckUpdate, DocumentComplianceIssueCreate, \
-    DocumentComplianceIssueUpdate, DocumentAIReviewFeedbackCreate, DocumentAIReviewFeedbackUpdate, \
-    DocumentAnalyticsCreate, DocumentAnalyticsUpdate
+    DocumentAuditUpdate
 
 
 class DocumentCategoryService(BaseService[DocumentCategory, DocumentCategoryCreate, DocumentCategoryUpdate]):
@@ -129,43 +125,3 @@ class DocumentSubscriptionService(
 class DocumentAuditService(BaseService[DocumentAudit, DocumentAuditCreate, DocumentAuditUpdate]):
     def __init__(self):
         super().__init__(DocumentAuditRepository())
-
-
-class DocumentAIModelService(BaseService[DocumentAIModel, DocumentAIModelCreate, DocumentAIModelUpdate]):
-    def __init__(self):
-        super().__init__(DocumentAIModelRepository())
-
-
-class DocumentAIAuthoringSessionService(
-    BaseService[DocumentAIAuthoringSession, DocumentAIAuthoringSessionCreate, DocumentAIAuthoringSessionUpdate]):
-    def __init__(self):
-        super().__init__(DocumentAIAuthoringSessionRepository())
-
-
-class DocumentComplianceStandardService(
-    BaseService[DocumentComplianceStandard, DocumentComplianceStandardCreate, DocumentComplianceStandardUpdate]):
-    def __init__(self):
-        super().__init__(DocumentComplianceStandardRepository())
-
-
-class DocumentAIComplianceCheckService(
-    BaseService[DocumentAIComplianceCheck, DocumentAIComplianceCheckCreate, DocumentAIComplianceCheckUpdate]):
-    def __init__(self):
-        super().__init__(DocumentAIComplianceCheckRepository())
-
-
-class DocumentComplianceIssueService(
-    BaseService[DocumentComplianceIssue, DocumentComplianceIssueCreate, DocumentComplianceIssueUpdate]):
-    def __init__(self):
-        super().__init__(DocumentComplianceIssueRepository())
-
-
-class DocumentAIReviewFeedbackService(
-    BaseService[DocumentAIReviewFeedback, DocumentAIReviewFeedbackCreate, DocumentAIReviewFeedbackUpdate]):
-    def __init__(self):
-        super().__init__(DocumentAIReviewFeedbackRepository())
-
-
-class DocumentAnalyticsService(BaseService[DocumentAnalytics, DocumentAnalyticsCreate, DocumentAnalyticsUpdate]):
-    def __init__(self):
-        super().__init__(DocumentAnalyticsRepository())

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Table, Text, Enum, Float, Boolean, Integer
+from sqlalchemy import Column, String, DateTime, ForeignKey, Table, Text, Enum, Integer
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract.entity import BaseEntity
@@ -189,80 +189,3 @@ class DocumentAudit(BaseEntity):
     user_uid = Column(String, ForeignKey('user.uid'))
     user = relationship("User", foreign_keys=[user_uid])
     ip_address = Column(String, nullable=True)
-
-
-# AI Assistant
-class DocumentAIModel(BaseEntity):
-    __tablename__ = 'document_ai_model'
-
-    name = Column(String)
-    description = Column(String, nullable=True)
-    api_endpoint = Column(String)
-    capabilities = Column(String)  # JSON string of capabilities: ["authoring", "review", "compliance"]
-    is_active = Column(Boolean, default=True)
-
-
-class DocumentAIAuthoringSession(BaseEntity):
-    __tablename__ = 'document_ai_authoring_session'
-
-    document_uid = Column(String, ForeignKey('document.uid'))
-    document = relationship("Document", backref="ai_authoring_sessions")
-    ai_model_uid = Column(String, ForeignKey('document_ai_model.uid'))
-    ai_model = relationship("DocumentAIModel")
-    prompt = Column(Text)
-    conversation = Column(Text)  # JSON string of conversation history
-
-
-class DocumentComplianceStandard(BaseEntity):
-    __tablename__ = 'document_compliance_standard'
-
-    name = Column(String)
-    description = Column(String)
-    content = Column(Text)  # The full standard or SOP text
-    version = Column(String)
-
-
-class DocumentAIComplianceCheck(BaseEntity):
-    __tablename__ = 'document_ai_compliance_check'
-
-    document_uid = Column(String, ForeignKey('document.uid'))
-    document = relationship("Document", backref="compliance_checks")
-    standard_uid = Column(String, ForeignKey('document_compliance_standard.uid'))
-    standard = relationship("DocumentComplianceStandard")
-    results = Column(Text)  # JSON string of compliance results
-    compliance_score = Column(Float)
-    issues = relationship("DocumentComplianceIssue", back_populates="check")
-
-
-class DocumentComplianceIssue(BaseEntity):
-    __tablename__ = 'document_compliance_issue'
-
-    check_uid = Column(String, ForeignKey('document_ai_compliance_check.uid'))
-    check = relationship("DocumentAIComplianceCheck", back_populates="issues")
-    section = Column(String)  # Section in the document where issue was found
-    description = Column(Text)
-    severity = Column(String)  # "high", "medium", "low"
-    suggestion = Column(Text)
-
-
-class DocumentAIReviewFeedback(BaseEntity):
-    __tablename__ = 'document_ai_review_feedback'
-
-    review_step_uid = Column(String, ForeignKey('document_review_step.uid'))
-    review_step = relationship("DocumentReviewStep", backref="ai_feedback")
-    ai_model_uid = Column(String, ForeignKey('document_ai_model.uid'))
-    ai_model = relationship("DocumentAIModel")
-    suggestions = Column(Text)  # AI-generated review feedback
-
-
-class DocumentAnalytics(BaseEntity):
-    __tablename__ = 'document_analytics'
-
-    document_uid = Column(String, ForeignKey('document.uid'))
-    document = relationship("Document", backref="analytics")
-    readability_score = Column(Float)
-    sentiment_score = Column(Float)
-    complexity_score = Column(Float)
-    summary = Column(Text)
-    key_topics = Column(String)  # JSON array of extracted topics
-    generated_date = Column(DateTime)

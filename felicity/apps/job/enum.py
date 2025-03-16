@@ -18,7 +18,7 @@ class JobAction(StrEnum):
     WORKSHEET_ASSIGN = auto()
     WORKSHEET_MANUAL_ASSIGN = auto()
     WORKSHEET_UN_ASSIGN = auto()
-    RESULT_VERIFY = auto()
+    RESULT_APPROVE = auto()
     RESULT_SUBMIT = auto()
     GENERATE_REPORT = auto()
     IMPRESS_REPORT = auto()

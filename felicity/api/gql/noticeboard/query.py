@@ -1,31 +1,45 @@
 from typing import List, Optional
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.noticeboard.types import NoticeType
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.noticeboard.services import NoticeService
 from felicity.core.dtz import timenow_dt
 
 
 @strawberry.type
 class NoticeQuery:
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.NOTICE)]
+        )]
+    )
     async def notice_by_uid(self, info, uid: str) -> Optional[NoticeType]:
         return await NoticeService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
+        )]
+    )
     async def notices_by_creator(self, info, uid: str) -> Optional[List[NoticeType]]:
         return await NoticeService().get_all(
             created_by_uid=uid, expiry__gt=timenow_dt()
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
+        )]
+    )
     async def notice_filter(
-        self,
-        info,
-        group_uid: str | None,
-        department_uid: str | None,
+            self,
+            info,
+            group_uid: str | None,
+            department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
 

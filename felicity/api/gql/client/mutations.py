@@ -1,14 +1,16 @@
 import logging
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 from strawberry.types import Info  # noqa
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.client.types import ClientContactType, ClientType
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import DeletedItem, OperationError
 from felicity.apps.client import schemas
 from felicity.apps.client.services import ClientContactService, ClientService
+from felicity.apps.guard import FAction, FObject
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -61,9 +63,13 @@ class ClientContactInputType:
 
 @strawberry.type
 class ClientMutations:
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.CLIENT)]
+        )]
+    )
     async def create_client(
-        self, info: Info, payload: ClientInputType
+            self, info: Info, payload: ClientInputType
     ) -> ClientResponse:
         felicity_user = await auth_from_info(info)
 
@@ -103,9 +109,13 @@ class ClientMutations:
         print(client.marshal_simple())
         return ClientType(**client.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.CLIENT)]
+        )]
+    )
     async def update_client(
-        self, info, uid: str, payload: ClientInputType
+            self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
         await auth_from_info(info)
 
@@ -129,9 +139,13 @@ class ClientMutations:
         client = await ClientService().update(client.uid, obj_in)
         return ClientType(**client.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.CLIENT)]
+        )]
+    )
     async def create_client_contact(
-        self, info, payload: ClientContactInputType
+            self, info, payload: ClientContactInputType
     ) -> ClientContactResponse:
         felicity_user = await auth_from_info(info)
 
@@ -166,9 +180,13 @@ class ClientMutations:
             **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
         )
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.CLIENT)]
+        )]
+    )
     async def update_client_contact(
-        self, info, uid: str, payload: ClientContactInputType
+            self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
         await auth_from_info(info)
 
@@ -194,7 +212,11 @@ class ClientMutations:
             **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
         )
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.CLIENT)]
+        )]
+    )
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
         await auth_from_info(info)
         client_contact = await ClientContactService().get(uid=uid)

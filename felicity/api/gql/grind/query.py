@@ -2,9 +2,10 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.grind import types
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import PageInfo
 from felicity.apps.grind.enum import StampCategory
 from felicity.apps.grind.services import (
@@ -17,13 +18,17 @@ from felicity.apps.grind.services import (
     GrindMilestoneService,
     GrindOccurrenceService, GrindStampService, GrindErrandDiscussionService,
 )
+from felicity.apps.guard import FAction, FObject
 from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type
 class GrindQuery:
-    # Scheme Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_scheme_all(
             self,
             info,
@@ -60,12 +65,20 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_scheme_by_uid(self, info, uid: str) -> Optional[types.GrindSchemeType]:
         return await GrindSchemeService().get(uid=uid)
 
     # Board Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_board_all(
             self,
             info,
@@ -106,16 +119,28 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_board_by_uid(self, info, uid: str) -> Optional[types.GrindBoardType]:
         return await GrindBoardService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_boards_by_scheme(self, info, scheme_uid: str) -> List[types.GrindBoardType]:
         return await GrindBoardService().get_all(scheme_uid=scheme_uid)
 
     # Poster Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_poster_all(
             self,
             info,
@@ -164,16 +189,28 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_poster_by_uid(self, info, uid: str) -> Optional[types.GrindPosterType]:
         return await GrindPosterService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_posters_by_board(self, info, board_uid: str) -> List[types.GrindPosterType]:
         return await GrindPosterService().get_all(board_uid=board_uid)
 
     # Errand Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_errand_all(
             self,
             info,
@@ -230,20 +267,36 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_errand_by_uid(self, info, uid: str) -> Optional[types.GrindErrandType]:
         return await GrindErrandService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_errands_by_poster(self, info, poster_uid: str) -> List[types.GrindErrandType]:
         return await GrindErrandService().get_all(poster_uid=poster_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_errands_by_assignee(self, info, assignee_uid: str) -> List[types.GrindErrandType]:
         return await GrindErrandService().get_all(assignee_uid=assignee_uid)
 
     # Label Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_label_all(
             self,
             info,
@@ -280,16 +333,28 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_label_by_uid(self, info, uid: str) -> Optional[types.GrindLabelType]:
         return await GrindLabelService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_labels_by_category(self, info, category: str) -> List[types.GrindLabelType]:
         return await GrindLabelService().get_all(category=category)
 
     # Label Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_stamp_all(
             self,
             info,
@@ -326,16 +391,28 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_stamp_by_uid(self, info, uid: str) -> Optional[types.GrindStampType]:
         return await GrindStampService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_stamp_by_category(self, info, category: StampCategory) -> List[types.GrindStampType]:
         return await GrindStampService().get_all(category=category)
 
     # Media Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_media_all(
             self,
             info,
@@ -371,16 +448,28 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_media_by_uid(self, info, uid: str) -> Optional[types.GrindMediaType]:
         return await GrindMediaService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_media_by_target(self, info, target: str, target_uid: str) -> List[types.GrindMediaType]:
         return await GrindMediaService().get_all(target=target, target_uid=target_uid)
 
     # Milestone Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_milestone_all(
             self,
             info,
@@ -429,20 +518,36 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_milestone_by_uid(self, info, uid: str) -> Optional[types.GrindMilestoneType]:
         return await GrindMilestoneService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_milestones_by_errand(self, info, errand_uid: str) -> List[types.GrindMilestoneType]:
         return await GrindMilestoneService().get_all(errand_uid=errand_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_milestones_by_assignee(self, info, assignee_uid: str) -> List[types.GrindMilestoneType]:
         return await GrindMilestoneService().get_all(assignee_uid=assignee_uid)
 
     # Occurrence Queries
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_occurrence_all(
             self,
             info,
@@ -491,24 +596,44 @@ class GrindQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_occurrence_by_uid(self, info, uid: str) -> Optional[types.GrindOccurrenceType]:
         return await GrindOccurrenceService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_occurrences_by_target(self, info, target: str, target_uid: str) -> List[types.GrindOccurrenceType]:
         return await GrindOccurrenceService().get_all(target=target, target_uid=target_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_occurrences_by_actor(self, info, actor_uid: str) -> List[types.GrindOccurrenceType]:
         return await GrindOccurrenceService().get_all(actor_uid=actor_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_errand_discussions(self, info, errand_uid: str) -> List[types.GrindErrandDiscussionType]:
         return await GrindErrandDiscussionService().get_all(
             errand_uid=errand_uid, parent_uid=None, sort_attrs=["-created_at"]
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SCHEMES)]
+        )]
+    )
     async def grind_errand_discussions_by_parent(self, info, parent_uid: str) -> List[types.GrindErrandDiscussionType]:
         return await GrindErrandDiscussionService().get_all(parent_uid=parent_uid, sort_attrs=["-created_at"])

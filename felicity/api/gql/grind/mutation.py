@@ -5,10 +5,11 @@ import shutil
 import uuid
 
 import strawberry
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.grind import inputs, responses, types
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError, DeletedItem, DeleteResponse
 from felicity.apps.grind import schema
 from felicity.apps.grind.enum import OccurrenceTarget
@@ -23,6 +24,7 @@ from felicity.apps.grind.services import (
     GrindOccurrenceService,
     GrindStampService, GrindErrandDiscussionService,
 )
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.iol.minio import MinioClient
 from felicity.apps.iol.minio.enum import MinioBucket
 from felicity.core.config import settings
@@ -34,8 +36,11 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class GrindMutations:
-    # Scheme Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SCHEMES)]
+        )]
+    )
     async def create_grind_scheme(
             self, info, payload: inputs.GrindCreateSchemeInput
     ) -> responses.GrindSchemeResponse:
@@ -69,7 +74,11 @@ class GrindMutations:
 
         return types.GrindSchemeType(**scheme.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SCHEMES, "modify")]
+        )]
+    )
     async def update_grind_scheme(
             self, info, uid: str, payload: inputs.GrindUpdateSchemeInput
     ) -> responses.GrindSchemeResponse:
@@ -107,7 +116,11 @@ class GrindMutations:
 
         return types.GrindSchemeType(**scheme.marshal_simple(exclude=["members", "boards"]))
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.SCHEMES)]
+        )]
+    )
     async def delete_grind_scheme(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
 

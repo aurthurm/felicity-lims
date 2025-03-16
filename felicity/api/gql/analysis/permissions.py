@@ -4,7 +4,6 @@ import typing
 from strawberry.permission import BasePermission
 
 from felicity.api.deps import Info
-from felicity.api.gql.types.generic import PermissionsError
 from felicity.apps.analysis.permissions import (
     check_result_verification,
     check_sample_verification,
@@ -17,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 class CanVerifySample(BasePermission):
     message = "You have no privileges to verify this sample"
-    error_class = PermissionsError
     error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
@@ -25,7 +23,7 @@ class CanVerifySample(BasePermission):
         if not user:
             return False
 
-        if not user.is_active or not has_perm(user.uid, FAction.VERIFY, FObject.SAMPLE):
+        if not user.is_active or not has_perm(user.uid, FAction.APPROVE, FObject.SAMPLE):
             return False
 
         try:
@@ -46,7 +44,6 @@ class CanVerifySample(BasePermission):
 
 class CanVerifyAnalysisResult(BasePermission):
     message = "You have no privileges to verify these analyses"
-    error_class = PermissionsError
     error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
@@ -55,7 +52,7 @@ class CanVerifyAnalysisResult(BasePermission):
         if not user:
             return False
 
-        if not user.is_active or not has_perm(user.uid, FAction.VERIFY, FObject.SAMPLE):
+        if not user.is_active or not has_perm(user.uid, FAction.APPROVE, FObject.RESULT):
             return False
 
         try:

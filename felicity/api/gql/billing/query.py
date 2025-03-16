@@ -2,9 +2,10 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.billing import types
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.apps.billing.services import (
     AnalysisDiscountService,
@@ -17,24 +18,29 @@ from felicity.apps.billing.services import (
     VoucherCodeService,
     VoucherService,
 )
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type
 class BillingQuery:
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bills(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        is_active: bool | None = None,
-        partial: bool | None = None,
-        client_uid: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            is_active: bool | None = None,
+            partial: bool | None = None,
+            client_uid: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> types.TestBillCursorPage:
         filters = []
 
@@ -78,83 +84,139 @@ class BillingQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bill_by_uid(self, info, uid: str) -> Optional[types.TestBillType]:
         return await TestBillService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bills_for_patient(
-        self, info, patient_uid: str
+            self, info, patient_uid: str
     ) -> Optional[list[types.TestBillType]]:
         bills = await TestBillService().get_all(patient_uid=patient_uid)
         return sorted(bills, key=lambda b: b.uid, reverse=True)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bills_for_client(
-        self, info, client_uid: str
+            self, info, client_uid: str
     ) -> Optional[list[types.TestBillType]]:
         return await TestBillService().get_all(client_uid=client_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bill_transactions(
-        self, info, bill_uid: str
+            self, info, bill_uid: str
     ) -> Optional[list[types.TestBillTransactionType]]:
         transactions = await TestBillTransactionService().get_all(
             test_bill_uid=bill_uid
         )
         return sorted(transactions, key=lambda t: t.uid, reverse=True)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bill_invoices(
-        self, info, bill_uid: str
+            self, info, bill_uid: str
     ) -> Optional[list[types.TestBillInvoiceType]]:
         return await TestBillInvoiceService().get(test_bill_uid=bill_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bill_invoice(
-        self, info, invoice_uid: str
+            self, info, invoice_uid: str
     ) -> Optional[types.TestBillInvoiceType]:
         return await TestBillInvoiceService().get(uid=invoice_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bill_invoice_create(self, info, bill_uid: str) -> BytesScalar | None:
         bill = await TestBillService().get(uid=bill_uid)
         return await impress_invoice(bill)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def price_for_profile(
-        self, info, profile_uid: str
+            self, info, profile_uid: str
     ) -> Optional[types.ProfilePriceType]:
         return await ProfilePriceService().get(profile_uid=profile_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def price_for_analysis(
-        self, info, analysis_uid: str
+            self, info, analysis_uid: str
     ) -> Optional[types.AnalysisPriceType]:
         return await AnalysisPriceService().get(analysis_uid=analysis_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def discount_for_profile(
-        self, info, profile_uid: str
+            self, info, profile_uid: str
     ) -> Optional[types.ProfileDiscountType]:
         return await ProfileDiscountService().get(profile_uid=profile_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def discount_for_analysis(
-        self, info, analysis_uid: str
+            self, info, analysis_uid: str
     ) -> Optional[types.AnalysisDiscountType]:
         return await AnalysisDiscountService().get(analysis_uid=analysis_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def voucher_all(self, info) -> Optional[list[types.VoucherType]]:
         return await VoucherService().all()
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def voucher_by_uid(self, info, uid: str) -> Optional[types.VoucherType]:
         return await VoucherService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def voucher_codes(
-        self, info, voucher_uid: str
+            self, info, voucher_uid: str
     ) -> Optional[list[types.VoucherCodeType]]:
         return await VoucherCodeService().get_all(voucher_uid=voucher_uid)

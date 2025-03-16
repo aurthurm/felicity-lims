@@ -40,11 +40,6 @@ class PageInfo:
 
 
 @strawberry.type
-class PermissionsError:
-    message: str
-
-
-@strawberry.type
 class DeletedItem:
     uid: str
 

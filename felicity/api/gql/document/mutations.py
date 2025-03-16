@@ -1,10 +1,11 @@
 import logging
 
 import strawberry
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.document import types, inputs, responses
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError
 from felicity.apps.document import schemas
 from felicity.apps.document.enum import DocumentState
@@ -20,15 +21,9 @@ from felicity.apps.document.services import (
     DocumentTemplateService,
     DocumentSubscriptionService,
     DocumentAuditService,
-    DocumentAIModelService,
-    DocumentAIAuthoringSessionService,
-    DocumentComplianceStandardService,
-    DocumentAIComplianceCheckService,
-    DocumentComplianceIssueService,
-    DocumentAIReviewFeedbackService,
-    DocumentAnalyticsService,
 )
 from felicity.apps.document.utils import get_thumbnail
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.setup.services import DepartmentService
 from felicity.core.dtz import timenow_dt
 
@@ -166,7 +161,11 @@ class DocumentMutations:
         return types.DocumentTagType(**tag.marshal_simple())
 
     # Document Folder Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def create_document_folder(
             self, info, payload: inputs.DocumentFolderInputType
     ) -> responses.DocumentFolderResponse:
@@ -195,7 +194,11 @@ class DocumentMutations:
         folder = await DocumentFolderService().create(obj_in)
         return types.DocumentFolderType(**folder.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def update_document_folder(
             self, info, uid: str, payload: inputs.DocumentFolderUpdateInputType
     ) -> responses.DocumentFolderResponse:
@@ -234,7 +237,11 @@ class DocumentMutations:
         folder = await DocumentFolderService().update(folder.uid, obj_in)
         return types.DocumentFolderType(**folder.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.DOCUMENT)]
+        )]
+    )
     async def delete_document_folder(self, info, uid: str) -> responses.DocumentFolderResponse:
         folder = await DocumentFolderService().get(uid=uid)
         if not folder:
@@ -258,7 +265,11 @@ class DocumentMutations:
         return types.DocumentFolderType(**folder.marshal_simple())
 
     # Document Template Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def create_document_template(
             self, info, payload: inputs.DocumentTemplateInputType
     ) -> responses.DocumentTemplateResponse:
@@ -287,7 +298,11 @@ class DocumentMutations:
         template = await DocumentTemplateService().create(obj_in)
         return types.DocumentTemplateType(**template.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def update_document_template(
             self, info, uid: str, payload: inputs.DocumentTemplateUpdateInputType
     ) -> responses.DocumentTemplateResponse:
@@ -323,7 +338,11 @@ class DocumentMutations:
         template = await DocumentTemplateService().update(template.uid, obj_in)
         return types.DocumentTemplateType(**template.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def delete_document_template(self, info, uid: str) -> responses.DocumentTemplateResponse:
         template = await DocumentTemplateService().get(uid=uid)
         if not template:
@@ -340,7 +359,11 @@ class DocumentMutations:
         return types.DocumentTemplateType(**template.marshal_simple())
 
     # Document Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def create_document(
             self, info, payload: inputs.DocumentInputType
     ) -> responses.DocumentResponse:
@@ -457,7 +480,11 @@ class DocumentMutations:
                      "analytics", "latest_version", "content", "editor", "status"]
         ))
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.DOCUMENT)]
+        )]
+    )
     async def update_document(
             self, info, uid: str, payload: inputs.DocumentUpdateInputType
     ) -> responses.DocumentResponse:
@@ -550,7 +577,11 @@ class DocumentMutations:
 
         return types.DocumentType(**document.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def delete_document(self, info, uid: str) -> responses.DocumentResponse:
         felicity_user = await auth_from_info(info)
 
@@ -599,7 +630,11 @@ class DocumentMutations:
         return types.DocumentType(**document.marshal_simple())
 
     # Document Version Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def create_document_version(
             self, info, payload: inputs.DocumentVersionInputType
     ) -> responses.DocumentVersionResponse:
@@ -636,7 +671,11 @@ class DocumentMutations:
 
         return types.DocumentVersionType(**version.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def update_document_version(
             self, info, uid: str, payload: inputs.DocumentVersionUpdateInputType
     ) -> responses.DocumentVersionResponse:
@@ -682,7 +721,11 @@ class DocumentMutations:
 
         return types.DocumentVersionType(**version.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.DOCUMENT)]
+        )]
+    )
     async def delete_document_version(self, info, uid: str) -> responses.DocumentVersionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -787,7 +830,11 @@ class DocumentMutations:
         return types.DocumentStatusType(**status.marshal_simple())
 
     # Document Review Cycle Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def create_document_review_cycle(
             self, info, payload: inputs.DocumentReviewCycleInputType
     ) -> responses.DocumentReviewCycleResponse:
@@ -839,7 +886,11 @@ class DocumentMutations:
 
         return types.DocumentReviewCycleType(**review_cycle.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def update_document_review_cycle(
             self, info, uid: str, payload: inputs.DocumentReviewCycleUpdateInputType
     ) -> responses.DocumentReviewCycleResponse:
@@ -913,7 +964,11 @@ class DocumentMutations:
 
         return types.DocumentReviewCycleType(**review_cycle.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def delete_document_review_cycle(self, info, uid: str) -> responses.DocumentReviewCycleResponse:
         felicity_user = await auth_from_info(info)
 
@@ -941,7 +996,11 @@ class DocumentMutations:
         return types.DocumentReviewCycleType(**review_cycle.marshal_simple())
 
     # Document Review Step Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
+        )]
+    )
     async def update_document_review_step(
             self, info, uid: str, payload: inputs.DocumentReviewStepUpdateInputType
     ) -> responses.DocumentReviewStepResponse:
@@ -1239,644 +1298,3 @@ class DocumentMutations:
         await DocumentAuditService().create(audit_in)
 
         return types.DocumentType(**source_document.marshal_simple())
-
-    # AI Model Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_ai_model(
-            self, info, payload: inputs.DocumentAIModelInputType
-    ) -> responses.DocumentAIModelResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check for duplicate name
-        exists = await DocumentAIModelService().get(name=payload.name)
-        if exists:
-            return OperationError(error=f"AI model with name '{payload.name}' already exists")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.DocumentAIModelCreate(**incoming)
-        model = await DocumentAIModelService().create(obj_in)
-        return types.DocumentAIModelType(**model.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_ai_model(
-            self, info, uid: str, payload: inputs.DocumentAIModelUpdateInputType
-    ) -> responses.DocumentAIModelResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        model = await DocumentAIModelService().get(uid=uid)
-        if not model:
-            return OperationError(
-                error=f"AI model with uid {uid} not found. Cannot update object..."
-            )
-
-        # Check for duplicate name if changing
-        if payload.name and payload.name != model.name:
-            exists = await DocumentAIModelService().get(name=payload.name)
-            if exists and exists.uid != uid:
-                return OperationError(error=f"AI model with name '{payload.name}' already exists")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        for field in model.to_dict():
-            if field in payload.__dict__:
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentAIModelUpdate(**update_data)
-        model = await DocumentAIModelService().update(model.uid, obj_in)
-        return types.DocumentAIModelType(**model.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_ai_model(self, info, uid: str) -> responses.DocumentAIModelResponse:
-        model = await DocumentAIModelService().get(uid=uid)
-        if not model:
-            return OperationError(error=f"AI model with uid {uid} not found.")
-
-        # Check if model is in use by authoring sessions
-        sessions = await DocumentAIAuthoringSessionService().get_all(model_uid=uid)
-        if sessions and len(sessions) > 0:
-            return OperationError(
-                error="Cannot delete AI model that is referenced by authoring sessions."
-            )
-
-        # Check if model is in use by review feedback
-        feedback = await DocumentAIReviewFeedbackService().get_all(model_uid=uid)
-        if feedback and len(feedback) > 0:
-            return OperationError(
-                error="Cannot delete AI model that is referenced by review feedback."
-            )
-
-        await DocumentAIModelService().delete(uid)
-        return types.DocumentAIModelType(**model.marshal_simple())
-
-    # AI Authoring Session Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_ai_authoring_session(
-            self, info, payload: inputs.DocumentAIAuthoringSessionInputType
-    ) -> responses.DocumentAIAuthoringSessionResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check if document exists
-        document = await DocumentService().get(uid=payload.document)
-        if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
-
-        # Check if model exists
-        model = await DocumentAIModelService().get(uid=payload.model)
-        if not model:
-            return OperationError(error=f"AI model with uid {payload.model} not found.")
-
-        # Check if model is active
-        if not model.is_active:
-            return OperationError(error=f"AI model '{model.name}' is not active.")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-            "document_uid": payload.document,
-            "model_uid": payload.model,
-        }
-
-        for k, v in payload.__dict__.items():
-            if k not in ["document", "model"]:  # Skip fields we've handled
-                incoming[k] = v
-
-        obj_in = schemas.DocumentAIAuthoringSessionCreate(**incoming)
-        session = await DocumentAIAuthoringSessionService().create(obj_in)
-
-        # Create audit record for AI session creation
-        audit_in = schemas.DocumentAuditCreate(
-            document_uid=document.uid,
-            action="ai_authoring_session_created",
-            date=timenow_dt(),
-            user_uid=felicity_user.uid,
-            created_by_uid=felicity_user.uid,
-            updated_by_uid=felicity_user.uid,
-        )
-        await DocumentAuditService().create(audit_in)
-
-        return types.DocumentAIAuthoringSessionType(**session.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_ai_authoring_session(
-            self, info, uid: str, payload: inputs.DocumentAIAuthoringSessionUpdateInputType
-    ) -> responses.DocumentAIAuthoringSessionResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        session = await DocumentAIAuthoringSessionService().get(uid=uid)
-        if not session:
-            return OperationError(
-                error=f"AI authoring session with uid {uid} not found. Cannot update object..."
-            )
-
-        # Validate foreign keys if changing
-        if payload.document and payload.document != session.document_uid:
-            document = await DocumentService().get(uid=payload.document)
-            if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
-
-        if payload.model and payload.model != session.model_uid:
-            model = await DocumentAIModelService().get(uid=payload.model)
-            if not model:
-                return OperationError(error=f"AI model with uid {payload.model} not found.")
-            # Check if model is active
-            if not model.is_active:
-                return OperationError(error=f"AI model '{model.name}' is not active.")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        # Map document to document_uid
-        if payload.document is not None:
-            update_data["document_uid"] = payload.document
-
-        # Map model to model_uid
-        if payload.model is not None:
-            update_data["model_uid"] = payload.model
-
-        for field in session.to_dict():
-            if field in payload.__dict__ and field not in ["document", "model"]:
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentAIAuthoringSessionUpdate(**update_data)
-        session = await DocumentAIAuthoringSessionService().update(session.uid, obj_in)
-
-        return types.DocumentAIAuthoringSessionType(**session.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_ai_authoring_session(self, info,
-                                                   uid: str) -> responses.DocumentAIAuthoringSessionResponse:
-        felicity_user = await auth_from_info(info)
-
-        session = await DocumentAIAuthoringSessionService().get(uid=uid)
-        if not session:
-            return OperationError(error=f"AI authoring session with uid {uid} not found.")
-
-        # Create audit record for AI session deletion
-        audit_in = schemas.DocumentAuditCreate(
-            document_uid=session.document_uid,
-            action="ai_authoring_session_deleted",
-            date=timenow_dt(),
-            user_uid=felicity_user.uid,
-            created_by_uid=felicity_user.uid,
-            updated_by_uid=felicity_user.uid,
-        )
-        await DocumentAuditService().create(audit_in)
-
-        await DocumentAIAuthoringSessionService().delete(uid)
-        return types.DocumentAIAuthoringSessionType(**session.marshal_simple())
-
-    # Compliance Standard Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_compliance_standard(
-            self, info, payload: inputs.DocumentComplianceStandardInputType
-    ) -> responses.DocumentComplianceStandardResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check for duplicate name/version combination
-        exists = await DocumentComplianceStandardService().get(name=payload.name, version=payload.version)
-        if exists:
-            return OperationError(
-                error=f"Compliance standard with name '{payload.name}' and version '{payload.version}' already exists")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.DocumentComplianceStandardCreate(**incoming)
-        standard = await DocumentComplianceStandardService().create(obj_in)
-        return types.DocumentComplianceStandardType(**standard.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_compliance_standard(
-            self, info, uid: str, payload: inputs.DocumentComplianceStandardUpdateInputType
-    ) -> responses.DocumentComplianceStandardResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        standard = await DocumentComplianceStandardService().get(uid=uid)
-        if not standard:
-            return OperationError(
-                error=f"Compliance standard with uid {uid} not found. Cannot update object..."
-            )
-
-        # Check for duplicate name/version if changing
-        if (payload.name and payload.name != standard.name) or (
-                payload.version and payload.version != standard.version):
-            name = payload.name or standard.name
-            version = payload.version or standard.version
-            exists = await DocumentComplianceStandardService().get(name=name, version=version)
-            if exists and exists.uid != uid:
-                return OperationError(
-                    error=f"Compliance standard with name '{name}' and version '{version}' already exists")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        for field in standard.to_dict():
-            if field in payload.__dict__:
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentComplianceStandardUpdate(**update_data)
-        standard = await DocumentComplianceStandardService().update(standard.uid, obj_in)
-        return types.DocumentComplianceStandardType(**standard.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_compliance_standard(self, info, uid: str) -> responses.DocumentComplianceStandardResponse:
-        standard = await DocumentComplianceStandardService().get(uid=uid)
-        if not standard:
-            return OperationError(error=f"Compliance standard with uid {uid} not found.")
-
-        # Check if standard is in use by compliance checks
-        checks = await DocumentAIComplianceCheckService().get_all(standard_uid=uid)
-        if checks and len(checks) > 0:
-            return OperationError(
-                error="Cannot delete compliance standard that is referenced by compliance checks."
-            )
-
-        await DocumentComplianceStandardService().delete(uid)
-        return types.DocumentComplianceStandardType(**standard.marshal_simple())
-
-    # AI Compliance Check Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_ai_compliance_check(
-            self, info, payload: inputs.DocumentAIComplianceCheckInputType
-    ) -> responses.DocumentAIComplianceCheckResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check if document exists
-        document = await DocumentService().get(uid=payload.document)
-        if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
-
-        # Check if standard exists
-        standard = await DocumentComplianceStandardService().get(uid=payload.standard)
-        if not standard:
-            return OperationError(error=f"Compliance standard with uid {payload.standard} not found.")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-            "document_uid": payload.document,
-            "standard_uid": payload.standard,
-        }
-
-        for k, v in payload.__dict__.items():
-            if k not in ["document", "standard", "issues"]:  # Skip fields we've handled
-                incoming[k] = v
-
-        obj_in = schemas.DocumentAIComplianceCheckCreate(**incoming)
-        check = await DocumentAIComplianceCheckService().create(obj_in)
-
-        # Create compliance issues if provided
-        if payload.issues and len(payload.issues) > 0:
-            for issue_data in payload.issues:
-                issue_in = schemas.DocumentComplianceIssueCreate(
-                    check_uid=check.uid,
-                    section=issue_data.section,
-                    description=issue_data.description,
-                    severity=issue_data.severity,
-                    suggestion=issue_data.suggestion,
-                    created_by_uid=felicity_user.uid,
-                    updated_by_uid=felicity_user.uid,
-                )
-                await DocumentComplianceIssueService().create(issue_in)
-
-        # Create audit record for compliance check
-        audit_in = schemas.DocumentAuditCreate(
-            document_uid=document.uid,
-            action="compliance_check_created",
-            date=timenow_dt(),
-            user_uid=felicity_user.uid,
-            created_by_uid=felicity_user.uid,
-            updated_by_uid=felicity_user.uid,
-        )
-        await DocumentAuditService().create(audit_in)
-
-        return types.DocumentAIComplianceCheckType(**check.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_ai_compliance_check(
-            self, info, uid: str, payload: inputs.DocumentAIComplianceCheckUpdateInputType
-    ) -> responses.DocumentAIComplianceCheckResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        check = await DocumentAIComplianceCheckService().get(uid=uid)
-        if not check:
-            return OperationError(
-                error=f"Compliance check with uid {uid} not found. Cannot update object..."
-            )
-
-        # Validate foreign keys if changing
-        if payload.document and payload.document != check.document_uid:
-            document = await DocumentService().get(uid=payload.document)
-            if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
-
-        if payload.standard and payload.standard != check.standard_uid:
-            standard = await DocumentComplianceStandardService().get(uid=payload.standard)
-            if not standard:
-                return OperationError(error=f"Compliance standard with uid {payload.standard} not found.")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        # Map document to document_uid
-        if payload.document is not None:
-            update_data["document_uid"] = payload.document
-
-        # Map standard to standard_uid
-        if payload.standard is not None:
-            update_data["standard_uid"] = payload.standard
-
-        for field in check.to_dict():
-            if field in payload.__dict__ and field not in ["document", "standard"]:
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentAIComplianceCheckUpdate(**update_data)
-        check = await DocumentAIComplianceCheckService().update(check.uid, obj_in)
-
-        return types.DocumentAIComplianceCheckType(**check.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_ai_compliance_check(self, info, uid: str) -> responses.DocumentAIComplianceCheckResponse:
-        felicity_user = await auth_from_info(info)
-
-        check = await DocumentAIComplianceCheckService().get(uid=uid)
-        if not check:
-            return OperationError(error=f"Compliance check with uid {uid} not found.")
-
-        # Delete associated compliance issues
-        issues = await DocumentComplianceIssueService().get_all(check_uid=uid)
-        for issue in issues:
-            await DocumentComplianceIssueService().delete(issue.uid)
-
-        # Create audit record for compliance check deletion
-        audit_in = schemas.DocumentAuditCreate(
-            document_uid=check.document_uid,
-            action="compliance_check_deleted",
-            date=timenow_dt(),
-            user_uid=felicity_user.uid,
-            created_by_uid=felicity_user.uid,
-            updated_by_uid=felicity_user.uid,
-        )
-        await DocumentAuditService().create(audit_in)
-
-        await DocumentAIComplianceCheckService().delete(uid)
-        return types.DocumentAIComplianceCheckType(**check.marshal_simple())
-
-    # Compliance Issue Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_compliance_issue(
-            self, info, payload: inputs.DocumentComplianceIssueInputType
-    ) -> responses.DocumentComplianceIssueResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check if compliance check exists
-        check = await DocumentAIComplianceCheckService().get(uid=payload.check)
-        if not check:
-            return OperationError(error=f"Compliance check with uid {payload.check} not found.")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-            "check_uid": payload.check,
-        }
-
-        for k, v in payload.__dict__.items():
-            if k != "check":  # Skip check as we've handled it
-                incoming[k] = v
-
-        obj_in = schemas.DocumentComplianceIssueCreate(**incoming)
-        issue = await DocumentComplianceIssueService().create(obj_in)
-        return types.DocumentComplianceIssueType(**issue.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_compliance_issue(
-            self, info, uid: str, payload: inputs.DocumentComplianceIssueUpdateInputType
-    ) -> responses.DocumentComplianceIssueResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        issue = await DocumentComplianceIssueService().get(uid=uid)
-        if not issue:
-            return OperationError(
-                error=f"Compliance issue with uid {uid} not found. Cannot update object..."
-            )
-
-        # Check if compliance check exists if changing
-        if payload.check and payload.check != issue.check_uid:
-            check = await DocumentAIComplianceCheckService().get(uid=payload.check)
-            if not check:
-                return OperationError(error=f"Compliance check with uid {payload.check} not found.")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        # Map check to check_uid
-        if payload.check is not None:
-            update_data["check_uid"] = payload.check
-
-        for field in issue.to_dict():
-            if field in payload.__dict__ and field != "check":
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentComplianceIssueUpdate(**update_data)
-        issue = await DocumentComplianceIssueService().update(issue.uid, obj_in)
-        return types.DocumentComplianceIssueType(**issue.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_compliance_issue(self, info, uid: str) -> responses.DocumentComplianceIssueResponse:
-        issue = await DocumentComplianceIssueService().get(uid=uid)
-        if not issue:
-            return OperationError(error=f"Compliance issue with uid {uid} not found.")
-
-        await DocumentComplianceIssueService().delete(uid)
-        return types.DocumentComplianceIssueType(**issue.marshal_simple())
-
-    # AI Review Feedback Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_ai_review_feedback(
-            self, info, payload: inputs.DocumentAIReviewFeedbackInputType
-    ) -> responses.DocumentAIReviewFeedbackResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check if review step exists
-        step = await DocumentReviewStepService().get(uid=payload.review_step)
-        if not step:
-            return OperationError(error=f"Review step with uid {payload.review_step} not found.")
-
-        # Check if AI model exists
-        model = await DocumentAIModelService().get(uid=payload.model)
-        if not model:
-            return OperationError(error=f"AI model with uid {payload.model} not found.")
-
-        # Check if model is active
-        if not model.is_active:
-            return OperationError(error=f"AI model '{model.name}' is not active.")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-            "review_step_uid": payload.review_step,
-            "model_uid": payload.model,
-        }
-
-        for k, v in payload.__dict__.items():
-            if k not in ["review_step", "model"]:  # Skip fields we've handled
-                incoming[k] = v
-
-        obj_in = schemas.DocumentAIReviewFeedbackCreate(**incoming)
-        feedback = await DocumentAIReviewFeedbackService().create(obj_in)
-        return types.DocumentAIReviewFeedbackType(**feedback.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_ai_review_feedback(
-            self, info, uid: str, payload: inputs.DocumentAIReviewFeedbackUpdateInputType
-    ) -> responses.DocumentAIReviewFeedbackResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        feedback = await DocumentAIReviewFeedbackService().get(uid=uid)
-        if not feedback:
-            return OperationError(
-                error=f"AI review feedback with uid {uid} not found. Cannot update object..."
-            )
-
-        # Validate foreign keys if changing
-        if payload.review_step and payload.review_step != feedback.review_step_uid:
-            step = await DocumentReviewStepService().get(uid=payload.review_step)
-            if not step:
-                return OperationError(error=f"Review step with uid {payload.review_step} not found.")
-
-        if payload.model and payload.model != feedback.model_uid:
-            model = await DocumentAIModelService().get(uid=payload.model)
-            if not model:
-                return OperationError(error=f"AI model with uid {payload.model} not found.")
-            # Check if model is active
-            if not model.is_active:
-                return OperationError(error=f"AI model '{model.name}' is not active.")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        # Map review_step to review_step_uid
-        if payload.review_step is not None:
-            update_data["review_step_uid"] = payload.review_step
-
-        # Map model to model_uid
-        if payload.model is not None:
-            update_data["model_uid"] = payload.model
-
-        for field in feedback.to_dict():
-            if field in payload.__dict__ and field not in ["review_step", "model"]:
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentAIReviewFeedbackUpdate(**update_data)
-        feedback = await DocumentAIReviewFeedbackService().update(feedback.uid, obj_in)
-        return types.DocumentAIReviewFeedbackType(**feedback.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_ai_review_feedback(self, info, uid: str) -> responses.DocumentAIReviewFeedbackResponse:
-        feedback = await DocumentAIReviewFeedbackService().get(uid=uid)
-        if not feedback:
-            return OperationError(error=f"AI review feedback with uid {uid} not found.")
-
-        await DocumentAIReviewFeedbackService().delete(uid)
-        return types.DocumentAIReviewFeedbackType(**feedback.marshal_simple())
-
-    # Document Analytics Mutations
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_document_analytics(
-            self, info, payload: inputs.DocumentAnalyticsInputType
-    ) -> responses.DocumentAnalyticsResponse:
-        felicity_user = await auth_from_info(info)
-
-        # Check if document exists
-        document = await DocumentService().get(uid=payload.document)
-        if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-            "document_uid": payload.document,
-            "generated_date": payload.generated_date or timenow_dt(),
-        }
-
-        for k, v in payload.__dict__.items():
-            if k not in ["document", "generated_date"]:  # Skip fields we've handled
-                incoming[k] = v
-
-        obj_in = schemas.DocumentAnalyticsCreate(**incoming)
-        analytics = await DocumentAnalyticsService().create(obj_in)
-        return types.DocumentAnalyticsType(**analytics.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_document_analytics(
-            self, info, uid: str, payload: inputs.DocumentAnalyticsUpdateInputType
-    ) -> responses.DocumentAnalyticsResponse:
-        felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify update object.")
-
-        analytics = await DocumentAnalyticsService().get(uid=uid)
-        if not analytics:
-            return OperationError(
-                error=f"Document analytics with uid {uid} not found. Cannot update object..."
-            )
-
-        # Check if document exists if changing
-        if payload.document and payload.document != analytics.document_uid:
-            document = await DocumentService().get(uid=payload.document)
-            if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
-
-        update_data = {"updated_by_uid": felicity_user.uid}
-
-        # Map document to document_uid
-        if payload.document is not None:
-            update_data["document_uid"] = payload.document
-
-        for field in analytics.to_dict():
-            if field in payload.__dict__ and field != "document":
-                if payload.__dict__[field] is not None:
-                    update_data[field] = payload.__dict__[field]
-
-        obj_in = schemas.DocumentAnalyticsUpdate(**update_data)
-        analytics = await DocumentAnalyticsService().update(analytics.uid, obj_in)
-        return types.DocumentAnalyticsType(**analytics.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_analytics(self, info, uid: str) -> responses.DocumentAnalyticsResponse:
-        analytics = await DocumentAnalyticsService().get(uid=uid)
-        if not analytics:
-            return OperationError(error=f"Document analytics with uid {uid} not found.")
-
-        await DocumentAnalyticsService().delete(uid)
-        return types.DocumentAnalyticsType(**analytics.marshal_simple())

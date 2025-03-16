@@ -37,15 +37,8 @@ from felicity.apps.billing.entities import VoucherCustomer  # noqa
 from felicity.apps.client.entities import Client  # noqa
 from felicity.apps.client.entities import ClientContact  # noqa
 from felicity.apps.document.entities import Document  # noqa
-from felicity.apps.document.entities import DocumentAIAuthoringSession  # noqa
-from felicity.apps.document.entities import DocumentAIComplianceCheck  # noqa
-from felicity.apps.document.entities import DocumentAIModel  # noqa
-from felicity.apps.document.entities import DocumentAIReviewFeedback  # noqa
-from felicity.apps.document.entities import DocumentAnalytics  # noqa
 from felicity.apps.document.entities import DocumentAudit  # noqa
 from felicity.apps.document.entities import DocumentCategory  # noqa
-from felicity.apps.document.entities import DocumentComplianceIssue  # noqa
-from felicity.apps.document.entities import DocumentComplianceStandard  # noqa
 from felicity.apps.document.entities import DocumentFolder  # noqa
 from felicity.apps.document.entities import DocumentReviewCycle  # noqa
 from felicity.apps.document.entities import DocumentReviewStep  # noqa

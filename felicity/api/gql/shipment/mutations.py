@@ -3,12 +3,15 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from sqlalchemy import or_
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.shipment import types
+from felicity.api.gql.shipment.permissions import CanActionShipment
 from felicity.api.gql.shipment.types import ShipmentType
 from felicity.api.gql.types import OperationError
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
@@ -91,9 +94,13 @@ ShipmentResponse = strawberry.union(
 
 @strawberry.type
 class ShipmentMutations:
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
+        )]
+    )
     async def create_shipment(
-        self, info, payload: ShipmentInputType
+            self, info, payload: ShipmentInputType
     ) -> ShipmentsResponse:
         felicity_user = await auth_from_info(info)
 
@@ -130,9 +137,13 @@ class ShipmentMutations:
             shipments=[(await ShipmentService().get(uid=sh.uid)) for sh in shipments]
         )
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
+        )]
+    )
     async def update_shipment(
-        self, info, uid: str, payload: ShipmentUpdateInputType
+            self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
         await auth_from_info(info)
 
@@ -162,7 +173,7 @@ class ShipmentMutations:
 
         return ShipmentType(**shipment.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(permission_classes=[IsAuthenticated, CanActionShipment])
     async def action_shipment(self, info, uid: str, action: str) -> ShipmentResponse:  # noqa
         felicity_user = await auth_from_info(info)
 
@@ -197,9 +208,13 @@ class ShipmentMutations:
 
         return ShipmentType(**shipment.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
+        )]
+    )
     async def shipment_manage_samples(
-        self, info, uid: str, payload: ShipmentManageSamplesInput
+            self, info, uid: str, payload: ShipmentManageSamplesInput
     ) -> ShipmentResponse:
         felicity_user = await auth_from_info(info)
 
@@ -238,7 +253,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_referral_laboratory(
-        info, payload: ReferralLaboratoryInputType
+            info, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
         felicity_user = await auth_from_info(info)
 
@@ -266,7 +281,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_referral_laboratory(
-        info, uid: str, payload: ReferralLaboratoryInputType
+            info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
         await auth_from_info(info)
 

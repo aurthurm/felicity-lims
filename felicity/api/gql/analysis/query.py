@@ -4,10 +4,11 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import PageInfo
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.services.analysis import (
@@ -40,6 +41,7 @@ from felicity.apps.analysis.services.result import (
     ResultMutationService,
 )
 from felicity.apps.analysis.utils import sample_search, get_qc_sample_type
+from felicity.apps.guard import FAction, FObject
 from felicity.database.session import async_session
 from felicity.utils import has_value_or_is_truthy
 
@@ -67,7 +69,11 @@ class AnalysisQuery:
     ) -> list[a_types.SampleTypeMappingType]:
         return await SampleTypeCodingService().get_all(sample_type_uid=sample_type_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def sample_all(
             self,
             info,
@@ -123,7 +129,11 @@ class AnalysisQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
+        )]
+    )
     async def samples_for_shipment_assign(
             self,
             info,
@@ -182,24 +192,38 @@ class AnalysisQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    # awaiting deprecation since sample_all can now achieve this
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def sample_search(
             self, info, status: str, text: str, client_uid: str
     ) -> List[a_types.SampleType]:
         return await sample_search(status, text, client_uid)
 
-    # awaiting deprecation since sample_all can now achieve this
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def sample_count(self, info, status: str, text: str, client_uid: str) -> int:
         combined = await sample_search(status, text, client_uid)
         return len(combined)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def sample_by_uid(self, info, uid: str) -> a_types.SampleType:
         return await SampleService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def sample_by_parent_id(
             self, info, parent_id: str, text: str | None = None
     ) -> List[a_types.SampleType]:
@@ -211,14 +235,22 @@ class AnalysisQuery:
 
         return samples
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def samples_by_uids(
-            self, info, sample_uids: list[str] = []
+            self, info, sample_uids: list[str]
     ) -> List[r_types.SamplesWithResults]:
         """Samples for publishing/ report printing"""
-        return await SampleService().get_all(uid__in=sample_uids)
+        return await SampleService().get_all(uid__in=sample_uids) if sample_uids else []
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def samples_by_storage_container_uid(
             self, info, uid: str
     ) -> List[a_types.SampleType]:
@@ -279,7 +311,7 @@ class AnalysisQuery:
 
             text_filters = {sa.or_: _or_text_}
             filters.append(text_filters)
-        
+
         if qc_only:
             filters.append({"category___name__exact": "Quality Control"})
 
@@ -319,7 +351,11 @@ class AnalysisQuery:
         a_uids = list(set([ids[0] for ids in result.all()]))
         return await AnalysisService().get_all(uid__notin=a_uids)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def analysis_request_all(
             self,
             info,
@@ -366,37 +402,61 @@ class AnalysisQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def analysis_request_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisRequestWithSamples:
         return await AnalysisRequestService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def analysis_requests_by_patient_uid(
             self, info, uid: str
     ) -> List[a_types.AnalysisRequestWithSamples]:
         return await AnalysisRequestService().get_all(patient_uid__exact=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def analysis_requests_by_client_uid(
             self, info, uid: str
     ) -> List[a_types.AnalysisRequestWithSamples]:
         return await AnalysisRequestService().get_all(client_uid__exact=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.RESULT)]
+        )]
+    )
     async def analysis_result_by_uid(
             self, info, uid: str
     ) -> r_types.AnalysisResultType:
         return await AnalysisResultService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.RESULT)]
+        )]
+    )
     async def analysis_result_by_sample_uid(
             self, info, uid: str
     ) -> List[r_types.AnalysisResultType]:
         return await AnalysisResultService().get_all(sample_uid__exact=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.WORKSHEET)]
+        )]
+    )
     async def analysis_results_for_ws_assign(
             self,
             info,
@@ -506,7 +566,11 @@ class AnalysisQuery:
     ) -> a_types.AnalysisSpecificationType:
         return await AnalysisSpecificationService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def qc_set_all(
             self,
             info,
@@ -537,7 +601,11 @@ class AnalysisQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SAMPLE)]
+        )]
+    )
     async def qc_set_by_uid(self, info, uid: str) -> r_types.QCSetWithSamples:
         return await QCSetService().get(uid=uid)
 
@@ -573,13 +641,21 @@ class AnalysisQuery:
     ) -> a_types.RejectionReasonType:
         return await RejectionReasonService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.RESULT)]
+        )]
+    )
     async def result_mutation_by_result_uid(
             self, info, result_uid: str
     ) -> r_types.ResultMutationType | None:
         return await ResultMutationService().get(result_uid=result_uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.RESULT)]
+        )]
+    )
     async def qc_chart_data(self, info, analyses: list[str], month: int, year: int) -> list[r_types.AnalysisResultType]:
         start_date = datetime(year, month, 1)
         if int(month) == 12:

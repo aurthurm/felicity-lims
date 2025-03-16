@@ -55,38 +55,3 @@ class DocumentSubscriptionRepository(BaseRepository[DocumentSubscription]):
 class DocumentAuditRepository(BaseRepository[DocumentAudit]):
     def __init__(self) -> None:
         super().__init__(DocumentAudit)
-
-
-class DocumentAIModelRepository(BaseRepository[DocumentAIModel]):
-    def __init__(self) -> None:
-        super().__init__(DocumentAIModel)
-
-
-class DocumentAIAuthoringSessionRepository(BaseRepository[DocumentAIAuthoringSession]):
-    def __init__(self) -> None:
-        super().__init__(DocumentAIAuthoringSession)
-
-
-class DocumentComplianceStandardRepository(BaseRepository[DocumentComplianceStandard]):
-    def __init__(self) -> None:
-        super().__init__(DocumentComplianceStandard)
-
-
-class DocumentAIComplianceCheckRepository(BaseRepository[DocumentAIComplianceCheck]):
-    def __init__(self) -> None:
-        super().__init__(DocumentAIComplianceCheck)
-
-
-class DocumentComplianceIssueRepository(BaseRepository[DocumentComplianceIssue]):
-    def __init__(self) -> None:
-        super().__init__(DocumentComplianceIssue)
-
-
-class DocumentAIReviewFeedbackRepository(BaseRepository[DocumentAIReviewFeedback]):
-    def __init__(self) -> None:
-        super().__init__(DocumentAIReviewFeedback)
-
-
-class DocumentAnalyticsRepository(BaseRepository[DocumentAnalytics]):
-    def __init__(self) -> None:
-        super().__init__(DocumentAnalytics)

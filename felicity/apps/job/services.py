@@ -83,7 +83,7 @@ class JobWorkerService:
         #     },
         #     JobCategories.RESULT: {
         #         JobActions.RESULT_SUBMIT: submit_results,
-        #         JobActions.RESULT_VERIFY: verify_results,
+        #         JobActions.RESULT_APPROVE: verify_results,
         #     },
         #     JobCategories.SHIPMENT: {
         #         JobActions.SH_MANUAL_ASSIGN: populate_shipment_manually,

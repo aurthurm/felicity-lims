@@ -4,21 +4,21 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.patient.types import IdentificationType, PatientType
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError
+from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.apps.client.services import ClientService
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.patient import schemas
 from felicity.apps.patient.services import (
     IdentificationService,
     PatientIdentificationService,
     PatientService,
 )
-from felicity.apps.impress.sample.utils import exclude
-from felicity.api.gql.types.generic import StrawberryMapper
-from felicity.apps.abstract.repository import M
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -68,7 +68,11 @@ IdentificationResponse = strawberry.union(
 
 @strawberry.type
 class PatientMutations:
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PATIENT)]
+        )]
+    )
     async def create_identification(info, name: str) -> IdentificationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -91,9 +95,13 @@ class PatientMutations:
         identification = await IdentificationService().create(obj_in)
         return IdentificationType(**identification.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.PATIENT)]
+        )]
+    )
     async def update_identification(
-        info, uid: str, name: str
+            info, uid: str, name: str
     ) -> IdentificationResponse:
         await auth_from_info(info)
 
@@ -110,15 +118,19 @@ class PatientMutations:
         identification = await IdentificationService().update(identification.uid, id_in)
         return IdentificationType(**identification.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
         felicity_user = await auth_from_info(info)
 
         if (
-            not payload.client_patient_id
-            or not payload.first_name
-            or not payload.last_name
-            or not payload.client_uid
+                not payload.client_patient_id
+                or not payload.first_name
+                or not payload.last_name
+                or not payload.client_uid
         ):
             return OperationError(
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
@@ -128,7 +140,7 @@ class PatientMutations:
         if exists:
             return OperationError(error="Client Patient Id already in use")
 
-        client = await ClientService().get(related=["province","district"],uid=payload.client_uid)
+        client = await ClientService().get(related=["province", "district"], uid=payload.client_uid)
         if not client:
             return OperationError(
                 error=f"Client with uid {payload.client_uid} does not exist"
@@ -152,16 +164,20 @@ class PatientMutations:
                 value=p_id.value,
             )
             await PatientIdentificationService().create(pid_in)
-            
+
         metadata = {"client": client.snapshot()}
         metadata["client"]["province"] = client.province.snapshot() if client.province else {}
         metadata["client"]["district"] = client.district.snapshot() if client.district else {}
         patient = await PatientService().snapshot(patient, metadata)
         return StrawberryMapper[PatientType]().map(**patient.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.PATIENT)]
+        )]
+    )
     async def update_patient(
-        self, info, uid: str, payload: PatientInputType
+            self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
         felicity_user = await auth_from_info(info)
 

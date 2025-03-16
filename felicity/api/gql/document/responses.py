@@ -69,48 +69,6 @@ DocumentAuditResponse = strawberry.union(
     description="Response for document audit operations",
 )
 
-DocumentAIModelResponse = strawberry.union(
-    "DocumentAIModelResponse",
-    (types.DocumentAIModelType, OperationError),
-    description="Response for document AI model operations",
-)
-
-DocumentAIAuthoringSessionResponse = strawberry.union(
-    "DocumentAIAuthoringSessionResponse",
-    (types.DocumentAIAuthoringSessionType, OperationError),
-    description="Response for document AI authoring session operations",
-)
-
-DocumentComplianceStandardResponse = strawberry.union(
-    "DocumentComplianceStandardResponse",
-    (types.DocumentComplianceStandardType, OperationError),
-    description="Response for document compliance standard operations",
-)
-
-DocumentAIComplianceCheckResponse = strawberry.union(
-    "DocumentAIComplianceCheckResponse",
-    (types.DocumentAIComplianceCheckType, OperationError),
-    description="Response for document AI compliance check operations",
-)
-
-DocumentComplianceIssueResponse = strawberry.union(
-    "DocumentComplianceIssueResponse",
-    (types.DocumentComplianceIssueType, OperationError),
-    description="Response for document compliance issue operations",
-)
-
-DocumentAIReviewFeedbackResponse = strawberry.union(
-    "DocumentAIReviewFeedbackResponse",
-    (types.DocumentAIReviewFeedbackType, OperationError),
-    description="Response for document AI review feedback operations",
-)
-
-DocumentAnalyticsResponse = strawberry.union(
-    "DocumentAnalyticsResponse",
-    (types.DocumentAnalyticsType, OperationError),
-    description="Response for document analytics operations",
-)
-
 DocumentRelationResponse = strawberry.union(
     "DocumentRelationResponse",
     (types.DocumentType, OperationError),

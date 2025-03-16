@@ -1,8 +1,6 @@
 from felicity.api.gql.document.types import DocumentCategoryType, DocumentTagType, DocumentFolderType, \
     DocumentTemplateType, DocumentVersionType, DocumentStatusType, DocumentReviewCycleType, DocumentSubscriptionType, \
-    DocumentAuditType, DocumentAIModelType, DocumentAIAuthoringSessionType, DocumentComplianceStandardType, \
-    DocumentComplianceIssueType, DocumentAIComplianceCheckType, DocumentAIReviewFeedbackType, DocumentAnalyticsType, \
-    DocumentType
+    DocumentAuditType, DocumentType
 
 document_types = [
     DocumentCategoryType,
@@ -14,12 +12,5 @@ document_types = [
     DocumentReviewCycleType,
     DocumentSubscriptionType,
     DocumentAuditType,
-    DocumentAIModelType,
-    DocumentAIAuthoringSessionType,
-    DocumentComplianceStandardType,
-    DocumentComplianceIssueType,
-    DocumentAIComplianceCheckType,
-    DocumentAIReviewFeedbackType,
-    DocumentAnalyticsType,
     DocumentType
 ]

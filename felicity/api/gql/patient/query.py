@@ -2,6 +2,7 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.patient.types import (
     IdentificationType,
@@ -9,23 +10,28 @@ from felicity.api.gql.patient.types import (
     PatientEdge,
     PatientType,
 )
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import PageInfo
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.patient.services import IdentificationService, PatientService
 from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type
 class PatientQuery:
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def patient_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> PatientCursorPage:
         filters = {}
 
@@ -65,17 +71,29 @@ class PatientQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def patient_by_uid(self, info, uid: str) -> Optional[PatientType]:
         return await PatientService().get(uid=uid)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def patient_by_patient_id(
-        self, info, patient_id: str
+            self, info, patient_id: str
     ) -> Optional[PatientType]:
         return await PatientService().get(patient_id=patient_id)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def patient_search(self, info, query_string: str) -> List[PatientType]:
         filters = [
             "first_name__ilike",
@@ -95,10 +113,18 @@ class PatientQuery:
                 combined.add(item)
         return list(combined)
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def identification_all(self, info) -> List[IdentificationType]:
         return await IdentificationService().all()
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
+        )]
+    )
     async def identification_by_uid(self, info, uid: str) -> IdentificationType:
         return await IdentificationService().get(uid=uid)

@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 import strawberry  # noqa
+from strawberry.permission import PermissionExtension
 from strawberry.types import Info  # noqa
 
 from felicity.api.gql.auth import auth_from_info
@@ -15,7 +16,7 @@ from felicity.api.gql.billing.types import (
     VoucherCodeType,
     VoucherType,
 )
-from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError
 from felicity.apps.billing import schemas, utils
 from felicity.apps.billing.enum import DiscountType, TransactionKind
@@ -30,6 +31,7 @@ from felicity.apps.billing.services import (
     VoucherCodeService,
     VoucherService,
 )
+from felicity.apps.guard import FAction, FObject
 from felicity.apps.impress.invoicing import utils as invoice_utils
 
 logging.basicConfig(level=logging.INFO)
@@ -137,7 +139,11 @@ class ApplyVoucherInput:
 
 @strawberry.type
 class BillingMutations:
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def update_profile_price(
             self, info: Info, uid: str, payload: PriceInput
     ) -> ProfilePriceResponse:
@@ -154,7 +160,11 @@ class BillingMutations:
         profile_price = await ProfilePriceService().update(profile_price.uid, obj_in)
         return ProfilePriceType(**profile_price.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def update_analysis_price(
             self, info: Info, uid: str, payload: PriceInput
     ) -> AnalysisPriceResponse:
@@ -171,7 +181,11 @@ class BillingMutations:
         analysis_price = await AnalysisPriceService().update(analysis_price.uid, obj_in)
         return AnalysisPriceType(**analysis_price.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def update_profile_discount(
             self, info, uid: str, payload: PriceDiscountInput
     ) -> ProfileDiscountResponse:
@@ -213,7 +227,11 @@ class BillingMutations:
             **profile_discount.marshal_simple(),
         )
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def update_analysis_discount(
             self, info, uid: str, payload: PriceDiscountInput
     ) -> AnalysisDiscountResponse:
@@ -248,7 +266,11 @@ class BillingMutations:
         )
         return AnalysisDiscountType(**analysis_discount.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def create_voucher(
             self, info: Info, payload: VoucherInput
     ) -> VoucherResponse:
@@ -269,7 +291,11 @@ class BillingMutations:
         voucher = await VoucherService().create(obj_in)
         return VoucherType(**voucher.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def update_voucher(
             self, info, uid: str, payload: VoucherInput
     ) -> VoucherResponse:
@@ -295,7 +321,11 @@ class BillingMutations:
         voucher = await VoucherService().update(voucher.uid, obj_in)
         return VoucherType(**voucher.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def create_voucher_code(
             self, info: Info, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
@@ -316,7 +346,11 @@ class BillingMutations:
         voucher_code = await VoucherCodeService().create(obj_in, related=["voucher"])
         return VoucherCodeType(**voucher_code.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def update_voucher_code(
             self, info, uid: str, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
@@ -342,7 +376,11 @@ class BillingMutations:
         voucher_code = await VoucherCodeService().update(voucher_code.uid, obj_in)
         return VoucherCodeType(**voucher_code.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def create_test_bill_transaction(
             self, info, payload: BillTransactionInput
     ) -> TestBillTransactionResponse:
@@ -393,7 +431,11 @@ class BillingMutations:
         await invoice_utils.impress_invoice(test_bill)
         return TestBillTransactionType(**tbt.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def confirm_test_bill_transaction(self, info, uid: str, notes: str | None) -> TestBillTransactionResponse:
         felicity_user = await auth_from_info(info)
         incoming: dict = {
@@ -407,7 +449,11 @@ class BillingMutations:
         await TestBillService().confirm_bill(tbt.test_bill_uid)
         return TestBillTransactionType(**tbt.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.BILLING)]
+        )]
+    )
     async def apply_voucher(
             self, info, payload: ApplyVoucherInput
     ) -> TestBillTransactionResponse:

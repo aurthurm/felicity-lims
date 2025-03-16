@@ -1,12 +1,28 @@
 from .definitions import FAction, FObject, FGroup
 
+""" Object Actions:
+WORKSHEET: CREATE, READ, UPDATE, SUBMIT, APPROVE, RETEST
+STORAGE: CREATE, READ, UPDATE
+CLIENT: CREATE, READ, UPDATE
+PATIENT: CREATE, READ, UPDATE
+SAMPLE: CREATE, READ, UPDATE, SUBMIT, APPROVE, CANCEL, RETEST, INVALIDATE, STORE, PUBLISH, PRINT
+RESULT: READ, UPDATE, SUBMIT, APPROVE, CANCEL, RETEST
+PRODUCT: CREATE, READ, UPDATE, ISSUE
+PRODUCT_ORDER: CREATE, READ, ISSUE, APPROVE
+SHIPMENT: CREATE, READ, UPDATE, CANCEL
+SCHEMES: CREATE, READ, UPDATE
+DOCUMENT: CREATE, READ, UPDATE, SUBMIT, APPROVE, ISSUE
+ANALYTICS: READ
+NOTICE: CREATE, READ, UPDATE, DELETE
+BILLING: UPDATE, READ
+"""
+
 DEFAULT_PERMISSION_MAPPINGS = {
     FAction.CREATE: {
         FObject.CLIENT: [FGroup.ADMINISTRATOR],
         FObject.PATIENT: [FGroup.LAB_HAND],
         FObject.SAMPLE: [FGroup.LAB_HAND],
         FObject.WORKSHEET: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST],
-        FObject.PRODUCT: [FGroup.STORES],
         FObject.SHIPMENT: [FGroup.LAB_HAND, FGroup.SCIENTIST, FGroup.TECHNOLOGIST],
         FObject.STORAGE: [
             FGroup.ADMINISTRATOR,
@@ -28,9 +44,23 @@ DEFAULT_PERMISSION_MAPPINGS = {
             FGroup.LAB_HAND,
             FGroup.SCIENTIST,
             FGroup.TECHNOLOGIST,
-        ]
+        ],
+        FObject.NOTICE: [
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.STORES,
+        ],
+        FObject.PRODUCT: [FGroup.STORES],
+        FObject.PRODUCT_ORDER: [
+            FGroup.ADMINISTRATOR,
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.TECHNOLOGIST,
+            FGroup.STORES,
+        ],
     },
     FAction.READ: {
+        FObject.BILLING: [FGroup.ACCOUNTING],
         FObject.ANALYTICS: [
             FGroup.ADMINISTRATOR,
             FGroup.LAB_MANAGER,
@@ -85,6 +115,13 @@ DEFAULT_PERMISSION_MAPPINGS = {
             FGroup.GUEST,
             FGroup.STORES,
         ],
+        FObject.PRODUCT_ORDER: [
+            FGroup.ADMINISTRATOR,
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.TECHNOLOGIST,
+            FGroup.STORES,
+        ],
         FObject.SHIPMENT: [FGroup.LAB_HAND, FGroup.SCIENTIST, FGroup.TECHNOLOGIST, FGroup.GUEST],
         FObject.STORAGE: [
             FGroup.ADMINISTRATOR,
@@ -107,7 +144,12 @@ DEFAULT_PERMISSION_MAPPINGS = {
             FGroup.LAB_HAND,
             FGroup.SCIENTIST,
             FGroup.TECHNOLOGIST,
-        ]
+        ],
+        FObject.NOTICE: [
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.STORES,
+        ],
     },
     FAction.UPDATE: {
         FObject.CLIENT: [FGroup.ADMINISTRATOR],
@@ -155,9 +197,16 @@ DEFAULT_PERMISSION_MAPPINGS = {
             FGroup.LAB_HAND,
             FGroup.SCIENTIST,
             FGroup.TECHNOLOGIST,
-        ]
+        ],
+        FObject.PRODUCT_ORDER: [
+            FGroup.ADMINISTRATOR,
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.TECHNOLOGIST,
+            FGroup.STORES,
+        ],
     },
-    FAction.VERIFY: {
+    FAction.APPROVE: {
         FObject.SAMPLE: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST],
         FObject.RESULT: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST],
         FObject.WORKSHEET: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST],
@@ -167,7 +216,13 @@ DEFAULT_PERMISSION_MAPPINGS = {
             FGroup.LAB_HAND,
             FGroup.SCIENTIST,
             FGroup.TECHNOLOGIST,
-        ]
+        ],
+        FObject.PRODUCT_ORDER: [
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.TECHNOLOGIST,
+            FGroup.STORES,
+        ],
     },
     FAction.CANCEL: {
         FObject.SAMPLE: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST, FGroup.LAB_HAND],
@@ -190,13 +245,20 @@ DEFAULT_PERMISSION_MAPPINGS = {
             FGroup.TECHNOLOGIST,
         ]
     },
-    FAction.ORDER: {
-        FObject.PRODUCT: [
-            FGroup.ADMINISTRATOR,
-            FGroup.LAB_MANAGER,
+    FAction.ASSIGN: {FObject.SAMPLE: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST]},
+    FAction.PRINT: {FObject.SAMPLE: [FGroup.LAB_HAND]},
+    FAction.PUBLISH: {FObject.SAMPLE: [FGroup.SCIENTIST, FGroup.TECHNOLOGIST]},
+    FAction.STORE: {
+        FObject.SAMPLE: [
             FGroup.SCIENTIST,
-            FGroup.TECHNOLOGIST,
-            FGroup.STORES,
+            FGroup.TECHNOLOGIST
         ],
     },
+    FAction.DELETE: {
+        FObject.NOTICE: [
+            FGroup.LAB_MANAGER,
+            FGroup.SCIENTIST,
+            FGroup.STORES,
+        ],
+    }
 }

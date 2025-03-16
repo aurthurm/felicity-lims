@@ -4,7 +4,6 @@ import typing
 from strawberry.permission import BasePermission
 
 from felicity.api.deps import Info
-from felicity.api.gql.types.generic import PermissionsError
 from felicity.apps.guard import FAction, FObject, has_perm
 
 logging.basicConfig(level=logging.INFO)
@@ -13,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 class IsAuthenticated(BasePermission):
     message = "Only accessible to authenticated users"
-    error_class = PermissionsError
     error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
@@ -23,7 +21,6 @@ class IsAuthenticated(BasePermission):
 
 class IsActiveUser(BasePermission):
     message = "You must be an active user"
-    error_class = PermissionsError
     error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
@@ -35,7 +32,6 @@ class IsActiveUser(BasePermission):
 
 class IsSuperUser(BasePermission):
     message = "You dont have enough privileges"
-    error_class = PermissionsError
     error_extensions = {"code": "UNAUTHORIZED"}
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
@@ -53,12 +49,11 @@ class HasPermission(BasePermission):
     """
     Permission class for checking if a user has permission to perform actions on objects.
     """
-    error_class = PermissionsError
     error_extensions = {"code": "UNAUTHORIZED"}
 
-    def __init__(self, action: FAction, target: FObject):
+    def __init__(self, action: FAction, target: FObject, message_action: str | None = None):
         super().__init__()
-        self.action = action
+        self.action = message_action if message_action else action
         self.target = target
         self.message = f"You are not authorized to {action} {target}"
 
