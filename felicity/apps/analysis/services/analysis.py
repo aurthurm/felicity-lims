@@ -2,6 +2,8 @@ import logging
 from datetime import timedelta
 from typing import Any, List, Union
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.analysis import (
     Analysis,
@@ -235,11 +237,14 @@ class AnalysisRequestService(
         super().__init__(AnalysisRequestRepository())
 
     async def create(
-            self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None
+            self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None,
+            commit: bool = True, session: AsyncSession | None = None
     ):
         data = self._import(obj_in)
-        data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
-        return await super().create(data, related)
+        data["request_id"] = (
+            await self.id_sequence_service.get_next_number(prefix="AR", commit=commit, session=session)
+        )[1]
+        return await super().create(c=data, related=related, commit=commit, session=session)
 
     async def snapshot(self, ar: AnalysisRequest, metadata: dict = {}):
         fields = ["client"]
@@ -530,12 +535,13 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         await self.streamer_service.stream(printed, printed_by, "printed", "sample")
         return printed
 
-    async def invalidate(self, uid: str, invalidated_by) -> tuple[Sample, Sample]:
-        sample = await self.get(uid=uid)
-        copy = await self.duplicate_unique(uid, invalidated_by)
+    async def invalidate(self, uid: str, invalidated_by, commit: bool = True, session: AsyncSession | None = None) -> \
+            tuple[Sample, Sample]:
+        sample = await self.get(uid=uid, session=session)
+        copy = await self.duplicate_unique(uid, invalidated_by, commit=commit, session=session)
         sample.status = SampleState.INVALIDATED
         sample.invalidated_by_uid = invalidated_by.uid
-        invalidated = await super().save(sample)
+        invalidated = await super().save(sample, commit=commit, session=session)
         await self.streamer_service.stream(
             invalidated, invalidated_by, "invalidated", "sample"
         )
@@ -570,17 +576,18 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return recovered
 
     async def create(
-            self, obj_in: dict | SampleCreate, related: list[str] | None = None
+            self, obj_in: dict | SampleCreate, related: list[str] | None = None,
+            commit: bool = True, session: AsyncSession | None = None
     ):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
         # data["sample_id"] = (await self.id_sequencer_service.get_next_number(sample_type.abbr))[1]
         data["sample_id"] = (
-            await self.id_sequencer_service.get_next_number(prefix="S", generic=True)
+            await self.id_sequencer_service.get_next_number(prefix="S", generic=True, commit=commit, session=session)
         )[1]
-        return await super().create(data, related)
+        return await super().create(c=data, related=related, commit=commit, session=session)
 
-    async def duplicate_unique(self, uid: str, duplicator):
+    async def duplicate_unique(self, uid: str, duplicator, commit: bool = True, session: AsyncSession | None = None):
         sample = await self.get(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique(sample)
@@ -592,9 +599,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["analyses"] = sample.analyses
         data["parent_id"] = sample.uid
         data["created_by_uid"] = duplicator.uid
-        return await super().create(data)
+        return await super().create(data, commit=commit, session=session)
 
-    async def clone_afresh(self, uid: str, cloner):
+    async def clone_afresh(self, uid: str, cloner, commit: bool = True, session: AsyncSession | None = None):
         sample = await self.get(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         for key, _ in list(data.items()):
@@ -605,7 +612,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["analyses"] = sample.analyses
         data["parent_id"] = sample.uid
         data["created_by_uid"] = cloner.uid
-        return await self.create(obj_in=data)
+        return await self.create(obj_in=data, commit=commit, session=session)
 
     async def get_by_analyses(self, analyses: list[str]) -> list[Sample]:
         return await self.get_all(analysis_results___analysis_uid__in=analyses)

@@ -1,3 +1,5 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.services.analysis import SampleService
@@ -189,10 +191,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException("Cannot print this Sample")
         return True
 
-    async def invalidate(self, uid, invalidated_by):
-        sample = await self.sample_service.get(uid=uid)
+    async def invalidate(self, uid, invalidated_by, commit: bool = True, session: AsyncSession | None = None):
+        sample = await self.sample_service.get(uid=uid, session=session)
         await self._guard_invalidate(sample)
-        return await self.sample_service.invalidate(sample.uid, invalidated_by)
+        return await self.sample_service.invalidate(sample.uid, invalidated_by, commit=commit, session=session)
 
     @staticmethod
     async def _guard_invalidate(sample: Sample):

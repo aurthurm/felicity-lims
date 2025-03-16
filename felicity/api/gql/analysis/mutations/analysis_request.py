@@ -145,165 +145,170 @@ async def create_analysis_request(
                 error="Samples must have either analysis or profiles or both"
             )
 
-    patient = await PatientService().get(uid=payload.patient_uid)
-    if not patient:
-        return OperationError(error=f"Patient with uid {payload.patient_uid} Not found")
-
-    client = await ClientService().get(uid=payload.client_uid)
-    if not client:
-        return OperationError(error=f"Client with uid {payload.client_uid} Not found")
-
     if len(payload.samples) == 0:
         return OperationError(error="Samples are required")
 
-    # create the ar
-    incoming = {
-        "patient_uid": payload.patient_uid,
-        "client_uid": payload.client_uid,
-        "request_id": None,
-        "client_request_id": payload.client_request_id,
-        "created_by_uid": felicity_user.uid,
-        "updated_by_uid": felicity_user.uid,
-    }
+    async with PatientService().repository.async_session() as transaction_session:
+        patient = await PatientService().get(uid=payload.patient_uid, session=transaction_session)
+        if not patient:
+            return OperationError(error=f"Patient with uid {payload.patient_uid} Not found")
 
-    obj_in = schemas.AnalysisRequestCreate(**incoming)
-    analysis_request = await AnalysisRequestService().create(obj_in)
+        client = await ClientService().get(uid=payload.client_uid, session=transaction_session)
+        if not client:
+            return OperationError(error=f"Client with uid {payload.client_uid} Not found")
 
-    # 1. create samples
-    logger.info(
-        f"Adding {len(payload.samples)} samples to the analysis request {analysis_request.client_request_id}"
-    )
-    for s in payload.samples:
-        _st_uid = s.sample_type
-        stype = await SampleTypeService().get(uid=_st_uid)
-        if not stype:
-            return OperationError(
-                error=f"Error, failed to retrieve sample type {_st_uid}"
-            )
-
-        sample_in = {
+        # create the ar
+        incoming = {
+            "patient_uid": payload.patient_uid,
+            "client_uid": payload.client_uid,
+            "request_id": None,
+            "client_request_id": payload.client_request_id,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
-            "analysis_request_uid": analysis_request.uid,
-            "date_collected": s.date_collected,
-            "sample_type_uid": _st_uid,
-            "sample_id": None,
-            "priority": payload.priority,
-            "status": SampleState.EXPECTED,
-            "metadata_snapshot": {}
         }
 
-        profiles = []
-        analyses = []
-        _profiles_analyses = set()
+        obj_in = schemas.AnalysisRequestCreate(**incoming)
+        analysis_request = await AnalysisRequestService().create(obj_in, session=transaction_session)
 
-        for p_uid in s.profiles:
-            profile = await ProfileService().get(related=["analyses"], uid=p_uid)
-            profiles.append(profile)
-            analyses_ = profile.analyses
-            for _an in analyses_:
-                _profiles_analyses.add(_an)
-
-        # make sure the selected analyses are not part of the selected profiles
-        for a_uid in s.analyses:
-            analysis = await AnalysisService().get(uid=a_uid)
-            if analysis not in _profiles_analyses:
-                analyses.append(analysis)
-                _profiles_analyses.add(analysis)
-
-        # determine sample due date
-        tat_lengths = []
-        for anal in _profiles_analyses:
-            if anal.tat_length_minutes:
-                tat_lengths.append(anal.tat_length_minutes)
-        if tat_lengths:
-            minutes = max(tat_lengths)
-            sample_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
-
-        sample_schema = schemas.SampleCreate(
-            **sample_in
-        )
-        sample = await SampleService().create(sample_schema)
-        sample = await SampleService().snapshot(
-            sample, {
-                "sample_type": stype.snapshot(),
-                "client": client.snapshot(),
-                "profiles": [p.snapshot() for p in profiles],
-                "analyses": [a.snapshot() for a in analyses]
-            }
-        )
-
-        # auto receive samples
-        _, lab_setting = await get_laboratory_setting()
-        if lab_setting.auto_receive_samples:
-            await SampleService().receive(sample.uid, received_by=felicity_user)
-
-        # link sample to provided profiles
-        for _prof in profiles:
-            await SampleService().repository.table_insert(
-                table=sample_profile,
-                mappings=[{"sample_uid": sample.uid, "profile_uid": _prof.uid}],
-            )
-
-        # link sample to provided services
-        for _anal in analyses:
-            if _anal.keyword == "felicity_ast_abx_antibiotic": continue
-            await SampleService().repository.table_insert(
-                table=sample_analysis,
-                mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
-            )
-
-        # create and attach result objects for each Analyses
+        # 1. create samples
         logger.info(
-            f"Adding {len(_profiles_analyses)} service results to the sample {sample.sample_id}"
+            f"Adding {len(payload.samples)} samples to the analysis request {analysis_request.client_request_id}"
         )
-        a_result_schema = schemas.AnalysisResultCreate(
-            sample_uid=sample.uid,
-            status=ResultState.PENDING,
-            analysis_uid=None,
-            due_date=None,
-            metadata_snapshot={},
-            created_by_uid=felicity_user.uid,
-            updated_by_uid=felicity_user.uid,
-        )
-        result_schemas = []
-        for _service in _profiles_analyses:
-            result_schemas.append(
-                a_result_schema.model_copy(
-                    update={
-                        "analysis_uid": _service.uid,
-                        "due_date": (
-                            timenow_dt()
-                            + timedelta(minutes=_service.tat_length_minutes)
-                            if _service.tat_length_minutes
-                            else None
-                        ),
-                    }
+
+        for s in payload.samples:
+            _st_uid = s.sample_type
+            stype = await SampleTypeService().get(uid=_st_uid, session=transaction_session)
+            if not stype:
+                await transaction_session.rollback()
+                return OperationError(
+                    error=f"Error, failed to retrieve sample type {_st_uid}"
                 )
+
+            sample_in = {
+                "created_by_uid": felicity_user.uid,
+                "updated_by_uid": felicity_user.uid,
+                "analysis_request_uid": analysis_request.uid,
+                "date_collected": s.date_collected,
+                "sample_type_uid": _st_uid,
+                "sample_id": None,
+                "priority": payload.priority,
+                "status": SampleState.EXPECTED,
+                "metadata_snapshot": {}
+            }
+
+            profiles = []
+            analyses = []
+            _profiles_analyses = set()
+
+            for p_uid in s.profiles:
+                profile = await ProfileService().get(related=["analyses"], uid=p_uid, session=transaction_session)
+                profiles.append(profile)
+                analyses_ = profile.analyses
+                for _an in analyses_:
+                    _profiles_analyses.add(_an)
+
+            # make sure the selected analyses are not part of the selected profiles
+            for a_uid in s.analyses:
+                analysis = await AnalysisService().get(uid=a_uid, session=transaction_session)
+                if analysis not in _profiles_analyses:
+                    analyses.append(analysis)
+                    _profiles_analyses.add(analysis)
+
+            # determine sample due date
+            tat_lengths = []
+            for anal in _profiles_analyses:
+                if anal.tat_length_minutes:
+                    tat_lengths.append(anal.tat_length_minutes)
+            if tat_lengths:
+                minutes = max(tat_lengths)
+                sample_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
+
+            sample_schema = schemas.SampleCreate(
+                **sample_in
             )
-        created = await AnalysisResultService().bulk_create(
-            result_schemas, related=["sample", "analysis"]
-        )
-        for _a in created:
-            if _a.keyword == "felicity_ast_abx_organism":
-                await AbxOrganismResultService().create(AbxOrganismResultCreate(
-                    analysis_result_uid=_a.uid,
-                    organism_uid=None,
-                    isolate_number=1
-                ))
+            sample = await SampleService().create(sample_schema, session=transaction_session)
 
-        await AnalysisResultService().snapshot(created)
+            # link sample to provided profiles
+            for _prof in profiles:
+                await SampleService().repository.table_insert(
+                    table=sample_profile,
+                    mappings=[{"sample_uid": sample.uid, "profile_uid": _prof.uid}],
+                    session=transaction_session
+                )
 
-        # initialise reflex action if exist
-        logger.info("ReflexUtil .... set_reflex_actions ...")
-        await ReflexEngineService().set_reflex_actions(created)
+            # link sample to provided services
+            for _anal in analyses:
+                if _anal.keyword == "felicity_ast_abx_antibiotic": continue
+                await SampleService().repository.table_insert(
+                    table=sample_analysis,
+                    mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
+                    session=transaction_session
+                )
 
-    # ! paramount !
+            # create and attach result objects for each Analyses
+            logger.info(
+                f"Adding {len(_profiles_analyses)} service results to the sample {sample.sample_id}"
+            )
+            a_result_schema = schemas.AnalysisResultCreate(
+                sample_uid=sample.uid,
+                status=ResultState.PENDING,
+                analysis_uid=None,
+                due_date=None,
+                metadata_snapshot={},
+                created_by_uid=felicity_user.uid,
+                updated_by_uid=felicity_user.uid,
+            )
+            result_schemas = []
+            for _service in _profiles_analyses:
+                result_schemas.append(
+                    a_result_schema.model_copy(
+                        update={
+                            "analysis_uid": _service.uid,
+                            "due_date": (
+                                timenow_dt()
+                                + timedelta(minutes=_service.tat_length_minutes)
+                                if _service.tat_length_minutes
+                                else None
+                            ),
+                        }
+                    )
+                )
+            created = await AnalysisResultService().bulk_create(
+                result_schemas, related=["sample", "analysis"], session=transaction_session
+            )
+            for _a in created:
+                if _a.keyword == "felicity_ast_abx_organism":
+                    await AbxOrganismResultService().create(AbxOrganismResultCreate(
+                        analysis_result_uid=_a.uid,
+                        organism_uid=None,
+                        isolate_number=1
+                    ), commit=False, session=transaction_session)
+
+        # save transactions
+        await PatientService().repository.save_transaction(transaction_session)
+
+    # ! paramount: No idea why but it makes it work!
     await asyncio.sleep(1)
 
     analysis_request = await AnalysisRequestService().get(
         related=["samples"], uid=analysis_request.uid
     )
+
+    _, lab_setting = await get_laboratory_setting()
+
+    for sample in analysis_request.samples:
+        await SampleService().snapshot(sample)
+        # auto receive samples
+        if lab_setting.auto_receive_samples:
+            await SampleService().receive(sample.uid, received_by=felicity_user)
+
+        # snapshot analyses of this sample
+        analyses = await AnalysisResultService().get_all(sample_uid=sample.uid)
+        await AnalysisResultService().snapshot(analyses)
+
+        # initialise reflex action if exist
+        logger.info("ReflexUtil .... set_reflex_actions ...")
+        await ReflexEngineService().set_reflex_actions(analyses)
 
     # auto_bill=True during sample registration
     await bill_order(analysis_request, auto_bill=True)
@@ -324,39 +329,47 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error="No Samples to clone are provided!")
 
     clones = []
-    to_clone = await SampleService().get_by_uids(uids=samples)
-    for _, _sample in enumerate(to_clone):
-        clone = await SampleService().clone_afresh(_sample.uid, felicity_user)
-        await SampleService().snapshot(clone, {})
+    creations = []
+    with SampleService().repository.async_session() as transaction_session:
+        to_clone = await SampleService().get_by_uids(uids=samples, session=transaction_session)
+        for _, _sample in enumerate(to_clone):
+            clone = await SampleService().clone_afresh(_sample.uid, felicity_user, session=transaction_session)
+            await SampleService().snapshot(clone, {})
 
-        if clone:
-            clones.append(clone)
+            if clone:
+                clones.append(clone)
 
-            # create associated analysis
-            _profiles_analyses = set()
+                # create associated analysis
+                _profiles_analyses = set()
 
-            for _prof in clone.profiles:
-                analyses_ = _prof.analyses
-                for _an in analyses_:
-                    _profiles_analyses.add(_an)
+                for _prof in clone.profiles:
+                    analyses_ = _prof.analyses
+                    for _an in analyses_:
+                        _profiles_analyses.add(_an)
 
-            for _anal in clone.analyses:
-                if _anal not in _profiles_analyses:
-                    _profiles_analyses.add(_anal)
+                for _anal in clone.analyses:
+                    if _anal not in _profiles_analyses:
+                        _profiles_analyses.add(_anal)
 
-            for _service in _profiles_analyses:
-                a_result_in = {
-                    "sample_uid": clone.uid,
-                    "analysis_uid": _service.uid,
-                    "status": ResultState.PENDING,
-                    "metadata_snapshot": {}
-                }
-                a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                created = await AnalysisResultService().create(
-                    a_result_schema, related=["sample", "analysis"]
-                )
-                await AnalysisResultService().snapshot([created])
-                await ReflexEngineService().set_reflex_actions([created])
+                for _service in _profiles_analyses:
+                    a_result_in = {
+                        "sample_uid": clone.uid,
+                        "analysis_uid": _service.uid,
+                        "status": ResultState.PENDING,
+                        "metadata_snapshot": {}
+                    }
+                    a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
+                    created = await AnalysisResultService().create(
+                        a_result_schema, related=["sample", "analysis"],
+                        session=transaction_session
+                    )
+                    creations.append(created)
+                    await AnalysisResultService().snapshot([created])
+
+        # save transaction
+        await SampleService().repository.save_transaction(transaction_session)
+
+    await ReflexEngineService().set_reflex_actions(creations)
 
     clones = [
         (await SampleService().get(related=["sample_type"], uid=clone.uid))
@@ -588,45 +601,51 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error="No Samples to invalidate are provided!")
 
     for _sa_uid in samples:
-        sample = await SampleService().get(uid=_sa_uid)
-        if not sample:
-            return OperationError(error=f"Sample with uid {_sa_uid} not found")
+        with SampleService().repository.async_session() as transaction_session:
+            sample = await SampleService().get(uid=_sa_uid, session=transaction_session)
+            if not sample:
+                return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        copy, invalidated = await SampleWorkFlow().invalidate(
-            sample.uid, invalidated_by=felicity_user
-        )
+            copy, invalidated = await SampleWorkFlow().invalidate(
+                sample.uid, invalidated_by=felicity_user, session=transaction_session
+            )
 
-        # add invalidated
-        if invalidated:
-            return_samples.append(invalidated)
+            # add invalidated
+            if invalidated:
+                return_samples.append(invalidated)
 
-        # add copy and create analytes
-        if copy:
-            return_samples.append(copy)
+            # add copy and create analytes
+            if copy:
+                return_samples.append(copy)
 
-            # create associated analysis
-            _profiles_analyses = set()
+                # create associated analysis
+                _profiles_analyses = set()
 
-            for _prof in copy.profiles:
-                analyses_ = _prof.analyses
-                for _an in analyses_:
-                    _profiles_analyses.add(_an)
+                for _prof in copy.profiles:
+                    analyses_ = _prof.analyses
+                    for _an in analyses_:
+                        _profiles_analyses.add(_an)
 
-            for _anal in copy.analyses:
-                if _anal not in _profiles_analyses:
-                    _profiles_analyses.add(_anal)
+                for _anal in copy.analyses:
+                    if _anal not in _profiles_analyses:
+                        _profiles_analyses.add(_anal)
 
-            for _service in _profiles_analyses:
-                a_result_in = {
-                    "sample_uid": copy.uid,
-                    "analysis_uid": _service.uid,
-                    "status": ResultState.PENDING,
-                    "metadata_snapshot": {}
-                }
-                a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                created = await AnalysisResultService().create(a_result_schema, related=["sample", "analysis"])
-                await AnalysisResultService().snapshot([created])
+                for _service in _profiles_analyses:
+                    a_result_in = {
+                        "sample_uid": copy.uid,
+                        "analysis_uid": _service.uid,
+                        "status": ResultState.PENDING,
+                        "metadata_snapshot": {}
+                    }
+                    a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
+                    created = await AnalysisResultService().create(
+                        a_result_schema, related=["sample", "analysis"],
+                        session=transaction_session
+                    )
+                    await AnalysisResultService().snapshot([created])
 
+            # save transaction
+            await SampleService().repository.save_transaction(transaction_session)
     return SampleListingType(samples=return_samples)
 
 

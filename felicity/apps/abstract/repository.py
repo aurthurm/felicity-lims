@@ -85,6 +85,9 @@ class BaseRepository(Generic[M]):
             await session.rollback()
             raise
 
+    async def save_transaction(self, session: Optional[AsyncSession]):
+        await self._commit_or_fail(session)
+
     async def save(self, m: M, commit=True, session: Optional[AsyncSession] = None) -> M:
         """
   Save a model instance to the database.

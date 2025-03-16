@@ -1,6 +1,7 @@
 from typing import Generic, TypeVar
 
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.entity import BaseEntity
 from felicity.apps.abstract.repository import BaseRepository
@@ -68,16 +69,16 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.search(**kwargs)
 
-    async def all(self) -> list[E]:
+    async def all(self, session: AsyncSession | None = None) -> list[E]:
         """
         Retrieve all entities.
 
         Returns:
             List of all entities
         """
-        return await self.repository.all()
+        return await self.repository.all(session=session)
 
-    async def get(self, related: list[str] | None = None, **kwargs) -> E:
+    async def get(self, related: list[str] | None = None, session: AsyncSession | None = None, **kwargs) -> E:
         """
         Get a single entity based on given criteria.
 
@@ -87,9 +88,9 @@ class BaseService(Generic[E, C, U]):
         Returns:
             A single entity
         """
-        return await self.repository.get(related=related, **kwargs)
+        return await self.repository.get(related=related, session=session, **kwargs)
 
-    async def get_by_uids(self, uids: list[str]) -> list[E]:
+    async def get_by_uids(self, uids: list[str], session: AsyncSession | None = None) -> list[E]:
         """
         Get multiple entities by their UIDs.
 
@@ -99,9 +100,10 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of entities matching the given UIDs
         """
-        return await self.repository.get_by_uids(uids)
+        return await self.repository.get_by_uids(uids, session=session)
 
-    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None, **kwargs) -> list[E]:
+    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None,
+                      session: AsyncSession | None = None, **kwargs) -> list[E]:
         """
         Get all entities matching the given criteria.
 
@@ -113,9 +115,10 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of matching entities
         """
-        return await self.repository.get_all(related=related, sort_attrs=sort_attrs, **kwargs)
+        return await self.repository.get_all(related=related, sort_attrs=sort_attrs, session=session, **kwargs)
 
-    async def create(self, c: C | dict, related: list[str] | None = None) -> E:
+    async def create(self, c: C | dict, related: list[str] | None = None, commit: bool = True,
+                     session: AsyncSession | None = None) -> E:
         """
         Create a new entity.
 
@@ -127,13 +130,14 @@ class BaseService(Generic[E, C, U]):
             Newly created entity (with related entities if specified)
         """
         data = self._import(c)
-        created = await self.repository.create(**data)
+        created = await self.repository.create(commit=commit, session=session, **data)
         if not related:
             return created
-        return await self.get(related=related, uid=created.uid)
+        return await self.get(related=related, uid=created.uid, session=session)
 
     async def bulk_create(
-            self, bulk: list[dict | C], related: list[str] | None = None
+            self, bulk: list[dict | C], related: list[str] | None = None, commit: bool = True,
+            session: AsyncSession | None = None
     ) -> list[E]:
         """
         Create multiple entities in bulk.
@@ -145,13 +149,15 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of newly created entities (with related entities if specified)
         """
-        created = await self.repository.bulk_create([self._import(b) for b in bulk])
+        created = await self.repository.bulk_create(bulk=[self._import(b) for b in bulk], commit=commit,
+                                                    session=session)
         if not related:
             return created
-        return [(await self.get(related=related, uid=x.uid)) for x in created]
+        return [(await self.get(related=related, uid=x.uid, session=session)) for x in created]
 
     async def update(
-            self, uid: str, update: U | dict, related: list[str] | None = None
+            self, uid: str, update: U | dict, related: list[str] | None = None, commit: bool = True,
+            session: AsyncSession | None = None
     ) -> E:
         """
         Update an existing entity.
@@ -166,12 +172,13 @@ class BaseService(Generic[E, C, U]):
         """
         if "uid" in update:
             del update["uid"]
-        updated = await self.repository.update(uid, **self._import(update))
+        updated = await self.repository.update(uid=uid, commit=commit, session=session, **self._import(update))
         if not related:
             return updated
-        return await self.get(related=related, uid=updated.uid)
+        return await self.get(related=related, uid=updated.uid, session=session)
 
-    async def save(self, entity: E, related: list[str] | None = None) -> E:
+    async def save(self, entity: E, related: list[str] | None = None, commit: bool = True,
+                   session: AsyncSession | None = None) -> E:
         """
         Save an entity (create if not exists, update if exists).
 
@@ -182,12 +189,13 @@ class BaseService(Generic[E, C, U]):
         Returns:
             Saved entity (with related entities if specified)
         """
-        saved = await self.repository.save(entity)
+        saved = await self.repository.save(m=entity, commit=commit, session=session)
         if not related:
             return saved
-        return await self.get(related=related, uid=saved.uid)
+        return await self.get(related=related, uid=saved.uid, session=session)
 
-    async def bulk_update_with_mappings(self, mappings: list[dict]) -> None:
+    async def bulk_update_with_mappings(self, mappings: list[dict], commit: bool = True,
+                                        session: AsyncSession | None = None) -> None:
         """
         Perform bulk updates using a list of mappings.
 
@@ -197,9 +205,9 @@ class BaseService(Generic[E, C, U]):
         Returns:
             None
         """
-        return await self.repository.bulk_update_with_mappings(mappings)
+        return await self.repository.bulk_update_with_mappings(mappings, commit=commit, session=session)
 
-    async def delete(self, uid: str) -> None:
+    async def delete(self, uid: str, commit: bool = True, session: AsyncSession | None = None) -> None:
         """
         Delete an entity by its unique identifier.
 
@@ -209,9 +217,9 @@ class BaseService(Generic[E, C, U]):
         Returns:
             None
         """
-        return await self.repository.delete(uid)
+        return await self.repository.delete(uid=uid, commit=commit, session=session)
 
-    async def delete_where(self, **kwargs) -> None:
+    async def delete_where(self, commit: bool = True, session: AsyncSession | None = None, **kwargs) -> None:
         """
         Delete an entity by its unique identifier.
 
@@ -221,7 +229,7 @@ class BaseService(Generic[E, C, U]):
         Returns:
             None
         """
-        return await self.repository.delete_where(**kwargs)
+        return await self.repository.delete_where(commit=commit, session=session, **kwargs)
 
     @classmethod
     def _import(cls, schema_in: C | U | dict) -> dict:

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import logging
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from felicity.apps.abstract import BaseService
 from felicity.apps.billing.entities import (
     AnalysisDiscount,
@@ -109,13 +111,14 @@ class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
         super().__init__(TestBillRepository())
 
     async def create(
-            self, obj_in: dict | TestBillCreate, related: list[str] | None = None
+            self, obj_in: dict | TestBillCreate, related: list[str] | None = None,
+            commit: bool = True, session: AsyncSession | None = None
     ) -> "TestBill":
         data = self._import(obj_in)
         data["bill_id"] = (
             await self.id_sequence_service.get_next_number(prefix="X", generic=True)
         )[1]
-        return await super().create(data, related)
+        return await super().create(data, related, commit=commit, session=session)
 
     async def confirm_bill(self, test_bill_uid: str):
         bill = await self.get(uid=test_bill_uid)
