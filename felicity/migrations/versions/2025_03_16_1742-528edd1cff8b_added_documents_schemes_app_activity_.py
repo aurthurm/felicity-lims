@@ -1,8 +1,8 @@
 """added documents, schemes, app activity tracker
 
-Revision ID: 3b6a1e34c164
+Revision ID: 528edd1cff8b
 Revises: cccb8d8adce5
-Create Date: 2025-03-16 17:36:18.285084
+Create Date: 2025-03-16 17:42:47.795531
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3b6a1e34c164'
+revision = '528edd1cff8b'
 down_revision = 'cccb8d8adce5'
 branch_labels = None
 depends_on = None
