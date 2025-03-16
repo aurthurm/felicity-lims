@@ -166,7 +166,7 @@ async def update_abx_antibiotic(
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def use_abx_antibiotic(info, uid: str) -> AbxAntibioticResponse:
     laboratory = await LaboratoryService().get_by_setup_name("felicity")
-    exists = await AbxAntibioticService().repository.query_table(
+    exists = await AbxAntibioticService().repository.table_query(
         table=laboratory_antibiotics,
         columns=["antibiotic_uid"],
         antibiotic_uid=uid,
@@ -187,7 +187,7 @@ async def use_abx_antibiotic(info, uid: str) -> AbxAntibioticResponse:
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def discard_abx_antibiotic(info, uid: str) -> DeletedItem:
     laboratory = await LaboratoryService().get_by_setup_name("felicity")
-    await AbxAntibioticService().repository.delete_table(
+    await AbxAntibioticService().repository.table_delete(
         table=laboratory_antibiotics,
         antibiotic_uid=uid,
         laboratory_uid=laboratory.uid

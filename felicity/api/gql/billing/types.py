@@ -170,7 +170,7 @@ class TestBillType:
 
     @strawberry.field
     async def orders(self) -> Optional[list[AnalysisRequestType]]:
-        test_bills = await TestBillService().repository.query_table(
+        test_bills = await TestBillService().repository.table_query(
             test_bill_item, ["analysis_request_uid"], test_bill_uid=self.uid
         )
         return await AnalysisRequestService().get_by_uids(uids=test_bills)

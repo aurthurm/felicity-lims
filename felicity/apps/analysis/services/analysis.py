@@ -140,7 +140,7 @@ class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
         return profile
 
     async def get_analyses(self, uid):
-        # items, cols = await self.repository.query_table(
+        # items, cols = await self.repository.table_query(
         #     analysis_profile,
         #     **{"profile_uid": uid},
         # )
@@ -618,7 +618,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
                     st = await SampleTypeService().get(uid=sample.sample_type_uid)
                     metadata[_field] = st.snapshot()
                 if _field == "profiles":
-                    profile_uids = await ProfileService().repository.query_table(
+                    profile_uids = await ProfileService().repository.table_query(
                         table=sample_profile,
                         columns=["profile_uid"],
                         sample_uid=sample.uid
@@ -627,7 +627,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
                         profiles = await ProfileService().get_by_uids(uids=profile_uids)
                         metadata[_field] = [p.snapshot() for p in profiles]
                 if _field == "analyses":
-                    anal_uids = await AnalysisService().repository.query_table(
+                    anal_uids = await AnalysisService().repository.table_query(
                         table=sample_analysis,
                         columns=["analysis_uid"],
                         sample_uid=sample.uid

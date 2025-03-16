@@ -68,7 +68,7 @@ class MicrobiologyQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_laboratory_antibiotics(self, info) -> Optional[List[AbxAntibioticType]]:
         laboratory = await LaboratoryService().get_by_setup_name("felicity")
-        antibiotic_uids = await AbxAntibioticService().repository.query_table(
+        antibiotic_uids = await AbxAntibioticService().repository.table_query(
             table=laboratory_antibiotics,
             columns=["antibiotic_uid"],
             laboratory_uid=laboratory.uid

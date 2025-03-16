@@ -22,7 +22,7 @@ class GrindSchemeService(BaseService[GrindScheme, GrindSchemeCreate, GrindScheme
         )
 
     async def update_members(self, uid: str, members: list[str]) -> None:
-        await self.repository.delete_table(grind_scheme_member, grind_scheme_uid=uid)
+        await self.repository.table_delete(grind_scheme_member, grind_scheme_uid=uid)
         await self.add_members(uid, members)
 
 
@@ -42,7 +42,7 @@ class GrindPosterService(BaseService[GrindPoster, GrindPosterCreate, GrindPoster
         )
 
     async def update_members(self, uid: str, members: list[str]) -> None:
-        await self.repository.delete_table(grind_poster_member, grind_poster_uid=uid)
+        await self.repository.table_delete(grind_poster_member, grind_poster_uid=uid)
         await self.add_members(uid, members)
 
     async def add_stamps(self, uid: str, stamps: list[str]):
@@ -52,7 +52,7 @@ class GrindPosterService(BaseService[GrindPoster, GrindPosterCreate, GrindPoster
         )
 
     async def update_stamps(self, uid: str, stamps: list[str]) -> None:
-        await self.repository.delete_table(grind_poster_stamp, grind_poster_uid=uid)
+        await self.repository.table_delete(grind_poster_stamp, grind_poster_uid=uid)
         await self.add_stamps(uid, stamps)
 
 
@@ -67,11 +67,11 @@ class GrindErrandService(BaseService[GrindErrand, GrindErrandCreate, GrindErrand
         )
 
     async def update_members(self, uid: str, members: list[str]) -> None:
-        await self.repository.delete_table(grind_errand_member, grind_errand_uid=uid)
+        await self.repository.table_delete(grind_errand_member, grind_errand_uid=uid)
         await self.add_members(uid, members)
 
     async def update_stamps(self, uid: str, stamps: list[str]) -> None:
-        await self.repository.delete_table(grind_errand_stamp, grind_errand_uid=uid)
+        await self.repository.table_delete(grind_errand_stamp, grind_errand_uid=uid)
         await self.add_stamps(uid, stamps)
 
     async def add_stamps(self, uid: str, stamps: list[str]):
@@ -112,13 +112,13 @@ class GrindStampService(BaseService[GrindStamp, GrindStampCreate, GrindStampUpda
         super().__init__(GrindStampRepository())
 
     async def get_errands(self, uid) -> list[GrindErrand]:
-        errand_uids = await self.repository.query_table(
+        errand_uids = await self.repository.table_query(
             grind_errand_stamp, columns=['grind_errand_uid'], stamp_uid=uid
         )
         return await GrindErrandService().get_by_uids(errand_uids)
 
     async def get_posters(self, uid) -> list[GrindPoster]:
-        poster_uids = await self.repository.query_table(
+        poster_uids = await self.repository.table_query(
             grind_poster_stamp, columns=['grind_poster_uid'], stamp_uid=uid
         )
         return await GrindPosterService().get_by_uids(poster_uids)

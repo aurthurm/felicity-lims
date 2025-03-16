@@ -34,7 +34,7 @@ async def impress_invoice(test_bill: TestBill):
 
     # orders
     impress_meta["orders"] = []
-    analysis_request_uids = await TestBillService().repository.query_table(
+    analysis_request_uids = await TestBillService().repository.table_query(
         test_bill_item, ["analysis_request_uid"], test_bill_uid=test_bill.uid
     )
     orders = await AnalysisRequestService().get_by_uids(uids=analysis_request_uids)

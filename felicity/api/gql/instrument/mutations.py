@@ -457,7 +457,7 @@ class InstrumentMutations:
         # infer linkages between analysis and instrument based on the r/ship they share with this method
         for _instr in payload.instruments:
             for _anal in payload.analyses:
-                exists = AnalysisService().repository.query_table(
+                exists = AnalysisService().repository.table_query(
                     table=analysis_instrument,
                     filters=[{"instrument_uid": _instr, "analysis_uid": _anal}],
                 )
@@ -531,7 +531,7 @@ class InstrumentMutations:
         # analyses management
         # Find all analyses linked already to this method
         _sacked_analyses = set()
-        existing_analyses_uids = await AnalysisService().repository.query_table(
+        existing_analyses_uids = await AnalysisService().repository.table_query(
             table=analysis_method,
             columns=["analysis_uid"],
             method_uid=method.uid,
@@ -559,7 +559,7 @@ class InstrumentMutations:
         # link new additions
         for _instr in _added_instruments:
             for _anal in _added_analyses:
-                exists = await AnalysisService().repository.query_table(
+                exists = await AnalysisService().repository.table_query(
                     table=analysis_instrument, instrument_uid=_instr, analysis_uid=_anal,
                 )
                 if not exists:
@@ -572,13 +572,13 @@ class InstrumentMutations:
         # if both analysis and instrument are removed at the same time
         for _instr in _sacked_instruments:
             for _anal in _sacked_analyses:
-                exists = await AnalysisService().repository.query_table(
+                exists = await AnalysisService().repository.table_query(
                     table=analysis_instrument,
                     instrument_uid=_instr,
                     analysis_uid=_anal,
                 )
                 if exists:
-                    await AnalysisService().repository.delete_table(
+                    await AnalysisService().repository.table_delete(
                         table=analysis_instrument,
                         instrument_uid=_instr,
                         analysis_uid=_anal,
@@ -586,28 +586,28 @@ class InstrumentMutations:
 
         # Remove relationships in analysis_instrument for sacked instruments only
         for _instr in _sacked_instruments:
-            exists = await AnalysisService().repository.query_table(
+            exists = await AnalysisService().repository.table_query(
                 table=analysis_instrument,
                 instrument_uid=_instr,
                 columns=['analysis_uid']
             )
             for relation in exists:
                 if relation not in _sacked_analyses:
-                    await AnalysisService().repository.delete_table(
+                    await AnalysisService().repository.table_delete(
                         table=analysis_instrument,
                         instrument_uid=_instr,
                     )
 
         # Remove relationships in analysis_instrument for sacked analyses only
         for _anal in _sacked_analyses:
-            exists = await AnalysisService().repository.query_table(
+            exists = await AnalysisService().repository.table_query(
                 table=analysis_instrument,
                 analysis_uid=_anal,
                 columns=['instrument_uid']
             )
             for relation in exists:
                 if relation not in _sacked_instruments:
-                    await AnalysisService().repository.delete_table(
+                    await AnalysisService().repository.table_delete(
                         table=analysis_instrument,
                         analysis_uid=_anal,
                     )
@@ -619,7 +619,7 @@ class InstrumentMutations:
             await AnalysisResultService().snapshot(to_snapshot)
 
         # Add the task to background tasks
-        linked_analyses = await AnalysisService().repository.query_table(
+        linked_analyses = await AnalysisService().repository.table_query(
             table=analysis_method,
             method_uid=method.uid,
             columns=["analysis_uid"],

@@ -119,7 +119,7 @@ ReflexBrainResponse = strawberry.union(
 class ReflexRuleMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_rule(
-        self, info, payload: ReflexRuleInput
+            self, info, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
         felicity_user = await auth_from_info(info)
 
@@ -143,7 +143,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_rule(
-        self, info, uid: str, payload: ReflexRuleInput
+            self, info, uid: str, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
         felicity_user = await auth_from_info(info)
 
@@ -172,14 +172,14 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_action(
-        self, info, payload: ReflexActionInput
+            self, info, payload: ReflexActionInput
     ) -> ReflexActionResponse:
         felicity_user = await auth_from_info(info)
 
         if (
-            not len(payload.analyses) > 0
-            or not isinstance(payload.level, int)
-            or not payload.description
+                not len(payload.analyses) > 0
+                or not isinstance(payload.level, int)
+                or not payload.description
         ):
             return OperationError(
                 error="Analysis, Level (as an integer) and description are required"
@@ -217,7 +217,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_action(
-        self, info, uid: str, payload: ReflexActionInput
+            self, info, uid: str, payload: ReflexActionInput
     ) -> ReflexActionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -254,7 +254,7 @@ class ReflexRuleMutations:
                 "analysis_uid": _anal_uid,
                 "reflex_action_uid": reflex_action.uid,
             }
-            await ReflexActionService().repository.delete_table(
+            await ReflexActionService().repository.table_delete(
                 table=reflex_action_analysis,
                 **mappings,
             )
@@ -267,7 +267,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_brain(
-        self, info, payload: ReflexBrainInput
+            self, info, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
         felicity_user = await auth_from_info(info)
 
@@ -349,7 +349,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_brain(
-        self, info, uid: str, payload: ReflexBrainInput
+            self, info, uid: str, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
         felicity_user = await auth_from_info(info)
 

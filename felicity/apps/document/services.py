@@ -23,7 +23,7 @@ class DocumentService(BaseService[Document, DocumentCreate, DocumentUpdate]):
         super().__init__(DocumentRepository())
 
     async def get_by_tag(self, tag_uid: str) -> list[Document]:
-        document_uids = await self.repository.query_table(
+        document_uids = await self.repository.table_query(
             document_tagged, columns=["document_uid"], document_tag_uid=tag_uid
         )
         return await self.get_by_uids(document_uids)
@@ -35,7 +35,7 @@ class DocumentService(BaseService[Document, DocumentCreate, DocumentUpdate]):
         )
 
     async def clear_tags(self, uid: str):
-        await self.repository.delete_table(document_tagged, document_uid=uid)
+        await self.repository.table_delete(document_tagged, document_uid=uid)
 
     async def add_author(self, uid: str, author_uid: str) -> None:
         await self.repository.table_insert(
@@ -44,7 +44,7 @@ class DocumentService(BaseService[Document, DocumentCreate, DocumentUpdate]):
         )
 
     async def clear_authors(self, uid: str):
-        await self.repository.delete_table(document_author, document_uid=uid)
+        await self.repository.table_delete(document_author, document_uid=uid)
 
     async def add_reader(self, uid: str, reader_uid: str) -> None:
         await self.repository.table_insert(
@@ -53,13 +53,13 @@ class DocumentService(BaseService[Document, DocumentCreate, DocumentUpdate]):
         )
 
     async def clear_readers(self, uid: str):
-        await self.repository.delete_table(document_reader, document_uid=uid)
+        await self.repository.table_delete(document_reader, document_uid=uid)
 
     async def clear_related_documents(self, uid: str):
-        await self.repository.delete_table(document_relation, source_document_uid=uid)
+        await self.repository.table_delete(document_relation, source_document_uid=uid)
 
     async def relation_exists(self, source_uid, target_uid, relation_type):
-        return await self.repository.query_table(
+        return await self.repository.table_query(
             document_relation,
             source_document_uid=source_uid,
             target_document_uid=target_uid,
@@ -77,7 +77,7 @@ class DocumentService(BaseService[Document, DocumentCreate, DocumentUpdate]):
         )
 
     async def remove_relation(self, source_uid: str, target_uid: str, relation_type: str):
-        await self.repository.delete_table(
+        await self.repository.table_delete(
             document_relation,
             source_document_uid=source_uid,
             target_document_uid=target_uid,

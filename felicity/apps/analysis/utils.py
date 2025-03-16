@@ -64,7 +64,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
     ar_service = AnalysisResultService()
     user_service = UserService()
 
-    data = await ar_service.repository.query_table(
+    data = await ar_service.repository.table_query(
         table=result_verification, result_uid=result_uid
     )
     if not data:

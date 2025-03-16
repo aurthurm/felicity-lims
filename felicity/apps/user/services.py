@@ -122,10 +122,10 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         await super().update(user_uid, user_in)
 
     async def get_user_permissions(self, user_uid: str) -> list[Permission]:
-        user_groups_uid = await self.repository.query_table(user_groups, ["group_uid"], user_uid=user_uid)
+        user_groups_uid = await self.repository.table_query(user_groups, ["group_uid"], user_uid=user_uid)
         permissions_uid = set()
         for user_group_uid in user_groups_uid:
-            groups_permissions = await self.repository.query_table(
+            groups_permissions = await self.repository.table_query(
                 permission_groups, ["permission_uid"], group_uid=user_group_uid
             )
             for permission_uid in groups_permissions:
@@ -133,7 +133,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         return await PermissionService().get_by_uids(list(permissions_uid))
 
     async def get_user_groups(self, user_uid: str) -> list[Group]:
-        user_groups_uid = await self.repository.query_table(user_groups, ["group_uid"], user_uid=user_uid)
+        user_groups_uid = await self.repository.table_query(user_groups, ["group_uid"], user_uid=user_uid)
         return await GroupService().get_by_uids(user_groups_uid) if user_groups_uid else []
 
 

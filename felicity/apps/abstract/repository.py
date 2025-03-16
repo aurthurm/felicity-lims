@@ -1,7 +1,9 @@
-from typing import Any, AsyncIterator, Generic, List, TypeVar
+from contextlib import asynccontextmanager
+from typing import Any, Generic, List, TypeVar, Optional
 
 from sqlalchemy import inspect, or_ as sa_or_, Table
 from sqlalchemy import select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam, delete
@@ -62,53 +64,81 @@ class BaseRepository(Generic[M]):
         """
         self.model = model
 
-    async def save(self, m: M) -> M:
+    @asynccontextmanager
+    async def transaction(self):
         """
-        Save a model instance to the database.
+        Context manager for transaction support.
+
+        Usage:
+            async with repo.transaction() as session:
+                # Perform operations with session
+                # Commits automatically if no exception occurs
+        """
+        async with self.async_session() as session:
+            yield session
+            await self._commit_or_fail(session)
+
+    async def _commit_or_fail(self, session: Optional[AsyncSession]):
+        try:
+            await session.commit()
+        except:
+            await session.rollback()
+            raise
+
+    async def save(self, m: M, commit=True, session: Optional[AsyncSession] = None) -> M:
+        """
+  Save a model instance to the database.
 
         :param m: The model instance to save.
+        :param commit: Whether to commit the transaction.
+        :param session: Optional session to use for transaction support.
         :return: The saved model instance.
         :raises ValueError: If no model is provided.
         """
         if not m:
             raise ValueError("No model provided to save")  # noqa
 
-        async with self.async_session() as session:
-            try:
-                session.add(m)
-                # try:
-                #     session.add(m)
-                # except Exception:
-                #     await session.merge(m)
+        if session:
+            # Use provided session (part of an existing transaction)
+            session.add(m)
+            if commit:
                 await session.flush()
-                await session.commit()
-            except Exception:
-                await session.rollback()
-                raise
+            return m
+        else:
+            async with self.async_session() as session:
+                session.add(m)
+                await session.flush()
+                await self._commit_or_fail(session)
         return m
 
-    async def save_all(self, items):
+    async def save_all(self, items, commit=True, session: Optional[AsyncSession] = None):
         """
         Save multiple model instances to the database.
 
         :param items: A list of model instances to save.
+        :param commit: Whether to commit the transaction.
+        :param session: Optional session to use for transaction support.
         :return: The list of saved model instances.
         :raises ValueError: If no items are provided.
         """
         if not items:
             raise ValueError("No items provided to save")
 
-        async with self.async_session() as session:
-            try:
-                session.add_all(items)
+        if session:
+            # Use provided session (part of an existing transaction)
+            session.add_all(items)
+            if commit:
                 await session.flush()
-                await session.commit()
-            except Exception:
-                await session.rollback()
-                raise
-        return items
+            return items
+        else:
+            # Create new session (standalone operation)
+            async with self.async_session() as session:
+                session.add(items)
+                await session.flush()
+                await self._commit_or_fail(session)
+            return items
 
-    async def create(self, **kwargs) -> M:
+    async def create(self, commit=True, session: Optional[AsyncSession] = None, **kwargs) -> M:
         """
         Create a new model instance with the given data.
 
@@ -119,9 +149,9 @@ class BaseRepository(Generic[M]):
         if not kwargs:
             raise ValueError("No data provided to create a new model")
         filled = self.model.fill(self.model(), **kwargs)
-        return await self.save(filled)
+        return await self.save(filled, commit=commit, session=session)
 
-    async def bulk_create(self, bulk: list[dict]) -> list[M]:
+    async def bulk_create(self, bulk: list[dict], commit=True, session: Optional[AsyncSession] = None) -> list[M]:
         """
         Create multiple new model instances with the given data.
 
@@ -136,46 +166,57 @@ class BaseRepository(Generic[M]):
         for data in bulk:
             fill = self.model.fill(self.model(), **data)
             to_save.append(fill)
-        return await self.save_all(to_save)
+        return await self.save_all(to_save, commit=commit, session=session)
 
-    async def update(self, uid: str, **data) -> M:
+    async def update(self, uid: str, commit=True, session: Optional[AsyncSession] = None, **kwargs) -> M:
         """
         Update an existing model instance.
 
         :param uid: The unique identifier of the model to update.
-        :param data: The data to update the model with.
+        :param kwargs: The data to update the model with.
         :return: The updated model instance.
         :raises ValueError: If uid or data is not provided.
         """
-        if not uid or not data:
+        if not uid or not kwargs:
             raise ValueError("Both uid and data are required to update model")
 
         item = await self.get(uid=uid)
-        filled = self.model.fill(item, **data)
-        return await self.save(filled)
+        filled = self.model.fill(item, **kwargs)
+        return await self.save(filled, commit=commit, session=session)
 
-    async def bulk_update_where(self, update_data: list[dict], filters: dict):
+    async def bulk_update_where(self, update_data: list[dict], filters: dict, commit=True,
+                                session: Optional[AsyncSession] = None):
         """
         Update multiple model instances that match the given filters.
 
-        :param update_data: A list of dictionaries containing update values.
+        :param update_data: A dictionary containing update values.
         :param filters: A dictionary of filter conditions.
-        :return: The updated model instances.
+        :param commit: Whether to commit the transaction.
+        :param session: Optional session to use for transaction support.
+        :return: The number of rows updated.
         :raises ValueError: If update_data or filters are not provided.
         """
         if not update_data or not filters:
             raise ValueError(
                 "Both update_data and filters are required to update model"
             )
+
         query = self.model.smart_query(query=update(self.model), filters=filters)
         stmt = query.values(update_data).execution_options(synchronize_session="fetch")
 
-        async with self.async_session() as session:
+        if session:
+            # Use provided session (part of an existing transaction)
             results = await session.execute(stmt)
-        updated = results.scalars().all()
-        return updated
+            if commit:
+                await session.flush()
+            return results.rowcount
+        else:
+            async with self.async_session() as session:
+                results = await session.execute(stmt)
+            return results.scalars().all()
 
-    async def bulk_update_with_mappings(self, mappings: list) -> None:
+    async def bulk_update_with_mappings(self, mappings: list, commit=True,
+                                        session: Optional[AsyncSession] = None) -> None:
         """
         Update multiple model instances using a list of mappings.
 
@@ -200,26 +241,40 @@ class BaseRepository(Generic[M]):
             synchronize_session=None
         )  # "fetch" not available
 
-        async with self.async_session() as session:
+        if session:
+            # Use provided session (part of an existing transaction)
             await session.execute(stmt, to_update)
-            await session.flush()
-            await session.commit()
+            if commit:
+                await session.flush()
+        else:
+            async with self.async_session() as session:
+                await session.execute(stmt, to_update)
+                await session.flush()
+                await self._commit_or_fail(session)
 
-    async def table_insert(self, table: Any, mappings: list[dict]) -> None:
+    async def table_insert(self, table: Any, mappings: list[dict], commit=True,
+                           session: Optional[AsyncSession] = None) -> None:
         """
         Insert multiple rows into a specified table.
 
         :param table: The SQLAlchemy table model.
         :param mappings: A list of dictionaries containing the data to insert.
         """
-        async with self.async_session() as session:
-            stmt = table.insert()
+        stmt = table.insert()
+        if session:
+            # Use provided session (part of an existing transaction)
             await session.execute(stmt, mappings)
-            await session.commit()
-            await session.flush()
+            if commit:
+                await session.flush()
+        else:
+            async with self.async_session() as session:
+                await session.execute(stmt, mappings)
+                await session.flush()
+                await self._commit_or_fail(session)
 
-    async def query_table(
-            self, table: Table, columns: list[str] | None = None, **kwargs
+    async def table_query(
+            self, table: Table, columns: list[str] | None = None,
+            session: Optional[AsyncSession] = None, **kwargs
     ):
         """
         Query a specific table with optional column selection and filters.
@@ -240,11 +295,16 @@ class BaseRepository(Generic[M]):
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
 
-        async with self.async_session() as session:
+        if session:
+            # Use provided session (part of an existing transaction)
             results = await session.execute(stmt)
-        return results.unique().scalars().all()  # , results.keys()
+            return results.unique().scalars().all()  # , results.keys()
+        else:
+            async with self.async_session() as session:
+                results = await session.execute(stmt)
+                return results.unique().scalars().all()  # , results.keys()
 
-    async def delete_table(self, table, **kwargs):
+    async def table_delete(self, table, commit=True, session: Optional[AsyncSession] = None, **kwargs):
         """
         Delete rows from a specified table based on the given filters.
 
@@ -258,12 +318,18 @@ class BaseRepository(Generic[M]):
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
 
-        async with self.async_session() as session:
+        if session:
+            # Use provided session (part of an existing transaction)
             await session.execute(stmt)
-            await session.commit()
-            await session.flush()
+            if commit:
+                await session.flush()
+        else:
+            async with self.async_session() as session:
+                await session.execute(stmt)
+                await session.flush()
+                await self._commit_or_fail(session)
 
-    async def get(self, related: list[str] | None = None, **kwargs) -> M:
+    async def get(self, related: list[str] | None = None, session: Optional[AsyncSession] = None, **kwargs) -> M:
         """
         Get a single model instance based on the given filters.
 
@@ -280,12 +346,16 @@ class BaseRepository(Generic[M]):
             for key in related:
                 stmt = apply_nested_loader_options(stmt, self.model, key)
 
-        async with self.async_session() as session:
+        if session:
             results = await session.execute(stmt)
-            found = results.scalars().first()
-        return found
+            return results.scalars().first()
+        else:
+            async with self.async_session() as session:
+                results = await session.execute(stmt)
+                return results.scalars().first()
 
-    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None, **kwargs) -> list[M]:
+    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None,
+                      session: Optional[AsyncSession] = None, **kwargs) -> list[M]:
         """
         Get all model instances that match the given filters.
 
@@ -304,21 +374,32 @@ class BaseRepository(Generic[M]):
             for key in related:
                 stmt = apply_nested_loader_options(stmt, self.model, key)
 
-        async with self.async_session() as session:
+        if session:
             results = await session.execute(stmt.distinct())
-            found = results.scalars().all()
+            return results.scalars().all()
+        else:
+            async with self.async_session() as session:
+                results = await session.execute(stmt.distinct())
+                return results.scalars().all()
 
-        return found
-
-    async def all(self) -> list[M]:
+    async def all(self, session: Optional[AsyncSession] = None) -> list[M]:
         """
         Get all instances of the model.
 
+        :param session: Optional session to use for transaction support.
         :return: A list of all model instances.
         """
-        async with self.async_session() as session:
-            results = await session.execute(select(self.model))
-        return results.scalars().all()
+        stmt = select(self.model)
+
+        if session:
+            # Use provided session (part of an existing transaction)
+            results = await session.execute(stmt)
+            return results.scalars().all()
+        else:
+            # Create new session (standalone operation)
+            async with self.async_session() as new_session:
+                results = await new_session.execute(stmt)
+                return results.scalars().all()
 
     async def all_by_page(self, page: int = 1, limit: int = 20, **kwargs) -> dict:
         """
@@ -334,10 +415,9 @@ class BaseRepository(Generic[M]):
         stmt = self.model.where(**kwargs).limit(limit).offset(start)
         async with self.async_session() as session:
             results = await session.execute(stmt)
-        found = results.scalars().all()
-        return found
+            return results.scalars().all()
 
-    async def get_by_uids(self, uids: List[str]) -> list[M]:
+    async def get_by_uids(self, uids: List[str], session: Optional[AsyncSession] = None) -> list[M]:
         """
         Get model instances based on a list of unique identifiers.
 
@@ -348,35 +428,13 @@ class BaseRepository(Generic[M]):
         if not uids:
             raise ValueError("No uids provided to get by uids")
         stmt = select(self.model).where(self.model.uid.in_(uids))  # type: ignore
+
+        if session:
+            results = await session.execute(stmt.order_by(self.model.uid))
+            return results.scalars().all()
         async with self.async_session() as session:
             results = await session.execute(stmt.order_by(self.model.uid))
-        return results.scalars().all()
-
-    async def stream_by_uids(self, uids: List[Any]) -> AsyncIterator[M]:
-        """
-        Stream model instances based on a list of unique identifiers.
-
-        :param uids: A list of unique identifiers.
-        :return: An asynchronous iterator yielding model instances.
-        """
-        stmt = select(self.model).where(self.model.in_(uids))  # type: ignore
-
-        async with self.async_session() as session:
-            stream = await session.stream(stmt.order_by(self.model.uid))
-        async for row in stream:
-            yield row
-
-    async def stream_all(self) -> AsyncIterator[Any]:
-        """
-        Stream all model instances.
-
-        :return: An asynchronous iterator yielding model instances.
-        """
-        stmt = select(self.model)
-        async with self.async_session() as session:
-            stream = await session.stream(stmt.order_by(self.model.uid))
-        async for row in stream:
-            yield row
+            return results.scalars().all()
 
     async def full_text_search(self, search_string, field):
         """
@@ -396,7 +454,7 @@ class BaseRepository(Generic[M]):
         search = results.scalars().all()
         return search
 
-    async def delete(self, uid: str) -> None:
+    async def delete(self, uid: str, commit=True, session: Optional[AsyncSession] = None) -> None:
         """
         Delete a model instance based on its unique identifier.
 
@@ -405,13 +463,20 @@ class BaseRepository(Generic[M]):
         """
         if not uid:
             raise ValueError("No uid provided to delete")
-        obj = await self.get(uid=uid)
-        async with self.async_session() as session:
-            await session.delete(obj)
-            await session.flush()
-            await session.commit()
+        obj = await self.get(uid=uid, session=session)
 
-    async def delete_where(self, **kwargs) -> None:
+        if session:
+            # Use provided session (part of an existing transaction)
+            await session.delete(obj)
+            if commit:
+                await session.flush()
+        else:
+            async with self.async_session() as session:
+                await session.delete(obj)
+                await session.flush()
+                await self._commit_or_fail(session)
+
+    async def delete_where(self, commit=True, session: Optional[AsyncSession] = None, **kwargs) -> None:
         """
         Delete a model instance based on its provided conditions.
         :param kwargs: The unique identifier of the model to delete.
@@ -420,12 +485,19 @@ class BaseRepository(Generic[M]):
         if not kwargs:
             raise ValueError("No filter criteria provided to delete")
 
-        objs = await self.get_all(**kwargs)
+        objs = await self.get_all(session=session, **kwargs)
+
+        if session:
+            # Use provided session (part of an existing transaction)
+            for obj in objs:
+                await session.delete(obj)
+            if commit:
+                await session.flush()
         async with self.async_session() as session:
             for obj in objs:
                 await session.delete(obj)
             await session.flush()
-            await session.commit()
+            await self._commit_or_fail(session)
 
     async def count_where(self, filters: dict) -> int:
         """

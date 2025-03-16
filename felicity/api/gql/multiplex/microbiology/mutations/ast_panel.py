@@ -137,7 +137,7 @@ async def update_abx_ast_panel(
     # Update organism associations if provided
     if payload.organisms is not None:
         # Remove existing associations
-        await AbxBreakpointService().repository.delete_table(
+        await AbxBreakpointService().repository.table_delete(
             panel_organism,
             panel_uid=astp_panel.uid
         )
@@ -152,7 +152,7 @@ async def update_abx_ast_panel(
     # Update antibiotic associations if provided
     if payload.antibiotics is not None:
         # Remove existing associations
-        await AbxBreakpointService().repository.delete_table(
+        await AbxBreakpointService().repository.table_delete(
             panel_antibiotic,
             panel_uid=astp_panel.uid
         )
