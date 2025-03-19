@@ -1,4 +1,7 @@
+import os
+from datetime import timedelta
 from typing import List, Optional
+from urllib.parse import quote
 
 import sqlalchemy as sa
 import strawberry
@@ -19,6 +22,8 @@ from felicity.apps.grind.services import (
     GrindOccurrenceService, GrindStampService, GrindErrandDiscussionService,
 )
 from felicity.apps.guard import FAction, FObject
+from felicity.apps.iol.minio import MinioClient
+from felicity.apps.iol.minio.enum import MinioBucket
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -637,3 +642,68 @@ class GrindQuery:
     )
     async def grind_errand_discussions_by_parent(self, info, parent_uid: str) -> List[types.GrindErrandDiscussionType]:
         return await GrindErrandDiscussionService().get_all(parent_uid=parent_uid, sort_attrs=["-created_at"])
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def download_grind_media_file_url(self, info, uid: str) -> types.FileUrlResponseType:
+        media = await GrindMediaService().get(uid=uid)
+
+        if not media:
+            raise Exception("Media not found")
+
+        if media.destination == "minio":
+            download_url = MinioClient().client.presigned_get_object(
+                bucket_name=MinioBucket.GRIND_MEDIA,
+                object_name=media.path,
+                expires=timedelta(minutes=5)  # valid for 1 minute since download is instant
+            )
+        else:
+            if not os.path.exists(media.path):
+                raise Exception("File not found on server")
+            download_url = quote(os.path.basename(media.path))
+
+        return types.FileUrlResponseType(
+            uid=media.uid,
+            filename=media.filename,
+            mimetype=media.mimetype,
+            download_url=download_url
+        )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def download_grind_media_file(self, info, uid: str) -> types.FileResponseType:
+        media = await GrindMediaService().get(uid=uid)
+
+        if not media:
+            raise Exception("Media not found")
+
+        # Create response type with file data and metadata
+        if media.destination == "minio":
+            # Get file content from MinIO
+            try:
+                files = MinioClient().get_object(
+                    bucket=MinioBucket.GRIND_MEDIA,
+                    object_names=[media.path]
+                )
+                if not files:
+                    raise Exception(f"Failed to retrieve {media.path}")
+
+                file_data = files[0]
+            except Exception as e:
+                raise Exception(str(e))
+        else:
+            # Get file from local filesystem
+            if not os.path.exists(media.path):
+                raise Exception("File not found on server")
+
+            try:
+                with open(media.path, 'rb') as f:
+                    file_data = f.read()
+            except Exception as e:
+                raise Exception(f"Failed to read local file: {str(e)}")
+
+        # Return file response object with content and metadata
+        return types.FileResponseType.from_binary(
+            uid=media.uid,
+            filename=media.filename,
+            mimetype=media.mimetype,
+            binary_content=file_data
+        )

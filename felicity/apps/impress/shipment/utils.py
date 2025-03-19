@@ -26,15 +26,16 @@ async def gen_pdf_manifest(data, shipment):
     if settings.OBJECT_STORAGE:
         MinioClient().put_object(
             bucket=MinioBucket.SHIPMENT,
-            object_name=shipment.shipment_id,
+            object_name=f"{shipment.shipment_id}.pdf",
             data=manifest_pdf,
             metadata={
                 "shipment_uid": shipment.uid,
             },
+            content_type="application/pdf"
         )
 
         # Save the json to mongodb
     if settings.DOCUMENT_STORAGE:
         await MongoService().upsert(
-            collection=MongoCollection.SHIPMENT, uid=shipment.uid, data={"data": data}
+            collection_name=MongoCollection.SHIPMENT, uid=shipment.uid, data={"data": data}
         )

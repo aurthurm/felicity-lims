@@ -327,6 +327,32 @@ export type GetGrindLabelAllQuery = (
   ) }
 );
 
+export type DownloadGrindMediaFileUrlQueryVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type DownloadGrindMediaFileUrlQuery = (
+  { __typename?: 'Query' }
+  & { downloadGrindMediaFileUrl: (
+    { __typename?: 'FileUrlResponseType' }
+    & Pick<Types.FileUrlResponseType, 'uid' | 'mimetype' | 'filename' | 'downloadUrl'>
+  ) }
+);
+
+export type DownloadGrindMediaFileQueryVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type DownloadGrindMediaFileQuery = (
+  { __typename?: 'Query' }
+  & { downloadGrindMediaFile: (
+    { __typename?: 'FileResponseType' }
+    & Pick<Types.FileResponseType, 'uid' | 'filename' | 'mimetype' | 'content' | 'size'>
+  ) }
+);
+
 
 export const GetGrindErrandsDocument = gql`
     query GetGrindErrands($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -762,4 +788,33 @@ export const GetGrindLabelAllDocument = gql`
 
 export function useGetGrindLabelAllQuery(options: Omit<Urql.UseQueryArgs<never, GetGrindLabelAllQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetGrindLabelAllQuery>({ query: GetGrindLabelAllDocument, ...options });
+};
+export const DownloadGrindMediaFileUrlDocument = gql`
+    query DownloadGrindMediaFileUrl($uid: String!) {
+  downloadGrindMediaFileUrl(uid: $uid) {
+    uid
+    mimetype
+    filename
+    downloadUrl
+  }
+}
+    `;
+
+export function useDownloadGrindMediaFileUrlQuery(options: Omit<Urql.UseQueryArgs<never, DownloadGrindMediaFileUrlQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<DownloadGrindMediaFileUrlQuery>({ query: DownloadGrindMediaFileUrlDocument, ...options });
+};
+export const DownloadGrindMediaFileDocument = gql`
+    query DownloadGrindMediaFile($uid: String!) {
+  downloadGrindMediaFile(uid: $uid) {
+    uid
+    filename
+    mimetype
+    content
+    size
+  }
+}
+    `;
+
+export function useDownloadGrindMediaFileQuery(options: Omit<Urql.UseQueryArgs<never, DownloadGrindMediaFileQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<DownloadGrindMediaFileQuery>({ query: DownloadGrindMediaFileDocument, ...options });
 };

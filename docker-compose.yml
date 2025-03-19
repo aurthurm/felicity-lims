@@ -1,12 +1,3 @@
-volumes:
-  db-data:
-  caddy_data:
-  caddy_config:
-  minio_data:
-  dragonflydata:
-  dbgate-data:
-    driver: local
-
 networks:
   felicitynet:
     driver: bridge
@@ -40,7 +31,7 @@ services:
     environment:
       POSTGRES_SERVER: felicity-postgres
       SERVE_WEBAPP: False
-      REDIS_SERVER: felicity-dragonfly:6379
+      REDIS_SERVER: redis://felicity-dragonfly:6379
       MONGODB_SERVER: felicity-mongo:27017
       MONGODB_USER: felicity
       MONGODB_PASS: felicity
@@ -63,22 +54,25 @@ services:
 
   felicity-minio:
     container_name: felicity-minio
-    image: bitnami/minio:2024.7.31
+    image: bitnami/minio:2025-debian-12
     ports:
       - '9000:9000'
       - '9001:9001'
     networks:
       - felicitynet
     volumes:
-      - 'minio_data:/data'
+      - ~/felicity_data/minio:/data
     environment:
       MINIO_ROOT_USER: felicity
       MINIO_ROOT_PASSWORD: felicity
-      MINIO_DEFAULT_BUCKET: felicity
+    command: minio server /data --console-address ":9001"
 
   felicity-dragonfly:
     container_name: felicity-dragonfly
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    environment:
+      - DFLY_proactor_threads=4
+      - DFLY_maxmemory=1G
     ulimits:
       memlock: -1
     ports:
@@ -88,7 +82,7 @@ services:
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
     # network_mode: "host"
     volumes:
-      - dragonflydata:/data
+      - ~/felicity_data/dragonfly:/data
     networks:
       - felicitynet
 
@@ -104,8 +98,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - ./postgres/init/:/docker-entrypoint-initdb.d/
-      - ./db-data:/var/lib/postgresql/data
+      - ~/felicity_data/postgres:/var/lib/postgresql/data
     ports:
       - 5434:5432
     networks:
@@ -130,7 +123,7 @@ services:
     ports:
       - 8051:3000
     volumes:
-      - dbgate-data:/root/.dbgate
+      - ~/felicity_data/dbgate:/root/.dbgate
     environment:
       LOGIN: felicity
       PASSWORD: felicity

@@ -85,19 +85,20 @@ async def impress_samples(sample_meta: list[dict], user):
             if settings.OBJECT_STORAGE:
                 MinioClient().put_object(
                     bucket=MinioBucket.DIAGNOSTIC_REPORT,
-                    object_name=sample.sample_id,
+                    object_name=f"{sample.sample_id}.pdf",
                     data=sample_pdf,
                     metadata={
                         "state": report_state,
                         "sample_uid": sample.uid,
                         "impress_meta_uid": report_impress.uid,
                     },
+                    content_type="application/pdf"
                 )
 
             # Save the json to mongodb
             if settings.DOCUMENT_STORAGE:
                 await MongoService().upsert(
-                    collection=MongoCollection.DIAGNOSTIC_REPORT,
+                    collection_name=MongoCollection.DIAGNOSTIC_REPORT,
                     uid=report_impress.uid,
                     data=impress_meta,
                 )

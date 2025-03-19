@@ -1,8 +1,16 @@
-import asyncio_redis
+from redis import asyncio as aioredis
 
 from felicity.core.config import settings
 
 
-async def create_redis_pool():
-    server = settings.REDIS_SERVER.split(":")
-    return await asyncio_redis.Pool.create(host=server[0], port=server[1], poolsize=10)
+def create_redis_pool():
+    return aioredis.ConnectionPool.from_url(settings.REDIS_SERVER)
+
+
+async def create_redis_pool_client():
+    pool = create_redis_pool()
+    return aioredis.Redis.from_pool(pool)
+
+
+async def create_redis_client():
+    return aioredis.from_url(settings.REDIS_SERVER, decode_responses=True)

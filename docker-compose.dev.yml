@@ -146,6 +146,15 @@ services:
     networks:
       - felicitynet
 
+  word-processor-server:
+    image: syncfusion/word-processor-server:latest
+    environment:
+      SYNCFUSION_LICENSE_KEY: ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU
+    ports:
+      - "6002:80"
+    networks:
+      - felicitynet
+
 volumes:
   pg-data:
   pgadmin:

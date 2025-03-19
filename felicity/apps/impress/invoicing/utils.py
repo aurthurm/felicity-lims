@@ -91,17 +91,18 @@ async def impress_invoice(test_bill: TestBill):
     if settings.OBJECT_STORAGE:
         MinioClient().put_object(
             bucket=MinioBucket.INVOICE,
-            object_name=test_bill.bill_id,
+            object_name=f"{test_bill.bill_id}.pdf",
             data=pdf,
             metadata={
                 "test_bill_uid": test_bill.uid,
             },
+            content_type="application/pdf"
         )
 
     # Save the json to mongodb
     if settings.DOCUMENT_STORAGE:
         await MongoService().upsert(
-            collection=MongoCollection.INVOICE, uid=test_bill.uid, data=impress_meta
+            collection_name=MongoCollection.INVOICE, uid=test_bill.uid, data=impress_meta
         )
 
     return pdf

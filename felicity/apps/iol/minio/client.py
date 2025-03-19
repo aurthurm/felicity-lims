@@ -35,7 +35,7 @@ class MinioClient:
             object_name: str,
             data,
             metadata,
-            content_type="application/pdf",
+            content_type="application/pdf"
     ):
         logger.info(f"minio -- put {bucket} object --")
         self.make_bucket(bucket)
@@ -46,7 +46,7 @@ class MinioClient:
         try:
             return self.client.put_object(
                 bucket_name=bucket,
-                object_name=f"{object_name}.pdf",
+                object_name=f"{object_name}",
                 data=data,
                 length=len(data.getvalue()),
                 content_type=content_type,
@@ -60,7 +60,7 @@ class MinioClient:
         objects = []
         try:
             for obj_name in object_names:
-                obj = self.client.get_object(bucket, f"{obj_name}.pdf")
+                obj = self.client.get_object(bucket, f"{obj_name}")
                 objects.append(obj.read())
             return objects
         except S3Error as e:

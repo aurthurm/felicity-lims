@@ -1689,306 +1689,6 @@ export type DistrictType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
-export type DocumentAiAuthoringSessionCursorPage = {
-  __typename?: 'DocumentAIAuthoringSessionCursorPage';
-  edges?: Maybe<Array<DocumentAiAuthoringSessionEdge>>;
-  items?: Maybe<Array<DocumentAiAuthoringSessionType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentAiAuthoringSessionEdge = {
-  __typename?: 'DocumentAIAuthoringSessionEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentAiAuthoringSessionType;
-};
-
-export type DocumentAiAuthoringSessionInputType = {
-  /** Conversation */
-  conversation: Scalars['String']['input'];
-  /** Document UID */
-  document: Scalars['String']['input'];
-  /** AI Model UID */
-  model: Scalars['String']['input'];
-  /** Prompt */
-  prompt: Scalars['String']['input'];
-};
-
-/** Response for document AI authoring session operations */
-export type DocumentAiAuthoringSessionResponse = DocumentAiAuthoringSessionType | OperationError;
-
-export type DocumentAiAuthoringSessionType = {
-  __typename?: 'DocumentAIAuthoringSessionType';
-  conversation: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  document: DocumentType;
-  documentUid: Scalars['String']['output'];
-  model: DocumentAiModelType;
-  modelUid: Scalars['String']['output'];
-  prompt: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type DocumentAiAuthoringSessionUpdateInputType = {
-  /** Conversation */
-  conversation?: InputMaybe<Scalars['String']['input']>;
-  /** Document UID */
-  document?: InputMaybe<Scalars['String']['input']>;
-  /** AI Model UID */
-  model?: InputMaybe<Scalars['String']['input']>;
-  /** Prompt */
-  prompt?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type DocumentAiComplianceCheckCursorPage = {
-  __typename?: 'DocumentAIComplianceCheckCursorPage';
-  edges?: Maybe<Array<DocumentAiComplianceCheckEdge>>;
-  items?: Maybe<Array<DocumentAiComplianceCheckType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentAiComplianceCheckEdge = {
-  __typename?: 'DocumentAIComplianceCheckEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentAiComplianceCheckType;
-};
-
-export type DocumentAiComplianceCheckInputType = {
-  /** Compliance score */
-  complianceScore: Scalars['Float']['input'];
-  /** Document UID */
-  document: Scalars['String']['input'];
-  /** Compliance issues */
-  issues?: InputMaybe<Array<DocumentComplianceIssueInputType>>;
-  /** Check results */
-  results: Scalars['String']['input'];
-  /** Compliance standard UID */
-  standard: Scalars['String']['input'];
-};
-
-/** Response for document AI compliance check operations */
-export type DocumentAiComplianceCheckResponse = DocumentAiComplianceCheckType | OperationError;
-
-export type DocumentAiComplianceCheckType = {
-  __typename?: 'DocumentAIComplianceCheckType';
-  complianceScore: Scalars['Float']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  document: DocumentType;
-  documentUid: Scalars['String']['output'];
-  issues: Array<DocumentComplianceIssueType>;
-  results: Scalars['String']['output'];
-  standard: DocumentComplianceStandardType;
-  standardUid: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type DocumentAiComplianceCheckUpdateInputType = {
-  /** Compliance score */
-  complianceScore?: InputMaybe<Scalars['Float']['input']>;
-  /** Document UID */
-  document?: InputMaybe<Scalars['String']['input']>;
-  /** Check results */
-  results?: InputMaybe<Scalars['String']['input']>;
-  /** Compliance standard UID */
-  standard?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type DocumentAiModelCursorPage = {
-  __typename?: 'DocumentAIModelCursorPage';
-  edges?: Maybe<Array<DocumentAiModelEdge>>;
-  items?: Maybe<Array<DocumentAiModelType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentAiModelEdge = {
-  __typename?: 'DocumentAIModelEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentAiModelType;
-};
-
-export type DocumentAiModelInputType = {
-  /** API endpoint */
-  apiEndpoint: Scalars['String']['input'];
-  /** Model capabilities */
-  capabilities: Scalars['String']['input'];
-  /** Model description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Is active */
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Model name */
-  name: Scalars['String']['input'];
-};
-
-/** Response for document AI model operations */
-export type DocumentAiModelResponse = DocumentAiModelType | OperationError;
-
-export type DocumentAiModelType = {
-  __typename?: 'DocumentAIModelType';
-  apiEndpoint: Scalars['String']['output'];
-  capabilities: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  isActive: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type DocumentAiModelUpdateInputType = {
-  /** API endpoint */
-  apiEndpoint?: InputMaybe<Scalars['String']['input']>;
-  /** Model capabilities */
-  capabilities?: InputMaybe<Scalars['String']['input']>;
-  /** Model description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Is active */
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Model name */
-  name?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type DocumentAiReviewFeedbackCursorPage = {
-  __typename?: 'DocumentAIReviewFeedbackCursorPage';
-  edges?: Maybe<Array<DocumentAiReviewFeedbackEdge>>;
-  items?: Maybe<Array<DocumentAiReviewFeedbackType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentAiReviewFeedbackEdge = {
-  __typename?: 'DocumentAIReviewFeedbackEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentAiReviewFeedbackType;
-};
-
-export type DocumentAiReviewFeedbackInputType = {
-  /** AI Model UID */
-  model: Scalars['String']['input'];
-  /** Review step UID */
-  reviewStep: Scalars['String']['input'];
-  /** AI suggestions */
-  suggestions: Scalars['String']['input'];
-};
-
-/** Response for document AI review feedback operations */
-export type DocumentAiReviewFeedbackResponse = DocumentAiReviewFeedbackType | OperationError;
-
-export type DocumentAiReviewFeedbackType = {
-  __typename?: 'DocumentAIReviewFeedbackType';
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  model: DocumentAiModelType;
-  modelUid: Scalars['String']['output'];
-  reviewStep: DocumentReviewStepType;
-  reviewStepUid: Scalars['String']['output'];
-  suggestions: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type DocumentAiReviewFeedbackUpdateInputType = {
-  /** AI Model UID */
-  model?: InputMaybe<Scalars['String']['input']>;
-  /** Review step UID */
-  reviewStep?: InputMaybe<Scalars['String']['input']>;
-  /** AI suggestions */
-  suggestions?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type DocumentAnalyticsCursorPage = {
-  __typename?: 'DocumentAnalyticsCursorPage';
-  edges?: Maybe<Array<DocumentAnalyticsEdge>>;
-  items?: Maybe<Array<DocumentAnalyticsType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentAnalyticsEdge = {
-  __typename?: 'DocumentAnalyticsEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentAnalyticsType;
-};
-
-export type DocumentAnalyticsInputType = {
-  /** Complexity score */
-  complexityScore: Scalars['Float']['input'];
-  /** Document UID */
-  document: Scalars['String']['input'];
-  /** Generated date */
-  generatedDate?: InputMaybe<Scalars['DateTime']['input']>;
-  /** Key topics */
-  keyTopics: Scalars['String']['input'];
-  /** Readability score */
-  readabilityScore: Scalars['Float']['input'];
-  /** Sentiment score */
-  sentimentScore: Scalars['Float']['input'];
-  /** Document summary */
-  summary: Scalars['String']['input'];
-};
-
-/** Response for document analytics operations */
-export type DocumentAnalyticsResponse = DocumentAnalyticsType | OperationError;
-
-export type DocumentAnalyticsType = {
-  __typename?: 'DocumentAnalyticsType';
-  complexityScore: Scalars['Float']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  document: DocumentType;
-  documentUid: Scalars['String']['output'];
-  generatedDate: Scalars['String']['output'];
-  keyTopics: Scalars['String']['output'];
-  readabilityScore: Scalars['Float']['output'];
-  sentimentScore: Scalars['Float']['output'];
-  summary: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type DocumentAnalyticsUpdateInputType = {
-  /** Complexity score */
-  complexityScore?: InputMaybe<Scalars['Float']['input']>;
-  /** Document UID */
-  document?: InputMaybe<Scalars['String']['input']>;
-  /** Generated date */
-  generatedDate?: InputMaybe<Scalars['DateTime']['input']>;
-  /** Key topics */
-  keyTopics?: InputMaybe<Scalars['String']['input']>;
-  /** Readability score */
-  readabilityScore?: InputMaybe<Scalars['Float']['input']>;
-  /** Sentiment score */
-  sentimentScore?: InputMaybe<Scalars['Float']['input']>;
-  /** Document summary */
-  summary?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
 export type DocumentAuditCursorPage = {
   __typename?: 'DocumentAuditCursorPage';
   edges?: Maybe<Array<DocumentAuditEdge>>;
@@ -2059,122 +1759,6 @@ export type DocumentCategoryUpdateInputType = {
   /** Category name */
   name?: InputMaybe<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
-};
-
-export type DocumentComplianceIssueCursorPage = {
-  __typename?: 'DocumentComplianceIssueCursorPage';
-  edges?: Maybe<Array<DocumentComplianceIssueEdge>>;
-  items?: Maybe<Array<DocumentComplianceIssueType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentComplianceIssueEdge = {
-  __typename?: 'DocumentComplianceIssueEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentComplianceIssueType;
-};
-
-export type DocumentComplianceIssueInputType = {
-  /** Compliance check UID */
-  check: Scalars['String']['input'];
-  /** Issue description */
-  description: Scalars['String']['input'];
-  /** Document section */
-  section: Scalars['String']['input'];
-  /** Issue severity */
-  severity: Scalars['String']['input'];
-  /** Suggestion */
-  suggestion: Scalars['String']['input'];
-};
-
-/** Response for document compliance issue operations */
-export type DocumentComplianceIssueResponse = DocumentComplianceIssueType | OperationError;
-
-export type DocumentComplianceIssueType = {
-  __typename?: 'DocumentComplianceIssueType';
-  check: DocumentAiComplianceCheckType;
-  checkUid: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
-  section: Scalars['String']['output'];
-  severity: Scalars['String']['output'];
-  suggestion: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type DocumentComplianceIssueUpdateInputType = {
-  /** Compliance check UID */
-  check?: InputMaybe<Scalars['String']['input']>;
-  /** Issue description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Document section */
-  section?: InputMaybe<Scalars['String']['input']>;
-  /** Issue severity */
-  severity?: InputMaybe<Scalars['String']['input']>;
-  /** Suggestion */
-  suggestion?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type DocumentComplianceStandardCursorPage = {
-  __typename?: 'DocumentComplianceStandardCursorPage';
-  edges?: Maybe<Array<DocumentComplianceStandardEdge>>;
-  items?: Maybe<Array<DocumentComplianceStandardType>>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type DocumentComplianceStandardEdge = {
-  __typename?: 'DocumentComplianceStandardEdge';
-  cursor: Scalars['String']['output'];
-  node: DocumentComplianceStandardType;
-};
-
-export type DocumentComplianceStandardInputType = {
-  /** Standard content */
-  content: Scalars['String']['input'];
-  /** Standard description */
-  description: Scalars['String']['input'];
-  /** Standard name */
-  name: Scalars['String']['input'];
-  /** Standard version */
-  version: Scalars['String']['input'];
-};
-
-/** Response for document compliance standard operations */
-export type DocumentComplianceStandardResponse = DocumentComplianceStandardType | OperationError;
-
-export type DocumentComplianceStandardType = {
-  __typename?: 'DocumentComplianceStandardType';
-  content: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-  version: Scalars['String']['output'];
-};
-
-export type DocumentComplianceStandardUpdateInputType = {
-  /** Standard content */
-  content?: InputMaybe<Scalars['String']['input']>;
-  /** Standard description */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Standard name */
-  name?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-  /** Standard version */
-  version?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentCursorPage = {
@@ -2367,7 +1951,6 @@ export type DocumentReviewStepResponse = DocumentReviewStepType | OperationError
 export type DocumentReviewStepType = {
   __typename?: 'DocumentReviewStepType';
   actionDate?: Maybe<Scalars['String']['output']>;
-  aiFeedback: Array<DocumentAiReviewFeedbackType>;
   comments?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
@@ -2605,13 +2188,10 @@ export type DocumentTemplateUpdateInputType = {
 
 export type DocumentType = {
   __typename?: 'DocumentType';
-  aiAuthoringSessions: Array<DocumentAiAuthoringSessionType>;
-  analytics: Array<DocumentAnalyticsType>;
   auditRecords: Array<DocumentAuditType>;
   authors: Array<UserType>;
   category?: Maybe<DocumentCategoryType>;
   categoryUid?: Maybe<Scalars['String']['output']>;
-  complianceChecks: Array<DocumentAiComplianceCheckType>;
   content?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
@@ -2725,6 +2305,23 @@ export enum ErrandCategory {
   Ticket = 'TICKET',
   Todo = 'TODO'
 }
+
+export type FileResponseType = {
+  __typename?: 'FileResponseType';
+  content: Scalars['String']['output'];
+  filename: Scalars['String']['output'];
+  mimetype: Scalars['String']['output'];
+  size: Scalars['Int']['output'];
+  uid: Scalars['String']['output'];
+};
+
+export type FileUrlResponseType = {
+  __typename?: 'FileUrlResponseType';
+  downloadUrl: Scalars['String']['output'];
+  filename: Scalars['String']['output'];
+  mimetype: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+};
 
 export type GrindBoardCursorPage = {
   __typename?: 'GrindBoardCursorPage';
@@ -3833,15 +3430,8 @@ export type Mutation = {
   createDepartment: DepartmentResponse;
   createDistrict: DistrictResponse;
   createDocument: DocumentResponse;
-  createDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
-  createDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
-  createDocumentAiModel: DocumentAiModelResponse;
-  createDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
-  createDocumentAnalytics: DocumentAnalyticsResponse;
   createDocumentAudit: DocumentAuditResponse;
   createDocumentCategory: DocumentCategoryResponse;
-  createDocumentComplianceIssue: DocumentComplianceIssueResponse;
-  createDocumentComplianceStandard: DocumentComplianceStandardResponse;
   createDocumentFolder: DocumentFolderResponse;
   createDocumentRelation: DocumentRelationResponse;
   createDocumentReviewCycle: DocumentReviewCycleResponse;
@@ -3907,14 +3497,7 @@ export type Mutation = {
   createWorksheetTemplate: WorkSheetTemplateResponse;
   deleteClientContact: DeleteContactResponse;
   deleteDocument: DocumentResponse;
-  deleteDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
-  deleteDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
-  deleteDocumentAiModel: DocumentAiModelResponse;
-  deleteDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
-  deleteDocumentAnalytics: DocumentAnalyticsResponse;
   deleteDocumentCategory: DocumentCategoryResponse;
-  deleteDocumentComplianceIssue: DocumentComplianceIssueResponse;
-  deleteDocumentComplianceStandard: DocumentComplianceStandardResponse;
   deleteDocumentFolder: DocumentFolderResponse;
   deleteDocumentRelation: DocumentRelationResponse;
   deleteDocumentReviewCycle: DocumentReviewCycleResponse;
@@ -4000,14 +3583,7 @@ export type Mutation = {
   updateDepartment: DepartmentResponse;
   updateDistrict: DistrictResponse;
   updateDocument: DocumentResponse;
-  updateDocumentAiAuthoringSession: DocumentAiAuthoringSessionResponse;
-  updateDocumentAiComplianceCheck: DocumentAiComplianceCheckResponse;
-  updateDocumentAiModel: DocumentAiModelResponse;
-  updateDocumentAiReviewFeedback: DocumentAiReviewFeedbackResponse;
-  updateDocumentAnalytics: DocumentAnalyticsResponse;
   updateDocumentCategory: DocumentCategoryResponse;
-  updateDocumentComplianceIssue: DocumentComplianceIssueResponse;
-  updateDocumentComplianceStandard: DocumentComplianceStandardResponse;
   updateDocumentFolder: DocumentFolderResponse;
   updateDocumentReviewCycle: DocumentReviewCycleResponse;
   updateDocumentReviewStep: DocumentReviewStepResponse;
@@ -4332,31 +3908,6 @@ export type MutationCreateDocumentArgs = {
 };
 
 
-export type MutationCreateDocumentAiAuthoringSessionArgs = {
-  payload: DocumentAiAuthoringSessionInputType;
-};
-
-
-export type MutationCreateDocumentAiComplianceCheckArgs = {
-  payload: DocumentAiComplianceCheckInputType;
-};
-
-
-export type MutationCreateDocumentAiModelArgs = {
-  payload: DocumentAiModelInputType;
-};
-
-
-export type MutationCreateDocumentAiReviewFeedbackArgs = {
-  payload: DocumentAiReviewFeedbackInputType;
-};
-
-
-export type MutationCreateDocumentAnalyticsArgs = {
-  payload: DocumentAnalyticsInputType;
-};
-
-
 export type MutationCreateDocumentAuditArgs = {
   payload: DocumentAuditInputType;
 };
@@ -4364,16 +3915,6 @@ export type MutationCreateDocumentAuditArgs = {
 
 export type MutationCreateDocumentCategoryArgs = {
   payload: DocumentCategoryInputType;
-};
-
-
-export type MutationCreateDocumentComplianceIssueArgs = {
-  payload: DocumentComplianceIssueInputType;
-};
-
-
-export type MutationCreateDocumentComplianceStandardArgs = {
-  payload: DocumentComplianceStandardInputType;
 };
 
 
@@ -4712,42 +4253,7 @@ export type MutationDeleteDocumentArgs = {
 };
 
 
-export type MutationDeleteDocumentAiAuthoringSessionArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteDocumentAiComplianceCheckArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteDocumentAiModelArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteDocumentAiReviewFeedbackArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteDocumentAnalyticsArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
 export type MutationDeleteDocumentCategoryArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteDocumentComplianceIssueArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteDocumentComplianceStandardArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -5227,50 +4733,8 @@ export type MutationUpdateDocumentArgs = {
 };
 
 
-export type MutationUpdateDocumentAiAuthoringSessionArgs = {
-  payload: DocumentAiAuthoringSessionUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDocumentAiComplianceCheckArgs = {
-  payload: DocumentAiComplianceCheckUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDocumentAiModelArgs = {
-  payload: DocumentAiModelUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDocumentAiReviewFeedbackArgs = {
-  payload: DocumentAiReviewFeedbackUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDocumentAnalyticsArgs = {
-  payload: DocumentAnalyticsUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
 export type MutationUpdateDocumentCategoryArgs = {
   payload: DocumentCategoryUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDocumentComplianceIssueArgs = {
-  payload: DocumentComplianceIssueUpdateInputType;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateDocumentComplianceStandardArgs = {
-  payload: DocumentComplianceStandardUpdateInputType;
   uid: Scalars['String']['input'];
 };
 
@@ -6280,33 +5744,13 @@ export type Query = {
   districtAll: DistrictCursorPage;
   districtByUid: DistrictType;
   districtsByProvinceUid: Array<DistrictType>;
-  documentAiAuthoringSessionAll: DocumentAiAuthoringSessionCursorPage;
-  documentAiAuthoringSessionByUid?: Maybe<DocumentAiAuthoringSessionType>;
-  documentAiAuthoringSessionsByDocument: Array<DocumentAiAuthoringSessionType>;
-  documentAiComplianceCheckAll: DocumentAiComplianceCheckCursorPage;
-  documentAiComplianceCheckByUid?: Maybe<DocumentAiComplianceCheckType>;
-  documentAiComplianceChecksByDocument: Array<DocumentAiComplianceCheckType>;
-  documentAiModelAll: DocumentAiModelCursorPage;
-  documentAiModelByUid?: Maybe<DocumentAiModelType>;
-  documentAiModelsActive: Array<DocumentAiModelType>;
-  documentAiReviewFeedbackAll: DocumentAiReviewFeedbackCursorPage;
-  documentAiReviewFeedbackByStep: Array<DocumentAiReviewFeedbackType>;
-  documentAiReviewFeedbackByUid?: Maybe<DocumentAiReviewFeedbackType>;
   documentAll: DocumentCursorPage;
-  documentAnalyticsAll: DocumentAnalyticsCursorPage;
-  documentAnalyticsByDocument: Array<DocumentAnalyticsType>;
-  documentAnalyticsByUid?: Maybe<DocumentAnalyticsType>;
   documentAuditAll: DocumentAuditCursorPage;
   documentAuditByUid?: Maybe<DocumentAuditType>;
   documentAuditsByDocument: Array<DocumentAuditType>;
   documentByDocumentId?: Maybe<DocumentType>;
   documentByUid?: Maybe<DocumentType>;
   documentCategoryByUid?: Maybe<DocumentCategoryType>;
-  documentComplianceIssueAll: DocumentComplianceIssueCursorPage;
-  documentComplianceIssueByUid?: Maybe<DocumentComplianceIssueType>;
-  documentComplianceIssuesByCheck: Array<DocumentComplianceIssueType>;
-  documentComplianceStandardAll: DocumentComplianceStandardCursorPage;
-  documentComplianceStandardByUid?: Maybe<DocumentComplianceStandardType>;
   documentFolderAll: DocumentFolderCursorPage;
   documentFolderByUid?: Maybe<DocumentFolderType>;
   documentReviewCycleAll: DocumentReviewCycleCursorPage;
@@ -6331,6 +5775,8 @@ export type Query = {
   documentVersionAll: DocumentVersionCursorPage;
   documentVersionByUid?: Maybe<DocumentVersionType>;
   documentVersionsByDocument: Array<DocumentVersionType>;
+  downloadGrindMediaFile: FileResponseType;
+  downloadGrindMediaFileUrl: FileUrlResponseType;
   grindBoardAll: GrindBoardCursorPage;
   grindBoardByUid?: Maybe<GrindBoardType>;
   grindBoardsByScheme: Array<GrindBoardType>;
@@ -6450,7 +5896,7 @@ export type Query = {
   stockOrderProductByUid?: Maybe<StockOrderProductType>;
   stockProductAll: StockItemVariantCursorPage;
   stockProductByUid?: Maybe<StockItemVariantType>;
-  stockProductInventory?: Maybe<StockProductInventoryType>;
+  stockProductInventory: Array<StockProductInventoryType>;
   stockReceipt: Array<StockReceiptType>;
   stockUnitAll: Array<StockUnitType>;
   stockUnitByUid?: Maybe<StockUnitType>;
@@ -6918,83 +6364,6 @@ export type QueryDistrictsByProvinceUidArgs = {
 };
 
 
-export type QueryDocumentAiAuthoringSessionAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  documentUid?: InputMaybe<Scalars['String']['input']>;
-  modelUid?: InputMaybe<Scalars['String']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-
-export type QueryDocumentAiAuthoringSessionByUidArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAiAuthoringSessionsByDocumentArgs = {
-  documentUid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAiComplianceCheckAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  documentUid?: InputMaybe<Scalars['String']['input']>;
-  maxScore?: InputMaybe<Scalars['Float']['input']>;
-  minScore?: InputMaybe<Scalars['Float']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  standardUid?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryDocumentAiComplianceCheckByUidArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAiComplianceChecksByDocumentArgs = {
-  documentUid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAiModelAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  text?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryDocumentAiModelByUidArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAiReviewFeedbackAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  modelUid?: InputMaybe<Scalars['String']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  reviewStepUid?: InputMaybe<Scalars['String']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-
-export type QueryDocumentAiReviewFeedbackByStepArgs = {
-  reviewStepUid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAiReviewFeedbackByUidArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
 export type QueryDocumentAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   authorUid?: InputMaybe<Scalars['String']['input']>;
@@ -7008,31 +6377,6 @@ export type QueryDocumentAllArgs = {
   status?: InputMaybe<Scalars['String']['input']>;
   tagUid?: InputMaybe<Scalars['String']['input']>;
   text?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryDocumentAnalyticsAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  documentUid?: InputMaybe<Scalars['String']['input']>;
-  maxComplexity?: InputMaybe<Scalars['Float']['input']>;
-  maxReadability?: InputMaybe<Scalars['Float']['input']>;
-  maxSentiment?: InputMaybe<Scalars['Float']['input']>;
-  minComplexity?: InputMaybe<Scalars['Float']['input']>;
-  minReadability?: InputMaybe<Scalars['Float']['input']>;
-  minSentiment?: InputMaybe<Scalars['Float']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-
-export type QueryDocumentAnalyticsByDocumentArgs = {
-  documentUid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentAnalyticsByUidArgs = {
-  uid: Scalars['String']['input'];
 };
 
 
@@ -7068,42 +6412,6 @@ export type QueryDocumentByUidArgs = {
 
 
 export type QueryDocumentCategoryByUidArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentComplianceIssueAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  checkUid?: InputMaybe<Scalars['String']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  severity?: InputMaybe<Scalars['String']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  text?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryDocumentComplianceIssueByUidArgs = {
-  uid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentComplianceIssuesByCheckArgs = {
-  checkUid: Scalars['String']['input'];
-};
-
-
-export type QueryDocumentComplianceStandardAllArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  version?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryDocumentComplianceStandardByUidArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -7261,6 +6569,16 @@ export type QueryDocumentVersionByUidArgs = {
 
 export type QueryDocumentVersionsByDocumentArgs = {
   documentUid: Scalars['String']['input'];
+};
+
+
+export type QueryDownloadGrindMediaFileArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryDownloadGrindMediaFileUrlArgs = {
+  uid: Scalars['String']['input'];
 };
 
 
@@ -7803,7 +7121,7 @@ export type QuerySamplesByStorageContainerUidArgs = {
 
 
 export type QuerySamplesByUidsArgs = {
-  sampleUids?: Array<Scalars['String']['input']>;
+  sampleUids: Array<Scalars['String']['input']>;
 };
 
 

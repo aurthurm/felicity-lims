@@ -23,7 +23,7 @@ from felicity.api.gql.schema import schema
 from felicity.api.rest.api_v1 import api
 from felicity.apps.common.channel import broadcast
 from felicity.apps.events import observe_events
-from felicity.apps.iol.redis import create_redis_pool
+from felicity.apps.iol.redis.client import create_redis_client
 from felicity.apps.job.sched import felicity_workforce_init
 from felicity.core.config import settings
 from felicity.database.session import async_engine
@@ -32,26 +32,28 @@ from felicity.lims.middleware.ratelimit import RateLimitMiddleware
 from felicity.lims.seeds import initialize_felicity
 from felicity.views import setup_webapp
 
-redis_pool = None
+redis_client = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
-    global redis_pool
+    global redis_client
     if settings.REDIS_SERVER:
-        redis_pool = await create_redis_pool()
+        redis_client = await create_redis_client()
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
     felicity_workforce_init()
     observe_events()
     await broadcast.connect()
-    #
+
+    # Startup complete
     yield
-    #
+
+    # Shutdown cleanup
     await broadcast.disconnect()
-    if redis_pool:
-        redis_pool.close()
-        await redis_pool.wait_closed()
+    if redis_client:
+        await redis_client.close()  # closes connections
+        await redis_client.connection_pool.disconnect()  # ensures the pool is cleaned up
 
 
 def register_middlewares(app: FastAPI) -> None:
@@ -63,12 +65,12 @@ def register_middlewares(app: FastAPI) -> None:
         allow_headers=["*"],
     )
     app.add_middleware(APIActivityLogMiddleware)  # noqa
-    if redis_pool and settings.RATE_LIMIT:
+    if redis_client and settings.RATE_LIMIT:
         print(f"Connected to Redis at {settings.REDIS_SERVER}")
         # Register the rate limit middleware with the app
         app.add_middleware(
             RateLimitMiddleware,  # noqa
-            redis_pool=redis_pool,
+            redis_client=redis_client,
             minute_limit=settings.RATE_LIMIT_PER_MINUTE,
             hour_limit=settings.RATE_LIMIT_PER_HOUR,
             exclude_paths=["/docs", "/redoc", "/openapi.json"]

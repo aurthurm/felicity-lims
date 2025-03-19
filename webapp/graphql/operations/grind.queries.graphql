@@ -331,3 +331,22 @@ query GetGrindLabelAll($first: Int!, $after: String, $text: String!, $sortBy: [S
         }
     }
 }
+
+query DownloadGrindMediaFileUrl($uid: String!) {
+   downloadGrindMediaFileUrl(uid: $uid) {
+        uid
+        mimetype
+        filename
+        downloadUrl
+   }
+}
+
+query DownloadGrindMediaFile($uid: String!) {
+    downloadGrindMediaFile(uid: $uid) {
+        uid
+        filename
+        mimetype
+        content
+        size
+    }
+}

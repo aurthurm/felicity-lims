@@ -588,12 +588,13 @@ class GrindMutations:
                 incoming[k] = v
 
         await file.seek(0)
+        file_bytes = await file.read()
         if not settings.OBJECT_STORAGE:
             destination = resolve_media_dirs_for(payload.target.value)
             path = os.path.join(destination, filename)
 
             with open(path, 'wb') as dest_file:
-                shutil.copyfileobj(io.BytesIO(await file.read()), dest_file)  # type: ignore
+                shutil.copyfileobj(io.BytesIO(file_bytes), dest_file)  # type: ignore
 
             incoming: dict = {
                 **incoming,
@@ -605,7 +606,7 @@ class GrindMutations:
             incoming: dict = {
                 **incoming,
                 "destination": "minio",
-                "size": file.size,
+                "size": str(len(file_bytes)),
             }
 
         # Create the media
@@ -614,8 +615,8 @@ class GrindMutations:
 
         # save file to minio
         if settings.OBJECT_STORAGE:
-            # Use the media's uid in the object name for easier retrieval and deletion
-            object_name = f"{media.uid}/{media.original_name}"
+            # Use the media's target_uid so that all uploads for a target_uid will be in the same folder
+            object_name = f"{payload.target_uid}/{media.original_name}"
 
             # Update the media record with the MinIO object path
             await GrindMediaService().update(
@@ -627,7 +628,7 @@ class GrindMutations:
             MinioClient().put_object(
                 bucket=MinioBucket.GRIND_MEDIA,
                 object_name=object_name,
-                data=file,
+                data=file_bytes,
                 content_type=media.mimetype,  # Add content type
                 metadata={
                     "mimetype": media.mimetype,

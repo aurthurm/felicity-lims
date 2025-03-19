@@ -1,50 +1,49 @@
 FROM node:18.16.0-alpine AS webapp-build
-RUN apk update && apk add bash
-RUN npm i -g pnpm
-RUN mkdir -p /app
+RUN apk update && apk add bash && npm i -g pnpm
 WORKDIR /app
-COPY ./package.json /app
-COPY ./pnpm-lock.yaml /app
+COPY package.json pnpm-lock.yaml .
 RUN pnpm install
-COPY ./webapp /app/webapp
-COPY ./index.html /app
-COPY ./public /app/public
-COPY ./*.js /app
-COPY ./*.json /app
-RUN pnpm webapp:build:only
+COPY ./webapp ./webapp
+COPY ./public ./public
+COPY index.html *.js *.json .
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN pnpm webapp:build:only && ls -la /app/dist || (echo "Build failed - dist directory not created" && exit 1)
 
-
-FROM python:3.12.3-bookworm AS server-aio
+FROM python:3.12.3-bookworm AS server-base
 RUN apt-get update && apt-get install -y git libpq-dev gcc python3-git
+RUN useradd -m -s /bin/bash felicity
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY ./requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+RUN uv pip install --system --no-cache-dir -r /tmp/requirements.txt
 WORKDIR /app
-COPY . /app
-RUN  rm -rf /app/felicity/templates/static/*
-COPY --from=webapp-build /app/dist /app/felicity/templates/static
-RUN cd /app && pip install -e .
+RUN chown felicity:felicity /app
+
+FROM server-base AS server-aio
+WORKDIR /app
+COPY --chown=felicity:felicity . .
+COPY --from=webapp-build --chown=felicity:felicity /app/dist /app/felicity/templates/static
+RUN pip install -e .
+RUN pip install xhtml2pdf==0.2.17
+USER felicity
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
-
-FROM python:3.12.3-bookworm AS server-api
-RUN apt-get update && apt-get install -y git libpq-dev gcc python3-git
-COPY ./requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+FROM server-base AS server-api
 WORKDIR /app
-COPY . /app/
-RUN  rm -rf /app/felicity/templates/static/*
-RUN cd /app && pip install -e .
+COPY --chown=felicity:felicity . .
+RUN rm -rf /app/felicity/templates/static/* && pip install -e .
+RUN pip install xhtml2pdf==0.2.17
+USER felicity
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 FROM nginx:latest AS nginx-static
-RUN mkdir /app
-COPY --from=webapp-build /app/dist /app
+WORKDIR /app
+COPY --from=webapp-build /app/dist .
 COPY ./services/nginx/static/default.conf.template /etc/nginx/templates/default.conf.template
 CMD ["nginx", "-g", "daemon off;"]
 
 FROM caddy:2-alpine AS caddy-static
-RUN mkdir /app
-COPY --from=webapp-build /app/dist /app
+WORKDIR /app
+COPY --from=webapp-build /app/dist .
 COPY ./services/caddy/static/Caddyfile /etc/caddy/Caddyfile

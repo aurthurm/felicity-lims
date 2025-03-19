@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 from typing import List, Optional
 
 import strawberry
@@ -417,3 +418,33 @@ class GrindOccurrenceCursorPage:
     edges: Optional[List[GrindOccurrenceEdge]] = None
     items: Optional[List[GrindOccurrenceType]] = None
     total_count: int
+
+
+@strawberry.type
+class FileUrlResponseType:
+    uid: str
+    filename: str
+    mimetype: str
+    download_url: str
+
+
+@strawberry.type
+class FileResponseType:
+    uid: str
+    filename: str
+    mimetype: str
+    content: str
+    size: int
+
+    @classmethod
+    def from_binary(cls, uid: str, filename: str, mimetype: str, binary_content: bytes):
+        """
+        Helper method to create a FileResponseType from binary data
+        """
+        return cls(
+            uid=uid,
+            filename=filename,
+            mimetype=mimetype,
+            content=base64.b64encode(binary_content).decode('utf-8'),
+            size=len(binary_content)
+        )

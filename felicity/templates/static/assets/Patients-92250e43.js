@@ -1,1 +1,0 @@
-import{_ as t,r as o,o as s,c,a as n}from"./index-fa13e788.js";const r={},a={class:""};function i(_,l){const e=o("router-view");return s(),c("div",a,[n(e)])}const p=t(r,[["render",i],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/patient/Patients.vue"]]);export{p as default};

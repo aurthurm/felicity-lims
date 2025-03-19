@@ -3,7 +3,7 @@ import json
 from felicity.apps.common.channel import broadcast
 from felicity.apps.notification.enum import NotificationChannel
 from felicity.core.config import settings
-from .client import create_redis_pool
+from .client import create_redis_client
 
 
 class TaskGuard:
@@ -25,15 +25,12 @@ class TaskGuard:
 
     @staticmethod
     async def connect():
-        pool = await create_redis_pool()
-        redis = await pool.get_connection()
-        return pool, redis
+        return await create_redis_client()
 
     async def process(self, uid: str, object_type: str):
         if self._has_redis:
-            pool, redis = await self.connect()
-            await redis.hmset(f"{uid}", {"status": "processing"})
-            pool.release(redis)
+            redis = await self.connect()
+            await redis.hset(f"{uid}", "status", "processing")  # Updated for hset instead of hmset
         else:
             self._store[uid] = {"status": "processing"}
 
@@ -46,9 +43,8 @@ class TaskGuard:
 
     async def release(self, uid: str, object_type: str):
         if self._has_redis:
-            pool, redis = await self.connect()
+            redis = await self.connect()
             await redis.delete(uid)
-            pool.release(redis)
         else:
             self._store.pop(uid, None)
 
@@ -59,9 +55,8 @@ class TaskGuard:
 
     async def is_processing(self, uid: str, object_type: str):
         if self._has_redis:
-            pool, redis = await self.connect()
+            redis = await self.connect()
             exists = await redis.exists(uid)
-            pool.release(redis)
         else:
             exists = uid in self._store
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useApiUtil from '@/composables/api_util';
-import { AddGrindMediaMutation, AddGrindMediaMutationVariables, AddGrindMediaDocument, DeleteGrindMediaDocument, DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables } from '@/graphql/operations/grind.mutations';
-import { GetGrindMediaQuery, GetGrindMediaQueryVariables, GetGrindMediaDocument } from '@/graphql/operations/grind.queries';
+import { AddGrindMediaMutation, AddGrindMediaMutationVariables, AddGrindMediaDocument, 
+  DeleteGrindMediaDocument, DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables } from '@/graphql/operations/grind.mutations';
+import { GetGrindMediaQuery, GetGrindMediaQueryVariables, GetGrindMediaDocument, DownloadGrindMediaFileQuery, DownloadGrindMediaFileQueryVariables, DownloadGrindMediaFileDocument } from '@/graphql/operations/grind.queries';
 import { IGrindMedia } from '@/models/grind';
 import { ref, computed, onMounted } from 'vue';
 import { MediaTarget} from '@/graphql/schema'
@@ -92,7 +93,41 @@ const getFileIcon = (file: IGrindMedia): string => {
 
 // Download file
 const downloadFile = (file: IGrindMedia) => {
-  window.open(`/${file.path}`, '_blank');
+  try {
+    withClientQuery<DownloadGrindMediaFileQuery, DownloadGrindMediaFileQueryVariables>(
+      DownloadGrindMediaFileDocument, {uid: file.uid}, "downloadGrindMediaFile"
+    ).then((fileData) => {
+      // Decode base64 content
+      const binaryContent = atob(fileData.content);
+      
+      // Convert to Uint8Array
+      const bytes = new Uint8Array(binaryContent.length);
+      for (let i = 0; i < binaryContent.length; i++) {
+        bytes[i] = binaryContent.charCodeAt(i);
+      }
+      
+      // Create a blob from the binary data
+      const blob = new Blob([bytes], { type: fileData.mimetype });
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileData.filename;
+      
+      // Trigger download
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+    });
+  } catch (error) {
+    console.error('Error downloading file:', error);
+  }
 };
 
 // Handle file selection
@@ -246,7 +281,7 @@ const fileSize = computed(() => {
                     <!-- File info -->
                     <div class="flex-grow min-w-0 mr-3">
                         <div class="font-medium text-gray-800 truncate" :title="fileItem.filename">
-                            {{ fileItem.filename }}
+                            {{ fileItem.originalName }}
                         </div>
                         <div class="text-sm text-gray-500 flex items-center gap-2">
                             <span>{{ formatFileSize(fileItem.size) }}</span>

@@ -1,8 +1,10 @@
 from typing import List
 
-from fastapi import Request, Response
+from redis.asyncio import Redis
 from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 from starlette.types import ASGIApp
 
@@ -11,13 +13,13 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(
             self,
             app: ASGIApp,
-            redis_pool=None,
+            redis_client: Redis = None,
             minute_limit: int = 100,
             hour_limit: int = 2000,
             exclude_paths: List[str] = None
     ):
         super().__init__(app)
-        self.redis_pool = redis_pool
+        self.redis_client = redis_client
         self.minute_limit = minute_limit
         self.hour_limit = hour_limit
         self.exclude_paths = exclude_paths or ["/docs", "/redoc", "/openapi.json"]
@@ -27,26 +29,26 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if request.url.path in self.exclude_paths:
             return await call_next(request)
 
-        # Skip if redis pool is not available
-        if not self.redis_pool:
+        # Skip if redis client is not available
+        if not self.redis_client:
             return await call_next(request)
 
-        # Get client IP
         client_ip = get_remote_address(request)
 
         # Create rate limit keys for minute and hour
         minute_key = f"ratelimit:{client_ip}:minute"
         hour_key = f"ratelimit:{client_ip}:hour"
 
-        # Use transaction to check and update rate limits
-        async with self.redis_pool.transaction() as transaction:
-            # Get current counts
-            minute_count = await transaction.get(minute_key)
-            hour_count = await transaction.get(hour_key)
+        # Use a pipeline (atomic transaction-like behavior)
+        async with self.redis_client.pipeline(transaction=True) as pipe:
+            # Fetch current counts
+            await pipe.get(minute_key)
+            await pipe.get(hour_key)
+            results = await pipe.execute()
 
             # Convert to integers or default to 0
-            minute_count = int(minute_count.decode()) if minute_count else 0
-            hour_count = int(hour_count.decode()) if hour_count else 0
+            minute_count = int(results[0]) if results[0] else 0
+            hour_count = int(results[1]) if results[1] else 0
 
             # Check if limits are exceeded
             if minute_count >= self.minute_limit:
@@ -63,24 +65,27 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     headers={"Retry-After": "3600"}
                 )
 
-            # Increment counters
-            await transaction.incrby(minute_key, 1)
-            await transaction.expire(minute_key, 60)  # Expire after 1 minute
-            await transaction.incrby(hour_key, 1)
-            await transaction.expire(hour_key, 3600)  # Expire after 1 hour
+            # Increment counters and set expiry
+            await pipe.incrby(minute_key, 1)
+            await pipe.expire(minute_key, 60)  # Expire after 1 minute
+            await pipe.incrby(hour_key, 1)
+            await pipe.expire(hour_key, 3600)  # Expire after 1 hour
+
+            await pipe.execute()
 
         # Process the request
         response = await call_next(request)
 
-        # Add rate limit headers to response
-        # We need the latest counts after processing
-        async with self.redis_pool.transaction() as transaction:
-            minute_count = await transaction.get(minute_key)
-            hour_count = await transaction.get(hour_key)
+        # Get updated counts (optional, for headers)
+        async with self.redis_client.pipeline(transaction=True) as pipe:
+            await pipe.get(minute_key)
+            await pipe.get(hour_key)
+            counts = await pipe.execute()
 
-            minute_count = int(minute_count.decode()) if minute_count else 0
-            hour_count = int(hour_count.decode()) if hour_count else 0
+        minute_count = int(counts[0]) if counts[0] else 0
+        hour_count = int(counts[1]) if counts[1] else 0
 
+        # Add rate limit headers to the response
         response.headers["X-RateLimit-Limit-Minute"] = str(self.minute_limit)
         response.headers["X-RateLimit-Remaining-Minute"] = str(max(0, self.minute_limit - minute_count))
         response.headers["X-RateLimit-Limit-Hour"] = str(self.hour_limit)

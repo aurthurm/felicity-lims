@@ -14,7 +14,7 @@ router = APIRouter()
 
 class FelicityVersion:
     _version = __version__
-    _owner = "beak-insights"
+    _owner = "aurthurm"
     _repo = "felicity-lims"
     _cache = {}
     _cache_duration = _cache_duration
