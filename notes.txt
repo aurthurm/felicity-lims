@@ -32,3 +32,9 @@ mkdir -p ~/felicity_data/minio
 mkdir -p ~/felicity_data/dragonfly
 mkdir -p ~/felicity_data/postgres
 mkdir -p ~/felicity_data/dbgate
+
+// inspect image file contents
+docker run --rm amusendame/felicity-lims:api-0.1.6 ls -ltr /ap
+
+// inspect layers for size
+docker history amusendame/felicity-lims:aio-0.1.6

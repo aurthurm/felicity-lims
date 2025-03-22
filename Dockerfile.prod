@@ -9,8 +9,8 @@ COPY index.html *.js *.json .
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN pnpm webapp:build:only && ls -la /app/dist || (echo "Build failed - dist directory not created" && exit 1)
 
-FROM python:3.12.3-bookworm AS server-base
-RUN apt-get update && apt-get install -y git libpq-dev gcc python3-git
+FROM python:3.12.3-slim-bookworm AS server-base
+RUN apt-get update && apt-get install -y git libpq-dev gcc python3-git && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -s /bin/bash felicity
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY ./requirements.txt /tmp/requirements.txt
@@ -20,19 +20,19 @@ RUN chown felicity:felicity /app
 
 FROM server-base AS server-aio
 WORKDIR /app
-COPY --chown=felicity:felicity . .
+COPY --chown=felicity:felicity felicity ./felicity
+COPY --chown=felicity:felicity requirements.txt requirements-dev.txt README.md setup.py alembic.ini .
 COPY --from=webapp-build --chown=felicity:felicity /app/dist /app/felicity/templates/static
 RUN pip install -e .
-RUN pip install xhtml2pdf==0.2.17
 USER felicity
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 FROM server-base AS server-api
 WORKDIR /app
-COPY --chown=felicity:felicity . .
+COPY --chown=felicity:felicity felicity ./felicity
+COPY --chown=felicity:felicity requirements.txt requirements-dev.txt README.md setup.py alembic.ini .
 RUN rm -rf /app/felicity/templates/static/* && pip install -e .
-RUN pip install xhtml2pdf==0.2.17
 USER felicity
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]

@@ -246,8 +246,12 @@ class AnalysisRequestService(
         )[1]
         return await super().create(c=data, related=related, commit=commit, session=session)
 
-    async def snapshot(self, ar: AnalysisRequest, metadata: dict = {}):
+    async def snapshot(self, ar: AnalysisRequest, metadata: dict = None):
         fields = ["client"]
+
+        if metadata is None:
+            metadata = {}
+
         for _field in fields:
             if _field not in metadata:
                 if _field == "client":
@@ -617,29 +621,50 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
     async def get_by_analyses(self, analyses: list[str]) -> list[Sample]:
         return await self.get_all(analysis_results___analysis_uid__in=analyses)
 
-    async def snapshot(self, sample: Sample, metadata: dict = {}):
+    async def snapshot(self, sample: Sample, metadata: dict = None):
+        if metadata is None:
+            metadata = {}
+
+        logger.info(f"Processing snapshot for sample: {sample.sample_id}")
+
+        sample_type_service = SampleTypeService()
+        profile_service = ProfileService()
+        analysis_service = AnalysisService()
+
         fields = ["sample_type", "profiles", "analyses"]
+
         for _field in fields:
-            if _field not in metadata:
-                if _field == "sample_type":
-                    st = await SampleTypeService().get(uid=sample.sample_type_uid)
-                    metadata[_field] = st.snapshot()
-                if _field == "profiles":
-                    profile_uids = await ProfileService().repository.table_query(
-                        table=sample_profile,
-                        columns=["profile_uid"],
-                        sample_uid=sample.uid
-                    )
-                    if profile_uids:
-                        profiles = await ProfileService().get_by_uids(uids=profile_uids)
-                        metadata[_field] = [p.snapshot() for p in profiles]
-                if _field == "analyses":
-                    anal_uids = await AnalysisService().repository.table_query(
-                        table=sample_analysis,
-                        columns=["analysis_uid"],
-                        sample_uid=sample.uid
-                    )
-                    if anal_uids:
-                        analyses = await AnalysisService().get_by_uids(uids=anal_uids)
-                        metadata[_field] = [a.snapshot() for a in analyses]
-        return await self.update(sample.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})
+            if _field in metadata:
+                continue
+
+            if _field == "sample_type":
+                st = await sample_type_service.get(uid=sample.sample_type_uid)
+                assert sample.sample_type_uid == st.uid
+                metadata[_field] = st.snapshot()
+                logger.info(f"SampleType => {st.name} :: {st.uid}")
+
+            elif _field == "profiles":
+                profile_uids = await profile_service.repository.table_query(
+                    table=sample_profile,
+                    columns=["profile_uid"],
+                    sample_uid=sample.uid
+                )
+                if profile_uids:
+                    # Assuming profile_uids is a list of dicts or tuples
+                    profiles = await profile_service.get_by_uids(uids=profile_uids)
+                    metadata[_field] = [p.snapshot() for p in profiles]
+                    logger.info(f"Profiles => {profiles}")
+
+            elif _field == "analyses":
+                anal_uids = await analysis_service.repository.table_query(
+                    table=sample_analysis,
+                    columns=["analysis_uid"],
+                    sample_uid=sample.uid
+                )
+                if anal_uids:
+                    analyses = await analysis_service.get_by_uids(uids=anal_uids)
+                    metadata[_field] = [a.snapshot() for a in analyses]
+                    logger.info(f"Analyses => {analyses}")
+
+        snapshot_data = marshaller(metadata, depth=3)
+        return await self.update(sample.uid, {"metadata_snapshot": snapshot_data})

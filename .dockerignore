@@ -1,0 +1,50 @@
+# Git and version control
+.git
+
+# Python cache and bytecode
+__pycache__
+.mypy_cache
+**/.mypy_cache/
+*.pyc
+**/__pycache__/
+**/*.pyc
+*.pyo
+*.pyd
+
+# Database and log files
+*.db
+*.sqlite3
+*.log
+
+# Node.js build artifacts
+node_modules
+
+# Build artifacts
+dist
+build
+
+# Environment and virtual environment files
+.env
+
+# Python egg and packaging files
+*.egg-info
+Felicity_LIMS.egg-info
+
+# Test files
+tests
+**/tests/
+
+# Media and log files that shouldn't be part of the image
+media
+logs
+
+# IDE and editor files
+.vscode
+**/.vscode/
+
+# Python type checking and Jupyter checkpoint files
+.pytype
+.ipynb_checkpoints
+
+# Unused Seeds files yet
+felicity/lims/seeds/data/amr-r

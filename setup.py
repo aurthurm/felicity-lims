@@ -1,4 +1,3 @@
-# setup.py
 from setuptools import setup, find_packages
 
 __version__ = "0.1.6"
@@ -10,11 +9,18 @@ def parse_requirements(filename):
         return f.read().splitlines()
 
 
+# Read long description from README.md, with error handling
+try:
+    with open("README.md", "r") as fh:
+        long_description = fh.read()
+except FileNotFoundError:
+    long_description = ""
+
 setup(
     name="Felicity-LIMS",
     version=__version__,
     description="Felicity Laboratory Information Management System",
-    long_description=open("README.md").read(),
+    long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
     classifiers=[
@@ -29,25 +35,8 @@ setup(
     packages=find_packages(include=['felicity', 'felicity.*']),
     python_requires='>=3.11',
     install_requires=parse_requirements('requirements.txt'),
-    # List additional groups of dependencies here (e.g. development
-    # dependencies). You can install these using the following syntax,
-    # for example:
-    # $ pip install -e .[dev,test]
     extras_require={
-        "dev": [
-            "pytest==8.1.2",
-            "pytest-asyncio==0.21",
-            "pytest-order==1.2.1",
-            "pytest-mock==3.14.0",
-            "anyio[trio]==4.2.0",
-            "faker==22.5.1",
-            "bump-pydantic==0.8.0",
-            "isort==5.13.2",
-            "flake8==7.0.0",
-            "mypy==1.11.1",
-            "sqlalchemy-stubs==0.4",
-            "aiosqlite==0.20.0"
-        ]
+        "dev": parse_requirements('requirements-dev.txt'),
     },
     entry_points={
         "console_scripts": [

@@ -90,13 +90,13 @@ class BaseRepository(Generic[M]):
 
     async def save(self, m: M, commit=True, session: Optional[AsyncSession] = None) -> M:
         """
-  Save a model instance to the database.
+        Save a model instance to the database.
 
-        :param m: The model instance to save.
-        :param commit: Whether to commit the transaction.
-        :param session: Optional session to use for transaction support.
-        :return: The saved model instance.
-        :raises ValueError: If no model is provided.
+            :param m: The model instance to save.
+            :param commit: Whether to commit the transaction.
+            :param session: Optional session to use for transaction support.
+            :return: The saved model instance.
+            :raises ValueError: If no model is provided.
         """
         if not m:
             raise ValueError("No model provided to save")  # noqa

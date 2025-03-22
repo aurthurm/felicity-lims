@@ -1,3 +1,5 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.client.services import ClientService
 from felicity.apps.common.utils.serializer import marshaller
@@ -56,13 +58,14 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return await super().search(**filters)
 
     async def create(
-            self, obj_in: dict | PatientCreate, related: list[str] | None = None
+            self, obj_in: dict | PatientCreate, related: list[str] | None = None,
+            commit: bool = True, session: AsyncSession | None = None
     ) -> Patient:
         data = self._import(obj_in)
         data["patient_id"] = (
-            await self.id_sequence_service.get_next_number(prefix="P", generic=True)
+            await self.id_sequence_service.get_next_number(prefix="P", generic=True, commit=commit, session=session)
         )[1]
-        return await super().create(data, related)
+        return await super().create(data, related, commit=commit, session=session)
 
     async def snapshot(self, pt: Patient, metadata: dict = {}):
         fields = ["client", "province", "district", "country"]

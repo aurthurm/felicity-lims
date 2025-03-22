@@ -136,34 +136,42 @@ class PatientMutations:
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
             )
 
-        exists = await PatientService().get(client_patient_id=payload.client_patient_id)
-        if exists:
-            return OperationError(error="Client Patient Id already in use")
-
-        client = await ClientService().get(related=["province", "district"], uid=payload.client_uid)
-        if not client:
-            return OperationError(
-                error=f"Client with uid {payload.client_uid} does not exist"
+        async with PatientService().repository.async_session() as tr_session:
+            exists = await PatientService().get(
+                client_patient_id=payload.client_patient_id, session=tr_session
             )
+            if exists:
+                return OperationError(error="Client Patient Id already in use")
 
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.PatientCreate(**incoming)
-        patient = await PatientService().create(obj_in)
-
-        # create identifications
-        for p_id in payload.identifications:
-            pid_in = schemas.PatientIdentificationCreate(
-                patient_uid=patient.uid,
-                identification_uid=p_id.identification_uid,
-                value=p_id.value,
+            client = await ClientService().get(
+                related=["province", "district"], uid=payload.client_uid, session=tr_session
             )
-            await PatientIdentificationService().create(pid_in)
+            if not client:
+                return OperationError(
+                    error=f"Client with uid {payload.client_uid} does not exist"
+                )
+
+            incoming: dict = {
+                "created_by_uid": felicity_user.uid,
+                "updated_by_uid": felicity_user.uid,
+            }
+            for k, v in payload.__dict__.items():
+                incoming[k] = v
+
+            obj_in = schemas.PatientCreate(**incoming)
+            patient = await PatientService().create(obj_in, session=tr_session)
+
+            # create identifications
+            for p_id in payload.identifications:
+                pid_in = schemas.PatientIdentificationCreate(
+                    patient_uid=patient.uid,
+                    identification_uid=p_id.identification_uid,
+                    value=p_id.value,
+                )
+                await PatientIdentificationService().create(pid_in, commit=False, session=tr_session)
+
+            # save transactions
+            await PatientService().repository.save_transaction(tr_session)
 
         metadata = {"client": client.snapshot()}
         metadata["client"]["province"] = client.province.snapshot() if client.province else {}
