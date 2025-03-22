@@ -916,6 +916,11 @@ class GrindMutations:
                 error=f"Stamp with uid {uid} not found. Cannot update object..."
             )
 
+        if comment.created_by_uid == felicity_user.uid:
+            return OperationError(
+                error=f"Oops this is not your comment"
+            )
+
         # Prepare update data
         update_data = {"updated_by_uid": felicity_user.uid}
 

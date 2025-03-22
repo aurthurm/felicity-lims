@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { Folder, Plus } from 'lucide-vue-next'
 import { useDocumentStore } from '@/stores/documentStore'
-import DocumentCard from './DocumentCard.vue'
+import DocumentListing from './DocumentListing.vue'
 import CreateDocumentDialog from './CreateDocumentDialog.vue'
 
 const store = useDocumentStore()
@@ -35,13 +35,10 @@ function openCreateDocumentDialog() {
       </button>
     </div>
     
-    <div v-if="documents.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-      <DocumentCard 
-        v-for="document in documents" 
-        :key="document.id" 
-        :document="document" 
-      />
+    <div v-if="documents.length > 0">
+      <DocumentListing :documents="documents" />
     </div>
+
     <div v-else class="flex flex-col items-center justify-center py-12 text-center">
       <div 
       class="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4" 

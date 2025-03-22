@@ -1,41 +1,52 @@
 <script setup lang="ts">
 import useApiUtil from "@/composables/api_util";
-import { AddGrindBoardMutation, AddGrindBoardMutationVariables, AddGrindBoardDocument } from "@/graphql/operations/grind.mutations";
+import { AddGrindBoardMutation, AddGrindBoardMutationVariables, AddGrindBoardDocument, EditGrindBoardMutation, EditGrindBoardMutationVariables, EditGrindBoardDocument } from "@/graphql/operations/grind.mutations";
 import { GetGrindSchemeDocument, GetGrindSchemeQuery, GetGrindSchemeQueryVariables } from "@/graphql/operations/grind.queries";
 import { IGrindBoard, IGrindScheme } from "@/models/grind";
-import { resetForm } from "@/utils/helpers";
+import { resetForm, mutateForm } from "@/utils/helpers";
+import { RequestPolicy } from "@urql/vue";
 import { defineAsyncComponent, onMounted, reactive, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
 
 const Board = defineAsyncComponent(() => import("./Board.vue"));
 
 const { withClientMutation, withClientQuery } = useApiUtil();
 
-
 const route = useRoute();
 const scheme = ref<IGrindScheme>();
 
-onMounted(() => {
-    getScheme();
+onMounted(async () => {
+  await getScheme();
+
+  if (route.query.board) {
+    const board = scheme.value?.boards?.find(b => b.uid === route.query.board);
+    if (board) {
+      selectBoard(board);
+    } 
+  } 
 });
 
-function getScheme() {
-    withClientQuery<GetGrindSchemeQuery, GetGrindSchemeQueryVariables>(
-        GetGrindSchemeDocument,
-        {uid: route.params.schemeUid as string},
-        "grindSchemeByUid"
-    ).then((data) => {
-        scheme.value = data as IGrindScheme;
-    });
+function getScheme(requestPolicy: RequestPolicy = 'cache-first'): Promise<void> {
+  return withClientQuery<GetGrindSchemeQuery, GetGrindSchemeQueryVariables>(
+    GetGrindSchemeDocument,
+    { uid: route.params.schemeUid as string },
+    "grindSchemeByUid",
+    requestPolicy
+  ).then((data) => {
+    scheme.value = data as IGrindScheme;
+  });
 }
 
 // Board Management
+let boardAction = ref<boolean>(false);
 let showBoardModal = ref<boolean>(false);
 let formAction = ref<boolean>(false);
 let boardFormTitle = ref<string>("");
 let boardForm = reactive({}) as IGrindBoard;
 
 const openCreateBoardForm = () => {
+    boardAction.value = true;
     showBoardModal.value = true;
     boardFormTitle.value = "Create Board";
     resetForm(boardForm)
@@ -43,27 +54,62 @@ const openCreateBoardForm = () => {
 
 const saveBoardForm = () => {
     showBoardModal.value = false;
-    withClientMutation<AddGrindBoardMutation, AddGrindBoardMutationVariables>(
-        AddGrindBoardDocument,
-        { payload: { ...boardForm, schemeUid: route.params.schemeUid as string} },
-        "createGrindBoard"
-    ).then((board) => {
-        if (!scheme.value!.boards) {
-            scheme.value!.boards = [];
-        }
-        scheme.value!.boards.push(board as IGrindBoard);
-    });
+    if(boardAction.value){
+      withClientMutation<AddGrindBoardMutation, AddGrindBoardMutationVariables>(
+          AddGrindBoardDocument,
+          { payload: { ...boardForm, schemeUid: route.params.schemeUid as string} },
+          "createGrindBoard"
+      ).then((board) => {
+          if (!scheme.value!.boards) {
+              scheme.value!.boards = [];
+          }
+          scheme.value!.boards.push(board as IGrindBoard);
+      });
+    } else {
+      withClientMutation<EditGrindBoardMutation, EditGrindBoardMutationVariables>(
+        EditGrindBoardDocument,
+          { 
+            uid: boardForm.uid,
+            payload: { title: boardForm.title, description: boardForm.description } 
+          },
+          "updateGrindBoard"
+      ).then(() => getScheme('network-only'));
+    }
+    boardAction.value = false;
 };
+
+const updateBoard = (board: IGrindBoard) => {
+  boardAction.value = false;
+  mutateForm(boardForm, board, true)
+  boardFormTitle.value = "Update Board";
+  showBoardModal.value = true;
+}
 
 // Board Selection
 let selectedBoard = ref<IGrindBoard>();
+const selectBoard =(board) => {
+  selectedBoard.value = board
+  router.push({query: {board: board.uid}})
+}
+
+// Go back
+const router = useRouter();
+function goBack() {
+  router.back();
+}
 </script>
 
 <template>
-    <h3 class="h3 text-xl">
-        <span class="font-bold mr-4">Project Title:</span>
-        <span>{{ scheme?.title }}</span>
-    </h3>
+     <div class="flex items-center">
+        <button @click="goBack" class="mr-4 text-gray-500 hover:text-gray-700">
+          <ArrowLeftIcon class="w-5 h-5" />
+        </button>
+        <h3 class="h3 text-xl">
+            <span class="font-bold mr-4">Project Title:</span>
+            <span>{{ scheme?.title }}</span>
+        </h3>
+      </div>
+
     
     <hr class="mt-2 mb-2">
     <p class="leading-2 bg-slate-50 p-2 italic font-medium text-gray-500">{{ scheme?.description }}</p>
@@ -75,7 +121,9 @@ let selectedBoard = ref<IGrindBoard>();
             <button v-for="board in scheme?.boards" :key="board.uid"
             class="py-1 px-4 mr-2 bg-gray-200 text-gray-600 shadow-md overflow-hidden font-medium border-2 border-gray-200"
             :class="{ 'bg-sky-500 text-white border-sky-500': selectedBoard?.uid === board.uid }"
-            @click="selectedBoard = board">{{ board.title }}</button>
+            @click="selectBoard(board)"
+            @dblclick="updateBoard(board)">
+            {{ board.title }}</button>
         </div>
         <button @click="openCreateBoardForm" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">+ Board</button>
     </div>

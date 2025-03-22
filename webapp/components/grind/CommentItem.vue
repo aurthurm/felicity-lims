@@ -7,6 +7,7 @@ import { getUserInitials } from '@/utils/helpers';
 import CommentForm from './CommentForm.vue';
 import CommentList from './CommentList.vue';
 import { GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables, GetGrindErrandDiscussionsByParentDocument } from '@/graphql/operations/grind.queries';
+import { RequestPolicy } from '@urql/core';
 
 const props = defineProps({
     comment: {
@@ -36,9 +37,9 @@ const emit = defineEmits(['setReplyingTo', 'setEditingComment', 'commentAdded', 
 const { withClientMutation, withClientQuery } = useApiUtil();
 
 const replies = ref<IGrindErrandDiscussion[]>([]);
-function getReplies(parentUid: string) {
+function getReplies(parentUid: string, requestPolicy: RequestPolicy = 'cache-first') {
     withClientQuery<GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables>(
-        GetGrindErrandDiscussionsByParentDocument, { parentUid }, "grindErrandDiscussionsByParent"
+        GetGrindErrandDiscussionsByParentDocument, { parentUid }, "grindErrandDiscussionsByParent", requestPolicy
     ).then((res: any) => {
         if (res) {
             replies.value = res as IGrindErrandDiscussion[];
@@ -129,12 +130,12 @@ function updateDiscussion() {
 
 function handleCommentAdded() {
     emit('commentAdded');
-    getReplies(props.comment.uid);
+    getReplies(props.comment.uid, "network-only");
 }
 
 function handleCommentUpdated() {
     emit('commentUpdated');
-    getReplies(props.comment.uid);
+    getReplies(props.comment.uid, "network-only");
 }
 
 function handleSetReplyingTo(discussion: IGrindErrandDiscussion | null) {

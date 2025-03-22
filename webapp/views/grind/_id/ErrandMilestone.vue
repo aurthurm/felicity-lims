@@ -6,6 +6,7 @@ import { GetGrindMilestonesByErrandDocument, GetGrindMilestonesByErrandQuery, Ge
 import { IUser } from '@/models/auth';
 import { IGrindMilestone } from '@/models/grind';
 import { mutateForm, resetForm } from '@/utils/helpers';
+import { RequestPolicy } from '@urql/core';
 import { onMounted, reactive, ref } from 'vue';
 import Multiselect from 'vue-multiselect'
 
@@ -22,10 +23,12 @@ onMounted(() => {
     getUsers();
 });
 
+const emit = defineEmits(['milestoneUpdated']);
+
 const milestones = ref<IGrindMilestone[]>([]);
-function fetchMilestones() {
+function fetchMilestones(requestPolicy: RequestPolicy = 'cache-first') {
     withClientQuery<GetGrindMilestonesByErrandQuery, GetGrindMilestonesByErrandQueryVariables>(
-        GetGrindMilestonesByErrandDocument,{ errandUid: props.errandUid }, "grindMilestonesByErrand"
+        GetGrindMilestonesByErrandDocument,{ errandUid: props.errandUid }, "grindMilestonesByErrand", requestPolicy
     ).then((res: any) => {
         if(res){
             milestones.value = res as IGrindMilestone[];
@@ -69,13 +72,16 @@ function saveForm(){
             AddGrindMilestoneDocument, 
             { payload: {...payload, errandUid: props.errandUid} }, 
             "createGrindMilestone"
-        ).then(() => fetchMilestones()); 
+        ).then(() => fetchMilestones("network-only")); 
     } else {
         withClientMutation<EditGrindMilestoneMutation,  EditGrindMilestoneMutationVariables>(
             EditGrindMilestoneDocument, 
             { uid: form.uid, payload }, 
             "updateGrindMilestone"
-        ).then(() => fetchMilestones()); 
+        ).then(() => {
+          fetchMilestones("network-only")
+          emit('milestoneUpdated');
+        }); 
     }
 }
 
@@ -83,6 +89,7 @@ function saveForm(){
 function customLabel ({firstName, lastName}) {
   return `${firstName} ${lastName}`
 }
+
 const users = ref<IUser[]>()
 function getUsers() {
   withClientQuery<UserAllQuery, UserAllQueryVariables>(

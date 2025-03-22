@@ -5,6 +5,7 @@ import { GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables
 import { IGrindErrandDiscussion } from '@/models/grind';
 import CommentForm from './CommentForm.vue';
 import CommentList from './CommentList.vue';
+import { RequestPolicy } from '@urql/vue';
 
 const props = defineProps(["errandUid"]);
 const { withClientQuery } = useApiUtil();
@@ -18,9 +19,9 @@ onMounted(() => {
     getDiscussions();
 });
 
-function getDiscussions() {
+function getDiscussions(requestPolicy: RequestPolicy = 'cache-first') {
     withClientQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables>(
-        GetGrindErrandDiscussionsDocument, { errandUid: props.errandUid }, "grindErrandDiscussions"
+        GetGrindErrandDiscussionsDocument, { errandUid: props.errandUid }, "grindErrandDiscussions", requestPolicy
     ).then((res: any) => {
         if (res) {
             discussions.value = res as IGrindErrandDiscussion[];
@@ -34,12 +35,12 @@ function getTopLevelComments(): IGrindErrandDiscussion[] {
 }
 
 function handleCommentAdded() {
-    getDiscussions();
+    getDiscussions("network-only");
     replyingTo.value = null;
 }
 
 function handleCommentUpdated() {
-    getDiscussions();
+    getDiscussions("network-only");
     editingComment.value = null;
 }
 

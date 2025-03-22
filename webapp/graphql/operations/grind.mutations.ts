@@ -241,6 +241,23 @@ export type AddGrindBoardMutation = (
   ) }
 );
 
+export type EditGrindBoardMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  payload: Types.GrindUpdateBoardInput;
+}>;
+
+
+export type EditGrindBoardMutation = (
+  { __typename?: 'Mutation' }
+  & { updateGrindBoard: (
+    { __typename?: 'GrindBoardType' }
+    & Pick<Types.GrindBoardType, 'uid' | 'title' | 'description'>
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
 export type AddGrindPosterMutationVariables = Types.Exact<{
   payload: Types.GrindCreatePosterInput;
 }>;
@@ -302,7 +319,7 @@ export type AddGrindMediaMutation = (
   { __typename?: 'Mutation' }
   & { createGrindMedia: (
     { __typename?: 'GrindMediaType' }
-    & Pick<Types.GrindMediaType, 'uid' | 'target' | 'targetUid' | 'filename' | 'path' | 'size' | 'mimetype'>
+    & Pick<Types.GrindMediaType, 'uid' | 'target' | 'targetUid' | 'filename' | 'originalName' | 'path' | 'size' | 'mimetype'>
   ) | (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
@@ -646,6 +663,26 @@ export const AddGrindBoardDocument = gql`
 export function useAddGrindBoardMutation() {
   return Urql.useMutation<AddGrindBoardMutation, AddGrindBoardMutationVariables>(AddGrindBoardDocument);
 };
+export const EditGrindBoardDocument = gql`
+    mutation EditGrindBoard($uid: String!, $payload: GrindUpdateBoardInput!) {
+  updateGrindBoard(uid: $uid, payload: $payload) {
+    ... on GrindBoardType {
+      uid
+      title
+      description
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditGrindBoardMutation() {
+  return Urql.useMutation<EditGrindBoardMutation, EditGrindBoardMutationVariables>(EditGrindBoardDocument);
+};
 export const AddGrindPosterDocument = gql`
     mutation AddGrindPoster($payload: GrindCreatePosterInput!) {
   createGrindPoster(payload: $payload) {
@@ -716,6 +753,7 @@ export const AddGrindMediaDocument = gql`
       target
       targetUid
       filename
+      originalName
       path
       size
       mimetype

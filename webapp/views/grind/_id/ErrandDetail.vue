@@ -28,12 +28,13 @@ import {
 } from 'ckeditor5';
 import { ref, onMounted, nextTick, computed, defineAsyncComponent } from 'vue'
 import Multiselect from 'vue-multiselect'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { GrindUpdateErrandInput } from '@/graphql/schema'
 import { IUser } from '@/models/auth'
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries'
+import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
 
-const ErrandActivity = defineAsyncComponent(() => import("./ErrandActivity.vue"))
+// const ErrandActivity = defineAsyncComponent(() => import("./ErrandActivity.vue"))
 const ErrandDiscussion = defineAsyncComponent(() => import("@/components/grind/CommentSystem.vue"))
 const ErrandFile = defineAsyncComponent(() => import("./ErrandFile.vue"))
 const ErrandMilestone = defineAsyncComponent(() => import("./ErrandMilestone.vue"))
@@ -310,20 +311,32 @@ const addStamp = (newTag: string) => {
     }
   });
 }
+
+// milestone updates
+const handleMilestoneUpdated = () => getErrand();
+
+// Go back
+const router = useRouter();
+function goBack() {
+  router.back();
+}
 </script>
 
 <template>
     <div class="bg-white rounded-lg shadow" v-if="errand">
-
+      
       <!-- Content area with sidebar -->
       <div class="flex flex-col md:flex-row">
 
         <!-- Main content -->
         <div class="flex-1 p-6 border-r">
             <!-- Header -->
-            <div class="p-6 border-b">
+            <div class="p-2 border-b">
                 <div class="flex justify-between items-center">
                     <div class="relative w-full">
+                        <button @click="goBack" class="-mt-8 mr-4 text-gray-500 hover:text-gray-700">
+                          <ArrowLeftIcon class="w-5 h-5" />
+                        </button>
                         <h1 
                         v-if="!editingTitle" 
                         @click="startEditingTitle" 
@@ -418,7 +431,7 @@ const addStamp = (newTag: string) => {
                 >
                     Milestones
                 </button>
-                <button 
+                <!-- <button 
                     @click="activeTab = 'activity'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
@@ -426,7 +439,7 @@ const addStamp = (newTag: string) => {
                     ]"
                 >
                     Activity Stream
-                </button>
+                </button> -->
                 <button 
                     @click="activeTab = 'files'" 
                     :class="[
@@ -448,13 +461,13 @@ const addStamp = (newTag: string) => {
                 
                 <!-- Milestones Tab -->
                 <div v-if="activeTab === 'milestones'" class="space-y-4">
-                  <ErrandMilestone  :errandUid="errand.uid" />
+                  <ErrandMilestone  :errandUid="errand.uid" @milestone-updated="handleMilestoneUpdated" />
                 </div>
                 
                 <!-- Activity Stream Tab -->
-                <div v-if="activeTab === 'activity'" class="space-y-4">
+                <!-- <div v-if="activeTab === 'activity'" class="space-y-4">
                   <ErrandActivity :errandUid="errand.uid"  />
-                </div>
+                </div> -->
                 
                 <!-- Files Tab -->
                 <div v-if="activeTab === 'files'">

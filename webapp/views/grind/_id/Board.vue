@@ -39,7 +39,6 @@ const tabs = computed(() => [
 </script>
 
 <template>
-   {{ board?.uid }}
     <hr class="mt-2 mb-2">
     <p class="leading-2 bg-slate-50 p-2 italic font-medium text-gray-500">{{ board?.description }}</p>
     <hr class="mt-2 mb-2">

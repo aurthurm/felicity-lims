@@ -4,7 +4,7 @@
     <div 
       :class="[
         'flex justify-start items-center p-2 rounded-md cursor-pointer group transition-colors duration-200',
-        level > 0 && 'ml-6'
+        level > 0 && 'ml-2'
       ]"
       @click="handleFolderClick"
     >

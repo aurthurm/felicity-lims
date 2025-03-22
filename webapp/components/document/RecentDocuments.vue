@@ -2,8 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import { useDocumentStore } from '@/stores/documentStore'
-import DocumentCard from './DocumentCard.vue'
 import CreateDocumentDialog from './CreateDocumentDialog.vue'
+import DocumentListing from './DocumentListing.vue'
 
 const store = useDocumentStore()
 const isDialogOpen = ref(false)
@@ -25,13 +25,10 @@ onMounted(() => store.fetchDocuments({first:25, sortBy:["-updated_at"]},true))
       </button>
     </div>
     
-    <div v-if="store.recentDocuments.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-      <DocumentCard 
-        v-for="document in store.recentDocuments" 
-        :key="document.id" 
-        :document="document" 
-      />
+    <div v-if="store.recentDocuments.length > 0">
+      <DocumentListing :documents="store.recentDocuments" />
     </div>
+    
     <div v-else class="flex flex-col items-center justify-center py-12 text-center">
       <div class="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4">
         <Plus class="text-muted-foreground w-8 h-8" />

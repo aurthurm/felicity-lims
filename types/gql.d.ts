@@ -10144,6 +10144,14 @@ export type AddGrindBoardMutationVariables = Exact<{
 
 export type AddGrindBoardMutation = { __typename?: 'Mutation', createGrindBoard: { __typename?: 'GrindBoardType', uid: string, title: string, description?: string | null, createdAt?: string | null, scheme?: { __typename?: 'GrindSchemeType', uid: string, title: string } | null, createdBy?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null } | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
+export type EditGrindBoardMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: GrindUpdateBoardInput;
+}>;
+
+
+export type EditGrindBoardMutation = { __typename?: 'Mutation', updateGrindBoard: { __typename?: 'GrindBoardType', uid: string, title: string, description?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
 export type AddGrindPosterMutationVariables = Exact<{
   payload: GrindCreatePosterInput;
 }>;
@@ -10170,7 +10178,7 @@ export type AddGrindMediaMutationVariables = Exact<{
 }>;
 
 
-export type AddGrindMediaMutation = { __typename?: 'Mutation', createGrindMedia: { __typename?: 'GrindMediaType', uid: string, target?: string | null, targetUid?: string | null, filename?: string | null, path?: string | null, size?: string | null, mimetype?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+export type AddGrindMediaMutation = { __typename?: 'Mutation', createGrindMedia: { __typename?: 'GrindMediaType', uid: string, target?: string | null, targetUid?: string | null, filename?: string | null, originalName?: string | null, path?: string | null, size?: string | null, mimetype?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type DeleteGrindMediaMutationVariables = Exact<{
   uid: Scalars['String']['input'];

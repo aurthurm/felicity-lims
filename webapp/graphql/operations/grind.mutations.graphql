@@ -272,6 +272,22 @@ mutation AddGrindBoard($payload: GrindCreateBoardInput!) {
     }
 }
 
+mutation EditGrindBoard($uid: String!, $payload: GrindUpdateBoardInput!) {
+    updateGrindBoard(uid: $uid, payload: $payload) {
+        ...on GrindBoardType {
+            uid
+            title
+            description
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
 mutation AddGrindPoster($payload: GrindCreatePosterInput!) {
     createGrindPoster(payload: $payload) {
         ...on GrindPosterType {
@@ -329,6 +345,7 @@ mutation AddGrindMedia($payload: GrindCreateMediaInput!) {
             target
             targetUid
             filename
+            originalName
             path
             size
             mimetype

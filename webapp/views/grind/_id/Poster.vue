@@ -61,8 +61,14 @@ const saveErrandForm = () => {
         AddGrindErrandDocument,
         { payload: { ...errandForm, posterUid: poster.value.uid!, category: ErrandCategory.Project } },
         "createGrindErrand"
-    ).then((resp) => {
-          poster.value.errands.push(resp as GrindErrandType);
+    ).then((resp: any) => {
+      if(resp) {
+       if(poster.value.errands?.length > 0) {
+          poster.value.errands.push(resp);
+       } else {
+         poster.value.errands = [resp]
+       }
+      }
     });
 };
 
