@@ -10,6 +10,7 @@ from felicity.api.gql.setup.types import UnitType
 from felicity.api.gql.types import PageInfo, JSONScalar
 from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import UserType
+from felicity.apps.instrument.services import MethodService, InstrumentService
 from felicity.apps.worksheet.services import WorkSheetService
 
 
@@ -60,14 +61,14 @@ class AnalysisResultType:
 
     @strawberry.field
     async def laboratory_instrument(self, info) -> Optional[LaboratoryInstrumentType]:
-        instruments = self.metadata_snapshot.get("instruments")
-        if not instruments or len(instruments) < 1: return None
-        lab_inst = filter(lambda inst: inst.get(), instruments)
-        for instrument in instruments:
-            lab_instruments = instrument.get("laboratory_instruments", [])
-            lab_inst = list(filter(lambda inst: inst.get("uid") == self.laboratory_instrument_uid, lab_instruments))
-            if lab_inst:
-                return StrawberryMapper[LaboratoryInstrumentType]().map(**lab_inst[0])
+        lab_inst = self.metadata_snapshot.get("laboratory_instrument")
+        if lab_inst: return StrawberryMapper[LaboratoryInstrumentType]().map(**lab_inst)
+        return None
+
+    @strawberry.field
+    async def method(self, info) -> MethodType | None:
+        _method = self.metadata_snapshot.get("method")
+        if _method: return StrawberryMapper[MethodType]().map(**_method)
         return None
 
     @strawberry.field
@@ -90,11 +91,14 @@ class AnalysisResultType:
             ]
             instruments.append(instrument)
 
-        analysis.instruments = instruments
+        default_instruments = await InstrumentService().get_all(name__in=["Manual", "Automated"])
+        analysis.instruments = instruments + default_instruments
         analysis.methods = [
             StrawberryMapper[MethodType]().map(**method)
             for method in _methods
         ]
+        default_methods = await MethodService().get_all(name__in=["Manual", "Automated"])
+        analysis.methods = analysis.methods + default_methods
         analysis.result_options = [
             StrawberryMapper[ResultOptionType]().map(**result_option)
             for result_option in _result_options
@@ -103,13 +107,10 @@ class AnalysisResultType:
             StrawberryMapper[AnalysisInterimType]().map(**interim)
             for interim in _interims
         ]
-        return analysis
 
-    @strawberry.field
-    async def method(self, info) -> MethodType | None:
-        _method = self.metadata_snapshot.get("method")
-        if not _method: return None
-        return StrawberryMapper[MethodType]().map(**_method)
+        # Add defaults
+        _lab_instruments = MethodService().get_all(name__in=["Manual", "Automated"])
+        return analysis
 
 
 @strawberry.type

@@ -17,9 +17,9 @@
 
   const props = defineProps({
       method: Object as PropType<IMethod>,
-      methodUid: Number,
+      methodUid: String,
       analysis: Object as PropType<IAnalysisService>,
-      analysisUid: Number,
+      analysisUid: String,
   })
 
   const { method, analysis  } = toRefs(props);

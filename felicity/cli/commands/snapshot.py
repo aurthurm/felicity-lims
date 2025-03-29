@@ -55,7 +55,7 @@ async def analyses() -> None:
     samples = await SampleService().get_all(**filters)
     typer.echo(f"{len(samples)} samples found for analysis refreshing")
     for sample in samples:
-        typer.echo(f"Refreshing associated results...")
+        typer.echo(f"Refreshing associated results for sample {sample.sample_id}")
         await AnalysisResultService().snapshot(sample.analysis_results)
     typer.echo("Done refreshing :)")
 

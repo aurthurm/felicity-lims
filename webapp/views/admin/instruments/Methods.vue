@@ -1,9 +1,8 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
   import { IMethod } from '@/models/setup'
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
-  import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -13,7 +12,6 @@
 
   const analysisStore = useAnalysisStore()
   const setupStore = useSetupStore()
-  const { withClientMutation } = useApiUtil()
   
   let showModal = ref(false);
   let formTitle = ref('');
@@ -26,7 +24,8 @@
   analysisStore.fetchAnalysesServices(analysesParams);
   const analyses = computed(() => analysisStore.getAnalysesServicesSimple)  
 
-  setupStore.fetchMethods();  
+  onMounted(() => setupStore.fetchMethods())  
+
   const methods = computed(() => setupStore.getMethods)  
 
   function FormManager(create: boolean, obj = {} as IMethod): void {
@@ -50,7 +49,10 @@
     return final.join(', ');
   }
 
-
+const closeForm = () => {
+  showModal.value = false
+  setupStore.fetchMethods();
+}
 </script>
 
 <template>
@@ -104,7 +106,7 @@
     </template>
 
     <template v-slot:body>
-      <method-form :method="method" :methodUid="method?.uid"  @close="showModal = false" />
+      <method-form :method="method" :methodUid="method?.uid"  @close="closeForm" />
     </template>
   </modal>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
   import { IInstrumentType } from '@/models/setup'
   import { AddInstrumentTypeDocument, AddInstrumentTypeMutation, AddInstrumentTypeMutationVariables,
     EditInstrumentTypeDocument, EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables } from '@/graphql/operations/instrument.mutations';
@@ -16,7 +16,10 @@
   let formTitle = ref('');
   const formAction = ref(true);
 
-  setupStore.fetchInstrumentTypes();    
+  onMounted(() => {
+    setupStore.fetchInstrumentTypes(); 
+  })
+   
   const instrumentTypes = computed(() => setupStore.getInstrumentTypes);
   let instrumentType = reactive({}) as IInstrumentType;
 

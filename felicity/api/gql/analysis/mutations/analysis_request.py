@@ -330,11 +330,10 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
 
     clones = []
     creations = []
-    with SampleService().repository.async_session() as transaction_session:
+    async with SampleService().repository.async_session() as transaction_session:
         to_clone = await SampleService().get_by_uids(uids=samples, session=transaction_session)
         for _, _sample in enumerate(to_clone):
             clone = await SampleService().clone_afresh(_sample.uid, felicity_user, session=transaction_session)
-            await SampleService().snapshot(clone, {})
 
             if clone:
                 clones.append(clone)
@@ -364,7 +363,6 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                         session=transaction_session
                     )
                     creations.append(created)
-                    await AnalysisResultService().snapshot([created])
 
         # save transaction
         await SampleService().repository.save_transaction(transaction_session)
@@ -375,6 +373,9 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
         (await SampleService().get(related=["sample_type"], uid=clone.uid))
         for clone in clones
     ]
+    for clone in clones:
+        await SampleService().snapshot(clone, {})
+    await AnalysisResultService().snapshot(creations)
     return SampleListingType(samples=clones)
 
 
@@ -601,7 +602,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error="No Samples to invalidate are provided!")
 
     for _sa_uid in samples:
-        with SampleService().repository.async_session() as transaction_session:
+        async with SampleService().repository.async_session() as transaction_session:
             sample = await SampleService().get(uid=_sa_uid, session=transaction_session)
             if not sample:
                 return OperationError(error=f"Sample with uid {_sa_uid} not found")

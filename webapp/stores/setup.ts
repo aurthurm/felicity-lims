@@ -4,7 +4,7 @@ import { IDepartment } from '@/models/setup';
 
 import  useApiUtil  from '@/composables/api_util';
 import { GetAllDepartmentsDocument, GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables, GetLaboratoryDocument, GetLaboratoryQuery, GetLaboratoryQueryVariables, GetLaboratorySettingDocument, GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables } from '@/graphql/operations/_queries';
-import { GetAllInstrumentsDocument, GetAllInstrumentsQuery, GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables, GetAllLaboratoryInstrumentsDocument, GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables, GetAllManufacturersDocument, GetAllManufacturersQuery, GetAllManufacturersQueryVariables, GetAllMethodsDocument, GetAllMethodsQuery, GetAllMethodsQueryVariables, GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllUnitsDocument, GetAllUnitsQuery, GetAllUnitsQueryVariables } from '@/graphql/operations/instrument.queries';
+import { GetAllInstrumentsDocument, GetAllInstrumentsQuery, GetAllInstrumentTypesDocument, GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables, GetAllLaboratoryInstrumentsDocument, GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables, GetAllManufacturersDocument, GetAllManufacturersQuery, GetAllManufacturersQueryVariables, GetAllMethodsDocument, GetAllMethodsQuery, GetAllMethodsQueryVariables, GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllUnitsDocument, GetAllUnitsQuery, GetAllUnitsQueryVariables } from '@/graphql/operations/instrument.queries';
 import { GetAllSampleTypesQueryVariables } from '@/graphql/operations/analyses.queries';
 
 const { withClientQuery } = useApiUtil();
@@ -135,12 +135,13 @@ export const useSetupStore = defineStore('setup', {
         // INSTRUMENT TYOES
         async fetchInstrumentTypes() {
             this.fetchingInstrumentTypes = true;
-            await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(GetAllInstrumentsDocument, {}, 'instrumentTypeAll')
-                .then(payload => {
-                    this.fetchingInstrumentTypes = false;
-                    this.instrumentTypes = payload?.items;
+            await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(GetAllInstrumentTypesDocument, {}, 'instrumentTypeAll')
+                .then(({ items }: any) => {
+                    this.instrumentTypes = items;
                 })
-                .catch(err => (this.fetchingInstrumentTypes = false));
+                .finally(() => {
+                    this.fetchingInstrumentTypes = false
+                });
         },
         addInstrumentType(payload) {
             this.instrumentTypes?.unshift(payload);

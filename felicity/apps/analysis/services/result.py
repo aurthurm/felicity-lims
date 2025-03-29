@@ -15,7 +15,7 @@ from felicity.apps.analysis.repository.results import (
 from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
 from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.apps.instrument.services import LaboratoryInstrumentService
+from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
 from felicity.apps.multiplex.microbiology.services import AbxOrganismResultService, AbxASTResultService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.user.entities import User, logger
@@ -203,6 +203,13 @@ class AnalysisResultService(
         for result in analyses_results:
             analysis = await AnalysisService().get(related=analysis_relations, uid=result.analysis_uid)
             metadata = {"analysis": analysis.snapshot()}
+            if result.method_uid:
+                metadata["method"] = (await MethodService().get(uid=result.method_uid)).snapshot()
+            if result.laboratory_instrument_uid:
+                metadata["laboratory_instrument"] = (await LaboratoryInstrumentService().get(
+                    uid=result.laboratory_instrument_uid
+                )).snapshot()
+
             for _field in analysis_relations:
                 try:
                     thing = getattr(analysis, _field)

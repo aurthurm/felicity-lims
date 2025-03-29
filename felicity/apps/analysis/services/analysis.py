@@ -606,7 +606,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().create(data, commit=commit, session=session)
 
     async def clone_afresh(self, uid: str, cloner, commit: bool = True, session: AsyncSession | None = None):
-        sample = await self.get(related=["profiles", "analyses"], uid=uid)
+        sample = await self.get(related=["profiles", "analyses"], uid=uid, session=session)
         data = sample.to_dict(nested=False)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
