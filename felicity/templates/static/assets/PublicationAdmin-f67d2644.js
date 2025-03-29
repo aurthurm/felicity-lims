@@ -1,1 +1,0 @@
-import{_ as i,o as n,c as t,b as o}from"./index-e1b11e1a.js";const s={},c={class:""};function a(l,e){return n(),t("div",c,e[0]||(e[0]=[o("h4",null,"Publication Preferences:> email and sms",-1)]))}const m=i(s,[["render",a],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/admin/publication/PublicationAdmin.vue"]]);export{m as default};
