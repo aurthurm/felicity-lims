@@ -158,5 +158,5 @@ class NoticeMutations:
         if not notice:
             raise Exception(f"Notice with uid {uid} does not exist")
 
-        await notice.delete()
+        await NoticeService().delete(uid)
         return DeletedItem(uid=uid)

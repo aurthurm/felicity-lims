@@ -140,6 +140,7 @@ class AnalysisResultWorkFlow:
             _submitted.append(
                 await self.analysis_result_service.submit(result.uid, datum, submitter)
             )
+        await self.analysis_result_service.snapshot(_submitted)
         return _skipped, _submitted
 
     async def _guard_submit(self, result: AnalysisResult) -> bool:

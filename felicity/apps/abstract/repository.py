@@ -136,7 +136,7 @@ class BaseRepository(Generic[M]):
         else:
             # Create new session (standalone operation)
             async with self.async_session() as session:
-                session.add(items)
+                session.add_all(items)
                 await session.flush()
                 await self._commit_or_fail(session)
             return items
