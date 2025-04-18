@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 import { IUser } from '@/models/auth';
-import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '@/conf';
+import { STORAGE_AUTH_KEY } from '@/conf';
 import {
     AuthenticateUserDocument, AuthenticateUserMutation, AuthenticateUserMutationVariables,
     TokenRefreshDocument, TokenRefreshMutation, TokenRefreshMutationVariables,
@@ -61,15 +61,6 @@ export const useAuthStore = defineStore('auth', () => {
         reset();
     };
 
-    const upsertPermission = () => {
-        if (USER_GROUP_OVERRIDE.length > 0) {
-            auth.value.user?.groups?.forEach(group => ({
-                ...group,
-                name: USER_GROUP_OVERRIDE,
-            }));
-        }
-    };
-
     if (localStorage.getItem(STORAGE_AUTH_KEY)) {
         const data = JSON.parse(localStorage.getItem(STORAGE_AUTH_KEY)!);
         auth.value = {
@@ -78,7 +69,6 @@ export const useAuthStore = defineStore('auth', () => {
             isAuthenticated: true,
             processing: false,
         };
-        upsertPermission();
     } else {
         // logout()
     }
@@ -86,7 +76,6 @@ export const useAuthStore = defineStore('auth', () => {
     watch(() => auth.value, authValue => {
         if (authValue?.user && authValue?.token) {
             localStorage.setItem(STORAGE_AUTH_KEY, JSON.stringify(authValue));
-            upsertPermission();
             // startRefreshTokenTimer();
         }
     });

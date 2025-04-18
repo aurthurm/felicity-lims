@@ -1,1 +1,0 @@
-import{d as o}from"./index-66877f9a.js";const s=o("notification",{state:()=>({notifications:[],show:!1}),getters:{getNotifications:t=>t.notifications,getShow:t=>t.show},actions:{showNotifications(t){this.show=t}}});export{s as u};

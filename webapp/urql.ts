@@ -48,19 +48,30 @@ export const urqlClient = createClient({
     exchanges: [
         cacheExchange,
         errorExchange({
-            onError: (error: CombinedError, operation: Operation) => {
-                let isAuthError = false;
-
-                if (!error.graphQLErrors || error.graphQLErrors.length === 0) {
-                    isAuthError = error.message === '[Network] Failed to fetch';
-                } else {
-                    isAuthError = error.graphQLErrors.some(e => e.extensions?.code === 'FORBIDDEN');
+            onError: (error, operation) => {
+                const { graphQLErrors, networkError } = error;
+              
+                if (graphQLErrors?.length) {
+                  for (const err of graphQLErrors) {
+                    switch (err.extensions?.code) {
+                      case 'FORBIDDEN':
+                      case 'UNAUTHENTICATED':
+                        toastError('Session expired, logging out...');
+                        authLogout();
+                        break;
+                      case 'BAD_USER_INPUT':
+                        toastError(err.message);
+                        break;
+                      default:
+                        toastError('Server error: ' + err.message);
+                    }
+                  }
                 }
-                if (isAuthError) {
-                    toastError('Unknown Network Error Encountered');
-                    authLogout();
+              
+                if (networkError) {
+                  toastError('Network error: ' + networkError.message);
                 }
-            },
+            }
         }),
         resultInterceptorExchange,
         fetchExchange,

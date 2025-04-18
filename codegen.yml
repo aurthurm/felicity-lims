@@ -11,9 +11,13 @@ config:
   defaultScalarType: never
   useTypeImports: true
 generates:
-  types/gql.d.ts:
+  webapp/types/gql.d.ts:
     plugins:
       - typescript
+    config:
+      useTypeImports: true
+  webapp/types/gqlops.d.ts:
+    plugins:
       - typescript-operations
     config:
       useTypeImports: true

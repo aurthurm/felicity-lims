@@ -1,0 +1,1 @@
+import{b as u,a as t,c as b}from"./_baseForOwn-656fabb0.js";import{b as c}from"./merge-2849153f.js";var m=1,f=4;function L(a){return u(a,m|f)}function i(a,s){var n={};return s=t(s),b(a,function(o,r,e){c(n,r,s(o,r,e))}),n}export{L as c,i as m};

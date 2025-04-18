@@ -23,14 +23,6 @@ const documentRoutes = [
           meta: {
             requiresAuth: true,
           },
-        },
-        {
-          path: 'preview',
-          name: 'document-preview',
-          component: () => import('@/views/document/_id/DocumentPreview.vue'),
-          meta: {
-            requiresAuth: true,
-          },
         }
       ]
     },
