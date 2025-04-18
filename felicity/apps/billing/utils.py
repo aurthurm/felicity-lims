@@ -67,7 +67,7 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
         for _an in sample.analyses:
             analysis_uids.append(_an.uid)
 
-    with ProfilePriceService().repository.async_session() as transaction_session:
+    async with ProfilePriceService().repository.async_session() as transaction_session:
         profiles_prices = await ProfilePriceService().get_all(profile_uid__in=profile_uids, session=transaction_session)
         analysis_prices = await AnalysisPriceService().get_all(
             analysis_uid__in=analysis_uids, session=transaction_session
@@ -343,6 +343,6 @@ async def apply_voucher(
 
         # save transaction
         await TestBillService().repository.save_transaction(transaction_session)
-        
+
     await impress_invoice(bill)
     return bill

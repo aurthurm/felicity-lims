@@ -9,7 +9,7 @@ const FelNotification = defineAsyncComponent(
 </script>
 
 <template>
-  <div class="bg-gray-100 font-roboto antialiased">
+  <div class="font-roboto antialiased">
     <header-main />
     <main class="px-8 pt-4">
       <slot />

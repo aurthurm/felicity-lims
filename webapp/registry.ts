@@ -1,9 +1,9 @@
 import { registerLicense } from '@syncfusion/ej2-base';
 import { markRaw } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
-import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
-import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
-import LayoutMobile from '@/views/layouts/LayoutMobile.vue';
+import LayoutDashboard from '@/layouts/LayoutDashboard.vue';
+import LayoutEmpty from '@/layouts/LayoutEmpty.vue';
+import LayoutMobile from '@/layouts/LayoutMobile.vue';
 import PageHeading from '@/components/common/FelPageHeading.vue';
 import FelModal from "@/components/ui/FelModal.vue";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';

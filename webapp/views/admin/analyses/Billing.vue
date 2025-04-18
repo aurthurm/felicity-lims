@@ -56,16 +56,17 @@
 
   const updatePricing = () => {
     const payload = { ...formPricing  };
+    let pricing = target.value == 'profile' ? billingStore.profilePrice : billingStore.analysisPrice;
     if(target?.value === "profile"){
         withClientMutation<EditProfilePricingMutation, EditProfilePricingMutationVariables>(
           EditProfilePricingDocument,
-          { uid: pricing?.uid, payload },
+          { uid: pricing!.uid, payload },
           "updateProfilePrice"
         ).then();
     } else {
         withClientMutation<EditAnalysisPricingMutation, EditAnalysisPricingMutationVariables>(
           EditAnalysisPricingDocument,
-          { uid: pricing?.uid, payload },
+          { uid: pricing!.uid, payload },
           "updateAnalysisPrice"
         ).then();
     }
@@ -106,16 +107,17 @@
 
   const updateDiscounting = () => {
     const payload = { ...formDiscount  };
+    let discount = target.value == 'profile' ? billingStore.profileDiscount : billingStore.analyisDiscount;
     if(target.value == 'profile'){
       withClientMutation<EditProfileDiscountMutation, EditProfileDiscountMutationVariables>(
         EditProfileDiscountDocument,
-        { uid: discount?.uid, payload },
+        { uid: discount!.uid, payload },
         "updateProfileDiscount"
       ).then();
     } else {
       withClientMutation<EditAnalysisDiscountMutation, EditAnalysisDiscountMutationVariables>(
         EditAnalysisDiscountDocument,
-        { uid: discount?.uid, payload },
+        { uid: discount!.uid, payload },
         "updateAnalysisDiscount"
       ).then();
     }
