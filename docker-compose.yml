@@ -5,7 +5,7 @@ networks:
 services:
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.1.6
+    image: amusendame/felicity-static-nginx:0.1.7
     restart: unless-stopped
     ports:
       - "80:80"
@@ -24,7 +24,7 @@ services:
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.1.6
+    image: amusendame/felicity-lims:api-0.1.7
     restart: unless-stopped
     env_file:
       - .env
