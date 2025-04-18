@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from "vue";
-const SideBar = defineAsyncComponent(
-  () => import("@/components/nav/NavigationAside.vue")
-)
 const HeaderMain = defineAsyncComponent(
   () => import("@/components/nav/NavigationMain.vue")
 )
@@ -13,20 +10,11 @@ const FelNotification = defineAsyncComponent(
 
 <template>
   <div class="bg-gray-100 font-roboto antialiased">
-    <div class="flex flex-row">
-      <div class="min-h-screen bg-sky-800">
-        <side-bar />
-      </div>
-      <div class="flex-1">
-        <header-main />
-        <main class="px-8 pt-4">
-          <slot />
-        </main>
-      </div>
-    </div>
+    <header-main />
+    <main class="px-8 pt-4">
+      <slot />
+    </main>
   </div>
-  <!-- <footer-main><slot /></footer-main> -->
-
   <FelNotification />
 </template>
 

@@ -143,9 +143,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4">
+  <div>
     <components.PageHeading title="Patients Quick View" />
-    
     <!-- Header Actions -->
     <div class="flex justify-between mb-4">
       <div class="flex items-center gap-4">

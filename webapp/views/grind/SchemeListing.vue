@@ -12,6 +12,9 @@ import { IUser } from '@/models/auth';
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 );
+const PageHeader = defineAsyncComponent(
+    () => import("@/components/common/FelPageHeading.vue")
+)
 
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -184,10 +187,10 @@ function saveForm() {
 </script>
 
 <template>
-  <div class="px-4 py-8">
+  <PageHeader title="Projects" />
+
+  <div class="pb-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Schemes</h1>
-      
       <div class="flex space-x-4">
         <!-- Search input -->
         <div class="relative">

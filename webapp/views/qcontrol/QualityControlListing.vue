@@ -249,23 +249,21 @@
 </script>
 
 <template>
-  <div class="flex items-center justify-between">
-    <PageHeader title="Reference Runs (QC)" />
-    <div>
-      <button 
-        v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
-        type="button" 
-        class="border border-sky-800 text-sky-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-white focus:outline-none focus:shadow-outline"
-        @click.prevent="showModal = !showModal">
-        Add Reference Runs
-      </button>
-      <router-link to="/quality-control/charts" id="control-charts"
-      class="border border-orange-800 text-orange-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-orange-800 hover:text-white focus:outline-none focus:shadow-outline">
-        View Run Charts
-      </router-link>
-    </div>
-  </div>
+  <PageHeader title="Reference Runs (QC)" />
 
+  <div>
+    <button 
+      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
+      type="button" 
+      class="border border-sky-800 text-sky-800 rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-white focus:outline-none focus:shadow-outline"
+      @click.prevent="showModal = !showModal">
+      Add Reference Runs
+    </button>
+    <router-link to="/quality-control/charts" id="control-charts"
+    class="border border-orange-800 text-orange-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-orange-800 hover:text-white focus:outline-none focus:shadow-outline">
+      View Run Charts
+    </router-link>
+  </div>
   <hr>
 
   <DataTable 

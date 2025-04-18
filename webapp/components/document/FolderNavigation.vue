@@ -1,7 +1,7 @@
 
 <template>
   <div class="h-full overflow-hidden flex flex-col">
-    <div class="px-4 py-3 flex items-center justify-between">
+    <div class="pr-4 py-3 flex items-center justify-between">
       <h2 class="font-semibold text-sm">Folders</h2>
       <button 
         @click="openAddFolderDialog(null)"
@@ -12,7 +12,7 @@
     </div>
     
     <div class="flex-1 overflow-auto">
-      <div class="px-2 py-1">
+      <div class="pr-2 py-1">
         <FolderItem 
           v-for="folder in rootFolders" 
           :key="folder.uid" 

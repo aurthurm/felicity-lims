@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import UmoEditor from '@/components/document/editor/umo/UmoEditor.vue';
-import SyncfusionEditor from '@/components/document/editor/syncfusion/SyncfusionEditor.vue';
 import useApiUtil from '@/composables/api_util';
 import { GetDocumentVersionByBidDocument, GetDocumentVersionByBidQuery, GetDocumentVersionByBidQueryVariables } from '@/graphql/operations/document.queries';
 import { IDocumentVersion } from '@/models/document';
@@ -8,6 +6,12 @@ import { computed, onMounted, ref, defineAsyncComponent } from 'vue';
 import { useRoute } from 'vue-router';
 const LoadingMessage = defineAsyncComponent(
   () => import("@/components/ui/spinners/FelLoadingMessage.vue")
+)
+const UmoEditor = defineAsyncComponent(
+  () => import("@/components/document/editor/umo/UmoEditor.vue")
+)
+const SyncfusionEditor = defineAsyncComponent(
+  () => import("@/components/document/editor/syncfusion/SyncfusionEditor.vue")
 )
 
 const route = useRoute();
