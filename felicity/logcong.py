@@ -25,10 +25,10 @@ LOGGING_CONFIG: dict[str, Any] = {
         "file_handler": {
             "formatter": "access_file",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "./logs/app.log",
+            "filename": "/var/log/felicity-app.log",
             "mode": "a+",
             "maxBytes": 10 * 1024 * 1024,
-            "backupCount": 0,
+            "backupCount": 5,
         },
         "default": {
             "formatter": "default",
