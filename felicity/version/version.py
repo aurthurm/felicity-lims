@@ -6,7 +6,7 @@ import httpx
 from fastapi import APIRouter, HTTPException
 from packaging import version
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 _cache_duration = timedelta(hours=1)
 router = APIRouter()
@@ -14,7 +14,7 @@ router = APIRouter()
 
 class FelicityVersion:
     _version = __version__
-    _owner = "aurthurm"
+    _owner = "beak-insights"
     _repo = "felicity-lims"
     _cache = {}
     _cache_duration = _cache_duration

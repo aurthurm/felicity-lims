@@ -1,6 +1,6 @@
 {
   "name": "felicity-lims",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "webapp/main.ts",
   "license": "Public",
   "scripts": {
