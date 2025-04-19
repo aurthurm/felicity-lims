@@ -305,11 +305,11 @@ const StorageHome = defineComponent({
         return (
             <>
                 <PageHeading title="Storage " />
-                <div class="grid grid-cols-12 gap-4 min-h-full bg-white">
+                <div class="grid grid-cols-12 gap-4 min-h-full bg-background">
                     <div class="col-span-2 pt-4 pl-2">
                         <button
                             onClick={() => this.roomFormManager(true, null)}
-                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                         >
                             Add Store Room
                         </button>
@@ -329,7 +329,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.locationFormManager(true, null)}
-                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                                         >
                                             Add Storage Location
                                         </button>
@@ -339,7 +339,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.sectionFormManager(true, null)}
-                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                                         >
                                             Add Storage Section
                                         </button>
@@ -349,7 +349,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.containerFormManager(true, null)}
-                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                                         >
                                             Add Storage Container
                                         </button>
@@ -372,7 +372,7 @@ const StorageHome = defineComponent({
                                     <form action="post" class="p-1">
                                         <div class="grid grid-cols-2 gap-x-4 mb-4">
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Store Room Name</span>
+                                                <span class="text-foreground">Store Room Name</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.roomForm.name}
@@ -380,7 +380,7 @@ const StorageHome = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Description</span>
+                                                <span class="text-foreground">Description</span>
                                                 <textarea
                                                     cols="2"
                                                     class="form-input mt-1 block w-full"
@@ -393,7 +393,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveStoreRoomForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>
@@ -413,7 +413,7 @@ const StorageHome = defineComponent({
                                     <form action="post" class="p-1">
                                         <div class="grid grid-cols-2 gap-x-4 mb-4">
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Storage Location Name</span>
+                                                <span class="text-foreground">Storage Location Name</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.locationForm.name}
@@ -421,7 +421,7 @@ const StorageHome = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Description</span>
+                                                <span class="text-foreground">Description</span>
                                                 <textarea
                                                     cols="2"
                                                     class="form-input mt-1 block w-full"
@@ -434,7 +434,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveLocationForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>
@@ -454,7 +454,7 @@ const StorageHome = defineComponent({
                                     <form action="post" class="p-1">
                                         <div class="grid grid-cols-2 gap-x-4 mb-4">
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Storage Section Name</span>
+                                                <span class="text-foreground">Storage Section Name</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.sectionForm.name}
@@ -462,7 +462,7 @@ const StorageHome = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Description</span>
+                                                <span class="text-foreground">Description</span>
                                                 <textarea
                                                     cols="2"
                                                     class="form-input mt-1 block w-full"
@@ -475,7 +475,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveStorageSectionForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>
@@ -495,7 +495,7 @@ const StorageHome = defineComponent({
                                     <form action="post" class="p-1">
                                         <div class="grid grid-cols-2 gap-x-4 mb-4">
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Storage Location Name</span>
+                                                <span class="text-foreground">Storage Location Name</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.containerForm.name}
@@ -503,7 +503,7 @@ const StorageHome = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Description</span>
+                                                <span class="text-foreground">Description</span>
                                                 <textarea
                                                     cols="2"
                                                     class="form-input mt-1 block w-full"
@@ -512,7 +512,7 @@ const StorageHome = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-gray-700">Number of Slots</span>
+                                                <span class="text-foreground">Number of Slots</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.containerForm.slots}
@@ -527,7 +527,7 @@ const StorageHome = defineComponent({
                                                     onChange={e => this.changeContainerType(e)}
                                                     v-model={this.containerForm.grid}
                                                 />
-                                                <span class="text-gray-700 ml-3">Add Grid View</span>
+                                                <span class="text-foreground ml-3">Add Grid View</span>
                                             </label>
                                         </div>
                                         <div class="grid grid-cols-4 gap-x-4 mb-4">
@@ -536,7 +536,7 @@ const StorageHome = defineComponent({
                                                     <span class="col-span-3">
                                                         <div class="grid grid-cols-3 gap-x-4">
                                                             <label class="block col-span-1 mb-2">
-                                                                <span class="text-gray-700">Cols</span>
+                                                                <span class="text-foreground">Cols</span>
                                                                 <input
                                                                     class="form-input mt-1 block w-full"
                                                                     v-model={this.containerForm.cols}
@@ -545,7 +545,7 @@ const StorageHome = defineComponent({
                                                                 />
                                                             </label>
                                                             <label class="block col-span-1 mb-2">
-                                                                <span class="text-gray-700">Rows</span>
+                                                                <span class="text-foreground">Rows</span>
                                                                 <input
                                                                     class="form-input mt-1 block w-full bg-secondary"
                                                                     v-model={this.containerForm.rows}
@@ -555,7 +555,7 @@ const StorageHome = defineComponent({
                                                             </label>
                                                             <label class="block col-span-1 mt-10">
                                                                 <input type="checkbox" class="" v-model={this.containerForm.rowWise} />
-                                                                <span class="text-gray-700 ml-3">Row Wise</span>
+                                                                <span class="text-foreground ml-3">Row Wise</span>
                                                             </label>
                                                         </div>
                                                     </span>
@@ -566,7 +566,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveStorageContainerForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>

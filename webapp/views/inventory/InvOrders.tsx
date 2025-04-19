@@ -257,30 +257,30 @@ const InventoryOrders = defineComponent({
                                         <div>Status: {this.slectedStockOrder?.order?.status}</div>
                                         <hr />
                                         <label class="flex justify-between items-center gap-4 mb-4">
-                                            <span class="text-gray-700">Department</span>
+                                            <span class="text-foreground">Department</span>
                                             <select class="form-select block w-full mt-1" v-model={this.slectedStockOrder.departmentUid}>
                                                 {this.setupStore.departments.map(department => (<option value={department.uid}>{department.name}</option>))}
                                             </select>
                                         </label>
                                         <hr />
                                         <div class="overflow-x-auto mt-2 mb-4">
-                                            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                                            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                                                 <table class="min-w-full">
                                                     <thead>
                                                         <tr>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
                                                                 Product
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
                                                                 Lot
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                                                 Qty
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody class="bg-white">
+                                                    <tbody class="bg-background">
                                                         {this.slectedStockOrder.products.map(item => (
                                                             <tr key={item.product.uid} v-motion-slide-right>
                                                                 <td>
@@ -300,7 +300,7 @@ const InventoryOrders = defineComponent({
                                                                 <td class="px-1 whitespace-no-wrap">
                                                                     <button
                                                                         type="button"
-                                                                        class="w-16 bg-primary text-white rounded-sm leading-none px-2 py-1"
+                                                                        class="w-16 bg-primary text-primary-foreground rounded-sm leading-none px-2 py-1"
                                                                         onClick={() => this.removeOrderProduct(item.product.uid)}
                                                                     >
                                                                         Remove
@@ -314,14 +314,14 @@ const InventoryOrders = defineComponent({
                                         </div>
                                         <hr />
                                         <div class="my-2">
-                                            <p class="italic text-red-400 text-xs">If you made any changes here please update order first before finalising else your changes wont be saved</p>
+                                            <p class="italic text-destructive text-xs">If you made any changes here please update order first before finalising else your changes wont be saved</p>
                                         </div>
                                         <hr />
                                         <div class="flex justify-start gap-x-4">
                                             <button
                                                 type="button"
                                                 onClick={() => this.updateOrder()}
-                                                class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                class="mt-4 bg-primary text-primary-foreground rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled={!this.shield.hasRights(shield.actions.ORDER, shield.objects.PRODUCT)}
                                             >
                                                 Update
@@ -329,7 +329,7 @@ const InventoryOrders = defineComponent({
                                             <button
                                                 type="button"
                                                 onClick={() => this.submitOrder()}
-                                                class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                class="mt-4 bg-primary text-primary-foreground rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled={!this.shield.hasRights(shield.actions.ORDER, shield.objects.PRODUCT)}
                                             >
                                                 Finalize
@@ -342,29 +342,29 @@ const InventoryOrders = defineComponent({
                                         <div>Status: {this.slectedStockOrder?.order?.status}</div>
                                         <hr />
                                         <div class="overflow-x-auto mt-4 mb-4">
-                                            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                                            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                                                 <table class="min-w-full">
                                                     <thead>
                                                         <tr>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
                                                                 Product
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
                                                                 Lot
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                                                 Available
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                                                 Requested
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                                                 Issue
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody class="bg-white">
+                                                    <tbody class="bg-background">
                                                         {this.slectedStockOrder.products.map(orderProduct => (
                                                             <tr key={orderProduct.uid} v-motion-slide-right>
                                                                 <td>
@@ -398,7 +398,7 @@ const InventoryOrders = defineComponent({
                                         <hr />
                                         <button
                                             type="button"
-                                            class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            class="mt-4 bg-primary text-primary-foreground rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                             disabled={!this.shield.hasRights(shield.actions.ISSUE, shield.objects.PRODUCT)}
                                             onClick={() => this.issueOrder()}
                                         >
@@ -413,23 +413,23 @@ const InventoryOrders = defineComponent({
                                         <h4>Request Details</h4>
                                         <hr />
                                         <div class="overflow-x-auto mt-4 mb-4">
-                                            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                                            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                                                 <table class="min-w-full">
                                                     <thead>
                                                         <tr>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
                                                                 Product Name
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                                                 Available
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                                                 Requested
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody class="bg-white">
+                                                    <tbody class="bg-background">
                                                         {this.slectedStockOrder.products.map(orderProduct => (
                                                             <tr key={orderProduct.uid} v-motion-slide-right>
                                                                 <td>

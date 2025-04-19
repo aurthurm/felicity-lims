@@ -7,7 +7,7 @@
   >
     <label 
       :for="id" 
-      class="text-medium text-gray-700 flex items-center"
+      class="text-medium text-foreground flex items-center"
       :class="[
         reverse ? 'gap-x-reverse gap-x-2' : 'gap-x-2'
       ]"
@@ -24,19 +24,19 @@
           type="checkbox"
           :checked="modelValue"
           @change="updateValue"
-          class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 border-border appearance-none cursor-pointer outline-none transition duration-200 ease-in"
+          class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-background border-4 border-border appearance-none cursor-pointer outline-none transition duration-200 ease-in"
           :class="{
             'translate-x-full': modelValue,
-            'border-blue-500': modelValue,
-            'bg-white border-border': !modelValue
+            'border-accent': modelValue,
+            'bg-background border-border': !modelValue
           }"
         />
         <label
           :for="id"
           class="toggle-label block overflow-hidden h-4 rounded-full cursor-pointer"
           :class="{
-            'bg-blue-300': modelValue,
-            'bg-gray-300': !modelValue
+            'bg-muted': modelValue,
+            'bg-muted': !modelValue
           }"
         ></label>
       </div>

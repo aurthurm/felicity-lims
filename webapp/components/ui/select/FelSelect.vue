@@ -1,6 +1,6 @@
 <template>
     <label class="flex justify-between items-center">
-      <span class="text-gray-700 mr-2">{{ label }}</span>
+      <span class="text-foreground mr-2">{{ label }}</span>
       <select
         :name="name"
         v-model="modelValue"

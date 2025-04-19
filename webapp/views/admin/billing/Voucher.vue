@@ -119,7 +119,7 @@ const updateVoucher = (vocher: IVoucher) => {
   <div class="mt-4">
     <div class="flex justify-between">
       <button
-        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
         @click="newVoucher">
         Add Voucher
       </button>
@@ -131,16 +131,16 @@ const updateVoucher = (vocher: IVoucher) => {
       <section v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
         :variants="{ custom: { scale: 2 } }" :delay="400"
         class="col-span-3 overflow-y-scroll overscroll-contain voucher-scroll">
-        <div v-if="fetchingVouchers" class="py-4 text-center bg-white w-full mb-1 rounded-sm shadow border">
+        <div v-if="fetchingVouchers" class="py-4 text-center bg-background w-full mb-1 rounded-sm shadow border">
           <LoadingMessage message="Fetching vouchers ..." />
         </div>
         <div v-else>
           <a v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" :class="[
-            'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
+            'bg-background w-full flex items-center p-1 mb-1 rounded-sm shadow border',
             { 'border-primary bg-emerald-200': voucher.uid === uid },
           ]">
             <div class="flex-grow p-1">
-              <div class="font-semibold text-gray-800 flex justify-between">
+              <div class="font-semibold text-foreground flex justify-between">
                 <span>{{ voucher.name }}</span>
                 <span class="text-sm text-muted-foreground">{{ voucher.used }} of {{ voucher.usageLimit }}</span>
               </div>
@@ -152,10 +152,10 @@ const updateVoucher = (vocher: IVoucher) => {
       <section v-if="vouchers?.length > 0 && uid" v-motion :initial="{ opacity: 0, y: -100 }"
         :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" class="col-span-9">
         
-        <div class="bg-white rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
+        <div class="bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
           <div class="flex justify-between items-center">
-            <h4 class="text-gray-800 text-l font-bold">{{ name?.toUpperCase() }}</h4>
-            <a @click="showModal = true" class="px-2 cursor text-gray-400 hover:text-gray-900">
+            <h4 class="text-foreground text-l font-bold">{{ name?.toUpperCase() }}</h4>
+            <a @click="showModal = true" class="px-2 cursor text-muted-foreground hover:text-foreground">
                 <font-awesome-icon icon="pen" />
             </a>
           </div>
@@ -163,32 +163,32 @@ const updateVoucher = (vocher: IVoucher) => {
           <section class="grid grid-cols-3 gap-x-8">
             <div class="col-span-1">
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Start Date:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ startDate }}</span>
+                <span class="text-foreground text-sm font-semibold">Start Date:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ startDate }}</span>
               </div>
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">End Date:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ endDate }}</span>
-              </div>
-            </div>
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Usage Limit:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ usageLimit }}</span>
-              </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Used:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ used }}</span>
+                <span class="text-foreground text-sm font-semibold">End Date:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ endDate }}</span>
               </div>
             </div>
             <div class="col-span-1">
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Once per customer:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ oncePerCustomer ? "Yes" : "No" }}</span>
+                <span class="text-foreground text-sm font-semibold">Usage Limit:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ usageLimit }}</span>
               </div>
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Once per order:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ oncePerOrder ? "Yes" : "No" }}</span>
+                <span class="text-foreground text-sm font-semibold">Used:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ used }}</span>
+              </div>
+            </div>
+            <div class="col-span-1">
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-foreground text-sm font-semibold">Once per customer:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ oncePerCustomer ? "Yes" : "No" }}</span>
+              </div>
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-foreground text-sm font-semibold">Once per order:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ oncePerOrder ? "Yes" : "No" }}</span>
               </div>
             </div>
           </section>
@@ -206,26 +206,26 @@ const updateVoucher = (vocher: IVoucher) => {
         <form>
           <div class="grid grid-cols-4 gap-x-4 mb-4">
             <label class="block col-span-2 mb-2">
-              <span class="text-gray-700">Voucher Name</span>
+              <span class="text-foreground">Voucher Name</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.name }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.name }]"
                 type="text"
                 v-model="name"
                 placeholder="Name ..."
               />
             </label>
             <label class="block col-span-1 mb-2">
-              <span class="text-gray-700">Start Date</span>
+              <span class="text-foreground">Start Date</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.startDate }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.startDate }]"
                 type="date"
                 v-model="startDate"
               />
             </label>
             <label class="block col-span-1 mb-2">
-              <span class="text-gray-700">End Date</span>
+              <span class="text-foreground">End Date</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.endDate }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.endDate }]"
                 type="date"
                 v-model="endDate"
               />
@@ -233,9 +233,9 @@ const updateVoucher = (vocher: IVoucher) => {
           </div>
           <div class="grid grid-cols-4 gap-x-4 mb-4">
             <label class="block col-span-2 mb-2">
-              <span class="text-gray-700">Usage Limit</span>
+              <span class="text-foreground">Usage Limit</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.usageLimit }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.usageLimit }]"
                 type="number"
                 min="1"
                 v-model="usageLimit"
@@ -244,7 +244,7 @@ const updateVoucher = (vocher: IVoucher) => {
           </div>
           <div class="grid grid-cols-2 gap-x-4 mb-4">
             <label class="block col-span-1 mb-2">
-              <span class="text-gray-700">Once Per Customer</span>
+              <span class="text-foreground">Once Per Customer</span>
               <input
                 class="form-checkbox ml-4"
                 type="checkbox"
@@ -253,7 +253,7 @@ const updateVoucher = (vocher: IVoucher) => {
               />
             </label>
             <label class="block col-span-1 mb-2">
-              <span class="text-gray-700">Once Per Order</span>
+              <span class="text-foreground">Once Per Order</span>
               <input
                 class="form-checkbox ml-4"
                 type="checkbox"
@@ -265,7 +265,7 @@ const updateVoucher = (vocher: IVoucher) => {
 
           <hr />
           <button type="submit"
-            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
             @click.prevent="submitVoucherForm">
             Save Voucher
           </button>

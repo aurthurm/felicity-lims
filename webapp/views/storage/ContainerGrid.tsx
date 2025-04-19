@@ -37,9 +37,9 @@ const ContainerGrid = defineComponent({
                                             <>
                                                 <div
                                                     class={[
-                                                        'col-span-1 w-full border-l-2 p-1 text-gray-800 hover:opacity-70 hover:text-white',
+                                                        'col-span-1 w-full border-l-2 p-1 text-foreground hover:opacity-70 hover:text-primary-foreground',
                                                         {
-                                                            'bg-slate-400':
+                                                            'bg-muted':
                                                                 slotSample(row * (this.container?.cols ?? 0) + col + 1) === null,
                                                         },
                                                         {

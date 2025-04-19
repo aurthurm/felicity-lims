@@ -33,7 +33,7 @@ const canApprove = computed(() => {
 <template>
   <div class="">
     <div
-      class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4"
+      class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4"
       v-motion-slide-top
     >
       <div class="grid grid-cols-12 gap-1">
@@ -43,22 +43,22 @@ const canApprove = computed(() => {
           <div>
             <div @click="dropdownOpen = !dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
                 {{ worksheet?.state }}
               </button>
               <div class="ml-2">
-                <font-awesome-icon icon="chevron-down" class="text-gray-400" />
+                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
               </div>
             </div>
             <div v-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
             </div>
-            <div v-show="dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
+            <div v-show="dropdownOpen" class="absolute mt-4 py-0 bg-muted rounded-sm shadow-xl z-20">
               <div v-show="canSubmit" @click="actionWorksheets([worksheet.uid], 'submit')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Submit
               </div>
               <div v-show="canApprove" @click="actionWorksheets([worksheet.uid], 'approve')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Approve
               </div>
             </div>
@@ -71,40 +71,40 @@ const canApprove = computed(() => {
             <div class="col-span-1">
               <!-- Client Details -->
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Analyst</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-sm font-semibold w-1/6">Analyst</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   worksheet?.analyst?.firstName
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-md font-semibold w-1/6">Instrument:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-md font-semibold w-1/6">Instrument:</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   worksheet?.instrument?.name
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Method:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-sm font-semibold w-1/6">Method:</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   worksheet?.method?.name
                 }}</span>
               </div>
             </div>
             <div class="col-span-1">
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Analyses:</span>
-                <span class="text-gray-600 text-sm md:text-md"
+                <span class="text-foreground text-sm font-semibold w-1/6">Analyses:</span>
+                <span class="text-foreground text-sm md:text-md"
                   >{{ worksheet?.analysis?.name }}
                 </span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Samples:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-sm font-semibold w-1/6">Samples:</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   worksheet?.assignedCount
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Template:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-sm font-semibold w-1/6">Template:</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   worksheet?.template?.name
                 }}</span>
               </div>

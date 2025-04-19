@@ -323,7 +323,7 @@ function goBack() {
 </script>
 
 <template>
-    <div class="bg-white rounded-lg shadow" v-if="errand">
+    <div class="bg-background rounded-lg shadow" v-if="errand">
       
       <!-- Content area with sidebar -->
       <div class="flex flex-col md:flex-row">
@@ -334,13 +334,13 @@ function goBack() {
             <div class="p-2 border-b">
                 <div class="flex justify-between items-center">
                     <div class="relative w-full">
-                        <button @click="goBack" class="-mt-8 mr-4 text-muted-foreground hover:text-gray-700">
+                        <button @click="goBack" class="-mt-8 mr-4 text-muted-foreground hover:text-foreground">
                           <ArrowLeftIcon class="w-5 h-5" />
                         </button>
                         <h1 
                         v-if="!editingTitle" 
                         @click="startEditingTitle" 
-                        class="text-3xl font-bold text-gray-800 cursor-pointer hover:bg-gray-50 rounded"
+                        class="text-3xl font-bold text-foreground cursor-pointer hover:bg-background rounded"
                         >
                             {{ errand.title }}
                         </h1>
@@ -351,22 +351,22 @@ function goBack() {
                         @blur="endEditingTitle" 
                         @keyup.enter="endEditingTitle"
                         ref="titleInput"
-                        class="text-2xl font-semibold text-gray-800 w-full px-2 py-1 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-ring"
+                        class="text-2xl font-semibold text-foreground w-full px-2 py-1 border border-border rounded focus:outline-none focus:ring-2 focus:ring-ring"
                         />
                     </div>
                 </div>
                 
                 <div class="mt-4 text-xs flex items-center gap-2">
-                    <div class="h-8 w-8 rounded-full bg-orange-200 flex items-center justify-center text-orange-600">
+                    <div class="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-destructive">
                         {{ getUserInitials(errand.createdBy?.firstName, errand.createdBy?.lastName) }}
                     </div>
                     by
                     <span class="my-1 font-semibold">{{ errand.createdBy?.firstName }} {{ errand.createdBy?.lastName }}</span>
-                    <span class="text-sm text-gray-600">on {{ formatDate(errand.createdAt, 'D MMMM YYYY') }}</span>
+                    <span class="text-sm text-foreground">on {{ formatDate(errand.createdAt, 'D MMMM YYYY') }}</span>
                 </div>
                 
                 <div class="mt-6 prose" @click="startEditingBody" v-if="!editingBody">
-                    <article v-if="errand.description" class="text-lg text-gray-800" v-html="errand.description"></article>
+                    <article v-if="errand.description" class="text-lg text-foreground" v-html="errand.description"></article>
                 </div>
                 
                 <div class="mt-6" v-else>
@@ -388,13 +388,13 @@ function goBack() {
                     <div class="mt-2 flex gap-2">
                         <button 
                         @click="saveDescription" 
-                        class="px-3 py-1 bg-accent text-white rounded hover:bg-blue-600 text-sm"
+                        class="px-3 py-1 bg-accent text-primary-foreground rounded hover:bg-primary text-sm"
                         >
                         Save
                         </button>
                         <button 
                         @click="cancelEditing" 
-                        class="px-3 py-1 bg-muted text-gray-700 rounded hover:bg-gray-300 text-sm"
+                        class="px-3 py-1 bg-muted text-foreground rounded hover:bg-muted text-sm"
                         >
                         Cancel
                         </button>
@@ -404,20 +404,20 @@ function goBack() {
       
             <!-- Progress Bar -->
             <div class="flex justify-start items-center gap-x-2 mt-1" v-show="errand?.milestonesAt">
-              <div class="my-2 w-full bg-muted rounded-full h-1 dark:bg-gray-700">
+              <div class="my-2 w-full bg-muted rounded-full h-1 bg-muted">
                   <div class="bg-success h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
               </div>
               <span class="text-xs">{{ errand?.milestonesAt }}%</span>
             </div>
             
             <!-- Tabs -->
-            <div class="border-b border-gray-200">
+            <div class="border-b border-border">
                 <div class="flex">
                 <button 
                     @click="activeTab = 'discussions'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'discussions' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
+                    activeTab === 'discussions' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
                     ]"
                 >
                     Discussions
@@ -426,7 +426,7 @@ function goBack() {
                     @click="activeTab = 'milestones'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'milestones' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
+                    activeTab === 'milestones' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
                     ]"
                 >
                     Milestones
@@ -435,7 +435,7 @@ function goBack() {
                     @click="activeTab = 'activity'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'activity' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
+                    activeTab === 'activity' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
                     ]"
                 >
                     Activity Stream
@@ -444,7 +444,7 @@ function goBack() {
                     @click="activeTab = 'files'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'files' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
+                    activeTab === 'files' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
                     ]"
                 >
                     Files
@@ -490,7 +490,7 @@ function goBack() {
 
             <!-- Status -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Status</label>
               <multiselect 
                 v-model="errand.poster" 
                 :options="posters" 
@@ -503,7 +503,7 @@ function goBack() {
             
             <!-- Assignee -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Assignee</label>
               <multiselect 
                 v-model="errand.assignee" 
                 :options="users"
@@ -518,7 +518,7 @@ function goBack() {
             
             <!-- Reporter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Reporter</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Reporter</label>
               <multiselect 
                 v-model="errand.reporter" 
                 :options="users"
@@ -532,7 +532,7 @@ function goBack() {
             
             <!-- Team Members -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Team Members</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Team Members</label>
               <multiselect 
                 v-model="errand.members" 
                 :options="users"
@@ -554,7 +554,7 @@ function goBack() {
             
             <!-- Priority -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Priority</label>
               <multiselect 
                 v-model="errand.priority" 
                 :options="priorities" 
@@ -567,7 +567,7 @@ function goBack() {
             
             <!-- Tags -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Tags</label>
               <multiselect 
                 v-model="errand.stamps" 
                 :options="stamps"

@@ -179,7 +179,7 @@ const approveResults = () =>
   <h3 class="flex justify-between items-center">
     <span class="font-bold">Organisms</span>
     <button @click="addOrganism()" v-if="analysisResult.status == 'pending'"
-    class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+    class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     :disabled="addingOrganism">
       add organism
     </button>
@@ -188,45 +188,45 @@ const approveResults = () =>
   <hr class="mt-1" />
 
   <div class="overflow-x-auto mt-2">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <table class="min-w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Isolate Number</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Organism Name</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Isolate Number</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Organism Name</th>
             <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
-        <tbody class="bg-white">
+        <tbody class="bg-background">
           <tr v-for="(orgResult, idx) in organismResults" :key="orgResult?.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-gray-800">#{{ orgResult?.isolateNumber }}</div>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+              <div class="text-sm leading-5 text-foreground">#{{ orgResult?.isolateNumber }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="orgResult?.organism"
               class="text-sm leading-5 text-primary">{{ orgResult?.organism?.name }}</div>
               <button v-else
-                class="px-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                class="px-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 @click="pickOrganism(idx)">
                 pick organism
               </button>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
               <span v-if="orgResult?.organism && !orgResult?.organismUid">
                 <button 
-                class="px-2 py-1 border-orange-800 border text-orange-800 rounded-sm transition duration-300 hover:bg-orange-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
                 @click="pickOrganism(idx)">
                   change
                 </button>
                 <button
-                class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 @click="saveOrgResult(orgResult)">
                   save
                 </button>
               </span>
               <span v-if="analysisResult.status == 'pending' && organismResults.length > 1">
                 <button 
-                class="px-2 py-1 border-orange-800 border text-orange-800 rounded-sm transition duration-300 hover:bg-orange-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
                 @click="removeOrgResult(orgResult)">
                   delete
                 </button>
@@ -241,7 +241,7 @@ const approveResults = () =>
   <div class="mt-4">
     <div class="flex justify-start items-center">
       <h4 class="font-semibold text-l flex-1 mb-2">Culture</h4>
-      <button type="button" class="bg-primary text-white ml-4 px-2 py-1 rounded-sm leading-none">
+      <button type="button" class="bg-primary text-primary-foreground ml-4 px-2 py-1 rounded-sm leading-none">
         {{ analysisResult.status }}
       </button>
     </div>
@@ -253,7 +253,7 @@ const approveResults = () =>
     class="mt-2 p-2 w-full" 
     rows="2"
     v-model="analysisResult.result"></textarea>
-    <p v-else class="py-2 w-full leading italic bg-slate-50 p-2">{{ analysisResult.result }}</p>
+    <p v-else class="py-2 w-full leading italic bg-background p-2">{{ analysisResult.result }}</p>
   </div>
 
   <div class="mt-2">
@@ -289,13 +289,13 @@ const approveResults = () =>
           <div class="border p-2 h-64 overflow-y-auto">
               <table class="w-full">
                 <tr v-for="org in organisms" :key="org.uid">
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-gray-800">{{ org.name }}</div>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                    <div class="text-sm leading-5 text-foreground">{{ org.name }}</div>
                   </td>
-                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
                     <button 
                     @click="selectOrganism(org)"
-                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
                       pick
                     </button>
                   </td>

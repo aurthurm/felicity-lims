@@ -33,7 +33,7 @@ watch(
 
 <template>
   <div ref="drawerNode"
-    class="w-full h-screen bg-gray-800 bg-opacity-90 top-0 left-0 overflow-y-auto hidden overflow-x-hidden fixed sticky-0 z-10">
+    class="w-full h-screen bg-secondary bg-opacity-90 top-0 left-0 overflow-y-auto hidden overflow-x-hidden fixed sticky-0 z-10">
     <div ref="notification"
       class="w-full absolute z-20 right-0 h-full overflow-x-hidden transform translate-x-full transition ease-in-out duration-700">
       <div class=" " :class="[
@@ -41,7 +41,7 @@ watch(
         contentWidth ? contentWidth : 'w-1/3',
       ]">
         <div class="flex items-center justify-between">
-          <p tabindex="0" class="focus:outline-none text-2xl font-semibold leading-6 text-gray-800">
+          <p tabindex="0" class="focus:outline-none text-2xl font-semibold leading-6 text-foreground">
             <slot name="header">Drawer Title</slot>
           </p>
           <button role="button" aria-label="close modal"

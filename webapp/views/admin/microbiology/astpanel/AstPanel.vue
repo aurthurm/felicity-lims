@@ -178,45 +178,45 @@ function filterOrganisms() {
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">AST Panels</h2>
       <button @click="FormManager(true)"
-              class="px-4 py-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+              class="px-4 py-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
         Add Panel
       </button>
     </div>
     <hr>
 
     <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
         <table class="min-w-full">
           <thead>
             <tr>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Organisms</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Antibiotics</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Description</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Organisms</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Antibiotics</th>
               <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
           </thead>
-          <tbody class="bg-white">
+          <tbody class="bg-background">
             <tr v-for="panel in panels" :key="panel?.uid">
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-gray-800">{{ panel?.name }}</div>
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                <div class="text-sm leading-5 text-foreground">{{ panel?.name }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div class="text-sm leading-5 text-primary">{{ panel?.description }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div class="text-sm leading-5 text-primary">
                   {{ panel?.organisms?.map(org => org.name).join(', ') }}
                 </div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div class="text-sm leading-5 text-primary">
                   {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
                 </div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+              <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
                 <button @click="FormManager(false, panel)"
-                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
                   Edit
                 </button>
               </td>
@@ -238,7 +238,7 @@ function filterOrganisms() {
         <div class="space-y-4">
           <div class="grid grid-cols-1 gap-4">
             <label class="block">
-              <span class="text-gray-700">Panel Name</span>
+              <span class="text-foreground">Panel Name</span>
               <input
                   v-model="form.name"
                   class="form-input mt-1 block w-full"
@@ -246,7 +246,7 @@ function filterOrganisms() {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Description</span>
+              <span class="text-foreground">Description</span>
               <textarea
                   v-model="form.description"
                   rows="2"
@@ -260,7 +260,7 @@ function filterOrganisms() {
           <div class="flex gap-4">
             <div class="w-2/3 space-y-2">
               <label class="block">
-                <span class="text-gray-700">Search Organisms</span>
+                <span class="text-foreground">Search Organisms</span>
                 <input
                     v-model="searchOrgText"
                     @input="filterOrganisms"
@@ -283,17 +283,17 @@ function filterOrganisms() {
             
             <!-- Selected Organisms List -->
             <div class="w-1/3">
-              <div class="text-gray-700 mb-1">Selected Organisms</div>
-              <div class="border p-2 h-72 overflow-y-auto bg-gray-50">
+              <div class="text-foreground mb-1">Selected Organisms</div>
+              <div class="border p-2 h-72 overflow-y-auto bg-background">
                 <div v-for="orgUid in form.selectedOrganisms" 
                      :key="orgUid" 
-                     class="flex items-center justify-between py-1 px-2 mb-1 bg-white rounded shadow-sm">
+                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded shadow-sm">
                   <span class="text-sm">
                     {{ organisms?.find(o => o.uid === orgUid)?.name }}
                   </span>
                   <button 
                     @click="form.selectedOrganisms = form.selectedOrganisms.filter(id => id !== orgUid)"
-                    class="text-red-500 hover:text-red-700 text-sm"
+                    class="text-destructive hover:text-destructive text-sm"
                   >
                     ×
                   </button>
@@ -306,7 +306,7 @@ function filterOrganisms() {
           <div class="flex gap-4">
             <div class="w-2/3 space-y-2">
               <label class="block">
-                <span class="text-gray-700">Search Antibiotics</span>
+                <span class="text-foreground">Search Antibiotics</span>
                 <input
                     v-model="searchAbxText"
                     @input="filterAntibiotics"
@@ -329,17 +329,17 @@ function filterOrganisms() {
             
             <!-- Selected Antibiotics List -->
             <div class="w-1/3">
-              <div class="text-gray-700 mb-1">Selected Antibiotics</div>
-              <div class="border p-2 h-72 overflow-y-auto bg-gray-50">
+              <div class="text-foreground mb-1">Selected Antibiotics</div>
+              <div class="border p-2 h-72 overflow-y-auto bg-background">
                 <div v-for="abxUid in form.selectedAntibiotics" 
                      :key="abxUid" 
-                     class="flex items-center justify-between py-1 px-2 mb-1 bg-white rounded shadow-sm">
+                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded shadow-sm">
                   <span class="text-sm">
                     {{ antibiotics.find(a => a.uid == abxUid)?.name }}
                   </span>
                   <button 
                     @click="form.selectedAntibiotics = form.selectedAntibiotics.filter(id => id !== abxUid)"
-                    class="text-red-500 hover:text-red-700 text-sm"
+                    class="text-destructive hover:text-destructive text-sm"
                   >
                     ×
                   </button>
@@ -352,7 +352,7 @@ function filterOrganisms() {
         <div class="mt-6">
           <button
               type="submit"
-              class="w-full bg-primary text-white rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+              class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
           >
             Save Panel
           </button>

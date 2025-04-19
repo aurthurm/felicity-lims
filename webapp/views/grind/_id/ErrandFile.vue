@@ -234,12 +234,12 @@ const fileSize = computed(() => {
             <h3 class="text-lg font-medium mb-3">Uploaded Files</h3>
             
             <!-- Loading or empty state -->
-            <div v-if="errandFiles.length === 0" class="py-6 text-center text-muted-foreground bg-gray-50 rounded-lg border border-dashed border-border">
+            <div v-if="errandFiles.length === 0" class="py-6 text-center text-muted-foreground bg-background rounded-lg border border-dashed border-border">
                 No files uploaded yet
             </div>
             
             <!-- Error message -->
-            <div v-if="deleteError" class="mb-3 p-3 bg-red-50 text-red-700 rounded-md">
+            <div v-if="deleteError" class="mb-3 p-3 bg-secondary text-destructive rounded-md">
                 {{ deleteError }}
             </div>
             
@@ -248,10 +248,10 @@ const fileSize = computed(() => {
                 <li 
                     v-for="fileItem in errandFiles" 
                     :key="fileItem.uid" 
-                    class="p-3 border rounded-md flex items-center hover:bg-gray-50 transition-colors"
+                    class="p-3 border rounded-md flex items-center hover:bg-background transition-colors"
                 >
                     <!-- File icon based on type -->
-                    <div class="file-icon mr-3 text-blue-500 flex-shrink-0">
+                    <div class="file-icon mr-3 text-accent flex-shrink-0">
                         <!-- Image icon -->
                         <svg v-if="getFileIcon(fileItem) === 'image'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -280,12 +280,12 @@ const fileSize = computed(() => {
                     
                     <!-- File info -->
                     <div class="flex-grow min-w-0 mr-3">
-                        <div class="font-medium text-gray-800 truncate" :title="fileItem.filename">
+                        <div class="font-medium text-foreground truncate" :title="fileItem.filename">
                             {{ fileItem.originalName }}
                         </div>
                         <div class="text-sm text-muted-foreground flex items-center gap-2">
                             <span>{{ formatFileSize(fileItem.size) }}</span>
-                            <span class="h-1 w-1 rounded-full bg-gray-300"></span>
+                            <span class="h-1 w-1 rounded-full bg-muted"></span>
                             <span>{{ fileItem.mimetype }}</span>
                         </div>
                     </div>
@@ -295,7 +295,7 @@ const fileSize = computed(() => {
                         <!-- Download button -->
                         <button 
                             @click="downloadFile(fileItem)" 
-                            class="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                            class="p-2 text-primary hover:bg-blue-50 rounded transition-colors"
                             title="Download file"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -306,7 +306,7 @@ const fileSize = computed(() => {
                         <!-- Delete button -->
                         <button 
                             @click="deleteFile(fileItem.uid)" 
-                            class="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            class="p-2 text-destructive hover:bg-secondary rounded transition-colors"
                             title="Delete file"
                             :disabled="isDeleting === fileItem.uid"
                         >
@@ -334,13 +334,13 @@ const fileSize = computed(() => {
                 @dragover="onDragOver"
                 @drop="onDrop"
             >
-                <div class="w-16 h-16 mb-2 mx-auto text-gray-400">
+                <div class="w-16 h-16 mb-2 mx-auto text-muted-foreground">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                     </svg>
                 </div>
                 <p class="text-center text-muted-foreground mb-2">Drag and drop file here</p>
-                <p class="text-center text-gray-400 text-sm mb-3">or</p>
+                <p class="text-center text-muted-foreground text-sm mb-3">or</p>
                 <label class="file-input-button">
                     Browse Files
                     <input 
@@ -356,14 +356,14 @@ const fileSize = computed(() => {
                 <div v-if="filePreview" class="image-preview mb-3">
                     <img :src="filePreview" alt="File preview" class="rounded-md max-h-64 max-w-full" />
                 </div>
-                <div v-else class="file-icon w-16 h-16 mx-auto mb-3 text-blue-500">
+                <div v-else class="file-icon w-16 h-16 mx-auto mb-3 text-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
                 
                 <div class="file-info mb-4 text-center">
-                    <p class="font-medium text-gray-800">{{ file.name }}</p>
+                    <p class="font-medium text-foreground">{{ file.name }}</p>
                     <p class="text-sm text-muted-foreground">{{ fileSize }}</p>
                 </div>
                 
@@ -384,19 +384,19 @@ const fileSize = computed(() => {
                     </button>
                 </div>
                 
-                <div v-if="uploadError" class="mt-3 text-red-500 text-center">
+                <div v-if="uploadError" class="mt-3 text-destructive text-center">
                     {{ uploadError }}
                 </div>
             </div>
 
             <!-- Upload success -->
             <div v-else-if="uploadSuccess" class="upload-success">
-                <div class="success-icon w-16 h-16 mx-auto mb-3 text-green-500">
+                <div class="success-icon w-16 h-16 mx-auto mb-3 text-success">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <p class="text-center text-gray-800 font-medium mb-2">Upload Successful</p>
+                <p class="text-center text-foreground font-medium mb-2">Upload Successful</p>
                 <p class="text-center text-muted-foreground text-sm mb-4">Your file has been uploaded successfully</p>
                 <button @click="resetUpload" class="upload-new-button">
                     Upload Another File
@@ -416,22 +416,22 @@ const fileSize = computed(() => {
 }
 
 .upload-area.dragging {
-  @apply border-blue-400 bg-blue-50;
+  @apply border-border bg-blue-50;
 }
 
 .file-input-button {
-  @apply px-4 py-2 bg-accent text-white rounded-md cursor-pointer hover:bg-blue-600 transition-colors inline-block;
+  @apply px-4 py-2 bg-accent text-primary-foreground rounded-md cursor-pointer hover:bg-primary transition-colors inline-block;
 }
 
 .upload-button {
-  @apply px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed;
+  @apply px-4 py-2 bg-accent text-primary-foreground rounded-md hover:bg-primary transition-colors disabled:bg-muted disabled:cursor-not-allowed;
 }
 
 .cancel-button {
-  @apply px-4 py-2 bg-muted text-gray-700 rounded-md hover:bg-gray-300 transition-colors;
+  @apply px-4 py-2 bg-muted text-foreground rounded-md hover:bg-muted transition-colors;
 }
 
 .upload-new-button {
-  @apply px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition-colors mx-auto block;
+  @apply px-4 py-2 bg-accent text-primary-foreground rounded-md hover:bg-primary transition-colors mx-auto block;
 }
 </style>

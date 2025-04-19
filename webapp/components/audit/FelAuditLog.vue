@@ -94,7 +94,7 @@ function changes(log: any): any {
 
 <template>
   <div class="relative mt-4">
-    <div class="border-r-2 border-gray-400 border-dotted absolute h-full top-0 z-0" style="left: 7px"></div>
+    <div class="border-r-2 border-border border-dotted absolute h-full top-0 z-0" style="left: 7px"></div>
     <div v-if="fetchingAudits" class="py-4 text-center">
       <LoadingMessage message="Fetching audit logs ..." />
     </div>
@@ -102,7 +102,7 @@ function changes(log: any): any {
       :variants="{ custom: { scale: 2 } }" :delay="200" class="list-none m-0 p-0" v-else>
       <li v-for="log in auditLogs" :key="log.uid" class="mb-2">
         <div class="flex items-center mb-1">
-          <div class="bg-indigo-600 rounded-full h-4 w-4 border-gray-200 border-2 z-10"></div>
+          <div class="bg-accent rounded-full h-4 w-4 border-border border-2 z-10"></div>
           <div class="ml-4 font-medium italic">
             <span>
               {{ translateUser(log?.userUid) }} {{ translateAction(log?.action) }}
@@ -114,10 +114,10 @@ function changes(log: any): any {
         <div class="ml-12 w-100">
           <div v-for="trail of changes(log)" :key="trail.key" class="grid grid-cols-4">
             <span class="col-span-1">
-              <span class="text-sm text-gray-600 italic">{{ trail?.key }}</span>
+              <span class="text-sm text-foreground italic">{{ trail?.key }}</span>
             </span>
             <span class="col-span-3">
-              <span class="text-muted text-xs text-orange-600">{{ trail?.old }}</span>
+              <span class="text-muted text-xs text-destructive">{{ trail?.old }}</span>
               &rarr;
               <span class="text-muted text-xs text-primary">{{ trail?.new }}</span>
             </span>

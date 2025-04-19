@@ -243,7 +243,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
 </script>
 
 <template>
-  <h3 class="mt-4 mb-2 text-xl text-gray-600 font-semibold tracking-wide">
+  <h3 class="mt-4 mb-2 text-xl text-foreground font-semibold tracking-wide">
     {{ reflexStore.reflexRule?.name }}
   </h3>
   <p class="leading-2 text-md italic tracking-wide">
@@ -253,7 +253,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
 
   <button
     @click="reflexActionFormManager(true)"
-    class="my-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+    class="my-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
   >
     Add Reflex Action
   </button>
@@ -267,7 +267,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
     <Accordion>
       <template v-slot:title>
         <span class="p-2" @click="reflexActionFormManager(false, action)"
-          ><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1"
+          ><font-awesome-icon icon="edit" class="text-md text-muted-foreground mr-1"
         /></span>
         Reflex Action Level {{ action?.level }} targeting
         <span v-for="anal in action?.analyses" :key="anal.uid" class="ml-1">{{ anal?.name }},</span>
@@ -277,7 +277,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           <h4 class="text-l leading-4 italic">Reflex Action Brains</h4>
           <button
             @click="reflexBrainFormManager(true, action?.uid!, {})"
-            class="ml-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+            class="ml-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
           >
             Add Brain
           </button>
@@ -286,18 +286,18 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           <div
             v-for="(brain, index) in action?.brains"
             :key="brain?.uid"
-            class="block col-span-1 bg-white py-2 px-4 m"
+            class="block col-span-1 bg-background py-2 px-4 m"
           >
             <div class="flex justify-between items-center">
-              <h2 class="my-2 text-l text-gray-600 font-bold">
+              <h2 class="my-2 text-l text-foreground font-bold">
                 {{ stringToNum(index + 1) }} Brain
               </h2>
               <div>
                 <span class="p-2" @click="reflexBrainFormManager(false, action.uid!, brain)"
-                ><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1"
+                ><font-awesome-icon icon="edit" class="text-md text-muted-foreground mr-1"
               /></span>
               <span class="p-2" @click="deleteReflexBrain(action.uid!, brain.uid!)"
-                ><font-awesome-icon icon="trash" class="text-md text-red-400 mr-1"
+                ><font-awesome-icon icon="trash" class="text-md text-destructive mr-1"
               /></span>
               </div>
             </div>
@@ -318,7 +318,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Level</span>
+            <span class="text-foreground">Level</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="actionForm.level"
@@ -328,7 +328,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Target Analyses</span>
+            <span class="text-foreground">Target Analyses</span>
             <select
               name="analyses"
               id="analyses"
@@ -347,7 +347,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
             </select>
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Description</span>
+            <span class="text-foreground">Description</span>
             <textarea
               cols="2"
               class="form-input mt-1 block w-full"
@@ -360,7 +360,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
         <button
           type="button"
           @click.prevent="saveActionForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -377,7 +377,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
     <template v-slot:body>
       <form action="post" class="p-1">
         <label class="mb-2">
-          <span class="text-gray-700">Description</span>
+          <span class="text-foreground">Description</span>
           <textarea
             cols="2"
             class="form-input mt-1 block w-full"
@@ -386,25 +386,25 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           />
         </label>
 
-        <h3 class="flex items-center justify-start my-4 font-bold text-l text-gray-600">
+        <h3 class="flex items-center justify-start my-4 font-bold text-l text-foreground">
           <span>Conditions (OR)</span>
           <button
             @click.prevent="addCondition()"
-            class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+            class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
           >
             Add
           </button>
         </h3>
-        <p class="italic text-sm text-gray-400">Criteria under a condition are evaluated as AND whilst conditions are evaluated as OR</p>
+        <p class="italic text-sm text-muted-foreground">Criteria under a condition are evaluated as AND whilst conditions are evaluated as OR</p>
         <div class="grid grid-cols-2 gap-4 my-4">
-          <section class="bg-slate-100 px-1" id="criteria" v-for="(condition, conIdx) in brainForm.conditions" :key="conIdx">
+          <section class="bg-secondary px-1" id="criteria" v-for="(condition, conIdx) in brainForm.conditions" :key="conIdx">
             <hr />
             <div class="flex justify-between items-center">
               <div class="flex justify-start items-center py-2">
                 <h5>Criteria (AND)</h5>
                 <button
                   @click.prevent="addCriteria(conIdx)"
-                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 >
                   + criteria
                 </button>
@@ -412,7 +412,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               
               <button
                 @click.prevent="removeCondition(conIdx)"
-                class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
               >
                 - condition
               </button>
@@ -423,7 +423,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               <div class="flex items-center justify-between">
                 <div class="flex items-bottom gap-x-2">
                   <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-gray-700">Analysis</span>
+                    <span class="text-foreground">Analysis</span>
                     <select
                       name="analysisService"
                       id="analysisService"
@@ -442,7 +442,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                     </select>
                   </label>
                   <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-white">.</span>
+                    <span class="text-primary-foreground">.</span>
                     <select
                       name="operator"
                       id="operator"
@@ -456,7 +456,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                     </select>
                   </label>
                   <label class="block col-span-1 mt-1">
-                    <span class="text-gray-700">Result</span>
+                    <span class="text-foreground">Result</span>
                     <input
                       v-if="criteriaResultOptions.length == 0"
                       class="form-input mt-1 block w-full"
@@ -485,7 +485,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                 <div class="">
                   <button
                     @click.prevent="removeCriteria(conIdx, index)"
-                    class="px-2 py-1 mt-5 ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                    class="px-2 py-1 mt-5 ml-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
                   >
                     - criteria
                   </button>
@@ -496,18 +496,18 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           </section>
         </div>
 
-        <h3 class="mt-4 font-bold text-l text-gray-600">Actions</h3>
+        <h3 class="mt-4 font-bold text-l text-foreground">Actions</h3>
 
-        <p class="italic text-sm text-gray-400">If conditions are met, auto create new analyses  and or set final results</p>
+        <p class="italic text-sm text-muted-foreground">If conditions are met, auto create new analyses  and or set final results</p>
         <section class="grid grid-cols-2 gap-x-4 my-4" v-for="(action, actIdx) in brainForm.actions" :key="actIdx">
           <!-- Add New -->
-          <div class=" bg-green-50 px-1" v-for="(addNu, adIn) in action.addNew" :key="adIn">
+          <div class=" bg-secondary px-1" v-for="(addNu, adIn) in action.addNew" :key="adIn">
             <div class="flex justify-start items-center py-2">
               <h5>Create Analyses</h5>
-              <span class="text-orange-600"></span>
+              <span class="text-destructive"></span>
               <button
                 @click.prevent="addNew(adIn)"
-                class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
               >
                 Add
               </button>
@@ -516,7 +516,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
             <div class="flex items-center justify-between">
               <div class="flex items-top gap-x-4">
                 <label class="flex flex-col whitespace-nowrap mb-2">
-                  <span class="text-gray-700">Analysis</span>
+                  <span class="text-foreground">Analysis</span>
                   <select
                     name="analysisService"
                     id="analysisService"
@@ -534,7 +534,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                   </select>
                 </label>
                 <label class="block col-span-1 mb-2">
-                  <span class="text-gray-700">Count</span>
+                  <span class="text-foreground">Count</span>
                   <input
                     class="form-input mt-1 block w-full"
                     v-model="addNu.count"
@@ -547,7 +547,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               <div class="">
                 <button
                   @click.prevent="removeNew(adIn)"
-                  class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                  class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
                 >
                   Remove
                 </button>
@@ -557,13 +557,13 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
 
           <!-- Finalise -->
           <div v-for="(action, actIdx) in brainForm.actions" :key="actIdx">
-            <div class=" bg-orange-50 px-1" v-for="(final, fiIn) in action.finalise" :key="fiIn">
+            <div class=" bg-secondary px-1" v-for="(final, fiIn) in action.finalise" :key="fiIn">
               <div class="flex justify-start items-center py-2">
                 <h5>Set Final Analyses</h5>
-                <span class="text-orange-600"></span>
+                <span class="text-destructive"></span>
                 <button
                   @click.prevent="addFinal(fiIn)"
-                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 >
                   Add
                 </button>
@@ -572,7 +572,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               <div class="flex items-center justify-between">
                 <div class="flex items-top gap-x-4">
                   <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-gray-700">Analysis</span>
+                    <span class="text-foreground">Analysis</span>
                     <select
                       name="analysisService"
                       id="analysisService"
@@ -591,7 +591,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                     </select>
                   </label>
                   <label class="block col-span-1 mb-2">
-                    <span class="text-gray-700">Result</span>
+                    <span class="text-foreground">Result</span>
                     <input
                       v-if="finalResultOptions.length == 0"
                       class="form-input mt-1 block w-full"
@@ -620,7 +620,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                 <div class="">
                   <button
                     @click.prevent="removeFinal(fiIn)"
-                    class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                    class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
                   >
                     Remove
                   </button>
@@ -635,7 +635,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
         <button
           type="button"
           @click.prevent="saveBrainForm()"
-          class="-mb-4 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save
         </button>

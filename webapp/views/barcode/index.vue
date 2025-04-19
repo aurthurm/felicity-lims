@@ -82,10 +82,10 @@ const printBarcodes = () => {
 <template>
     <div class="mx-auto w-fit">
         <div class="flex justify-start items-center gap-x-1">
-            <span class="bg-gray-500 text-lg font-semibold px-2 py-0 rounded-sm hover:cursor-pointer select-none" @click="() => increment(false)">-</span>
+            <span class="bg-muted text-lg font-semibold px-2 py-0 rounded-sm hover:cursor-pointer select-none" @click="() => increment(false)">-</span>
             <span class="mr-2">Count: {{ multiplier }}</span>
             <span class="bg-accent text-lg font-semibold px-2 py-0 rounded-sm hover:cursor-pointer select-none" @click="() => increment(true)">+</span>
-            <button type="submit" class="ml-4 px-2 py-1 border-orange-500 border text-orange-500rounded-smtransition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none" @click="printBarcodes()"><span>Print</span></button>
+            <button type="submit" class="ml-4 px-2 py-1 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none" @click="printBarcodes()"><span>Print</span></button>
         </div>
     </div>
 

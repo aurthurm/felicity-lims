@@ -131,7 +131,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -260,7 +260,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
       Add OrganismSerotype
     </button> -->
     <hr>
@@ -299,7 +299,7 @@ function saveForm(): void {
         <div class="mb-6">
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-                <span class="text-gray-700">Organism</span>
+                <span class="text-foreground">Organism</span>
                 <VueMultiselect
                 v-model="form.organism"
                 :options="abxOrganisms"
@@ -312,35 +312,35 @@ function saveForm(): void {
                 </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Serotype</span>
+              <span class="text-foreground">Serotype</span>
               <input class="form-input mt-1 block w-full" v-model="form.serotype" placeholder="Serotype" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Serogroup</span>
+              <span class="text-foreground">Serogroup</span>
               <input class="form-input mt-1 block w-full" v-model="form.serogroup" placeholder="Serogroup" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Subspecies</span>
+              <span class="text-foreground">Subspecies</span>
               <input class="form-input mt-1 block w-full" v-model="form.subspecies" placeholder="Subspecies" />
             </label>
             <label class="block">
-              <span class="text-gray-700">O Antigens</span>
+              <span class="text-foreground">O Antigens</span>
               <input class="form-input mt-1 block w-full" v-model="form.oAntigens" placeholder="O Antigens" />
             </label>
             <label class="block">
-              <span class="text-gray-700">H Phase1</span>
+              <span class="text-foreground">H Phase1</span>
               <input class="form-input mt-1 block w-full" v-model="form.hPhase1" placeholder="H Phase1" />
             </label>
             <label class="block">
-              <span class="text-gray-700">H Phase2</span>
+              <span class="text-foreground">H Phase2</span>
               <input class="form-input mt-1 block w-full" v-model="form.hPhase2" placeholder="H Phase2" />
             </label>
             <label class="block">
-              <span class="text-gray-700">X997 Check</span>
+              <span class="text-foreground">X997 Check</span>
               <input class="form-input mt-1 block w-full" v-model="form.x997Check" placeholder="X997 Check" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Fate</span>
+              <span class="text-foreground">Fate</span>
               <input class="form-input mt-1 block w-full" v-model="form.fate" placeholder="fate" />
             </label>
           </div>
@@ -350,7 +350,7 @@ function saveForm(): void {
         
         <button
           type="submit"
-          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save OrganismSerotype
         </button>

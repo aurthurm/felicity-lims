@@ -40,7 +40,7 @@ const tabs = computed(() => [
 
 <template>
     <hr class="mt-2 mb-2">
-    <p class="leading-2 bg-slate-50 p-2 italic font-medium text-muted-foreground">{{ board?.description }}</p>
+    <p class="leading-2 bg-background p-2 italic font-medium text-muted-foreground">{{ board?.description }}</p>
     <hr class="mt-2 mb-2">
 
     <fel-tabs :tabs="tabs" initial-tab="board-view" />

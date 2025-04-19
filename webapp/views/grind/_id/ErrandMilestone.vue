@@ -105,8 +105,8 @@ function getUsers() {
 
 <template>
 <div class="flex justify-between items-center">
-    <h3 class="text-gray-700 font-medium">Milestones</h3>
-    <button class="text-sm text-gray-600 hover:text-gray-800 flex items-center gap-1"
+    <h3 class="text-foreground font-medium">Milestones</h3>
+    <button class="text-sm text-foreground hover:text-foreground flex items-center gap-1"
         @click="addMilestone">
         <span>+ Add New</span>
     </button>
@@ -118,8 +118,8 @@ v-for="milestone in milestones"
 class="pl-6 border-l-2 relative" 
 :class="{'border-green-200': milestone.complete, 'border-red-200': !milestone.complete}"
 @dblclick="editMilestone(milestone)">
-    <div class="absolute left-0 top-0 transform -translate-x-1/2 bg-white p-1 border border-border rounded-full w-4 h-4 flex items-center justify-center">
-        <div class="w-2 h-2 rounded-full" :class="{'bg-green-500': milestone.complete, 'bg-destructive': !milestone.complete}"></div>
+    <div class="absolute left-0 top-0 transform -translate-x-1/2 bg-background p-1 border border-border rounded-full w-4 h-4 flex items-center justify-center">
+        <div class="w-2 h-2 rounded-full" :class="{'bg-success': milestone.complete, 'bg-destructive': !milestone.complete}"></div>
     </div>
     <div class="mb-6">
         <h4 class="font-medium">{{ milestone.title }}</h4>
@@ -137,8 +137,8 @@ class="pl-6 border-l-2 relative"
       <form @submit.prevent="saveForm">
 
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="title">
-            Title <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-foreground mb-1" for="title">
+            Title <span class="text-destructive">*</span>
           </label>
           <input
             id="title"
@@ -151,7 +151,7 @@ class="pl-6 border-l-2 relative"
         </div>  
         
          <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="description">
+          <label class="block text-sm font-medium text-foreground mb-1" for="description">
             Description
           </label>
           <textarea
@@ -164,7 +164,7 @@ class="pl-6 border-l-2 relative"
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+            <label class="block text-sm font-medium text-foreground mb-1">Assignee</label>
             <multiselect 
             v-model="form.assignee" 
             :options="users"
@@ -183,7 +183,7 @@ class="pl-6 border-l-2 relative"
             type="checkbox"
             class="mr-2 px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
           />
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="complete">
+          <label class="block text-sm font-medium text-foreground mb-1" for="complete">
             Complete
           </label>
         </div>  
@@ -191,7 +191,7 @@ class="pl-6 border-l-2 relative"
         <div class="flex justify-end">
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             {{ formAction ? 'Create' : 'Update' }}
           </button>

@@ -20,7 +20,7 @@ const navigate = (routeName: string, query: LocationQueryRaw | undefined, params
 </script>
 
 <template>
-    <span class="italic underline text-sm md:text-md text-blue-500 hover:text-blue-700 hover:cursor-pointer" @click="navigate(routeName, query, params)">
+    <span class="italic underline text-sm md:text-md text-accent hover:text-primary hover:cursor-pointer" @click="navigate(routeName, query, params)">
         {{ name }}
     </span>
 </template>

@@ -189,7 +189,7 @@ const tableColumns = ref([
               confirmTransaction.value = transaction;
             },
             type: "button",
-            class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+            class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
           },
           "confirm"
         );
@@ -226,26 +226,26 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
 
 <template>
   <div class="mt-4">
-    <h4 class="text-sm text-gray-800 font-bold">Patient's Order Bills</h4>
+    <h4 class="text-sm text-foreground font-bold">Patient's Order Bills</h4>
     <hr>
     <div class="grid grid-cols-12 gap-4 mt-2">
       <section v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
         :variants="{ custom: { scale: 2 } }" :delay="400"
         class="col-span-3 overflow-y-scroll overscroll-contain billing-scroll">
-        <div v-if="fetchingBills" class="py-4 text-center bg-white w-full mb-1 rounded-sm shadow border">
+        <div v-if="fetchingBills" class="py-4 text-center bg-background w-full mb-1 rounded-sm shadow border">
           <LoadingMessage message="Fetching bills ..." />
         </div>
         <div v-else>
           <ul>
             <li v-for="bill in bills" :key="bill.uid" :class="[
-              'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
+              'bg-background w-full flex items-center p-1 mb-1 rounded-sm shadow border',
               { 'border-primary bg-emerald-200': bill.uid === testBill.uid },
               ]" 
               @click="selectTestBill(bill)">
               <div class="flex-grow p-1">
-                <div class="font-semibold text-gray-800">
+                <div class="font-semibold text-foreground">
                   <div>{{ bill.billId?.toLocaleUpperCase() }}</div>
-                  <div class="text-sm text-gray-400">{{ parseDate(bill.createdAt) }}</div>
+                  <div class="text-sm text-muted-foreground">{{ parseDate(bill.createdAt) }}</div>
                 </div>
               </div>
             </li>
@@ -256,59 +256,59 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
       <section v-show="bills?.length > 0 && testBill.uid" v-motion :initial="{ opacity: 0, y: -100 }"
         :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" class="col-span-9">
 
-        <div class="bg-white rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
+        <div class="bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
           <div class="flex justify-between items-center">
-            <h4 class="text-gray-800 text-l font-bold">{{ testBill.billId?.toLocaleUpperCase() }}</h4>
+            <h4 class="text-foreground text-l font-bold">{{ testBill.billId?.toLocaleUpperCase() }}</h4>
           </div>
           <hr>
           <section class="grid grid-cols-3 gap-x-8">
             <div class="col-span-1">
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Active:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ testBill.isActive ? "Yes" : "No" }}</span>
+                <span class="text-foreground text-sm font-semibold">Active:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ testBill.isActive ? "Yes" : "No" }}</span>
               </div>
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Confirmed:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ testBill?.toConfirm ? "No" : "Yes" }}</span>
-              </div>
-            </div>
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Total Charged:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ testBill?.totalCharged }}</span>
-              </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Total Paid:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ testBill?.totalPaid }}</span>
+                <span class="text-foreground text-sm font-semibold">Confirmed:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ testBill?.toConfirm ? "No" : "Yes" }}</span>
               </div>
             </div>
             <div class="col-span-1">
               <div class="flex justify-between items-center mt-2">
-                <span class="text-gray-800 text-sm font-semibold">Partial:</span> 
-                <span class="text-gray-600 text-sm md:text-md">{{ testBill?.totalPaid < testBill?.totalCharged ? "Yes" : "No" }}</span>
+                <span class="text-foreground text-sm font-semibold">Total Charged:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ testBill?.totalCharged }}</span>
+              </div>
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-foreground text-sm font-semibold">Total Paid:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ testBill?.totalPaid }}</span>
+              </div>
+            </div>
+            <div class="col-span-1">
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-foreground text-sm font-semibold">Partial:</span> 
+                <span class="text-foreground text-sm md:text-md">{{ testBill?.totalPaid < testBill?.totalCharged ? "Yes" : "No" }}</span>
               </div>
             </div>
           </section>
         </div>
         <div class="mt-4">
           <div class="flex justify-between items-center">
-            <h4 class=" text-gray-800 text-l font-semibold">Order Items</h4>
+            <h4 class=" text-foreground text-l font-semibold">Order Items</h4>
             <button
-                class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 @click.prevent="invoice(testBill)">
                 Invoice
             </button>
           </div>
           <hr>
-          <ul class="mt-4 bg-white rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4">
+          <ul class="mt-4 bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4">
             <li class="font-semibold" v-for="order in orders" :key="order.uid">
               <div>{{ order?.requestId }} ({{ order?.clientRequestId }})</div>
               <div class="ml-4 text-sm" v-for="sample in order.samples" :key="sample.uid" v-motion-slide-right>
-                <span class="text-gray-400">
+                <span class="text-muted-foreground">
                     {{ sample.sampleId }}
                 </span> 
                 &rArr;
-                <span class="ml-2 text-md leading-5 text-sky-600">
+                <span class="ml-2 text-md leading-5 text-primary">
                     {{ profileAnalysesText(sample.profiles ?? [], sample.analyses ?? []) }}
                 </span>
               </div>
@@ -317,22 +317,22 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
         </div>
         <div class="mt-4">
           <div class="flex justify-between items-center">
-            <h4 class="text-gray-800 text-l font-semibold">Transactions</h4>
+            <h4 class="text-foreground text-l font-semibold">Transactions</h4>
             <div>
               <button v-show="testBill.isActive"
-              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
               @click.prevent="newTransaction">
               Add Transaction
             </button>
             <button v-show="testBill.isActive"
-              class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+              class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
               @click.prevent="applyVoucher">
               Apply Voucher
             </button>
             </div>
           </div>
           <hr>
-          <div class="mt-4 bg-white rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4">
+          <div class="mt-4 bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4">
             <DataTable 
             :columns="tableColumns" 
             :data="transactions" 
@@ -359,10 +359,10 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
         <form>
           <div class="grid grid-cols-2 gap-x-4 mb-4">
             <label class="whitespace-nowrap mb-2 w-full">
-              <span class="text-gray-700 w-4/12">Kind of payment</span>
+              <span class="text-foreground w-4/12">Kind of payment</span>
               <div class="w-full">
                 <select 
-                :class="['form-select mt-1 w-full', {'border-red-500 animate-pulse': errors.kind }]"
+                :class="['form-select mt-1 w-full', {'border-destructive animate-pulse': errors.kind }]"
                 v-model="kind" 
                 :disabled="processing">
                   <option></option>
@@ -370,13 +370,13 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
                     {{ kind }}
                   </option>
                 </select>
-                <div class="text-orange-600 w-4/12">{{ errors.gender }}</div>
+                <div class="text-destructive w-4/12">{{ errors.gender }}</div>
               </div>
             </label>
             <label class="block col-span-1 mb-2">
-              <span class="text-gray-700">Amount</span>
+              <span class="text-foreground">Amount</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.amount }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.amount }]"
                 type="number"
                 v-model="amount"
                 :disabled="processing"
@@ -385,9 +385,9 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
           </div>
           <div class="grid grid-cols-4 gap-x-4 mb-4">
             <label class="block col-span-4 mb-2">
-              <span class="text-gray-700">Notes</span>
+              <span class="text-foreground">Notes</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.notes }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.notes }]"
                 v-model="notes"
                 :disabled="processing"
               />
@@ -413,9 +413,9 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
         <h4>{{ kind }} Transaction </h4>
         <div class="grid grid-cols-4 gap-x-4 mb-4">
           <label class="block col-span-4 mb-2">
-            <span class="text-gray-700">Notes</span>
+            <span class="text-foreground">Notes</span>
             <input
-              :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': errors.notes }]"
+              :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.notes }]"
               v-model="confirmTransaction.notes"
               :disabled="processing"
             />
@@ -440,9 +440,9 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
         <form>
           <div class="grid grid-cols-2 gap-x-4 mb-4">
             <label class="block col-span-2 mb-2">
-              <span class="text-gray-700">Voucher Code:</span>
+              <span class="text-foreground">Voucher Code:</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-red-500 animate-pulse': !voucherCodeForm.code }]"
+                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': !voucherCodeForm.code }]"
                 type="text"
                 v-model="voucherCodeForm.code"
                 :disabled="processing"

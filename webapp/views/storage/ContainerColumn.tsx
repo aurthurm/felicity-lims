@@ -25,8 +25,8 @@ const ContainerColumn = defineComponent({
                             <span class="col-span-1 my-1">{slotIdx + 1}:</span>
                             <span
                                 class={[
-                                    'col-span-5 my-1 p-1 text-white flex justify-center border-2',
-                                    { 'bg-slate-400': slotSample(slotIdx + 1) === null },
+                                    'col-span-5 my-1 p-1 text-primary-foreground flex justify-center border-2',
+                                    { 'bg-muted': slotSample(slotIdx + 1) === null },
                                     { 'bg-emerald-400': slotSample(slotIdx + 1) !== null },
                                 ]}
                             >

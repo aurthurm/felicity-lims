@@ -125,7 +125,7 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-primary text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
+                                    class: 'bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none disabled:bg-muted',
                                     innerHTML: '+ Basket',
                                     disabled: product.quantity < 1,
                                     onClick: () => {
@@ -140,7 +140,7 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-primary text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
+                                    class: 'bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none disabled:bg-muted',
                                     innerHTML: '+/- Adjust',
                                     disabled: product.quantity < 1,
                                     onClick: () => {
@@ -155,7 +155,7 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-primary text-white py-1 px-2 rounded-sm leading-none',
+                                    class: 'bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none',
                                     innerHTML: 'View Detail',
                                     onClick: () => {
                                         openProductDetail.value = true;
@@ -230,7 +230,7 @@ const InventoryListing = defineComponent({
                 <div>
                     <button
                         onClick={() => (this.openDrawer = true)}
-                        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+                        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
                     >
                         Receive Stock
                     </button>
@@ -274,7 +274,7 @@ const InventoryListing = defineComponent({
                                 return (
                                     <form action="post" class="p-1">
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
+                                            <span class="col-span-1 text-foreground  text-nowrap">Product Lot</span>
                                             <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
                                             <option></option>
                                             {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>
@@ -283,7 +283,7 @@ const InventoryListing = defineComponent({
                                             </select>
                                         </label>
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-gray-700 text-nowrap">Quantiy</span>
+                                            <span class="col-span-1 text-foreground text-nowrap">Quantiy</span>
                                             <input
                                                 class="col-span-3 form-input mt-1 block w-full"
                                                 type="number"
@@ -303,7 +303,7 @@ const InventoryListing = defineComponent({
                                                 );
                                                 this.openAddProduct = false;
                                             }}
-                                            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-gray-500"
+                                            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-muted"
                                             disabled={!this.choiceProduct.stockLotUid}>
                                             Add to basket
                                         </button>
@@ -321,14 +321,14 @@ const InventoryListing = defineComponent({
                                 return (
                                     <form action="post" class="p-1">
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
+                                            <span class="col-span-1 text-foreground  text-nowrap">Product Lot</span>
                                             <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
                                             <option></option>
                                             {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
                                             </select>
                                         </label>
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-gray-700">Adjustmet</span>
+                                            <span class="col-span-1 text-foreground">Adjustmet</span>
                                             <select 
                                             class="col-span-3 form-select block w-full mt-1" 
                                             v-model={this.choiceProduct.type}
@@ -339,7 +339,7 @@ const InventoryListing = defineComponent({
                                             </select>
                                         </label>
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-gray-700">Quantiy</span>
+                                            <span class="col-span-1 text-foreground">Quantiy</span>
                                             <input
                                                 class="col-span-3 form-input mt-1 block w-full"
                                                 type="number"
@@ -349,7 +349,7 @@ const InventoryListing = defineComponent({
                                             />
                                         </label>
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-gray-700">Remarks</span>
+                                            <span class="col-span-1 text-foreground">Remarks</span>
                                             <textarea
                                                 class="col-span-3 form-input mt-1 block w-full"
                                                 rows="3"
@@ -364,7 +364,7 @@ const InventoryListing = defineComponent({
                                                 this.adjustStock()
                                                 this.openAdjustProduct = false;
                                             }}
-                                            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-gray-500"
+                                            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-muted"
                                             disabled={!this.choiceProduct.stockLotUid}>
                                             Adjust
                                         </button>

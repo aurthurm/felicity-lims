@@ -125,7 +125,7 @@ const sampleManager = (action: string) => {
       <form action="post" class="p-1" v-show="!applying && !shipmentStore.shipment?.incoming">
         <div class="flex justify-start items-center mb-4">
           <label class="flex justify-between items-center">
-            <span class="text-gray-700 mr-2 whitespace-nowrap">Reference Laboratory</span>
+            <span class="text-foreground mr-2 whitespace-nowrap">Reference Laboratory</span>
             <select
               name="laboratory_uid"
               v-model="form.laboratoryUid"
@@ -137,7 +137,7 @@ const sampleManager = (action: string) => {
             </select>
           </label>
           <label class="flex justify-between items-center ml-4">
-            <span class="text-gray-700 mr-2">Courier</span>
+            <span class="text-foreground mr-2">Courier</span>
             <input
               type="text"
               class="form-input mt-1 block w-full py-1"
@@ -156,7 +156,7 @@ const sampleManager = (action: string) => {
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
         >
           Refresh
         </button>
@@ -167,13 +167,13 @@ const sampleManager = (action: string) => {
     <!-- Sampe Table View -->
     <div class="overflow-x-auto">
       <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
+        class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
       >
         <table class="min-w-full">
           <thead>
             <tr>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
                 v-show="shipment?.state === 'preperation'"
               >
                 <input
@@ -184,49 +184,49 @@ const sampleManager = (action: string) => {
                 />
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               ></th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               >
                 Sample ID
               </th>
               <th 
                 v-show="shipment?.incoming"
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               >
                 Exernal SID
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               >
                 Client Request Id
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Date Collected
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Analysis
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Status
               </th>
               <!-- <th class="px-1 py-1 border-b-2 border-border"></th> -->
             </tr>
           </thead>
-          <tbody class="bg-white">
+          <tbody class="bg-background">
             <tr
               v-for="shipped in shipment?.shippedSamples"
               :key="shipped.sampleUid"
               v-motion-slide-right
             >
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500" v-show="shipment?.state === 'preperation'">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border" v-show="shipment?.state === 'preperation'">
                 <input
                   type="checkbox"
                   class=""
@@ -234,19 +234,19 @@ const sampleManager = (action: string) => {
                   @change="checkCheck()"
                 />
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <span
                   v-if="shipped.sample?.priority ?? 0 > 0"
                   :class="[
                         'font-small',
-                        { 'text-orange-600': shipped.sample?.priority ?? 0 > 1 },
+                        { 'text-destructive': shipped.sample?.priority ?? 0 > 1 },
                     ]"
                 >
                   <font-awesome-icon icon="fa-star" />
                 </span>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-gray-800 font-semibold">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                <div class="text-sm leading-5 text-foreground font-semibold">
                   <router-link
                     v-if="shipped.sample?.analysisRequest?.patient?.uid"
                     :to="{
@@ -262,22 +262,22 @@ const sampleManager = (action: string) => {
                 </div>
               </td>
               <td v-show="shipment?.incoming"
-                class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div>{{ shipped.extSampleId }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div>{{ shipped.sample?.analysisRequest?.clientRequestId }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div>{{ shipped.sample?.dateCollected }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div>tests</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <button
                   type="button"
-                  class="bg-primary text-white py-1 px-2 rounded-sm leading-none"
+                  class="bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none"
                 >
                   {{ shipped.sample?.status || "unknown" }}
                 </button>
@@ -292,14 +292,14 @@ const sampleManager = (action: string) => {
       <button
         v-show="can_recover"
         @click.prevent="sampleManager('recover')"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Remove
       </button>
       <button
         v-show="can_recall"
         @click.prevent="sampleManager('recall')"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Pair
       </button>

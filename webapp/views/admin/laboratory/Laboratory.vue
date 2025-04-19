@@ -85,22 +85,22 @@ const items = [
     v-model="currentTab"
   >
   <section v-if="currentTab === 'general-info'">
-      <h2 class="text-lg font-semibold text-gray-700">Laboratory Information</h2>
+      <h2 class="text-lg font-semibold text-foreground">Laboratory Information</h2>
       <hr class="my-4">
       <form>
         <div class="grid grid-cols-2 gap-x-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Laboratory Name</span>
+            <span class="text-foreground">Laboratory Name</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.labName" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Tag Line</span>
+            <span class="text-foreground">Tag Line</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.tagLine" placeholder="Tag Line ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Lab Manager</span>
+            <span class="text-foreground">Lab Manager</span>
             <div class="w-full">
               <select class="form-select mt-1 w-full" v-model="formLaboratory.labManagerUid" :disabled="processing">
                 <option></option>
@@ -111,42 +111,42 @@ const items = [
             </div>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Laboratory Email</span>
+            <span class="text-foreground">Laboratory Email</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.email" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">CC Emails</span>
+            <span class="text-foreground">CC Emails</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.emailCc" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Lab Mobile Phone</span>
+            <span class="text-foreground">Lab Mobile Phone</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.mobilePhone" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Lab Bunsiness Phone</span>
+            <span class="text-foreground">Lab Bunsiness Phone</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.businessPhone" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Address</span>
+            <span class="text-foreground">Address</span>
             <textarea cols="3" class="form-input mt-1 block w-full" v-model="formLaboratory.address"
               placeholder="Address ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Banking Details</span>
+            <span class="text-foreground">Banking Details</span>
             <textarea cols="3" class="form-input mt-1 block w-full" v-model="formLaboratory.banking"
               placeholder="Banking ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Quality Statemnt</span>
+            <span class="text-foreground">Quality Statemnt</span>
             <input class="form-input mt-1 block w-full" v-model="formLaboratory.qualityStatement" placeholder="Quality Statemnt ..."
               :disabled="processing" />
           </label>
           <!-- <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Laboratory Logo</span>
+            <span class="text-foreground">Laboratory Logo</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="formLaboratory.logo"
@@ -157,62 +157,62 @@ const items = [
         </div>
         <hr class="my-4" />
         <button v-show="!processing" type="button" @click.prevent="saveLaboratoryForm()"
-          class="w-2/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+          class="w-2/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Update
         </button>
       </form>
     </section>
 
     <section v-if="currentTab === 'other-settings'">
-      <h2 class="text-lg font-semibold text-gray-700">Other Settings</h2>
+      <h2 class="text-lg font-semibold text-foreground">Other Settings</h2>
       <hr class="my-4">
       <form>
         <div class="grid grid-cols-2 gap-x-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Default Landing Page</span>
+            <span class="text-foreground">Default Landing Page</span>
             <input class="form-input mt-1 block w-full" v-model="formSettings.defaultRoute" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Default Theme</span>
+            <span class="text-foreground">Default Theme</span>
             <input class="form-input mt-1 block w-full" v-model="formSettings.defaultTheme" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Password Lifetime (days)</span>
+            <span class="text-foreground">Password Lifetime (days)</span>
             <input type="number" min="0" class="form-input mt-1 block w-full" v-model="formSettings.passwordLifetime"
               placeholder="Name ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Inactivity Auto Logout (minutes)</span>
+            <span class="text-foreground">Inactivity Auto Logout (minutes)</span>
             <input type="number" min="0" class="form-input mt-1 block w-full" v-model="formSettings.inactivityLogOut"
               placeholder="Name ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700 ml-3">Default Sticker copies</span>
+            <span class="text-foreground ml-3">Default Sticker copies</span>
             <input type="number" min="0" class="form-input mt-1 block w-full" v-model="formSettings.stickerCopies"
               placeholder="Name ..." :disabled="processing" />
           </label>
           <span class="block col-span-1 mb-2"></span>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowSelfVerification" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow self verificaion</span>
+            <span class="text-foreground ml-3">Allow self verificaion</span>
           </label>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowPatientRegistration" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow patient registration</span>
+            <span class="text-foreground ml-3">Allow patient registration</span>
           </label>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowSampleRegistration" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow sample registration</span>
+            <span class="text-foreground ml-3">Allow sample registration</span>
           </label>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowWorksheetCreation" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow worksheet creation</span>
+            <span class="text-foreground ml-3">Allow worksheet creation</span>
           </label>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.autoReceiveSamples" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Auto receive samples</span>
+            <span class="text-foreground ml-3">Auto receive samples</span>
           </label>
           <span class="block col-span-1 mb-2"></span>
         </div>
@@ -220,24 +220,24 @@ const items = [
         <div class="grid grid-cols-2 gap-x-4">
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowBilling" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Enable Sample Billing</span>
+            <span class="text-foreground ml-3">Enable Sample Billing</span>
           </label>
           <label class="block col-span-1 mb-2">
             <input type="checkbox" class="" v-model="formSettings.allowAutoBilling" :disabled="processing" />
-            <span class="text-gray-700 ml-3">Allow automatic billing on sample registration</span>
+            <span class="text-foreground ml-3">Allow automatic billing on sample registration</span>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700 ml-3">Currency</span>
+            <span class="text-foreground ml-3">Currency</span>
             <input type="text" class="form-input mt-1 block w-full" v-model="formSettings.currency" :disabled="processing" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700 ml-3">Payment Terms (Days)</span>
+            <span class="text-foreground ml-3">Payment Terms (Days)</span>
             <input type="number" min="0" class="form-input mt-1 block w-full" v-model="formSettings.paymentTermsDays" :disabled="processing" />
           </label>
         </div>
         <hr class="my-4" />
         <button v-show="!processing" type="button" @click.prevent="saveSettingForm()"
-          class="mb-4 w-2/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+          class="mb-4 w-2/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Update
         </button>
       </form>

@@ -174,7 +174,7 @@ function areAllChecked(): Boolean {
     <hr />
     <form action="post" class="mt-4" v-motion-slide-right>
       <div class="flex justify-start items-center mr-4">
-        <span class="text-gray-700">Worksheet Template</span>
+        <span class="text-foreground">Worksheet Template</span>
         <label class="block mx-4">
           <select class="form-select block w-full py-1" v-model="templateUid">
             <option></option>
@@ -191,7 +191,7 @@ function areAllChecked(): Boolean {
           v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
           type="button"
           @click.prevent="applyTemplate()"
-          class="border border-primary bg-primary text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Apply Template
         </button>
@@ -207,7 +207,7 @@ function areAllChecked(): Boolean {
     <form action="post" class="p-1" v-motion-slide-left>
       <div class="flex justify-start mb-4">
         <label class="flex justify-between items-center">
-          <span class="text-gray-700 mr-2">SampleType</span>
+          <span class="text-foreground mr-2">SampleType</span>
           <select
             name="analyses_uids"
             v-model="filterForm.sampleTypeUid"
@@ -223,7 +223,7 @@ function areAllChecked(): Boolean {
           </select>
         </label>
         <label class="flex justify-between items-center ml-6">
-          <span class="text-gray-700 mr-2">Analyses</span>
+          <span class="text-foreground mr-2">Analyses</span>
           <select
             name="analyses_uids"
             v-model="filterForm.analysisUid"
@@ -253,7 +253,7 @@ function areAllChecked(): Boolean {
 
   <div class="overflow-x-auto mt-4">
     <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
       <div v-if="worksheetStore.fetchingAnalysisResults" class="py-4 text-center">
         <LoadingMessage message="Fetching analytes ..." />
@@ -262,41 +262,41 @@ function areAllChecked(): Boolean {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               <input type="checkbox" @change="toggleCheckAll" v-model="allChecked" />
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               Sample ID
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Analysis
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Date Created
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Date Received
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Status
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white" v-motion-slide-right>
+        <tbody class="bg-background" v-motion-slide-right>
           <tr v-for="analysisResult in analysisResults" :key="analysisResult?.uid">
             <td>
               <input
@@ -305,28 +305,28 @@ function areAllChecked(): Boolean {
                 @change="checkCheck(analysisResult)"
               />
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ analysisResult?.sample?.sampleId }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.analysis?.name }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.createdAt }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.dateReceived }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.status }}
               </div>
@@ -340,7 +340,7 @@ function areAllChecked(): Boolean {
   <section class="my-4">
     <form action="post" class="mb-4">
       <div class="flex justify-start items-center mr-4">
-        <span class="text-gray-700">Apply QC Template</span>
+        <span class="text-foreground">Apply QC Template</span>
         <label class="block mx-4">
           <select class="form-select block w-full py-1" v-model="qcTemplateUid">
             <option></option>

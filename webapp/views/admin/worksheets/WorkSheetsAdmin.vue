@@ -207,7 +207,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
     <div class="flex items-center">
       <h1 class="h1 my-4 font-bold text-dark-700">WorkSheet Templates</h1>
       <button
-        class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+        class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
         @click="FormManager(true)"
       >
         Add Template
@@ -224,13 +224,13 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             :class="
               workSheetTemplate?.uid === wst.uid
                 ? 'w-full flex justify-between p-2 mb-1 rounded-sm shadow border border-primary bg-emerald-200'
-                : 'bg-white w-full flex justify-between p-2 mb-1 rounded-sm shadow border'
+                : 'bg-background w-full flex justify-between p-2 mb-1 rounded-sm shadow border'
             "
           >
             <a
              
               @click.prevent.stop="selectWorkSheetTemplate(wst)"
-              class="font-semibold text-gray-700"
+              class="font-semibold text-foreground"
             >
               <span>{{ wst.name }}</span>
             </a>
@@ -247,19 +247,19 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
       >
         <!-- Listing Item Card -->
         <div
-          class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
+          class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
         >
           <div class="grid grid-cols-12 gap-3">
             <!-- Summary Column -->
             <div class="col-span-12 px-3 sm:px-0">
               <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
+                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold"
               >
                 <span>{{ workSheetTemplate.name }}</span>
                 <div>
                   <button
                     @click="FormManager(false, workSheetTemplate)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-foreground transition-colors duration-150 bg-background rounded-full focus:outline-none hover:bg-muted"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -274,18 +274,18 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 <div class="col-span-1">
                   <!-- Client Details -->
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-1/2"
+                    <span class="text-foreground text-sm font-medium w-1/2"
                       >Instrument:</span
                     >
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.instrument?.name
                     }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-1/2"
+                    <span class="text-foreground text-sm font-medium w-1/2"
                       >Analyses Service:</span
                     >
-                    <span class="text-gray-600 text-sm md:text-md ml-1">{{
+                    <span class="text-foreground text-sm md:text-md ml-1">{{
                       workSheetTemplate?.analysis?.name
                     }}</span>
                   </div>
@@ -293,18 +293,18 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 <div class="col-span-1">
                   <!-- Communication Details -->
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-1/2"
+                    <span class="text-foreground text-sm font-medium w-1/2"
                       >Number of Samples:</span
                     >
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.numberOfSamples
                     }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-1/2"
+                    <span class="text-foreground text-sm font-medium w-1/2"
                       >Number of Reserved:</span
                     >
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.reserved?.length
                     }}</span>
                   </div>
@@ -316,10 +316,10 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               <div class="grid grid-cols-2 mt-2">
                 <div class="col-span-1">
                   <div class="flex w-full">
-                    <span class="text-gray-800 text-sm font-medium w-1/2"
+                    <span class="text-foreground text-sm font-medium w-1/2"
                       >WorkSheet type</span
                     >
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.worksheetType
                     }}</span>
                   </div>
@@ -327,24 +327,24 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                     class="flex w-full"
                     v-if="workSheetTemplate.worksheetType == 'grid'"
                   >
-                    <span class="text-gray-800 text-sm font-medium w-1/2"
+                    <span class="text-foreground text-sm font-medium w-1/2"
                       >Direction:</span
                     >
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.rowWise ? "row-wise" : "column-wise"
                     }}</span>
                   </div>
                 </div>
                 <div class="col-span-1" v-if="workSheetTemplate.worksheetType == 'grid'">
                   <div class="flex w-full">
-                    <span class="text-gray-800 text-sm font-medium w-1/2">Rows:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm font-medium w-1/2">Rows:</span>
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.rows
                     }}</span>
                   </div>
                   <div class="flex w-full">
-                    <span class="text-gray-800 text-sm font-medium w-1/2">Columns:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{
+                    <span class="text-foreground text-sm font-medium w-1/2">Columns:</span>
+                    <span class="text-foreground text-sm md:text-md">{{
                       workSheetTemplate.cols
                     }}</span>
                   </div>
@@ -355,13 +355,13 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
         </div>
 
         <!-- Sample and Case Data -->
-        <nav class="bg-white shadow-md mt-2">
+        <nav class="bg-background shadow-md mt-2">
           <div class="-mb-px flex justify-start">
             <a
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
@@ -385,8 +385,8 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 <span class="col-span-1 my-1">{{ item.position }}:</span>
                 <span
                   :class="[
-                    'col-span-5 my-1 p-1 text-white rounded-xl flex justify-center',
-                    { 'bg-emerald-600': item.name !== 'sample' },
+                    'col-span-5 my-1 p-1 text-primary-foreground rounded-xl flex justify-center',
+                    { 'bg-success': item.name !== 'sample' },
                     { 'bg-primary': item.name === 'sample' },
                   ]"
                   >{{ item.name }}</span
@@ -408,8 +408,8 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 >
                   <span
                     :class="[
-                        'my-1 p-1 text-white rounded-xl flex justify-center',
-                        { 'bg-emerald-600': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
+                        'my-1 p-1 text-primary-foreground rounded-xl flex justify-center',
+                        { 'bg-success': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
                         { 'bg-primary': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
                         ]"
                     >({{ index*workSheetTemplate.cols! + col }})
@@ -431,8 +431,8 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                     <!-- <span class="my-1 flex justify-center" >{{ index*workSheetTemplate.rows + row }}</span> -->
                     <span
                       :class="[
-                          'my-1 p-1 text-white rounded-xl flex justify-center',
-                          { 'bg-emerald-600': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
+                          'my-1 p-1 text-primary-foreground rounded-xl flex justify-center',
+                          { 'bg-success': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
                           { 'bg-primary': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
                           ]"
                       >({{ index*workSheetTemplate.rows! + row }})
@@ -458,7 +458,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
       <form action="post" class="p-1">
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Template Name</span>
+            <span class="text-foreground">Template Name</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="workSheetTemplate.name"
@@ -466,8 +466,8 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Number of Samples</span>
-            <span class="text-orange-600 ml-2 italic">(less reserved)</span>
+            <span class="text-foreground">Number of Samples</span>
+            <span class="text-destructive ml-2 italic">(less reserved)</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="workSheetTemplate.numberOfSamples"
@@ -479,7 +479,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
 
         <div class="grid grid-cols-4 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Template Type</span>
+            <span class="text-foreground">Template Type</span>
             <select
               class="form-select block w-full mt-1"
               @change="changeWorkSheetType($event)"
@@ -492,7 +492,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
           <span class="col-span-3" v-if="workSheetTemplate.worksheetType === 'grid'">
             <div class="grid grid-cols-3 gap-x-4">
               <label class="block col-span-1 mb-2">
-                <span class="text-gray-700">Cols</span>
+                <span class="text-foreground">Cols</span>
                 <input
                   class="form-input mt-1 block w-full"
                   v-model="workSheetTemplate.cols"
@@ -501,7 +501,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 />
               </label>
               <label class="block col-span-1 mb-2">
-                <span class="text-gray-700">Rows</span>
+                <span class="text-foreground">Rows</span>
                 <input
                   class="form-input mt-1 block w-full bg-secondary"
                   v-model="workSheetTemplate.rows"
@@ -509,7 +509,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                   disabled
                 />
               </label>
-              <label for="toggle" class="text-gray-700 mt-8 ml-4">
+              <label for="toggle" class="text-foreground mt-8 ml-4">
                 <div
                   class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
                 >
@@ -518,14 +518,14 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                     name="toggle"
                     id="toggle"
                     v-model="workSheetTemplate.rowWise"
-                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
+                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"
                   />
                   <label
                     for="toggle"
-                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                    class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"
                   ></label>
                 </div>
-                <span class="text-gray-700 text-base">Row Wise</span>
+                <span class="text-foreground text-base">Row Wise</span>
               </label>
             </div>
           </span>
@@ -533,7 +533,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
 
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Instrument</span>
+            <span class="text-foreground">Instrument</span>
             <select
               class="form-select block w-full mt-1"
               v-model="workSheetTemplate.instrumentUid"
@@ -549,7 +549,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">SampleType</span>
+            <span class="text-foreground">SampleType</span>
             <select
               class="form-select block w-full mt-1"
               v-model="workSheetTemplate.sampleTypeUid"
@@ -561,7 +561,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Anslysis Service</span>
+            <span class="text-foreground">Anslysis Service</span>
             <select
               class="form-select block w-full mt-1"
               v-model="workSheetTemplate.analysisUid"
@@ -579,7 +579,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
           <div class="flex justify-between items-center py-2">
             <h5>Reserved Positions</h5>
             <label class="block col-span-1 mb-2">
-              <span class="text-gray-700">QC Template</span>
+              <span class="text-foreground">QC Template</span>
               <div class="flex items-center">
                 <select
                   class="form-select block w-full mt-1"
@@ -596,7 +596,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 </select>
                 <button
                   @click.prevent="appyQCTemplate()"
-                  class="px-2 py-1 ml-2 h-auto border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-2 h-auto border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 >
                   Apply
                 </button>
@@ -604,7 +604,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             </label>
             <button
               @click.prevent="addReserved()"
-              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
             >
               Add Reserve Slot
             </button>
@@ -615,7 +615,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               <div class="">
                 <div class="grid grid-cols-6 gap-x-4">
                   <label class="block col-span-2 mb-2">
-                    <span class="text-gray-700">Position</span>
+                    <span class="text-foreground">Position</span>
                     <input
                       class="form-input mt-1 block w-full"
                       v-model="reserved.position"
@@ -623,7 +623,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                     />
                   </label>
                   <label class="block col-span-2 mb-2">
-                    <span class="text-gray-700">Blank/Control</span>
+                    <span class="text-foreground">Blank/Control</span>
                     <select
                       v-model="reserved.levelUid"
                       class="form-input mt-1 block w-full"
@@ -642,7 +642,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               <div class="">
                 <button
                   @click.prevent="removeReserved(index)"
-                  class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                  class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
                 >
                   Remove
                 </button>
@@ -656,7 +656,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

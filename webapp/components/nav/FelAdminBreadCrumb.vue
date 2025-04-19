@@ -12,15 +12,15 @@ const select = (val?: string) => locationStore.updateConfRoute(val!);
 </script>
 
 <template>
-    <li class="col-span-4 border-gray-400" @click="select(props.title)">
+    <li class="col-span-4 border-border" @click="select(props.title)">
         <router-link :to="path ?? ''" class="no-underline">
             <div
-                class="shadow border select-none cursor-pointer bg-white dark:bg-gray-800 rounded-sm flex flex-1 items-center p-4">
+                class="shadow border select-none cursor-pointer bg-background rounded-sm flex flex-1 items-center p-4">
                 <div class="mr-4">
                     <font-awesome-icon :icon="icon" />
                 </div>
                 <div class="flex-1 pl-1 md:mr-16">
-                    <div class="font-medium dark:text-white">
+                    <div class="font-medium text-secondary-foreground">
                         {{ title }}
                     </div>
                 </div>

@@ -165,7 +165,7 @@ function getSampleUids(): string[] {
 function getResultRowColor(result: any): string {
   switch (result?.status) {
     case "retracted":
-      return "bg-gray-300 text-sm italic text-muted-foreground";
+      return "bg-muted text-sm italic text-muted-foreground";
     default:
       return "text-sm leading-5 text-primary";
   }
@@ -291,7 +291,7 @@ const printBarCodes = async () => {
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
         >
           Refresh
         </button>
@@ -302,13 +302,13 @@ const printBarCodes = async () => {
     <!-- Sampe Table View -->
     <div class="overflow-x-auto">
       <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
+        class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
       >
         <table class="min-w-full">
           <thead>
             <tr>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               >
                 <input
                   type="checkbox"
@@ -318,52 +318,52 @@ const printBarCodes = async () => {
                 />
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               ></th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
               >
                 Sample ID
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Analysis/Test
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Instrument
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Method
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Interim
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Result
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Unit
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Status
               </th>
               <!-- <th class="px-1 py-1 border-b-2 border-border"></th> -->
             </tr>
           </thead>
-          <tbody class="bg-white">
+          <tbody class="bg-background">
             <tr
               v-for="result in worksheet?.analysisResults"
               :key="result.uid"
@@ -379,19 +379,19 @@ const printBarCodes = async () => {
                   :disabled="checkDisabled(result)"
                 />
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <span
                   v-if="(result?.sample?.priority ?? 0) > 0"
                   :class="[
                         'font-small',
-                        { 'text-orange-600': (worksheet?.priority ?? 0) > 1 },
+                        { 'text-destructive': (worksheet?.priority ?? 0) > 1 },
                     ]"
                 >
                   <font-awesome-icon icon="fa-star" />
                 </span>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-gray-800 font-semibold">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                <div class="text-sm leading-5 text-foreground font-semibold">
                   <router-link
                     v-if="result?.sample?.analysisRequest?.patient?.uid"
                     :to="{
@@ -418,10 +418,10 @@ const printBarCodes = async () => {
                   </div>
                 </span>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div>{{ result?.analysis?.name }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                   {{ result.laboratoryInstrument?.labName || "---" }}
                 </div>
@@ -440,7 +440,7 @@ const printBarCodes = async () => {
                   </select>
                 </label>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                   {{ result.method?.name || "---" }}
                 </div>
@@ -454,7 +454,7 @@ const printBarCodes = async () => {
                   </select>
                 </label>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div
                   v-if="!isEditable(result) || (result?.analysis?.interims?.length ?? 0) === 0"
                   class="text-sm leading-5 text-primary"
@@ -478,7 +478,7 @@ const printBarCodes = async () => {
                   </select>
                 </label>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div v-if="!isEditable(result)">{{ result?.result }}</div>
                 <label
                   v-else-if="result?.analysis?.resultOptions?.length === 0"
@@ -507,13 +507,13 @@ const printBarCodes = async () => {
                   </select>
                 </label>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div>{{ result?.analysis?.unit?.name || "---" }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <button
                   type="button"
-                  class="bg-primary text-white py-1 px-2 rounded-sm leading-none"
+                  class="bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none"
                 >
                   {{ result?.status || "unknown" }}
                 </button>
@@ -531,7 +531,7 @@ const printBarCodes = async () => {
           can_unassign
         "
         @click.prevent="unAssignSamples()"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Un Assign
       </button>
@@ -540,7 +540,7 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_submit
         "
         @click.prevent="submitResults()"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Submit
       </button>
@@ -549,7 +549,7 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retract
         "
         @click.prevent="retractResults()"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Retract
       </button>
@@ -558,7 +558,7 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_approve
         "
         @click.prevent="approveResults()"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Approve
       </button>
@@ -567,14 +567,14 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retest
         "
         @click.prevent="retestResults()"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Retest
       </button>
       <button 
           v-show="barcodes"
           @click.prevent="printBarCodes"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Print Barcodes
         </button>
     </section>

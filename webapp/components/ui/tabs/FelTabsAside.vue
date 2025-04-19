@@ -46,7 +46,7 @@ const getComponent = (sectionId: string): any => {
     <!-- Sidebar -->
     <aside class="w-48 sticky top-0">
       <nav class="p-4">
-        <h2 v-if="!hideTitle" class="text-lg font-semibold text-gray-700 mb-4">{{ title }}</h2>
+        <h2 v-if="!hideTitle" class="text-lg font-semibold text-foreground mb-4">{{ title }}</h2>
         <hr class="my-1">
         <ul class="space-y-2">
           <li v-for="item in items" :key="item.id">
@@ -55,8 +55,8 @@ const getComponent = (sectionId: string): any => {
               :class="[
                 'w-full text-left p-2  transition-colors duration-150 flex items-center gap-2',
                 {
-                  'bg-sky-600 text-white': modelValue === item.id,
-                  'text-gray-600 hover:bg-secondary': modelValue !== item.id,
+                  'bg-primary text-primary-foreground': modelValue === item.id,
+                  'text-foreground hover:bg-secondary': modelValue !== item.id,
                 },
               ]"
             >
@@ -69,7 +69,7 @@ const getComponent = (sectionId: string): any => {
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8 bg-slate-50">
+    <main class="flex-1 p-8 bg-background">
       <!-- Render component if available -->
       <component
         v-if="shouldRenderComponent(modelValue)"

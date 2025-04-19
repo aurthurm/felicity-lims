@@ -236,14 +236,14 @@ const resetLateAuth = () => {
     <LoadingMessage message="fetching laggard stats ..." />
   </div>
   <section class="mt-4">
-    <h1 class="text-xl text-gray-700 font-semibold">Delayed and incomplete</h1>
+    <h1 class="text-xl text-foreground font-semibold">Delayed and incomplete</h1>
     <hr class="my-2" />
     <div class="flex justify-start items-center">
       <div
-        class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center"
+        class="content-middle bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center"
       >
-        <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteDAI }}</div>
-        <div class="font-semibold text-gray-400 text-l">Already Delayed</div>
+        <div class="mr-4 font-bold text-foreground text-2xl">{{ totalIncompleteDAI }}</div>
+        <div class="font-semibold text-muted-foreground text-l">Already Delayed</div>
       </div>
       <div id="late-active" class="flex justify-start items-center ms-8">
         <div class="me-8">
@@ -255,14 +255,14 @@ const resetLateAuth = () => {
       </div>
     </div>
 
-    <h1 class="mt-4 text-xl text-gray-700 font-semibold">Authosised already delayed</h1>
+    <h1 class="mt-4 text-xl text-foreground font-semibold">Authosised already delayed</h1>
     <hr class="my-2" />
     <div class="flex justify-start items-center">
       <div
-        class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center"
+        class="content-middle bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center"
       >
-        <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteAAD }}</div>
-        <div class="font-semibold text-gray-400 text-l">Released as Delayed</div>
+        <div class="mr-4 font-bold text-foreground text-2xl">{{ totalIncompleteAAD }}</div>
+        <div class="font-semibold text-muted-foreground text-l">Released as Delayed</div>
       </div>
       <div id="late-auth" class="flex justify-start items-center ms-8">
         <div class="me-8">

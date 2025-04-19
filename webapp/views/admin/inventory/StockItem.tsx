@@ -102,60 +102,60 @@ const StockItem = defineComponent({
                 <hr />
                 <button
                     onClick={() => this.FormManager(true, null)}
-                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                 >
                     Add Stock Item
                 </button>
                 <hr />
 
                 <div class="overflow-x-auto mt-4">
-                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                         <table class="min-w-full">
                             <thead>
                                 <tr>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                         Item Name
                                     </th>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                         Category
                                     </th>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                         Hazard
                                     </th>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                         Description
                                     </th>
                                     <th class="px-1 py-1 border-b-2 border-border"></th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white">
+                            <tbody class="bg-background">
                                 {this.stockItems?.map(item => {
                                     return (
                                         <tr key={item?.uid}>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                                                 <div class="flex items-center">
-                                                    <div class="text-sm leading-5 text-gray-800">{item?.name}</div>
+                                                    <div class="text-sm leading-5 text-foreground">{item?.name}</div>
                                                 </div>
                                             </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                                                 <div class="text-sm leading-5 text-primary">{item?.category?.name}</div>
                                             </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                                                 <div class="text-sm leading-5 text-primary">{item?.hazard?.name}</div>
                                             </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                                                 <div class="text-sm leading-5 text-primary">{item?.description}</div>
                                             </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                                            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
                                                 <button
                                                     onClick={() => this.FormManager(false, item)}
-                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                                                 >
                                                     Edit
                                                 </button>  
                                                 <button
                                                     onClick={() => this.viewStockItem(item)}
-                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                                                 >
                                                     View
                                                 </button>
@@ -186,7 +186,7 @@ const StockItem = defineComponent({
                                     <form action="post" class="p-1">
                                         <div class="grid grid-cols-2 gap-x-4 mb-4">
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Stock Item Name</span>
+                                                <span class="text-foreground">Stock Item Name</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.form.name}
@@ -194,7 +194,7 @@ const StockItem = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-gray-700">Min Level</span>
+                                                <span class="text-foreground">Min Level</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     type="number"
@@ -202,7 +202,7 @@ const StockItem = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-gray-700">Max Level</span>
+                                                <span class="text-foreground">Max Level</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     type="number"
@@ -210,7 +210,7 @@ const StockItem = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Description</span>
+                                                <span class="text-foreground">Description</span>
                                                 <textarea
                                                     cols="2"
                                                     class="form-input mt-1 block w-full"
@@ -219,7 +219,7 @@ const StockItem = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-gray-700">Hazard</span>
+                                                <span class="text-foreground">Hazard</span>
                                                 <select class="form-select block w-full mt-1" v-model={this.form.hazardUid}>
                                                     <option></option>
                                                     {this.hazards.map(hazard => (
@@ -230,7 +230,7 @@ const StockItem = defineComponent({
                                                 </select>
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-gray-700">Category</span>
+                                                <span class="text-foreground">Category</span>
                                                 <select class="form-select block w-full mt-1" v-model={this.form.categoryUid}>
                                                     <option></option>
                                                     {this.categories.map(category => (
@@ -245,7 +245,7 @@ const StockItem = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>

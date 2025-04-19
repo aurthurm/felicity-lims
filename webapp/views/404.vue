@@ -7,8 +7,8 @@
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-screen bg-gray-700 px-6">
-    <div class="p-6 max-w-sm w-full bg-white shadow-md rounded-sm">
+  <div class="flex justify-center items-center h-screen bg-muted px-6">
+    <div class="p-6 max-w-sm w-full bg-background shadow-md rounded-sm">
       <div class="flex justify-center items-center mb-2">
         <svg class="h-10 w-10" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -24,7 +24,7 @@
             fill="white"
           />
         </svg>
-        <span class="text-gray-700 font-semibold text-2xl">FelicityLIMS</span>
+        <span class="text-foreground font-semibold text-2xl">FelicityLIMS</span>
       </div>
       <hr>
       <section class="flex justify-center items-center mt-4">
@@ -33,7 +33,7 @@
         <div>
           <button 
           @click="goHome"
-          class="ml-4 py-2 px-4 text-center border-indigo-200 border rounded-sm w-full text-indigo-600 text-sm hover:bg-indigo-600 hover:text-white">
+          class="ml-4 py-2 px-4 text-center border-border border rounded-sm w-full text-accent text-sm hover:bg-accent hover:text-primary-foreground">
             Go Home /
           </button>
         </div>

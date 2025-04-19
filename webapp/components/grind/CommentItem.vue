@@ -70,10 +70,10 @@ const avatarSize = computed(() => {
 
 const avatarColor = computed(() => {
     switch (props.level) {
-        case 0: return 'bg-orange-100 text-orange-600';
-        case 1: return 'bg-blue-100 text-blue-600';
-        case 2: return 'bg-green-100 text-green-600';
-        default: return 'bg-orange-100 text-orange-600';
+        case 0: return 'bg-muted text-destructive';
+        case 1: return 'bg-secondary text-primary';
+        case 2: return 'bg-muted text-success';
+        default: return 'bg-muted text-destructive';
     }
 });
 
@@ -161,12 +161,12 @@ function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
                 </div>
                 <!-- Comment action buttons -->
                 <div class="flex gap-2" v-if="!isEditing">
-                    <button v-if="comment.canEdit" @click="startEditing" class="text-muted-foreground hover:text-blue-500">
+                    <button v-if="comment.canEdit" @click="startEditing" class="text-muted-foreground hover:text-accent">
                         <svg xmlns="http://www.w3.org/2000/svg" :class="iconSize" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                     </button>
-                    <button v-if="canReply" @click="toggleReply" class="text-muted-foreground hover:text-blue-500">
+                    <button v-if="canReply" @click="toggleReply" class="text-muted-foreground hover:text-accent">
                         <svg xmlns="http://www.w3.org/2000/svg" :class="iconSize" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                         </svg>
@@ -182,17 +182,17 @@ function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
                     :class="`w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 ${level === 2 ? 'text-xs' : ''}`"
                 ></textarea>
                 <div class="flex items-center justify-end gap-2 mt-2">
-                    <button @click="cancelEditing" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} border border-border rounded hover:bg-gray-50 ${level > 0 ? 'text-sm' : ''}`">
+                    <button @click="cancelEditing" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} border border-border rounded hover:bg-background ${level > 0 ? 'text-sm' : ''}`">
                         Cancel
                     </button>
-                    <button @click="updateDiscussion" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} bg-accent text-white rounded hover:bg-blue-600 ${level > 0 ? 'text-sm' : ''}`">
+                    <button @click="updateDiscussion" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} bg-accent text-primary-foreground rounded hover:bg-primary ${level > 0 ? 'text-sm' : ''}`">
                         Save
                     </button>
                 </div>
             </div>
             
             <!-- Comment content - normal mode -->
-            <div v-else :class="`mt-${level === 0 ? 2 : 1} text-gray-600 ${textSize}`" v-html="comment.comment"></div>
+            <div v-else :class="`mt-${level === 0 ? 2 : 1} text-foreground ${textSize}`" v-html="comment.comment"></div>
             
             <!-- Reply input area -->
             <div v-if="isReplying" :class="`mt-${level === 0 ? 3 : 2}`">

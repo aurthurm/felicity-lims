@@ -23,14 +23,14 @@ const manifestDownloader = async (report_uid) => await downloadManifest(report_u
             <div class="flex justify-between items-center space-x-4">
               <p>Manifest Report</p>
               <span
-                class="flex justify-center items-center animate-bounce h-8 w-8 rounded-full bg-white border border-gray-200 drop-shadow-sm"
+                class="flex justify-center items-center animate-bounce h-8 w-8 rounded-full bg-background border border-border drop-shadow-sm"
                 @click="manifestDownloader(shipment.uid)">
-                <FontAwesomeIcon class="text-blue-500" icon="fa-download" />
+                <FontAwesomeIcon class="text-accent" icon="fa-download" />
               </span>
             </div>
           </div>
       </div>
-      <div v-else class="mt-4 text-red-500">This shipment has no Manifest Report</div>
+      <div v-else class="mt-4 text-destructive">This shipment has no Manifest Report</div>
     </section>
   </div>
 </template>

@@ -163,8 +163,8 @@ const resetUserMatrix = () => {
           @click="dashBoardStore.setCurrentFilter(filter)"
           type="button"
           :class="[
-            'px-2 py-1 mr-2 border-gray-800 border text-gray-800 rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none',
-            { 'bg-primary text-white': dashboard.currentFilter === filter },
+            'px-2 py-1 mr-2 border-foreground border text-foreground rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none',
+            { 'bg-primary text-primary-foreground': dashboard.currentFilter === filter },
           ]"
         >
           {{ filter }}
@@ -174,13 +174,13 @@ const resetUserMatrix = () => {
 
       <button
         @click="showModal = true"
-        class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-muted-foreground rounded-sm transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none"
+        class="ml-4 mr-1 px-2 py-1 border-border border text-muted-foreground rounded-sm transition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none"
       >
         {{ dashboard.filterRange.from }} - {{ dashboard.filterRange.to }}
       </button>
       <!-- <button
         type="button"
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
       >
         Apply
       </button> -->
@@ -191,23 +191,23 @@ const resetUserMatrix = () => {
     <LoadingMessage message="fetching resource stats ..." />
   </div>
   <section>
-    <h1 class="text-xl text-gray-700 font-semibold">Instrument Matrix / Load</h1>
+    <h1 class="text-xl text-foreground font-semibold">Instrument Matrix / Load</h1>
     <hr class="my-2" />
     <div v-if="dashboard.resourceStats?.instruments?.length === 0">NO DATA</div>
     <div v-else class="flex justify-start">
       <div
         v-for="instr in dashboard.resourceStats?.instruments"
         :key="instr.group"
-        class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8"
+        class="flex items-center bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8"
       >
-        <span class="mr-4 font-bold text-gray-600 text-xl">{{
+        <span class="mr-4 font-bold text-foreground text-xl">{{
           instrumentPerf(instr?.count)
         }}</span>
-        <span class="font-semibold text-gray-400 text-l">{{ instr.group }}</span>
+        <span class="font-semibold text-muted-foreground text-l">{{ instr.group }}</span>
       </div>
     </div>
 
-    <h1 class="mt-8 text-xl text-gray-700 font-semibold">User Matrix / Load</h1>
+    <h1 class="mt-8 text-xl text-foreground font-semibold">User Matrix / Load</h1>
     <hr class="my-2" />
     <div class="flex flex-wrap justify-start" id="user-matrix">
       <div>
@@ -235,7 +235,7 @@ const resetUserMatrix = () => {
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Date From</span>
+            <span class="text-foreground">Date From</span>
             <input
               type="datetime-local"
               class="form-input mt-1 block w-full"
@@ -245,7 +245,7 @@ const resetUserMatrix = () => {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Date To</span>
+            <span class="text-foreground">Date To</span>
             <input
               type="datetime-local"
               class="form-input mt-1 block w-full"
@@ -259,7 +259,7 @@ const resetUserMatrix = () => {
         <button
           type="button"
           @click.prevent="setCustomRange()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

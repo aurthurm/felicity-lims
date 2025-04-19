@@ -108,7 +108,7 @@
 
     <div class="grid grid-cols-3 gap-x-4 mb-4">
       <label class="block col-span-2 mb-2">
-        <span class="text-gray-700">Method Name</span>
+        <span class="text-foreground">Method Name</span>
         <input
           class="form-input mt-1 block w-full"
           v-model="form.name"
@@ -116,7 +116,7 @@
         />
       </label>
       <label class="block col-span-1 mb-2">
-        <span class="text-gray-700">keyword</span>
+        <span class="text-foreground">keyword</span>
         <input
           class="form-input mt-1 block w-full"
           v-model="form.keyword"
@@ -127,7 +127,7 @@
 
     <div class="grid grid-cols-2 gap-x-4 mb-4">
       <label class="block col-span-2 mb-2" >
-        <span class="text-gray-700">Analyses</span>
+        <span class="text-foreground">Analyses</span>
         <VueMultiselect
         v-model="selectedAnalyses"
         :options="analyses"
@@ -139,7 +139,7 @@
         </VueMultiselect>
       </label>
       <label class="block col-span-2 mb-2">
-        <span class="text-gray-700">Instruments</span>
+        <span class="text-foreground">Instruments</span>
         <VueMultiselect
         v-model="selectedIntsruments"
         :options="instruments"
@@ -150,7 +150,7 @@
         </VueMultiselect>
       </label>
       <label class="block col-span-2 mb-2">
-        <span class="text-gray-700">Description</span>
+        <span class="text-foreground">Description</span>
         <textarea
         cols="2"
           class="form-input mt-1 block w-full"
@@ -163,7 +163,7 @@
     <button
       type="button"
       @click.prevent="saveForm()"
-      class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+      class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
     >
       Save Form
     </button>

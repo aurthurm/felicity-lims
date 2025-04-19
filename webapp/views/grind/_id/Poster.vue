@@ -78,7 +78,7 @@ const saveErrandForm = () => {
 <template>
     <h3 class="h3 w-full font-semibold text-lg">{{ poster.title }}</h3>
     <button 
-    class="w-full font-medium my-2 py-1 px-2 border border-border hover:border-sky-700 hover:text-sky-700 hover:bg-secondary"
+    class="w-full font-medium my-2 py-1 px-2 border border-border hover:border-primary hover:text-primary hover:bg-secondary"
     @click="openCreateErrandForm">Add New...</button>
     <VueDraggable
     class="flex flex-col gap-2 w-full min-h-8"
@@ -97,34 +97,34 @@ const saveErrandForm = () => {
         <div class="flex justify-between items-center">
           <router-link 
               :to="{name: 'errand-detail', params: {errandUid: errand?.uid, boardUid: poster.boardUid}}" 
-              class="text-sm font-semibold text-gray-800 truncate">
+              class="text-sm font-semibold text-foreground truncate">
               {{ errand.title }}
             </router-link>
-          <FontAwesomeIcon class="h-4 w-4 cursor-move text-gray-400" icon="fa-grip" />
+          <FontAwesomeIcon class="h-4 w-4 cursor-move text-muted-foreground" icon="fa-grip" />
         </div>
 
           <div class="flex justify-start items-center gap-x-2 mt-2">
             <span 
             v-for="stamp in errand.stamps"
-            class="lowercase text-xs bg-primary p-1 text-gray-100">{{ stamp.title }}</span>
+            class="lowercase text-xs bg-primary p-1 text-primary-foreground">{{ stamp.title }}</span>
           </div>
 
           <div class="flex justify-start items-center gap-x-2 mt-1" v-show="errand?.milestonesAt">
-              <div class="my-2 w-full bg-muted rounded-full h-1 dark:bg-gray-700">
+              <div class="my-2 w-full bg-muted rounded-full h-1 bg-muted">
                   <div class="bg-success h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
               </div>
               <span class="text-xs">{{ errand?.milestonesAt }}%</span>
           </div>
 
           <div class="flex justify-between items-center gap-x-2 mt-1" v-show="errand.endDate">
-            <span class="bg-gray-400/50 px-1 text-xs rounded-lg">{{ formatDate(errand.endDate, 'DD/MM/YYYY') }}</span>
+            <span class="bg-muted/50 px-1 text-xs rounded-lg">{{ formatDate(errand.endDate, 'DD/MM/YYYY') }}</span>
 
             <div v-if="errand.members && errand.members.length > 0">
                 <div class="flex -space-x-2 overflow-hidden">
                   <div 
                       v-for="(member, index) in errand.members.slice(0, 5)" 
                       :key="index"
-                      class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-medium"
+                      class="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center text-primary-foreground text-xs font-medium"
                       :style="{ backgroundColor: stringToColor(member.firstName! + member.lastName) }"
                       :title="`${member.firstName} ${member.lastName}`"
                   >
@@ -133,7 +133,7 @@ const saveErrandForm = () => {
 
                   <div 
                       v-if="errand.members.length > 5"
-                      class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center bg-gray-300 text-gray-800 text-xs font-medium"
+                      class="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center bg-muted text-foreground text-xs font-medium"
                       :title="errand.members.slice(5).map(m => `${m.firstName} ${m.lastName}`).join(', ')"
                   >
                       +{{ errand.members.length - 5 }}
@@ -153,8 +153,8 @@ const saveErrandForm = () => {
     <template v-slot:body>
       <form @submit.prevent="saveErrandForm">
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="title">
-            Scheme Title <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-foreground mb-1" for="title">
+            Scheme Title <span class="text-destructive">*</span>
           </label>
           <input
             id="title"
@@ -167,7 +167,7 @@ const saveErrandForm = () => {
         </div>  
         
          <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="description">
+          <label class="block text-sm font-medium text-foreground mb-1" for="description">
             Description
           </label>
           <textarea
@@ -182,7 +182,7 @@ const saveErrandForm = () => {
         <!-- Date Range -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="startDate">
+            <label class="block text-sm font-medium text-foreground mb-1" for="startDate">
               Start Date
             </label>
             <input
@@ -193,7 +193,7 @@ const saveErrandForm = () => {
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="endDate">
+            <label class="block text-sm font-medium text-foreground mb-1" for="endDate">
               End Date
             </label>
             <input
@@ -208,7 +208,7 @@ const saveErrandForm = () => {
         <div class="flex justify-end">
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             {{ formAction ? 'Create' : 'Update' }}
           </button>

@@ -51,7 +51,7 @@ const tableColumns = ref([
           },
         },
         class:
-          "px-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-primary hover:text-primary focus:outline-none",
+          "px-1 ml-2 border-foreground border text-gray-500rounded-smtransition duration-300 hover:border-primary hover:text-primary focus:outline-none",
         innerHTML: client?.name,
       });
     },
@@ -190,7 +190,7 @@ const countNone = computed(
 <template>
   <PageHeading title="Clients" />
   <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
-    class="p-2 my-2 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+    class="p-2 my-2 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
     @click="FormManager(true, 'client')">
     Add client
   </button>
@@ -215,18 +215,18 @@ const countNone = computed(
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Name</span>
+            <span class="text-foreground">Name</span>
             <input class="form-input mt-1 block w-full" v-model="client.name" placeholder="Name ..." />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Code</span>
+            <span class="text-foreground">Code</span>
             <input class="form-input mt-1 block w-full" v-model="client.code" placeholder="Code ..." />
           </label>
         </div>
 
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Country</span>
+            <span class="text-foreground">Country</span>
             <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
               <option></option>
               <option v-for="country in countries" :key="country.uid" :value="country.uid">
@@ -235,7 +235,7 @@ const countNone = computed(
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Province</span>
+            <span class="text-foreground">Province</span>
             <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
               <option></option>
               <option v-for="province in provinces" :key="province.uid" :value="province.uid">
@@ -244,7 +244,7 @@ const countNone = computed(
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">District</span>
+            <span class="text-foreground">District</span>
             <select class="form-select block w-full mt-1" v-model="client.districtUid">
               <option></option>
               <option v-for="district in districts" :key="district.uid" :value="district.uid">
@@ -256,7 +256,7 @@ const countNone = computed(
 
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

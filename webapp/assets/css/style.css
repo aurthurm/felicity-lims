@@ -4,75 +4,306 @@
 
 
 @layer base {
+    /* --- Original Light Theme --- */
     :root {
-        --background: 0 0% 100%;
-        --foreground: 220 9% 20%;
-      
-        --card: 0 0% 100%;
-        --card-foreground: 220 9% 20%;
-      
-        --popover: 0 0% 100%;
-        --popover-foreground: 220 9% 20%;
-      
+        --background: 0 0% 100%; /* white */
+        --foreground: 220 9% 20%; /* near black */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 220 9% 20%; /* near black */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 220 9% 20%; /* near black */
         --primary: 204 100% 33%; /* sky-800 */
-        --primary-foreground: 0 0% 98%; /* white */
-      
+        --primary-foreground: 0 0% 98%; /* near white */
         --secondary: 0 0% 96%; /* gray-100 */
-        --secondary-foreground: 220 9% 20%;
-      
+        --secondary-foreground: 220 9% 20%; /* near black */
         --muted: 0 0% 91%; /* gray-200 */
         --muted-foreground: 220 5% 50%; /* gray-500 */
-      
         --accent: 217 91% 60%; /* blue-500 */
         --accent-foreground: 0 0% 100%; /* white */
-      
         --destructive: 0 84% 60%; /* red-500 */
-        --destructive-foreground: 0 0% 98%;
-      
+        --destructive-foreground: 0 0% 98%; /* near white */
         --success: 142 71% 45%; /* green-600 */
-        --success-foreground: 0 0% 100%;
-      
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
         --border: 220 5% 85%; /* gray-300 */
-        --input: 220 5% 85%;
-        --ring: 204 100% 33%; /* same as primary */
-      
+        --input: 220 5% 85%; /* gray-300 */
+        --ring: 204 100% 33%; /* sky-800 (same as primary) */
         --radius: 0.5rem;
     }
       
+    /* --- Original Dark Theme --- */
     .dark {
-        --background: 220 9% 10%;
-        --foreground: 0 0% 98%;
-      
-        --card: 220 9% 12%;
-        --card-foreground: 0 0% 98%;
-      
-        --popover: 220 9% 12%;
-        --popover-foreground: 0 0% 98%;
-      
+        --background: 220 9% 10%; /* very dark blue-gray */
+        --foreground: 0 0% 98%; /* near white */
+        --card: 220 9% 12%; /* slightly lighter dark */
+        --card-foreground: 0 0% 98%; /* near white */
+        --popover: 220 9% 12%; /* slightly lighter dark */
+        --popover-foreground: 0 0% 98%; /* near white */
         --primary: 217 91% 60%; /* blue-500 */
-        --primary-foreground: 0 0% 100%;
-      
-        --secondary: 220 4% 20%;
-        --secondary-foreground: 0 0% 98%;
-      
-        --muted: 220 4% 25%;
-        --muted-foreground: 220 5% 70%;
-      
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 220 4% 20%; /* dark gray */
+        --secondary-foreground: 0 0% 98%; /* near white */
+        --muted: 220 4% 25%; /* slightly lighter dark gray */
+        --muted-foreground: 220 5% 70%; /* light gray */
         --accent: 204 100% 33%; /* sky-800 */
-        --accent-foreground: 0 0% 100%;
-      
-        --destructive: 0 72% 50%;
-        --destructive-foreground: 0 0% 98%;
-      
-        --success: 142 71% 45%;
-        --success-foreground: 0 0% 100%;
-      
-        --border: 220 4% 30%;
-        --input: 220 4% 30%;
-        --ring: 217 91% 60%;
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 72% 50%; /* slightly muted red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* green-600 */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 45 80% 55%; /* slightly brighter orange/yellow */
+        --warning-foreground: 30 80% 10%; /* very dark brown */
+        --info: 205 75% 60%; /* slightly brighter blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 4% 30%; /* medium dark gray */
+        --input: 220 4% 30%; /* medium dark gray */
+        --ring: 217 91% 60%; /* blue-500 (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Black and White --- */
+    .theme-black-and-white {
+        --background: 0 0% 100%; /* white */
+        --foreground: 0 0% 0%; /* black */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 0 0% 0%; /* black */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 0 0% 0%; /* black */
+        --primary: 0 0% 15%; /* very dark gray (near black) */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 0 0% 95%; /* very light gray */
+        --secondary-foreground: 0 0% 0%; /* black */
+        --muted: 0 0% 85%; /* light gray */
+        --muted-foreground: 0 0% 40%; /* mid-dark gray */
+        --accent: 0 0% 50%; /* mid gray */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 0% 20%; /* dark gray */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 0 0% 45%; /* mid gray */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 0 0% 75%; /* light-mid gray */
+        --warning-foreground: 0 0% 0%; /* black */
+        --info: 0 0% 65%; /* mid gray */
+        --info-foreground: 0 0% 0%; /* black */
+        --border: 0 0% 80%; /* gray border */
+        --input: 0 0% 80%; /* gray input */
+        --ring: 0 0% 15%; /* very dark gray (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Sterile White --- */
+    .theme-sterile {
+        --background: 0 0% 98%; /* off white */
+        --foreground: 220 9% 25%; /* dark grayish blue */
+        --card: 0 0% 98%;
+        --card-foreground: 220 9% 25%;
+        --popover: 0 0% 98%;
+        --popover-foreground: 220 9% 25%;
+        --primary: 200 80% 50%; /* light sky blue */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 200 20% 90%; /* very light blue-gray */
+        --secondary-foreground: 220 9% 25%;
+        --muted: 0 0% 90%; /* light gray */
+        --muted-foreground: 220 5% 60%; /* mid gray */
+        --accent: 190 70% 60%; /* light teal */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* standard red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 5% 85%; /* gray-300 */
+        --input: 220 5% 85%; /* gray-300 */
+        --ring: 200 80% 50%; /* light sky blue (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Clinical Blue --- */
+    .theme-clinical-blue {
+        --background: 210 20% 98%; /* very light cool gray */
+        --foreground: 220 15% 25%; /* dark slate blue */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 220 15% 25%; /* dark slate blue */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 220 15% 25%; /* dark slate blue */
+        --primary: 210 90% 45%; /* strong clear blue */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 210 30% 94%; /* light blue-gray */
+        --secondary-foreground: 220 15% 25%; /* dark slate blue */
+        --muted: 210 20% 90%; /* light gray */
+        --muted-foreground: 210 10% 55%; /* mid gray-blue */
+        --accent: 190 80% 50%; /* teal/cyan */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 80% 55%; /* standard red */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 140 60% 40%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 210 20% 88%; /* light gray border */
+        --input: 210 20% 88%; /* light gray input */
+        --ring: 210 90% 45%; /* strong clear blue (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Emergency Red --- */
+    .theme-emergency-red {
+        --background: 0 50% 95%; /* very light red */
+        --foreground: 0 50% 30%; /* dark desaturated red */
+        --card: 0 50% 98%; /* extremely light red */
+        --card-foreground: 0 50% 30%;
+        --popover: 0 50% 98%;
+        --popover-foreground: 0 50% 30%;
+        --primary: 0 80% 55%; /* strong red */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 0 20% 90%; /* light pinkish gray */
+        --secondary-foreground: 0 50% 30%;
+        --muted: 0 50% 90%; /* light pink */
+        --muted-foreground: 0 50% 60%; /* mid desaturated red */
+        --accent: 0 100% 60%; /* bright red */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* slightly different strong red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 0 50% 60%; /* mid desaturated red border */
+        --input: 0 50% 85%; /* light pink input */
+        --ring: 0 80% 55%; /* strong red (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Sterile Green --- */
+    .theme-sterile-green {
+        --background: 0 0% 100%; /* white */
+        --foreground: 215 10% 20%; /* dark cool gray */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 215 10% 20%; /* dark cool gray */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 215 10% 20%; /* dark cool gray */
+        --primary: 145 65% 35%; /* calm medium green */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 150 20% 96%; /* very light green-gray */
+        --secondary-foreground: 215 10% 20%; /* dark cool gray */
+        --muted: 0 0% 92%; /* light gray */
+        --muted-foreground: 215 5% 50%; /* mid cool gray */
+        --accent: 160 70% 40%; /* slightly brighter teal-green */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 80% 55%; /* standard red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 145 65% 35%; /* calm medium green (same as primary) */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 215 10% 85%; /* light cool gray border */
+        --input: 215 10% 85%; /* light cool gray input */
+        --ring: 145 65% 35%; /* calm medium green (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Warm Neutral --- */
+    .theme-warm-neutral {
+        --background: 40 30% 96%; /* very light beige */
+        --foreground: 30 25% 20%; /* dark warm brown */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 30 25% 20%; /* dark warm brown */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 30 25% 20%; /* dark warm brown */
+        --primary: 30 70% 50%; /* warm orange/brown */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 40 20% 92%; /* light beige */
+        --secondary-foreground: 30 25% 20%; /* dark warm brown */
+        --muted: 40 20% 88%; /* lighter beige */
+        --muted-foreground: 35 15% 50%; /* mid brown-gray */
+        --accent: 45 60% 55%; /* muted gold/ochre */
+        --accent-foreground: 30 25% 15%; /* very dark warm brown */
+        --destructive: 0 60% 50%; /* muted red */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 90 40% 40%; /* muted olive green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 35 15% 80%; /* light brown-gray border */
+        --input: 35 15% 80%; /* light brown-gray input */
+        --ring: 30 70% 50%; /* warm orange/brown (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Cool Slate (Darker) --- */
+    .theme-cool-slate {
+        --background: 220 15% 15%; /* very dark cool slate */
+        --foreground: 210 15% 95%; /* very light gray */
+        --card: 220 12% 20%; /* slightly lighter dark slate */
+        --card-foreground: 210 15% 95%; /* very light gray */
+        --popover: 220 12% 20%; /* slightly lighter dark slate */
+        --popover-foreground: 210 15% 95%; /* very light gray */
+        --primary: 220 50% 60%; /* medium slate blue */
+        --primary-foreground: 220 15% 10%; /* very dark slate */
+        --secondary: 220 10% 25%; /* dark gray */
+        --secondary-foreground: 210 15% 95%; /* very light gray */
+        --muted: 220 10% 35%; /* darker gray */
+        --muted-foreground: 210 15% 70%; /* light gray */
+        --accent: 260 60% 65%; /* muted purple */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 50% 55%; /* desaturated red */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 140 40% 50%; /* desaturated green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 45 80% 55%; /* slightly brighter orange/yellow */
+        --warning-foreground: 30 80% 10%; /* very dark brown */
+        --info: 205 75% 60%; /* slightly brighter blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 10% 40%; /* mid-dark gray border */
+        --input: 220 10% 40%; /* mid-dark gray input */
+        --ring: 220 50% 60%; /* medium slate blue (same as primary) */
+        /* --radius is inherited from :root */
+    }
+
+    /* --- Theme: Corporate Navy --- */
+    .theme-corporate-navy {
+        --background: 0 0% 100%; /* white */
+        --foreground: 220 30% 20%; /* very dark navy */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 220 30% 20%; /* very dark navy */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 220 30% 20%; /* very dark navy */
+        --primary: 220 80% 40%; /* strong navy blue */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 215 30% 95%; /* very light gray-blue */
+        --secondary-foreground: 220 30% 20%; /* very dark navy */
+        --muted: 210 20% 90%; /* light gray */
+        --muted-foreground: 215 15% 55%; /* mid gray-blue */
+        --accent: 210 90% 55%; /* brighter lighter blue */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* standard red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 215 20% 85%; /* light gray-blue border */
+        --input: 215 20% 85%; /* light gray-blue input */
+        --ring: 220 80% 40%; /* strong navy blue (same as primary) */
+        /* --radius is inherited from :root */
     }
 }
-  
 
 @layer components {
     /* Your custom component classes go here */

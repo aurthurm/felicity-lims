@@ -63,35 +63,35 @@ const rejectSamples_ = async () => {
   <h4>Sample Rejection</h4>
   <div v-for="(sample, index) in state.rejections" :key="index">
     <hr class="my-4" />
-    <h2 class="text-gray-800 font-bold">
+    <h2 class="text-foreground font-bold">
       {{ sample?.sampleId }} &rarr; {{ sample?.status }}
     </h2>
     <div class="grid grid-cols-12 gap-1 mt-2">
       <div class="col-span-6 grid grid-cols-2 gap-1">
         <div class="col-span-1">
           <div class="flex w-full">
-            <span class="text-gray-700 font-semibold w-4/12">Sample Type</span>
+            <span class="text-foreground font-semibold w-4/12">Sample Type</span>
             <span>{{ sample?.sampleType?.name }}</span>
           </div>
           <div class="flex w-full">
-            <span class="text-gray-700 font-semibold w-4/12">Client Sample ID</span>
+            <span class="text-foreground font-semibold w-4/12">Client Sample ID</span>
             <span>{{ sample?.analysisRequest?.clientRequestId }}</span>
           </div>
           <div class="flex w-full">
-            <span class="text-gray-700 font-semibold w-4/12">Anayses</span>
+            <span class="text-foreground font-semibold w-4/12">Anayses</span>
             <span>{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
           </div>
         </div>
         <div class="col-span-1">
           <div class="flex w-full">
-            <span class="text-gray-700 font-semibold w-4/12">Patient</span>
+            <span class="text-foreground font-semibold w-4/12">Patient</span>
             <span
               >{{ sample?.analysisRequest?.patient?.firstName }}
               {{ sample?.analysisRequest?.patient?.lastName }}</span
             >
           </div>
           <div class="flex w-full">
-            <span class="text-gray-700 font-semibold w-4/12">Client Patient ID</span>
+            <span class="text-foreground font-semibold w-4/12">Client Patient ID</span>
             <span>{{ sample?.analysisRequest?.patient?.clientPatientId }}</span>
           </div>
         </div>
@@ -100,7 +100,7 @@ const rejectSamples_ = async () => {
         <div class="grid grid-cols-2 gap-2">
           <div class="col-span-1">
             <label class="flex flex-col whitespace-nowrap w-full">
-              <span class="text-gray-800 font-bold">Rejection Reasons</span>
+              <span class="text-foreground font-bold">Rejection Reasons</span>
               <hr />
               <select
                 name="reasons"
@@ -122,7 +122,7 @@ const rejectSamples_ = async () => {
           </div>
           <div class="col-span-1">
             <label class="flex flex-col whitespace-nowrap w-full">
-              <span class="text-gray-700 font-bold">Other</span>
+              <span class="text-foreground font-bold">Other</span>
               <hr />
               <input
                 type="text"
@@ -144,7 +144,7 @@ const rejectSamples_ = async () => {
   <button
     v-if="state.rejections?.length > 0"
     @click.prevent="rejectSamples_()"
-    class="px-2 py-1 mr-2 border-orange-600 border text-orange-600 rounded-sm transition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+    class="px-2 py-1 mr-2 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
   >
     Reject Samples
   </button>

@@ -115,7 +115,7 @@ const tableColumns = ref([
     customRender: function (worksheet, _) {
       return h("button", {
         type: "button",
-        class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+        class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
         innerHTML: worksheet?.state || "unknown",
       });
     },
@@ -209,7 +209,7 @@ const countNone = computed(
   <div class="flex justify-between items-center">
     <div>
       <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" @click.prevent="showModal = true"
-        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
         Add WorkSheet
       </button>
     </div>
@@ -244,7 +244,7 @@ const countNone = computed(
         <h3>Create Worksheet</h3>
         <hr />
         <ul>
-          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-orange-600">
+          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-destructive">
             {{ error }}
           </li>
         </ul>
@@ -255,7 +255,7 @@ const countNone = computed(
       <form action="post" class="p-1">
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Analyst</span>
+            <span class="text-foreground">Analyst</span>
             <select class="form-select block w-full mt-1" v-model="analystUid">
               <option v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
                 {{ analystName(analyst) }}
@@ -263,7 +263,7 @@ const countNone = computed(
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Worksheet Template</span>
+            <span class="text-foreground">Worksheet Template</span>
             <select class="form-select block w-full mt-1" v-model="templateUid">
               <option value="undefined"></option>
               <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
@@ -272,14 +272,14 @@ const countNone = computed(
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">How Many</span>
+            <span class="text-foreground">How Many</span>
             <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" />
           </label>
         </div>
 
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

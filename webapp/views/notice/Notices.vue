@@ -79,46 +79,46 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
 <template>
   <PageHeading title="Notice Manager" />
   <button @click.prevent="FormManager(true)"
-    class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
+    class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground">
     New Notice
   </button>
 
   <!-- Notice Table View -->
   <div class="overflow-x-auto mt-4">
     <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <table class="min-w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Notice Title
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Expiration
             </th>
             <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
-        <tbody class="bg-white">
+        <tbody class="bg-background">
           <tr v-for="notice in notices" :key="notice.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="flex items-center">
-                <div class="text-sm leading-5 text-gray-800" @click="FormManager(false, notice)">
+                <div class="text-sm leading-5 text-foreground" @click="FormManager(false, notice)">
                   {{ notice.title }}
                 </div>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               {{ notice.status }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
               <button
-                class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-secondary hover:text-black-700 focus:outline-none"
+                class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-secondary hover:text-foreground-700 focus:outline-none"
                 @click="FormManager(false, notice)">
                 View/Edit
               </button>
               <button
-                class="px-2 py-1 mr-2 ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-black-700 focus:outline-none"
+                class="px-2 py-1 mr-2 ml-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-foreground-700 focus:outline-none"
                 @click="deleteNotice(notice.uid)">
                 Delete
               </button>

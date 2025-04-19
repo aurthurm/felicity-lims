@@ -103,7 +103,7 @@ const tableColumns = ref([
     customRender: function (worksheet, _) {
       return h("button", {
         type: "button",
-        class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+        class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
         innerHTML: worksheet?.state || "unknown",
       });
     },
@@ -117,11 +117,11 @@ const tableColumns = ref([
     customRender: function (shipment, _) {
       return  shipment.incoming ? h(
             "span",
-            { class: "text-green-600" },
+            { class: "text-success" },
             h("i", { class: "fa fa-reply-all" })
           ) : h(
             "span",
-            { class: "text-orange-600" },
+            { class: "text-destructive" },
             h("i", { class: "fa fa-share-from-square" })
           );
     },
@@ -206,7 +206,7 @@ const countNone = computed(
     <div>
       <!-- v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SHIPMENT)" -->
       <button  @click.prevent="showModal = true"
-        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
         Add Shipment
       </button>
     </div>
@@ -247,7 +247,7 @@ const countNone = computed(
         <h3>Create Shipment</h3>
         <hr />
         <ul>
-          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-orange-600">
+          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-destructive">
             {{ error }}
           </li>
         </ul>
@@ -258,7 +258,7 @@ const countNone = computed(
       <form action="post" class="p-1">
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">External Laboratory</span>
+            <span class="text-foreground">External Laboratory</span>
             <select class="form-select block w-full mt-1" v-model="laboratoryUid">
               <option v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
                 {{ laboratory.name }}
@@ -266,17 +266,17 @@ const countNone = computed(
             </select>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Courier</span>
+            <span class="text-foreground">Courier</span>
             <input type="text" class="form-input mt-1 block w-full" v-model="courier" />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">How Many</span>
+            <span class="text-foreground">How Many</span>
             <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" default=1/>
           </label>
         </div>
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-3 mb-2">
-            <span class="text-gray-700">Comment</span>
+            <span class="text-foreground">Comment</span>
             <textarea
               class="form-input mt-1 block w-full"
               rows="2"
@@ -288,7 +288,7 @@ const countNone = computed(
 
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Create Shipment
         </button>
       </form>

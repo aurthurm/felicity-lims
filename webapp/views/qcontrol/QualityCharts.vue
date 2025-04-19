@@ -127,7 +127,7 @@
       <PageHeader title="Analyses Service Control Charts" />
       <div class="flex justify-start items-center gap-x-2">
         <VueDatePicker 
-          class="z-60 disabled:bg-slate-200" 
+          class="z-60 disabled:bg-muted" 
           v-model="selectedMonth"
           :max-date="today"
           month-picker></VueDatePicker>

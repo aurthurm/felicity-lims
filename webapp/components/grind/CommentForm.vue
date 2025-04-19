@@ -60,13 +60,13 @@ function cancelReply() {
             <button 
                 v-if="isReply"
                 @click="cancelReply" 
-                class="px-2 py-1 border border-border rounded hover:bg-gray-50 text-sm"
+                class="px-2 py-1 border border-border rounded hover:bg-background text-sm"
             >
                 Cancel
             </button>
             <button 
                 @click="addDiscussion"
-                :class="`px-3 py-1.5 bg-accent text-white rounded hover:bg-blue-600 flex items-center gap-2 ${isReply ? 'text-sm px-2 py-1' : ''}`"
+                :class="`px-3 py-1.5 bg-accent text-primary-foreground rounded hover:bg-primary flex items-center gap-2 ${isReply ? 'text-sm px-2 py-1' : ''}`"
             >
                 <div v-if="!isReply" class="flex items-center gap-2 font-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

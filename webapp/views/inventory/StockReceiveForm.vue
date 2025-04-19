@@ -120,7 +120,7 @@ const updateQuantityReceived = () => {
   <form @submit.prevent="submitStockForm" class="rounded-sm py-2" autocomplete="off" :inert="addingProduct">
     {{ errors }}
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Reveice Type</span>
+      <span class="col-span-2 text-foreground w-4/12">Reveice Type</span>
       <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="receiptType">
         <option value="null"></option>
         <option value="purchase">Purchased</option>
@@ -128,10 +128,10 @@ const updateQuantityReceived = () => {
         <option value="transfer_in">Transfer In</option>
       </select>
     </label>
-    <div class="text-orange-600 w-4/12">{{ errors.receiptType }}</div>
+    <div class="text-destructive w-4/12">{{ errors.receiptType }}</div>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Stock Item</span>
+      <span class="col-span-2 text-foreground w-4/12">Stock Item</span>
       <div class="w-full col-span-4">
         <VueMultiselect 
         placeholder="Select a Stock Item" 
@@ -145,12 +145,12 @@ const updateQuantityReceived = () => {
           {{ `${slotProps.option?.stockItem?.name} ${slotProps.option?.name}` }}
         </template> -->
         </VueMultiselect>
-        <div class="text-orange-600 w-4/12">{{ errors.stockItemVariantUid }}</div>
+        <div class="text-destructive w-4/12">{{ errors.stockItemVariantUid }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Supplier</span>
+      <span class="col-span-2 text-foreground w-4/12">Supplier</span>
       <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="supplierUid">
         <option value="null"></option>
         <option v-for="supplier in setupStore.suppliers" :key="supplier.uid" :value="supplier.uid">
@@ -158,10 +158,10 @@ const updateQuantityReceived = () => {
         </option>
       </select>
     </label>
-    <div class="text-orange-600 w-4/12">{{ errors.supplierUid }}</div>
+    <div class="text-destructive w-4/12">{{ errors.supplierUid }}</div>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Unit (Single)</span>
+      <span class="col-span-2 text-foreground w-4/12">Unit (Single)</span>
       <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="unitUid">
         <option value="null"></option>
         <option v-for="unit in inventoryStore.units" :key="unit.uid" :value="unit.uid">
@@ -169,10 +169,10 @@ const updateQuantityReceived = () => {
         </option>
       </select>
     </label>
-    <div class="text-orange-600 w-4/12">{{ errors.unitUid }}</div>
+    <div class="text-destructive w-4/12">{{ errors.unitUid }}</div>
 
     <!-- <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Store Room</span>
+      <span class="col-span-2 text-foreground w-4/12">Store Room</span>
       <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="storeRoomUid">
         <option value="null"></option>
         <option v-for="storeRoom in storageStore.storeRooms" :key="storeRoom.uid" :value="storeRoom.uid">
@@ -180,86 +180,86 @@ const updateQuantityReceived = () => {
         </option>
       </select>
     </label>
-    <div class="text-orange-600 w-4/12">{{ errors.storeRoomUid }}</div> -->
+    <div class="text-destructive w-4/12">{{ errors.storeRoomUid }}</div> -->
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Lot Number</span>
+      <span class="col-span-2 text-foreground w-4/12">Lot Number</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" v-model="lotNumber" placeholder="Lot Number..." />
-        <div class="text-orange-600 w-4/12">{{ errors.lotNumber }}</div>
+        <div class="text-destructive w-4/12">{{ errors.lotNumber }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Packages Received</span>
+      <span class="col-span-2 text-foreground w-4/12">Packages Received</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" type="number" v-model="packagesReceived"
           placeholder="Quantity Received..." @keyup="updateQuantityReceived" @focus="(e: any) => (e.target.select())"/>
-        <div class="text-orange-600 w-4/12">{{ errors.packagesReceived }}</div>
+        <div class="text-destructive w-4/12">{{ errors.packagesReceived }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Package Factor</span>
+      <span class="col-span-2 text-foreground w-4/12">Package Factor</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" type="number" v-model="packageFactor"
           placeholder="Quantity Received..."  @keyup="updateQuantityReceived" @focus="(e: any) => (e.target.select())" />
-        <div class="text-orange-600 w-4/12">{{ errors.packageFactor }}</div>
+        <div class="text-destructive w-4/12">{{ errors.packageFactor }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Singles Received</span>
+      <span class="col-span-2 text-foreground w-4/12">Singles Received</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" type="number" v-model="singlesReceived"
           placeholder="Quantity Received..." @keyup="updateQuantityReceived" @focus="(e: any) => (e.target.select())" />
-        <div class="text-orange-600 w-4/12">{{ errors.singlesReceived }}</div>
+        <div class="text-destructive w-4/12">{{ errors.singlesReceived }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Quantity Received</span>
+      <span class="col-span-2 text-foreground w-4/12">Quantity Received</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" type="number" v-model="quantityReceived" disabled/>
-        <div class="text-orange-600 w-4/12">{{ errors.quantityReceived }}</div>
+        <div class="text-destructive w-4/12">{{ errors.quantityReceived }}</div>
       </div>
     </label>
 
     <!-- <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Unit Price</span>
+      <span class="col-span-2 text-foreground w-4/12">Unit Price</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" type="number" v-model="unitPrice" placeholder="Size..." />
-        <div class="text-orange-600 w-4/12">{{ errors.unitPrice }}</div>
+        <div class="text-destructive w-4/12">{{ errors.unitPrice }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Total Price</span>
+      <span class="col-span-2 text-foreground w-4/12">Total Price</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 block w-full" type="number" v-model="totalPrice"
           placeholder="Quantity Received..." />
-        <div class="text-orange-600 w-4/12">{{ errors.totalPrice }}</div>
+        <div class="text-destructive w-4/12">{{ errors.totalPrice }}</div>
       </div>
     </label> -->
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Expiry Date</span>
+      <span class="col-span-2 text-foreground w-4/12">Expiry Date</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 w-full" type="date" v-model="expiryDate" placeholder="Expiry Date" />
-        <div class="text-orange-600 w-4/12">{{ errors.expiryDate }}</div>
+        <div class="text-destructive w-4/12">{{ errors.expiryDate }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Received Date</span>
+      <span class="col-span-2 text-foreground w-4/12">Received Date</span>
       <div class="w-full col-span-4">
         <input class=" form-input mt-1 w-full" type="date" v-model="receiptDate" placeholder="Expiry Date" />
-        <div class="text-orange-600 w-4/12">{{ errors.receiptDate }}</div>
+        <div class="text-destructive w-4/12">{{ errors.receiptDate }}</div>
       </div>
     </label>
 
     <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-gray-700 w-4/12">Received By</span>
+      <span class="col-span-2 text-foreground w-4/12">Received By</span>
       <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="receiptByUid">
         <option value="null"></option>
         <option v-for="user in userStore.users" :key="user.uid" :value="user.uid">
@@ -267,12 +267,12 @@ const updateQuantityReceived = () => {
         </option>
       </select>
     </label>
-    <div class="text-orange-600 w-4/12">{{ errors.receiptByUid }}</div>
+    <div class="text-destructive w-4/12">{{ errors.receiptByUid }}</div>
     
     <hr class="my-4" />
 
     <button type="submit"
-      class="-mb-4 w-1/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+      class="-mb-4 w-1/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
       v-show="!addingProduct">
       Save
     </button>

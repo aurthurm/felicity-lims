@@ -261,7 +261,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -440,7 +440,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
       Add Organism
     </button> -->
     <hr>
@@ -480,19 +480,19 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Organism Name</span>
+              <span class="text-foreground">Organism Name</span>
               <input class="form-input mt-1 block w-full" v-model="form.name" placeholder="Enter organism name" />
             </label>
             <label class="block">
-              <span class="text-gray-700">WHONET Code</span>
+              <span class="text-foreground">WHONET Code</span>
               <input class="form-input mt-1 block w-full" v-model="form.whonetOrgCode" placeholder="WHONET code" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Replaced By</span>
+              <span class="text-foreground">Replaced By</span>
               <input class="form-input mt-1 block w-full" v-model="form.replacedBy" placeholder="Replaced by" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Taxonomic Status</span>
+              <span class="text-foreground">Taxonomic Status</span>
               <input class="form-input mt-1 block w-full" v-model="form.taxonomicStatus" placeholder="Taxonomic status" />
             </label>
           </div>
@@ -503,19 +503,19 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Classification</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Common</span>
+              <span class="text-foreground">Common</span>
               <input class="form-input mt-1 block w-full" v-model="form.common" placeholder="Common" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Type</span>
+              <span class="text-foreground">Organism Type</span>
               <input class="form-input mt-1 block w-full" v-model="form.organismType" placeholder="Organism type" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Anaerobe</span>
+              <span class="text-foreground">Anaerobe</span>
               <input type="checkbox" class="form-checkbox mt-1" v-model="form.anaerobe" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Morphology</span>
+              <span class="text-foreground">Morphology</span>
               <input class="form-input mt-1 block w-full" v-model="form.morphology" placeholder="Morphology" />
             </label>
           </div>
@@ -526,27 +526,27 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Taxonomy</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Subkingdom Code</span>
+              <span class="text-foreground">Subkingdom Code</span>
               <input class="form-input mt-1 block w-full" v-model="form.subkingdomCode" placeholder="Subkingdom code" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Family Code</span>
+              <span class="text-foreground">Family Code</span>
               <input class="form-input mt-1 block w-full" v-model="form.familyCode" placeholder="Family code" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Genus Group</span>
+              <span class="text-foreground">Genus Group</span>
               <input class="form-input mt-1 block w-full" v-model="form.genusGroup" placeholder="Genus group" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Genus Code</span>
+              <span class="text-foreground">Genus Code</span>
               <input class="form-input mt-1 block w-full" v-model="form.genusCode" placeholder="Genus code" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Species Group</span>
+              <span class="text-foreground">Species Group</span>
               <input class="form-input mt-1 block w-full" v-model="form.speciesGroup" placeholder="Species group" />
             </label>
             <label class="block">
-              <span class="text-gray-700">Serovar Group</span>
+              <span class="text-foreground">Serovar Group</span>
               <input class="form-input mt-1 block w-full" v-model="form.serovarGroup" placeholder="Serovar group" />
             </label>
           </div>
@@ -557,15 +557,15 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Additional Details</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">GBIF Taxon ID</span>
+              <span class="text-foreground">GBIF Taxon ID</span>
               <input class="form-input mt-1 block w-full" v-model="form.gbifTaxonId" placeholder="GBIF Taxon ID" />
             </label>
             <label class="block">
-              <span class="text-gray-700">GBIF Dataset ID</span>
+              <span class="text-foreground">GBIF Dataset ID</span>
               <input class="form-input mt-1 block w-full" v-model="form.gbifDatasetId" placeholder="GBIF Dataset ID" />
             </label>
             <label class="block">
-              <span class="text-gray-700">GBIF Taxonomic Status</span>
+              <span class="text-foreground">GBIF Taxonomic Status</span>
               <input class="form-input mt-1 block w-full" v-model="form.gbifTaxonomicStatus" placeholder="GBIF Taxonomic Status" />
             </label>
           </div>
@@ -575,7 +575,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Additional Details</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-                <span class="text-gray-700">Kingdom</span>
+                <span class="text-foreground">Kingdom</span>
                 <VueMultiselect
                 v-model="form.kingdom"
                 :options="abxKingdoms"
@@ -586,7 +586,7 @@ function saveForm(): void {
                 </VueMultiselect>
             </label>
             <label class="block">
-                <span class="text-gray-700">Phylum</span>
+                <span class="text-foreground">Phylum</span>
                 <VueMultiselect
                 v-model="form.phylum"
                 :options="phylums"
@@ -599,7 +599,7 @@ function saveForm(): void {
           </div>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-                <span class="text-gray-700">Class</span>
+                <span class="text-foreground">Class</span>
                 <VueMultiselect
                 v-model="form.class_"
                 :options="classes"
@@ -610,7 +610,7 @@ function saveForm(): void {
                 </VueMultiselect>
             </label>
             <label class="block">
-                <span class="text-gray-700">Order</span>
+                <span class="text-foreground">Order</span>
                 <VueMultiselect
                 v-model="form.Order"
                 :options="orders"
@@ -623,7 +623,7 @@ function saveForm(): void {
           </div>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-                <span class="text-gray-700">Family</span>
+                <span class="text-foreground">Family</span>
                 <VueMultiselect
                 v-model="form.family"
                 :options="familys"
@@ -634,7 +634,7 @@ function saveForm(): void {
                 </VueMultiselect>
             </label>
             <label class="block">
-                <span class="text-gray-700">Genus</span>
+                <span class="text-foreground">Genus</span>
                 <VueMultiselect
                 v-model="form.genus"
                 :options="genuses"
@@ -651,7 +651,7 @@ function saveForm(): void {
         <div class="mb-6">
           <h4 class="text-lg font-semibold mb-4">Comments</h4>
           <label class="block">
-            <span class="text-gray-700">Additional Comments</span>
+            <span class="text-foreground">Additional Comments</span>
             <textarea class="form-textarea mt-1 block w-full" v-model="form.comments" rows="3" placeholder="Additional comments..."></textarea>
           </label>
         </div>
@@ -660,7 +660,7 @@ function saveForm(): void {
         
         <button
           type="submit"
-          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save Organism
         </button>

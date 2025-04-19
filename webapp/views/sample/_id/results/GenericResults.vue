@@ -149,10 +149,10 @@ function isEditable(result: IAnalysisResult): Boolean {
 function getResultRowColor(result: any): string {
   switch (result?.status) {
     case "retracted":
-      return "bg-gray-300";
+      return "bg-muted";
     case "aproved":
       if (result?.reportable === false) {
-        return "bg-orange-600";
+        return "bg-destructive";
       } else {
         return "";
       }
@@ -274,77 +274,77 @@ const retestResults = () =>
   <hr class="mb-4 mt-2" />
 
   <div class="overflow-x-auto">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <div v-if="fetchingResults" class="py-4 text-center">
         <LoadingMessage message="Fetching analytes ..." />
       </div>
       <table class="min-w-full" v-else>
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
               <input type="checkbox" class="" @change="toggleCheckAll" v-model="state.allChecked" />
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
               Analysis
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Instrument
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Method
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Analyst
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Reviewer(s)
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Interim
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Result
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Retest
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Due Date
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Submitted
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Approved
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Status
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Reportable
             </th>
             <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
-        <tbody class="bg-white">
+        <tbody class="bg-background">
           <tr v-for="result in analysisResults" :key="result.uid" :class="[getResultRowColor(result)]"
             v-motion-slide-right>
             <td>
-              <input type="checkbox" class="border-red-500" v-model="result.checked" @change="checkCheck(result)"
+              <input type="checkbox" class="border-destructive" v-model="result.checked" @change="checkCheck(result)"
                 :disabled="isDisabledRowCheckBox(result)" /><font-awesome-icon v-if="result.status === 'pending'"
                 icon="fa-question" class="ml-1 text-xs"></font-awesome-icon>
               <font-awesome-icon v-if="result.status === 'resulted'" icon="fa-question"
                 class="ml-1 text-xs text-orange"></font-awesome-icon>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 <span class="mr-1 hover:cursor-pointer" @click="viewAnalysisInfo(result)"><font-awesome-icon icon="fa-info-circle"></font-awesome-icon></span>
                 {{ result.analysis?.name }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.laboratoryInstrument?.labName || "---" }}
               </div>
@@ -363,7 +363,7 @@ const retestResults = () =>
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.method?.name || "---" }}
               </div>
@@ -377,19 +377,19 @@ const retestResults = () =>
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
                   {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                 </span>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
                 class="text-sm leading-5 text-primary">
                 ---
@@ -404,7 +404,7 @@ const retestResults = () =>
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result?.result }}
               </div>
@@ -423,41 +423,41 @@ const retestResults = () =>
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <span v-if="result?.retest" class="text-primary">
                   <font-awesome-icon icon="fa-check-circle"></font-awesome-icon>
                 </span>
-                <span v-else class="text-orange-600">
+                <span v-else class="text-destructive">
                   <font-awesome-icon icon="fa-times-circle"></font-awesome-icon>
                 </span>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dueDate) }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateSubmitted) }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateVerified) }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
                 {{ result.status }}
               </button>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
-                <span v-if="result?.reportable" class="text-emerald-600">
+                <span v-if="result?.reportable" class="text-success">
                   <font-awesome-icon icon="fa-thumbs-up" aria-hidden="true"></font-awesome-icon>
                 </span>
-                <span v-else class="text-orange-600">
+                <span v-else class="text-destructive">
                   <font-awesome-icon icon="fa-thumbs-down" aria-hidden="true"></font-awesome-icon>
                 </span>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
             </td>
           </tr>
         </tbody>

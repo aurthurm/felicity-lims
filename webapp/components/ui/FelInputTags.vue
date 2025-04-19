@@ -2,10 +2,10 @@
     <div id="app" class="max-w-screen-sm mx-auto">
         <div class="mt-6 grid grid-cols-1 row-gap-6 col-gap-4 sm:grid-cols-6">
             <div class="sm:col-span-6">
-                <label for="tag" class="block text-sm font-medium leading-5 text-gray-700">Add Tags</label>
-                <div class="flex mt-1 relative bg-white overflow-x-scroll rounded-md shadow-sm focus:outline-none focus:shadow-outline border border-border">
-                    <div v-for="(tag, index) in state.emailDomains" :key="index" class="flex-grow-0 text-gray-700 text-center my-1 ml-1">
-                        <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold bg-indigo-500 hover:bg-indigo-300 text-white hover:text-black cursor-pointer">
+                <label for="tag" class="block text-sm font-medium leading-5 text-foreground">Add Tags</label>
+                <div class="flex mt-1 relative bg-background overflow-x-scroll rounded-md shadow-sm focus:outline-none focus:shadow-outline border border-border">
+                    <div v-for="(tag, index) in state.emailDomains" :key="index" class="flex-grow-0 text-foreground text-center my-1 ml-1">
+                        <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold bg-accent hover:bg-indigo-300 text-primary-foreground hover:text-foreground cursor-pointer">
                             {{ state.emailDomain }}
                             <button type="button" class="flex-shrink-0 -mr-0.5 ml-1.5 inline-flex hover:bg-indigo-400 p-1 rounded-full" @click="removeTag(index)">
                                 <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
@@ -14,7 +14,7 @@
                             </button>
                         </span>
                     </div>
-                    <div class="flex-grow text-gray-700 text-center">
+                    <div class="flex-grow text-foreground text-center">
                         <input
                             id="tags"
                             class="w-full h-full rounded-lg py-2 pl-2 pr-4 block appearance-none leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5"

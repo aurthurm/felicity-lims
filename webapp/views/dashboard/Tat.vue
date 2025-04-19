@@ -1,6 +1,6 @@
 <template>
   <div class="mt-4">
-    <h1 class="text-xl text-gray-700 font-semibold">Turn Aroud Time Measures</h1>
+    <h1 class="text-xl text-foreground font-semibold">Turn Aroud Time Measures</h1>
   </div>
 </template>
 

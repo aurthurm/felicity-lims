@@ -173,15 +173,15 @@ function saveForm(): void {
         <div class="w-full flex justify-between items-center pr-4">
           <h2 class="text-l font-semibold inline uppercase">Countries</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
             @click="FormManager(true, 'country')">
             Add Country
           </button>
         </div>
         <div class="overflow-y-scroll overscroll-contain scroll-section">
           <div v-for="c in countries" :key="c.uid"
-            :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a @click.prevent.stop="selectLocation('country', c)" class="font-semibold text-gray-700">
+            :class="country?.uid === c.uid ? 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
+            <a @click.prevent.stop="selectLocation('country', c)" class="font-semibold text-foreground">
               <span>{{ c.name }}</span>
             </a>
             <a @click="FormManager(false, 'country', c)" class="px-2 cursor">
@@ -195,15 +195,15 @@ function saveForm(): void {
         <div class="w-full flex justify-between items-center pr-4">
           <h2 class="text-l font-semibold inline uppercase">Provinces</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
             @click="FormManager(true, 'province')">
             Add Province
           </button>
         </div>
         <div class="overflow-y-scroll overscroll-contain scroll-section">
           <div v-for="p in provinces" :key="p.uid"
-            :class="province?.uid === p.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a @click.prevent.stop="selectLocation('province', p)" class="font-semibold text-gray-700">
+            :class="province?.uid === p.uid ? 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
+            <a @click.prevent.stop="selectLocation('province', p)" class="font-semibold text-foreground">
               <span>{{ p.name }}</span>
 
             </a>
@@ -218,15 +218,15 @@ function saveForm(): void {
         <div class="w-full flex justify-between items-center pr-4">
           <h2 class="text-l font-semibold inline uppercase">Districts</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
+            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
             @click="FormManager(true, 'district')">
             Add District
           </button>
         </div>
         <div class="overflow-y-scroll overscroll-contain scroll-section">
           <div v-for="d in districts" :key="d.uid"
-            :class="district?.uid === d.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a @click.prevent.stop="selectLocation('district', d)" class="font-semibold text-gray-700">
+            :class="district?.uid === d.uid ? 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
+            <a @click.prevent.stop="selectLocation('district', d)" class="font-semibold text-foreground">
               <span>{{ d.name }}</span>
             </a>
             <a @click="FormManager(false, 'district', d)" class="px-2 cursor">
@@ -248,17 +248,17 @@ function saveForm(): void {
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Name</span>
+            <span class="text-foreground">Name</span>
             <input class="form-input mt-1 block w-full" v-model="form.name" placeholder="Name ..." />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Code</span>
+            <span class="text-foreground">Code</span>
             <input class="form-input mt-1 block w-full" v-model="form.code" placeholder="Code ..." />
           </label>
         </div>
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

@@ -176,7 +176,7 @@ const goToStorage = async (sample?: ISample) => {
       name: 'patient-detail',
       params: { patientUid: sample?.analysisRequest?.patient?.uid },
     }"
-      class="p-2 my-2 ml-4 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
+      class="p-2 my-2 ml-4 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground">
       ... other samples
     </router-link>
     </div>
@@ -184,24 +184,24 @@ const goToStorage = async (sample?: ISample) => {
 
   <hr />
 
-  <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-right>
+  <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-right>
     <div v-if="fetchingSample" class="py-4 text-center">
       <LoadingMessage message="Fetching sample details ..." />
     </div>
     <div class="grid grid-cols-12 gap-3" v-else>
       <!-- Summary Column -->
       <div class="col-span-12 px-3 sm:px-0">
-        <div class="mb-2 flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
+        <div class="mb-2 flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold">
           <div>
             <span v-if="sample?.priority ?? 0 < 1" :class="[
               'font-small',
-              { 'text-orange-600': sample?.priority ?? 0 < 1 },
+              { 'text-destructive': sample?.priority ?? 0 < 1 },
             ]">
               <font-awesome-icon icon="fa-star" />
             </span>
             {{ sample?.sampleId }}
             <!-- <button
-                                                class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
+                                                class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-primary border text-foreground transition-colors duration-150 bg-background rounded-full focus:outline-none hover:bg-muted"
                                               >
                                                 <font-awesome-icon icon="fa-pen" />
                                               </button> -->
@@ -214,7 +214,7 @@ const goToStorage = async (sample?: ISample) => {
                   sampleUid: repeatSample?.uid,
                 },
               }"
-                class="p-2 my-2 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
+                class="p-2 my-2 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground">
                 {{ repeatSample?.sampleId }}
               </router-link>
             </span>
@@ -223,46 +223,46 @@ const goToStorage = async (sample?: ISample) => {
           <div>
             <div @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
                 {{ sample?.status }}
               </button>
               <div class="ml-2">
-                <font-awesome-icon icon="chevron-down" class="text-gray-400" />
+                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
               </div>
             </div>
             <div v-show="state.dropdownOpen" @click="state.dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
             </div>
-            <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
+            <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-muted rounded-sm shadow-xl z-20">
               <div v-show="canReceive" @click="receiveSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Receive
               </div>
               <div v-show="canVerify" @click="verifySample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Approve
               </div>
               <div v-show="canReject" @click="rejectSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-destructive hover:text-primary-foreground">
                 Reject
               </div>
               <div v-show="canCancel" @click="cancelSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-destructive hover:text-primary-foreground">
                 Cancel
               </div>
               <div v-show="canReinstate" @click="reInstateSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-destructive hover:text-primary-foreground">
                 Reinstate
               </div>
               <div v-show="canPublish" @click="publishSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-muted hover:text-primary-foreground">
                 {{ publishText }}
               </div>
               <div v-show="canInvalidate" @click="invalidateSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-muted hover:text-primary-foreground">
                 Invalidate
               </div>
               <div v-show="canRecover" @click="recoverSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-muted hover:text-primary-foreground">
                 Recover
               </div>
             </div>
@@ -272,70 +272,70 @@ const goToStorage = async (sample?: ISample) => {
         <div class="grid grid-cols-3 gap-x-4 mt-2">
           <div class="col-span-1">
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Client Request ID:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Client Request ID:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 sample?.analysisRequest?.clientRequestId
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Client:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Client:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 sample?.analysisRequest?.client?.name
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Cliet Contact:</span>
-              <span class="text-gray-600 text-sm md:text-md">Sister in Charge</span>
+              <span class="text-foreground text-sm font-semibold">Cliet Contact:</span>
+              <span class="text-foreground text-sm md:text-md">Sister in Charge</span>
             </div>
           </div>
           <div class="col-span-1">
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Sample Type:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Sample Type:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 sample?.sampleType?.name
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Sampled:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Sampled:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.dateCollected, true)
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Registered:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Registered:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.createdAt, true)
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Received:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Received:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.dateReceived, true)
               }}</span>
             </div>
           </div>
           <div class="col-span-1">
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Submitted:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Submitted:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.dateSubmitted, true)
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Verified:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Verified:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.dateVerified, true)
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Published:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Published:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.datePublished, true)
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-800 text-sm font-semibold">Date Printed:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Date Printed:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 parseDate(sample?.datePrinted, true)
               }}</span>
             </div>
@@ -346,7 +346,7 @@ const goToStorage = async (sample?: ISample) => {
   </div>
 
   <div v-show="sample?.status === 'stored'"
-    class="bg-blue-300 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4">
+    class="bg-muted rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4">
     <div class="flex">
       <div class="mr-4 font-semibold">Storage:</div>
       <!--  -->
@@ -366,8 +366,8 @@ const goToStorage = async (sample?: ISample) => {
   </div>
 
   <div v-show="sample?.status === 'rejected'"
-    class="bg-orange-600 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4">
-    <!-- <h3 clas="font-bold text-gray-800 text-md">This sample was rejected because of the following reason(s):</h3> -->
+    class="bg-destructive rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4">
+    <!-- <h3 clas="font-bold text-foreground text-md">This sample was rejected because of the following reason(s):</h3> -->
     <ul>
       <li v-for="reason in sample?.rejectionReasons" :key="reason.uid">{{ reason.reason }}</li>
     </ul>

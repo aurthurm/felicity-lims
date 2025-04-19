@@ -43,7 +43,7 @@ export default defineComponent({
       "px-2 py-1 mr-2 border transition duration-300 focus:outline-none disabled:opacity-50 relative",
       props.disabled || props.loading
         ? "cursor-not-allowed"
-        : `border-${props.color} text-${props.color} hover:bg-${props.color} hover:text-white`,
+        : `border-${props.color} text-${props.color} hover:bg-${props.color} hover:text-primary-foreground`,
     ]);
 
     return {

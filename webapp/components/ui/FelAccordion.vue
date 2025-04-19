@@ -12,7 +12,7 @@ let show = ref(false);
     <div class="rounded-sm my-1">
       <div class="border border-b-0 bg-secondary px-4 p-2">
         <button @click="show = !show"
-          class="w-full flex justify-between text-gray-800 font-bold hover:underline focus:outline-none" type="button">
+          class="w-full flex justify-between text-foreground font-bold hover:underline focus:outline-none" type="button">
           <span class="w-full text-left">
             <slot name="title">Accordion Title</slot>
           </span>

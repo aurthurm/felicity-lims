@@ -35,7 +35,7 @@ const login = handleSubmit((values) => {
 
 <template>
   
-  <div class="min-h-screen bg-gradient-to-br from-sky-800 to-indigo-900 flex items-center justify-center p-6">
+  <div class="min-h-screen bg-gradient-to-br from-primary to-accent flex items-center justify-center p-6">
 
 
     <div class="w-full max-w-md">
@@ -45,10 +45,10 @@ const login = handleSubmit((values) => {
       </div>
 
       <!-- Card Container -->
-      <div class="bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl p-8 space-y-6">
+      <div class="bg-background/95 backdrop-blur-sm rounded-xl shadow-2xl p-8 space-y-6">
         <!-- Logo Section -->
         <div class="flex flex-col items-center space-y-2">
-          <h2 class="mt-4 text-2xl font-bold text-gray-800">Felicity LIMS</h2>
+          <h2 class="mt-4 text-2xl font-bold text-foreground">Felicity LIMS</h2>
           <p class="text-muted-foreground text-sm">Laboratory Information Management System</p>
         </div>
 
@@ -56,7 +56,7 @@ const login = handleSubmit((values) => {
         <form v-if="!auth.isAuthenticated" @submit.prevent="login" class="space-y-5">
           <!-- Username Field -->
           <div class="space-y-1">
-            <label class="text-sm font-medium text-gray-700" for="username">
+            <label class="text-sm font-medium text-foreground" for="username">
               Username
             </label>
             <div class="relative">
@@ -67,14 +67,14 @@ const login = handleSubmit((values) => {
                 :disabled="auth.processing"
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
-                  'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  errors?.username ? 'border-red-500' : 'border-border'
+                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
+                  errors?.username ? 'border-destructive' : 'border-border'
                 ]"
                 placeholder="Enter your username"
               />
               <div v-if="errors?.username" class="absolute right-0 top-0 h-full pr-3 flex items-center">
                 <svg
-                  class="h-5 w-5 text-red-500"
+                  class="h-5 w-5 text-destructive"
                   fill="none"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -86,12 +86,12 @@ const login = handleSubmit((values) => {
                 </svg>
               </div>
             </div>
-            <p v-if="errors?.username" class="text-red-500 text-xs mt-1">{{ errors.username }}</p>
+            <p v-if="errors?.username" class="text-destructive text-xs mt-1">{{ errors.username }}</p>
           </div>
 
           <!-- Password Field -->
           <div class="space-y-1">
-            <label class="text-sm font-medium text-gray-700" for="password">
+            <label class="text-sm font-medium text-foreground" for="password">
               Password
             </label>
             <div class="relative">
@@ -102,14 +102,14 @@ const login = handleSubmit((values) => {
                 :disabled="auth.processing"
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
-                  'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  errors?.password ? 'border-red-500' : 'border-border'
+                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
+                  errors?.password ? 'border-destructive' : 'border-border'
                 ]"
                 placeholder="Enter your password"
               />
               <div v-if="errors?.password" class="absolute right-0 top-0 h-full pr-3 flex items-center">
                 <svg
-                  class="h-5 w-5 text-red-500"
+                  class="h-5 w-5 text-destructive"
                   fill="none"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -121,7 +121,7 @@ const login = handleSubmit((values) => {
                 </svg>
               </div>
             </div>
-            <p v-if="errors?.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
+            <p v-if="errors?.password" class="text-destructive text-xs mt-1">{{ errors.password }}</p>
           </div>
 
           <!-- Forgot Password Link -->
@@ -129,7 +129,7 @@ const login = handleSubmit((values) => {
             <button
               type="button"
               @click="emit('forgot')"
-              class="text-sm text-indigo-600 hover:text-indigo-800 transition-colors duration-200"
+              class="text-sm text-accent hover:text-indigo-800 transition-colors duration-200"
             >
               Forgot your password?
             </button>
@@ -142,10 +142,10 @@ const login = handleSubmit((values) => {
               type="submit"
               :disabled="!username || !password"
               :class="[
-                'w-full px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200',
+                'w-full px-4 py-2 rounded-lg text-primary-foreground font-medium transition-colors duration-200',
                 username && password
-                  ? 'bg-indigo-600 hover:bg-indigo-700'
-                  : 'bg-gray-400 cursor-not-allowed'
+                  ? 'bg-accent hover:bg-accent'
+                  : 'bg-muted cursor-not-allowed'
               ]"
             >
               Sign In
@@ -162,7 +162,7 @@ const login = handleSubmit((values) => {
 
       <!-- Footer -->
       <div class="mt-6 text-center">
-        <p class="text-sm text-white/80">
+        <p class="text-sm text-primary-foreground/80">
           Secure Laboratory Management Solution
         </p>
       </div>

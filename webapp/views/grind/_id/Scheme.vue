@@ -101,7 +101,7 @@ function goBack() {
 
 <template>
      <div class="flex items-center">
-        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-gray-700">
+        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-foreground">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
         <h3 class="h3 text-xl">
@@ -112,20 +112,20 @@ function goBack() {
 
     
     <hr class="mt-2 mb-2">
-    <p class="leading-2 bg-slate-50 p-2 italic font-medium text-muted-foreground">{{ scheme?.description }}</p>
+    <p class="leading-2 bg-background p-2 italic font-medium text-muted-foreground">{{ scheme?.description }}</p>
     <hr class="mt-2 mb-2">
 
     <h4 class="h3 text-xl font-semibold mb-2">Boards:</h4>
     <div class="flex justify-start items-center mb-2">
         <div>
             <button v-for="board in scheme?.boards" :key="board.uid"
-            class="py-1 px-4 mr-2 bg-muted text-gray-600 shadow-md overflow-hidden font-medium border-2 border-gray-200"
-            :class="{ 'bg-sky-500 text-white border-sky-500': selectedBoard?.uid === board.uid }"
+            class="py-1 px-4 mr-2 bg-muted text-foreground shadow-md overflow-hidden font-medium border-2 border-border"
+            :class="{ 'bg-sky-500 text-primary-foreground border-sky-500': selectedBoard?.uid === board.uid }"
             @click="selectBoard(board)"
             @dblclick="updateBoard(board)">
             {{ board.title }}</button>
         </div>
-        <button @click="openCreateBoardForm" class="bg-accent hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">+ Board</button>
+        <button @click="openCreateBoardForm" class="bg-accent hover:bg-primary text-primary-foreground font-bold py-1 px-2 rounded">+ Board</button>
     </div>
 
     <board v-if="selectedBoard" :board="selectedBoard" />
@@ -140,8 +140,8 @@ function goBack() {
       <form @submit.prevent="saveBoardForm">
         <!-- Scheme Title -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="title">
-            Scheme Title <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-foreground mb-1" for="title">
+            Scheme Title <span class="text-destructive">*</span>
           </label>
           <input
             id="title"
@@ -155,7 +155,7 @@ function goBack() {
         
          <!-- Description -->
          <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="description">
+          <label class="block text-sm font-medium text-foreground mb-1" for="description">
             Description
           </label>
           <textarea
@@ -171,7 +171,7 @@ function goBack() {
         <div class="flex justify-end">
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             {{ formAction ? 'Create' : 'Update' }}
           </button>

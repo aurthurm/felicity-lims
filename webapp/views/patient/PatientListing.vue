@@ -122,7 +122,7 @@ const tableColumns = ref([
           },
         },
         class:
-          "px-2 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none",
+          "px-2 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none",
         innerHTML: "+ Analysis Request",
       });
     },
@@ -180,7 +180,7 @@ let getPatientFullName = (pt: IPatient) => {
       <div>
         <div class="flex content-start items-center">
           <span class="text-primary"><i class="fas fa-info-circle"></i></span>
-          <p class="ml-2 italic text-orange-600">
+          <p class="ml-2 italic text-destructive">
             Click register when you dont find your patient during search*
           </p>
         </div>
@@ -188,7 +188,7 @@ let getPatientFullName = (pt: IPatient) => {
 
         <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
-          class="px-4 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
+          class="px-4 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground">
           Register New Patiet
         </router-link>
       </div>

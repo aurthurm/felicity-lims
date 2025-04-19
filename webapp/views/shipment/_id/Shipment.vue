@@ -49,7 +49,7 @@ const shipmentActor = (action: string) => {
 <template>
   <div class="">
     <div
-      class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4"
+      class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4"
       v-motion-slide-top
     >
       <div class="grid grid-cols-12 gap-1">
@@ -62,38 +62,38 @@ const shipmentActor = (action: string) => {
           <div>
             <div @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
                 {{ shipment?.state || "unknown" }}
               </button>
               <div class="ml-2">
-                <font-awesome-icon icon="chevron-down" class="text-gray-400" />
+                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
               </div>
             </div>
             <div v-show="state.dropdownOpen" @click="state.dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
             </div>
-            <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
+            <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-muted rounded-sm shadow-xl z-20">
               <div v-show="canReceive" @click="shipmentActor('reject')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Reject
               </div>
               <div v-show="canReceive" @click="shipmentActor('receive')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Receive
               </div>
               <div v-show="canFinalise" @click="shipmentActor('finalise')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Finalise
               </div>
               <div v-show="canDispatch" @click="shipmentActor('dispatch')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Dispatch
               </div>
               <div v-show="canRetryDispatch" @click="shipmentActor('dispatch-now')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Retry Notification
               </div>
               <div v-show="canCancel" @click="shipmentActor('cancel')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
+                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
                 Cancel
               </div>
             </div>
@@ -106,28 +106,28 @@ const shipmentActor = (action: string) => {
             <div class="col-span-1">
               <!-- Client Details -->
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">External Laboratory</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-sm font-semibold w-1/6">External Laboratory</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   shipment?.laboratory?.name
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-md font-semibold w-1/6">Courier:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-md font-semibold w-1/6">Courier:</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   shipment?.courier
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Assigned Count:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{
+                <span class="text-foreground text-sm font-semibold w-1/6">Assigned Count:</span>
+                <span class="text-foreground text-sm md:text-md">{{
                   shipment?.assignedCount
                 }}</span>
               </div>
             </div>
             <div class="col-span-1">
               <div class="flex">
-                <span class="text-gray-800 text-sm font-semibold w-1/6">Comment:</span>
-                <span class="text-gray-600 text-sm md:text-md"
+                <span class="text-foreground text-sm font-semibold w-1/6">Comment:</span>
+                <span class="text-foreground text-sm md:text-md"
                   >{{ shipment?.comment }}
                 </span>
               </div>

@@ -315,7 +315,7 @@ const tableColumns = ref([
       if(laboratoryAntibiotics.value.find(labAbx => labAbx.uid == abx.uid)) {
         return h("button", {
           type: "button",
-          class: "bg-red-800 text-white py-1 px-2 rounded-sm leading-none",
+          class: "bg-destructive text-primary-foreground py-1 px-2 rounded-sm leading-none",
           innerHTML: "in use",
           disabled: true,
         }, []);
@@ -324,7 +324,7 @@ const tableColumns = ref([
         "button",
         {
           type: "button",
-          class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+          class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
           innerHTML: "use",
           onClick: () => useAntibiotic(abx),
         },
@@ -343,7 +343,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -503,7 +503,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
       Add Antibiotic
     </button> -->
     <hr>
@@ -543,7 +543,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Antibiotic Name</span>
+              <span class="text-foreground">Antibiotic Name</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.name"
@@ -551,7 +551,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Guidelines</span>
+              <span class="text-foreground">Guidelines</span>
               <VueMultiselect
               v-model="form.guidelines"
               :options="abxGuidelines"
@@ -573,7 +573,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Coding Systems</h4>
           <div class="grid grid-cols-3 gap-4">
             <label class="block">
-              <span class="text-gray-700">WHONET Code</span>
+              <span class="text-foreground">WHONET Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.whonetAbxCode"
@@ -581,7 +581,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">WHO Code</span>
+              <span class="text-foreground">WHO Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.whoCode"
@@ -589,7 +589,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">DIN Code</span>
+              <span class="text-foreground">DIN Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.dinCode"
@@ -597,7 +597,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">JAC Code</span>
+              <span class="text-foreground">JAC Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.jacCode"
@@ -605,7 +605,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">EUCAST Code</span>
+              <span class="text-foreground">EUCAST Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.eucastCode"
@@ -613,7 +613,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">User Code</span>
+              <span class="text-foreground">User Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.userCode"
@@ -628,7 +628,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Classification</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Class</span>
+              <span class="text-foreground">Class</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.class"
@@ -636,7 +636,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Subclass</span>
+              <span class="text-foreground">Subclass</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.subclass"
@@ -644,7 +644,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Professional Class</span>
+              <span class="text-foreground">Professional Class</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.profClass"
@@ -652,7 +652,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">CIA Category</span>
+              <span class="text-foreground">CIA Category</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.ciaCategory"
@@ -667,7 +667,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Technical Details</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">ABX Number</span>
+              <span class="text-foreground">ABX Number</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.abxNumber"
@@ -675,7 +675,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Potency</span>
+              <span class="text-foreground">Potency</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.potency"
@@ -683,7 +683,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">ATC Code</span>
+              <span class="text-foreground">ATC Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.atcCode"
@@ -703,7 +703,7 @@ function saveForm(): void {
                 class="form-checkbox"
                 v-model="form.human"
               />
-              <span class="ml-2 text-gray-700">Human Use</span>
+              <span class="ml-2 text-foreground">Human Use</span>
             </div>
             <div class="flex items-center">
               <input
@@ -711,10 +711,10 @@ function saveForm(): void {
                 class="form-checkbox"
                 v-model="form.veterinary"
               />
-              <span class="ml-2 text-gray-700">Veterinary Use</span>
+              <span class="ml-2 text-foreground">Veterinary Use</span>
             </div>
             <label class="block col-span-2">
-              <span class="text-gray-700">Animal Group</span>
+              <span class="text-foreground">Animal Group</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.animalGp"
@@ -729,7 +729,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">LOINC Codes</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">LOINC Comp</span>
+              <span class="text-foreground">LOINC Comp</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loinccomp"
@@ -737,7 +737,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC Gen</span>
+              <span class="text-foreground">LOINC Gen</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincgen"
@@ -745,7 +745,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC Disk</span>
+              <span class="text-foreground">LOINC Disk</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincdisk"
@@ -753,7 +753,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC MIC</span>
+              <span class="text-foreground">LOINC MIC</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincmic"
@@ -761,7 +761,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC E-Test</span>
+              <span class="text-foreground">LOINC E-Test</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincetest"
@@ -769,7 +769,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC Slow</span>
+              <span class="text-foreground">LOINC Slow</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincslow"
@@ -777,7 +777,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC AFB</span>
+              <span class="text-foreground">LOINC AFB</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincafb"
@@ -785,7 +785,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC SBT</span>
+              <span class="text-foreground">LOINC SBT</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincsbt"
@@ -793,7 +793,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">LOINC MLC</span>
+              <span class="text-foreground">LOINC MLC</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.loincmlc"
@@ -807,7 +807,7 @@ function saveForm(): void {
         <div class="mb-6">
           <h4 class="text-lg font-semibold mb-4">Additional Information</h4>
           <label class="block">
-            <span class="text-gray-700">Comments</span>
+            <span class="text-foreground">Comments</span>
             <textarea
               class="form-textarea mt-1 block w-full"
               v-model="form.comments"
@@ -822,7 +822,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save Antibiotic
         </button>

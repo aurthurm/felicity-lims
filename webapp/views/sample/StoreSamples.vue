@@ -122,8 +122,8 @@ const submitForm = handleSubmit(async (values) => {
 <template>
   <h4>Store Samples</h4>
 
-  <div class="grid grid-cols-12 gap-4 min-h-full bg-white">
-    <div className="col-span-2 pt-4 pl-4 bg-sky-200">
+  <div class="grid grid-cols-12 gap-4 min-h-full bg-background">
+    <div className="col-span-2 pt-4 pl-4 bg-secondary">
       <ul>
         <TreeItem v-for="(_tree, _idx) in treeData" :tree="_tree" :key="_idx" />
       </ul>
@@ -134,26 +134,26 @@ const submitForm = handleSubmit(async (values) => {
           <div class="grid grid-cols-2 mt-2">
             <div class="col-span-1">
               <div class="flex">
-                <span class="text-gray-600 text-md font-bold w-52">Name:</span>
-                <span class="text-gray-600 text-md">{{ storageContainer?.name }}</span>
+                <span class="text-foreground text-md font-bold w-52">Name:</span>
+                <span class="text-foreground text-md">{{ storageContainer?.name }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-600 text-md font-bold w-52">Layout:</span>
-                <span class="text-gray-600 text-md">{{
+                <span class="text-foreground text-md font-bold w-52">Layout:</span>
+                <span class="text-foreground text-md">{{
                   storageContainer?.grid ? "grid" : "column"
                 }}</span>
-                <span class="ml-2 text-gray-600 text-md italic bg-slate-400 px-1 rounded-sm"
+                <span class="ml-2 text-foreground text-md italic bg-muted px-1 rounded-sm"
                   v-if="storageContainer?.grid">{{ storageContainer?.rowWise ? "by-row" : "by-column" }}</span>
               </div>
             </div>
             <div class="col-span-1">
               <div class="flex">
-                <span class="text-gray-600 text-md font-bold w-52">Slots:</span>
-                <span class="text-gray-600 text-md">{{ storageContainer?.slots }}</span>
+                <span class="text-foreground text-md font-bold w-52">Slots:</span>
+                <span class="text-foreground text-md">{{ storageContainer?.slots }}</span>
               </div>
               <div class="flex mt-2">
-                <span class="text-gray-600 text-md font-bold w-52">Empty Slots:</span>
-                <span class="text-gray-600 text-md mr-2">{{ emptySlots }}</span>
+                <span class="text-foreground text-md font-bold w-52">Empty Slots:</span>
+                <span class="text-foreground text-md mr-2">{{ emptySlots }}</span>
               </div>
             </div>
           </div>
@@ -163,12 +163,12 @@ const submitForm = handleSubmit(async (values) => {
       <hr />
 
       <button v-if="activeTree.tag === tags.storageContainer"
-        class="border border-primary bg-primary text-white rounded-sm mt-2 px-4 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+        class="border border-primary bg-primary text-primary-foreground rounded-sm mt-2 px-4 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         @click="prepareSlots()">
         Reset Slots
       </button>
 
-      <form action="post" class="p-4 mb-8 bg-white" @submit.prevent="submitForm">
+      <form action="post" class="p-4 mb-8 bg-background" @submit.prevent="submitForm">
         <div class="grid grid-cols-12 mb-4">
           <div class="col-span-1 font-semibold">Position</div>
           <div class="col-span-1 font-semibold">Label</div>
@@ -194,7 +194,7 @@ const submitForm = handleSubmit(async (values) => {
                 }}&rbbrk;
               </option>
             </select>
-            <span v-if="storageMeta.sampleUid" class="ml-2 text-red-500"
+            <span v-if="storageMeta.sampleUid" class="ml-2 text-destructive"
               @click="removeSample(storageMeta.sampleUid)">
               <FontAwesomeIcon icon="ban" />
             </span>
@@ -202,7 +202,7 @@ const submitForm = handleSubmit(async (values) => {
         </div>
         <hr class="mt-8" />
         <button v-if="activeTree.tag === tags.storageContainer && samples?.length > 0" type="submit"
-          class="px-2 py-1 mt-4 border-orange-600 border text-orange-600 rounded-sm transition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">
+          class="px-2 py-1 mt-4 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">
           Store Samples
         </button>
       </form>

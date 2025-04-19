@@ -9,8 +9,8 @@ defineProps(["label", "value", "link"]);
 
 <template>
      <div class="flex justify-between">
-        <span class="text-gray-800 text-sm font-semibold">{{label}}:</span>
+        <span class="text-foreground text-sm font-semibold">{{label}}:</span>
         <FelLink v-if="link" :name="value" :routeName="link.name" :query="link.query" />
-        <span v-else class="text-gray-600 text-sm md:text-md">{{value}}</span>
+        <span v-else class="text-foreground text-sm md:text-md">{{value}}</span>
     </div>
 </template>

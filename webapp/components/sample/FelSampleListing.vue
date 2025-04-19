@@ -74,7 +74,7 @@ const tableColumns = ref([
         sample.priority! > 1
           ? h(
             "span",
-            { class: [{ "text-orange-600": sample.priority! > 1 }] },
+            { class: [{ "text-destructive": sample.priority! > 1 }] },
             h("i", { class: "fa fa-star" })
           )
           : "",
@@ -347,7 +347,7 @@ const tableColumns = ref([
         "button",
         {
           type: "button",
-          class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+          class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
           innerHTML: value,
         },
         []
@@ -607,7 +607,7 @@ const printBarCodes = async () => router.push({
 <template>
   <div class="mb-4 flex justify-start">
     <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)" to="/patients/search"
-      class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Add
+      class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add
       Laboratory Request</router-link>
   </div>
   <hr />
@@ -627,76 +627,76 @@ const printBarCodes = async () => router.push({
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_cancel
         " @click.prevent="cancelSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Cancel
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_reinstate
         " @click.prevent="reInstateSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           ReInstate
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_receive
         " @click.prevent="receiveSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Reveive
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_store
         " @click.prevent="prepareStorages()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Store
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_recover
         " @click.prevent="recoverSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Recover
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_reject
         " @click.prevent="prepareRejections()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Reject
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_copy_to
         " @click.prevent="cloneSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Copy to New
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_download
         " @click.prevent="impressDownload_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Download
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_publish
         " @click.prevent="publishReports_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Publish
         </button>
         <button v-show="
           shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
           state.can_print
         " @click.prevent="printReports_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Print
         </button>
         <button 
           v-show="state.barcodes"
           @click.prevent="printBarCodes"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
           Print Barcodes
         </button>
       </div>

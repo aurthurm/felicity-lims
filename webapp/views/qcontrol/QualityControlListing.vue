@@ -88,7 +88,7 @@
           name:'qc-set-detail', params: { qcSetUid: qcset.uid }
         },
         class:
-          "px-2 mr-2 border-primary border text-gray-500rounded-smtransition duration-300 hover:bg-primary hover:text-white focus:outline-none",
+          "px-2 mr-2 border-primary border text-gray-500rounded-smtransition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none",
         innerHTML: 'View Run Set',
       });
     },
@@ -255,12 +255,12 @@
     <button 
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
       type="button" 
-      class="border border-primary text-primary rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary hover:text-white focus:outline-none focus:shadow-outline"
+      class="border border-primary text-primary rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary hover:text-primary-foreground focus:outline-none focus:shadow-outline"
       @click.prevent="showModal = !showModal">
       Add Reference Runs
     </button>
     <router-link to="/quality-control/charts" id="control-charts"
-    class="border border-orange-800 text-orange-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-orange-800 hover:text-white focus:outline-none focus:shadow-outline">
+    class="border border-destructive text-destructive rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-destructive hover:text-primary-foreground focus:outline-none focus:shadow-outline">
       View Run Charts
     </router-link>
   </div>
@@ -295,10 +295,10 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="mb-8 bg-white">
+      <form action="post" class="mb-8 bg-background">
          <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1">
-              <span class="text-gray-700">Department</span>
+              <span class="text-foreground">Department</span>
               <select 
               name="clientContacts" 
               id="clientContacts" 
@@ -319,7 +319,7 @@
               <button
                 v-if="form.samples?.length < 20"
                 @click.prevent="addQCSet()"
-                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Add QCSet</button>
+                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add QCSet</button>
             </div>
             <hr class="mb-4">
             <div v-for="(sample, index) in form.samples" :key="index">
@@ -327,7 +327,7 @@
                     <div class="">
                         <div class="grid grid-cols-4 gap-x-4">
                             <label class="block col-span-1 mb-2">
-                              <span class="text-gray-700">QC Template</span>
+                              <span class="text-foreground">QC Template</span>
                               <VueMultiselect
                               class="max-w-[300px]"
                               v-model="sample.qcTemplateUid"
@@ -339,7 +339,7 @@
                               </VueMultiselect>
                             </label>
                             <label class="block col-span-1 mb-2">
-                              <span class="text-gray-700">QC Levels</span>
+                              <span class="text-foreground">QC Levels</span>
                               <VueMultiselect
                               class="max-w-[300px]"
                               v-model="sample.qcLevels"
@@ -351,7 +351,7 @@
                               </VueMultiselect>
                             </label>
                             <label class="block col-span-1 mb-2">
-                              <span class="text-gray-700">Analysis Profiles</span>
+                              <span class="text-foreground">Analysis Profiles</span>
                               <VueMultiselect
                               class="max-w-[300px]"
                               v-model="sample.analysisProfiles"
@@ -363,7 +363,7 @@
                               </VueMultiselect>
                             </label>
                             <label class="block col-span-1 mb-2">
-                              <span class="text-gray-700">Analysis Services</span>
+                              <span class="text-foreground">Analysis Services</span>
                               <VueMultiselect
                               class="max-w-[300px]"
                               v-model="sample.analysisServices"
@@ -378,7 +378,7 @@
                     </div>
                     <div class="ml-4">
                       <button @click.prevent="removeQCSet(index)"
-                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -389,7 +389,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

@@ -157,12 +157,12 @@ onMounted(() => {
     <div class="flex-1">
       <div class="flex text-right align-middle">
         <!-- Logo and brand name -->
-        <router-link to="/" id="brand" class="flex items-center md:w-auto text-white" aria-label="Felicity LIMS Home">
+        <router-link to="/" id="brand" class="flex items-center md:w-auto text-primary-foreground" aria-label="Felicity LIMS Home">
           <Logo />
           <h1 class="text-left text-2xl font-medium mx-2 transition-all duration-500">Felicity LIMS</h1>
         </router-link>
 
-        <span class="mx-8 border-l-2 border-gray-400 my-2" aria-hidden="true"></span>
+        <span class="mx-8 border-l-2 border-border my-2" aria-hidden="true"></span>
         
         <!-- Main menu dropdown trigger -->
         <button 
@@ -171,10 +171,10 @@ onMounted(() => {
           :aria-expanded="menuOpen"
           aria-controls="main-menu"
         >
-          <span class="text-gray-50 text-xl font-bold mr-2 uppercase">Menu</span>
+          <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Menu</span>
           <font-awesome-icon 
             :icon="menuOpen ? 'chevron-up' : 'chevron-down'" 
-            class="text-gray-400 transition-transform" 
+            class="text-muted-foreground transition-transform" 
             aria-hidden="true" 
           />
         </button>
@@ -197,7 +197,7 @@ onMounted(() => {
               v-show="guards.canAccessPage(item.guard)" 
               :to="item.route" 
               :id="`${item.id}-link`"
-              class="flex items-center mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white rounded transition-colors focus:outline-none"
+              class="flex items-center mt-1 py-2 px-6 text-primary-foreground hover:bg-secondary hover:bg-opacity-25 hover:text-primary-foreground rounded transition-colors focus:outline-none"
               role="menuitem"
               @click="menuOpen = false"
             >
@@ -216,46 +216,46 @@ onMounted(() => {
       <!-- Errors button -->
       <button
         v-if="errors.length > 0"
-        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-grey-dark transition-opacity focus:outline-none rounded"
+        class="no-underline text-primary-foreground opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-border transition-opacity focus:outline-none rounded"
         @click="showErrors = true"
         aria-label="Show errors"
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
-        <span class="text-gray-50 text-xl font-bold mr-2 uppercase">Errors</span>
-        <span class="bg-destructive text-white text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
+        <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Errors</span>
+        <span class="bg-destructive text-primary-foreground text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
       </button>
       
-      <span v-if="errors.length > 0" class="mx-4 border-l-2 border-gray-400" aria-hidden="true"></span>
+      <span v-if="errors.length > 0" class="mx-4 border-l-2 border-border" aria-hidden="true"></span>
 
       <!-- Notifications button -->
       <button
-        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-grey-dark transition-opacity focus:outline-none rounded"
+        class="no-underline text-primary-foreground opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-border transition-opacity focus:outline-none rounded"
         @click="toggleNotifications(true)"
         aria-label="Show notifications"
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
-        <span class="text-gray-50 text-xl font-bold mr-2 uppercase">Notifications</span>
+        <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Notifications</span>
       </button>
       
-      <span class="mx-4 border-l-2 border-gray-400" aria-hidden="true"></span>
+      <span class="mx-4 border-l-2 border-border" aria-hidden="true"></span>
 
       <!-- Admin settings link -->
       <router-link 
         v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)" 
         to="/admin"
-        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-grey-dark transition-opacity focus:outline-none rounded"
+        class="no-underline text-primary-foreground opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-border transition-opacity focus:outline-none rounded"
         aria-label="Settings"
       >
         <font-awesome-icon icon="cog" class="mr-2" aria-hidden="true" />
-        <span class="text-gray-50 text-xl font-bold mr-2 uppercase">Settings</span>
+        <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Settings</span>
       </router-link>
       
-      <span class="mx-4 border-l-2 border-gray-400" aria-hidden="true"></span>
+      <span class="mx-4 border-l-2 border-border" aria-hidden="true"></span>
 
       <!-- User profile section -->
       <div class="px-4 flex text-right align-middle relative">
         <span
-          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-gray-400 hover:border-border text-white"
+          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-border hover:border-border text-primary-foreground"
           aria-hidden="true"
         >
           <font-awesome-icon icon="user" />
@@ -269,10 +269,10 @@ onMounted(() => {
             :aria-expanded="dropdownOpen"
             aria-controls="user-menu"
           >
-            <span class="text-gray-50 text-xl font-bold mr-2 uppercase">{{ userFullName }}</span>
+            <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">{{ userFullName }}</span>
             <font-awesome-icon 
               :icon="dropdownOpen ? 'chevron-up' : 'chevron-down'" 
-              class="text-gray-400 transition-transform" 
+              class="text-muted-foreground transition-transform" 
               aria-hidden="true" 
             />
           </button>
@@ -286,7 +286,7 @@ onMounted(() => {
           >
             <button 
               @click="authStore.logout()"
-              class="w-full text-left cursor-pointer py-2 px-4 text-gray-100 opacity-80 flex items-center border-b border-transparent hover:bg-gray-800 hover:bg-opacity-25 hover:text-white uppercase transition-colors focus:outline-none"
+              class="w-full text-left cursor-pointer py-2 px-4 text-primary-foreground opacity-80 flex items-center border-b border-transparent hover:bg-secondary hover:bg-opacity-25 hover:text-primary-foreground uppercase transition-colors focus:outline-none"
               role="menuitem"
             >
               <font-awesome-icon icon="sign-out-alt" class="mr-2" aria-hidden="true" />
@@ -304,7 +304,7 @@ onMounted(() => {
       <div class="flex items-center justify-between">
         <h3 class="font-semibold text-lg">Errors List</h3>
         <button 
-          class="p-2 text-muted-foreground hover:text-gray-700 rounded-full hover:bg-secondary transition-colors focus:outline-none"
+          class="p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-secondary transition-colors focus:outline-none"
           @click="clearErrors()"
           aria-label="Clear all errors"
         >
@@ -318,11 +318,11 @@ onMounted(() => {
     </template>
     <template v-slot:body>
       <p v-if="errors.length === 0" class="text-muted-foreground italic">No errors to display</p>
-      <ul v-else aria-label="Error messages" class="divide-y divide-gray-100">
+      <ul v-else aria-label="Error messages" class="divide-y divide-border">
         <li 
           v-for="(err, idx) in errors" 
           :key="idx" 
-          class="mb-2 p-3 bg-gray-50 rounded text-sm border-l-4 border-red-500"
+          class="mb-2 p-3 bg-background rounded text-sm border-l-4 border-destructive"
         >
           <code class="block whitespace-pre-wrap">{{ err }}</code>
         </li>

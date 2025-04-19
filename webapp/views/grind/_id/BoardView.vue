@@ -57,7 +57,7 @@ const savePosterForm = () => {
     </div>
 
     <button 
-    class="font-medium py-1 px-2 border border-border hover:border-sky-700 hover:text-sky-700 hover:bg-secondary"
+    class="font-medium py-1 px-2 border border-border hover:border-primary hover:text-primary hover:bg-secondary"
     @click="openCreatePosterForm">Add Listing</button>
   </div>
 
@@ -72,8 +72,8 @@ const savePosterForm = () => {
       <form @submit.prevent="savePosterForm">
         <!-- Scheme Title -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="title">
-            Scheme Title <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-foreground mb-1" for="title">
+            Scheme Title <span class="text-destructive">*</span>
           </label>
           <input
             id="title"
@@ -87,7 +87,7 @@ const savePosterForm = () => {
         
          <!-- Description -->
          <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="description">
+          <label class="block text-sm font-medium text-foreground mb-1" for="description">
             Description
           </label>
           <textarea
@@ -103,7 +103,7 @@ const savePosterForm = () => {
         <div class="flex justify-end">
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             {{ formAction ? 'Create' : 'Update' }}
           </button>

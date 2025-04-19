@@ -55,33 +55,33 @@
     <div class="container w-full my-4">
         <hr>
           <button @click="FormManager(true)"
-           class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Add Supplier</button>
+           class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add Supplier</button>
         <hr>
 
         <div class="overflow-x-auto mt-4">
-            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
             <table class="min-w-full">
                 <thead>
                 <tr>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Supplier</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
+                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Supplier</th>
+                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Description</th>
                     <th class="px-1 py-1 border-b-2 border-border"></th>
                 </tr>
                 </thead>
-                <tbody class="bg-white">
+                <tbody class="bg-background">
                 <tr v-for="supplier in suppliers" :key="supplier?.uid">
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ supplier?.name }}</div>
+                        <div class="text-sm leading-5 text-foreground">{{ supplier?.name }}</div>
                         </div>
                     </div>
                     </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                     <div class="text-sm leading-5 text-primary">{{ supplier?.description }}</div>
                     </td>
-                    <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                        <button @click="FormManager(false, supplier)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
+                    <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+                        <button @click="FormManager(false, supplier)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
                     </td>
                 </tr>
                 </tbody>
@@ -100,7 +100,7 @@
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Name</span>
+            <span class="text-foreground">Name</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="form.name"
@@ -108,7 +108,7 @@
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Description</span>
+            <span class="text-foreground">Description</span>
             <textarea
             cols="2"
               class="form-input mt-1 block w-full"
@@ -121,7 +121,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

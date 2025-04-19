@@ -200,7 +200,7 @@ const resetSampleGraphs = () => {
   <hr />
   <section class="flex justify-end">
     <span>In the last</span>
-    <select name="" id="" class="mx-4 p-1 bg-slate-300" @change="dashBoardStore.setCurrentPeformancePeriod($event)">
+    <select name="" id="" class="mx-4 p-1 bg-muted" @change="dashBoardStore.setCurrentPeformancePeriod($event)">
       <option v-for="period in dashboard.peformancePeriods" :key="period" :value="period"
         :selected="period === dashboard.currentPeformancePeriod">
         {{ period }}
@@ -210,20 +210,20 @@ const resetSampleGraphs = () => {
   </section>
 
   <hr />
-  <h1 class="text-xl text-gray-700 font-semibold">
+  <h1 class="text-xl text-foreground font-semibold">
     Process peformance for samples in average days
   </h1>
   <hr class="mt-1 mb-2" />
 
-  <div class="bg-slate-200 p-2 mb-4">
+  <div class="bg-muted p-2 mb-4">
     <div v-if="dashboard.fetchingSampePeformanceStats" class="text-start my-4 w-100">
       <LoadingMessage message="fetching updated sample peformance stats ..." />
     </div>
     <div class="flex flex-wrap justify-start">
       <div class="mr-4 items-center content-center">
-        <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
-          <div class="font-semibold text-gray-400 text-l">received to published</div>
-          <div class="mr-4 font-bold text-gray-600 text-xl">
+        <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center">
+          <div class="font-semibold text-muted-foreground text-l">received to published</div>
+          <div class="mr-4 font-bold text-foreground text-xl">
             {{ prRTP?.counts?.processAverage ?? 0 }} days
           </div>
         </div>
@@ -233,9 +233,9 @@ const resetSampleGraphs = () => {
       </div>
 
       <div class="mr-4 items-center content-center">
-        <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
-          <div class="font-semibold text-gray-400 text-l">received to submitted</div>
-          <div class="mr-4 font-bold text-gray-600 text-xl">
+        <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center">
+          <div class="font-semibold text-muted-foreground text-l">received to submitted</div>
+          <div class="mr-4 font-bold text-foreground text-xl">
             {{ prRTS?.counts?.processAverage ?? 0 }} days
           </div>
         </div>
@@ -245,9 +245,9 @@ const resetSampleGraphs = () => {
       </div>
 
       <div class="mr-4 items-center content-center">
-        <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
-          <div class="font-semibold text-gray-400 text-l">submitted to verified</div>
-          <div class="mr-4 font-bold text-gray-600 text-xl">
+        <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center">
+          <div class="font-semibold text-muted-foreground text-l">submitted to verified</div>
+          <div class="mr-4 font-bold text-foreground text-xl">
             {{ prSTV?.counts?.processAverage ?? 0 }} days
           </div>
         </div>
@@ -257,9 +257,9 @@ const resetSampleGraphs = () => {
       </div>
 
       <div class="mr-4 items-center content-center">
-        <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
-          <div class="font-semibold text-gray-400 text-l">verified to published</div>
-          <div class="mr-4 font-bold text-gray-600 text-xl">
+        <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center">
+          <div class="font-semibold text-muted-foreground text-l">verified to published</div>
+          <div class="mr-4 font-bold text-foreground text-xl">
             {{ prVTP?.counts?.processAverage ?? 0 }} days
           </div>
         </div>
@@ -271,9 +271,9 @@ const resetSampleGraphs = () => {
   </div>
 
   <hr>
-  <h1 class="mt-1 text-xl text-gray-700 font-semibold">
+  <h1 class="mt-1 text-xl text-foreground font-semibold">
     <span>Process peformance by anayses service</span>
-    <select name="" id="" class="ml-8 p-1 bg-slate-300 outline-none"
+    <select name="" id="" class="ml-8 p-1 bg-muted outline-none"
       @change="dashBoardStore.setCurrentPeformance($event)">
       <option v-for="performance in dashboard.performances" :key="performance" :value="performance"
         :selected="performance === dashboard.currentPeformance">
@@ -283,7 +283,7 @@ const resetSampleGraphs = () => {
   </h1>
   <hr class="mt-1 mb-2" />
 
-  <div class=" bg-slate-200 p-2">
+  <div class=" bg-muted p-2">
     <div v-if="dashboard.fetchingAnalysisPeformanceStats" class="text-start my-4 w-100">
       <LoadingMessage message="fetching analysis peformance stats ..." />
     </div>

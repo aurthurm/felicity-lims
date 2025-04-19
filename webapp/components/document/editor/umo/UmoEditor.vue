@@ -76,13 +76,13 @@ const goBack = () => router.back();
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 py-3 px-4 flex items-center justify-between">
+    <header class="bg-background border-b border-border py-3 px-4 flex items-center justify-between">
       <div class="flex items-center">
-        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-gray-700">
+        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-foreground">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
-        <h1 class="uppercase text-xl font-semibold text-gray-800">{{ document?.document?.name }}</h1>
-        <span v-if="saveMessage" class="ml-4 text-sm text-green-600">{{ saveMessage }}</span>
+        <h1 class="uppercase text-xl font-semibold text-foreground">{{ document?.document?.name }}</h1>
+        <span v-if="saveMessage" class="ml-4 text-sm text-success">{{ saveMessage }}</span>
       </div>
       <div v-if="isSaving" class="text-center">
         <LoadingMessage message="Saving..." />

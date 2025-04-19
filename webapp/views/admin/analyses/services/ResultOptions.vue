@@ -81,38 +81,38 @@
 
 <template>
      <button
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
         @click="FormManager(true)"
       >Add Result Option</button>
     <hr>
     <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Result Key</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Result Value</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Sample Tyes</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Result Key</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Result Value</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Sample Tyes</th>
                 <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
             </thead>
-            <tbody class="bg-white">
+            <tbody class="bg-background">
             <tr v-for="option in analysis?.resultOptions"  :key="option?.uid">
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                 <div class="flex items-center">
                     <div>
-                    <div class="text-sm leading-5 text-gray-800">{{ option?.optionKey }}</div>
+                    <div class="text-sm leading-5 text-foreground">{{ option?.optionKey }}</div>
                     </div>
                 </div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                   <div class="text-sm leading-5 text-primary">{{ option?.value }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                   <span class="p-1 rounded-sm text-sm leading-5 text-primary bg-muted mr-2" v-for="stype of option?.sampleTypes" :key="stype.uid">{{ stype.name }}</span>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, option)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
+                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+                    <button @click="FormManager(false, option)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
                 </td>
             </tr>
             </tbody>
@@ -130,7 +130,7 @@
       <form action="post" class="p-1">
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Result Key</span>
+            <span class="text-foreground">Result Key</span>
             <input
              type="number"
               class="form-input mt-1 block w-full"
@@ -139,7 +139,7 @@
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Result Value</span>
+            <span class="text-foreground">Result Value</span>
             <input
              type="text"
               class="form-input mt-1 block w-full"
@@ -148,7 +148,7 @@
             />
           </label>      
           <label class="block col-span-3 mb-2">
-            <span class="text-gray-700">Sample Types</span>
+            <span class="text-foreground">Sample Types</span>
             <VueMultiselect
             v-model="form.sampleTypes"
             :options="sampleTypes"
@@ -163,7 +163,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

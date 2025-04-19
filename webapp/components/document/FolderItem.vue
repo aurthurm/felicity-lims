@@ -18,10 +18,10 @@
       
       <div class="mr-2 text-muted-foreground">
         <component :is="isExpanded ? FolderOpen : Folder" 
-        :class="['w-[18px] h-[18px]', isActive && 'text-sky-600']" />
+        :class="['w-[18px] h-[18px]', isActive && 'text-primary']" />
       </div>
       
-      <div :class="['flex-1 truncate', isActive && 'text-sky-600']">{{ folder.name }}</div>
+      <div :class="['flex-1 truncate', isActive && 'text-primary']">{{ folder.name }}</div>
       
       <div class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button 
@@ -42,7 +42,7 @@
           <!-- Dropdown menu -->
           <div 
             v-if="isMenuOpen" 
-            class="absolute right-0 mt-1 w-48 rounded-md border bg-white p-1 text-popover-foreground shadow-md z-10"
+            class="absolute right-0 mt-1 w-48 rounded-md border bg-background p-1 text-popover-foreground shadow-md z-10"
             v-click-outside="() => isMenuOpen = false"
           >
             <button 

@@ -103,7 +103,7 @@ const vClickOutside = {
 <template>
   <teleport to="body">
     <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4" @click.stop>
+      <div class="bg-background rounded-lg shadow-lg p-6 max-w-sm w-full mx-4" @click.stop>
         <h3 class="text-lg font-medium mb-4">Create new document</h3>
         
         <div class="space-y-4">
@@ -112,7 +112,7 @@ const vClickOutside = {
             <input
               id="name"
               v-model="name"
-              class="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter document name"
             />
           </div>
@@ -122,7 +122,7 @@ const vClickOutside = {
             <input
               id="docu"
               v-model="documentId"
-              class="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter document id"
             />
           </div>
@@ -134,17 +134,17 @@ const vClickOutside = {
                 id="folder"
                 type="button"
                 @click="isFolderSelectOpen = !isFolderSelectOpen"
-                class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {{ selectedFolderName }}
                 <ChevronDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </button>
               
-              <div v-if="isFolderSelectOpen" class="absolute top-full left-0 z-10 mt-1 w-full rounded-md border bg-white shadow-md">
+              <div v-if="isFolderSelectOpen" class="absolute top-full left-0 z-10 mt-1 w-full rounded-md border bg-background shadow-md">
                 <div class="max-h-[200px] overflow-auto p-1">
                   <input
                     v-model="folderSearchQuery"
-                    class="flex h-8 w-full rounded-sm border-0 bg-white px-3 py-1 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring mb-1"
+                    class="flex h-8 w-full rounded-sm border-0 bg-background px-3 py-1 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring mb-1"
                     placeholder="Search folders..."
                   />
                   <button
@@ -166,7 +166,7 @@ const vClickOutside = {
         <div class="flex justify-end gap-2 mt-6">
           <button 
             @click="closeDialog"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input bg-white hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
           >
             Cancel
           </button>

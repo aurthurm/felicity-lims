@@ -33,14 +33,14 @@ const InventoryHome = defineComponent({
         const { currentTab, tabs } = this.exposed;
         return (
             <div class="mt-4">
-                <nav class="bg-white shadow-md mt-2">
+                <nav class="bg-background shadow-md mt-2">
                     <div class="-mb-px flex justify-start" role="tablist">
                         {tabs.map(tab => {
                             return (
                                 <a
                                     key={tab}
                                     class={[
-                                        'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                                        'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
                                         { 'tab-active': currentTab.value === tab },
                                     ]}
                                     onClick={() => (currentTab.value = tab)}

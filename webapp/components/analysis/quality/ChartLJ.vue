@@ -290,7 +290,7 @@ onMounted(() => {
       <h2 class="text-lg font-semibold">{{ title }}</h2>
     </div>
     
-    <div class="relative w-full min-h-[400px] border bg-white shadow-sm" v-if="!cannotPlot">
+    <div class="relative w-full min-h-[400px] border bg-background shadow-sm" v-if="!cannotPlot">
       <div :id="chartId" class="absolute inset-0"></div>
     </div>
     <div v-else>At least {{ SERIES_LIMIT }} data points are required to plot. Currently you have {{ series?.length }} for the selected period.</div>

@@ -220,16 +220,16 @@ function updateNotice(payload: INotice) {
   <form action="post" class="p-1" @submit.prevent="submitNoticeForm">
     <div class="grid grid-cols-2 gap-x-4 mb-4">
       <label class="block col-span-2 mb-2">
-        <span class="text-gray-700">Title</span>
+        <span class="text-foreground">Title</span>
         <input
           class="form-input mt-1 block w-full"
           v-model="title"
           placeholder="Name ..."
         />
-        <div class="text-orange-600 w-4/12">{{ errors.title }}</div>
+        <div class="text-destructive w-4/12">{{ errors.title }}</div>
       </label>
       <label class="block col-span-2 mb-2">
-        <span class="text-gray-700">Body</span>
+        <span class="text-foreground">Body</span>
         <div class="main-container min-w-full prose prose-slate">
           <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
             <div class="editor-container__editor">
@@ -244,20 +244,20 @@ function updateNotice(payload: INotice) {
             </div>
           </div>
         </div>
-        <div class="text-orange-600 w-4/12">{{ errors.body }}</div>
+        <div class="text-destructive w-4/12">{{ errors.body }}</div>
       </label>
       <label class="block col-span-2 mb-2">
-        <span class="text-gray-700">Expiration</span>
+        <span class="text-foreground">Expiration</span>
         <VueDatePicker class="z-60" 
         v-model="expiry"
         :min-date="minDateTime" placeholder="Select Expiry Date"></VueDatePicker>
-        <div class="text-orange-600 w-4/12">{{ errors.expiry }}</div>
+        <div class="text-destructive w-4/12">{{ errors.expiry }}</div>
       </label>
     </div>
     <hr />
     <button
       type="submit"
-      class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+      class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
     >
       Save Form
     </button>

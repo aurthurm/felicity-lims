@@ -159,19 +159,19 @@ const goBack = () => router.back();
 
 <template>
     <div class="max-w-[99%]">
-        <header class="bg-white border-b border-gray-200 py-3 px-4 flex items-center justify-between">
+        <header class="bg-background border-b border-border py-3 px-4 flex items-center justify-between">
             <div class="flex items-center">
-                <button @click="goBack" class="mr-4 text-muted-foreground hover:text-gray-700">
+                <button @click="goBack" class="mr-4 text-muted-foreground hover:text-foreground">
                     <ArrowLeftIcon class="w-5 h-5" />
                 </button>
-                <h1 class="uppercase text-xl font-semibold text-gray-800">{{ document?.document?.name }}</h1>
+                <h1 class="uppercase text-xl font-semibold text-foreground">{{ document?.document?.name }}</h1>
             </div>        
             <div v-if="isSaving" class="text-center">
                 <LoadingMessage message="Saving..." />
             </div>
             <div class="flex justify-start items-center gap-x-8">
                 <button v-on:click="printBtnClick" title="Print this document (Ctrl+P).">Print</button>
-                <DropDownButtonComponent ref="de-export" class="bg-sky-700" :items="exportItems" cssClass="e-caret-hide" content="Download" v-bind:select="onExport" :open="openExportDropDown" title="Download this document."></DropDownButtonComponent>
+                <DropDownButtonComponent ref="de-export" class="bg-primary" :items="exportItems" cssClass="e-caret-hide" content="Download" v-bind:select="onExport" :open="openExportDropDown" title="Download this document."></DropDownButtonComponent>
                 <button @click="saveChanges" title="Save changes" class="flex items-center">
                     <span v-show="contentChanged" class="h-2 w-2 rounded-full bg-success animate-pulse"></span>
                     <span class="ml-2">Save</span>

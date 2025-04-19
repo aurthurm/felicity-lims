@@ -56,7 +56,7 @@ const placeholderItems = computed(() => Array(3).fill(null));
 
 <template>
   <div class="min-h-[450px] flex flex-col">
-    <h1 class="text-xl text-gray-700 font-semibold p-4 border-b">{{ title }}</h1>
+    <h1 class="text-xl text-foreground font-semibold p-4 border-b">{{ title }}</h1>
     
     <div class="flex flex-1 overflow-hidden">
       <!-- List Panel -->
@@ -84,25 +84,25 @@ const placeholderItems = computed(() => Array(3).fill(null));
             :key="item.uid"
             @click="handleSelect(item)"
             :class="[
-              'p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-150',
+              'p-4 cursor-pointer hover:bg-background transition-colors duration-150',
               selectedItem?.uid === item.uid ? 'bg-blue-50' : ''
             ]"
           >
             <div class="flex items-start space-x-4">
               <span 
                 v-if="showNumbers"
-                class="inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-white bg-gray-600 rounded-full"
+                class="inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-primary-foreground bg-muted rounded-full"
               >
                 {{ index + 1 }}
               </span>
               <div class="flex-1 min-w-0">
                 <div class="flex justify-between">
-                  <h2 class="text-sm font-medium text-gray-900 truncate">
+                  <h2 class="text-sm font-medium text-foreground truncate">
                     {{ item[titleKey] }}
                   </h2>
                   <span 
                     v-if="item[statusKey]"
-                    class="text-xs font-medium text-orange-600"
+                    class="text-xs font-medium text-destructive"
                   >
                     {{ item[statusKey] }}
                   </span>
@@ -117,15 +117,15 @@ const placeholderItems = computed(() => Array(3).fill(null));
       </div>
 
       <!-- Content Panel -->
-      <div class="flex-1 overflow-y-auto bg-white">
+      <div class="flex-1 overflow-y-auto bg-background">
         <article class="p-6" v-if="selectedItem">
           <div class="mb-4 border-b pb-4">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">
+            <h2 class="text-2xl font-bold text-foreground mb-2">
               {{ selectedItem[titleKey] }}
             </h2>
             <span 
               v-if="selectedItem[statusKey]"
-              class="text-sm font-medium text-orange-600"
+              class="text-sm font-medium text-destructive"
             >
               {{ selectedItem[statusKey] }}
             </span>

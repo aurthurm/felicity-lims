@@ -60,7 +60,7 @@ const closeForm = () => {
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
         @click="FormManager(true)"
       > Add Method</button>
       <hr>
@@ -68,29 +68,29 @@ const closeForm = () => {
     <hr />
 
     <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Instruments</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Analyses</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Instruments</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Analyses</th>
                 <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
             </thead>
-            <tbody class="bg-white">
+            <tbody class="bg-background">
             <tr v-for="meth in methods" :key="meth?.uid">
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-gray-800">{{ meth?.name }}</div>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm leading-5 text-foreground">{{ meth?.name }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-gray-800">{{ meth?.instruments?.map(inst => inst?.name)?.join(",") }}</div>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm leading-5 text-foreground">{{ meth?.instruments?.map(inst => inst?.name)?.join(",") }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                   <div class="text-sm leading-5 text-primary">{{ getAnalyses(meth) }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, meth)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
+                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+                    <button @click="FormManager(false, meth)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
                 </td>
             </tr>
             </tbody>

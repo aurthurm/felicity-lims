@@ -333,15 +333,15 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
         <span class="italic">{{ pickedOrg?.organism?.name }}</span>
       </span>
       <button @click="choosePanel(pickedOrg)" v-show="canAddPanel(pickedOrg)"
-        class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+        class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
         choose panel
       </button>
     </h3>
 
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-border">
         <thead>
-          <tr class="bg-gray-50">
+          <tr class="bg-background">
             <th class="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Parameter</th>
             <th v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
@@ -350,10 +350,10 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-background divide-y divide-border">
           <!-- Guideline year -->
           <tr>
-            <td class="px-4 py-2 text-sm font-medium text-gray-900">Guideline</td>
+            <td class="px-4 py-2 text-sm font-medium text-foreground">Guideline</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
                 class="px-4 py-2 text-sm text-muted-foreground">
@@ -369,7 +369,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
           </tr>
           <!-- AST Method -->
           <tr>
-            <td class="px-4 py-2 text-sm font-medium text-gray-900">AST Method</td>
+            <td class="px-4 py-2 text-sm font-medium text-foreground">AST Method</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
                 class="px-4 py-2 text-sm text-muted-foreground">
@@ -386,7 +386,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
           
           <!-- AST Value -->
           <tr>
-            <td class="px-4 py-2 text-sm font-medium text-gray-900">AST Value</td>
+            <td class="px-4 py-2 text-sm font-medium text-foreground">AST Value</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
                 class="px-4 py-2 text-sm text-muted-foreground">
@@ -403,7 +403,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
           <!-- Result -->
           <tr>
-            <td class="px-4 py-2 text-sm font-medium text-gray-900">Result</td>
+            <td class="px-4 py-2 text-sm font-medium text-foreground">Result</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
                 class="px-4 py-2 text-sm">
@@ -412,18 +412,18 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'result', $event.target.value)"
                 class="w-32 px-2 py-1 border rounded"
                 :class="{
-                  'text-green-600': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
+                  'text-success': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
                   'text-yellow-600': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'I',
-                  'text-red-600': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'R'
+                  'text-destructive': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'R'
                 }"
                 :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'">
                 <option value="S">S</option>
                 <option value="I">I</option>
                 <option value="R">R</option>
               </select>
-              <span class="ml-2 text-xs text-gray-400">
+              <span class="ml-2 text-xs text-muted-foreground">
                 <span v-show="organismResults[pickedOrg.uid][antibiotic].breakpointUid">
-                  <font-awesome-icon icon="robot" class="text-md text-gray-400 mr-1"/>
+                  <font-awesome-icon icon="robot" class="text-md text-muted-foreground mr-1"/>
                 </span>
               </span>
             </td>
@@ -431,7 +431,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
           <!-- Reportable -->
           <tr>
-            <td class="px-4 py-2 text-sm font-medium text-gray-900">Reportable</td>
+            <td class="px-4 py-2 text-sm font-medium text-foreground">Reportable</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
                 class="px-4 py-2 text-sm">
@@ -439,10 +439,10 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 type="checkbox"
                 v-model="organismResults[pickedOrg.uid][antibiotic].reportable"
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', $event.target.checked)"
-                class="form-checkbox h-4 w-4 text-sky-600"
+                class="form-checkbox h-4 w-4 text-primary"
                 :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
               />
-              <button type="button" class="bg-primary text-white ml-4 px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-primary-foreground ml-4 px-2 py-1 rounded-sm leading-none">
                 {{ organismResults[pickedOrg.uid][antibiotic].status }}
               </button>
             </td>
@@ -493,16 +493,16 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
           <div class="border p-2 h-64 overflow-y-auto">
               <table class="w-full">
                 <tr v-for="panel in panels" :key="panel.uid">
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-gray-800 font-bold">{{ panel.name }}</div>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                    <div class="text-sm leading-5 text-foreground font-bold">{{ panel.name }}</div>
                   </td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-gray-800">{{ panel.antibiotics?.map(a => a.name)?.join(", ") }}</div>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                    <div class="text-sm leading-5 text-foreground">{{ panel.antibiotics?.map(a => a.name)?.join(", ") }}</div>
                   </td>
-                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
                     <button type="button"
                     @click="applyPanel(panel)"
-                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
                       Appy Panel
                     </button>
                   </td>

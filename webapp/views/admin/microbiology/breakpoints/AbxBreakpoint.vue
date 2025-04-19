@@ -192,7 +192,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -350,7 +350,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
       Add Breakpoint
     </button> -->
     <hr>
@@ -390,7 +390,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Guidelines</span>
+              <span class="text-foreground">Guidelines</span>
               <VueMultiselect
               v-model="form.guidelines"
               :options="abxGuidelines"
@@ -400,7 +400,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Year</span>
+              <span class="text-foreground">Year</span>
               <input type="number"
                 class="form-input mt-1 block w-full"
                 v-model="form.year"
@@ -414,7 +414,7 @@ function saveForm(): void {
         <div class="mb-6">
           <div class="grid grid-cols-3 gap-4">
             <label class="block">
-              <span class="text-gray-700">Test Method</span>
+              <span class="text-foreground">Test Method</span>
               <VueMultiselect
               v-model="form.testMethod"
               :options="abxTestMethods"
@@ -424,7 +424,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Potency</span>
+              <span class="text-foreground">Potency</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.potency"
@@ -432,7 +432,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Code</span>
+              <span class="text-foreground">Organism Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.organismCode"
@@ -440,7 +440,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Code Type</span>
+              <span class="text-foreground">Organism Code Type</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.organismCodeType"
@@ -448,7 +448,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Breakpoint Type</span>
+              <span class="text-foreground">Breakpoint Type</span>
               <VueMultiselect
               v-model="form.breakpointType"
               :options="abxBreakpointTypes"
@@ -458,7 +458,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Host</span>
+              <span class="text-foreground">Host</span>
               <VueMultiselect
               v-model="form.host"
               :options="abxHosts"
@@ -468,7 +468,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Site Of Infection</span>
+              <span class="text-foreground">Site Of Infection</span>
               <VueMultiselect
               v-model="form.siteOfInfection"
               :options="abxSiteOfInfections"
@@ -478,7 +478,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Reference Table</span>
+              <span class="text-foreground">Reference Table</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.referenceTable"
@@ -486,7 +486,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Reference Sequence</span>
+              <span class="text-foreground">Reference Sequence</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.referenceSequence"
@@ -494,7 +494,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Whonet AbxCode</span>
+              <span class="text-foreground">Whonet AbxCode</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.whonetAbxCode"
@@ -502,7 +502,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">R</span>
+              <span class="text-foreground">R</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.r"
@@ -510,7 +510,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">I</span>
+              <span class="text-foreground">I</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.i"
@@ -518,7 +518,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">SDD</span>
+              <span class="text-foreground">SDD</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.sdd"
@@ -526,7 +526,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">S</span>
+              <span class="text-foreground">S</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.s"
@@ -534,7 +534,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">EcvEcoff</span>
+              <span class="text-foreground">EcvEcoff</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.ecvEcoff"
@@ -542,7 +542,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">EcvEcoff Tentative</span>
+              <span class="text-foreground">EcvEcoff Tentative</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.ecvEcoffTentative"
@@ -557,7 +557,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save Breakpoint
         </button>

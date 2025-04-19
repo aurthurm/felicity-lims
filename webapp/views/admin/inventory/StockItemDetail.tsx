@@ -78,7 +78,7 @@ const StockItemDetail = defineComponent({
         return (
             <div class="container w-full my-4">
                 <section>
-                    <h3 class="text-xl font-semibold text-gray-700">{this.stockItem?.name}</h3>
+                    <h3 class="text-xl font-semibold text-foreground">{this.stockItem?.name}</h3>
                     <p class="mt-2 italic leading-3 text-muted-foreground">{this.stockItem?.description}</p>
                 </section>
 
@@ -87,7 +87,7 @@ const StockItemDetail = defineComponent({
                     <h3 class="text-xl font-semibold">Item Variants</h3>
                     <button
                         onClick={() => this.FormManager(true, null)}
-                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                     >
                     Add New {this.stockItem?.name}
                     </button>
@@ -95,35 +95,35 @@ const StockItemDetail = defineComponent({
                 <hr />
 
                 <div class="overflow-x-auto mt-4">
-                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                         <table class="min-w-full">
                             <thead>
                                 <tr>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                         Variant Name
                                     </th>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
                                         Description
                                     </th>
                                     <th class="px-1 py-1 border-b-2 border-border"></th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white">
+                            <tbody class="bg-background">
                                 {this.stockItem?.variants?.map(variant => {
                                     return (
                                         <tr key={variant?.uid}>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                                                 <div class="flex items-center">
-                                                    <div class="text-sm leading-5 text-gray-800">{variant?.name}</div>
+                                                    <div class="text-sm leading-5 text-foreground">{variant?.name}</div>
                                                 </div>
                                             </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                                                 <div class="text-sm leading-5 text-primary">{variant?.description}</div>
                                             </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                                            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
                                                 <button
                                                     onClick={() => this.FormManager(false, variant)}
-                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
                                                 >
                                                     Edit
                                                 </button>
@@ -146,7 +146,7 @@ const StockItemDetail = defineComponent({
                                     <form action="post" class="p-1">
                                         <div class="grid grid-cols-2 gap-x-4 mb-4">
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Variant Name</span>
+                                                <span class="text-foreground">Variant Name</span>
                                                 <input
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.form.name}
@@ -154,7 +154,7 @@ const StockItemDetail = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Description</span>
+                                                <span class="text-foreground">Description</span>
                                                 <textarea
                                                     cols="2"
                                                     class="form-input mt-1 block w-full"
@@ -163,7 +163,7 @@ const StockItemDetail = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Minimum Level</span>
+                                                <span class="text-foreground">Minimum Level</span>
                                                 <input
                                                     type="number"
                                                     class="form-input mt-1 block w-full"
@@ -172,7 +172,7 @@ const StockItemDetail = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">
-                                                <span class="text-gray-700">Maximum Level</span>
+                                                <span class="text-foreground">Maximum Level</span>
                                                 <input
                                                     type="number"
                                                     class="form-input mt-1 block w-full"
@@ -185,7 +185,7 @@ const StockItemDetail = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>

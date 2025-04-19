@@ -34,7 +34,7 @@ const isSelected = computed(() => {
 <template>
   <li class="cursor-pointer leading-6 mb-2">
     <div 
-      :class="[{ 'text-blue-500 font-bold': isSelected }]" 
+      :class="[{ 'text-accent font-bold': isSelected }]" 
       @click="toggle"
     >
       {{ tree?.name }}

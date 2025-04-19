@@ -44,58 +44,58 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
 <template>
   <div class="overflow-x-auto mt-4">
     <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard p-2 rounded-bl-sm rounded-br-sm">
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard p-2 rounded-bl-sm rounded-br-sm">
       <table class="min-w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
               Sampe ID
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Test(s)
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Patient
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Client Patient ID
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Client
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Created
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Creator
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
               Status
             </th>
             <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
-        <tbody class="bg-white" v-for="request in analysisRequests" :key="request.uid">
+        <tbody class="bg-background" v-for="request in analysisRequests" :key="request.uid">
           <tr class="bg-muted" v-motion-slide-left>
-            <td colspan="10" class="px-1 py-1 whitespace-no-wrap border-b border-gray-400">
+            <td colspan="10" class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="flex items-center">
-                <div class="text-sm leading-5 text-gray-800">
+                <div class="text-sm leading-5 text-foreground">
                   {{ request.clientRequestId }}
                 </div>
               </div>
             </td>
           </tr>
           <tr v-for="sample in request.samples" :key="sample.uid" v-motion-slide-right>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <span v-if="sample.priority ?? 0 < 1" :class="[
                 'font-small',
-                { 'text-orange-600': sample.priority ?? 0 == 0 },
+                { 'text-destructive': sample.priority ?? 0 == 0 },
               ]">
                 <font-awesome-icon icon="fa-star" />
               </span>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="flex items-center">
                 <div class="font-semibold">
                   <router-link :to="{
@@ -108,45 +108,45 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
                 </div>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ profileAnalysesText(sample.profiles ?? [], sample.analyses ?? []) }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ request.patient?.firstName }} {{ request.patient?.lastName }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ request.patient?.clientPatientId }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ request.client?.name }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ parseDate(sample?.createdAt) }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ sample?.createdBy?.firstName }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <button type="button" class="bg-cyan-600 text-white p-1 rounded-sm leading-none">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+              <button type="button" class="bg-primary text-primary-foreground p-1 rounded-sm leading-none">
                 {{ sample.status }}
               </button>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
               <router-link :to="{
                 name: 'sample-detail',
                 params: { patientUid: request.patient?.uid, sampleUid: sample?.uid },
               }"
-                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">View</router-link>
+                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">View</router-link>
             </td>
           </tr>
         </tbody>

@@ -32,14 +32,14 @@ const ContainerView = defineComponent({
                 <div class="grid grid-cols-2 mt-2">
                     <div class="col-span-1">
                         <div class="flex">
-                            <span class="text-gray-600 text-md font-bold w-52">Name:</span>
-                            <span class="text-gray-600 text-md">{this.storageContainer?.name}</span>
+                            <span class="text-foreground text-md font-bold w-52">Name:</span>
+                            <span class="text-foreground text-md">{this.storageContainer?.name}</span>
                         </div>
                         <div class="flex">
-                            <span class="text-gray-600 text-md font-bold w-52">Layout:</span>
-                            <span class="text-gray-600 text-md">{this.storageContainer?.grid ? 'grid' : 'column'}</span>
+                            <span class="text-foreground text-md font-bold w-52">Layout:</span>
+                            <span class="text-foreground text-md">{this.storageContainer?.grid ? 'grid' : 'column'}</span>
                             {this.storageContainer?.grid ? (
-                                <span class="ml-2 text-gray-600 text-md italic bg-slate-400 px-1 rounded-sm">
+                                <span class="ml-2 text-foreground text-md italic bg-muted px-1 rounded-sm">
                                     {this.storageContainer?.rowWise ? 'by-row' : 'by-column'}
                                 </span>
                             ) : null}
@@ -47,12 +47,12 @@ const ContainerView = defineComponent({
                     </div>
                     <div class="col-span-1">
                         <div class="flex">
-                            <span class="text-gray-600 text-md font-bold w-52">Slots:</span>
-                            <span class="text-gray-600 text-md">{this.storageContainer?.slots}</span>
+                            <span class="text-foreground text-md font-bold w-52">Slots:</span>
+                            <span class="text-foreground text-md">{this.storageContainer?.slots}</span>
                         </div>
                         <div class="flex mt-2">
-                            <span class="text-gray-600 text-md font-bold w-52">Empty Slots:</span>
-                            <span class="text-gray-600 text-md mr-2">
+                            <span class="text-foreground text-md font-bold w-52">Empty Slots:</span>
+                            <span class="text-foreground text-md mr-2">
                                 {(this.storageContainer?.slots ?? 0) - (this.storageContainer?.samples?.length ?? 0)}
                             </span>
                         </div>
@@ -61,14 +61,14 @@ const ContainerView = defineComponent({
 
                 <div>
                     <div class="mt-4">
-                        <nav class="bg-white shadow-sm my-2">
+                        <nav class="bg-background shadow-sm my-2">
                             <div class="-mb-px flex justify-start" role="tablist">
                                 {this.tabs.map(tab => {
                                     return (
                                         <a
                                             key={tab}
                                             class={[
-                                                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                                                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
                                                 { 'tab-active': this.currentTab === tab },
                                             ]}
                                             onClick={() => (this.currentTab = tab)}

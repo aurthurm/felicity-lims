@@ -45,7 +45,7 @@ function handleCommentUpdated() {
         <div 
             v-for="comment in comments" 
             :key="comment.uid" 
-            :class="level === 0 ? 'border-b border-gray-200 pb-4' : ''"
+            :class="level === 0 ? 'border-b border-border pb-4' : ''"
         >
             <CommentItem 
                 :comment="comment"

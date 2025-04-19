@@ -20,7 +20,7 @@ const editPatient = (patient) => {
 </script>
 
 <template>
-  <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
+  <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
     <div v-if="fetchingPatient" class="py-4 text-center">
       <LoadingMessage message="Fetching patient details ..." />
     </div>
@@ -32,13 +32,13 @@ const editPatient = (patient) => {
         </div>
         <!-- Age -->
         <div class="flex flex-col items-center justify-center mx-auto py-2 w-4/5 2lg:w-3/5 rounded-sm bg-primary">
-          <div class="inline-block font-semibold text-white text-sm lg:text-md">
+          <div class="inline-block font-semibold text-primary-foreground text-sm lg:text-md">
             {{ patient?.gender }}
           </div>
-          <div class="inline-block font-bold text-2xl text-white my-2">
+          <div class="inline-block font-bold text-2xl text-primary-foreground my-2">
             {{ patient?.age }}
           </div>
-          <div class="inline-block font-semibold text-white text-sm lg:text-md">
+          <div class="inline-block font-semibold text-primary-foreground text-sm lg:text-md">
             Yrs Old
           </div>
         </div>
@@ -47,19 +47,19 @@ const editPatient = (patient) => {
       <!-- Summary Column -->
       <div class="col-span-12 sm:col-start-3 sm:col-end-13 px-3 sm:px-0">
         <div class="flex justify-between sm:text-sm md:text-md lg:text-lg">
-          <span class="font-bold text-gray-800">{{ patient?.firstName?.toUpperCase() }}
+          <span class="font-bold text-foreground">{{ patient?.firstName?.toUpperCase() }}
             {{ patient?.lastName?.toUpperCase() }}</span>
           <div>
             <span class="font-medium text-md">{{ parseDate(patient?.dateOfBirth, false) }}</span>
             <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)" @click="editPatient(patient)"
-              class="p-1 ml-2 border-white border text-muted-foreground text-md rounded-sm transition duration-300 hover:text-primary focus:outline-none">
+              class="p-1 ml-2 border-foreground border text-muted-foreground text-md rounded-sm transition duration-300 hover:text-primary focus:outline-none">
               <font-awesome-icon icon="fa-edit" />
             </button>
             <router-link v-show="route.fullPath.includes('patients-compact')" :to="{
               name: 'patient-detail',
               params: { patientUid: patient?.uid },
             }"
-              class="p-1 ml-2 border-white border text-muted-foreground rounded-sm transition duration-300 hover:text-primary focus:outline-none">
+              class="p-1 ml-2 border-foreground border text-muted-foreground rounded-sm transition duration-300 hover:text-primary focus:outline-none">
               <font-awesome-icon icon="fa-left-right" />
             </router-link>
           </div>
@@ -74,20 +74,20 @@ const editPatient = (patient) => {
             <hr class="my-1">
             <!-- Client Details -->
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 text-sm font-semibold">Country</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Country</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 patient?.country?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 text-sm font-semibold">District:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">District:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 patient?.district?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 text-sm font-semibold">Province: </span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Province: </span>
+              <span class="text-foreground text-sm md:text-md">{{
                 patient?.province?.name
               }}</span>
             </div>
@@ -98,20 +98,20 @@ const editPatient = (patient) => {
             <hr class="my-1">
             <!-- Client Details -->
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 text-sm font-semibold">Client</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Client</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 patient?.client?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 text-sm font-semibold">District:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">District:</span>
+              <span class="text-foreground text-sm md:text-md">{{
                 patient?.client?.district?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 text-sm font-semibold">Province: </span>
-              <span class="text-gray-600 text-sm md:text-md">{{
+              <span class="text-foreground text-sm font-semibold">Province: </span>
+              <span class="text-foreground text-sm md:text-md">{{
                 patient?.client?.district?.province?.name
               }}</span>
             </div>
@@ -120,28 +120,28 @@ const editPatient = (patient) => {
           <div class="col-span-1 mr-2">
             <!-- Identifiers -->
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 whitespace-nowrap text-sm font-semibold">Client Patient ID:
+              <span class="text-foreground whitespace-nowrap text-sm font-semibold">Client Patient ID:
               </span>
-              <span class="text-gray-600 text-sm md:text-md">
+              <span class="text-foreground text-sm md:text-md">
                 {{ patient?.clientPatientId }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 whitespace-nowrap text-sm font-semibold">Mobile:
+              <span class="text-foreground whitespace-nowrap text-sm font-semibold">Mobile:
               </span>
-              <span class="text-gray-600 text-sm md:text-md">
+              <span class="text-foreground text-sm md:text-md">
                 {{ patient?.phoneMobile }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
-              <span class="text-gray-800 whitespace-nowrap text-sm font-semibold">Consent SMS:
+              <span class="text-foreground whitespace-nowrap text-sm font-semibold">Consent SMS:
               </span>
-              <span class="text-gray-600 text-sm md:text-md">
+              <span class="text-foreground text-sm md:text-md">
                 {{ patient?.consentSms ? 'Yes' : 'No' }}</span>
             </div>
             <div class="flex justify-between items-center mt-2" v-for="identification in patient?.identifications" :key="identification.uid">
-              <span class="text-gray-800 whitespace-nowrap text-sm font-semibold">{{ identification?.identification?.name
+              <span class="text-foreground whitespace-nowrap text-sm font-semibold">{{ identification?.identification?.name
               }}:
               </span>
-              <span class="text-gray-600 text-sm md:text-md">
+              <span class="text-foreground text-sm md:text-md">
                 {{ identification?.value }}</span>
             </div>
           </div>

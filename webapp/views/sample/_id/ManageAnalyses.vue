@@ -114,7 +114,7 @@ const applyChanges = async () => {
     <hr />
     <form action="post" class="mt-4" v-motion-slide-right>
       <div class="flex justify-start items-center mr-4">
-        <span class="text-gray-700">Analyses Template (Auto)</span>
+        <span class="text-foreground">Analyses Template (Auto)</span>
         <label class="block mx-4">
           <select class="form-select block w-full py-1" v-model="templateUid">
             <option></option>
@@ -130,7 +130,7 @@ const applyChanges = async () => {
         <button
           type="button"
           @click.prevent="applyTemplate()"
-          class="border border-primary bg-primary text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Apply Template
         </button>
@@ -142,7 +142,7 @@ const applyChanges = async () => {
   <h3 class="font-bold">Manually Modify Analyses: ({{ selectedAnalyses?.length }})</h3>
   <hr class="mb-4 mt-2" />
 
-  <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-white">
+  <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-background">
     <div class="w-full">
         <accordion v-for="(category, idx) in analysesServices" :key="idx">
           <template v-slot:title>{{ category[0] }}</template>
@@ -150,22 +150,22 @@ const applyChanges = async () => {
             <table class="min-w-full">
               <thead>
                 <tr>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
                     <input type="checkbox" class="" :checked="isSelectedCategory(category[1])" @change="selectCategory(category[1])"/>
                   </th>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Analysis</th>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Keyword</th>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Description</th>
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Analysis</th>
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Keyword</th>
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Description</th>
                 </tr>
               </thead>
-              <tbody class="bg-white">
+              <tbody class="bg-background">
                 <tr v-for="service in category[1]" :key="service?.uid" v-motion-slide-right>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-200">
-                    <input type="checkbox" class="border-red-500" :checked="isSelectedAnalysis(service?.uid)" @change="selectAnalysis(service?.uid)" />
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                    <input type="checkbox" class="border-destructive" :checked="isSelectedAnalysis(service?.uid)" @change="selectAnalysis(service?.uid)" />
                   </td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-200">{{ service?.name }}</td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-200">{{ service?.keyword }}</td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-200">{{ service?.description }}</td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">{{ service?.name }}</td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">{{ service?.keyword }}</td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">{{ service?.description }}</td>
                 </tr>
               </tbody>
             </table>
@@ -175,7 +175,7 @@ const applyChanges = async () => {
         <button
           type="button"
           @click.prevent="applyChanges()"
-          class="border border-primary bg-primary text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Apply Changes
         </button>

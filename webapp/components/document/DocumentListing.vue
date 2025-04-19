@@ -33,24 +33,24 @@ function handleEdit(document: IDocument) {
   </div>
 
   <div v-else class="overflow-x-auto rounded-xl shadow">
-    <table class="min-w-full bg-white border border-gray-200">
+    <table class="min-w-full bg-background border border-border">
       <thead class="bg-secondary">
         <tr>
-        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Name</th>
-          <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Created At</th>
-          <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Updated At</th>
-          <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Actions</th>
+        <th class="py-3 px-4 text-left text-sm font-semibold text-foreground">Name</th>
+          <th class="py-3 px-4 text-left text-sm font-semibold text-foreground">Created At</th>
+          <th class="py-3 px-4 text-left text-sm font-semibold text-foreground">Updated At</th>
+          <th class="py-3 px-4 text-left text-sm font-semibold text-foreground">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="doc in documents" :key="doc.uid" class="border-t border-gray-200 hover:bg-gray-50 transition">
-          <td class="px-4 text-sm font-medium text-gray-800 font-semibold" @click.stop="handleEdit(doc)">{{ doc.name }}</td>
+        <tr v-for="doc in documents" :key="doc.uid" class="border-t border-border hover:bg-background transition">
+          <td class="px-4 text-sm font-medium text-foreground font-semibold" @click.stop="handleEdit(doc)">{{ doc.name }}</td>
           <td class="px-4 text-sm text-muted-foreground">{{ formatDate(doc.createdAt) }}</td>
           <td class="px-4 text-sm text-muted-foreground">{{ formatDate(doc.updatedAt) }}</td>
           <td class="px-4 text-sm">
             <button @click.stop="handleEdit(doc)">
-              <div class="h-8 w-8 rounded-full bg-white/90 flex items-center justify-center">
-                <Edit class="text-gray-900 w-5 h-5" />
+              <div class="h-8 w-8 rounded-full bg-background/90 flex items-center justify-center">
+                <Edit class="text-foreground w-5 h-5" />
               </div>
             </button>
           </td>

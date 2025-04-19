@@ -96,7 +96,7 @@ function areAllChecked(): Boolean {
     <form action="post" class="p-1" v-motion-slide-left>
       <div class="flex justify-start mb-4">
         <label class="flex justify-between items-center">
-          <span class="text-gray-700 mr-2 whitespace-nowrap">Sample Type</span>
+          <span class="text-foreground mr-2 whitespace-nowrap">Sample Type</span>
           <select
             name="analyses_uids"
             v-model="filterForm.sampleTypeUid"
@@ -112,7 +112,7 @@ function areAllChecked(): Boolean {
           </select>
         </label>
         <!-- <label class="flex justify-between items-center ml-6">
-          <span class="text-gray-700 mr-2">Analyses</span>
+          <span class="text-foreground mr-2">Analyses</span>
           <select
             name="analyses_uids"
             v-model="filterForm.analysisUid"
@@ -142,7 +142,7 @@ function areAllChecked(): Boolean {
 
   <div class="overflow-x-auto mt-4">
     <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
       <div v-if="shipmentStore.fetchingSamples" class="py-4 text-center">
         <LoadingMessage message="Fetching samples ..." />
@@ -151,51 +151,51 @@ function areAllChecked(): Boolean {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               <input type="checkbox" @change="toggleCheckAll" v-model="allChecked" />
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               Sample ID
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               Sample Type
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               Client Sample ID
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Analysis
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Date Created
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Date Received
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Status
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white" v-motion-slide-right>
+        <tbody class="bg-background" v-motion-slide-right>
           <tr v-for="sample in shipmentStore.samples" :key="sample?.uid">
             <td>
               <input
@@ -204,23 +204,23 @@ function areAllChecked(): Boolean {
                 @change="checkCheck(sample)"
               />
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ sample?.sampleId }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ sample?.sampleType?.name }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ sample?.analysisRequest?.clientRequestId }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <ul>
                   <li 
@@ -238,17 +238,17 @@ function areAllChecked(): Boolean {
                 </ul>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ sample?.createdAt }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ sample?.dateReceived }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ sample?.status }}
               </div>

@@ -139,7 +139,7 @@ const toCapitalize = (str) => {
       <div class="flex items-center">
         <svg
           aria-hidden="true"
-          class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+          class="w-8 h-8 mr-2 text-muted-foreground animate-spin text-foreground fill-accent"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +164,7 @@ const toCapitalize = (str) => {
                 <div><slot name="pre-filter"></slot></div>
                 <select
                   v-model="filterStatus"
-                  class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  class="appearance-none h-full rounded-l-sm border block w-full bg-background border-border text-foreground py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-background focus:border-border"
                 >
                   <option
                     v-for="filterValue in filterMeta?.filters"
@@ -175,7 +175,7 @@ const toCapitalize = (str) => {
                   </option>
                 </select>
                 <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-foreground"
                 >
                   <svg
                     class="fill-current h-4 w-4"
@@ -200,14 +200,14 @@ const toCapitalize = (str) => {
               <input
                 placeholder="Search ..."
                 v-model="filterText"
-                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-border border-b block pl-8 pr-6 py-2 w-full bg-background text-sm placeholder-muted-foreground text-foreground focus:bg-background focus:placeholder-foreground focus:text-foreground focus:outline-none"
                 @keyup="searchKeyUp()"
                 @focus="searchFocus()"
               />
             </div>
             <button
               @click.prevent="searchEntries()"
-              class="px-2 py-1 ml-2 border-primary border text-sky-800rounded-smtransition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+              class="px-2 py-1 ml-2 border-primary border text-sky-800rounded-smtransition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
               v-if="searchable || filterable">
               Search
             </button>
@@ -224,8 +224,8 @@ const toCapitalize = (str) => {
                   class="inline-flex items-center px-2 py-1 mr-2 text-sm font-medium rounded border"
                   :class="[
                     {
-                      'text-gray-400 bg-secondary border-gray-400': column.hidden,
-                      'text-blue-600 bg-blue-100 border-blue-800': !column.hidden,
+                      'text-muted-foreground bg-secondary border-border': column.hidden,
+                      'text-primary bg-secondary border-primary': !column.hidden,
                       hidden: !(column.showInToggler ?? true),
                     },
                   ]"
@@ -250,7 +250,7 @@ const toCapitalize = (str) => {
               </div>
             </div>
             <button
-              class="ml-4 text-xl font-semibold text-blue-900"
+              class="ml-4 text-xl font-semibold text-primary"
               @click="openColumns = !openColumns"
               v-tooltip="'manage table columns'"
             >
@@ -267,14 +267,14 @@ const toCapitalize = (str) => {
           <tr>
             <th
               v-if="selectable"
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               <input type="checkbox" :checked="allChecked" @click="(e) => checkAll(e)" />
             </th>
             <th
               v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
               :key="columnIdx"
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               <div class="flex items-center cursor-pointer" @click="setSorting(column)">
                 <span class="mr-1">{{ column.name }}</span>
@@ -282,28 +282,28 @@ const toCapitalize = (str) => {
                   <font-awesome-icon
                     v-if="!isSorter(column)"
                     icon="fa-sort"
-                    class="text-gray-400"
+                    class="text-muted-foreground"
                   />
                   <font-awesome-icon
                     v-else-if="sorting?.sortBy === 'asc'"
                     icon="fa-solid fa-arrow-up-wide-short"
-                    class="text-gray-800"
+                    class="text-foreground"
                   />
                   <font-awesome-icon
                     v-else
                     icon="fa-solid fa-arrow-down-wide-short"
-                    class="text-gray-800"
+                    class="text-foreground"
                   />
                 </span>
               </div>
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white">
+        <tbody class="bg-background">
           <tr v-for="(entry, entryIdx) in entries" :key="entryIdx">
             <td
               v-if="selectable"
-              class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"
+              class="px-1 py-1 whitespace-no-wrap border-b border-border"
             >
               <input
                 type="checkbox"
@@ -314,7 +314,7 @@ const toCapitalize = (str) => {
             <td
               v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
               :key="`${entryIdx}_${columnIdx}`"
-              class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"
+              class="px-1 py-1 whitespace-no-wrap border-b border-border"
             >
               <span v-if="column.customRender && column">
                 <component :is="getValue(entry, column)" />
@@ -331,7 +331,7 @@ const toCapitalize = (str) => {
           <div>
             <button
               v-show="pageMeta?.hasNextPage"
-              class="px-2 py-1 mr-2 border-primary border text-sky-800rounded-smtransition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+              class="px-2 py-1 mr-2 border-primary border text-sky-800rounded-smtransition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
               @click.prevent="paginate"
             >
               Show More
@@ -341,7 +341,7 @@ const toCapitalize = (str) => {
             <div class="flex flex-row mb-1 sm:mb-0">
               <div class="relative">
                 <select
-                  class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  class="appearance-none h-full rounded-l-sm border block w-full bg-background border-border text-foreground py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-background focus:border-border"
                   v-model.number="fetchCount"
                   :disabled="!pageMeta?.hasNextPage"
                 >
@@ -355,7 +355,7 @@ const toCapitalize = (str) => {
                   <option value="10000">10000</option>
                 </select>
                 <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-foreground"
                 >
                   <svg
                     class="fill-current h-4 w-4"
@@ -373,7 +373,7 @@ const toCapitalize = (str) => {
           <div class="block relative">
             <input
               :placeholder="pageMeta?.countNone"
-              class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+              class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-border border-b block pl-8 pr-6 py-2 w-full bg-background text-sm placeholder-muted-foreground text-foreground focus:bg-background focus:placeholder-foreground focus:text-foreground focus:outline-none"
               disabled
             />
           </div>

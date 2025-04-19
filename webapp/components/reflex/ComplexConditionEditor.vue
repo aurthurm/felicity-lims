@@ -5,7 +5,7 @@
           <option value="AND">AND</option>
           <option value="OR">OR</option>
         </select>
-        <button @click="$emit('remove')" class="text-red-600">Remove</button>
+        <button @click="$emit('remove')" class="text-destructive">Remove</button>
       </div>
       <div v-for="(subcondition, index) in condition.subconditions" :key="index" class="ml-4 mb-2">
         <div class="flex items-center gap-2">
@@ -21,10 +21,10 @@
             <option value="lt">&lt;</option>
           </select>
           <input v-model="subcondition.value" class="form-input" />
-          <button @click="removeSubcondition(index)" class="text-red-600">Remove</button>
+          <button @click="removeSubcondition(index)" class="text-destructive">Remove</button>
         </div>
       </div>
-      <button @click="addSubcondition" class="mt-2 text-blue-600">Add Subcondition</button>
+      <button @click="addSubcondition" class="mt-2 text-primary">Add Subcondition</button>
     </div>
   </template>
   

@@ -151,7 +151,7 @@ onMounted(() => {
         <router-link
           v-if="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           to="/patients/search"
-          class="px-4 py-2 text-sm border border-primary text-dark-800 rounded-sm hover:bg-primary hover:text-gray-100 transition-colors duration-150"
+          class="px-4 py-2 text-sm border border-primary text-dark-800 rounded-sm hover:bg-primary hover:text-primary-foreground transition-colors duration-150"
         >
           Add Patient
         </router-link>
@@ -159,7 +159,7 @@ onMounted(() => {
         <input
           type="text"
           placeholder="Search patients..."
-          class="w-64 px-4 py-2 text-sm text-gray-800 placeholder-gray-400 border border-gray-400 rounded-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+          class="w-64 px-4 py-2 text-sm text-foreground placeholder-muted-foreground border border-border rounded-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           @keyup="handleSearch"
           @focus="resetPatient"
         />
@@ -167,7 +167,7 @@ onMounted(() => {
       
       <button
         v-if="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
-        class="px-4 py-2 text-sm border border-primary text-dark-700 rounded-sm hover:bg-primary hover:text-gray-100 transition-colors duration-150"
+        class="px-4 py-2 text-sm border border-primary text-dark-700 rounded-sm hover:bg-primary hover:text-primary-foreground transition-colors duration-150"
         @click="handleQuickRegistration"
       >
         Quick Registration
@@ -196,7 +196,7 @@ onMounted(() => {
             v-for="patient in patients"
             :key="patient.patientId"
             @click="selectPatient(patient)"
-            class="bg-white w-full flex items-center mb-1 rounded-sm shadow border cursor-pointer transition-colors duration-150 hover:border-primary hover:bg-sky-50"
+            class="bg-background w-full flex items-center mb-1 rounded-sm shadow border cursor-pointer transition-colors duration-150 hover:border-primary hover:bg-sky-50"
             :class="{ 'border-primary bg-emerald-200': patient.uid === patientForm?.uid }"
           >
             <div class="flex-grow p-3">

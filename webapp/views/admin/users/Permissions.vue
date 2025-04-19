@@ -45,25 +45,25 @@ function handlePermissionToggle(group: IGroup, perm: IPermission, value: boolean
 
 <template>
   <div class="overflow-x-auto mt-4">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <div class="relative">
         <!-- Fixed Header -->
         <table class="min-w-full">
           <thead>
             <tr>
               <th
-                class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="sticky top-0 z-10 bg-background px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 Permissions
               </th>
               <th 
                 v-for="group in groups" 
                 :key="group.uid"
-                class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="sticky top-0 z-10 bg-background px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
               >
                 {{ group.name }}
               </th>
-              <th class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-border"></th>
+              <th class="sticky top-0 z-10 bg-background px-1 py-1 border-b-2 border-border"></th>
             </tr>
           </thead>
         </table>
@@ -71,15 +71,15 @@ function handlePermissionToggle(group: IGroup, perm: IPermission, value: boolean
         <!-- Scrollable Body -->
         <div class="flex-1 overflow-y-auto max-h-[700px]">
           <table class="min-w-full">
-            <tbody class="bg-white">
+            <tbody class="bg-background">
               <template v-for="category in permissions" :key="category[0]">
-                <tr class="bg-slate-100" >
-                  <td class="py-1 font-bold px-1 text-gray-600 ">{{ category[0] }}</td>
-                  <td class="py-1 font-medium px-1 text-slate-100" v-for="group in groups" :key="group.uid">
+                <tr class="bg-secondary" >
+                  <td class="py-1 font-bold px-1 text-foreground ">{{ category[0] }}</td>
+                  <td class="py-1 font-medium px-1 text-muted-foreground" v-for="group in groups" :key="group.uid">
                     {{ group.name }}
                   </td>
                 </tr>
-                <tr v-for="perm in category[1]" :key="perm.uid" class="border-b border-slate-200">
+                <tr v-for="perm in category[1]" :key="perm.uid" class="border-b border-border">
                   <td class="py-1 font-sm italic text-muted-foreground px-1">
                     {{ perm.action }}
                   </td>

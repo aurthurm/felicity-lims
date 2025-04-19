@@ -39,7 +39,7 @@ const initInstall = handleSubmit((values) => {
 
 <template>
   <div class="flex justify-center items-center h-screen bg-primary px-6">
-    <div class="p-6 max-w-sm w-full bg-white shadow-md rounded-sm">
+    <div class="p-6 max-w-sm w-full bg-background shadow-md rounded-sm">
       <div class="flex justify-center items-center">
         <svg
           class="h-10 w-10"
@@ -60,26 +60,26 @@ const initInstall = handleSubmit((values) => {
             fill="white"
           />
         </svg>
-        <span class="text-gray-700 font-semibold text-2xl">Install Felicity LIMS</span>
+        <span class="text-foreground font-semibold text-2xl">Install Felicity LIMS</span>
       </div>
 
       <form class="mt-4" @submit.prevent="initInstall">
         <label class="block">
-          <span class="text-gray-700 text-sm">Laboratory Name</span>
+          <span class="text-foreground text-sm">Laboratory Name</span>
           <input
             type="text"
             class="form-input mt-1 block w-full rounded-sm focus:border-primary"
             v-model="name"
             :disabled="loading"
           />
-          <div class="text-orange-600 w-4/12">{{ errors.name }}</div>
+          <div class="text-destructive w-4/12">{{ errors.name }}</div>
         </label>
 
         <div class="mt-6">
           <button
             v-if="!loading"
             type="submit"
-            class="py-2 px-4 text-center bg-primary rounded-sm w-full text-white text-sm hover:bg-primary"
+            class="py-2 px-4 text-center bg-primary rounded-sm w-full text-primary-foreground text-sm hover:bg-primary"
           >
             Install
           </button>

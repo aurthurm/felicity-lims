@@ -234,42 +234,42 @@ const removeIdentifier = (index: number) => {
 </script>
 
 <template>
-  <form @submit.prevent="submitPatientForm" class="border-2 border-gray-900 border-dotted rounded-sm px-4 py-8"
+  <form @submit.prevent="submitPatientForm" class="border-2 border-foreground border-dotted rounded-sm px-4 py-8"
     autocomplete="off">
     <label class="flex whitespace-nowrap w-full">
-      <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
+      <span class="text-foreground w-4/12">Patient Unique Identifier</span>
       <div class="w-full">
         <input class="form-input mt-1 block w-full" v-model="clientPatientId" placeholder="Patient Unique Identifier" />
-        <div class="text-orange-600 w-4/12">{{ errors.clientPatientId }}</div>
+        <div class="text-destructive w-4/12">{{ errors.clientPatientId }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap w-full">
-      <span class="text-gray-700 w-4/12">First Name</span>
+      <span class="text-foreground w-4/12">First Name</span>
       <div class="w-full">
         <input class="form-input mt-1 w-full" v-model="firstName" placeholder="First Name" />
-        <div class="text-orange-600 w-4/12">{{ errors.firstName }}</div>
+        <div class="text-destructive w-4/12">{{ errors.firstName }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Middle Name</span>
+      <span class="text-foreground w-4/12">Middle Name</span>
       <div class="w-full">
         <input class="form-input mt-1 w-full" v-model="middleName" placeholder="Middle Name" />
-        <div class="text-orange-600 w-4/12">{{ errors.middleName }}</div>
+        <div class="text-destructive w-4/12">{{ errors.middleName }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap w-full">
-      <span class="text-gray-700 w-4/12">Last Name</span>
+      <span class="text-foreground w-4/12">Last Name</span>
       <div class="w-full">
         <input class="form-input mt-1 w-full" v-model="lastName" placeholder="Last Name" />
-        <div class="text-orange-600 w-4/12">{{ errors.lastName }}</div>
+        <div class="text-destructive w-4/12">{{ errors.lastName }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap my-2 w-full">
-      <span class="text-gray-700 w-4/12">Age/DOB Estimated?</span>
+      <span class="text-foreground w-4/12">Age/DOB Estimated?</span>
       <div class="w-full flex justify-between items-center">
         <input type="checkbox" class="form-checkbox text-primary" v-model="ageDobEstimated" />
         <div class="flex justify-start items-center gap-x-2 ml-4" v-show="ageDobEstimated">
@@ -289,34 +289,34 @@ const removeIdentifier = (index: number) => {
               v-model="estimateDays" @change="estimateDOB()" @keyup="estimateDOB()" />
           </label>
         </div>
-        <div class="text-orange-600 w-4/12">{{ errors.ageDobEstimated }}</div>
+        <div class="text-destructive w-4/12">{{ errors.ageDobEstimated }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Date of Birth</span>
+      <span class="text-foreground w-4/12">Date of Birth</span>
       <div class="w-full">
         <VueDatePicker 
-        class="z-60 disabled:bg-slate-200" 
+        class="z-60 disabled:bg-muted" 
         v-model="dateOfBirth" 
         :disabled="ageDobEstimated" 
         @closed="calculateAge()"
         :max-date="maxDate"></VueDatePicker>
-        <div class="text-orange-600 w-4/12">{{ errors.dateOfBirth }}</div>
+        <div class="text-destructive w-4/12">{{ errors.dateOfBirth }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Age</span>
+      <span class="text-foreground w-4/12">Age</span>
       <div class="w-full">
-        <input class="form-input mt-1 w-full disabled:bg-slate-200" type="number" v-model="age" placeholder="Age"
+        <input class="form-input mt-1 w-full disabled:bg-muted" type="number" v-model="age" placeholder="Age"
           disabled />
-        <div class="text-orange-600 w-4/12">{{ errors.age }}</div>
+        <div class="text-destructive w-4/12">{{ errors.age }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Gender</span>
+      <span class="text-foreground w-4/12">Gender</span>
       <div class="w-full">
         <select class="form-select mt-1 w-full" v-model="gender">
           <option></option>
@@ -324,49 +324,49 @@ const removeIdentifier = (index: number) => {
             {{ sex }}
           </option>
         </select>
-        <div class="text-orange-600 w-4/12">{{ errors.gender }}</div>
+        <div class="text-destructive w-4/12">{{ errors.gender }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Mobile Number</span>
+      <span class="text-foreground w-4/12">Mobile Number</span>
       <div class="w-full">
         <input class="form-input mt-1 w-full" v-model="phoneMobile" placeholder="Mobile Number" />
-        <div class="text-orange-600 w-4/12">{{ errors.phoneMobile }}</div>
+        <div class="text-destructive w-4/12">{{ errors.phoneMobile }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Consent to SMS</span>
+      <span class="text-foreground w-4/12">Consent to SMS</span>
       <div class="w-full">
         <input type="checkbox" class="form-checkbox text-primary" v-model="consentSms" />
-        <div class="text-orange-600 w-4/12">{{ errors.consentSms }}</div>
+        <div class="text-destructive w-4/12">{{ errors.consentSms }}</div>
       </div>
     </label>
 
     <!-- other identifiers: passport, client pid, national id -->
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Primary Referrer</span>
+      <span class="text-foreground w-4/12">Primary Referrer</span>
       <div class="w-full">
         <VueMultiselect placeholder="Select a Primary Referrer" v-model="client" :options="state.clients"
           :searchable="true" label="name" track-by="uid">
         </VueMultiselect>
-        <div class="text-orange-600 w-4/12">{{ errors.client }}</div>
+        <div class="text-destructive w-4/12">{{ errors.client }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12 flex justify-between items-center">
+      <span class="text-foreground w-4/12 flex justify-between items-center">
         <span class="mr-4">Extra Ids:</span>
         <div>
           <span
-            class="relative px-1 mr-2 mt-4 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+            class="relative px-1 mr-2 mt-4 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
             @click="addIdentifier()">
             Add
           </span>
         </div>
       </span>
-      <div class="w-full border-gray-200">
+      <div class="w-full border-border">
         <div class="flex justify-around items-center  w-full" v-for="(identication, index) of identifications">
           <span>Identification</span>
           <select class="form-select mt-1" v-model="identication.identificationUid">
@@ -377,7 +377,7 @@ const removeIdentifier = (index: number) => {
           </select>
           <span>Value</span>
           <input type="text" class="form-input text-primary" v-model="identication.value" />
-          <span class="p-2 text-red-800" @click.prevent="removeIdentifier(index)">X</span>
+          <span class="p-2 text-destructive" @click.prevent="removeIdentifier(index)">X</span>
         </div>
       </div>
     </label>
@@ -387,7 +387,7 @@ const removeIdentifier = (index: number) => {
     <div class="grid grid-cols-3 gap-x-4 mb-4">
       <div class="col-span-1">
         <label class="flex gap-x-2 items-center whitespace-nowrap w-full">
-          <span class="text-gray-700 w-4/12">Country</span>
+          <span class="text-foreground w-4/12">Country</span>
           <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
             <option :value="null"></option>
             <option v-for="country in state.countries" :key="country.uid" :value="country.uid">
@@ -395,12 +395,12 @@ const removeIdentifier = (index: number) => {
             </option>
           </select>
         </label>
-        <div class="text-orange-600 w-4/12">{{ errors.countryUid }}</div>
+        <div class="text-destructive w-4/12">{{ errors.countryUid }}</div>
       </div>
 
       <div class="col-span-1">
         <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
-          <span class="text-gray-700 w-4/12">Province</span>
+          <span class="text-foreground w-4/12">Province</span>
           <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
             <option :value="null"></option>
             <option v-for="province in state.provinces" :key="province.uid" :value="province.uid">
@@ -408,12 +408,12 @@ const removeIdentifier = (index: number) => {
             </option>
           </select>
         </label>
-        <div class="text-orange-600 w-4/12">{{ errors.provinceUid }}</div>
+        <div class="text-destructive w-4/12">{{ errors.provinceUid }}</div>
       </div>
 
       <div class="col-span-1">
         <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
-          <span class="text-gray-700 w-4/12">District</span>
+          <span class="text-foreground w-4/12">District</span>
           <select class="form-select mt-1 w-full" v-model="districtUid">
             <option :value="null"></option>
             <option v-for="district in state.districts" :key="district.uid" :value="district.uid">
@@ -422,12 +422,12 @@ const removeIdentifier = (index: number) => {
           </select>
         </label>
       </div>
-      <div class="text-orange-600 w-4/12">{{ errors.districtUid }}</div>
+      <div class="text-destructive w-4/12">{{ errors.districtUid }}</div>
     </div>
 
     <hr />
     <button type="submit"
-      class="-mb-4 w-1/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+      class="-mb-4 w-1/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
       Save Patient
     </button>
   </form>

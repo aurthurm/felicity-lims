@@ -115,7 +115,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -226,7 +226,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
       Add ExpertInterpretationRule
     </button> -->
     <hr>
@@ -265,7 +265,7 @@ function saveForm(): void {
         <div class="mb-6">
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Rule Code</span>
+              <span class="text-foreground">Rule Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.ruleCode"
@@ -273,7 +273,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Description</span>
+              <span class="text-foreground">Description</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.description"
@@ -281,7 +281,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Code</span>
+              <span class="text-foreground">Organism Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.organismCode"
@@ -289,7 +289,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Code Type</span>
+              <span class="text-foreground">Organism Code Type</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.organismCodeType"
@@ -297,7 +297,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Rule Criteria</span>
+              <span class="text-foreground">Rule Criteria</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.ruleCriteria"
@@ -305,7 +305,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Affected Antibiotics</span>
+              <span class="text-foreground">Affected Antibiotics</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.affectedAntibiotics"
@@ -313,7 +313,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Antibiotic Exceptions</span>
+              <span class="text-foreground">Antibiotic Exceptions</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.antibioticExceptions"
@@ -326,7 +326,7 @@ function saveForm(): void {
         <div class="mb-6">
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Strain</span>
+              <span class="text-foreground">Strain</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.strain"
@@ -334,7 +334,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Code</span>
+              <span class="text-foreground">Organism Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.organismCode"
@@ -342,7 +342,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Organism Code Type</span>
+              <span class="text-foreground">Organism Code Type</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.organismCodeType"
@@ -350,7 +350,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Exception Organism Code</span>
+              <span class="text-foreground">Exception Organism Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.exceptionOrganismCode"
@@ -358,7 +358,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Exception Organism Code Type</span>
+              <span class="text-foreground">Exception Organism Code Type</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.exceptionOrganismCodeType"
@@ -366,7 +366,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Abx Code</span>
+              <span class="text-foreground">Abx Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.abxCode"
@@ -374,7 +374,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Abx Code Type</span>
+              <span class="text-foreground">Abx Code Type</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.abxCodeType"
@@ -382,7 +382,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Antibiotic Exceptions</span>
+              <span class="text-foreground">Antibiotic Exceptions</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.antibioticExceptions"
@@ -395,7 +395,7 @@ function saveForm(): void {
         <!-- Additional Information -->
         <div class="mb-6">
           <label class="block">
-            <span class="text-gray-700">Comments</span>
+            <span class="text-foreground">Comments</span>
             <textarea
               class="form-textarea mt-1 block w-full"
               v-model="form.comments"
@@ -410,7 +410,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save ExpertInterpretationRule
         </button>

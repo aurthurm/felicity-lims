@@ -203,7 +203,7 @@ function saveForm() {
           />
           <button
             @click="searchSchemes(schemeParams.text)"
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-sky-700"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -214,7 +214,7 @@ function saveForm() {
         <!-- Add button -->
         <button
           @click="openCreateForm"
-          class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           <span class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -227,7 +227,7 @@ function saveForm() {
     </div>
     
     <!-- Status and count information -->
-    <div class="mb-4 text-sm text-gray-600">
+    <div class="mb-4 text-sm text-foreground">
       <span v-if="isLoading">Loading schemes...</span>
       <span v-else>{{ countText }}</span>
     </div>
@@ -238,18 +238,18 @@ function saveForm() {
       <div 
         v-for="scheme in schemes" 
         :key="scheme.uid"
-        class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow"
+        class="bg-background rounded-lg shadow-md overflow-hidden border border-border hover:shadow-lg transition-shadow"
       >
         <div class="p-6">
           <div class="flex justify-between items-start mb-3">
             <router-link 
             :to="{name: 'scheme-detail', params: {schemeUid: scheme?.uid}}" 
-            class="text-lg font-semibold text-gray-800 truncate">
+            class="text-lg font-semibold text-foreground truncate">
               {{ scheme.title }}
             </router-link>
             <button 
               @click="openEditForm(scheme)"
-              class="text-muted-foreground hover:text-sky-600 transition-colors"
+              class="text-muted-foreground hover:text-primary transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -258,7 +258,7 @@ function saveForm() {
           </div>
           
           <!-- Description -->
-          <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+          <p class="text-foreground text-sm mb-4 line-clamp-2">
             {{ scheme.description || "No description provided" }}
           </p>
           
@@ -277,7 +277,7 @@ function saveForm() {
             <p class="text-xs text-muted-foreground mb-1">Assignee:</p>
             <div class="flex items-center">
               <div 
-                class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium mr-2"
+                class="w-8 h-8 rounded-full flex items-center justify-center text-primary-foreground text-xs font-medium mr-2"
                 :style="{ backgroundColor: stringToColor(scheme.assignee.firstName + scheme.assignee.lastName) }"
               >
                 {{ getUserInitials(scheme.assignee.firstName, scheme.assignee.lastName) }}
@@ -293,7 +293,7 @@ function saveForm() {
               <div 
                 v-for="(member, index) in scheme.members.slice(0, 5)" 
                 :key="index"
-                class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-medium"
+                class="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center text-primary-foreground text-xs font-medium"
                 :style="{ backgroundColor: stringToColor(member.firstName + member.lastName) }"
                 :title="`${member.firstName} ${member.lastName}`"
               >
@@ -303,7 +303,7 @@ function saveForm() {
               <!-- Show count for additional members -->
               <div 
                 v-if="scheme.members.length > 5"
-                class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center bg-gray-300 text-gray-800 text-xs font-medium"
+                class="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center bg-muted text-foreground text-xs font-medium"
                 :title="scheme.members.slice(5).map(m => `${m.firstName} ${m.lastName}`).join(', ')"
               >
                 +{{ scheme.members.length - 5 }}
@@ -312,7 +312,7 @@ function saveForm() {
           </div>
           
           <!-- Created info -->
-          <div class="mt-4 pt-3 border-t border-gray-100 text-xs text-muted-foreground flex justify-between">
+          <div class="mt-4 pt-3 border-t border-border text-xs text-muted-foreground flex justify-between">
             <span>Created {{ formatDate(scheme.createdAt, 'D MMMM YYYY') }}</span>
             <span v-if="scheme.createdBy">by {{ scheme.createdBy.firstName }}</span>
           </div>
@@ -324,7 +324,7 @@ function saveForm() {
     <div v-if="schemesPageInfo.hasNextPage" class="mt-8 flex justify-center">
       <button 
         @click="loadMoreSchemes"
-        class="px-4 py-2 bg-secondary text-gray-700 rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+        class="px-4 py-2 bg-secondary text-foreground rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
         :disabled="fetchingSchemes"
       >
         <span v-if="fetchingSchemes">Loading...</span>
@@ -334,14 +334,14 @@ function saveForm() {
     
     <!-- Empty state -->
     <div v-if="schemes.length === 0 && !isLoading" class="flex flex-col items-center justify-center py-12">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-muted-foreground mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
-      <h3 class="text-lg font-medium text-gray-600 mb-2">No schemes found</h3>
+      <h3 class="text-lg font-medium text-foreground mb-2">No schemes found</h3>
       <p class="text-muted-foreground mb-4">Get started by creating your first scheme</p>
       <button
         @click="openCreateForm"
-        class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+        class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
       >
         <span class="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -363,8 +363,8 @@ function saveForm() {
       <form @submit.prevent="saveForm" class="p-6">
         <!-- Scheme Title -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="title">
-            Scheme Title <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-foreground mb-1" for="title">
+            Scheme Title <span class="text-destructive">*</span>
           </label>
           <input
             id="title"
@@ -378,7 +378,7 @@ function saveForm() {
         
         <!-- Description -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="description">
+          <label class="block text-sm font-medium text-foreground mb-1" for="description">
             Description
           </label>
           <textarea
@@ -393,7 +393,7 @@ function saveForm() {
         <!-- Date Range -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="startDate">
+            <label class="block text-sm font-medium text-foreground mb-1" for="startDate">
               Start Date
             </label>
             <input
@@ -404,7 +404,7 @@ function saveForm() {
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="endDate">
+            <label class="block text-sm font-medium text-foreground mb-1" for="endDate">
               End Date
             </label>
             <input
@@ -418,7 +418,7 @@ function saveForm() {
         
         <!-- Assignee -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-foreground mb-1">
             Assignee
           </label>
           <VueMultiselect
@@ -433,7 +433,7 @@ function saveForm() {
         
         <!-- Members -->
         <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-foreground mb-1">
             Members
           </label>
           <VueMultiselect
@@ -452,13 +452,13 @@ function saveForm() {
           <button
             type="button"
             @click="showModal = false"
-            class="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-border rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="mr-3 px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-background focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             Cancel
           </button>
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-sky-600 border border-transparent rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             {{ formAction ? 'Create' : 'Update' }}
           </button>

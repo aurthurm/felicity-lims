@@ -206,7 +206,7 @@ function saveMappingForm(): void {
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
         @click="FormManager(true)"
       >Add Analyses Service</button>
       <hr>
@@ -215,7 +215,7 @@ function saveMappingForm(): void {
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-white p-1">
+      <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-background p-1">
         <div class="w-full">
             <accordion v-for="category in analysesServices" :key="category[0]">
               <template v-slot:title>{{ category[0] }}</template>
@@ -233,8 +233,8 @@ function saveMappingForm(): void {
                         <div class="flex-grow p-1">
                           <div 
                             :class="[
-                            'font-medium text-muted-foreground hover:text-gray-700 flex justify-between',
-                              { 'text-gray-700 font-medium': service.uid === analysisService.uid },
+                            'font-medium text-muted-foreground hover:text-foreground flex justify-between',
+                              { 'text-foreground font-medium': service.uid === analysisService.uid },
                             ]"
                           >
                             <span>{{ service?.name }}</span>
@@ -251,7 +251,7 @@ function saveMappingForm(): void {
 
       <section class="col-span-10" v-if="analysisService?.uid !== undefined">
         <!-- Question Listing Item Card -->
-        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
+        <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
           <div class="grid grid-cols-12 gap-3">
             <!-- Meta Column -->
             <div class="sm:col-span-2 text-center hidden sm:block">
@@ -259,22 +259,22 @@ function saveMappingForm(): void {
               <!-- Age -->
               <div class="grid grid-rows-2 mx-auto mb-1 py-3 w-4/5 2lg:w-3/5 rounded-sm bg-primary" >
                 <p class="font-bold">KEYWORD</p>
-                <div class="inline-block font-medium text-2xl text-white">
+                <div class="inline-block font-medium text-2xl text-primary-foreground">
                   <font-awesome-icon icon="fa-exclamation-circle" />
                 </div>
-                <div class="inline-block font-medium text-white text-md mt-2">{{ analysisService?.keyword }}</div>
+                <div class="inline-block font-medium text-primary-foreground text-md mt-2">{{ analysisService?.keyword }}</div>
               </div>
             </div>
             <!-- Summary Column -->
             <div class="col-span-12 sm:col-start-3 sm:col-end-13 px-3 sm:px-0">
               <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
+                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold"
               >
                 <span>{{ analysisService?.name }}</span>
                 <div>
                   <button
                     @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-foreground transition-colors duration-150 bg-background rounded-full focus:outline-none hover:bg-muted"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -289,42 +289,42 @@ function saveMappingForm(): void {
                 <div class="col-span-1">
                   <!-- Client Details -->
                   <div class="flex">
-                    <span class="text-gray-600 text-md font-bold w-52">Category:</span>
-                    <span class="text-gray-600 text-md">{{ analysisService?.category?.name || 'un-categprised' }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Category:</span>
+                    <span class="text-foreground text-md">{{ analysisService?.category?.name || 'un-categprised' }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-gray-600 text-md font-bold w-52">Unit:</span>
-                    <span class="text-gray-600 text-md">{{ analysisService?.unit?.name }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Unit:</span>
+                    <span class="text-foreground text-md">{{ analysisService?.unit?.name }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-gray-600 text-md font-bold w-52">SortKey:</span>
-                    <span class="text-gray-600 text-md">{{ analysisService?.sortKey || '---' }}</span>
+                    <span class="text-foreground text-md font-bold w-52">SortKey:</span>
+                    <span class="text-foreground text-md">{{ analysisService?.sortKey || '---' }}</span>
                   </div>
                   <div class="flex mt-2">
-                    <span class="text-gray-600 text-md font-bold w-52">TAT (minutes):</span>
-                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.tatLengthMinutes }}</span>
+                    <span class="text-foreground text-md font-bold w-52">TAT (minutes):</span>
+                    <span class="text-foreground text-md mr-2">{{ analysisService?.tatLengthMinutes }}</span>
                   </div>
                   <div class="flex mt-2">
-                    <span class="text-gray-600 text-md font-bold w-52">Precision (decimals):</span>
-                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.precision }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Precision (decimals):</span>
+                    <span class="text-foreground text-md mr-2">{{ analysisService?.precision }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-600 text-md font-bold w-52">Methods:</span>
-                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Methods:</span>
+                    <span class="text-foreground text-md mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-600 text-md font-bold w-52">Sample Types:</span>
-                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Sample Types:</span>
+                    <span class="text-foreground text-md mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                   <div class="flex mt-2">
-                    <span class="text-gray-600 text-md font-bold w-52">Required verifications:</span>
-                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.requiredVerifications }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Required verifications:</span>
+                    <span class="text-foreground text-md mr-2">{{ analysisService?.requiredVerifications }}</span>
                   </div>
                   <div class="col-span-4 flex mt-2">
-                    <span class="text-gray-600 text-md font-bold w-52">Allow self-verification:</span>
-                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.selfVerification }}</span>
+                    <span class="text-foreground text-md font-bold w-52">Allow self-verification:</span>
+                    <span class="text-foreground text-md mr-2">{{ analysisService?.selfVerification }}</span>
                   </div>
                 </div>
               </div>
@@ -333,13 +333,13 @@ function saveMappingForm(): void {
         </div>
 
         <!-- Sample and Case Data -->
-        <nav class="bg-white shadow-md mt-2">
+        <nav class="bg-background shadow-md mt-2">
           <div class="-mb-px flex justify-start">
             <a
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
@@ -350,7 +350,7 @@ function saveMappingForm(): void {
           </div>
         </nav>
 
-      <section class="mt-2 p-2 bg-white">
+      <section class="mt-2 p-2 bg-background">
         <div v-if="currentTab === 'general'">
           <h3>General</h3>
           <hr> 
@@ -378,39 +378,39 @@ function saveMappingForm(): void {
             <div class="flex justify-between items-center mb-2">
               <h3>Concept Mappings</h3>
               <button @click="MappingFormManager(true)"
-                class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Add Mapping</button>
+                class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add Mapping</button>
             </div>
             <hr />
             <div class="overflow-x-auto mt-4">
-              <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+              <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                 <table class="min-w-full">
                     <thead>
                     <tr>
-                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Coding Standard</th>
-                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Code</th>
-                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Coding Standard</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Code</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Description</th>
                         <th class="px-1 py-1 border-b-2 border-border"></th>
                     </tr>
                     </thead>
-                    <tbody class="bg-white">
+                    <tbody class="bg-background">
                     <tr v-for="mapp in mappings"  :key="mapp">
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                           <div class="flex items-center">
-                            <div class="text-sm leading-5 text-gray-800">{{ mapp.codingStandard?.name }}</div>
+                            <div class="text-sm leading-5 text-foreground">{{ mapp.codingStandard?.name }}</div>
                           </div>
                         </td>
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                           <div class="text-sm leading-5 text-primary">{{ mapp.name }}</div>
                         </td>
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                           <div class="text-sm leading-5 text-primary">{{ mapp.code }}</div>
                         </td>
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
                           <div class="text-sm leading-5 text-primary">{{ mapp.description }}</div>
                         </td>
-                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                            <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
+                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+                            <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
                         </td>
                     </tr>
                     </tbody>
@@ -438,7 +438,7 @@ function saveMappingForm(): void {
       <form action="post" class="p-1">
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-4 mb-2">
-            <span class="text-gray-700">Analysis Service Name</span>
+            <span class="text-foreground">Analysis Service Name</span>
             <input v-if="!analysisService.keyword?.includes('felicity')"
               class="form-input mt-1 block w-full"
               v-model="analysisService.name"
@@ -447,7 +447,7 @@ function saveMappingForm(): void {
             <span class="block mt-2 mb-4 font-bold text-xl" v-else>{{ analysisService.name }}</span>
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">keyword</span>
+            <span class="text-foreground">keyword</span>
             <input v-if="!analysisService.keyword?.includes('felicity')"
               class="form-input mt-1 block w-full"
               v-model="analysisService.keyword"
@@ -456,7 +456,7 @@ function saveMappingForm(): void {
             <span class="block mt-2 mb-4 italic font-semibold" v-else>{{ analysisService.keyword }}</span>
           </label>
           <label class="block col-span-1 mb-2" v-show="!analysisService.keyword?.includes('felicity')">
-            <span class="text-gray-700">Unit</span>
+            <span class="text-foreground">Unit</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.unitUid">
                <option></option>
               <option v-for="unit in units" :key="unit.uid" :value="unit?.uid">{{ unit.name }}</option>
@@ -466,7 +466,7 @@ function saveMappingForm(): void {
     
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-3 mb-2">
-            <span class="text-gray-700">Sample Types</span>
+            <span class="text-foreground">Sample Types</span>
             <VueMultiselect
             v-model="analysisService.sampleTypes"
             :options="sampleTypes"
@@ -477,7 +477,7 @@ function saveMappingForm(): void {
             </VueMultiselect>
           </label>
           <label class="block col-span-3 mb-2">
-            <span class="text-gray-700">Methods</span>
+            <span class="text-foreground">Methods</span>
             <VueMultiselect
             v-model="analysisService.methods"
             :options="methods"
@@ -488,7 +488,7 @@ function saveMappingForm(): void {
             </VueMultiselect>
           </label>
           <label class="block col-span-6 mb-2">
-            <span class="text-gray-700">Description</span>
+            <span class="text-foreground">Description</span>
             <textarea v-if="!analysisService.keyword?.includes('felicity')"
             cols="2"
               class="form-input mt-1 block w-full"
@@ -501,21 +501,21 @@ function saveMappingForm(): void {
     
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Department</span>
+            <span class="text-foreground">Department</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.departmentUid">
                <option></option>
               <option v-for="department in departments" :key="department.uid" :value="department?.uid">{{ department.name }}</option>
             </select>
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Analysis Category</span>
+            <span class="text-foreground">Analysis Category</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.categoryUid">
                <option></option>
               <option v-for="category in analysesCategories" :key="category.uid" :value="category?.uid">{{ category.name }}</option>
             </select>
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Sort Key</span>
+            <span class="text-foreground">Sort Key</span>
             <input
               type="number" default="1"
               class="form-input mt-1 block w-full"
@@ -523,7 +523,7 @@ function saveMappingForm(): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">TAT (minutes)</span>
+            <span class="text-foreground">TAT (minutes)</span>
             <input
               type="number" default="240"
               class="form-input mt-1 block w-full"
@@ -531,7 +531,7 @@ function saveMappingForm(): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Precision</span>
+            <span class="text-foreground">Precision</span>
             <input
               type="number" default="4"
               class="form-input mt-1 block w-full"
@@ -539,7 +539,7 @@ function saveMappingForm(): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Required veifications</span>
+            <span class="text-foreground">Required veifications</span>
             <input
               type="number" default="1"
               class="form-input mt-1 block w-full"
@@ -554,28 +554,28 @@ function saveMappingForm(): void {
               type="checkbox"
               v-model="analysisService.active"
             />
-            <span class="text-gray-700 ml-4">Is Active</span>
+            <span class="text-foreground ml-4">Is Active</span>
           </label>
           <label class="block col-span-2 my-2">
             <input
               type="checkbox"
               v-model="analysisService.internalUse"
             />
-            <span class="text-gray-700 ml-4">Internal Use</span>
+            <span class="text-foreground ml-4">Internal Use</span>
           </label>
           <label class="block col-span-2 my-2">
             <input
               type="checkbox"
               v-model="analysisService.selfVerification"
             />
-            <span class="text-gray-700 ml-4">Allow Self Verifaction</span>
+            <span class="text-foreground ml-4">Allow Self Verifaction</span>
           </label>
         </div>
         <hr />
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -595,7 +595,7 @@ function saveMappingForm(): void {
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Coding Standard</span>
+            <span class="text-foreground">Coding Standard</span>
             <select
               class="form-select block w-full mt-1"
               v-model="mappingForm.codingStandardUid"
@@ -611,7 +611,7 @@ function saveMappingForm(): void {
             </select>
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Standard Name</span>
+            <span class="text-foreground">Standard Name</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="mappingForm.name"
@@ -619,7 +619,7 @@ function saveMappingForm(): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Standard Code</span>
+            <span class="text-foreground">Standard Code</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="mappingForm.code"
@@ -627,7 +627,7 @@ function saveMappingForm(): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Standard Description</span>
+            <span class="text-foreground">Standard Description</span>
             <textarea
               cols="2"
               class="form-input mt-1 block w-full"
@@ -640,7 +640,7 @@ function saveMappingForm(): void {
         <button
           type="button"
           @click.prevent="saveMappingForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

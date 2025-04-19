@@ -154,7 +154,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -284,7 +284,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
       Add QcRange
     </button> -->
     <hr>
@@ -324,7 +324,7 @@ function saveForm(): void {
           <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-gray-700">Guidelines</span>
+              <span class="text-foreground">Guidelines</span>
               <VueMultiselect
               v-model="form.guidelines"
               :options="abxGuidelines"
@@ -335,7 +335,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Year</span>
+              <span class="text-foreground">Year</span>
               <input
                 type="number"
                 class="form-input mt-1 block w-full"
@@ -350,7 +350,7 @@ function saveForm(): void {
         <div class="mb-6">
           <div class="grid grid-cols-3 gap-4">
             <label class="block">
-              <span class="text-gray-700">Strain</span>
+              <span class="text-foreground">Strain</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.strain"
@@ -358,7 +358,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Reference Table</span>
+              <span class="text-foreground">Reference Table</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.referenceTable"
@@ -366,7 +366,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Whonet Org Code</span>
+              <span class="text-foreground">Whonet Org Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.whonetOrgCode"
@@ -374,7 +374,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Antibiotic</span>
+              <span class="text-foreground">Antibiotic</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.antibiotic"
@@ -382,7 +382,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Abx Test</span>
+              <span class="text-foreground">Abx Test</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.abxTest"
@@ -390,7 +390,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Whonet Abx Code</span>
+              <span class="text-foreground">Whonet Abx Code</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.whonetAbxCode"
@@ -398,7 +398,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Method</span>
+              <span class="text-foreground">Method</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.method"
@@ -406,7 +406,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Medium</span>
+              <span class="text-foreground">Medium</span>
               <VueMultiselect
               v-model="form.medium"
               :options="abxMediums"
@@ -416,7 +416,7 @@ function saveForm(): void {
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-gray-700">Minimum</span>
+              <span class="text-foreground">Minimum</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.minimum"
@@ -424,7 +424,7 @@ function saveForm(): void {
               />
             </label>
             <label class="block">
-              <span class="text-gray-700">Maximum</span>
+              <span class="text-foreground">Maximum</span>
               <input
                 class="form-input mt-1 block w-full"
                 v-model="form.maximum"
@@ -437,7 +437,7 @@ function saveForm(): void {
         <!-- Additional Information -->
         <div class="mb-6">
           <label class="block">
-            <span class="text-gray-700">Comments</span>
+            <span class="text-foreground">Comments</span>
             <textarea
               class="form-textarea mt-1 block w-full"
               v-model="form.comments"
@@ -452,7 +452,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save QcRange
         </button>

@@ -25,7 +25,7 @@
     <!-- Add Folder Dialog -->
     <teleport to="body">
       <div v-if="isAddFolderOpen" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4" @click.stop>
+        <div class="bg-background rounded-lg shadow-lg p-6 max-w-md w-full mx-4" @click.stop>
           <h3 class="text-lg font-medium mb-4">
             {{ parentFolderId 
               ? `Add subfolder to ${folderById(parentFolderId)?.name}` 
@@ -38,7 +38,7 @@
             <input
               id="folderName"
               v-model="folderName"
-              class="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               placeholder="Enter folder name"
             />
           </div>
@@ -46,7 +46,7 @@
           <div class="flex justify-end gap-2">
             <button 
               @click="closeAddFolderDialog"
-              class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input bg-white hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+              class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
             >
               Cancel
             </button>
