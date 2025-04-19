@@ -49,7 +49,7 @@ const login = handleSubmit((values) => {
         <!-- Logo Section -->
         <div class="flex flex-col items-center space-y-2">
           <h2 class="mt-4 text-2xl font-bold text-gray-800">Felicity LIMS</h2>
-          <p class="text-gray-500 text-sm">Laboratory Information Management System</p>
+          <p class="text-muted-foreground text-sm">Laboratory Information Management System</p>
         </div>
 
         <!-- Login Form -->
@@ -68,7 +68,7 @@ const login = handleSubmit((values) => {
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
                   'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  errors?.username ? 'border-red-500' : 'border-gray-300'
+                  errors?.username ? 'border-red-500' : 'border-border'
                 ]"
                 placeholder="Enter your username"
               />
@@ -103,7 +103,7 @@ const login = handleSubmit((values) => {
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
                   'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  errors?.password ? 'border-red-500' : 'border-gray-300'
+                  errors?.password ? 'border-red-500' : 'border-border'
                 ]"
                 placeholder="Enter your password"
               />

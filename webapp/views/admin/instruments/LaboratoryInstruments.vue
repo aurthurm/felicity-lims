@@ -70,7 +70,7 @@
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         @click="FormManager(true)"
       > Add Laboratory Instrument</button>
       <hr>
@@ -82,12 +82,12 @@
       <table class="min-w-full">
           <thead>
           <tr>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Instrument</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Lab Name/ID</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Serial Number</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Date Commisioned</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Date Decommisioned</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Instrument</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Lab Name/ID</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Serial Number</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Date Commisioned</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Date Decommisioned</th>
+              <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
           </thead>
           <tbody class="bg-white">
@@ -99,16 +99,16 @@
                 <div class="text-sm leading-5 text-gray-800">{{ inst?.labName }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ inst?.serialNumber }}</div>
+                <div class="text-sm leading-5 text-primary">{{ inst?.serialNumber }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ inst?.dateCommissioned }}</div>
+                <div class="text-sm leading-5 text-primary">{{ inst?.dateCommissioned }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ inst?.dateDecommissioned }}</div>
+                <div class="text-sm leading-5 text-primary">{{ inst?.dateDecommissioned }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                  <button @click="FormManager(false, inst)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                  <button @click="FormManager(false, inst)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
               </td>
           </tr>
           </tbody>
@@ -173,7 +173,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

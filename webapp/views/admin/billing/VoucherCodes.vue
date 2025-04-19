@@ -119,7 +119,7 @@ const updateVoucherCode = (vocher: IVoucherCode) => {
           <div class="flex justify-between">
             <h4 class="text-gray-800 text-l font-semibold">Voucher Codes</h4>
             <button
-              class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+              class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
               @click="newVoucherCode">
               Add Voucher Code
             </button>
@@ -131,7 +131,7 @@ const updateVoucherCode = (vocher: IVoucherCode) => {
             class="col-span-1 bg-white rounded-sm shadow-sm hover:shadow-md duration-500 px-2 py-2">
               <div class="font-semibold text-gray-800 flex justify-between items-center">
                 <h5>{{ vcode.code }}</h5>
-                <div class="text-sm text-gray-500 flex-grow text-right">{{ vcode.used }} of {{ vcode.usageLimit }}</div>
+                <div class="text-sm text-muted-foreground flex-grow text-right">{{ vcode.used }} of {{ vcode.usageLimit }}</div>
                 <a class="ml-2 pl-2 text-gray-400 border-l-2 border-l-gray-400" @click="editCode(vcode)">
                   <font-awesome-icon class="text-xs hover:text-gray-800" icon="pen" />
                 </a>
@@ -181,7 +181,7 @@ const updateVoucherCode = (vocher: IVoucherCode) => {
 
           <hr />
           <button type="submit"
-            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
             @click.prevent="submitVoucherForm">
             Save Voucher
           </button>

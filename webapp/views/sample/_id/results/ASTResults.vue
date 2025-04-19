@@ -333,7 +333,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
         <span class="italic">{{ pickedOrg?.organism?.name }}</span>
       </span>
       <button @click="choosePanel(pickedOrg)" v-show="canAddPanel(pickedOrg)"
-        class="ml-2 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+        class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
         choose panel
       </button>
     </h3>
@@ -342,10 +342,10 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
       <table class="min-w-full divide-y divide-gray-200">
         <thead>
           <tr class="bg-gray-50">
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parameter</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Parameter</th>
             <th v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 tracking-wider">
+                class="px-4 py-2 text-left text-xs font-medium text-muted-foreground tracking-wider">
               {{ antibiotic }}
             </th>
           </tr>
@@ -356,7 +356,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
             <td class="px-4 py-2 text-sm font-medium text-gray-900">Guideline</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
-                class="px-4 py-2 text-sm text-gray-500">
+                class="px-4 py-2 text-sm text-muted-foreground">
               <select 
                 v-model="organismResults[pickedOrg.uid][antibiotic].guidelineYearUid"
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'guidelineYearUid', $event.target.value)"
@@ -372,7 +372,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
             <td class="px-4 py-2 text-sm font-medium text-gray-900">AST Method</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
-                class="px-4 py-2 text-sm text-gray-500">
+                class="px-4 py-2 text-sm text-muted-foreground">
               <select 
                 v-model="organismResults[pickedOrg.uid][antibiotic].astMethodUid"
                 @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astMethodUid', $event.target.value)"
@@ -389,7 +389,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
             <td class="px-4 py-2 text-sm font-medium text-gray-900">AST Value</td>
             <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                 :key="antibiotic"
-                class="px-4 py-2 text-sm text-gray-500">
+                class="px-4 py-2 text-sm text-muted-foreground">
               <input 
                 type="number"
                 v-model="organismResults[pickedOrg.uid][antibiotic].astValue"
@@ -442,7 +442,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                 class="form-checkbox h-4 w-4 text-sky-600"
                 :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
               />
-              <button type="button" class="bg-sky-800 text-white ml-4 px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-white ml-4 px-2 py-1 rounded-sm leading-none">
                 {{ organismResults[pickedOrg.uid][antibiotic].status }}
               </button>
             </td>
@@ -502,18 +502,18 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <button type="button"
                     @click="applyPanel(panel)"
-                    class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
                       Appy Panel
                     </button>
                   </td>
                 </tr>
                 <tr v-if="loadingPanels">
-                  <td colspan="3" class="px-4 py-3 text-center text-sm text-gray-500">
+                  <td colspan="3" class="px-4 py-3 text-center text-sm text-muted-foreground">
                     Loading panels...
                   </td>
                 </tr>
                 <tr v-if="!loadingPanels && panels.length === 0">
-                  <td colspan="3" class="px-4 py-3 text-center text-sm text-gray-500">
+                  <td colspan="3" class="px-4 py-3 text-center text-sm text-muted-foreground">
                     No panels found
                   </td>
                 </tr>

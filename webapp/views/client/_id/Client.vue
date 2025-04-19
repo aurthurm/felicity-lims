@@ -102,7 +102,7 @@ function saveForm() {
                 <div>
                   <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                     @click="FormManager(false, clientStore.client)"
-                    class="p-1 ml-2 border-white border text-gray-500 text-md rounded-sm transition duration-300 hover:text-sky-800 focus:outline-none">
+                    class="p-1 ml-2 border-white border text-muted-foreground text-md rounded-sm transition duration-300 hover:text-primary focus:outline-none">
                     <font-awesome-icon icon="fa-edit" />
                   </button>
                 </div>
@@ -198,7 +198,7 @@ function saveForm() {
 
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

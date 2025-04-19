@@ -130,7 +130,7 @@ const applyChanges = async () => {
         <button
           type="button"
           @click.prevent="applyTemplate()"
-          class="border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="border border-primary bg-primary text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Apply Template
         </button>
@@ -150,12 +150,12 @@ const applyChanges = async () => {
             <table class="min-w-full">
               <thead>
                 <tr>
-                  <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                     <input type="checkbox" class="" :checked="isSelectedCategory(category[1])" @change="selectCategory(category[1])"/>
                   </th>
-                  <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Analysis</th>
-                  <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Keyword</th>
-                  <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Description</th>
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Analysis</th>
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Keyword</th>
+                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Description</th>
                 </tr>
               </thead>
               <tbody class="bg-white">
@@ -175,7 +175,7 @@ const applyChanges = async () => {
         <button
           type="button"
           @click.prevent="applyChanges()"
-          class="border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="border border-primary bg-primary text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Apply Changes
         </button>

@@ -45,7 +45,7 @@ const loadDefault = (_) => {
       v-if="!loading"
       type="button"
       @click.prevent="loadDefault"
-      class="mt-4 px-2 py-1 border border-sky-800 bg-sky-800 text-white rounded-sm transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+      class="mt-4 px-2 py-1 border border-primary bg-primary text-white rounded-sm transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
     >
       load setup data
     </button>

@@ -88,7 +88,7 @@
           name:'qc-set-detail', params: { qcSetUid: qcset.uid }
         },
         class:
-          "px-2 mr-2 border-sky-800 border text-gray-500rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none",
+          "px-2 mr-2 border-primary border text-gray-500rounded-smtransition duration-300 hover:bg-primary hover:text-white focus:outline-none",
         innerHTML: 'View Run Set',
       });
     },
@@ -255,7 +255,7 @@
     <button 
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
       type="button" 
-      class="border border-sky-800 text-sky-800 rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-white focus:outline-none focus:shadow-outline"
+      class="border border-primary text-primary rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary hover:text-white focus:outline-none focus:shadow-outline"
       @click.prevent="showModal = !showModal">
       Add Reference Runs
     </button>
@@ -319,7 +319,7 @@
               <button
                 v-if="form.samples?.length < 20"
                 @click.prevent="addQCSet()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add QCSet</button>
+                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Add QCSet</button>
             </div>
             <hr class="mb-4">
             <div v-for="(sample, index) in form.samples" :key="index">
@@ -389,7 +389,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

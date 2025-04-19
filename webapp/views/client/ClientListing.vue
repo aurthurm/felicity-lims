@@ -51,7 +51,7 @@ const tableColumns = ref([
           },
         },
         class:
-          "px-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none",
+          "px-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-primary hover:text-primary focus:outline-none",
         innerHTML: client?.name,
       });
     },
@@ -190,7 +190,7 @@ const countNone = computed(
 <template>
   <PageHeading title="Clients" />
   <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
-    class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+    class="p-2 my-2 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
     @click="FormManager(true, 'client')">
     Add client
   </button>
@@ -256,7 +256,7 @@ const countNone = computed(
 
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

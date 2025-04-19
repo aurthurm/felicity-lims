@@ -19,7 +19,7 @@ const notyf = new Notyf({
     types: [
         {
             type: 'info',
-            className: 'bg-sky-800',
+            className: 'bg-primary',
             icon: false,
         },
         {

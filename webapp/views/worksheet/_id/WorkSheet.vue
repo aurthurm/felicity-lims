@@ -43,7 +43,7 @@ const canApprove = computed(() => {
           <div>
             <div @click="dropdownOpen = !dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
                 {{ worksheet?.state }}
               </button>
               <div class="ml-2">
@@ -54,11 +54,11 @@ const canApprove = computed(() => {
             </div>
             <div v-show="dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
               <div v-show="canSubmit" @click="actionWorksheets([worksheet.uid], 'submit')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Submit
               </div>
               <div v-show="canApprove" @click="actionWorksheets([worksheet.uid], 'approve')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Approve
               </div>
             </div>

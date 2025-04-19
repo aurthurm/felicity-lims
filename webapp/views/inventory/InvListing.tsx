@@ -125,7 +125,7 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
+                                    class: 'bg-primary text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
                                     innerHTML: '+ Basket',
                                     disabled: product.quantity < 1,
                                     onClick: () => {
@@ -140,7 +140,7 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
+                                    class: 'bg-primary text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
                                     innerHTML: '+/- Adjust',
                                     disabled: product.quantity < 1,
                                     onClick: () => {
@@ -155,7 +155,7 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
+                                    class: 'bg-primary text-white py-1 px-2 rounded-sm leading-none',
                                     innerHTML: 'View Detail',
                                     onClick: () => {
                                         openProductDetail.value = true;
@@ -230,7 +230,7 @@ const InventoryListing = defineComponent({
                 <div>
                     <button
                         onClick={() => (this.openDrawer = true)}
-                        class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+                        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
                     >
                         Receive Stock
                     </button>
@@ -303,7 +303,7 @@ const InventoryListing = defineComponent({
                                                 );
                                                 this.openAddProduct = false;
                                             }}
-                                            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline disabled:bg-gray-500"
+                                            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-gray-500"
                                             disabled={!this.choiceProduct.stockLotUid}>
                                             Add to basket
                                         </button>
@@ -364,7 +364,7 @@ const InventoryListing = defineComponent({
                                                 this.adjustStock()
                                                 this.openAdjustProduct = false;
                                             }}
-                                            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline disabled:bg-gray-500"
+                                            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-gray-500"
                                             disabled={!this.choiceProduct.stockLotUid}>
                                             Adjust
                                         </button>

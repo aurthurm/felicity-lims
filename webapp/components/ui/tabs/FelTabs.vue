@@ -50,7 +50,7 @@ watch(visibleTabs, (newTabs) => {
           v-for="tab in visibleTabs"
           :key="tab.id"
           :class="[
-            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4',
+            'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4',
             'tab hover:bg-sky-600 hover:text-gray-200 cursor-pointer',
             { 'tab-active': currentTabId === tab.id }
           ]"

@@ -70,7 +70,7 @@ const StockCategory = defineComponent({
                 <hr />
                 <button
                     onClick={() => this.FormManager(true, null)}
-                    class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 >
                     Add Stock Category
                 </button>
@@ -81,13 +81,13 @@ const StockCategory = defineComponent({
                         <table class="min-w-full">
                             <thead>
                                 <tr>
-                                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                         Category Name
                                     </th>
-                                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                         Description
                                     </th>
-                                    <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                                    <th class="px-1 py-1 border-b-2 border-border"></th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white">
@@ -100,12 +100,12 @@ const StockCategory = defineComponent({
                                                 </div>
                                             </td>
                                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                                                <div class="text-sm leading-5 text-sky-800">{category?.description}</div>
+                                                <div class="text-sm leading-5 text-primary">{category?.description}</div>
                                             </td>
                                             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                                                 <button
                                                     onClick={() => this.FormManager(false, category)}
-                                                    class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                                                 >
                                                     Edit
                                                 </button>
@@ -149,7 +149,7 @@ const StockCategory = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveForm()}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>

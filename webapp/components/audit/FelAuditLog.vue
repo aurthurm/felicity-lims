@@ -119,7 +119,7 @@ function changes(log: any): any {
             <span class="col-span-3">
               <span class="text-muted text-xs text-orange-600">{{ trail?.old }}</span>
               &rarr;
-              <span class="text-muted text-xs text-sky-800">{{ trail?.new }}</span>
+              <span class="text-muted text-xs text-primary">{{ trail?.new }}</span>
             </span>
           </div>
         </div>

@@ -178,7 +178,7 @@ function filterOrganisms() {
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">AST Panels</h2>
       <button @click="FormManager(true)"
-              class="px-4 py-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+              class="px-4 py-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
         Add Panel
       </button>
     </div>
@@ -189,11 +189,11 @@ function filterOrganisms() {
         <table class="min-w-full">
           <thead>
             <tr>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Organisms</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Antibiotics</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Organisms</th>
+              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Antibiotics</th>
+              <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
           </thead>
           <tbody class="bg-white">
@@ -202,21 +202,21 @@ function filterOrganisms() {
                 <div class="text-sm leading-5 text-gray-800">{{ panel?.name }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ panel?.description }}</div>
+                <div class="text-sm leading-5 text-primary">{{ panel?.description }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
+                <div class="text-sm leading-5 text-primary">
                   {{ panel?.organisms?.map(org => org.name).join(', ') }}
                 </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
+                <div class="text-sm leading-5 text-primary">
                   {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
                 </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                 <button @click="FormManager(false, panel)"
-                        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
                   Edit
                 </button>
               </td>
@@ -352,7 +352,7 @@ function filterOrganisms() {
         <div class="mt-6">
           <button
               type="submit"
-              class="w-full bg-sky-800 text-white rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+              class="w-full bg-primary text-white rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
           >
             Save Panel
           </button>
@@ -364,10 +364,10 @@ function filterOrganisms() {
 
 <style scoped>
 .form-checkbox {
-  @apply rounded border-gray-300 text-sky-800 shadow-sm focus:border-sky-300 focus:ring focus:ring-offset-0 focus:ring-sky-200 focus:ring-opacity-50;
+  @apply rounded border-border text-primary shadow-sm focus:border-sky-300 focus:ring focus:ring-offset-0 focus:ring-sky-200 focus:ring-opacity-50;
 }
 
 .form-input {
-  @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-300 focus:ring focus:ring-sky-200 focus:ring-opacity-50;
+  @apply mt-1 block w-full rounded-md border-border shadow-sm focus:border-sky-300 focus:ring focus:ring-sky-200 focus:ring-opacity-50;
 }
 </style>

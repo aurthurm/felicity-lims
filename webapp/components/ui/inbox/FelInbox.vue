@@ -69,10 +69,10 @@ const placeholderItems = computed(() => Array(3).fill(null));
               class="p-4 animate-pulse"
             >
               <div class="flex items-start space-x-4">
-                <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
+                <div class="w-8 h-8 bg-muted rounded-full"></div>
                 <div class="flex-1">
-                  <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                  <div class="h-3 bg-muted rounded w-1/2"></div>
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@ const placeholderItems = computed(() => Array(3).fill(null));
                     {{ item[statusKey] }}
                   </span>
                 </div>
-                <p class="mt-1 text-sm text-gray-500 truncate">
+                <p class="mt-1 text-sm text-muted-foreground truncate">
                   {{ getExcerpt(item[bodyKey]) }}
                 </p>
               </div>
@@ -137,7 +137,7 @@ const placeholderItems = computed(() => Array(3).fill(null));
         </article>
         <div 
           v-else 
-          class="h-full flex items-center justify-center text-gray-500"
+          class="h-full flex items-center justify-center text-muted-foreground"
         >
           Select an item to view its contents
         </div>

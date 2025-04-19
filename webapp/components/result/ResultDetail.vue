@@ -51,7 +51,7 @@ const columns = [
 </script>
 
 <template>
-    <h4 class="mt-4 font-bold text-xl text-gray-500">Result Mutations</h4>
+    <h4 class="mt-4 font-bold text-xl text-muted-foreground">Result Mutations</h4>
     <hr class="mb-2">
     <FelDataTable v-if="(mutations?.length ?? 0) > 0"
     :columns="columns"
@@ -59,7 +59,7 @@ const columns = [
     :toggleColumns="false"
     />
     <span v-else>No Mutations for this result</span>
-    <h4 class="mt-4 font-bold text-xl text-gray-500">Result Audit Log</h4>
+    <h4 class="mt-4 font-bold text-xl text-muted-foreground">Result Audit Log</h4>
     <hr>
     <FelAuditLog targetType="analysis_result" :targetUid="analysisResultesultUid" />
 </template>

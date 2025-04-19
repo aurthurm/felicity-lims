@@ -93,7 +93,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
       Add kingdom
     </button> -->
     <hr>
@@ -104,10 +104,10 @@ function saveForm(): void {
         <table class="min-w-full">
           <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Name
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
           </thead>
           <tbody class="bg-white">
@@ -119,7 +119,7 @@ function saveForm(): void {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
               <!-- <button @click="FormManager(false, guideline)"
-                      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+                      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
                 Edit
               </button> -->
             </td>
@@ -152,7 +152,7 @@ function saveForm(): void {
         <button
             type="button"
             @click.prevent="saveForm()"
-            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save kingdom
         </button>

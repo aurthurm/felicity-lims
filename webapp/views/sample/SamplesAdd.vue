@@ -230,7 +230,7 @@ function removeSample(index: number): void {
           <h5>Samples</h5>
           <span class="text-orange-600">{{ errors.samples }}</span>
           <button v-if="samples?.length !== 20" @click.prevent="addSample()"
-            class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+            class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
             Add Sample
           </button>
         </div>
@@ -290,7 +290,7 @@ function removeSample(index: number): void {
       </section>
       <hr />
       <button v-if="!arSaving" type="submit"
-        class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+        class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
         Add Sample(s)
       </button>
       <div v-else class="py-4 text-center">

@@ -144,7 +144,7 @@
             </label>
           </div>
           <button type="button" @click.prevent="updatePricing()"
-            class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+            class="border border-primary bg-primary text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
             Update Pricing
           </button>
         </form>
@@ -223,7 +223,7 @@
           </div>
           <hr>
           <button type="button" @click.prevent="updateDiscounting()"
-            class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+            class="border border-primary bg-primary text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
             Update Discount
           </button>
         </form>

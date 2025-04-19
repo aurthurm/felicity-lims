@@ -189,7 +189,7 @@ const tableColumns = ref([
               confirmTransaction.value = transaction;
             },
             type: "button",
-            class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+            class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
           },
           "confirm"
         );
@@ -239,7 +239,7 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
           <ul>
             <li v-for="bill in bills" :key="bill.uid" :class="[
               'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
-              { 'border-sky-800 bg-emerald-200': bill.uid === testBill.uid },
+              { 'border-primary bg-emerald-200': bill.uid === testBill.uid },
               ]" 
               @click="selectTestBill(bill)">
               <div class="flex-grow p-1">
@@ -294,7 +294,7 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
           <div class="flex justify-between items-center">
             <h4 class=" text-gray-800 text-l font-semibold">Order Items</h4>
             <button
-                class="ml-4 px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 @click.prevent="invoice(testBill)">
                 Invoice
             </button>
@@ -320,12 +320,12 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
             <h4 class="text-gray-800 text-l font-semibold">Transactions</h4>
             <div>
               <button v-show="testBill.isActive"
-              class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
               @click.prevent="newTransaction">
               Add Transaction
             </button>
             <button v-show="testBill.isActive"
-              class="ml-4 px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+              class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
               @click.prevent="applyVoucher">
               Apply Voucher
             </button>

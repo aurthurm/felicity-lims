@@ -40,25 +40,25 @@ function discardAntibiotic(antibiotic) {
         <table class="min-w-full">
           <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Name
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Guidelines
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Potency
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               LOINC MIC
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               LOINC DISK
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               LOINC ETEST
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
           </thead>
           <tbody class="bg-white">
@@ -69,21 +69,21 @@ function discardAntibiotic(antibiotic) {
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
-                <span class="px-2 py-1 mr-2 text-sm bg-gray-200 rounded-md font-medium" v-for="gl in abx?.guidelines" :key="gl.name">{{ gl.name }}</span>
+              <div class="text-sm leading-5 text-primary">
+                <span class="px-2 py-1 mr-2 text-sm bg-muted rounded-md font-medium" v-for="gl in abx?.guidelines" :key="gl.name">{{ gl.name }}</span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ abx?.potency }}</div>
+              <div class="text-sm leading-5 text-primary">{{ abx?.potency }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ abx?.loincmic }}</div>
+              <div class="text-sm leading-5 text-primary">{{ abx?.loincmic }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ abx?.loincdisk }}</div>
+              <div class="text-sm leading-5 text-primary">{{ abx?.loincdisk }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ abx?.loincetest }}</div>
+              <div class="text-sm leading-5 text-primary">{{ abx?.loincetest }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                <button @click="discardAntibiotic(abx)"

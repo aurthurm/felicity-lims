@@ -59,11 +59,11 @@ const ProductDetail = defineComponent({
         return (
             <>
                 <h3 class="font-bold text-l text-gray-600">Stock Item: {this.props.product?.stockItem?.name}</h3>
-                <p class="italic text-gray-500">{this.props.product?.stockItem?.description}</p>
+                <p class="italic text-muted-foreground">{this.props.product?.stockItem?.description}</p>
                 <hr class="my-2" />
 
                 <h3 class="font-bold text-l text-gray-600">Stock Variant: {this.props.product?.name}</h3>
-                <p class="italic text-gray-500">{this.props.product?.description}</p>
+                <p class="italic text-muted-foreground">{this.props.product?.description}</p>
                 <hr class="mt-2 mb-4" />
 
                 <nav class="flex justify-between bg-white shadow-md mt-2">
@@ -72,7 +72,7 @@ const ProductDetail = defineComponent({
                             <a
                                 key={tab}
                                 class={[
-                                    'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                                    'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
                                     { 'tab-active': this.currentTab === tab },
                                 ]}
                                 onClick={() => (this.currentTab = tab)}

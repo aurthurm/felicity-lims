@@ -281,50 +281,50 @@ const retestResults = () =>
       <table class="min-w-full" v-else>
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
               <input type="checkbox" class="" @change="toggleCheckAll" v-model="state.allChecked" />
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
               Analysis
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Instrument
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Method
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Analyst
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Reviewer(s)
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Interim
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Result
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Retest
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Due Date
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Submitted
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Approved
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Status
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Reportable
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
         <tbody class="bg-white">
@@ -339,13 +339,13 @@ const retestResults = () =>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800 font-semibold">
+              <div class="text-sm leading-5 text-primary font-semibold">
                 <span class="mr-1 hover:cursor-pointer" @click="viewAnalysisInfo(result)"><font-awesome-icon icon="fa-info-circle"></font-awesome-icon></span>
                 {{ result.analysis?.name }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.laboratoryInstrument?.labName || "---" }}
               </div>
               <label v-else class="block col-span-2 mb-2">
@@ -364,7 +364,7 @@ const retestResults = () =>
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.method?.name || "---" }}
               </div>
               <label v-else class="block col-span-2 mb-2">
@@ -378,12 +378,12 @@ const retestResults = () =>
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
                   {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                 </span>
@@ -391,7 +391,7 @@ const retestResults = () =>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
-                class="text-sm leading-5 text-sky-800">
+                class="text-sm leading-5 text-primary">
                 ---
               </div>
               <label v-else class="block col-span-2 mb-2">
@@ -405,7 +405,7 @@ const retestResults = () =>
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result?.result }}
               </div>
               <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block">
@@ -424,8 +424,8 @@ const retestResults = () =>
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
-                <span v-if="result?.retest" class="text-sky-800">
+              <div class="text-sm leading-5 text-primary">
+                <span v-if="result?.retest" class="text-primary">
                   <font-awesome-icon icon="fa-check-circle"></font-awesome-icon>
                 </span>
                 <span v-else class="text-orange-600">
@@ -434,21 +434,21 @@ const retestResults = () =>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dueDate) }}</div>
+              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dueDate) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateSubmitted) }}</div>
+              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateSubmitted) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateVerified) }}</div>
+              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateVerified) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
                 {{ result.status }}
               </button>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 <span v-if="result?.reportable" class="text-emerald-600">
                   <font-awesome-icon icon="fa-thumbs-up" aria-hidden="true"></font-awesome-icon>
                 </span>

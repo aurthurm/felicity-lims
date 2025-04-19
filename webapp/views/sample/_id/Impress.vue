@@ -46,7 +46,7 @@ const impressDownloader = async (report_uid) => await downloadImpress(report_uid
     <div v-if="impressMeta.length > 0" class="flex justify-start mt-4 mr-4">
       <ul class="">
         <li v-for="report in impressMeta" :key="report?.uid" class="mb-2 p-3 rounded-sm border w-96" :class="[
-          { 'border-gray-300 bg-white': report?.uid !== selectedMeta?.uid },
+          { 'border-border bg-white': report?.uid !== selectedMeta?.uid },
           {
             'border-3 border-blue-800 bg-green-200': report?.uid === selectedMeta?.uid,
           },
@@ -56,7 +56,7 @@ const impressDownloader = async (report_uid) => await downloadImpress(report_uid
               <p class="text-sm font-medium text-gray-900 truncat">
                 {{ report.state }}
               </p>
-              <p class="text-sm text-gray-500 truncat">
+              <p class="text-sm text-muted-foreground truncat">
                 Generated on {{ report.createdAt }}
               </p>
               <!-- <FontAwesomeIcon class="text-red-500 mr-2" icon="fa-message" />

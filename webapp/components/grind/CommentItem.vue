@@ -157,16 +157,16 @@ function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
             <div class="flex justify-between">
                 <div>
                     <h3 :class="`font-medium ${textSize}`">{{ comment.createdBy?.firstName }} {{ comment.createdBy?.lastName }}</h3>
-                    <div :class="`${level > 0 ? 'text-xs' : 'text-sm'} text-gray-500`">{{ comment.createdAt }}</div>
+                    <div :class="`${level > 0 ? 'text-xs' : 'text-sm'} text-muted-foreground`">{{ comment.createdAt }}</div>
                 </div>
                 <!-- Comment action buttons -->
                 <div class="flex gap-2" v-if="!isEditing">
-                    <button v-if="comment.canEdit" @click="startEditing" class="text-gray-500 hover:text-blue-500">
+                    <button v-if="comment.canEdit" @click="startEditing" class="text-muted-foreground hover:text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" :class="iconSize" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                     </button>
-                    <button v-if="canReply" @click="toggleReply" class="text-gray-500 hover:text-blue-500">
+                    <button v-if="canReply" @click="toggleReply" class="text-muted-foreground hover:text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" :class="iconSize" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                         </svg>
@@ -179,13 +179,13 @@ function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
                 <textarea
                     v-model="editingComment.comment"
                     :rows="level === 0 ? 3 : 2"
-                    :class="`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 ${level === 2 ? 'text-xs' : ''}`"
+                    :class="`w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 ${level === 2 ? 'text-xs' : ''}`"
                 ></textarea>
                 <div class="flex items-center justify-end gap-2 mt-2">
-                    <button @click="cancelEditing" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} border border-gray-300 rounded hover:bg-gray-50 ${level > 0 ? 'text-sm' : ''}`">
+                    <button @click="cancelEditing" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} border border-border rounded hover:bg-gray-50 ${level > 0 ? 'text-sm' : ''}`">
                         Cancel
                     </button>
-                    <button @click="updateDiscussion" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} bg-blue-500 text-white rounded hover:bg-blue-600 ${level > 0 ? 'text-sm' : ''}`">
+                    <button @click="updateDiscussion" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} bg-accent text-white rounded hover:bg-blue-600 ${level > 0 ? 'text-sm' : ''}`">
                         Save
                     </button>
                 </div>

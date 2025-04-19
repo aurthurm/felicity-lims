@@ -65,7 +65,7 @@
     <section class="my-4">
       <button
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         @click.prevent="addSample(patient)"
       >
         Add Sample

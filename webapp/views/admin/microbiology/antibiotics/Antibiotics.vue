@@ -324,7 +324,7 @@ const tableColumns = ref([
         "button",
         {
           type: "button",
-          class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+          class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
           innerHTML: "use",
           onClick: () => useAntibiotic(abx),
         },
@@ -343,7 +343,7 @@ const tableColumns = ref([
   //       "button",
   //       {
   //         type: "button",
-  //         class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+  //         class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
   //         innerHTML: "Edit",
   //         onClick: () => FormManager(false, abx),
   //       },
@@ -503,7 +503,7 @@ function saveForm(): void {
   <div class="w-full my-4">
     <!-- <hr>
     <button @click="FormManager(true)"
-            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
       Add Antibiotic
     </button> -->
     <hr>
@@ -822,7 +822,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="w-full bg-sky-800 text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-white rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           Save Antibiotic
         </button>

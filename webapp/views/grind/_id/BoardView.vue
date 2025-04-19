@@ -52,12 +52,12 @@ const savePosterForm = () => {
 
 <template>
   <div class="flex justify-start gap-x-4 items-start mt-4"> 
-    <div v-for="poster in boardPosters" :key="poster.uid" class="p-2 w-72 bg-gray-200 rounded overflow-auto">
+    <div v-for="poster in boardPosters" :key="poster.uid" class="p-2 w-72 bg-muted rounded overflow-auto">
       <poster :poster="poster" />
     </div>
 
     <button 
-    class="font-medium py-1 px-2 border border-gray-300 hover:border-sky-700 hover:text-sky-700 hover:bg-gray-100"
+    class="font-medium py-1 px-2 border border-border hover:border-sky-700 hover:text-sky-700 hover:bg-secondary"
     @click="openCreatePosterForm">Add Listing</button>
   </div>
 
@@ -80,7 +80,7 @@ const savePosterForm = () => {
             v-model="posterForm.title"
             type="text"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter scheme title"
           />
         </div>  
@@ -94,7 +94,7 @@ const savePosterForm = () => {
             id="description"
             v-model="posterForm.description"
             rows="3"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter scheme description"
           ></textarea>
         </div>

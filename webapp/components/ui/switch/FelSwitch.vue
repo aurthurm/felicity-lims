@@ -24,11 +24,11 @@
           type="checkbox"
           :checked="modelValue"
           @change="updateValue"
-          class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer outline-none transition duration-200 ease-in"
+          class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 border-border appearance-none cursor-pointer outline-none transition duration-200 ease-in"
           :class="{
             'translate-x-full': modelValue,
             'border-blue-500': modelValue,
-            'bg-white border-gray-300': !modelValue
+            'bg-white border-border': !modelValue
           }"
         />
         <label

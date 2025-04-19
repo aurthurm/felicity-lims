@@ -3,7 +3,7 @@
         <div class="mt-6 grid grid-cols-1 row-gap-6 col-gap-4 sm:grid-cols-6">
             <div class="sm:col-span-6">
                 <label for="tag" class="block text-sm font-medium leading-5 text-gray-700">Add Tags</label>
-                <div class="flex mt-1 relative bg-white overflow-x-scroll rounded-md shadow-sm focus:outline-none focus:shadow-outline border border-gray-300">
+                <div class="flex mt-1 relative bg-white overflow-x-scroll rounded-md shadow-sm focus:outline-none focus:shadow-outline border border-border">
                     <div v-for="(tag, index) in state.emailDomains" :key="index" class="flex-grow-0 text-gray-700 text-center my-1 ml-1">
                         <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold bg-indigo-500 hover:bg-indigo-300 text-white hover:text-black cursor-pointer">
                             {{ state.emailDomain }}
@@ -28,7 +28,7 @@
                         />
                     </div>
                 </div>
-                <p class="mt-2 text-sm text-gray-500">
+                <p class="mt-2 text-sm text-muted-foreground">
                     Start writing, to finish your tag use a comma, tab or enter...
                 </p>
             </div>

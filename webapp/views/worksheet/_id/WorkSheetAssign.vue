@@ -191,7 +191,7 @@ function areAllChecked(): Boolean {
           v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
           type="button"
           @click.prevent="applyTemplate()"
-          class="border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="border border-primary bg-primary text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Apply Template
         </button>
@@ -262,35 +262,35 @@ function areAllChecked(): Boolean {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               <input type="checkbox" @change="toggleCheckAll" v-model="allChecked" />
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               Sample ID
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Analysis
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Date Created
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Date Received
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Status
             </th>
@@ -307,27 +307,27 @@ function areAllChecked(): Boolean {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800 font-semibold">
+              <div class="text-sm leading-5 text-primary font-semibold">
                 {{ analysisResult?.sample?.sampleId }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.analysis?.name }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.createdAt }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.dateReceived }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.status }}
               </div>
             </td>

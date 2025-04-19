@@ -113,7 +113,7 @@ function saveForm(): void {
     <div class="container w-full my-4">
       <hr />
       <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         @click="FormManager(true)"
       >
         Add Analyses Template
@@ -144,10 +144,10 @@ function saveForm(): void {
             <a class="cursor-pointer">
               <div class="flex-grow p-1">
                 <div
-                  class="font-medium text-gray-500 hover:text-gray-700 flex justify-between"
+                  class="font-medium text-muted-foreground hover:text-gray-700 flex justify-between"
                 >
                   <span>{{ template?.name }}</span>
-                  <span class="text-sm text-gray-500"></span>
+                  <span class="text-sm text-muted-foreground"></span>
                 </div>
               </div>
             </a>
@@ -168,7 +168,7 @@ function saveForm(): void {
                 <div>
                   <button
                     @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -188,7 +188,7 @@ function saveForm(): void {
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
@@ -222,13 +222,13 @@ function saveForm(): void {
                             :key="service?.uid"
                             class="cursor-pointer"
                             :class="[
-                              { 'border-sky-800 bg-gray-200 underline pl-3': false },
+                              { 'border-primary bg-muted underline pl-3': false },
                             ]"
                           >
                             <div class="flex-grow p-1">
                               <div
                                 :class="[
-                                  'font-medium text-gray-500 hover:text-gray-700',
+                                  'font-medium text-muted-foreground hover:text-gray-700',
                                   { 'text-gray-700 font-medium': false },
                                 ]"
                               >
@@ -254,7 +254,7 @@ function saveForm(): void {
                 </div>
               </div>
               <button
-                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 @click="updateTemplate()"
               >
                 Update Template
@@ -313,7 +313,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

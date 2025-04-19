@@ -168,7 +168,7 @@ const goToStorage = async (sample?: ISample) => {
   <div class="flex justify-between items-center">
     <h3 class="my-4 font-bold">Sample Detail</h3>
     <div>
-      <button class="p-2 mr-8 text-sm hover:border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none"
+      <button class="p-2 mr-8 text-sm hover:border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none"
       @click="printBarCooe">
         Barcode <font-awesome-icon icon="barcode" class="ml-2" /> 
       </button>
@@ -176,7 +176,7 @@ const goToStorage = async (sample?: ISample) => {
       name: 'patient-detail',
       params: { patientUid: sample?.analysisRequest?.patient?.uid },
     }"
-      class="p-2 my-2 ml-4 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
+      class="p-2 my-2 ml-4 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
       ... other samples
     </router-link>
     </div>
@@ -201,7 +201,7 @@ const goToStorage = async (sample?: ISample) => {
             </span>
             {{ sample?.sampleId }}
             <!-- <button
-                                                class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                                                class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
                                               >
                                                 <font-awesome-icon icon="fa-pen" />
                                               </button> -->
@@ -214,7 +214,7 @@ const goToStorage = async (sample?: ISample) => {
                   sampleUid: repeatSample?.uid,
                 },
               }"
-                class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
+                class="p-2 my-2 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
                 {{ repeatSample?.sampleId }}
               </router-link>
             </span>
@@ -223,7 +223,7 @@ const goToStorage = async (sample?: ISample) => {
           <div>
             <div @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
                 {{ sample?.status }}
               </button>
               <div class="ml-2">
@@ -234,11 +234,11 @@ const goToStorage = async (sample?: ISample) => {
             </div>
             <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
               <div v-show="canReceive" @click="receiveSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Receive
               </div>
               <div v-show="canVerify" @click="verifySample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Approve
               </div>
               <div v-show="canReject" @click="rejectSample()"

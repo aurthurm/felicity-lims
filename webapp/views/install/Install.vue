@@ -38,7 +38,7 @@ const initInstall = handleSubmit((values) => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-screen bg-sky-800 px-6">
+  <div class="flex justify-center items-center h-screen bg-primary px-6">
     <div class="p-6 max-w-sm w-full bg-white shadow-md rounded-sm">
       <div class="flex justify-center items-center">
         <svg
@@ -68,7 +68,7 @@ const initInstall = handleSubmit((values) => {
           <span class="text-gray-700 text-sm">Laboratory Name</span>
           <input
             type="text"
-            class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
+            class="form-input mt-1 block w-full rounded-sm focus:border-primary"
             v-model="name"
             :disabled="loading"
           />
@@ -79,7 +79,7 @@ const initInstall = handleSubmit((values) => {
           <button
             v-if="!loading"
             type="submit"
-            class="py-2 px-4 text-center bg-sky-800 rounded-sm w-full text-white text-sm hover:bg-sky-800"
+            class="py-2 px-4 text-center bg-primary rounded-sm w-full text-white text-sm hover:bg-primary"
           >
             Install
           </button>

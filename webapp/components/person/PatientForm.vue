@@ -271,21 +271,21 @@ const removeIdentifier = (index: number) => {
     <label class="flex whitespace-nowrap my-2 w-full">
       <span class="text-gray-700 w-4/12">Age/DOB Estimated?</span>
       <div class="w-full flex justify-between items-center">
-        <input type="checkbox" class="form-checkbox text-sky-800" v-model="ageDobEstimated" />
+        <input type="checkbox" class="form-checkbox text-primary" v-model="ageDobEstimated" />
         <div class="flex justify-start items-center gap-x-2 ml-4" v-show="ageDobEstimated">
           <label for="estimateYears">
             <span class="mr-1">Years</span>
-            <input name="estimateYears" type="number" min=0 class="form-input w-24 py-0 text-sky-800"
+            <input name="estimateYears" type="number" min=0 class="form-input w-24 py-0 text-primary"
               v-model="estimateYears" @change="estimateDOB()" @keyup="estimateDOB()" />
           </label>
           <label for="estimateMonths">
             <span class="mr-1">Months</span>
-            <input name="estimateMonths" type="number" min=0 max=12 class="form-input w-24 py-0 text-sky-800"
+            <input name="estimateMonths" type="number" min=0 max=12 class="form-input w-24 py-0 text-primary"
               v-model="estimateMonths" @change="estimateDOB()" @keyup="estimateDOB()" />
           </label>
           <label for="estimateDays">
             <span class="mr-1">Days</span>
-            <input name="estimateDays" type="number" min=0 max=365 class="form-input w-24 py-0 text-sky-800"
+            <input name="estimateDays" type="number" min=0 max=365 class="form-input w-24 py-0 text-primary"
               v-model="estimateDays" @change="estimateDOB()" @keyup="estimateDOB()" />
           </label>
         </div>
@@ -339,7 +339,7 @@ const removeIdentifier = (index: number) => {
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Consent to SMS</span>
       <div class="w-full">
-        <input type="checkbox" class="form-checkbox text-sky-800" v-model="consentSms" />
+        <input type="checkbox" class="form-checkbox text-primary" v-model="consentSms" />
         <div class="text-orange-600 w-4/12">{{ errors.consentSms }}</div>
       </div>
     </label>
@@ -360,7 +360,7 @@ const removeIdentifier = (index: number) => {
         <span class="mr-4">Extra Ids:</span>
         <div>
           <span
-            class="relative px-1 mr-2 mt-4 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+            class="relative px-1 mr-2 mt-4 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
             @click="addIdentifier()">
             Add
           </span>
@@ -376,7 +376,7 @@ const removeIdentifier = (index: number) => {
             </option>
           </select>
           <span>Value</span>
-          <input type="text" class="form-input text-sky-800" v-model="identication.value" />
+          <input type="text" class="form-input text-primary" v-model="identication.value" />
           <span class="p-2 text-red-800" @click.prevent="removeIdentifier(index)">X</span>
         </div>
       </div>
@@ -427,7 +427,7 @@ const removeIdentifier = (index: number) => {
 
     <hr />
     <button type="submit"
-      class="-mb-4 w-1/5 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+      class="-mb-4 w-1/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
       Save Patient
     </button>
   </form>

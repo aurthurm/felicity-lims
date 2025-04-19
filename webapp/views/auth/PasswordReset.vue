@@ -62,7 +62,7 @@ const changePassword = () => {
             </div>
           </div>
           <h2 class="text-2xl font-bold text-gray-800">Felicity LIMS</h2>
-          <p class="text-gray-500 text-sm">Password Recovery</p>
+          <p class="text-muted-foreground text-sm">Password Recovery</p>
         </div>
 
         <!-- Email/Token Request Form -->
@@ -90,7 +90,7 @@ const changePassword = () => {
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
                   'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  !email ? 'border-gray-300' : 'border-gray-300'
+                  !email ? 'border-border' : 'border-border'
                 ]"
                 placeholder="Enter your email"
               />
@@ -146,7 +146,7 @@ const changePassword = () => {
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
                   'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  !token ? 'border-gray-300' : 'border-gray-300'
+                  !token ? 'border-border' : 'border-border'
                 ]"
                 placeholder="Enter your reset token"
               />
@@ -189,7 +189,7 @@ const changePassword = () => {
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
                   'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  !formIsValid ? 'border-red-300' : 'border-gray-300'
+                  !formIsValid ? 'border-red-300' : 'border-border'
                 ]"
                 placeholder="Enter new password"
               />
@@ -205,7 +205,7 @@ const changePassword = () => {
                 :class="[
                   'w-full px-4 py-2 border rounded-lg outline-none transition-colors duration-200',
                   'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-                  !formIsValid ? 'border-red-300' : 'border-gray-300'
+                  !formIsValid ? 'border-red-300' : 'border-border'
                 ]"
                 placeholder="Confirm new password"
               />

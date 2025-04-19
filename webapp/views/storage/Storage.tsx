@@ -309,7 +309,7 @@ const StorageHome = defineComponent({
                     <div class="col-span-2 pt-4 pl-2">
                         <button
                             onClick={() => this.roomFormManager(true, null)}
-                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                         >
                             Add Store Room
                         </button>
@@ -329,7 +329,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.locationFormManager(true, null)}
-                                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                                         >
                                             Add Storage Location
                                         </button>
@@ -339,7 +339,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.sectionFormManager(true, null)}
-                                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                                         >
                                             Add Storage Section
                                         </button>
@@ -349,7 +349,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.containerFormManager(true, null)}
-                                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                                         >
                                             Add Storage Container
                                         </button>
@@ -393,7 +393,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveStoreRoomForm()}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>
@@ -434,7 +434,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveLocationForm()}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>
@@ -475,7 +475,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveStorageSectionForm()}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>
@@ -547,7 +547,7 @@ const StorageHome = defineComponent({
                                                             <label class="block col-span-1 mb-2">
                                                                 <span class="text-gray-700">Rows</span>
                                                                 <input
-                                                                    class="form-input mt-1 block w-full bg-gray-100"
+                                                                    class="form-input mt-1 block w-full bg-secondary"
                                                                     v-model={this.containerForm.rows}
                                                                     type="number"
                                                                     disabled
@@ -566,7 +566,7 @@ const StorageHome = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => this.saveStorageContainerForm()}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                                            class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
                                         >
                                             Save Form
                                         </button>

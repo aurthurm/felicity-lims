@@ -163,8 +163,8 @@ const resetUserMatrix = () => {
           @click="dashBoardStore.setCurrentFilter(filter)"
           type="button"
           :class="[
-            'px-2 py-1 mr-2 border-gray-800 border text-gray-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none',
-            { 'bg-sky-800 text-white': dashboard.currentFilter === filter },
+            'px-2 py-1 mr-2 border-gray-800 border text-gray-800 rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none',
+            { 'bg-primary text-white': dashboard.currentFilter === filter },
           ]"
         >
           {{ filter }}
@@ -174,13 +174,13 @@ const resetUserMatrix = () => {
 
       <button
         @click="showModal = true"
-        class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-gray-500 rounded-sm transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none"
+        class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-muted-foreground rounded-sm transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none"
       >
         {{ dashboard.filterRange.from }} - {{ dashboard.filterRange.to }}
       </button>
       <!-- <button
         type="button"
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Apply
       </button> -->
@@ -259,7 +259,7 @@ const resetUserMatrix = () => {
         <button
           type="button"
           @click.prevent="setCustomRange()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

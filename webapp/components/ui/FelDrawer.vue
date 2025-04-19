@@ -37,7 +37,7 @@ watch(
     <div ref="notification"
       class="w-full absolute z-20 right-0 h-full overflow-x-hidden transform translate-x-full transition ease-in-out duration-700">
       <div class=" " :class="[
-        'bg-gray-100 h-screen overflow-y-auto p-8 absolute right-0 flex flex-col',
+        'bg-secondary h-screen overflow-y-auto p-8 absolute right-0 flex flex-col',
         contentWidth ? contentWidth : 'w-1/3',
       ]">
         <div class="flex items-center justify-between">

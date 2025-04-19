@@ -115,7 +115,7 @@ const tableColumns = ref([
     customRender: function (worksheet, _) {
       return h("button", {
         type: "button",
-        class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+        class: "bg-primary text-white py-1 px-2 rounded-sm leading-none",
         innerHTML: worksheet?.state || "unknown",
       });
     },
@@ -209,7 +209,7 @@ const countNone = computed(
   <div class="flex justify-between items-center">
     <div>
       <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" @click.prevent="showModal = true"
-        class="p-2 h-10 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
         Add WorkSheet
       </button>
     </div>
@@ -279,7 +279,7 @@ const countNone = computed(
 
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

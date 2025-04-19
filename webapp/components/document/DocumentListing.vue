@@ -34,7 +34,7 @@ function handleEdit(document: IDocument) {
 
   <div v-else class="overflow-x-auto rounded-xl shadow">
     <table class="min-w-full bg-white border border-gray-200">
-      <thead class="bg-gray-100">
+      <thead class="bg-secondary">
         <tr>
         <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Name</th>
           <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Created At</th>
@@ -45,8 +45,8 @@ function handleEdit(document: IDocument) {
       <tbody>
         <tr v-for="doc in documents" :key="doc.uid" class="border-t border-gray-200 hover:bg-gray-50 transition">
           <td class="px-4 text-sm font-medium text-gray-800 font-semibold" @click.stop="handleEdit(doc)">{{ doc.name }}</td>
-          <td class="px-4 text-sm text-gray-500">{{ formatDate(doc.createdAt) }}</td>
-          <td class="px-4 text-sm text-gray-500">{{ formatDate(doc.updatedAt) }}</td>
+          <td class="px-4 text-sm text-muted-foreground">{{ formatDate(doc.createdAt) }}</td>
+          <td class="px-4 text-sm text-muted-foreground">{{ formatDate(doc.updatedAt) }}</td>
           <td class="px-4 text-sm">
             <button @click.stop="handleEdit(doc)">
               <div class="h-8 w-8 rounded-full bg-white/90 flex items-center justify-center">

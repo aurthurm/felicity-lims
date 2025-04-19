@@ -31,7 +31,7 @@ const editPatient = (patient) => {
           {{ patient?.patientId }}
         </div>
         <!-- Age -->
-        <div class="flex flex-col items-center justify-center mx-auto py-2 w-4/5 2lg:w-3/5 rounded-sm bg-sky-800">
+        <div class="flex flex-col items-center justify-center mx-auto py-2 w-4/5 2lg:w-3/5 rounded-sm bg-primary">
           <div class="inline-block font-semibold text-white text-sm lg:text-md">
             {{ patient?.gender }}
           </div>
@@ -52,14 +52,14 @@ const editPatient = (patient) => {
           <div>
             <span class="font-medium text-md">{{ parseDate(patient?.dateOfBirth, false) }}</span>
             <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)" @click="editPatient(patient)"
-              class="p-1 ml-2 border-white border text-gray-500 text-md rounded-sm transition duration-300 hover:text-sky-800 focus:outline-none">
+              class="p-1 ml-2 border-white border text-muted-foreground text-md rounded-sm transition duration-300 hover:text-primary focus:outline-none">
               <font-awesome-icon icon="fa-edit" />
             </button>
             <router-link v-show="route.fullPath.includes('patients-compact')" :to="{
               name: 'patient-detail',
               params: { patientUid: patient?.uid },
             }"
-              class="p-1 ml-2 border-white border text-gray-500 rounded-sm transition duration-300 hover:text-sky-800 focus:outline-none">
+              class="p-1 ml-2 border-white border text-muted-foreground rounded-sm transition duration-300 hover:text-primary focus:outline-none">
               <font-awesome-icon icon="fa-left-right" />
             </router-link>
           </div>

@@ -60,7 +60,7 @@ const closeForm = () => {
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         @click="FormManager(true)"
       > Add Method</button>
       <hr>
@@ -72,10 +72,10 @@ const closeForm = () => {
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Instruments</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Analyses</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Instruments</th>
+                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Analyses</th>
+                <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
             </thead>
             <tbody class="bg-white">
@@ -87,10 +87,10 @@ const closeForm = () => {
                   <div class="text-sm leading-5 text-gray-800">{{ meth?.instruments?.map(inst => inst?.name)?.join(",") }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ getAnalyses(meth) }}</div>
+                  <div class="text-sm leading-5 text-primary">{{ getAnalyses(meth) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, meth)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                    <button @click="FormManager(false, meth)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
                 </td>
             </tr>
             </tbody>

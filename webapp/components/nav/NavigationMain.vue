@@ -152,7 +152,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav id="main-nav" class="flex items-center px-6 bg-sky-800 shadow-md" role="navigation" aria-label="Main Navigation">
+  <nav id="main-nav" class="flex items-center px-6 bg-primary shadow-md" role="navigation" aria-label="Main Navigation">
     <!-- Brand and menu section -->
     <div class="flex-1">
       <div class="flex text-right align-middle">
@@ -183,7 +183,7 @@ onMounted(() => {
         <div 
           v-show="menuOpen" 
           id="main-menu"
-          class="absolute left-64 top-12 mt-1 p-4 w-1/2 bg-sky-800 rounded-sm shadow-xl z-20"
+          class="absolute left-64 top-12 mt-1 p-4 w-1/2 bg-primary rounded-sm shadow-xl z-20"
           @click.away="menuOpen = false"
         >
           <div 
@@ -222,7 +222,7 @@ onMounted(() => {
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
         <span class="text-gray-50 text-xl font-bold mr-2 uppercase">Errors</span>
-        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
+        <span class="bg-destructive text-white text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
       </button>
       
       <span v-if="errors.length > 0" class="mx-4 border-l-2 border-gray-400" aria-hidden="true"></span>
@@ -255,7 +255,7 @@ onMounted(() => {
       <!-- User profile section -->
       <div class="px-4 flex text-right align-middle relative">
         <span
-          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-gray-400 hover:border-gray-300 text-white"
+          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-gray-400 hover:border-border text-white"
           aria-hidden="true"
         >
           <font-awesome-icon icon="user" />
@@ -281,7 +281,7 @@ onMounted(() => {
           <div 
             v-show="dropdownOpen" 
             id="user-menu"
-            class="absolute right-0 top-11 py-2 w-48 bg-sky-800 rounded-sm shadow-xl z-20"
+            class="absolute right-0 top-11 py-2 w-48 bg-primary rounded-sm shadow-xl z-20"
             @click.away="dropdownOpen = false"
           >
             <button 
@@ -304,7 +304,7 @@ onMounted(() => {
       <div class="flex items-center justify-between">
         <h3 class="font-semibold text-lg">Errors List</h3>
         <button 
-          class="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
+          class="p-2 text-muted-foreground hover:text-gray-700 rounded-full hover:bg-secondary transition-colors focus:outline-none"
           @click="clearErrors()"
           aria-label="Clear all errors"
         >
@@ -317,7 +317,7 @@ onMounted(() => {
       </div>
     </template>
     <template v-slot:body>
-      <p v-if="errors.length === 0" class="text-gray-500 italic">No errors to display</p>
+      <p v-if="errors.length === 0" class="text-muted-foreground italic">No errors to display</p>
       <ul v-else aria-label="Error messages" class="divide-y divide-gray-100">
         <li 
           v-for="(err, idx) in errors" 

@@ -268,16 +268,16 @@ const InventoryOrders = defineComponent({
                                                 <table class="min-w-full">
                                                     <thead>
                                                         <tr>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                                                                 Product
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                                                                 Lot
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Qty
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="bg-white">
@@ -300,7 +300,7 @@ const InventoryOrders = defineComponent({
                                                                 <td class="px-1 whitespace-no-wrap">
                                                                     <button
                                                                         type="button"
-                                                                        class="w-16 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                                                                        class="w-16 bg-primary text-white rounded-sm leading-none px-2 py-1"
                                                                         onClick={() => this.removeOrderProduct(item.product.uid)}
                                                                     >
                                                                         Remove
@@ -321,7 +321,7 @@ const InventoryOrders = defineComponent({
                                             <button
                                                 type="button"
                                                 onClick={() => this.updateOrder()}
-                                                class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled={!this.shield.hasRights(shield.actions.ORDER, shield.objects.PRODUCT)}
                                             >
                                                 Update
@@ -329,7 +329,7 @@ const InventoryOrders = defineComponent({
                                             <button
                                                 type="button"
                                                 onClick={() => this.submitOrder()}
-                                                class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled={!this.shield.hasRights(shield.actions.ORDER, shield.objects.PRODUCT)}
                                             >
                                                 Finalize
@@ -346,22 +346,22 @@ const InventoryOrders = defineComponent({
                                                 <table class="min-w-full">
                                                     <thead>
                                                         <tr>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                                                                 Product
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                                                                 Lot
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Available
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Requested
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Issue
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="bg-white">
@@ -398,7 +398,7 @@ const InventoryOrders = defineComponent({
                                         <hr />
                                         <button
                                             type="button"
-                                            class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                             disabled={!this.shield.hasRights(shield.actions.ISSUE, shield.objects.PRODUCT)}
                                             onClick={() => this.issueOrder()}
                                         >
@@ -417,16 +417,16 @@ const InventoryOrders = defineComponent({
                                                 <table class="min-w-full">
                                                     <thead>
                                                         <tr>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                                                                 Product Name
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Available
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Requested
                                                             </th>
-                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="bg-white">

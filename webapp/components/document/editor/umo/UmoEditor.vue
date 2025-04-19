@@ -78,7 +78,7 @@ const goBack = () => router.back();
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 py-3 px-4 flex items-center justify-between">
       <div class="flex items-center">
-        <button @click="goBack" class="mr-4 text-gray-500 hover:text-gray-700">
+        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-gray-700">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
         <h1 class="uppercase text-xl font-semibold text-gray-800">{{ document?.document?.name }}</h1>

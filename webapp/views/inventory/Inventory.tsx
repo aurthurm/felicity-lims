@@ -92,7 +92,7 @@ const InventoryHome = defineComponent({
                                 <a
                                     key={tab}
                                     class={[
-                                        'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                                        'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
                                         { 'tab-active': this.currentTab === tab },
                                     ]}
                                     onClick={() => (this.currentTab = tab)}
@@ -125,16 +125,16 @@ const InventoryHome = defineComponent({
                                             <table class="min-w-full">
                                                 <thead>
                                                     <tr>
-                                                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                        <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
                                                             Product Name
                                                         </th>
-                                                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                             Lot Number
                                                         </th>
-                                                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                             Quantity
                                                         </th>
-                                                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                                                        <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="bg-white">
@@ -159,7 +159,7 @@ const InventoryHome = defineComponent({
                                                             <td class="px-1 whitespace-no-wrap">
                                                                 <button
                                                                     type="button"
-                                                                    class="bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                                                                    class="bg-primary text-white rounded-sm leading-none px-2 py-1"
                                                                     onClick={() => this.inventoryStore.removeFromBasket(item.product.uid)}
                                                                 >
                                                                     Remove
@@ -174,7 +174,7 @@ const InventoryHome = defineComponent({
                                     <hr />
                                     <button
                                         type="button"
-                                        class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                                        class="mt-4 bg-primary text-white rounded-sm leading-none px-2 py-1"
                                         onClick={() => this.createOrder()}
                                     >
                                         Create Order

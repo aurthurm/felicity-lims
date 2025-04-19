@@ -56,7 +56,7 @@ const getComponent = (sectionId: string): any => {
                 'w-full text-left p-2  transition-colors duration-150 flex items-center gap-2',
                 {
                   'bg-sky-600 text-white': modelValue === item.id,
-                  'text-gray-600 hover:bg-gray-100': modelValue !== item.id,
+                  'text-gray-600 hover:bg-secondary': modelValue !== item.id,
                 },
               ]"
             >

@@ -207,7 +207,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
     <div class="flex items-center">
       <h1 class="h1 my-4 font-bold text-dark-700">WorkSheet Templates</h1>
       <button
-        class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+        class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
         @click="FormManager(true)"
       >
         Add Template
@@ -223,7 +223,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             :key="wst.uid"
             :class="
               workSheetTemplate?.uid === wst.uid
-                ? 'w-full flex justify-between p-2 mb-1 rounded-sm shadow border border-sky-800 bg-emerald-200'
+                ? 'w-full flex justify-between p-2 mb-1 rounded-sm shadow border border-primary bg-emerald-200'
                 : 'bg-white w-full flex justify-between p-2 mb-1 rounded-sm shadow border'
             "
           >
@@ -259,7 +259,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 <div>
                   <button
                     @click="FormManager(false, workSheetTemplate)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -361,7 +361,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
@@ -387,7 +387,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                   :class="[
                     'col-span-5 my-1 p-1 text-white rounded-xl flex justify-center',
                     { 'bg-emerald-600': item.name !== 'sample' },
-                    { 'bg-sky-800': item.name === 'sample' },
+                    { 'bg-primary': item.name === 'sample' },
                   ]"
                   >{{ item.name }}</span
                 >
@@ -410,7 +410,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                     :class="[
                         'my-1 p-1 text-white rounded-xl flex justify-center',
                         { 'bg-emerald-600': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
-                        { 'bg-sky-800': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
+                        { 'bg-primary': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
                         ]"
                     >({{ index*workSheetTemplate.cols! + col }})
                     {{ workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name }}</span
@@ -433,7 +433,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                       :class="[
                           'my-1 p-1 text-white rounded-xl flex justify-center',
                           { 'bg-emerald-600': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
-                          { 'bg-sky-800': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
+                          { 'bg-primary': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
                           ]"
                       >({{ index*workSheetTemplate.rows! + row }})
                       {{ workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name }}</span
@@ -503,7 +503,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               <label class="block col-span-1 mb-2">
                 <span class="text-gray-700">Rows</span>
                 <input
-                  class="form-input mt-1 block w-full bg-gray-100"
+                  class="form-input mt-1 block w-full bg-secondary"
                   v-model="workSheetTemplate.rows"
                   type="number"
                   disabled
@@ -596,7 +596,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 </select>
                 <button
                   @click.prevent="appyQCTemplate()"
-                  class="px-2 py-1 ml-2 h-auto border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-2 h-auto border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 >
                   Apply
                 </button>
@@ -604,7 +604,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             </label>
             <button
               @click.prevent="addReserved()"
-              class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
             >
               Add Reserve Slot
             </button>
@@ -656,7 +656,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

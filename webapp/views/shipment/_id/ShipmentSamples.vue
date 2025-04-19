@@ -156,7 +156,7 @@ const sampleManager = (action: string) => {
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         >
           Refresh
         </button>
@@ -173,7 +173,7 @@ const sampleManager = (action: string) => {
           <thead>
             <tr>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
                 v-show="shipment?.state === 'preperation'"
               >
                 <input
@@ -184,40 +184,40 @@ const sampleManager = (action: string) => {
                 />
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               ></th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               >
                 Sample ID
               </th>
               <th 
                 v-show="shipment?.incoming"
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               >
                 Exernal SID
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               >
                 Client Request Id
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Date Collected
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Analysis
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Status
               </th>
-              <!-- <th class="px-1 py-1 border-b-2 border-gray-300"></th> -->
+              <!-- <th class="px-1 py-1 border-b-2 border-border"></th> -->
             </tr>
           </thead>
           <tbody class="bg-white">
@@ -277,7 +277,7 @@ const sampleManager = (action: string) => {
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <button
                   type="button"
-                  class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none"
+                  class="bg-primary text-white py-1 px-2 rounded-sm leading-none"
                 >
                   {{ shipped.sample?.status || "unknown" }}
                 </button>
@@ -292,14 +292,14 @@ const sampleManager = (action: string) => {
       <button
         v-show="can_recover"
         @click.prevent="sampleManager('recover')"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Remove
       </button>
       <button
         v-show="can_recall"
         @click.prevent="sampleManager('recall')"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Pair
       </button>

@@ -189,7 +189,7 @@ function saveMappingForm(): void {
     <div class="container w-full my-4">
       <hr />
       <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         @click="FormManager(true)"
       >
         Add Analyses Profile
@@ -220,10 +220,10 @@ function saveMappingForm(): void {
             <a class="cursor-pointer">
               <div class="flex-grow p-1">
                 <div
-                  class="font-medium text-gray-500 hover:text-gray-700 flex justify-between"
+                  class="font-medium text-muted-foreground hover:text-gray-700 flex justify-between"
                 >
                   <span>{{ profile?.name }}</span>
-                  <span class="text-sm text-gray-500"></span>
+                  <span class="text-sm text-muted-foreground"></span>
                 </div>
               </div>
             </a>
@@ -244,7 +244,7 @@ function saveMappingForm(): void {
                 <div>
                   <button
                     @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-muted"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -264,7 +264,7 @@ function saveMappingForm(): void {
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
@@ -298,13 +298,13 @@ function saveMappingForm(): void {
                             :key="service?.uid"
                             class="cursor-pointer"
                             :class="[
-                              { 'border-sky-800 bg-gray-200 underline pl-3': false },
+                              { 'border-primary bg-muted underline pl-3': false },
                             ]"
                           >
                             <div class="flex-grow p-1">
                               <div
                                 :class="[
-                                  'font-medium text-gray-500 hover:text-gray-700',
+                                  'font-medium text-muted-foreground hover:text-gray-700',
                                   { 'text-gray-700 font-medium': false },
                                 ]"
                               >
@@ -330,7 +330,7 @@ function saveMappingForm(): void {
                 </div>
               </div>
               <button
-                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 @click="updateProfile()"
               >
                 Update Analtsis Profile
@@ -341,7 +341,7 @@ function saveMappingForm(): void {
             <div class="flex justify-between items-center mb-2">
               <h3>Concept Mappings</h3>
               <button @click="MappingFormManager(true)"
-                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Mapping</button>
+                class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Add Mapping</button>
             </div>
             <hr />
             <div class="overflow-x-auto mt-4">
@@ -349,11 +349,11 @@ function saveMappingForm(): void {
                 <table class="min-w-full">
                     <thead>
                     <tr>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Coding Standard</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Code</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Coding Standard</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Code</th>
+                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
+                        <th class="px-1 py-1 border-b-2 border-border"></th>
                     </tr>
                     </thead>
                     <tbody class="bg-white">
@@ -364,16 +364,16 @@ function saveMappingForm(): void {
                           </div>
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-sky-800">{{ mapp.name }}</div>
+                          <div class="text-sm leading-5 text-primary">{{ mapp.name }}</div>
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-sky-800">{{ mapp.code }}</div>
+                          <div class="text-sm leading-5 text-primary">{{ mapp.code }}</div>
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-sky-800">{{ mapp.description }}</div>
+                          <div class="text-sm leading-5 text-primary">{{ mapp.description }}</div>
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                            <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                            <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">Edit</button>
                         </td>
                     </tr>
                     </tbody>
@@ -474,7 +474,7 @@ function saveMappingForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -537,7 +537,7 @@ function saveMappingForm(): void {
         <button
           type="button"
           @click.prevent="saveMappingForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

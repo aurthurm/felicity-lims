@@ -203,7 +203,7 @@ function saveForm() {
           />
           <button
             @click="searchSchemes(schemeParams.text)"
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-sky-700"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-sky-700"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -249,7 +249,7 @@ function saveForm() {
             </router-link>
             <button 
               @click="openEditForm(scheme)"
-              class="text-gray-500 hover:text-sky-600 transition-colors"
+              class="text-muted-foreground hover:text-sky-600 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -263,7 +263,7 @@ function saveForm() {
           </p>
           
           <!-- Date information -->
-          <div class="flex items-center text-xs text-gray-500 mb-4">
+          <div class="flex items-center text-xs text-muted-foreground mb-4">
             <div class="flex items-center mr-4">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -274,7 +274,7 @@ function saveForm() {
           
           <!-- Assignee -->
           <div v-if="scheme.assignee" class="mb-4">
-            <p class="text-xs text-gray-500 mb-1">Assignee:</p>
+            <p class="text-xs text-muted-foreground mb-1">Assignee:</p>
             <div class="flex items-center">
               <div 
                 class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium mr-2"
@@ -288,7 +288,7 @@ function saveForm() {
           
           <!-- Members -->
           <div v-if="scheme.members && scheme.members.length > 0">
-            <p class="text-xs text-gray-500 mb-1">Members:</p>
+            <p class="text-xs text-muted-foreground mb-1">Members:</p>
             <div class="flex -space-x-2 overflow-hidden">
               <div 
                 v-for="(member, index) in scheme.members.slice(0, 5)" 
@@ -312,7 +312,7 @@ function saveForm() {
           </div>
           
           <!-- Created info -->
-          <div class="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500 flex justify-between">
+          <div class="mt-4 pt-3 border-t border-gray-100 text-xs text-muted-foreground flex justify-between">
             <span>Created {{ formatDate(scheme.createdAt, 'D MMMM YYYY') }}</span>
             <span v-if="scheme.createdBy">by {{ scheme.createdBy.firstName }}</span>
           </div>
@@ -324,7 +324,7 @@ function saveForm() {
     <div v-if="schemesPageInfo.hasNextPage" class="mt-8 flex justify-center">
       <button 
         @click="loadMoreSchemes"
-        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+        class="px-4 py-2 bg-secondary text-gray-700 rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
         :disabled="fetchingSchemes"
       >
         <span v-if="fetchingSchemes">Loading...</span>
@@ -338,7 +338,7 @@ function saveForm() {
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
       <h3 class="text-lg font-medium text-gray-600 mb-2">No schemes found</h3>
-      <p class="text-gray-500 mb-4">Get started by creating your first scheme</p>
+      <p class="text-muted-foreground mb-4">Get started by creating your first scheme</p>
       <button
         @click="openCreateForm"
         class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
@@ -371,7 +371,7 @@ function saveForm() {
             v-model="form.title"
             type="text"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter scheme title"
           />
         </div>
@@ -385,7 +385,7 @@ function saveForm() {
             id="description"
             v-model="form.description"
             rows="3"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter scheme description"
           ></textarea>
         </div>
@@ -400,7 +400,7 @@ function saveForm() {
               id="startDate"
               v-model="form.startDate"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             />
           </div>
           <div>
@@ -411,7 +411,7 @@ function saveForm() {
               id="endDate"
               v-model="form.endDate"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             />
           </div>
         </div>
@@ -452,7 +452,7 @@ function saveForm() {
           <button
             type="button"
             @click="showModal = false"
-            class="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-border rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             Cancel
           </button>

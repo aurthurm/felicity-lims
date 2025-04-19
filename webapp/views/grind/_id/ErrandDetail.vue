@@ -334,7 +334,7 @@ function goBack() {
             <div class="p-2 border-b">
                 <div class="flex justify-between items-center">
                     <div class="relative w-full">
-                        <button @click="goBack" class="-mt-8 mr-4 text-gray-500 hover:text-gray-700">
+                        <button @click="goBack" class="-mt-8 mr-4 text-muted-foreground hover:text-gray-700">
                           <ArrowLeftIcon class="w-5 h-5" />
                         </button>
                         <h1 
@@ -351,7 +351,7 @@ function goBack() {
                         @blur="endEditingTitle" 
                         @keyup.enter="endEditingTitle"
                         ref="titleInput"
-                        class="text-2xl font-semibold text-gray-800 w-full px-2 py-1 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="text-2xl font-semibold text-gray-800 w-full px-2 py-1 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-ring"
                         />
                     </div>
                 </div>
@@ -388,13 +388,13 @@ function goBack() {
                     <div class="mt-2 flex gap-2">
                         <button 
                         @click="saveDescription" 
-                        class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                        class="px-3 py-1 bg-accent text-white rounded hover:bg-blue-600 text-sm"
                         >
                         Save
                         </button>
                         <button 
                         @click="cancelEditing" 
-                        class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
+                        class="px-3 py-1 bg-muted text-gray-700 rounded hover:bg-gray-300 text-sm"
                         >
                         Cancel
                         </button>
@@ -404,8 +404,8 @@ function goBack() {
       
             <!-- Progress Bar -->
             <div class="flex justify-start items-center gap-x-2 mt-1" v-show="errand?.milestonesAt">
-              <div class="my-2 w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
-                  <div class="bg-green-600 h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
+              <div class="my-2 w-full bg-muted rounded-full h-1 dark:bg-gray-700">
+                  <div class="bg-success h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
               </div>
               <span class="text-xs">{{ errand?.milestonesAt }}%</span>
             </div>
@@ -417,7 +417,7 @@ function goBack() {
                     @click="activeTab = 'discussions'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'discussions' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    activeTab === 'discussions' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
                     ]"
                 >
                     Discussions
@@ -426,7 +426,7 @@ function goBack() {
                     @click="activeTab = 'milestones'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'milestones' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    activeTab === 'milestones' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
                     ]"
                 >
                     Milestones
@@ -435,7 +435,7 @@ function goBack() {
                     @click="activeTab = 'activity'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'activity' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    activeTab === 'activity' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
                     ]"
                 >
                     Activity Stream
@@ -444,7 +444,7 @@ function goBack() {
                     @click="activeTab = 'files'" 
                     :class="[
                     'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'files' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    activeTab === 'files' ? 'border-blue-500 text-blue-500' : 'border-transparent text-muted-foreground hover:text-gray-700'
                     ]"
                 >
                     Files

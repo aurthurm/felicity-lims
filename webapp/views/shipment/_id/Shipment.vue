@@ -62,7 +62,7 @@ const shipmentActor = (action: string) => {
           <div>
             <div @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
+              <button type="button" class="bg-primary text-white px-2 py-1 rounded-sm leading-none">
                 {{ shipment?.state || "unknown" }}
               </button>
               <div class="ml-2">
@@ -73,27 +73,27 @@ const shipmentActor = (action: string) => {
             </div>
             <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
               <div v-show="canReceive" @click="shipmentActor('reject')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Reject
               </div>
               <div v-show="canReceive" @click="shipmentActor('receive')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Receive
               </div>
               <div v-show="canFinalise" @click="shipmentActor('finalise')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Finalise
               </div>
               <div v-show="canDispatch" @click="shipmentActor('dispatch')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Dispatch
               </div>
               <div v-show="canRetryDispatch" @click="shipmentActor('dispatch-now')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Retry Notification
               </div>
               <div v-show="canCancel" @click="shipmentActor('cancel')"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-primary hover:text-white">
                 Cancel
               </div>
             </div>

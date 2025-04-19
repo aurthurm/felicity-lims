@@ -173,7 +173,7 @@ function saveForm(): void {
         <div class="w-full flex justify-between items-center pr-4">
           <h2 class="text-l font-semibold inline uppercase">Countries</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
             @click="FormManager(true, 'country')">
             Add Country
           </button>
@@ -195,7 +195,7 @@ function saveForm(): void {
         <div class="w-full flex justify-between items-center pr-4">
           <h2 class="text-l font-semibold inline uppercase">Provinces</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
             @click="FormManager(true, 'province')">
             Add Province
           </button>
@@ -218,7 +218,7 @@ function saveForm(): void {
         <div class="w-full flex justify-between items-center pr-4">
           <h2 class="text-l font-semibold inline uppercase">Districts</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
             @click="FormManager(true, 'district')">
             Add District
           </button>
@@ -258,7 +258,7 @@ function saveForm(): void {
         </div>
         <hr />
         <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

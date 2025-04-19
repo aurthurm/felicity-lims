@@ -253,7 +253,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
 
   <button
     @click="reflexActionFormManager(true)"
-    class="my-4 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+    class="my-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
   >
     Add Reflex Action
   </button>
@@ -277,7 +277,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           <h4 class="text-l leading-4 italic">Reflex Action Brains</h4>
           <button
             @click="reflexBrainFormManager(true, action?.uid!, {})"
-            class="ml-4 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+            class="ml-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
           >
             Add Brain
           </button>
@@ -301,7 +301,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               /></span>
               </div>
             </div>
-            <p class="text-gray-500 text-sm">{{ brain?.description }}</p>
+            <p class="text-muted-foreground text-sm">{{ brain?.description }}</p>
           </div>
         </div>
       </template>
@@ -360,7 +360,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
         <button
           type="button"
           @click.prevent="saveActionForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -390,7 +390,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           <span>Conditions (OR)</span>
           <button
             @click.prevent="addCondition()"
-            class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+            class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
           >
             Add
           </button>
@@ -404,7 +404,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                 <h5>Criteria (AND)</h5>
                 <button
                   @click.prevent="addCriteria(conIdx)"
-                  class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 >
                   + criteria
                 </button>
@@ -507,7 +507,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               <span class="text-orange-600"></span>
               <button
                 @click.prevent="addNew(adIn)"
-                class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
               >
                 Add
               </button>
@@ -563,7 +563,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                 <span class="text-orange-600"></span>
                 <button
                   @click.prevent="addFinal(fiIn)"
-                  class="px-2 py-1 ml-4 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 >
                   Add
                 </button>
@@ -635,7 +635,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
         <button
           type="button"
           @click.prevent="saveBrainForm()"
-          class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save
         </button>

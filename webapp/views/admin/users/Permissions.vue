@@ -52,18 +52,18 @@ function handlePermissionToggle(group: IGroup, perm: IPermission, value: boolean
           <thead>
             <tr>
               <th
-                class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Permissions
               </th>
               <th 
                 v-for="group in groups" 
                 :key="group.uid"
-                class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 {{ group.name }}
               </th>
-              <th class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-gray-300"></th>
+              <th class="sticky top-0 z-10 bg-white px-1 py-1 border-b-2 border-border"></th>
             </tr>
           </thead>
         </table>
@@ -80,7 +80,7 @@ function handlePermissionToggle(group: IGroup, perm: IPermission, value: boolean
                   </td>
                 </tr>
                 <tr v-for="perm in category[1]" :key="perm.uid" class="border-b border-slate-200">
-                  <td class="py-1 font-sm italic text-gray-500 px-1">
+                  <td class="py-1 font-sm italic text-muted-foreground px-1">
                     {{ perm.action }}
                   </td>
                   <td v-for="group in groups" :key="group.uid" class="px-1">

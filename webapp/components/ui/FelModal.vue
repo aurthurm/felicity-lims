@@ -51,7 +51,7 @@
               </div>
 
               <!-- Divider -->
-              <div class="h-px bg-gray-200 my-4"></div>
+              <div class="h-px bg-muted my-4"></div>
 
               <!-- Body -->
               <div class="modal-body">
@@ -61,7 +61,7 @@
               </div>
 
               <!-- Divider -->
-              <div class="h-px bg-gray-200 my-4"></div>
+              <div class="h-px bg-muted my-4"></div>
 
               <!-- Footer -->
               <div class="modal-footer">
@@ -69,7 +69,7 @@
                   <div class="flex justify-end space-x-3">
                     <button
                       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border 
-                             border-gray-300 rounded-md shadow-sm hover:bg-gray-50 
+                             border-border rounded-md shadow-sm hover:bg-gray-50 
                              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                       @click="$emit('close')"
                     >

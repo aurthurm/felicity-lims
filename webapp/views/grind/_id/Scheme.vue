@@ -101,7 +101,7 @@ function goBack() {
 
 <template>
      <div class="flex items-center">
-        <button @click="goBack" class="mr-4 text-gray-500 hover:text-gray-700">
+        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-gray-700">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
         <h3 class="h3 text-xl">
@@ -112,20 +112,20 @@ function goBack() {
 
     
     <hr class="mt-2 mb-2">
-    <p class="leading-2 bg-slate-50 p-2 italic font-medium text-gray-500">{{ scheme?.description }}</p>
+    <p class="leading-2 bg-slate-50 p-2 italic font-medium text-muted-foreground">{{ scheme?.description }}</p>
     <hr class="mt-2 mb-2">
 
     <h4 class="h3 text-xl font-semibold mb-2">Boards:</h4>
     <div class="flex justify-start items-center mb-2">
         <div>
             <button v-for="board in scheme?.boards" :key="board.uid"
-            class="py-1 px-4 mr-2 bg-gray-200 text-gray-600 shadow-md overflow-hidden font-medium border-2 border-gray-200"
+            class="py-1 px-4 mr-2 bg-muted text-gray-600 shadow-md overflow-hidden font-medium border-2 border-gray-200"
             :class="{ 'bg-sky-500 text-white border-sky-500': selectedBoard?.uid === board.uid }"
             @click="selectBoard(board)"
             @dblclick="updateBoard(board)">
             {{ board.title }}</button>
         </div>
-        <button @click="openCreateBoardForm" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">+ Board</button>
+        <button @click="openCreateBoardForm" class="bg-accent hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">+ Board</button>
     </div>
 
     <board v-if="selectedBoard" :board="selectedBoard" />
@@ -148,7 +148,7 @@ function goBack() {
             v-model="boardForm.title"
             type="text"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter scheme title"
           />
         </div>  
@@ -162,7 +162,7 @@ function goBack() {
             id="description"
             v-model="boardForm.description"
             rows="3"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter scheme description"
           ></textarea>
         </div>

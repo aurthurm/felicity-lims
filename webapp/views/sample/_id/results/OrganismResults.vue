@@ -179,7 +179,7 @@ const approveResults = () =>
   <h3 class="flex justify-between items-center">
     <span class="font-bold">Organisms</span>
     <button @click="addOrganism()" v-if="analysisResult.status == 'pending'"
-    class="ml-2 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+    class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     :disabled="addingOrganism">
       add organism
     </button>
@@ -192,9 +192,9 @@ const approveResults = () =>
       <table class="min-w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Isolate Number</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Organism Name</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Isolate Number</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Organism Name</th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
         <tbody class="bg-white">
@@ -204,9 +204,9 @@ const approveResults = () =>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div v-if="orgResult?.organism"
-              class="text-sm leading-5 text-sky-800">{{ orgResult?.organism?.name }}</div>
+              class="text-sm leading-5 text-primary">{{ orgResult?.organism?.name }}</div>
               <button v-else
-                class="px-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 @click="pickOrganism(idx)">
                 pick organism
               </button>
@@ -219,7 +219,7 @@ const approveResults = () =>
                   change
                 </button>
                 <button
-                class="ml-2 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
                 @click="saveOrgResult(orgResult)">
                   save
                 </button>
@@ -241,7 +241,7 @@ const approveResults = () =>
   <div class="mt-4">
     <div class="flex justify-start items-center">
       <h4 class="font-semibold text-l flex-1 mb-2">Culture</h4>
-      <button type="button" class="bg-sky-800 text-white ml-4 px-2 py-1 rounded-sm leading-none">
+      <button type="button" class="bg-primary text-white ml-4 px-2 py-1 rounded-sm leading-none">
         {{ analysisResult.status }}
       </button>
     </div>
@@ -295,7 +295,7 @@ const approveResults = () =>
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <button 
                     @click="selectOrganism(org)"
-                    class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
                       pick
                     </button>
                   </td>

@@ -53,20 +53,20 @@ function cancelReply() {
         <textarea
             v-model="comment"
             :rows="isReply ? 2 : 3"
-            :class="`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 ${isReply ? 'text-sm' : ''}`"
+            :class="`w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 ${isReply ? 'text-sm' : ''}`"
             :placeholder="isReply ? 'Write a reply...' : 'Add a comment...'"
         ></textarea>
         <div class="flex items-center justify-end mt-2 gap-2">
             <button 
                 v-if="isReply"
                 @click="cancelReply" 
-                class="px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                class="px-2 py-1 border border-border rounded hover:bg-gray-50 text-sm"
             >
                 Cancel
             </button>
             <button 
                 @click="addDiscussion"
-                :class="`px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2 ${isReply ? 'text-sm px-2 py-1' : ''}`"
+                :class="`px-3 py-1.5 bg-accent text-white rounded hover:bg-blue-600 flex items-center gap-2 ${isReply ? 'text-sm px-2 py-1' : ''}`"
             >
                 <div v-if="!isReply" class="flex items-center gap-2 font-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

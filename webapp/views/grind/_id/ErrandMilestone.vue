@@ -118,12 +118,12 @@ v-for="milestone in milestones"
 class="pl-6 border-l-2 relative" 
 :class="{'border-green-200': milestone.complete, 'border-red-200': !milestone.complete}"
 @dblclick="editMilestone(milestone)">
-    <div class="absolute left-0 top-0 transform -translate-x-1/2 bg-white p-1 border border-gray-300 rounded-full w-4 h-4 flex items-center justify-center">
-        <div class="w-2 h-2 rounded-full" :class="{'bg-green-500': milestone.complete, 'bg-red-500': !milestone.complete}"></div>
+    <div class="absolute left-0 top-0 transform -translate-x-1/2 bg-white p-1 border border-border rounded-full w-4 h-4 flex items-center justify-center">
+        <div class="w-2 h-2 rounded-full" :class="{'bg-green-500': milestone.complete, 'bg-destructive': !milestone.complete}"></div>
     </div>
     <div class="mb-6">
         <h4 class="font-medium">{{ milestone.title }}</h4>
-        <p class="text-sm text-gray-500">{{ milestone.description }}</p>
+        <p class="text-sm text-muted-foreground">{{ milestone.description }}</p>
     </div>
 </div>
 
@@ -145,7 +145,7 @@ class="pl-6 border-l-2 relative"
             v-model="form.title"
             type="text"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter errand title"
           />
         </div>  
@@ -158,7 +158,7 @@ class="pl-6 border-l-2 relative"
             id="description"
             v-model="form.description"
             rows="3"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter errand description"
           ></textarea>
         </div>
@@ -181,7 +181,7 @@ class="pl-6 border-l-2 relative"
             id="complete"
             v-model="form.complete"
             type="checkbox"
-            class="mr-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="mr-2 px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
           />
           <label class="block text-sm font-medium text-gray-700 mb-1" for="complete">
             Complete

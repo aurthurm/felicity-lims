@@ -78,7 +78,7 @@ const saveErrandForm = () => {
 <template>
     <h3 class="h3 w-full font-semibold text-lg">{{ poster.title }}</h3>
     <button 
-    class="w-full font-medium my-2 py-1 px-2 border border-gray-300 hover:border-sky-700 hover:text-sky-700 hover:bg-gray-100"
+    class="w-full font-medium my-2 py-1 px-2 border border-border hover:border-sky-700 hover:text-sky-700 hover:bg-secondary"
     @click="openCreateErrandForm">Add New...</button>
     <VueDraggable
     class="flex flex-col gap-2 w-full min-h-8"
@@ -92,7 +92,7 @@ const saveErrandForm = () => {
     >
       <div
           v-for="errand in poster.errands" :key="errand.uid"
-          class="shadow-sm bg-gray-100 rounded p-2"
+          class="shadow-sm bg-secondary rounded p-2"
       > 
         <div class="flex justify-between items-center">
           <router-link 
@@ -106,12 +106,12 @@ const saveErrandForm = () => {
           <div class="flex justify-start items-center gap-x-2 mt-2">
             <span 
             v-for="stamp in errand.stamps"
-            class="lowercase text-xs bg-sky-800 p-1 text-gray-100">{{ stamp.title }}</span>
+            class="lowercase text-xs bg-primary p-1 text-gray-100">{{ stamp.title }}</span>
           </div>
 
           <div class="flex justify-start items-center gap-x-2 mt-1" v-show="errand?.milestonesAt">
-              <div class="my-2 w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
-                  <div class="bg-green-600 h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
+              <div class="my-2 w-full bg-muted rounded-full h-1 dark:bg-gray-700">
+                  <div class="bg-success h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
               </div>
               <span class="text-xs">{{ errand?.milestonesAt }}%</span>
           </div>
@@ -161,7 +161,7 @@ const saveErrandForm = () => {
             v-model="errandForm.title"
             type="text"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter errand title"
           />
         </div>  
@@ -174,7 +174,7 @@ const saveErrandForm = () => {
             id="description"
             v-model="errandForm.description"
             rows="3"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter errand description"
           ></textarea>
         </div>
@@ -189,7 +189,7 @@ const saveErrandForm = () => {
               id="startDate"
               v-model="errandForm.startDate"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             />
           </div>
           <div>
@@ -200,7 +200,7 @@ const saveErrandForm = () => {
               id="endDate"
               v-model="errandForm.endDate"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
             />
           </div>
         </div>

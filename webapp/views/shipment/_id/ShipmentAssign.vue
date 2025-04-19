@@ -151,45 +151,45 @@ function areAllChecked(): Boolean {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               <input type="checkbox" @change="toggleCheckAll" v-model="allChecked" />
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               Sample ID
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               Sample Type
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               Client Sample ID
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Analysis
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Date Created
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Date Received
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Status
             </th>
@@ -206,22 +206,22 @@ function areAllChecked(): Boolean {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800 font-semibold">
+              <div class="text-sm leading-5 text-primary font-semibold">
                 {{ sample?.sampleId }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800 font-semibold">
+              <div class="text-sm leading-5 text-primary font-semibold">
                 {{ sample?.sampleType?.name }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800 font-semibold">
+              <div class="text-sm leading-5 text-primary font-semibold">
                 {{ sample?.analysisRequest?.clientRequestId }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 <ul>
                   <li 
                   class="flex justify-start items-center"
@@ -239,17 +239,17 @@ function areAllChecked(): Boolean {
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ sample?.createdAt }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ sample?.dateReceived }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ sample?.status }}
               </div>
             </td>

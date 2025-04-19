@@ -119,7 +119,7 @@ const updateVoucher = (vocher: IVoucher) => {
   <div class="mt-4">
     <div class="flex justify-between">
       <button
-        class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100"
         @click="newVoucher">
         Add Voucher
       </button>
@@ -137,12 +137,12 @@ const updateVoucher = (vocher: IVoucher) => {
         <div v-else>
           <a v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" :class="[
             'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
-            { 'border-sky-800 bg-emerald-200': voucher.uid === uid },
+            { 'border-primary bg-emerald-200': voucher.uid === uid },
           ]">
             <div class="flex-grow p-1">
               <div class="font-semibold text-gray-800 flex justify-between">
                 <span>{{ voucher.name }}</span>
-                <span class="text-sm text-gray-500">{{ voucher.used }} of {{ voucher.usageLimit }}</span>
+                <span class="text-sm text-muted-foreground">{{ voucher.used }} of {{ voucher.usageLimit }}</span>
               </div>
             </div>
           </a>
@@ -265,7 +265,7 @@ const updateVoucher = (vocher: IVoucher) => {
 
           <hr />
           <button type="submit"
-            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+            class="-mb-4 border border-primary bg-primary text-white rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
             @click.prevent="submitVoucherForm">
             Save Voucher
           </button>

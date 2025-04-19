@@ -51,7 +51,7 @@ watch(
         <hr class="mt-2 mb-4">
 
         <div v-for="stream of streamStore.streams" :key="stream?.uid"
-          class="w-full my-1 py-1 px-2 bg-gray-100 rounded-lg shadow-sm flex items-center">
+          class="w-full my-1 py-1 px-2 bg-secondary rounded-lg shadow-sm flex items-center">
           <div tabindex="0" aria-label="heart icon" role="img"
             class="focus:outline-none w-6 h-6 border rounded-full border-gray-200 flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,18 +64,18 @@ watch(
             <p tabindex="0" class="focus:outline-none text-sm leading-none">
               <span class="text-indigo-700">{{ stream?.actor?.firstName }} {{ stream?.actor?.lastName }}</span>
               <span class="mx-1 text-red-500 italic">{{ stream.verb }}</span>
-              <span class="mr-1 text-gray-500">{{ stream.actionObjectType }}</span>
+              <span class="mr-1 text-muted-foreground">{{ stream.actionObjectType }}</span>
               <span class="text-indigo-700 font-semibold text-sm">{{ stream?.actionObject?.sample?.sampleId ?? stream?.actionObject.sampleId ??
                 stream?.actionObject.sampleUid ?? stream?.actionObject.worksheetId }}</span>
             </p>
-            <!-- <p tabindex="0" class="focus:outline-none text-xs leading-3 pt-1 text-gray-500">
+            <!-- <p tabindex="0" class="focus:outline-none text-xs leading-3 pt-1 text-muted-foreground">
                   2 hours ago
                 </p> -->
           </div>
         </div>
         <div class="flex items-center justiyf-between">
           <hr class="w-full" />
-          <p tabindex="0" class="focus:outline-none text-sm flex flex-shrink-0 leading-normal px-3 py-16 text-gray-500">
+          <p tabindex="0" class="focus:outline-none text-sm flex flex-shrink-0 leading-normal px-3 py-16 text-muted-foreground">
             Thats it for now :)
           </p>
           <hr class="w-full" />

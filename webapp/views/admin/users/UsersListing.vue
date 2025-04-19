@@ -85,7 +85,7 @@ function saveUserForm(): void {
       <h3>Users</h3>
       <button
         @click="UserFormManager(true)"
-        class="px-2 py-1 ml-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 ml-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Add User/Lab Contact
       </button>
@@ -100,41 +100,41 @@ function saveUserForm(): void {
           <thead>
             <tr>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 First Name
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Last Name
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Email Adress
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Active
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Groups
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Username
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Blocked
               </th>
-              <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+              <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
           </thead>
           <tbody class="bg-white">
@@ -145,10 +145,10 @@ function saveUserForm(): void {
                 </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ user.lastName }}</div>
+                <div class="text-sm leading-5 text-primary">{{ user.lastName }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ user.email }}</div>
+                <div class="text-sm leading-5 text-primary">{{ user.email }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <span
@@ -160,12 +160,12 @@ function saveUserForm(): void {
                 ></span>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
+                <div class="text-sm leading-5 text-primary">
                   {{ userGroupsName(user) }}
                 </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
+                <div class="text-sm leading-5 text-primary">
                   {{ user?.userName }}
                 </div>
               </td>
@@ -304,7 +304,7 @@ function saveUserForm(): void {
         <button
           type="button"
           @click.prevent="saveUserForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-primary bg-primary text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

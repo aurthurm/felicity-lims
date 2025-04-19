@@ -157,7 +157,7 @@ const items = [
         </div>
         <hr class="my-4" />
         <button v-show="!processing" type="button" @click.prevent="saveLaboratoryForm()"
-          class="w-2/5 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+          class="w-2/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Update
         </button>
       </form>
@@ -237,7 +237,7 @@ const items = [
         </div>
         <hr class="my-4" />
         <button v-show="!processing" type="button" @click.prevent="saveSettingForm()"
-          class="mb-4 w-2/5 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
+          class="mb-4 w-2/5 border border-primary bg-primary text-white rounded-sm px-4 py-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
           Update
         </button>
       </form>

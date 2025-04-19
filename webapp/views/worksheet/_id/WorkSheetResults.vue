@@ -165,9 +165,9 @@ function getSampleUids(): string[] {
 function getResultRowColor(result: any): string {
   switch (result?.status) {
     case "retracted":
-      return "bg-gray-300 text-sm italic text-gray-500";
+      return "bg-gray-300 text-sm italic text-muted-foreground";
     default:
-      return "text-sm leading-5 text-sky-800";
+      return "text-sm leading-5 text-primary";
   }
 }
 
@@ -291,7 +291,7 @@ const printBarCodes = async () => {
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
         >
           Refresh
         </button>
@@ -308,7 +308,7 @@ const printBarCodes = async () => {
           <thead>
             <tr>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               >
                 <input
                   type="checkbox"
@@ -318,49 +318,49 @@ const printBarCodes = async () => {
                 />
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               ></th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
               >
                 Sample ID
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Analysis/Test
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Instrument
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Method
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Interim
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Result
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Unit
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Status
               </th>
-              <!-- <th class="px-1 py-1 border-b-2 border-gray-300"></th> -->
+              <!-- <th class="px-1 py-1 border-b-2 border-border"></th> -->
             </tr>
           </thead>
           <tbody class="bg-white">
@@ -422,7 +422,7 @@ const printBarCodes = async () => {
                 <div>{{ result?.analysis?.name }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                   {{ result.laboratoryInstrument?.labName || "---" }}
                 </div>
                 <label v-else class="block col-span-2 mb-2">
@@ -441,7 +441,7 @@ const printBarCodes = async () => {
                 </label>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                   {{ result.method?.name || "---" }}
                 </div>
                 <label v-else class="block col-span-2 mb-2">
@@ -457,7 +457,7 @@ const printBarCodes = async () => {
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div
                   v-if="!isEditable(result) || (result?.analysis?.interims?.length ?? 0) === 0"
-                  class="text-sm leading-5 text-sky-800"
+                  class="text-sm leading-5 text-primary"
                 >
                   ---
                 </div>
@@ -513,7 +513,7 @@ const printBarCodes = async () => {
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <button
                   type="button"
-                  class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none"
+                  class="bg-primary text-white py-1 px-2 rounded-sm leading-none"
                 >
                   {{ result?.status || "unknown" }}
                 </button>
@@ -531,7 +531,7 @@ const printBarCodes = async () => {
           can_unassign
         "
         @click.prevent="unAssignSamples()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Un Assign
       </button>
@@ -540,7 +540,7 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_submit
         "
         @click.prevent="submitResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Submit
       </button>
@@ -549,7 +549,7 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retract
         "
         @click.prevent="retractResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Retract
       </button>
@@ -558,7 +558,7 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_approve
         "
         @click.prevent="approveResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Approve
       </button>
@@ -567,14 +567,14 @@ const printBarCodes = async () => {
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retest
         "
         @click.prevent="retestResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
       >
         Retest
       </button>
       <button 
           v-show="barcodes"
           @click.prevent="printBarCodes"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none">
           Print Barcodes
         </button>
     </section>

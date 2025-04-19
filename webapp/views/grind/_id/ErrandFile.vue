@@ -234,7 +234,7 @@ const fileSize = computed(() => {
             <h3 class="text-lg font-medium mb-3">Uploaded Files</h3>
             
             <!-- Loading or empty state -->
-            <div v-if="errandFiles.length === 0" class="py-6 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+            <div v-if="errandFiles.length === 0" class="py-6 text-center text-muted-foreground bg-gray-50 rounded-lg border border-dashed border-border">
                 No files uploaded yet
             </div>
             
@@ -283,7 +283,7 @@ const fileSize = computed(() => {
                         <div class="font-medium text-gray-800 truncate" :title="fileItem.filename">
                             {{ fileItem.originalName }}
                         </div>
-                        <div class="text-sm text-gray-500 flex items-center gap-2">
+                        <div class="text-sm text-muted-foreground flex items-center gap-2">
                             <span>{{ formatFileSize(fileItem.size) }}</span>
                             <span class="h-1 w-1 rounded-full bg-gray-300"></span>
                             <span>{{ fileItem.mimetype }}</span>
@@ -339,7 +339,7 @@ const fileSize = computed(() => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                     </svg>
                 </div>
-                <p class="text-center text-gray-500 mb-2">Drag and drop file here</p>
+                <p class="text-center text-muted-foreground mb-2">Drag and drop file here</p>
                 <p class="text-center text-gray-400 text-sm mb-3">or</p>
                 <label class="file-input-button">
                     Browse Files
@@ -364,7 +364,7 @@ const fileSize = computed(() => {
                 
                 <div class="file-info mb-4 text-center">
                     <p class="font-medium text-gray-800">{{ file.name }}</p>
-                    <p class="text-sm text-gray-500">{{ fileSize }}</p>
+                    <p class="text-sm text-muted-foreground">{{ fileSize }}</p>
                 </div>
                 
                 <div class="flex justify-center gap-3">
@@ -397,7 +397,7 @@ const fileSize = computed(() => {
                     </svg>
                 </div>
                 <p class="text-center text-gray-800 font-medium mb-2">Upload Successful</p>
-                <p class="text-center text-gray-500 text-sm mb-4">Your file has been uploaded successfully</p>
+                <p class="text-center text-muted-foreground text-sm mb-4">Your file has been uploaded successfully</p>
                 <button @click="resetUpload" class="upload-new-button">
                     Upload Another File
                 </button>
@@ -412,7 +412,7 @@ const fileSize = computed(() => {
 }
 
 .upload-area {
-  @apply border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors;
+  @apply border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer transition-colors;
 }
 
 .upload-area.dragging {
@@ -420,18 +420,18 @@ const fileSize = computed(() => {
 }
 
 .file-input-button {
-  @apply px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600 transition-colors inline-block;
+  @apply px-4 py-2 bg-accent text-white rounded-md cursor-pointer hover:bg-blue-600 transition-colors inline-block;
 }
 
 .upload-button {
-  @apply px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed;
+  @apply px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed;
 }
 
 .cancel-button {
-  @apply px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors;
+  @apply px-4 py-2 bg-muted text-gray-700 rounded-md hover:bg-gray-300 transition-colors;
 }
 
 .upload-new-button {
-  @apply px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors mx-auto block;
+  @apply px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition-colors mx-auto block;
 }
 </style>

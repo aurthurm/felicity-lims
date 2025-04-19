@@ -79,7 +79,7 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
 <template>
   <PageHeading title="Notice Manager" />
   <button @click.prevent="FormManager(true)"
-    class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
+    class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-gray-100">
     New Notice
   </button>
 
@@ -90,13 +90,13 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
       <table class="min-w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Notice Title
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">
               Expiration
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
         <tbody class="bg-white">
@@ -113,7 +113,7 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
             </td>
             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
               <button
-                class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
+                class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-secondary hover:text-black-700 focus:outline-none"
                 @click="FormManager(false, notice)">
                 View/Edit
               </button>

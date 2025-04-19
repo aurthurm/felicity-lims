@@ -318,21 +318,21 @@ function toggleView(choice: string): void {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               Analysis
             </th>
             <th
               v-for="level in qcSet?.levels"
               :key="level.uid"
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"
             >
               {{ level?.level }}
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
         <tbody class="bg-white">
@@ -350,7 +350,7 @@ function toggleView(choice: string): void {
             >
               <div class="flex items-center gap-x-4">
                 <div>
-                  <div class="text-md font-semibold italics text-sky-800"> {{ result?.sample?.qcLevel?.level }}</div>
+                  <div class="text-md font-semibold italics text-primary"> {{ result?.sample?.qcLevel?.level }}</div>
                   <div class="text-sm italics text-sky-400">({{ result?.status }})</div>
                   <input
                     type="checkbox"
@@ -363,7 +363,7 @@ function toggleView(choice: string): void {
                 <div class="w-3/5">
                   <div class="flex justify-start items-center gap-x-4 px-1 py-1">
                     <h4 class="w-28">Instrument</h4>
-                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                       {{ result.laboratoryInstrument?.labName }}
                     </div>
                     <label v-else class="mb-2 w-full">
@@ -384,7 +384,7 @@ function toggleView(choice: string): void {
 
                   <div class="flex justify-start items-center gap-x-4 px-1 py-1">
                     <h4 class="w-28">Method</h4>
-                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                       {{ result.method?.name }}
                     </div>
                     <label v-else class="mb-2 w-full">
@@ -400,7 +400,7 @@ function toggleView(choice: string): void {
 
                   <div class="flex justify-start items-center gap-x-4 px-1 py-1">
                     <h4 class="w-28">Result</h4>
-                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                    <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                       {{ result?.result }}
                     </div>
                     <label v-else-if="result?.analysis?.resultOptions?.length > 0" class="block w-full" >
@@ -440,22 +440,22 @@ function toggleView(choice: string): void {
       <table class="min-w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">
               <input type="checkbox"  @change="toggleCheckAll()"  v-model="allChecked" />
             </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Analysis</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Methods</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Instrument </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Analyst</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Reviewer</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Interims </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Retest</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Submitted</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Reviewed</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Status</th>
-            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-gray-800 tracking-wider">Analysis</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Methods</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Instrument </th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Analyst</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Reviewer</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Interims </th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Result</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Retest</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Submitted</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Reviewed</th>
+            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-gray-800 tracking-wider">Status</th>
+            <th class="px-1 py-1 border-b-2 border-border"></th>
           </tr>
         </thead>
         <tbody class="bg-white">
@@ -471,13 +471,13 @@ function toggleView(choice: string): void {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ result.analysis?.name }}
               </div>
               <div class="italic text-sm text-gray-400">({{ result?.sample?.qcLevel?.level }})</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.laboratoryInstrument?.labName || "---" }}
               </div>
               <label v-else class="block col-span-2 mb-2">
@@ -496,7 +496,7 @@ function toggleView(choice: string): void {
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.method?.name }}
               </div>
               <label v-else class="block col-span-2 mb-2">
@@ -510,12 +510,12 @@ function toggleView(choice: string): void {
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
+              <div class="text-sm leading-5 text-primary">
                 <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
                   {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                 </span>
@@ -523,7 +523,7 @@ function toggleView(choice: string): void {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
-                class="text-sm leading-5 text-sky-800">
+                class="text-sm leading-5 text-primary">
                 ---
               </div>
               <label v-else class="block col-span-2 mb-2">
@@ -537,7 +537,7 @@ function toggleView(choice: string): void {
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result?.result }}
               </div>
               <label
@@ -568,8 +568,8 @@ function toggleView(choice: string): void {
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
-                <span v-if="result?.retest" class="text-sky-800">
+              <div class="text-sm leading-5 text-primary">
+                <span v-if="result?.retest" class="text-primary">
                   <font-awesome-icon icon="fa-check-circle" />
                 </span>
                 <span v-else class="text-orange-600">
@@ -578,15 +578,15 @@ function toggleView(choice: string): void {
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateSubmitted) }}</div>
+              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateSubmitted) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateVerified) }}</div>
+              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateVerified) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <button
                 type="button"
-                class="p-1 bg-sky-800 text-white rounded-sm leading-none"
+                class="p-1 bg-primary text-white rounded-sm leading-none"
               >
                 {{ result.status }}
               </button>
@@ -605,7 +605,7 @@ function toggleView(choice: string): void {
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="cancelResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     >
       Cancel
     </button>
@@ -614,35 +614,35 @@ function toggleView(choice: string): void {
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_reinstate
       "
       @click.prevent="reInstateResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     >
       Re-Instate
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="submitResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     >
       Submit
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
       @click.prevent="retractResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     >
       Retract
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
       @click.prevent="verifyResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     >
       Verify
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
       @click.prevent="retestResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-white focus:outline-none"
     >
       Retest
     </button>
