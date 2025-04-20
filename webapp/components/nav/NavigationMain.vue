@@ -165,7 +165,7 @@ onMounted(() => {
         <router-link 
           to="/" 
           id="brand" 
-          class="flex items-center md:w-auto text-primary-foreground hover:text-primary transition-colors" 
+          class="flex items-center md:w-auto text-primary-foreground/80 hover:text-primary-foreground transition-colors" 
           aria-label="Felicity LIMS Home"
         >
           <Logo />
@@ -181,7 +181,7 @@ onMounted(() => {
           :aria-expanded="menuOpen"
           aria-controls="main-menu"
         >
-          <span class="text-primary-foreground text-xl font-medium mr-2">Menu</span>
+          <span class="text-xl font-medium mr-2 text-primary-foreground/80 hover:text-primary-foreground">Menu</span>
           <font-awesome-icon 
             :icon="menuOpen ? 'chevron-up' : 'chevron-down'" 
             class="text-muted-foreground transition-transform duration-200" 
@@ -226,7 +226,7 @@ onMounted(() => {
       <!-- Errors button -->
       <button
         v-if="errors.length > 0"
-        class="flex items-center px-4 py-2 text-primary-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+        class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
         @click="showErrors = true"
         aria-label="Show errors"
       >
@@ -239,7 +239,7 @@ onMounted(() => {
 
       <!-- Notifications button -->
       <button
-        class="flex items-center px-4 py-2 text-primary-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+        class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
         @click="toggleNotifications(true)"
         aria-label="Show notifications"
       >
@@ -253,7 +253,7 @@ onMounted(() => {
       <router-link 
         v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)" 
         to="/admin"
-        class="flex items-center px-4 py-2 text-primary-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+        class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
         aria-label="Settings"
       >
         <font-awesome-icon icon="cog" class="mr-2" aria-hidden="true" />
