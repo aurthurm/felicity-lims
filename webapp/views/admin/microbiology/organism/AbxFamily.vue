@@ -20,9 +20,6 @@ import {
   GetAbxOrderAllQueryVariables
 } from "@/graphql/operations/microbiology.queries";
 
-const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-)
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
 )
@@ -103,99 +100,112 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Families">
+      <fel-button @click="FormManager(true)">Add Family</fel-button>
+    </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add Family
-    </button> -->
-    <hr>
-
-    <div class="overflow-x-auto mt-4">
-      <div
-          class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
+    <div class="rounded-md border border-border shadow-sm bg-card p-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border">
           <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Name
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Order
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
+            <tr>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Order</th>
+              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
           </thead>
-          <tbody class="bg-background">
-          <tr v-for="guideline in abxFamilys" :key="guideline?.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground">{{ guideline?.name }}</div>
-              </div>
-            </td>   <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground">{{ guideline?.order?.name }}</div>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-              <!-- <button @click="FormManager(false, guideline)"
-                      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-                Edit
-              </button> -->
-            </td>
-          </tr>
+          <tbody class="divide-y divide-border bg-background">
+            <tr v-for="guideline in abxFamilys" :key="guideline?.uid" class="hover:bg-muted/50">
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.order?.name }}</td>
+              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <button 
+                  @click="FormManager(false, guideline)"
+                  class="text-primary hover:text-primary/80">
+                  Edit
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <!-- Family Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Kindom Name</span>
-            <input
-                class="form-input mt-1 block w-full"
-                v-model="form.name"
-                placeholder="Name ..."
-            />
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Family Name</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.name" 
+              placeholder="Name ..." />
           </label>
           <label class="block">
-              <span class="text-foreground">Order</span>
-              <VueMultiselect
+            <span class="text-sm font-medium text-foreground">Order</span>
+            <VueMultiselect
               v-model="form.order"
               :options="abxOrders"
               :multiple="false"
               :searchable="true"
               label="name"
-              >
-              </VueMultiselect>
+              class="mt-1 multiselect-blue"
+            />
           </label>
         </div>
-        <hr/>
+
+        <hr class="border-border"/>
+        
         <button
-            type="button"
-            @click.prevent="saveForm()"
-            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          type="submit"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Save Family
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
-
 <style scoped>
+.multiselect-blue {
+  @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
+}
+
+.multiselect-blue :deep(.multiselect__tags) {
+  @apply border-border rounded-md;
+}
+
+.multiselect-blue :deep(.multiselect__single) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__input) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option) {
+  @apply text-foreground hover:bg-primary/10;
+}
+
+.multiselect-blue :deep(.multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option--selected) {
+  @apply bg-primary/20 text-foreground;
+}
+
 .toggle-checkbox:checked {
   right: 0;
   border-color: #68D391;

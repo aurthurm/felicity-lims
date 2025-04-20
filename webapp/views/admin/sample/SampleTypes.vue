@@ -50,106 +50,110 @@
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Sample Types">
+      <fel-button @click="FormManager(true)">Add Sample Type</fel-button>
+    </fel-heading>
 
-    <div class="container w-full my-4">
-        <hr>
-          <button @click="FormManager(true)"
-           class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add Sample Type</button>
-        <hr>
-
-        <div class="overflow-x-auto mt-4">
-            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-            <table class="min-w-full">
-                <thead>
-                <tr>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Sample Type</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Prefix</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Active</th>
-                    <th class="px-1 py-1 border-b-2 border-border"></th>
-                </tr>
-                </thead>
-                <tbody class="bg-background">
-                <tr v-for="s_type in sampleTypes" :key="s_type?.uid">
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="flex items-center">
-                        <div>
-                        <div class="text-sm leading-5 text-foreground">{{ s_type?.name }}</div>
-                        </div>
-                    </div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="text-sm leading-5 text-primary">{{ s_type?.abbr }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="text-sm leading-5 text-primary">{{ s_type?.active }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                        <button @click="FormManager(false, s_type)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            </div>
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow-md rounded-lg bg-background p-6">
+          <table class="min-w-full divide-y divide-border">
+            <thead class="bg-muted">
+              <tr>
+                <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Sample Type</th>
+                <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Prefix</th>
+                <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Active</th>
+                <th scope="col" class="px-4 py-2 text-right text-sm font-medium text-muted-foreground tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-background divide-y divide-border">
+              <tr v-for="s_type in sampleTypes" :key="s_type?.uid">
+                <td class="px-4 py-2 whitespace-nowrap">
+                  <div class="text-sm font-medium text-foreground">{{ s_type?.name }}</div>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap">
+                  <div class="text-sm text-primary">{{ s_type?.abbr }}</div>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap">
+                  <div class="text-sm text-primary">{{ s_type?.active }}</div>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
+                  <button 
+                    @click="FormManager(false, s_type)" 
+                    class="text-primary hover:text-primary/80 transition-colors duration-200"
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
+  </div>
 
-      <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <!-- Sample Type Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Sample Type Name</span>
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+        <div class="grid grid-cols-1 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Sample Type Name</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               v-model="form.name"
               placeholder="Name ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Prefix</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Prefix</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               v-model="form.abbr"
               placeholder="Prefix ..."
             />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Description</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Description</span>
             <textarea
-            cols="2"
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               v-model="form.description"
               placeholder="Description ..."
+              rows="3"
             />
           </label>
-          <label for="toggle" class="text-xs text-foreground mr-4">Active
-            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input 
+          <div class="flex items-center">
+            <span class="text-sm font-medium text-foreground mr-2">Active</span>
+            <div class="relative inline-block w-10 align-middle select-none">
+              <input 
                 type="checkbox" 
-                name="toggle" id="toggle" 
+                name="toggle" 
+                id="toggle" 
                 v-model="form.active"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"/>
-                <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"></label>
+                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none transition-colors duration-200"
+              />
+              <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer transition-colors duration-200"></label>
             </div>
-          </label>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            Save Sample Type
+          </button>
+        </div>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
 

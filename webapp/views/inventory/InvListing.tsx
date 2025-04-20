@@ -4,16 +4,10 @@ import { IStockLot, IStockProduct } from '@/models/inventory';
 import  useApiUtil  from '@/composables/api_util';
 import { AddStockAdjustmentDocument, AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables } from '@/graphql/operations/inventory.mutations';
 import { GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables } from '@/graphql/operations/inventory.queries';
-import { parseDate } from '@/utils/helpers';
+import { parseDate } from '@/utils';
 
 const DataTable = defineAsyncComponent(
     () => import('@/components/ui/datatable/FelDataTable.vue')
-)
-const Drawer = defineAsyncComponent(
-    () => import( '@/components/ui/FelDrawer.vue')
-)
-const Modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
 )
 const StockReceiveForm = defineAsyncComponent(
     () => import('./StockReceiveForm.vue')
@@ -227,10 +221,10 @@ const InventoryListing = defineComponent({
     render() {
         return (
             <>
-                <div>
+                <div class="space-y-4">
                     <button
                         onClick={() => (this.openDrawer = true)}
-                        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
+                        class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
                     >
                         Receive Stock
                     </button>
@@ -252,47 +246,54 @@ const InventoryListing = defineComponent({
                     onOnSearch={x => this.filterProducts(x)}
                     onOnPaginate={x => this.showMoreProducts(x)}
                 ></DataTable>
+
                 {/* Drawer */}
-                <Drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                <fel-drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => 'Receive Stock',
                         body: () => [<StockReceiveForm onClose={() => (this.openDrawer = false)} />],
                     }}
-                </Drawer>
+                </fel-drawer>
+
                 {/* Drawer */}
-                <Drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
+                <fel-drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
                     {{
                         header: () => 'Product Details',
                         body: () => [<ProductDetail product={this.productDetailItem} onClose={() => (this.openProductDetail = false)} />],
                     }}
-                </Drawer>
+                </fel-drawer>
+
                 {this.openAddProduct && (
-                    <Modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
+                    <fel-modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
                         {{
-                            header: () => <h3>{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
+                            header: () => <h3 class="text-lg font-medium text-foreground">{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-foreground  text-nowrap">Product Lot</span>
-                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
-                                            <option></option>
-                                            {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>
-                                                {lot.lotNumber} ({lot.quantity}) [{parseDate(lot.expiryDate, false)}]
-                                            </option>))}
+                                    <form action="post" class="space-y-4 p-4">
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-foreground">Product Lot</label>
+                                            <select 
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+                                                v-model={this.choiceProduct.stockLotUid}
+                                                aria-label="Product Lot"
+                                            >
+                                                <option value=""></option>
+                                                {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>
+                                                    {lot.lotNumber} ({lot.quantity}) [{parseDate(lot.expiryDate, false)}]
+                                                </option>))}
                                             </select>
-                                        </label>
-                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-foreground text-nowrap">Quantiy</span>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-foreground">Quantity</label>
                                             <input
-                                                class="col-span-3 form-input mt-1 block w-full"
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
                                                 type="number"
                                                 onChange={this.validateMinMax}
                                                 v-model={this.choiceProduct.quantity}
-                                                placeholder="Name ..."
+                                                placeholder="Quantity..."
                                             />
-                                        </label>
-                                        <hr />
+                                        </div>
+                                        <div class="border-t border-border my-4"></div>
                                         <button
                                             type="button"
                                             onClick={() => {
@@ -303,7 +304,7 @@ const InventoryListing = defineComponent({
                                                 );
                                                 this.openAddProduct = false;
                                             }}
-                                            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-muted"
+                                            class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                             disabled={!this.choiceProduct.stockLotUid}>
                                             Add to basket
                                         </button>
@@ -311,60 +312,66 @@ const InventoryListing = defineComponent({
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 )}
+
                 {this.openAdjustProduct && (
-                    <Modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
+                    <fel-modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
                         {{
-                            header: () => <h3>{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
+                            header: () => <h3 class="text-lg font-medium text-foreground">{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-foreground  text-nowrap">Product Lot</span>
-                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
-                                            <option></option>
-                                            {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
-                                            </select>
-                                        </label>
-                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-foreground">Adjustmet</span>
+                                    <form action="post" class="space-y-4 p-4">
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-foreground">Product Lot</label>
                                             <select 
-                                            class="col-span-3 form-select block w-full mt-1" 
-                                            v-model={this.choiceProduct.type}
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+                                                v-model={this.choiceProduct.stockLotUid}
+                                                aria-label="Product Lot"
+                                            >
+                                                <option value=""></option>
+                                                {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
+                                            </select>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-foreground">Adjustment Type</label>
+                                            <select 
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+                                                v-model={this.choiceProduct.type}
+                                                aria-label="Adjustment Type"
                                             >
                                                 <option value="lost">Lost</option>
                                                 <option value="theft">Theft</option>
                                                 <option value="transfer-out">Transfer Out</option>
                                             </select>
-                                        </label>
-                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-foreground">Quantiy</span>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-foreground">Quantity</label>
                                             <input
-                                                class="col-span-3 form-input mt-1 block w-full"
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
                                                 type="number"
                                                 onChange={this.validateMinMax}
                                                 v-model={this.choiceProduct.quantity}
-                                                placeholder="Name ..."
+                                                placeholder="Quantity..."
                                             />
-                                        </label>
-                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
-                                            <span class="col-span-1 text-foreground">Remarks</span>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-foreground">Remarks</label>
                                             <textarea
-                                                class="col-span-3 form-input mt-1 block w-full"
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
                                                 rows="3"
                                                 v-model={this.choiceProduct.remarks}
-                                                placeholder="Remarks ..."
+                                                placeholder="Remarks..."
                                             ></textarea>
-                                        </label>
-                                        <hr />
+                                        </div>
+                                        <div class="border-t border-border my-4"></div>
                                         <button
                                             type="button"
                                             onClick={() => {
                                                 this.adjustStock()
                                                 this.openAdjustProduct = false;
                                             }}
-                                            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline disabled:bg-muted"
+                                            class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                             disabled={!this.choiceProduct.stockLotUid}>
                                             Adjust
                                         </button>
@@ -372,12 +379,12 @@ const InventoryListing = defineComponent({
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 )}
             </>
         );
     },
 });
-
 export { InventoryListing };
 export default InventoryListing
+

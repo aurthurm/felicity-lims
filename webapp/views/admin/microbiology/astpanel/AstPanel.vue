@@ -21,12 +21,8 @@ import {
   GetAbxOrganismAllQuery,
   GetAbxOrganismAllQueryVariables,
 } from "@/graphql/operations/microbiology.queries";
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import { AbxOrganismCursorPage } from '@/graphql/schema';
-
-const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-)
 
 const { withClientMutation, withClientQuery } = useApiUtil()
 
@@ -174,83 +170,68 @@ function filterOrganisms() {
 </script>
 
 <template>
-  <div class="w-full my-4">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold">AST Panels</h2>
-      <button @click="FormManager(true)"
-              class="px-4 py-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-        Add Panel
-      </button>
-    </div>
-    <hr>
+  <fel-heading title="AST Panels">
+    <fel-button @click="FormManager(true)">Add Panel</fel-button>      
+  </fel-heading>
 
-    <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Description</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Organisms</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Antibiotics</th>
-              <th class="px-1 py-1 border-b-2 border-border"></th>
-            </tr>
-          </thead>
-          <tbody class="bg-background">
-            <tr v-for="panel in panels" :key="panel?.uid">
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-foreground">{{ panel?.name }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">{{ panel?.description }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">
-                  {{ panel?.organisms?.map(org => org.name).join(', ') }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">
-                  {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                <button @click="FormManager(false, panel)"
-                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-                  Edit
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="overflow-x-auto">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
+      <table class="min-w-full divide-y divide-border">
+        <thead>
+          <tr>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Organisms</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Antibiotics</th>
+            <th class="px-3 py-3.5"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-background divide-y divide-border">
+          <tr v-for="panel in panels" :key="panel?.uid">
+            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</td>
+            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</td>
+            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
+              {{ panel?.organisms?.map(org => org.name).join(', ') }}
+            </td>
+            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
+              {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
+            </td>
+            <td class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
+              <button @click="FormManager(false, panel)"
+                      class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                Edit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <!-- Panel Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-4">
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <div class="space-y-4">
           <div class="grid grid-cols-1 gap-4">
             <label class="block">
-              <span class="text-foreground">Panel Name</span>
+              <span class="text-sm font-medium text-foreground">Panel Name</span>
               <input
                   v-model="form.name"
-                  class="form-input mt-1 block w-full"
+                  class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                   placeholder="Enter panel name"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Description</span>
+              <span class="text-sm font-medium text-foreground">Description</span>
               <textarea
                   v-model="form.description"
                   rows="2"
-                  class="form-input mt-1 block w-full"
+                  class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                   placeholder="Enter description"
               ></textarea>
             </label>
@@ -260,40 +241,40 @@ function filterOrganisms() {
           <div class="flex gap-4">
             <div class="w-2/3 space-y-2">
               <label class="block">
-                <span class="text-foreground">Search Organisms</span>
+                <span class="text-sm font-medium text-foreground">Search Organisms</span>
                 <input
                     v-model="searchOrgText"
                     @input="filterOrganisms"
-                    class="form-input mt-1 block w-full"
+                    class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                     placeholder="Search organisms..."
                 />
               </label>
-              <div class="border p-2 h-64 overflow-y-auto">
+              <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
                 <div v-for="org in filteredOrganisms" :key="org.uid" class="flex items-center py-1">
                   <input
                       type="checkbox"
                       :value="org.uid"
                       v-model="form.selectedOrganisms"
-                      class="form-checkbox"
+                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                   />
-                  <span class="ml-2">{{ org.name }}</span>
+                  <span class="ml-2 text-sm text-foreground">{{ org.name }}</span>
                 </div>
               </div>
             </div>
             
             <!-- Selected Organisms List -->
             <div class="w-1/3">
-              <div class="text-foreground mb-1">Selected Organisms</div>
-              <div class="border p-2 h-72 overflow-y-auto bg-background">
+              <div class="text-sm font-medium text-foreground mb-1">Selected Organisms</div>
+              <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
                 <div v-for="orgUid in form.selectedOrganisms" 
                      :key="orgUid" 
-                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded shadow-sm">
-                  <span class="text-sm">
+                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
+                  <span class="text-sm text-foreground">
                     {{ organisms?.find(o => o.uid === orgUid)?.name }}
                   </span>
                   <button 
                     @click="form.selectedOrganisms = form.selectedOrganisms.filter(id => id !== orgUid)"
-                    class="text-destructive hover:text-destructive text-sm"
+                    class="text-destructive hover:text-destructive/80 text-sm"
                   >
                     ×
                   </button>
@@ -306,40 +287,40 @@ function filterOrganisms() {
           <div class="flex gap-4">
             <div class="w-2/3 space-y-2">
               <label class="block">
-                <span class="text-foreground">Search Antibiotics</span>
+                <span class="text-sm font-medium text-foreground">Search Antibiotics</span>
                 <input
                     v-model="searchAbxText"
                     @input="filterAntibiotics"
-                    class="form-input mt-1 block w-full"
+                    class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                     placeholder="Search antibiotics..."
                 />
               </label>
-              <div class="border p-2 h-64 overflow-y-auto">
+              <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
                 <div v-for="abx in filteredAntibiotics" :key="abx.uid" class="flex items-center py-1">
                   <input
                       type="checkbox"
                       :value="abx.uid"
                       v-model="form.selectedAntibiotics"
-                      class="form-checkbox"
+                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                   />
-                  <span class="ml-2">{{ abx.name }}</span>
+                  <span class="ml-2 text-sm text-foreground">{{ abx.name }}</span>
                 </div>
               </div>
             </div>
             
             <!-- Selected Antibiotics List -->
             <div class="w-1/3">
-              <div class="text-foreground mb-1">Selected Antibiotics</div>
-              <div class="border p-2 h-72 overflow-y-auto bg-background">
+              <div class="text-sm font-medium text-foreground mb-1">Selected Antibiotics</div>
+              <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
                 <div v-for="abxUid in form.selectedAntibiotics" 
                      :key="abxUid" 
-                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded shadow-sm">
-                  <span class="text-sm">
+                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
+                  <span class="text-sm text-foreground">
                     {{ antibiotics.find(a => a.uid == abxUid)?.name }}
                   </span>
                   <button 
                     @click="form.selectedAntibiotics = form.selectedAntibiotics.filter(id => id !== abxUid)"
-                    class="text-destructive hover:text-destructive text-sm"
+                    class="text-destructive hover:text-destructive/80 text-sm"
                   >
                     ×
                   </button>
@@ -352,22 +333,16 @@ function filterOrganisms() {
         <div class="mt-6">
           <button
               type="submit"
-              class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+              class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Save Panel
           </button>
         </div>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 </template>
 
 <style scoped>
-.form-checkbox {
-  @apply rounded border-border text-primary shadow-sm focus:border-sky-300 focus:ring focus:ring-offset-0 focus:ring-sky-200 focus:ring-opacity-50;
-}
-
-.form-input {
-  @apply mt-1 block w-full rounded-md border-border shadow-sm focus:border-sky-300 focus:ring focus:ring-sky-200 focus:ring-opacity-50;
-}
+/* Remove the form-checkbox and form-input classes as they are now directly applied in the template */
 </style>

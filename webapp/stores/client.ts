@@ -5,7 +5,7 @@ import {
     GetClientContactsByClientUidDocument, GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables,
     GetClientByUidDocument, GetClientByUidQuery, GetClientByUidQueryVariables
 } from '@/graphql/operations/clients.queries';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import { IClient, IClientContact } from '@/models/client';
 import { IPageInfo } from '@/models/pagination';
 

@@ -1,232 +1,152 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import useApiUtil from '@/composables/api_util';
-import { EditGrindErrandDiscussionDocument, EditGrindErrandDiscussionMutation, EditGrindErrandDiscussionMutationVariables } from '@/graphql/operations/grind.mutations';
+import { ref, onMounted } from 'vue';
 import { IGrindErrandDiscussion } from '@/models/grind';
-import { getUserInitials } from '@/utils/helpers';
+import { GetGrindErrandDiscussionsByParentDocument, GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables } from '@/graphql/operations/grind.queries';
+import useApiUtil from '@/composables/api_util';
 import CommentForm from './CommentForm.vue';
-import CommentList from './CommentList.vue';
-import { GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables, GetGrindErrandDiscussionsByParentDocument } from '@/graphql/operations/grind.queries';
-import { RequestPolicy } from '@urql/core';
 
-const props = defineProps({
-    comment: {
-        type: Object as () => IGrindErrandDiscussion,
-        required: true
-    },
-    replyingTo: {
-        type: Object as () => IGrindErrandDiscussion | null,
-        default: null
-    },
-    editingComment: {
-        type: Object as () => IGrindErrandDiscussion | null,
-        default: null
-    },
-    level: {
-        type: Number,
-        default: 0
-    }
-});
+interface Props {
+    discussion: IGrindErrandDiscussion & {
+        createdBy?: {
+            uid: string;
+            firstName?: string | null;
+            lastName?: string | null;
+        } | null;
+        createdAt?: string | null;
+    };
+    errandUid: string;
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<{
+    (e: 'reply', discussion: IGrindErrandDiscussion): void;
+    (e: 'edit', discussion: IGrindErrandDiscussion): void;
+}>();
+
+const { withClientQuery } = useApiUtil();
+const replies = ref<IGrindErrandDiscussion[]>([]);
+const isLoading = ref(false);
+const showReplies = ref(false);
+const showReplyForm = ref(false);
 
 onMounted(() => {
-    getReplies(props.comment.uid)
+    if (props.discussion.subdiscussions?.length) {
+        fetchReplies();
+    }
 });
 
-const emit = defineEmits(['setReplyingTo', 'setEditingComment', 'commentAdded', 'commentUpdated']);
-
-const { withClientMutation, withClientQuery } = useApiUtil();
-
-const replies = ref<IGrindErrandDiscussion[]>([]);
-function getReplies(parentUid: string, requestPolicy: RequestPolicy = 'cache-first') {
+function fetchReplies() {
+    isLoading.value = true;
     withClientQuery<GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables>(
-        GetGrindErrandDiscussionsByParentDocument, { parentUid }, "grindErrandDiscussionsByParent", requestPolicy
-    ).then((res: any) => {
-        if (res) {
-            replies.value = res as IGrindErrandDiscussion[];
+        GetGrindErrandDiscussionsByParentDocument,
+        { parentUid: props.discussion.uid },
+        "grindErrandDiscussionsByParent"
+    ).then((result) => {
+        if (result && typeof result === 'object' && 'grindErrandDiscussionsByParent' in result) {
+            replies.value = result.grindErrandDiscussionsByParent as IGrindErrandDiscussion[];
         }
+        isLoading.value = false;
     });
 }
 
-const isEditing = computed(() => 
-    props.editingComment && props.editingComment.uid === props.comment.uid
-);
-
-const isReplying = computed(() => 
-    props.replyingTo && props.replyingTo.uid === props.comment.uid
-);
-
-const canReply = computed(() => 
-    props.level < 2 // Allow replies only for top-level and first-level comments
-);
-
-const avatarSize = computed(() => {
-    switch (props.level) {
-        case 0: return 'h-10 w-10';
-        case 1: return 'h-8 w-8';
-        case 2: return 'h-6 w-6';
-        default: return 'h-10 w-10';
-    }
-});
-
-const avatarColor = computed(() => {
-    switch (props.level) {
-        case 0: return 'bg-muted text-destructive';
-        case 1: return 'bg-secondary text-primary';
-        case 2: return 'bg-muted text-success';
-        default: return 'bg-muted text-destructive';
-    }
-});
-
-const textSize = computed(() => {
-    switch (props.level) {
-        case 0: return '';
-        case 1: return 'text-sm';
-        case 2: return 'text-xs';
-        default: return '';
-    }
-});
-
-const iconSize = computed(() => {
-    switch (props.level) {
-        case 0: return 'h-5 w-5';
-        case 1: return 'h-4 w-4';
-        case 2: return 'h-3.5 w-3.5';
-        default: return 'h-5 w-5';
-    }
-});
-
-function toggleReply() {
-    if (isReplying.value) {
-        emit('setReplyingTo', null);
-    } else {
-        emit('setReplyingTo', props.comment);
+function toggleReplies() {
+    showReplies.value = !showReplies.value;
+    if (showReplies.value && replies.value.length === 0) {
+        fetchReplies();
     }
 }
 
-function startEditing() {
-    emit('setEditingComment', {...props.comment});
+function handleReply() {
+    emit('reply', props.discussion);
 }
 
-function cancelEditing() {
-    emit('setEditingComment', null);
-}
-
-function updateDiscussion() {
-    if (!props.editingComment) return;
-    withClientMutation<EditGrindErrandDiscussionMutation, EditGrindErrandDiscussionMutationVariables>(
-        EditGrindErrandDiscussionDocument,
-        { 
-            uid: props.comment.uid,
-            payload: { 
-                comment: props.editingComment.comment,
-                errandUid: props.editingComment.errandUid
-            }
-        },
-        "updateGrindErrandDiscussion"
-    ).then(() => {
-        emit('commentUpdated');
-    });
+function handleEdit() {
+    emit('edit', props.discussion);
 }
 
 function handleCommentAdded() {
-    emit('commentAdded');
-    getReplies(props.comment.uid, "network-only");
-}
-
-function handleCommentUpdated() {
-    emit('commentUpdated');
-    getReplies(props.comment.uid, "network-only");
-}
-
-function handleSetReplyingTo(discussion: IGrindErrandDiscussion | null) {
-    emit('setReplyingTo', discussion);
-}
-
-function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
-    emit('setEditingComment', discussion);
+    showReplyForm.value = false;
+    fetchReplies();
 }
 </script>
 
 <template>
-    <div class="flex items-start gap-4">
-        <div :class="`${avatarSize} shrink-0 rounded-full ${avatarColor} flex items-center justify-center font-semibold ${textSize}`">
-            {{ getUserInitials(comment.createdBy?.firstName, comment.createdBy?.lastName) }}
-        </div>
-        <div class="flex-1">
-            <!-- Comment header -->
-            <div class="flex justify-between">
-                <div>
-                    <h3 :class="`font-medium ${textSize}`">{{ comment.createdBy?.firstName }} {{ comment.createdBy?.lastName }}</h3>
-                    <div :class="`${level > 0 ? 'text-xs' : 'text-sm'} text-muted-foreground`">{{ comment.createdAt }}</div>
-                </div>
-                <!-- Comment action buttons -->
-                <div class="flex gap-2" v-if="!isEditing">
-                    <button v-if="comment.canEdit" @click="startEditing" class="text-muted-foreground hover:text-accent">
-                        <svg xmlns="http://www.w3.org/2000/svg" :class="iconSize" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                    </button>
-                    <button v-if="canReply" @click="toggleReply" class="text-muted-foreground hover:text-accent">
-                        <svg xmlns="http://www.w3.org/2000/svg" :class="iconSize" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                        </svg>
-                    </button>
+    <div class="mb-4 p-4 border border-input bg-background rounded-lg shadow-sm" role="article" :aria-label="`Comment by ${discussion.createdBy?.firstName || 'User'}`">
+        <div class="flex items-start gap-3">
+            <div class="flex-shrink-0">
+                <div class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                    {{ discussion.createdBy?.firstName?.[0] || 'U' }}
                 </div>
             </div>
-
-            <!-- Comment content - edit mode -->
-            <div v-if="isEditing" :class="`mt-${level === 0 ? 2 : level === 1 ? 2 : 1}`">
-                <textarea
-                    v-model="editingComment.comment"
-                    :rows="level === 0 ? 3 : 2"
-                    :class="`w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 ${level === 2 ? 'text-xs' : ''}`"
-                ></textarea>
-                <div class="flex items-center justify-end gap-2 mt-2">
-                    <button @click="cancelEditing" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} border border-border rounded hover:bg-background ${level > 0 ? 'text-sm' : ''}`">
-                        Cancel
-                    </button>
-                    <button @click="updateDiscussion" :class="`px-${level < 2 ? 3 : 2} py-${level < 2 ? '1.5' : 1} bg-accent text-primary-foreground rounded hover:bg-primary ${level > 0 ? 'text-sm' : ''}`">
-                        Save
+            <div class="flex-grow">
+                <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-foreground">
+                            {{ discussion.createdBy?.firstName }} {{ discussion.createdBy?.lastName }}
+                        </span>
+                        <span class="text-sm text-muted-foreground">{{ discussion.createdAt ? new Date(discussion.createdAt).toLocaleString() : '' }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button 
+                            @click="handleReply"
+                            class="text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1 transition-colors"
+                            aria-label="Reply to comment"
+                        >
+                            Reply
+                        </button>
+                        <button 
+                            v-if="discussion.canEdit"
+                            @click="handleEdit"
+                            class="text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1 transition-colors"
+                            aria-label="Edit comment"
+                        >
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <p class="text-foreground whitespace-pre-wrap">{{ discussion.comment }}</p>
+                <div v-if="discussion.subdiscussions?.length" class="mt-2">
+                    <button 
+                        @click="toggleReplies"
+                        class="text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1 transition-colors"
+                        :aria-expanded="showReplies"
+                        :aria-label="`${showReplies ? 'Hide' : 'Show'} ${discussion.subdiscussions.length} ${discussion.subdiscussions.length === 1 ? 'reply' : 'replies'}`"
+                    >
+                        {{ discussion.subdiscussions.length }} {{ discussion.subdiscussions.length === 1 ? 'reply' : 'replies' }}
                     </button>
                 </div>
-            </div>
-            
-            <!-- Comment content - normal mode -->
-            <div v-else :class="`mt-${level === 0 ? 2 : 1} text-foreground ${textSize}`" v-html="comment.comment"></div>
-            
-            <!-- Reply input area -->
-            <div v-if="isReplying" :class="`mt-${level === 0 ? 3 : 2}`">
-                <CommentForm 
-                    :parent-discussion="comment"
-                    :is-reply="true"
-                    :errandUid="comment.errandUid"
-                    @comment-added="handleCommentAdded"
-                    @cancel-reply="toggleReply"
-                />
             </div>
         </div>
-    </div>
 
-    <!-- Render replies to this comment -->
-    <div v-if="replies.length > 0" :class="`ml-${level === 0 ? 14 : 12} mt-4`">
-        <CommentList
-            :comments="replies"
-            :replying-to="replyingTo"
-            :editing-comment="editingComment"
-            :level="level + 1"
-            @set-replying-to="handleSetReplyingTo"
-            @set-editing-comment="handleSetEditingComment"
-            @comment-added="handleCommentAdded"
-            @comment-updated="handleCommentUpdated"
-        />
+        <div v-if="showReplies" class="mt-4 ml-8">
+            <div v-if="isLoading" class="flex items-center justify-center py-4">
+                <div class="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" role="status" aria-label="Loading replies"></div>
+            </div>
+            <template v-else>
+                <div v-if="replies.length === 0" class="text-sm text-muted-foreground py-2">
+                    No replies yet
+                </div>
+                <template v-else>
+                    <CommentItem 
+                        v-for="reply in replies" 
+                        :key="reply.uid" 
+                        :discussion="reply" 
+                        :errand-uid="errandUid"
+                        @reply="handleReply"
+                        @edit="handleEdit"
+                    />
+                </template>
+            </template>
+        </div>
+
+        <div v-if="showReplyForm" class="mt-4 ml-8">
+            <CommentForm 
+                :errand-uid="errandUid" 
+                :parent-discussion="discussion"
+                :is-reply="true"
+                @comment-added="handleCommentAdded"
+                @cancel-reply="showReplyForm = false"
+            />
+        </div>
     </div>
 </template>
-
-<style scoped>
-.ml-12 {
-    margin-left: 3rem;
-}
-.ml-14 {
-    margin-left: 3.5rem;
-}
-</style>

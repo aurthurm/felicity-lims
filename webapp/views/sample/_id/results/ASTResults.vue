@@ -16,8 +16,8 @@ import { ApplyAbxAstPanelDocument, ApplyAbxAstPanelMutation, ApplyAbxAstPanelMut
 const modal = defineAsyncComponent(
     () => import("@/components/ui/FelModal.vue")
 )
-const FelButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
+const fel-button = defineAsyncComponent(
+  () => import("@/components/ui/buttons/fel-button.vue")
 )
 
 const {
@@ -321,206 +321,247 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 </script>
 
 <template>
-  <h3 class="flex justify-between items-center mt-4">
-    <span class="font-bold">AST Panel</span>
-  </h3>
+  <div class="space-y-6">
+    <div class="flex items-center justify-between border-b border-border pb-4">
+      <h3 class="text-lg font-semibold text-foreground">AST Panel</h3>
+    </div>
 
-  <hr class="mt-1" />
-  <div v-for="pickedOrg in pickedOrganisms" :key="pickedOrg.uid" class="mb-4">
-    <h3 class="flex justify-between items-center">
-      <span>
-        <span class="font-bold">Organism #{{ pickedOrg?.isolateNumber }}</span>: 
-        <span class="italic">{{ pickedOrg?.organism?.name }}</span>
-      </span>
-      <button @click="choosePanel(pickedOrg)" v-show="canAddPanel(pickedOrg)"
-        class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-        choose panel
-      </button>
-    </h3>
+    <div class="space-y-8">
+      <div v-for="pickedOrg in pickedOrganisms" :key="pickedOrg.uid" class="space-y-6">
+        <div class="flex items-center justify-between">
+          <div class="space-x-2">
+            <span class="font-semibold text-foreground">Organism #{{ pickedOrg?.isolateNumber }}</span>
+            <span class="text-muted-foreground">{{ pickedOrg?.organism?.name }}</span>
+          </div>
+          <button 
+            v-show="canAddPanel(pickedOrg)"
+            @click="choosePanel(pickedOrg)" 
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+          >
+            Choose Panel
+          </button>
+        </div>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-border">
-        <thead>
-          <tr class="bg-background">
-            <th class="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Parameter</th>
-            <th v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
-                :key="antibiotic"
-                class="px-4 py-2 text-left text-xs font-medium text-muted-foreground tracking-wider">
-              {{ antibiotic }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-background divide-y divide-border">
-          <!-- Guideline year -->
-          <tr>
-            <td class="px-4 py-2 text-sm font-medium text-foreground">Guideline</td>
-            <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
-                :key="antibiotic"
-                class="px-4 py-2 text-sm text-muted-foreground">
-              <select 
-                v-model="organismResults[pickedOrg.uid][antibiotic].guidelineYearUid"
-                @change="handleCellEdit(pickedOrg.uid, antibiotic, 'guidelineYearUid', $event.target.value)"
-                class="w-32 px-2 py-1 border rounded"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
-              >
-                <option v-for="gly in guidelines" :key="gly.uid" :value="gly.uid">{{ gly.code }}</option>
-              </select>
-            </td>
-          </tr>
-          <!-- AST Method -->
-          <tr>
-            <td class="px-4 py-2 text-sm font-medium text-foreground">AST Method</td>
-            <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
-                :key="antibiotic"
-                class="px-4 py-2 text-sm text-muted-foreground">
-              <select 
-                v-model="organismResults[pickedOrg.uid][antibiotic].astMethodUid"
-                @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astMethodUid', $event.target.value)"
-                class="w-32 px-2 py-1 border rounded"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
-              >
-                <option v-for="tm in testMethods" :key="tm.uid" :value="tm.uid">{{ tm.name }}</option>
-              </select>
-            </td>
-          </tr>
-          
-          <!-- AST Value -->
-          <tr>
-            <td class="px-4 py-2 text-sm font-medium text-foreground">AST Value</td>
-            <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
-                :key="antibiotic"
-                class="px-4 py-2 text-sm text-muted-foreground">
-              <input 
-                type="number"
-                v-model="organismResults[pickedOrg.uid][antibiotic].astValue"
-                @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astValue', $event.target.value)"
-                class="w-32 px-2 py-1 border rounded"
-                step="0.1"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
-              />
-            </td>
-          </tr>
+        <div class="rounded-lg border border-border bg-background">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-border bg-muted/50">
+                  <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Parameter</th>
+                  <th 
+                    v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
+                    :key="antibiotic"
+                    class="px-4 py-3 text-left text-sm font-medium text-muted-foreground"
+                  >
+                    {{ antibiotic }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Guideline year -->
+                <tr class="border-b border-border">
+                  <td class="px-4 py-3 text-sm font-medium text-foreground">Guideline</td>
+                  <td 
+                    v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
+                    :key="antibiotic"
+                    class="px-4 py-3"
+                  >
+                    <select 
+                      v-model="organismResults[pickedOrg.uid][antibiotic].guidelineYearUid"
+                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'guidelineYearUid', $event.target.value)"
+                      class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
+                    >
+                      <option v-for="gly in guidelines" :key="gly.uid" :value="gly.uid">{{ gly.code }}</option>
+                    </select>
+                  </td>
+                </tr>
+                <!-- AST Method -->
+                <tr class="border-b border-border">
+                  <td class="px-4 py-3 text-sm font-medium text-foreground">AST Method</td>
+                  <td 
+                    v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
+                    :key="antibiotic"
+                    class="px-4 py-3"
+                  >
+                    <select 
+                      v-model="organismResults[pickedOrg.uid][antibiotic].astMethodUid"
+                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astMethodUid', $event.target.value)"
+                      class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
+                    >
+                      <option v-for="tm in testMethods" :key="tm.uid" :value="tm.uid">{{ tm.name }}</option>
+                    </select>
+                  </td>
+                </tr>
+                <!-- AST Value -->
+                <tr class="border-b border-border">
+                  <td class="px-4 py-3 text-sm font-medium text-foreground">AST Value</td>
+                  <td 
+                    v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
+                    :key="antibiotic"
+                    class="px-4 py-3"
+                  >
+                    <input 
+                      type="number"
+                      v-model="organismResults[pickedOrg.uid][antibiotic].astValue"
+                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astValue', $event.target.value)"
+                      class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      step="0.1"
+                      :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
+                    />
+                  </td>
+                </tr>
+                <!-- Result -->
+                <tr class="border-b border-border">
+                  <td class="px-4 py-3 text-sm font-medium text-foreground">Result</td>
+                  <td 
+                    v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
+                    :key="antibiotic"
+                    class="px-4 py-3"
+                  >
+                    <div class="flex items-center space-x-2">
+                      <select 
+                        v-model="organismResults[pickedOrg.uid][antibiotic].result"
+                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'result', $event.target.value)"
+                        class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        :class="{
+                          'text-success': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
+                          'text-warning': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'I',
+                          'text-destructive': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'R'
+                        }"
+                        :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
+                      >
+                        <option value="S">S</option>
+                        <option value="I">I</option>
+                        <option value="R">R</option>
+                      </select>
+                      <span v-show="organismResults[pickedOrg.uid][antibiotic].breakpointUid">
+                        <font-awesome-icon 
+                          icon="robot" 
+                          class="text-muted-foreground"
+                          aria-label="Auto-calculated"
+                        />
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Reportable -->
+                <tr>
+                  <td class="px-4 py-3 text-sm font-medium text-foreground">Reportable</td>
+                  <td 
+                    v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
+                    :key="antibiotic"
+                    class="px-4 py-3"
+                  >
+                    <div class="flex items-center space-x-4">
+                      <input 
+                        type="checkbox"
+                        v-model="organismResults[pickedOrg.uid][antibiotic].reportable"
+                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', $event.target.checked)"
+                        class="rounded border-input text-primary focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                        :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
+                      />
+                      <span 
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        :class="{
+                          'bg-primary/10 text-primary': organismResults[pickedOrg.uid][antibiotic].status === 'pending',
+                          'bg-warning/10 text-warning': organismResults[pickedOrg.uid][antibiotic].status === 'resulted',
+                          'bg-success/10 text-success': organismResults[pickedOrg.uid][antibiotic].status === 'approved',
+                          'bg-destructive/10 text-destructive': organismResults[pickedOrg.uid][antibiotic].status === 'cancelled'
+                        }"
+                      >
+                        {{ organismResults[pickedOrg.uid][antibiotic].status }}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-          <!-- Result -->
-          <tr>
-            <td class="px-4 py-2 text-sm font-medium text-foreground">Result</td>
-            <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
-                :key="antibiotic"
-                class="px-4 py-2 text-sm">
-              <select 
-                v-model="organismResults[pickedOrg.uid][antibiotic].result"
-                @change="handleCellEdit(pickedOrg.uid, antibiotic, 'result', $event.target.value)"
-                class="w-32 px-2 py-1 border rounded"
-                :class="{
-                  'text-success': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
-                  'text-yellow-600': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'I',
-                  'text-destructive': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'R'
-                }"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'">
-                <option value="S">S</option>
-                <option value="I">I</option>
-                <option value="R">R</option>
-              </select>
-              <span class="ml-2 text-xs text-muted-foreground">
-                <span v-show="organismResults[pickedOrg.uid][antibiotic].breakpointUid">
-                  <font-awesome-icon icon="robot" class="text-md text-muted-foreground mr-1"/>
-                </span>
-              </span>
-            </td>
-          </tr>
+        <div class="flex items-center space-x-4">
+          <fel-button 
+            v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
+            key="save" 
+            @click.prevent="saveAntibiotics(pickedOrg.uid)" 
+            :color="'primary'"
+            :disabled="savingAntibiotics"
+          >
+            Save Antibiotics
+          </fel-button>
 
-          <!-- Reportable -->
-          <tr>
-            <td class="px-4 py-2 text-sm font-medium text-foreground">Reportable</td>
-            <td v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
-                :key="antibiotic"
-                class="px-4 py-2 text-sm">
-              <input 
-                type="checkbox"
-                v-model="organismResults[pickedOrg.uid][antibiotic].reportable"
-                @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', $event.target.checked)"
-                class="form-checkbox h-4 w-4 text-primary"
-                :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
-              />
-              <button type="button" class="bg-primary text-primary-foreground ml-4 px-2 py-1 rounded-sm leading-none">
-                {{ organismResults[pickedOrg.uid][antibiotic].status }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <fel-button 
+            v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 
+            key="submit" 
+            @click.prevent="submitAntibiotics(pickedOrg.uid)" 
+            :color="'warning'"
+          >
+            Submit Antibiotics
+          </fel-button>
 
-      <div class="mt-2">
-        <FelButton 
-        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
-        key="button" 
-        @click.prevent="saveAntibiotics(pickedOrg.uid)" 
-        :color="'orange-600'" :disabled="savingAntibiotics">Save Antibiotics</FelButton>
-
-        <FelButton 
-        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 
-        key="button" 
-        @click.prevent="submitAntibiotics(pickedOrg.uid)" 
-        :color="'orange-600'">Submit Antibiotics</FelButton>
-
-        <FelButton 
-        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canApprove(pickedOrg.uid)" 
-        key="button" 
-        @click.prevent="approveAntibiotics(pickedOrg.uid)" 
-        :color="'orange-600'">Approve Antibiotics</FelButton>
+          <fel-button 
+            v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canApprove(pickedOrg.uid)" 
+            key="approve" 
+            @click.prevent="approveAntibiotics(pickedOrg.uid)" 
+            :color="'success'"
+          >
+            Approve Antibiotics
+          </fel-button>
+        </div>
       </div>
-
     </div>
   </div>
 
   <!-- Panel Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
-      <h3>Search Panel for <span class="italic font-semibold">{{ choiceOrganism?.organism?.name }}</span></h3>
+      <h3 class="text-lg font-semibold text-foreground">
+        Search Panel for <span class="italic">{{ choiceOrganism?.organism?.name }}</span>
+      </h3>
     </template>
 
     <template v-slot:body>
-      <form class="" @submit.prevent="{}">
-        <div class="w-full">
-          <label class="block mb-4">
-            <input
-                v-model="searchPanelText"
-                @input="searchPanels"
-                class="form-input mt-1 block w-full"
-                placeholder="Begin typing..."
-            />
-          </label>
-          <div class="border p-2 h-64 overflow-y-auto">
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <input
+            v-model="searchPanelText"
+            @input="searchPanels"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            placeholder="Begin typing..."
+          />
+
+          <div class="rounded-lg border border-border">
+            <div class="overflow-y-auto max-h-64">
               <table class="w-full">
-                <tr v-for="panel in panels" :key="panel.uid">
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="text-sm leading-5 text-foreground font-bold">{{ panel.name }}</div>
-                  </td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="text-sm leading-5 text-foreground">{{ panel.antibiotics?.map(a => a.name)?.join(", ") }}</div>
-                  </td>
-                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button type="button"
-                    @click="applyPanel(panel)"
-                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-                      Appy Panel
-                    </button>
-                  </td>
-                </tr>
-                <tr v-if="loadingPanels">
-                  <td colspan="3" class="px-4 py-3 text-center text-sm text-muted-foreground">
-                    Loading panels...
-                  </td>
-                </tr>
-                <tr v-if="!loadingPanels && panels.length === 0">
-                  <td colspan="3" class="px-4 py-3 text-center text-sm text-muted-foreground">
-                    No panels found
-                  </td>
-                </tr>
+                <tbody>
+                  <tr 
+                    v-for="panel in panels" 
+                    :key="panel.uid"
+                    class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
+                  >
+                    <td class="px-4 py-3">
+                      <div class="font-medium text-foreground">{{ panel.name }}</div>
+                      <div class="text-sm text-muted-foreground">
+                        {{ panel.antibiotics?.map(a => a.name)?.join(", ") }}
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <button
+                        @click="applyPanel(panel)"
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+                      >
+                        Apply
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
+            </div>
           </div>
         </div>
-      </form>
+      </div>
     </template>
-  </modal>
+  </fel-modal>
 </template>

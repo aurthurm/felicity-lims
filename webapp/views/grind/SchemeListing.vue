@@ -3,18 +3,11 @@
 import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import useApiUtil from '@/composables/api_util';
 import { IGrindScheme } from '@/models/grind';
-import { formatDate, stringToColor, getUserInitials } from '@/utils/helpers'
+import { formatDate, stringToColor, getUserInitials } from '@/utils'
 import { AddGrindSchemeDocument, AddGrindSchemeMutation, AddGrindSchemeMutationVariables, EditGrindSchemeDocument, EditGrindSchemeMutation, EditGrindSchemeMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindSchemeAllDocument, GetGrindSchemeAllQuery, GetGrindSchemeAllQueryVariables } from '@/graphql/operations/grind.queries';
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries';
 import { IUser } from '@/models/auth';
-
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-);
-const PageHeader = defineAsyncComponent(
-    () => import("@/components/common/FelPageHeading.vue")
-)
 
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -187,7 +180,7 @@ function saveForm() {
 </script>
 
 <template>
-  <PageHeader title="Projects" />
+  <fel-heading title="Projects" />
 
   <div class="pb-8">
     <div class="flex justify-between items-center mb-6">
@@ -197,13 +190,13 @@ function saveForm() {
           <input
             type="text"
             placeholder="Search schemes..."
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             v-model="schemeParams.text"
             @keyup.enter="searchSchemes(schemeParams.text)"
           />
           <button
             @click="searchSchemes(schemeParams.text)"
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors duration-200"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -214,13 +207,13 @@ function saveForm() {
         <!-- Add button -->
         <button
           @click="openCreateForm"
-          class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          <span class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <span class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            Add Scheme
+            <span>Add Scheme</span>
           </span>
         </button>
       </div>
@@ -228,7 +221,7 @@ function saveForm() {
     
     <!-- Status and count information -->
     <div class="mb-4 text-sm text-foreground">
-      <span v-if="isLoading">Loading schemes...</span>
+      <span v-if="isLoading" class="text-muted-foreground">Loading schemes...</span>
       <span v-else>{{ countText }}</span>
     </div>
     
@@ -238,18 +231,19 @@ function saveForm() {
       <div 
         v-for="scheme in schemes" 
         :key="scheme.uid"
-        class="bg-background rounded-lg shadow-md overflow-hidden border border-border hover:shadow-lg transition-shadow"
+        class="bg-background rounded-lg shadow-sm overflow-hidden border border-border hover:shadow-md transition-all duration-200"
       >
         <div class="p-6">
           <div class="flex justify-between items-start mb-3">
             <router-link 
-            :to="{name: 'scheme-detail', params: {schemeUid: scheme?.uid}}" 
-            class="text-lg font-semibold text-foreground truncate">
+              :to="{name: 'scheme-detail', params: {schemeUid: scheme?.uid}}" 
+              class="text-lg font-semibold text-foreground hover:text-primary transition-colors duration-200 truncate"
+            >
               {{ scheme.title }}
             </router-link>
             <button 
               @click="openEditForm(scheme)"
-              class="text-muted-foreground hover:text-primary transition-colors"
+              class="text-muted-foreground hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary rounded-md p-1"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -264,8 +258,8 @@ function saveForm() {
           
           <!-- Date information -->
           <div class="flex items-center text-xs text-muted-foreground mb-4">
-            <div class="flex items-center mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-center space-x-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <span>{{ formatDate(scheme.startDate, 'D MMMM YYYY') }} - {{ formatDate(scheme.endDate, 'D MMMM YYYY') }}</span>
@@ -275,14 +269,14 @@ function saveForm() {
           <!-- Assignee -->
           <div v-if="scheme.assignee" class="mb-4">
             <p class="text-xs text-muted-foreground mb-1">Assignee:</p>
-            <div class="flex items-center">
+            <div class="flex items-center space-x-2">
               <div 
-                class="w-8 h-8 rounded-full flex items-center justify-center text-primary-foreground text-xs font-medium mr-2"
+                class="w-8 h-8 rounded-full flex items-center justify-center text-primary-foreground text-xs font-medium"
                 :style="{ backgroundColor: stringToColor(scheme.assignee.firstName + scheme.assignee.lastName) }"
               >
                 {{ getUserInitials(scheme.assignee.firstName, scheme.assignee.lastName) }}
               </div>
-              <span class="text-sm">{{ scheme.assignee.firstName }} {{ scheme.assignee.lastName }}</span>
+              <span class="text-sm text-foreground">{{ scheme.assignee.firstName }} {{ scheme.assignee.lastName }}</span>
             </div>
           </div>
           
@@ -293,7 +287,7 @@ function saveForm() {
               <div 
                 v-for="(member, index) in scheme.members.slice(0, 5)" 
                 :key="index"
-                class="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center text-primary-foreground text-xs font-medium"
+                class="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-primary-foreground text-xs font-medium"
                 :style="{ backgroundColor: stringToColor(member.firstName + member.lastName) }"
                 :title="`${member.firstName} ${member.lastName}`"
               >
@@ -303,7 +297,7 @@ function saveForm() {
               <!-- Show count for additional members -->
               <div 
                 v-if="scheme.members.length > 5"
-                class="w-8 h-8 rounded-full border-2 border-foreground flex items-center justify-center bg-muted text-foreground text-xs font-medium"
+                class="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center bg-muted text-foreground text-xs font-medium"
                 :title="scheme.members.slice(5).map(m => `${m.firstName} ${m.lastName}`).join(', ')"
               >
                 +{{ scheme.members.length - 5 }}
@@ -324,7 +318,7 @@ function saveForm() {
     <div v-if="schemesPageInfo.hasNextPage" class="mt-8 flex justify-center">
       <button 
         @click="loadMoreSchemes"
-        class="px-4 py-2 bg-secondary text-foreground rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+        class="px-4 py-2 bg-secondary text-foreground rounded-lg hover:bg-secondary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="fetchingSchemes"
       >
         <span v-if="fetchingSchemes">Loading...</span>
@@ -341,28 +335,28 @@ function saveForm() {
       <p class="text-muted-foreground mb-4">Get started by creating your first scheme</p>
       <button
         @click="openCreateForm"
-        class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+        class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
-        <span class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <span class="flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
-          Create Scheme
+          <span>Create Scheme</span>
         </span>
       </button>
     </div>
   </div>
   
   <!-- Create/Edit Scheme Modal -->
-  <modal v-if="showModal" @close="showModal = false" content-width="w-full max-w-2xl">
+  <fel-modal v-if="showModal" @close="showModal = false" content-width="w-full max-w-2xl">
     <template v-slot:header>
-      <h3 class="text-lg font-semibold">{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
     
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <!-- Scheme Title -->
-        <div class="mb-4">
+        <div>
           <label class="block text-sm font-medium text-foreground mb-1" for="title">
             Scheme Title <span class="text-destructive">*</span>
           </label>
@@ -371,13 +365,13 @@ function saveForm() {
             v-model="form.title"
             type="text"
             required
-            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             placeholder="Enter scheme title"
           />
         </div>
         
         <!-- Description -->
-        <div class="mb-4">
+        <div>
           <label class="block text-sm font-medium text-foreground mb-1" for="description">
             Description
           </label>
@@ -385,13 +379,13 @@ function saveForm() {
             id="description"
             v-model="form.description"
             rows="3"
-            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             placeholder="Enter scheme description"
           ></textarea>
         </div>
         
         <!-- Date Range -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-foreground mb-1" for="startDate">
               Start Date
@@ -400,7 +394,7 @@ function saveForm() {
               id="startDate"
               v-model="form.startDate"
               type="date"
-              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             />
           </div>
           <div>
@@ -411,13 +405,13 @@ function saveForm() {
               id="endDate"
               v-model="form.endDate"
               type="date"
-              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
             />
           </div>
         </div>
         
         <!-- Assignee -->
-        <div class="mb-4">
+        <div>
           <label class="block text-sm font-medium text-foreground mb-1">
             Assignee
           </label>
@@ -428,11 +422,12 @@ function saveForm() {
             :searchable="true"
             track-by="uid"
             placeholder="Select an assignee"
+            class="multiselect-primary"
           />
         </div>
         
         <!-- Members -->
-        <div class="mb-6">
+        <div>
           <label class="block text-sm font-medium text-foreground mb-1">
             Members
           </label>
@@ -444,36 +439,61 @@ function saveForm() {
             track-by="uid"
             :multiple="true"
             placeholder="Select members"
+            class="multiselect-primary"
           />
         </div>
         
         <!-- Submit button -->
-        <div class="flex justify-end">
+        <div class="flex justify-end space-x-3">
           <button
             type="button"
             @click="showModal = false"
-            class="mr-3 px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-background focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
           >
             Cancel
           </button>
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
+            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
           >
             {{ formAction ? 'Create' : 'Update' }}
           </button>
         </div>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 </template>
 
 <style scoped>
-/* Add any component-specific styles here */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Multiselect styling */
+:deep(.multiselect-primary) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__tags) {
+  @apply border-border bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__single) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__input) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__option) {
+  @apply bg-background text-foreground hover:bg-muted;
+}
+
+:deep(.multiselect-primary .multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
 }
 </style>

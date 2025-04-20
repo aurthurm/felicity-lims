@@ -1,53 +1,52 @@
 <script setup lang="ts">
-  import { ref, computed, defineAsyncComponent } from 'vue';
-  const tabInstrumentTypes = defineAsyncComponent(
+  import { defineAsyncComponent } from 'vue';
+  const InstrumentTypes = defineAsyncComponent(
     () => import('./InstrumentTypes.vue')
   )
-  const tabLaboratoryInstruments = defineAsyncComponent(
+  const LaboratoryInstruments = defineAsyncComponent(
     () => import('./LaboratoryInstruments.vue')
   )
-  const tabInstruments = defineAsyncComponent(
+  const Instruments = defineAsyncComponent(
     () => import('./Instruments.vue')
   )
-  const tabMethods = defineAsyncComponent(
+  const Methods = defineAsyncComponent(
     () => import('./Methods.vue')
   )
-  const tabUnits = defineAsyncComponent(
+  const Units = defineAsyncComponent(
     () => import('./Units.vue')
   )
 
-  let currentTab = ref('laboratory-instruments');
-  const tabs = ['laboratory-instruments', 'instrument-types', 'instruments', 'methods', 'units'];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+const tabs = [
+    { 
+      id:"insttypes", 
+      label: 'Instrument Types', 
+      component: InstrumentTypes
+    },
+    { 
+      id:"linstruments", 
+      label: 'Laboratory Instruments', 
+      component: LaboratoryInstruments
+    },
+    { 
+      id:"instruments", 
+      label: 'Instruments', 
+      component: Instruments
+    },
+    { 
+      id:"methods", 
+      label: 'Methods', 
+      component: Methods
+    },
+    { 
+      id:"units", 
+      label: 'Units', 
+      component: Units
+    },  
+  ];
 </script>
 
 <template>
-  <div class="mt-4">
-
-        <nav class="bg-background shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <tab-laboratory-instruments v-if="currentTab === 'laboratory-instruments'"/>
-        <tab-instrument-types v-if="currentTab === 'instrument-types'"/>
-        <tab-instruments v-if="currentTab === 'instruments'"/>
-        <tab-methods v-if="currentTab === 'methods'" />
-        <tab-units v-if="currentTab === 'units'" />
-
-  </div>
+  <fel-tabs :tabs="tabs" />
 </template>
 
 

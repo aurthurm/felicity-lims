@@ -9,18 +9,10 @@ import {
   IAnalysisService,
   ISample,
 } from "@/models/analysis";
-import { isNullOrWs, parseDate } from "@/utils/helpers";
+import { isNullOrWs, parseDate } from "@/utils";
 
 import * as shield from "@/guards";
-const FelButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
-)
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-const FelDrawer = defineAsyncComponent(
-  () => import("@/components/ui/FelDrawer.vue")
-)
+
 const AnalysisSneak = defineAsyncComponent(
   () => import("@/components/analysis/AnalysisSneak.vue")
 )
@@ -269,87 +261,95 @@ const retestResults = () =>
 </script>
 
 <template>
-  <hr class="mt-4 mb-2" />
-  <h3 class="font-bold">Analyses/Results</h3>
-  <hr class="mb-4 mt-2" />
+  <div class="space-y-6">
+    <div class="border-t border-border my-4" />
+    <h3 class="text-lg font-semibold text-foreground">Analyses/Results</h3>
+    <div class="border-t border-border my-4" />
 
-  <div class="overflow-x-auto">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <div v-if="fetchingResults" class="py-4 text-center">
-        <LoadingMessage message="Fetching analytes ..." />
+    <div class="rounded-lg border border-border bg-background shadow-sm">
+      <div v-if="fetchingResults" class="p-6 text-center">
+        <fel-loader message="Fetching analytes ..." />
       </div>
-      <table class="min-w-full" v-else>
-        <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
-              <input type="checkbox" class="" @change="toggleCheckAll" v-model="state.allChecked" />
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
-              Analysis
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Instrument
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Method
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Analyst
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Reviewer(s)
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Interim
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Result
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Retest
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Due Date
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Submitted
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Approved
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Status
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Reportable
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
-        </thead>
-        <tbody class="bg-background">
-          <tr v-for="result in analysisResults" :key="result.uid" :class="[getResultRowColor(result)]"
-            v-motion-slide-right>
-            <td>
-              <input type="checkbox" class="border-destructive" v-model="result.checked" @change="checkCheck(result)"
-                :disabled="isDisabledRowCheckBox(result)" /><font-awesome-icon v-if="result.status === 'pending'"
-                icon="fa-question" class="ml-1 text-xs"></font-awesome-icon>
-              <font-awesome-icon v-if="result.status === 'resulted'" icon="fa-question"
-                class="ml-1 text-xs text-orange"></font-awesome-icon>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary font-semibold">
-                <span class="mr-1 hover:cursor-pointer" @click="viewAnalysisInfo(result)"><font-awesome-icon icon="fa-info-circle"></font-awesome-icon></span>
-                {{ result.analysis?.name }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
-                {{ result.laboratoryInstrument?.labName || "---" }}
-              </div>
-              <label v-else class="block col-span-2 mb-2">
-                <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
+      <div v-else class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-border bg-muted/50">
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                <input 
+                  type="checkbox" 
+                  @change="toggleCheckAll" 
+                  v-model="state.allChecked"
+                  class="rounded border-input text-primary focus:ring-primary" 
+                />
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground"></th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Analysis</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Instrument</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Method</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Analyst</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reviewer(s)</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Interim</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Result</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Retest</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Due Date</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Submitted</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Approved</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reportable</th>
+              <th class="px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr 
+              v-for="result in analysisResults" 
+              :key="result.uid" 
+              :class="[getResultRowColor(result), 'hover:bg-muted/50 transition-colors duration-200']"
+              v-motion-slide-right
+            >
+              <td class="px-4 py-3 border-b border-border">
+                <div class="flex items-center space-x-2">
+                  <input 
+                    type="checkbox" 
+                    v-model="result.checked" 
+                    @change="checkCheck(result)"
+                    :disabled="isDisabledRowCheckBox(result)"
+                    class="rounded border-input text-primary focus:ring-primary" 
+                  />
+                  <font-awesome-icon 
+                    v-if="result.status === 'pending'"
+                    icon="fa-question" 
+                    class="text-xs text-muted-foreground"
+                  />
+                  <font-awesome-icon 
+                    v-if="result.status === 'resulted'" 
+                    icon="fa-question"
+                    class="text-xs text-warning"
+                  />
+                </div>
+              </td>
+              <td class="px-4 py-3 border-b border-border"></td>
+              <td class="px-4 py-3 border-b border-border">
+                <div class="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    @click="viewAnalysisInfo(result)"
+                    class="text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <font-awesome-icon icon="fa-info-circle" />
+                  </button>
+                  <span class="font-medium">{{ result.analysis?.name }}</span>
+                </div>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div v-if="!isEditable(result)" class="text-sm text-foreground">
+                  {{ result.laboratoryInstrument?.labName || "---" }}
+                </div>
+                <select 
+                  v-else
+                  v-model="result.laboratoryInstrumentUid" 
+                  @change="check(result)"
+                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
                   <option value=""></option>
                   <template v-for="instrument in result.analysis?.instruments" :key="instrument.uid">
                     <option 
@@ -361,141 +361,205 @@ const retestResults = () =>
                     </option>
                   </template>
                 </select>
-              </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
-                {{ result.method?.name || "---" }}
-              </div>
-              <label v-else class="block col-span-2 mb-2">
-                <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div v-if="!isEditable(result)" class="text-sm text-foreground">
+                  {{ result.method?.name || "---" }}
+                </div>
+                <select 
+                  v-else
+                  v-model="result.methodUid" 
+                  @change="check(result)"
+                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
                   <option value=""></option>
-                  <option v-for="method in result.analysis?.methods" :key="method.uid"
-                    :value="method.uid">
+                  <option 
+                    v-for="method in result.analysis?.methods" 
+                    :key="method.uid"
+                    :value="method.uid"
+                  >
                     {{ method.name }}
                   </option>
                 </select>
-              </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
-                  {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <span class="text-sm text-foreground">
+                  {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
                 </span>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
-                class="text-sm leading-5 text-primary">
-                ---
-              </div>
-              <label v-else class="block col-span-2 mb-2">
-                <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div class="text-sm text-foreground space-x-1">
+                  <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName">
+                    {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
+                  </span>
+                </div>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0" class="text-sm text-foreground">
+                  ---
+                </div>
+                <select 
+                  v-else
+                  v-model="result.result" 
+                  @change="check(result)"
+                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
                   <option value=""></option>
-                  <option v-for="interim in result?.analysis?.interims" :key="interim.key"
-                    :value="interim.value">
+                  <option 
+                    v-for="interim in result?.analysis?.interims" 
+                    :key="interim.key"
+                    :value="interim.value"
+                  >
                     {{ interim.value }}
                   </option>
                 </select>
-              </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
-                {{ result?.result }}
-              </div>
-              <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block">
-                <input class="form-input mt-1 block w-full" 
-                v-model="result.result" 
-                @keyup="check(result)" />
-              </label>
-              <label v-else class="block col-span-2 mb-2">
-                <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div v-if="!isEditable(result)" class="text-sm text-foreground">
+                  {{ result?.result }}
+                </div>
+                <input 
+                  v-else-if="result?.analysis?.resultOptions?.length === 0"
+                  v-model="result.result" 
+                  @keyup="check(result)"
+                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                />
+                <select 
+                  v-else
+                  v-model="result.result" 
+                  @change="check(result)"
+                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
                   <option value=""></option>
-                  <option v-for="option in result?.analysis?.resultOptions" :key="option.optionKey"
-                    :value="option.value">
+                  <option 
+                    v-for="option in result?.analysis?.resultOptions" 
+                    :key="option.optionKey"
+                    :value="option.value"
+                  >
                     {{ option.value }}
                   </option>
                 </select>
-              </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                <span v-if="result?.retest" class="text-primary">
-                  <font-awesome-icon icon="fa-check-circle"></font-awesome-icon>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div class="text-sm">
+                  <font-awesome-icon 
+                    v-if="result?.retest" 
+                    icon="fa-check-circle"
+                    class="text-success"
+                  />
+                  <font-awesome-icon 
+                    v-else 
+                    icon="fa-times-circle"
+                    class="text-destructive"
+                  />
+                </div>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <span class="text-sm text-foreground">{{ parseDate(result?.dueDate) }}</span>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <span class="text-sm text-foreground">{{ parseDate(result?.dateSubmitted) }}</span>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <span class="text-sm text-foreground">{{ parseDate(result?.dateVerified) }}</span>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <span 
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  :class="{
+                    'bg-primary/10 text-primary': result.status === 'pending',
+                    'bg-warning/10 text-warning': result.status === 'resulted',
+                    'bg-success/10 text-success': result.status === 'approved',
+                    'bg-destructive/10 text-destructive': result.status === 'cancelled' || result.status === 'retracted'
+                  }"
+                >
+                  {{ result.status }}
                 </span>
-                <span v-else class="text-destructive">
-                  <font-awesome-icon icon="fa-times-circle"></font-awesome-icon>
-                </span>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dueDate) }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateSubmitted) }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateVerified) }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
-                {{ result.status }}
-              </button>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                <span v-if="result?.reportable" class="text-success">
-                  <font-awesome-icon icon="fa-thumbs-up" aria-hidden="true"></font-awesome-icon>
-                </span>
-                <span v-else class="text-destructive">
-                  <font-awesome-icon icon="fa-thumbs-down" aria-hidden="true"></font-awesome-icon>
-                </span>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+              <td class="px-4 py-3 border-b border-border">
+                <div class="text-sm">
+                  <font-awesome-icon 
+                    v-if="result?.reportable" 
+                    icon="fa-thumbs-up"
+                    class="text-success"
+                    aria-label="Reportable"
+                  />
+                  <font-awesome-icon 
+                    v-else 
+                    icon="fa-thumbs-down"
+                    class="text-destructive"
+                    aria-label="Not reportable"
+                  />
+                </div>
+              </td>
+              <td class="px-4 py-3 border-b border-border"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4 pt-4">
+      <fel-button 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel"
+        key="cancel" 
+        @click.prevent="cancelResults" 
+        :color="'destructive'"
+      >
+        Cancel
+      </fel-button>
+      <fel-button 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_reinstate"
+        key="reinstate" 
+        @click.prevent="reInstateResults" 
+        :color="'warning'"
+      >
+        Re-Instate
+      </fel-button>
+      <fel-button 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit"
+        key="submit" 
+        @click.prevent="submitResults" 
+        :color="'primary'"
+      >
+        Submit
+      </fel-button>
+      <fel-button 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retract"
+        key="retract" 
+        @click.prevent="retractResults" 
+        :color="'warning'"
+      >
+        Retract
+      </fel-button>
+      <fel-button 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve"
+        key="verify" 
+        @click.prevent="approveResults" 
+        :color="'success'"
+      >
+        Verify
+      </fel-button>
+      <fel-button 
+        v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest"
+        key="retest" 
+        @click.prevent="retestResults" 
+        :color="'warning'"
+      >
+        Retest
+      </fel-button>
     </div>
   </div>
 
-  <section class="my-4">
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel
-    " key="cancel" @click.prevent="cancelResults" :color="'sky-800'">Cancel</FelButton>
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-      state.can_reinstate
-    " key="reinstate" @click.prevent="reInstateResults" :color="'orange-600'">Re-Instate</FelButton>
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
-    " key="submit" @click.prevent="submitResults" :color="'orange-600'">Submit</FelButton>
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-      state.can_retract
-    " key="retract" @click.prevent="retractResults" :color="'orange-600'">Retract</FelButton>
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-      state.can_approve
-    " key="verify" @click.prevent="approveResults" :color="'orange-600'">Verify</FelButton>
-    <FelButton v-show="
-      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest
-    " key="retest" @click.prevent="retestResults" :color="'orange-600'">Retest</FelButton>
-  </section>
-
-  <FelDrawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
+  <fel-drawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
     <template v-slot:header>
-      <h3>Result Information</h3>
+      <h3 class="text-lg font-semibold text-foreground">Result Information</h3>
     </template>
     <template v-slot:body>
-      <AnalysisSneak v-if="viewResultInfo?.analysisUid" :analysisUid="viewResultInfo?.analysisUid" />
-      <ResultDetail v-if="viewResultInfo?.uid" :analysisResultesultUid="viewResultInfo?.uid" />
+      <div class="space-y-6">
+        <AnalysisSneak v-if="viewResultInfo?.analysisUid" :analysisUid="viewResultInfo?.analysisUid" />
+        <ResultDetail v-if="viewResultInfo?.uid" :analysisResultesultUid="viewResultInfo?.uid" />
+      </div>
     </template>
-  </FelDrawer>
+  </fel-drawer>
 </template>

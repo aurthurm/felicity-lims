@@ -5,7 +5,7 @@ import { AddGrindMilestoneDocument, AddGrindMilestoneMutation, AddGrindMilestone
 import { GetGrindMilestonesByErrandDocument, GetGrindMilestonesByErrandQuery, GetGrindMilestonesByErrandQueryVariables } from '@/graphql/operations/grind.queries';
 import { IUser } from '@/models/auth';
 import { IGrindMilestone } from '@/models/grind';
-import { mutateForm, resetForm } from '@/utils/helpers';
+import { mutateForm, resetForm } from '@/utils';
 import { RequestPolicy } from '@urql/core';
 import { onMounted, reactive, ref } from 'vue';
 import Multiselect from 'vue-multiselect'
@@ -104,99 +104,180 @@ function getUsers() {
 </script>
 
 <template>
-<div class="flex justify-between items-center">
-    <h3 class="text-foreground font-medium">Milestones</h3>
-    <button class="text-sm text-foreground hover:text-foreground flex items-center gap-1"
-        @click="addMilestone">
-        <span>+ Add New</span>
-    </button>
-</div>
-
-<div 
-v-for="milestone in milestones" 
-:key="milestone.uid" 
-class="pl-6 border-l-2 relative" 
-:class="{'border-green-200': milestone.complete, 'border-red-200': !milestone.complete}"
-@dblclick="editMilestone(milestone)">
-    <div class="absolute left-0 top-0 transform -translate-x-1/2 bg-background p-1 border border-border rounded-full w-4 h-4 flex items-center justify-center">
-        <div class="w-2 h-2 rounded-full" :class="{'bg-success': milestone.complete, 'bg-destructive': !milestone.complete}"></div>
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+      <h3 class="text-lg font-medium text-foreground">Milestones</h3>
+      <button 
+        @click="addMilestone"
+        class="px-3 py-1.5 text-sm font-medium text-foreground bg-background border border-border rounded-md hover:border-primary hover:text-primary hover:bg-secondary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      >
+        <span class="flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add New</span>
+        </span>
+      </button>
     </div>
-    <div class="mb-6">
-        <h4 class="font-medium">{{ milestone.title }}</h4>
-        <p class="text-sm text-muted-foreground">{{ milestone.description }}</p>
-    </div>
-</div>
 
-<!-- Create/Edit Errand Modal -->
-<modal v-if="showForm" @close="showForm = false" content-width="w-full max-w-2xl">
-    <template v-slot:header>
-      <h3 class="text-lg font-semibold">{{ formTitle }}</h3>
-    </template>
-    
-    <template v-slot:body>
-      <form @submit.prevent="saveForm">
-
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-foreground mb-1" for="title">
-            Title <span class="text-destructive">*</span>
-          </label>
-          <input
-            id="title"
-            v-model="form.title"
-            type="text"
-            required
-            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-            placeholder="Enter errand title"
-          />
-        </div>  
-        
-         <div class="mb-4">
-          <label class="block text-sm font-medium text-foreground mb-1" for="description">
-            Description
-          </label>
-          <textarea
-            id="description"
-            v-model="form.description"
-            rows="3"
-            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-            placeholder="Enter errand description"
-          ></textarea>
+    <!-- Milestones List -->
+    <div class="space-y-6">
+      <div 
+        v-for="milestone in milestones" 
+        :key="milestone.uid" 
+        class="pl-6 border-l-2 relative group cursor-pointer" 
+        :class="{
+          'border-success/20': milestone.complete, 
+          'border-destructive/20': !milestone.complete
+        }"
+        @dblclick="editMilestone(milestone)"
+      >
+        <!-- Status Indicator -->
+        <div 
+          class="absolute left-0 top-0 transform -translate-x-1/2 bg-background p-1 border border-border rounded-full w-4 h-4 flex items-center justify-center transition-colors duration-200 group-hover:border-primary"
+        >
+          <div 
+            class="w-2 h-2 rounded-full transition-colors duration-200" 
+            :class="{
+              'bg-success': milestone.complete, 
+              'bg-destructive': !milestone.complete
+            }"
+          ></div>
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Assignee</label>
+        <!-- Milestone Content -->
+        <div class="mb-6">
+          <h4 class="font-medium text-foreground group-hover:text-primary transition-colors duration-200">
+            {{ milestone.title }}
+          </h4>
+          <p class="text-sm text-muted-foreground mt-1">
+            {{ milestone.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create/Edit Milestone Modal -->
+    <fel-modal 
+      v-if="showForm" 
+      @close="showForm = false" 
+      content-width="w-full max-w-2xl"
+    >
+      <template v-slot:header>
+        <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
+      </template>
+      
+      <template v-slot:body>
+        <form @submit.prevent="saveForm" class="space-y-6 p-6">
+          <!-- Title -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-1" for="title">
+              Title <span class="text-destructive">*</span>
+            </label>
+            <input
+              id="title"
+              v-model="form.title"
+              type="text"
+              required
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              placeholder="Enter milestone title"
+            />
+          </div>  
+          
+          <!-- Description -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-1" for="description">
+              Description
+            </label>
+            <textarea
+              id="description"
+              v-model="form.description"
+              rows="3"
+              class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+              placeholder="Enter milestone description"
+            ></textarea>
+          </div>
+
+          <!-- Assignee -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-1">
+              Assignee
+            </label>
             <multiselect 
-            v-model="form.assignee" 
-            :options="users"
-            track-by="uid"
-            :searchable="true"
-            :custom-label="customLabel"
-            placeholder="Select assignee"
+              v-model="form.assignee" 
+              :options="users"
+              track-by="uid"
+              :searchable="true"
+              :custom-label="customLabel"
+              placeholder="Select assignee"
+              class="multiselect-primary"
             >
             </multiselect>
-        </div>
-        
-        <div class="my-4 flex justify-start">
-          <input
-            id="complete"
-            v-model="form.complete"
-            type="checkbox"
-            class="mr-2 px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-          />
-          <label class="block text-sm font-medium text-foreground mb-1" for="complete">
-            Complete
-          </label>
-        </div>  
-        
-        <div class="flex justify-end">
-          <button
-            type="submit"
-            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
-          >
-            {{ formAction ? 'Create' : 'Update' }}
-          </button>
-        </div>
-      </form>
-    </template>
-</modal>
+          </div>
+          
+          <!-- Complete Status -->
+          <div class="flex items-center space-x-2">
+            <input
+              id="complete"
+              v-model="form.complete"
+              type="checkbox"
+              class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-offset-2"
+            />
+            <label class="text-sm font-medium text-foreground" for="complete">
+              Complete
+            </label>
+          </div>  
+          
+          <!-- Submit button -->
+          <div class="flex justify-end space-x-3">
+            <button
+              type="button"
+              @click="showForm = false"
+              class="px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+            >
+              {{ formAction ? 'Create' : 'Update' }}
+            </button>
+          </div>
+        </form>
+      </template>
+    </fel-modal>
+  </div>
 </template>
+
+<style scoped>
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1.5rem;
+}
+
+/* Multiselect styling */
+:deep(.multiselect-primary) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__tags) {
+  @apply border-border bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__single) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__input) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__option) {
+  @apply bg-background text-foreground hover:bg-muted;
+}
+
+:deep(.multiselect-primary .multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+</style>

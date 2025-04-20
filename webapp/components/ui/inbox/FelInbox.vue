@@ -55,13 +55,13 @@ const placeholderItems = computed(() => Array(3).fill(null));
 </script>
 
 <template>
-  <div class="min-h-[450px] flex flex-col">
-    <h1 class="text-xl text-foreground font-semibold p-4 border-b">{{ title }}</h1>
+  <div class="min-h-[450px] flex flex-col bg-card rounded-lg">
+    <h1 class="text-xl text-card-foreground font-semibold p-4 border-b border-border">{{ title }}</h1>
     
     <div class="flex flex-1 overflow-hidden">
       <!-- List Panel -->
-      <div :class="[leftPanelWidth, 'border-r overflow-y-auto']">
-        <div class="divide-y">
+      <div :class="[leftPanelWidth, 'border-r border-border overflow-y-auto']">
+        <div class="divide-y divide-border">
           <template v-if="loading">
             <div 
               v-for="(_, index) in placeholderItems" 
@@ -84,20 +84,22 @@ const placeholderItems = computed(() => Array(3).fill(null));
             :key="item.uid"
             @click="handleSelect(item)"
             :class="[
-              'p-4 cursor-pointer hover:bg-background transition-colors duration-150',
-              selectedItem?.uid === item.uid ? 'bg-blue-50' : ''
+              'p-4 cursor-pointer transition-colors duration-200',
+              selectedItem?.uid === item.uid 
+                ? 'bg-accent text-accent-foreground' 
+                : 'hover:bg-accent/50'
             ]"
           >
             <div class="flex items-start space-x-4">
               <span 
                 v-if="showNumbers"
-                class="inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-primary-foreground bg-muted rounded-full"
+                class="inline-flex items-center justify-center w-8 h-8 text-xs font-medium text-primary-foreground bg-primary rounded-full"
               >
                 {{ index + 1 }}
               </span>
               <div class="flex-1 min-w-0">
                 <div class="flex justify-between">
-                  <h2 class="text-sm font-medium text-foreground truncate">
+                  <h2 class="text-sm font-medium truncate">
                     {{ item[titleKey] }}
                   </h2>
                   <span 
@@ -119,7 +121,7 @@ const placeholderItems = computed(() => Array(3).fill(null));
       <!-- Content Panel -->
       <div class="flex-1 overflow-y-auto bg-background">
         <article class="p-6" v-if="selectedItem">
-          <div class="mb-4 border-b pb-4">
+          <div class="mb-4 border-b border-border pb-4">
             <h2 class="text-2xl font-bold text-foreground mb-2">
               {{ selectedItem[titleKey] }}
             </h2>
@@ -131,7 +133,7 @@ const placeholderItems = computed(() => Array(3).fill(null));
             </span>
           </div>
           <div
-            class="prose max-w-none"
+            class="prose prose-foreground max-w-none"
             v-html="sanitizeHtml ? selectedItem[bodyKey] : selectedItem[bodyKey]"
           ></div>
         </article>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { IAbxQCRange, IAbxGuideline, IAbxMedium } from "@/models/microbiology";
 import { GetAbxQcRangeAllDocument, GetAbxQcRangeAllQuery, GetAbxQcRangeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxMediumAllDocument, GetAbxMediumAllQuery, GetAbxMediumAllQueryVariables } from "@/graphql/operations/microbiology.queries";
@@ -281,64 +281,61 @@ function saveForm(): void {
 
 <template>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add QcRange
-    </button> -->
-    <hr>
+  <fel-heading title="Quality Control range">
+    <!-- <fel-button @click="FormManager(true)">Add Medium</fel-button> -->
+  </fel-heading>
 
+  <div class="rounded-lg shadow-sm bg-card p-6">
     <DataTable 
-    :columns="tableColumns" 
-    :data="qcRanges" 
-    :toggleColumns="true" 
-    :loading="fetchingQcRanges" 
-    :paginable="true"
-    :pageMeta="{
-      fetchCount: abxParams.first,
-      hasNextPage: true,
-      countNone,
-    }" 
-    :searchable="true" 
-    :filterable="false" 
-    @onSearchKeyUp="searchQcRanges" 
-    @onSearchFocus="resetQcRange"
-    @onPaginate="showMoreQcRanges" 
-    :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
-
+      :columns="tableColumns" 
+      :data="qcRanges" 
+      :toggleColumns="true" 
+      :loading="fetchingQcRanges" 
+      :paginable="true"
+      :pageMeta="{
+        fetchCount: abxParams.first,
+        hasNextPage: true,
+        countNone,
+      }" 
+      :searchable="true" 
+      :filterable="false" 
+      @onSearchKeyUp="searchQcRanges" 
+      @onSearchFocus="resetQcRange"
+      @onPaginate="showMoreQcRanges" 
+      :selectable="false">
+      <template v-slot:footer> </template>
+    </DataTable>
   </div>
 
   <!-- QcRange Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-4">
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <!-- Basic Information -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-foreground">Guidelines</span>
+              <span class="text-sm font-medium text-foreground">Guidelines</span>
               <VueMultiselect
               v-model="form.guidelines"
               :options="abxGuidelines"
               :searchable="true"
               label="name"
+              class="mt-1"
               >
               <!-- track-by="uid" -->
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-foreground">Year</span>
+              <span class="text-sm font-medium text-foreground">Year</span>
               <input
                 type="number"
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.year"
                 placeholder="Enter year"
               />
@@ -347,86 +344,87 @@ function saveForm(): void {
         </div>
 
         <!-- Coding Systems -->
-        <div class="mb-6">
+        <div class="space-y-4">
           <div class="grid grid-cols-3 gap-4">
             <label class="block">
-              <span class="text-foreground">Strain</span>
+              <span class="text-sm font-medium text-foreground">Strain</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.strain"
                 placeholder="Strain"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Reference Table</span>
+              <span class="text-sm font-medium text-foreground">Reference Table</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.referenceTable"
                 placeholder="Reference Table"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Whonet Org Code</span>
+              <span class="text-sm font-medium text-foreground">Whonet Org Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.whonetOrgCode"
                 placeholder="Whonet Org Code"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Antibiotic</span>
+              <span class="text-sm font-medium text-foreground">Antibiotic</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.antibiotic"
                 placeholder="Antibiotic"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Abx Test</span>
+              <span class="text-sm font-medium text-foreground">Abx Test</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.abxTest"
                 placeholder="Abx Test"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Whonet Abx Code</span>
+              <span class="text-sm font-medium text-foreground">Whonet Abx Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.whonetAbxCode"
                 placeholder="Whonet Abx Code"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Method</span>
+              <span class="text-sm font-medium text-foreground">Method</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.method"
                 placeholder="Method"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Medium</span>
+              <span class="text-sm font-medium text-foreground">Medium</span>
               <VueMultiselect
               v-model="form.medium"
               :options="abxMediums"
               :searchable="true"
               label="name"
+              class="mt-1"
               >
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-foreground">Minimum</span>
+              <span class="text-sm font-medium text-foreground">Minimum</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.minimum"
                 placeholder="Minimum"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Maximum</span>
+              <span class="text-sm font-medium text-foreground">Maximum</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.maximum"
                 placeholder="Maximum"
               />
@@ -435,11 +433,11 @@ function saveForm(): void {
         </div>
 
         <!-- Additional Information -->
-        <div class="mb-6">
+        <div class="space-y-4">
           <label class="block">
-            <span class="text-foreground">Comments</span>
+            <span class="text-sm font-medium text-foreground">Comments</span>
             <textarea
-              class="form-textarea mt-1 block w-full"
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               v-model="form.comments"
               rows="3"
               placeholder="Additional comments..."
@@ -447,29 +445,21 @@ function saveForm(): void {
           </label>
         </div>
 
-        <hr class="my-6"/>
+        <hr class="border-border"/>
         
         <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          type="submit"
+          class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Save QcRange
         </button>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 
 </template>
 
 
 <style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
-}
-
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
-}
+/* Remove the toggle-checkbox styles as they are not needed */
 </style>

@@ -13,10 +13,6 @@ import { IClientContact } from "@/models/client";
 import useApiUtil  from "@/composables/api_util";
 import * as shield from "@/guards";
 
-const LoadingMessage = defineAsyncComponent(
-    () => import('@/components/ui/spinners/FelLoadingMessage.vue')
-)
-
 let clientStore = useClientStore();
 let router = useRoute();
 const { withClientMutation } = useApiUtil();
@@ -32,8 +28,11 @@ const props = defineProps({
   clientUid: String,
 });
 
-// dispatch get contacts fo slients
-clientStore.fetchClientContacts(router.query.clientUid!);
+// Load initial data
+const clientUid = (router.query.clientUid as string) || '';
+if (clientUid) {
+  clientStore.fetchClientContacts(clientUid);
+}
 
 function addClientContact() {
   withClientMutation<AddClientContactMutation, AddClientContactMutationVariables>(AddClientContactDocument,
@@ -81,11 +80,17 @@ function saveForm() {
   showContactModal.value = false;
 }
 
-function deleteClientContact(uid: string) {
-  withClientMutation<DeleteClientContactMutation, DeleteClientContactMutationVariables>(DeleteClientContactDocument, { uid },
+const deleteClientContact = (contact: IClientContact) => {
+  withClientMutation<DeleteClientContactMutation, DeleteClientContactMutationVariables>(
+    DeleteClientContactDocument,
+    { uid: contact.uid },
     "deleteClientContact"
-  ).then((res) => clientStore.deleteClientContact(res?.uid));
-}
+  ).then((res) => {
+    if (res) {
+      clientStore.deleteClientContact(contact.uid);
+    }
+  });
+};
 </script>
 
 <template>
@@ -136,7 +141,7 @@ function deleteClientContact(uid: string) {
                 class="px-2 py-1 mr-2 border-border border text-orange-500rounded-smtransition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none">
                 Edit
               </button> <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
-                @click="deleteClientContact(cont?.uid!)"
+                @click="deleteClientContact(cont)"
                 class="px-2 py-1 mr-2 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">
                 Deactivate
               </button>
@@ -145,13 +150,13 @@ function deleteClientContact(uid: string) {
         </tbody>
       </table>
       <div v-if="fetchingClientContacts" class="py-4 text-center">
-        <LoadingMessage message="Fetching client contacts ..." />
+        <fel-loader message="Fetching client contacts ..." />
       </div>
     </div>
   </div>
 
   <!-- Contact Edit Form Modal -->
-  <modal v-if="showContactModal" @close="showContactModal = false">
+  <fel-modal v-if="showContactModal" @close="showContactModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -183,5 +188,5 @@ function deleteClientContact(uid: string) {
         </button>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 </template>

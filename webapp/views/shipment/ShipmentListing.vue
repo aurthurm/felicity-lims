@@ -10,9 +10,6 @@ import { AddShipmentDocument, AddShipmentMutation, AddShipmentMutationVariables 
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
-const PageHeading = defineAsyncComponent(
-  () => import("@/components/common/FelPageHeading.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
 )
@@ -201,53 +198,56 @@ const countNone = computed(
 </script>
 
 <template>
-  <PageHeading title="Shipments" />
-  <div class="flex justify-between items-center">
-    <div>
-      <!-- v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SHIPMENT)" -->
-      <button  @click.prevent="showModal = true"
-        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-        Add Shipment
+  <div class="space-y-6">
+    <fel-heading>
+      <template v-slot:title>Shipments</template>
+      <template v-slot:buttons>
+        <button
+          @click="showModal = true"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+          aria-label="Create New Shipment"
+        >
+          Create New
+        </button>
+      </template>
+    </page-heading>
+
+    <div class="flex items-center space-x-4 mb-4">
+      <button
+        @click="viewIncoming = !viewIncoming"
+        :class="[
+          'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background h-10 py-2 px-4',
+          viewIncoming
+            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+        ]"
+        :aria-pressed="viewIncoming"
+      >
+        {{ viewIncoming ? 'Incoming' : 'Outgoing' }}
       </button>
     </div>
-  </div>
-  <DataTable 
-    :columns="tableColumns" 
-    :data="shipments" 
-    :toggleColumns="true" 
-    :loading="fetchingShipments"
-    :paginable="true" 
-    :pageMeta="{
-        fetchCount: shipmentParams.first,
-        hasNextPage: shipmentPageInfo?.hasNextPage,
-        countNone,
-    }" 
-    :searchable="true" 
-    :filterable="true" 
-    :filterMeta="{
-      defaultFilter: shipmentParams.status,
-      filters: filterOptions,
-    }" 
-    @onSearch="searchShipments" 
-    @onPaginate="showMoreShipments" 
-    :selectable="false"
-  >
-    <template v-slot:pre-filter>
-      <label class="flex">
-        <input type="checkbox" v-model="viewIncoming"> <span class="mx-2">InBound</span>
-      </label>
-    </template>
-    <template v-slot:footer> </template>
-  </DataTable>
 
-  <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+    <data-table
+      :columns="columns"
+      :data="shipmentStore.shipments"
+      :loading="loading"
+      :total="shipmentStore.total"
+      :filter-options="filterOptions"
+      @load-more="showMoreShipments"
+      @search="searchShipments"
+      class="bg-background rounded-lg shadow-sm"
+    />
+  </div>
+
+  <fel-modal v-if="showModal" @close="showModal = false" class="max-w-2xl">
     <template v-slot:header>
-      <div>
-        <h3>Create Shipment</h3>
-        <hr />
-        <ul>
-          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-destructive">
+      <h3 class="text-lg font-medium leading-6 text-foreground">Create New Shipment</h3>
+    </template>
+
+    <template v-slot:validation>
+      <div v-if="errors.length" class="bg-destructive/10 text-destructive p-4 rounded-md mb-4">
+        <ul class="list-disc list-inside space-y-1">
+          <li v-for="(error, index) in errors" :key="index" class="text-sm">
             {{ error }}
           </li>
         </ul>
@@ -255,30 +255,52 @@ const countNone = computed(
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">External Laboratory</span>
-            <select class="form-select block w-full mt-1" v-model="laboratoryUid">
-              <option v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
-                {{ laboratory.name }}
-              </option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Courier</span>
-            <input type="text" class="form-input mt-1 block w-full" v-model="courier" />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">How Many</span>
-            <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" default=1/>
-          </label>
+      <form action="post" class="space-y-6">
+        <div class="grid grid-cols-3 gap-6">
+          <div class="col-span-1">
+            <label class="block space-y-1.5">
+              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">External Laboratory</span>
+              <select 
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                v-model="laboratoryUid"
+              >
+                <option v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
+                  {{ laboratory.name }}
+                </option>
+              </select>
+            </label>
+          </div>
+          
+          <div class="col-span-1">
+            <label class="block space-y-1.5">
+              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Courier</span>
+              <input 
+                type="text" 
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                v-model="courier" 
+              />
+            </label>
+          </div>
+
+          <div class="col-span-1">
+            <label class="block space-y-1.5">
+              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">How Many</span>
+              <input 
+                type="number" 
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                v-model="count" 
+                min="1" 
+                default="1"
+              />
+            </label>
+          </div>
         </div>
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-3 mb-2">
-            <span class="text-foreground">Comment</span>
+
+        <div>
+          <label class="block space-y-1.5">
+            <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comment</span>
             <textarea
-              class="form-input mt-1 block w-full"
+              class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               rows="2"
               placeholder="Notes ..."
               v-model="comment"
@@ -286,12 +308,16 @@ const countNone = computed(
           </label>
         </div>
 
-        <hr />
-        <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
-          Create Shipment
-        </button>
+        <div class="border-t border-border pt-4">
+          <button 
+            type="button" 
+            @click.prevent="saveForm()"
+            class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4"
+          >
+            Create Shipment
+          </button>
+        </div>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 </template>

@@ -10,10 +10,6 @@ import * as shield from "@/guards";
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
 )
-const PageHeading = defineAsyncComponent(
-  () => import("@/components/common/FelPageHeading.vue")
-)
-
 let patientStore = usePatientStore();
 
 const { patients, fetchingPatients, patientPageInfo } = storeToRefs(patientStore);
@@ -168,30 +164,48 @@ let getPatientFullName = (pt: IPatient) => {
 <style lang="postcss" scoped></style>
 
 <template>
-  <PageHeading title="Patients" />
-  <DataTable :columns="tableColumns" :data="patients" :toggleColumns="true" :loading="fetchingPatients" :paginable="true"
-    :pageMeta="{
-      fetchCount: patientParams.first,
-      hasNextPage: patientPageInfo?.hasNextPage,
-      countNone,
-    }" :searchable="true" :filterable="false" @onSearch="searchPatients" @onPaginate="showMorePatients"
-    :selectable="false">
-    <template v-slot:footer>
-      <div>
-        <div class="flex content-start items-center">
-          <span class="text-primary"><i class="fas fa-info-circle"></i></span>
-          <p class="ml-2 italic text-destructive">
-            Click register when you dont find your patient during search*
-          </p>
-        </div>
-        <hr class="my-2" />
-
-        <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
-          :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
-          class="px-4 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground">
-          Register New Patiet
-        </router-link>
-      </div>
-    </template>
-  </DataTable>
+  <div class="space-y-6">
+    <fel-heading title="Patients" />
+    <div class="rounded-lg border border-border bg-card shadow-sm p-6">
+      <DataTable 
+        :columns="tableColumns" 
+        :data="patients" 
+        :toggleColumns="true" 
+        :loading="fetchingPatients" 
+        :paginable="true"
+        :pageMeta="{
+          fetchCount: patientParams.first,
+          hasNextPage: patientPageInfo?.hasNextPage,
+          countNone,
+        }" 
+        :searchable="true" 
+        :filterable="false" 
+        @onSearch="searchPatients" 
+        @onPaginate="showMorePatients"
+        :selectable="false"
+        class="bg-background rounded-lg shadow-sm"
+      >
+        <template v-slot:footer>
+          <div class="space-y-4 p-4">
+            <div class="flex justify-start items-center gap-2">
+              <span class="text-primary">
+                <font-awesome-icon icon="fa-info-circle"></font-awesome-icon>
+              </span>
+              <p class="text-sm text-muted-foreground italic">
+                Click register when you dont find your patient during search*
+              </p>
+            </div>
+            <div class="flex justify-start">
+              <RouterLink 
+                to="/patient/register" 
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              >
+                Register New Patient
+              </RouterLink>
+            </div>
+          </div>
+        </template>
+      </DataTable>
+    </div>
+  </div>
 </template>

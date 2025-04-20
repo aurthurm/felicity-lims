@@ -3,7 +3,7 @@ import useApiUtil from "@/composables/api_util";
 import { AddGrindBoardMutation, AddGrindBoardMutationVariables, AddGrindBoardDocument, EditGrindBoardMutation, EditGrindBoardMutationVariables, EditGrindBoardDocument } from "@/graphql/operations/grind.mutations";
 import { GetGrindSchemeDocument, GetGrindSchemeQuery, GetGrindSchemeQueryVariables } from "@/graphql/operations/grind.queries";
 import { IGrindBoard, IGrindScheme } from "@/models/grind";
-import { resetForm, mutateForm } from "@/utils/helpers";
+import { resetForm, mutateForm } from "@/utils";
 import { RequestPolicy } from "@urql/vue";
 import { defineAsyncComponent, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -100,83 +100,125 @@ function goBack() {
 </script>
 
 <template>
-     <div class="flex items-center">
-        <button @click="goBack" class="mr-4 text-muted-foreground hover:text-foreground">
-          <ArrowLeftIcon class="w-5 h-5" />
-        </button>
-        <h3 class="h3 text-xl">
-            <span class="font-bold mr-4">Project Title:</span>
-            <span>{{ scheme?.title }}</span>
-        </h3>
+  <div class="bg-background rounded-lg shadow-sm border border-border p-6 space-y-6">
+    <!-- Header -->
+    <div class="flex items-center space-x-4">
+      <button 
+        @click="goBack" 
+        class="p-1 text-muted-foreground hover:text-foreground transition-colors duration-200"
+      >
+        <ArrowLeftIcon class="w-5 h-5" />
+      </button>
+      <div class="flex items-center space-x-4">
+        <h1 class="text-2xl font-bold text-foreground">Project Title:</h1>
+        <span class="text-xl text-foreground">{{ scheme?.title }}</span>
       </div>
-
-    
-    <hr class="mt-2 mb-2">
-    <p class="leading-2 bg-background p-2 italic font-medium text-muted-foreground">{{ scheme?.description }}</p>
-    <hr class="mt-2 mb-2">
-
-    <h4 class="h3 text-xl font-semibold mb-2">Boards:</h4>
-    <div class="flex justify-start items-center mb-2">
-        <div>
-            <button v-for="board in scheme?.boards" :key="board.uid"
-            class="py-1 px-4 mr-2 bg-muted text-foreground shadow-md overflow-hidden font-medium border-2 border-border"
-            :class="{ 'bg-sky-500 text-primary-foreground border-sky-500': selectedBoard?.uid === board.uid }"
-            @click="selectBoard(board)"
-            @dblclick="updateBoard(board)">
-            {{ board.title }}</button>
-        </div>
-        <button @click="openCreateBoardForm" class="bg-accent hover:bg-primary text-primary-foreground font-bold py-1 px-2 rounded">+ Board</button>
     </div>
 
-    <board v-if="selectedBoard" :board="selectedBoard" />
+    <!-- Description -->
+    <div class="space-y-4">
+      <div class="border-t border-b border-border py-4">
+        <p class="text-muted-foreground italic">{{ scheme?.description }}</p>
+      </div>
+    </div>
 
-  <!-- Create/Edit Board Modal -->
-  <modal v-if="showBoardModal" @close="showBoardModal = false" content-width="w-full max-w-2xl">
-    <template v-slot:header>
-      <h3 class="text-lg font-semibold">{{ boardFormTitle }}</h3>
-    </template>
-    
-    <template v-slot:body>
-      <form @submit.prevent="saveBoardForm">
-        <!-- Scheme Title -->
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-foreground mb-1" for="title">
-            Scheme Title <span class="text-destructive">*</span>
-          </label>
-          <input
-            id="title"
-            v-model="boardForm.title"
-            type="text"
-            required
-            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-            placeholder="Enter scheme title"
-          />
-        </div>  
-        
-         <!-- Description -->
-         <div class="mb-4">
-          <label class="block text-sm font-medium text-foreground mb-1" for="description">
-            Description
-          </label>
-          <textarea
-            id="description"
-            v-model="boardForm.description"
-            rows="3"
-            class="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
-            placeholder="Enter scheme description"
-          ></textarea>
-        </div>
-        
-        <!-- Submit button -->
-        <div class="flex justify-end">
-          <button
-            type="submit"
-            class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary focus:outline-none focus:ring-2 focus:ring-sky-500"
+    <!-- Boards Section -->
+    <div class="space-y-4">
+      <h2 class="text-xl font-semibold text-foreground">Boards</h2>
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap gap-2">
+          <button 
+            v-for="board in scheme?.boards" 
+            :key="board.uid"
+            class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            :class="[
+              selectedBoard?.uid === board.uid 
+                ? 'bg-primary text-primary-foreground border-transparent' 
+                : 'bg-muted text-foreground border border-border hover:bg-muted/80'
+            ]"
+            @click="selectBoard(board)"
+            @dblclick="updateBoard(board)"
           >
-            {{ formAction ? 'Create' : 'Update' }}
+            {{ board.title }}
           </button>
         </div>
-      </form>
-    </template>
-  </modal>
+        <button 
+          @click="openCreateBoardForm" 
+          class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+        >
+          + Board
+        </button>
+      </div>
+    </div>
+
+    <!-- Selected Board -->
+    <board v-if="selectedBoard" :board="selectedBoard" />
+
+    <!-- Create/Edit Board Modal -->
+    <fel-modal v-if="showBoardModal" @close="showBoardModal = false" content-width="w-full max-w-2xl">
+      <template v-slot:header>
+        <h3 class="text-lg font-semibold text-foreground">{{ boardFormTitle }}</h3>
+      </template>
+      
+      <template v-slot:body>
+        <form @submit.prevent="saveBoardForm" class="space-y-6">
+          <!-- Scheme Title -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-1" for="title">
+              Scheme Title <span class="text-destructive">*</span>
+            </label>
+            <input
+              id="title"
+              v-model="boardForm.title"
+              type="text"
+              required
+              class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              placeholder="Enter scheme title"
+            />
+          </div>  
+          
+          <!-- Description -->
+          <div>
+            <label class="block text-sm font-medium text-foreground mb-1" for="description">
+              Description
+            </label>
+            <textarea
+              id="description"
+              v-model="boardForm.description"
+              rows="3"
+              class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              placeholder="Enter scheme description"
+            ></textarea>
+          </div>
+          
+          <!-- Submit button -->
+          <div class="flex justify-end space-x-3">
+            <button
+              type="button"
+              @click="showBoardModal = false"
+              class="px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+            >
+              {{ formAction ? 'Create' : 'Update' }}
+            </button>
+          </div>
+        </form>
+      </template>
+    </fel-modal>
+  </div>
 </template>
+
+<style scoped>
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1.5rem;
+}
+
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+</style>

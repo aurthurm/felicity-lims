@@ -104,68 +104,93 @@
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <template>
-  <form action="post" class="p-1">
+  <form @submit.prevent="saveForm" class="space-y-4">
+    <div class="space-y-4">
+      <div class="grid grid-cols-3 gap-4">
+        <div class="col-span-2 space-y-2">
+          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Method Name
+          </label>
+          <input
+            v-model="form.name"
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Enter method name..."
+          />
+        </div>
+        <div class="space-y-2">
+          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Keyword
+          </label>
+          <input
+            v-model="form.keyword"
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Enter keyword..."
+          />
+        </div>
+      </div>
 
-    <div class="grid grid-cols-3 gap-x-4 mb-4">
-      <label class="block col-span-2 mb-2">
-        <span class="text-foreground">Method Name</span>
-        <input
-          class="form-input mt-1 block w-full"
-          v-model="form.name"
-          placeholder="Name ..."
-        />
-      </label>
-      <label class="block col-span-1 mb-2">
-        <span class="text-foreground">keyword</span>
-        <input
-          class="form-input mt-1 block w-full"
-          v-model="form.keyword"
-          placeholder="Keyword ..."
-        />
-      </label>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Analyses
+          </label>
+          <VueMultiselect
+            v-model="selectedAnalyses"
+            :options="analyses"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid"
+            :disabled="analysis?.uid != undefined"
+            class="multiselect-blue"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Instruments
+          </label>
+          <VueMultiselect
+            v-model="selectedIntsruments"
+            :options="instruments"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid"
+            class="multiselect-blue"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Description
+          </label>
+          <textarea
+            v-model="form.description"
+            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Enter description..."
+          />
+        </div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-x-4 mb-4">
-      <label class="block col-span-2 mb-2" >
-        <span class="text-foreground">Analyses</span>
-        <VueMultiselect
-        v-model="selectedAnalyses"
-        :options="analyses"
-        :multiple="true"
-        :searchable="true"
-        label="name"
-        track-by="uid"
-        :disabled="analysis?.uid != undefined">
-        </VueMultiselect>
-      </label>
-      <label class="block col-span-2 mb-2">
-        <span class="text-foreground">Instruments</span>
-        <VueMultiselect
-        v-model="selectedIntsruments"
-        :options="instruments"
-        :multiple="true"
-        :searchable="true"
-        label="name"
-        track-by="uid">
-        </VueMultiselect>
-      </label>
-      <label class="block col-span-2 mb-2">
-        <span class="text-foreground">Description</span>
-        <textarea
-        cols="2"
-          class="form-input mt-1 block w-full"
-          v-model="form.description"
-          placeholder="Description ..."
-        />
-      </label>
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+      >
+        Save Changes
+      </button>
     </div>
-    <hr />
-    <button
-      type="button"
-      @click.prevent="saveForm()"
-      class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-    >
-      Save Form
-    </button>
   </form>
 </template>
+
+<style>
+.multiselect-blue {
+  --ms-option-bg-selected: theme('colors.primary.DEFAULT');
+  --ms-option-color-selected: theme('colors.primary.foreground');
+  --ms-tag-bg: theme('colors.primary.DEFAULT');
+  --ms-tag-color: theme('colors.primary.foreground');
+  --ms-ring-color: theme('colors.primary.DEFAULT');
+}
+</style>

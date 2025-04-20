@@ -8,9 +8,6 @@
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
-  const PageHeader = defineAsyncComponent(
-    () => import("@/components/common/FelPageHeading.vue")
-  )
   const ChartLJ = defineAsyncComponent(
     () => import('@/components/analysis/quality/ChartLJ.vue')
   )
@@ -124,7 +121,7 @@
 <template>
   <div class="min-h-[500px]">
     <div class="flex justify-between" >
-      <PageHeader title="Analyses Service Control Charts" />
+      <fel-heading title="Analyses Service Control Charts" />
       <div class="flex justify-start items-center gap-x-2">
         <VueDatePicker 
           class="z-60 disabled:bg-muted" 

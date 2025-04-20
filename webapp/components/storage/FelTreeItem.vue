@@ -32,24 +32,30 @@ const isSelected = computed(() => {
 </script>
 
 <template>
-  <li class="cursor-pointer leading-6 mb-2">
+  <li class="cursor-pointer text-sm mb-2">
     <div 
-      :class="[{ 'text-accent font-bold': isSelected }]" 
+      :class="[
+        'py-1 px-2 rounded-md transition-colors duration-200',
+        'hover:bg-muted/50',
+        { 'bg-muted/30 text-primary font-medium': isSelected }
+      ]" 
       @click="toggle"
     >
-      {{ tree?.name }}
-      <span v-if="tree.children?.length">
-        [{{ tree.isOpen ? "-" : "+" }}]
+      <span class="flex items-center gap-2">
+        <span>{{ tree?.name }}</span>
+        <span v-if="tree.children?.length" class="text-xs text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded">
+          {{ tree.isOpen ? "-" : "+" }}
+        </span>
       </span>
     </div>
     <ul
       v-if="tree.children?.length && tree.isOpen"
       :class="[
-        'pl-4 border-l-2',
+        'pl-4 mt-1 border-l-2',
         {
-          'border-l-orange-200': tree.tag === tags.storeRoom,
-          'border-l-blue-200': tree.tag === tags.storageLocation,
-          'border-l-green-200': tree.tag === tags.storageSection,
+          'border-l-warning/30': tree.tag === tags.storeRoom,
+          'border-l-primary/30': tree.tag === tags.storageLocation,
+          'border-l-success/30': tree.tag === tags.storageSection,
         },
       ]"
     >

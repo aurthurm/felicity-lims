@@ -84,3 +84,12 @@ export interface IReflexAction {
     createdBy?: IUser;
     createdAt?: string;
 }
+
+export interface IComplexCondition {
+    conditionType: 'AND' | 'OR';
+    subconditions: {
+        analysisUid: string;
+        operator: 'eq' | 'neq' | 'gt' | 'lt';
+        value: string;
+    }[];
+}

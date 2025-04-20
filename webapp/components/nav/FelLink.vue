@@ -7,20 +7,52 @@ interface Props {
   routeName: string;
   query?: LocationQueryRaw;
   params?: RouteParamsRaw;
+  variant?: 'default' | 'primary' | 'secondary' | 'muted';
+  size?: 'sm' | 'md' | 'lg';
+  underline?: boolean;
 }
-defineProps<Props>();
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'default',
+  size: 'md',
+  underline: true
+});
+
+const sizeClasses = {
+  sm: 'text-xs',
+  md: 'text-sm',
+  lg: 'text-base'
+} as const;
+
+const variantClasses = {
+  default: 'text-foreground hover:text-primary',
+  primary: 'text-primary hover:text-primary/90',
+  secondary: 'text-secondary-foreground hover:text-secondary',
+  muted: 'text-muted-foreground hover:text-foreground'
+} as const;
 
 const navigate = (routeName: string, query: LocationQueryRaw | undefined, params: RouteParamsRaw | undefined) => {
     router.push({
         name: routeName,
-    ...(query && { query }),
-    ...(params && { params })
+        ...(query && { query }),
+        ...(params && { params })
     });
 }
 </script>
 
 <template>
-    <span class="italic underline text-sm md:text-md text-accent hover:text-primary hover:cursor-pointer" @click="navigate(routeName, query, params)">
+    <button
+        type="button"
+        class="inline-flex items-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        :class="[
+            sizeClasses[size],
+            variantClasses[variant],
+            { 'underline': underline }
+        ]"
+        @click="navigate(routeName, query, params)"
+        :aria-label="`Navigate to ${name}`"
+        role="link"
+    >
         {{ name }}
-    </span>
+    </button>
 </template>

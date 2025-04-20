@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
+import {onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
 import {IAbxSiteOfInfection} from "@/models/microbiology";
@@ -12,11 +12,6 @@ import {
   EditAbxSiteOfInfectionMutationVariables
 } from "@/graphql/operations/microbiology.mutations";
 import { GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables, GetAbxSiteOfInfectionAllDocument } from '@/graphql/operations/microbiology.queries';
-
-
-const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-)
 
 const {withClientMutation, withClientQuery} = useApiUtil()
 
@@ -87,47 +82,30 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Site of Infection"></fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add Abx SiteOfInfection
-    </button> -->
-    <hr>
-
-    <div class="overflow-x-auto mt-4">
-      <div
-          class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
+    <div class="overflow-x-auto">
+      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card shadow-dashboard rounded-lg p-6">
+        <table class="min-w-full divide-y divide-border">
           <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Name
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Description
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
+            <tr>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
+              <th class="px-3 py-3.5"></th>
+            </tr>
           </thead>
-          <tbody class="bg-background">
-          <tr v-for="soi in abxSiteOfInfections" :key="soi?.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground">{{ soi?.name }}</div>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ soi?.description }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-              <!-- <button @click="FormManager(false, soi)"
-                      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-                Edit
-              </button> -->
-            </td>
-          </tr>
+          <tbody class="bg-background divide-y divide-border">
+            <tr v-for="soi in abxSiteOfInfections" :key="soi?.uid">
+              <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ soi?.name }}</td>
+              <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ soi?.description }}</td>
+              <td class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
+                <!-- <button @click="FormManager(false, soi)"
+                        class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                  Edit
+                </button> -->
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -135,53 +113,43 @@ function saveForm(): void {
   </div>
 
   <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Name</span>
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Name</span>
             <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.name"
                 placeholder="Name ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Description</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Description</span>
             <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.description"
                 placeholder="Begin typing ..."
             />
           </label>
         </div>
-        <hr/>
+        <hr class="border-border"/>
         <button
-            type="button"
-            @click.prevent="saveForm()"
-            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+            type="submit"
+            class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Save Abx SiteOfInfection
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
-
 <style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
-}
-
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
-}
+/* Remove the toggle-checkbox styles as they are not needed */
 </style>

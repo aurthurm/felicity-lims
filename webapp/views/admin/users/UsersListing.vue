@@ -7,9 +7,6 @@ import {
 import { IUser } from "@/models/auth";
 import { useUserStore } from "@/stores/user";
 import useApiUtil  from "@/composables/api_util";
-const modal = defineAsyncComponent(
-  () => import( "@/components/ui/FelModal.vue")
-)
 
 interface IUserAuthForm extends IUser {
   groupUid: string;
@@ -76,241 +73,241 @@ function saveUserForm(): void {
   }
   showUserModal.value = false;
 }
+
+const headers = [
+  "First Name",
+  "Last Name",
+  "Email",
+  "Active",
+  "Group",
+  "Username",
+  "Blocked",
+  "Actions"
+];
 </script>
 
 <template>
-  <div class="w-full my-4">
-    <hr />
+  <div class="space-y-6">
     <div class="flex justify-between items-center">
-      <h3>Users</h3>
+      <h1 class="text-2xl font-semibold">Users</h1>
       <button
-        @click="UserFormManager(true)"
-        class="px-2 py-1 ml-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+        @click="showUserModal = true"
+        class="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        aria-label="Add new user"
       >
-        Add User/Lab Contact
+        Add User
       </button>
     </div>
-    <hr />
 
-    <div class="overflow-x-auto mt-4">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-      >
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
+    <div class="bg-card rounded-lg shadow-sm">
+      <table class="min-w-full divide-y divide-border">
+        <thead>
+          <tr>
+            <th
+              v-for="header in headers"
+              :key="header"
+              class="px-6 py-3 text-left text-sm font-medium text-muted-foreground tracking-wider"
+            >
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-background divide-y divide-border">
+          <tr v-for="user in users" :key="user.uid" class="hover:bg-muted/50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.firstName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.lastName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.email }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <span
+                :class="[
+                  'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                  user.isActive ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                ]"
               >
-                First Name
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.groups?.map(g => g?.name).join(', ') }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.userName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <span
+                :class="[
+                  'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                  user.isBlocked ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'
+                ]"
               >
-                Last Name
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
+                {{ user.isBlocked ? 'Blocked' : 'Active' }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-right">
+              <button
+                @click="editUser(user)"
+                class="text-primary hover:text-primary/80 focus:outline-none focus:underline"
+                aria-label="Edit user"
               >
-                Email Adress
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Active
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Groups
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Username
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Blocked
-              </th>
-              <th class="px-1 py-1 border-b-2 border-border"></th>
-            </tr>
-          </thead>
-          <tbody class="bg-background">
-            <tr v-for="user in users" :key="user.uid">
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="flex items-center">
-                  <div class="text-sm leading-5 text-foreground">{{ user.firstName }}</div>
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">{{ user.lastName }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">{{ user.email }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <span
-                  class=""
-                  :class="[
-                    'block h-4 w-4 rounded-full bottom-0 right-0',
-                    user?.isActive ? 'bg-success' : 'bg-destructive',
-                  ]"
-                ></span>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">
-                  {{ userGroupsName(user) }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">
-                  {{ user?.userName }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <span
-                  :class="[
-                    'block h-4 w-4 rounded-full bottom-0 right-0',
-                    !user?.isBlocked ? 'bg-success' : 'bg-destructive',
-                  ]"
-                ></span>
-              </td>
-              <td
-                class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5"
-              >
-                <button v-show="!user.isSuperuser"
-                  @click="UserFormManager(false, user)"
-                  class="px-2 py-1 mr-2 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
-                >
-                  Edit User
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                Edit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- UserForm Modal -->
-  <modal v-if="showUserModal" @close="showUserModal = false">
-    <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
-    </template>
-
+  <fel-modal v-if="showUserModal" @close="showUserModal = false" :title="form.uid ? 'Edit User' : 'Add User'">
     <template v-slot:body>
-      <form action="post" class="p-1" disabled>
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">First Name</span>
+      <form @submit.prevent="saveUserForm()" class="space-y-6">
+        <div class="grid grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="firstName" class="block text-sm font-medium text-foreground">
+              First Name
+            </label>
             <input
-              class="form-input mt-1 block w-full"
+              id="firstName"
               v-model="form.firstName"
-              placeholder="First Name ..."
+              type="text"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter first name"
             />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Last Name</span>
+          </div>
+
+          <div class="space-y-2">
+            <label for="lastName" class="block text-sm font-medium text-foreground">
+              Last Name
+            </label>
             <input
-              class="form-input mt-1 block w-full"
+              id="lastName"
               v-model="form.lastName"
-              placeholder="Last Name ..."
+              type="text"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter last name"
             />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Email</span>
+          </div>
+
+          <div class="space-y-2">
+            <label for="email" class="block text-sm font-medium text-foreground">
+              Email
+            </label>
             <input
-              class="form-input mt-1 block w-full"
-              type="email"
+              id="email"
               v-model="form.email"
-              placeholder="Email ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">UserName</span>
-            <input
-              class="form-input mt-1 block w-full disabled:bg-muted"
-              v-model="form.userName"
-              placeholder="First Name ..."
-              :disabled="form.uid != undefined"
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Password</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="form.password"
-              placeholder="Password ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Confirm Password</span>
-            <input
-              class="form-input mt-1 block w-full"
               type="email"
-              v-model="form.passwordc"
-              placeholder="confirm ..."
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter email address"
             />
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Group</span>
-            <select class="form-select block w-full mt-1" v-model="form.groupUid">
-              <option></option>
-              <option v-for="group in groups" :key="group.uid" :value="group.uid">
+          </div>
+
+          <div class="space-y-2">
+            <label for="userName" class="block text-sm font-medium text-foreground">
+              Username
+            </label>
+            <input
+              id="userName"
+              v-model="form.userName"
+              type="text"
+              :disabled="form.uid != undefined"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-muted disabled:cursor-not-allowed"
+              placeholder="Enter username"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="password" class="block text-sm font-medium text-foreground">
+              Password
+            </label>
+            <input
+              id="password"
+              v-model="form.password"
+              type="password"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter password"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="passwordc" class="block text-sm font-medium text-foreground">
+              Confirm Password
+            </label>
+            <input
+              id="passwordc"
+              v-model="form.passwordc"
+              type="password"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Confirm password"
+            />
+          </div>
+
+          <div class="col-span-2 space-y-2">
+            <label for="groupUid" class="block text-sm font-medium text-foreground">
+              Group
+            </label>
+            <select
+              id="groupUid"
+              v-model="form.groupUid"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">Select a group</option>
+              <option
+                v-for="group in groups"
+                :key="group.uid"
+                :value="group.uid"
+              >
                 {{ group?.name }}
               </option>
             </select>
-          </label>
-          <label for="toggle" class="block col-span-1 text-xs text-foreground mt-4"
-            >Blocked
-            <div
-              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-            >
-              <input
-                type="checkbox"
-                name="toggle"
-                id="toggle"
-                v-model="form.isBlocked"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"
-              />
-              <label
-                for="toggle"
-                class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"
-              ></label>
-            </div>
-          </label>
-          <label for="toggle" class="block col-span-1 text-xs text-foreground mt-4"
-            >Active
-            <div
-              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-            >
-              <input
-                type="checkbox"
-                name="toggle"
-                id="toggle"
-                v-model="form.isActive"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"
-              />
-              <label
-                for="toggle"
-                class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"
-              ></label>
-            </div>
-          </label>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <label class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-foreground">Blocked</span>
+              <button
+                type="button"
+                role="switch"
+                :aria-checked="form.isBlocked"
+                @click="form.isBlocked = !form.isBlocked"
+                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                :class="[form.isBlocked ? 'bg-destructive' : 'bg-success']"
+              >
+                <span
+                  aria-hidden="true"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out"
+                  :class="[form.isBlocked ? 'translate-x-5' : 'translate-x-0']"
+                />
+              </button>
+            </label>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <label class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-foreground">Active</span>
+              <button
+                type="button"
+                role="switch"
+                :aria-checked="form.isActive"
+                @click="form.isActive = !form.isActive"
+                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                :class="[form.isActive ? 'bg-success' : 'bg-destructive']"
+              >
+                <span
+                  aria-hidden="true"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out"
+                  :class="[form.isActive ? 'translate-x-5' : 'translate-x-0']"
+                />
+              </button>
+            </label>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveUserForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="flex justify-end pt-6">
+          <button
+            type="submit"
+            class="inline-flex justify-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            {{ form.uid ? 'Update' : 'Create' }} User
+          </button>
+        </div>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 @/graphql/operations/_mutations@/graphql/_mutations

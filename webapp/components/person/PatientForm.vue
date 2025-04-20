@@ -1,27 +1,34 @@
 <script setup lang="ts">
 import VueMultiselect from "vue-multiselect";
-import { reactive, computed, onMounted, PropType, toRefs, ref } from "vue";
+import { reactive, computed, onMounted, toRefs, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { IPatient } from "@/models/patient";
-import { AddPatientDocument, AddPatientMutation, AddPatientMutationVariables } from "@/graphql/operations/patient.mutations";
-
+import * as yup from 'yup';
+import useApiUtil from '@/composables/api_util';
+import { 
+  AddPatientDocument,
+  AddPatientMutation,
+  AddPatientMutationVariables,
+  EditPatientDocument,
+  EditPatientMutation,
+  EditPatientMutationVariables,
+} from '@/graphql/operations/patient.mutations';
 import { useClientStore } from "@/stores/client";
 import { useLocationStore } from "@/stores/location";
 import { usePatientStore } from "@/stores/patient";
-import useApiUtil  from "@/composables/api_util";
 import { IClient } from "@/models/client";
 import { IPatientIdentificationForm } from "@/models/patient";
-import { formatDate, isNullOrWs } from "@/utils/helpers";
+import { formatDate, isNullOrWs } from "@/utils";
 import dayjs from "dayjs";
 import { useField, useForm } from "vee-validate";
-import { object, string, boolean, number, date } from "yup";
 
-const props = defineProps({
-  patient: Object as PropType<IPatient>,
-  navigate: {
-    type: Boolean,
-    default: false,
-  },
+interface Props {
+  patient?: IPatient;
+  navigate?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  navigate: false
 });
 
 const emit = defineEmits(["close"]);
@@ -44,10 +51,10 @@ const state = reactive({
 });
 
 let clientParams = reactive({
-  first: undefined,
+  first: undefined as number | undefined,
   after: "",
   text: "",
-  sortBy: ["name"],
+  sortBy: ["name"] as string[],
   filterAction: false,
 });
 
@@ -85,24 +92,24 @@ const calculateAge = () => {
   }
 }
 
-const patientSchema = object({
-  uid: number(),
-  clientPatientId: string().required("Client Patient ID is Required"),
-  patientId: string().nullable(),
-  firstName: string().required("First Name is Required"),
-  middleName: string().nullable(),
-  lastName: string().required("Last Name is Required"),
-  client: object().required("Client is Required"),
-  gender: string().required("Gender is Required"),
-  age: number().nullable(),
-  dateOfBirth: date().nullable(),
-  ageDobEstimated: boolean().nullable(),
-  phoneHome: string().nullable(),
-  phoneMobile: string().nullable(),
-  consentSms: boolean().nullable(),
-  districtUid: number().nullable(),
-  provinceUid: number().nullable(),
-  countryUid: number().nullable(),
+const patientSchema = yup.object({
+  uid: yup.number().nullable(),
+  clientPatientId: yup.string().required("Client Patient ID is Required"),
+  patientId: yup.string().nullable(),
+  firstName: yup.string().required("First Name is Required"),
+  middleName: yup.string().nullable(),
+  lastName: yup.string().required("Last Name is Required"),
+  client: yup.object().required("Client is Required"),
+  gender: yup.string().required("Gender is Required"),
+  age: yup.number().nullable(),
+  dateOfBirth: yup.date().nullable(),
+  ageDobEstimated: yup.boolean().nullable(),
+  phoneHome: yup.string().nullable(),
+  phoneMobile: yup.string().nullable(),
+  consentSms: yup.boolean().nullable(),
+  districtUid: yup.number().nullable(),
+  provinceUid: yup.number().nullable(),
+  countryUid: yup.number().nullable(),
 });
 
 const { handleSubmit, errors } = useForm({
@@ -166,7 +173,7 @@ function addPatient(payload: IPatient) {
         gender: payload.gender,
         dateOfBirth: formatDate(payload.dateOfBirth, "YYYY-MM-DD HH:mm"),
         ageDobEstimated: payload.ageDobEstimated,
-        clientUid: payload.client.uid,
+        clientUid: payload.client.uid!,
         phoneMobile: payload.phoneMobile,
         consentSms: payload.consentSms,
         countryUid: payload.countryUid,
@@ -179,14 +186,16 @@ function addPatient(payload: IPatient) {
   ).then((result) => {
     patientStore.addPatient(result);
     emit("close", result);
-    if (navigate.value === true)
-      router.push({ name: "patient-detail", params: { patientUid: result.uid } });
+    if (navigate.value === true){
+      router.push({ name: "patient-detail", params: { patientUid: result?.uid } });
+    }
+
   });
 }
 
 function updatePatient(payload: IPatient) {
-  withClientMutation<UpdatePatientMutation, UpdatePatientMutationVariables>(
-    UpdatePatientDocument,
+  withClientMutation<EditPatientMutation, EditPatientMutationVariables>(
+    EditPatientDocument,
     {
       uid: payload.uid,
       payload: {
@@ -196,9 +205,9 @@ function updatePatient(payload: IPatient) {
         lastName: payload.lastName,
         age: payload.age,
         gender: payload.gender,
-        dateOfBirth: payload.dateOfBirth,
+        dateOfBirth: payload.dateOfBirth ? new Date(payload.dateOfBirth).toISOString() : null,
         ageDobEstimated: payload.ageDobEstimated,
-        clientUid: payload.client.uid,
+        clientUid: payload.client.uid!,
         phoneMobile: payload.phoneMobile,
         consentSms: payload.consentSms,
         countryUid: payload.countryUid,
@@ -214,82 +223,89 @@ function updatePatient(payload: IPatient) {
   });
 }
 
-// Provinces
-function getProvinces(event: any) {
+
+function getProvinces(event: Event) {
   locationsStore.filterProvincesByCountry(countryUid.value);
 }
 
-// Districts
-function getDistricts(event: any) {
+function getDistricts(event: Event) {
   locationsStore.filterDistrictsByProvince(provinceUid.value);
 }
 
-// Extra Patient Identifiers
-const addIdentifier = () => {
+function addIdentifier() {
   identifications.value.push({ identificationUid: "12122", value: "" })
 }
-const removeIdentifier = (index: number) => {
+
+function removeIdentifier(index: number) {
   identifications.value.splice(index, 1)
 }
 </script>
 
 <template>
-  <form @submit.prevent="submitPatientForm" class="border-2 border-foreground border-dotted rounded-sm px-4 py-8"
-    autocomplete="off">
+  <form @submit.prevent="submitPatientForm"
+    autocomplete="off" role="form" aria-label="Patient Information Form">
     <label class="flex whitespace-nowrap w-full">
       <span class="text-foreground w-4/12">Patient Unique Identifier</span>
       <div class="w-full">
-        <input class="form-input mt-1 block w-full" v-model="clientPatientId" placeholder="Patient Unique Identifier" />
-        <div class="text-destructive w-4/12">{{ errors.clientPatientId }}</div>
+        <input class="form-input mt-1 block w-full" v-model="clientPatientId" placeholder="Patient Unique Identifier" 
+          aria-label="Patient Unique Identifier" aria-required="true" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.clientPatientId }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap w-full">
       <span class="text-foreground w-4/12">First Name</span>
       <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="firstName" placeholder="First Name" />
-        <div class="text-destructive w-4/12">{{ errors.firstName }}</div>
+        <input class="form-input mt-1 w-full" v-model="firstName" placeholder="First Name" 
+          aria-label="First Name" aria-required="true" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.firstName }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-foreground w-4/12">Middle Name</span>
       <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="middleName" placeholder="Middle Name" />
-        <div class="text-destructive w-4/12">{{ errors.middleName }}</div>
+        <input class="form-input mt-1 w-full" v-model="middleName" placeholder="Middle Name" 
+          aria-label="Middle Name" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.middleName }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap w-full">
       <span class="text-foreground w-4/12">Last Name</span>
       <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="lastName" placeholder="Last Name" />
-        <div class="text-destructive w-4/12">{{ errors.lastName }}</div>
+        <input class="form-input mt-1 w-full" v-model="lastName" placeholder="Last Name" 
+          aria-label="Last Name" aria-required="true" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.lastName }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap my-2 w-full">
       <span class="text-foreground w-4/12">Age/DOB Estimated?</span>
       <div class="w-full flex justify-between items-center">
-        <input type="checkbox" class="form-checkbox text-primary" v-model="ageDobEstimated" />
+        <input type="checkbox" class="form-checkbox text-primary" v-model="ageDobEstimated" 
+          aria-label="Age/DOB Estimated" />
         <div class="flex justify-start items-center gap-x-2 ml-4" v-show="ageDobEstimated">
           <label for="estimateYears">
             <span class="mr-1">Years</span>
             <input name="estimateYears" type="number" min=0 class="form-input w-24 py-0 text-primary"
-              v-model="estimateYears" @change="estimateDOB()" @keyup="estimateDOB()" />
+              v-model="estimateYears" @change="estimateDOB()" @keyup="estimateDOB()" 
+              aria-label="Estimated Years" />
           </label>
           <label for="estimateMonths">
             <span class="mr-1">Months</span>
             <input name="estimateMonths" type="number" min=0 max=12 class="form-input w-24 py-0 text-primary"
-              v-model="estimateMonths" @change="estimateDOB()" @keyup="estimateDOB()" />
+              v-model="estimateMonths" @change="estimateDOB()" @keyup="estimateDOB()" 
+              aria-label="Estimated Months" />
           </label>
           <label for="estimateDays">
             <span class="mr-1">Days</span>
             <input name="estimateDays" type="number" min=0 max=365 class="form-input w-24 py-0 text-primary"
-              v-model="estimateDays" @change="estimateDOB()" @keyup="estimateDOB()" />
+              v-model="estimateDays" @change="estimateDOB()" @keyup="estimateDOB()" 
+              aria-label="Estimated Days" />
           </label>
         </div>
-        <div class="text-destructive w-4/12">{{ errors.ageDobEstimated }}</div>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.ageDobEstimated }}</div>
       </div>
     </label>
 
@@ -301,8 +317,9 @@ const removeIdentifier = (index: number) => {
         v-model="dateOfBirth" 
         :disabled="ageDobEstimated" 
         @closed="calculateAge()"
-        :max-date="maxDate"></VueDatePicker>
-        <div class="text-destructive w-4/12">{{ errors.dateOfBirth }}</div>
+        :max-date="maxDate"
+        aria-label="Date of Birth"></VueDatePicker>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.dateOfBirth }}</div>
       </div>
     </label>
 
@@ -310,48 +327,49 @@ const removeIdentifier = (index: number) => {
       <span class="text-foreground w-4/12">Age</span>
       <div class="w-full">
         <input class="form-input mt-1 w-full disabled:bg-muted" type="number" v-model="age" placeholder="Age"
-          disabled />
-        <div class="text-destructive w-4/12">{{ errors.age }}</div>
+          disabled aria-label="Age" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.age }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-foreground w-4/12">Gender</span>
       <div class="w-full">
-        <select class="form-select mt-1 w-full" v-model="gender">
-          <option></option>
+        <select class="form-select mt-1 w-full" v-model="gender" aria-label="Gender" aria-required="true">
+          <option value=""></option>
           <option v-for="sex of state.genders" :key="sex" :value="sex">
             {{ sex }}
           </option>
         </select>
-        <div class="text-destructive w-4/12">{{ errors.gender }}</div>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.gender }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-foreground w-4/12">Mobile Number</span>
       <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="phoneMobile" placeholder="Mobile Number" />
-        <div class="text-destructive w-4/12">{{ errors.phoneMobile }}</div>
+        <input class="form-input mt-1 w-full" v-model="phoneMobile" placeholder="Mobile Number" 
+          aria-label="Mobile Number" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.phoneMobile }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-foreground w-4/12">Consent to SMS</span>
       <div class="w-full">
-        <input type="checkbox" class="form-checkbox text-primary" v-model="consentSms" />
-        <div class="text-destructive w-4/12">{{ errors.consentSms }}</div>
+        <input type="checkbox" class="form-checkbox text-primary" v-model="consentSms" 
+          aria-label="Consent to SMS" />
+        <div class="text-destructive w-4/12" role="alert">{{ errors.consentSms }}</div>
       </div>
     </label>
 
-    <!-- other identifiers: passport, client pid, national id -->
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-foreground w-4/12">Primary Referrer</span>
       <div class="w-full">
         <VueMultiselect placeholder="Select a Primary Referrer" v-model="client" :options="state.clients"
-          :searchable="true" label="name" track-by="uid">
+          :searchable="true" label="name" track-by="uid" aria-label="Primary Referrer" aria-required="true">
         </VueMultiselect>
-        <div class="text-destructive w-4/12">{{ errors.client }}</div>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.client }}</div>
       </div>
     </label>
 
@@ -359,25 +377,29 @@ const removeIdentifier = (index: number) => {
       <span class="text-foreground w-4/12 flex justify-between items-center">
         <span class="mr-4">Extra Ids:</span>
         <div>
-          <span
-            class="relative px-1 mr-2 mt-4 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-            @click="addIdentifier()">
+          <button type="button"
+            class="relative px-1 mr-2 mt-4 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            @click="addIdentifier()"
+            aria-label="Add Extra Identifier">
             Add
-          </span>
+          </button>
         </div>
       </span>
       <div class="w-full border-border">
-        <div class="flex justify-around items-center  w-full" v-for="(identication, index) of identifications">
+        <div class="flex justify-around items-center w-full" v-for="(identication, index) of identifications" :key="index">
           <span>Identification</span>
-          <select class="form-select mt-1" v-model="identication.identificationUid">
-            <option></option>
+          <select class="form-select mt-1" v-model="identication.identificationUid" 
+            :aria-label="'Identification Type ' + (index + 1)">
+            <option value=""></option>
             <option v-for="identifier of patientStore.identifications" :key="identifier.uid" :value="identifier.uid">
               {{ identifier.name }}
             </option>
           </select>
           <span>Value</span>
-          <input type="text" class="form-input text-primary" v-model="identication.value" />
-          <span class="p-2 text-destructive" @click.prevent="removeIdentifier(index)">X</span>
+          <input type="text" class="form-input text-primary" v-model="identication.value" 
+            :aria-label="'Identification Value ' + (index + 1)" />
+          <button type="button" class="p-2 text-destructive" @click.prevent="removeIdentifier(index)"
+            :aria-label="'Remove Identification ' + (index + 1)">X</button>
         </div>
       </div>
     </label>
@@ -388,46 +410,49 @@ const removeIdentifier = (index: number) => {
       <div class="col-span-1">
         <label class="flex gap-x-2 items-center whitespace-nowrap w-full">
           <span class="text-foreground w-4/12">Country</span>
-          <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
+          <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)"
+            aria-label="Country">
             <option :value="null"></option>
             <option v-for="country in state.countries" :key="country.uid" :value="country.uid">
               {{ country.name }}
             </option>
           </select>
         </label>
-        <div class="text-destructive w-4/12">{{ errors.countryUid }}</div>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.countryUid }}</div>
       </div>
 
       <div class="col-span-1">
         <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
           <span class="text-foreground w-4/12">Province</span>
-          <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
+          <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)"
+            aria-label="Province">
             <option :value="null"></option>
             <option v-for="province in state.provinces" :key="province.uid" :value="province.uid">
               {{ province.name }}
             </option>
           </select>
         </label>
-        <div class="text-destructive w-4/12">{{ errors.provinceUid }}</div>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.provinceUid }}</div>
       </div>
 
       <div class="col-span-1">
         <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
           <span class="text-foreground w-4/12">District</span>
-          <select class="form-select mt-1 w-full" v-model="districtUid">
+          <select class="form-select mt-1 w-full" v-model="districtUid" aria-label="District">
             <option :value="null"></option>
             <option v-for="district in state.districts" :key="district.uid" :value="district.uid">
               {{ district.name }}
             </option>
           </select>
         </label>
+        <div class="text-destructive w-4/12" role="alert">{{ errors.districtUid }}</div>
       </div>
-      <div class="text-destructive w-4/12">{{ errors.districtUid }}</div>
     </div>
 
     <hr />
     <button type="submit"
-      class="-mb-4 w-1/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+      class="-mb-4 w-1/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary"
+      aria-label="Save Patient Information">
       Save Patient
     </button>
   </form>

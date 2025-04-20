@@ -4,10 +4,6 @@ import axios from "@/composables/axios";
 import useApiUtils from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
 
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-
 const{ addError } = useApiUtils()
 const { toastSuccess, toastError } = useNotifyToast();
 const loading = ref(false);
@@ -34,23 +30,26 @@ const loadDefault = (_) => {
 </script>
 
 <template>
-  <div class="mt-4">
-    <div class="mt-2">
-      <h2 class="h2 mb-4">Load Default Setup Data</h2>
-      <hr />
-      <p>Load analysis, services, profiles, sample types etc</p>
-    </div>
+  <div class="space-y-6">
+    <div class="rounded-lg border border-border bg-card p-6">
+      <div class="space-y-4">
+        <h2 class="text-2xl font-semibold text-foreground">Load Default Setup Data</h2>
+        <p class="text-sm text-muted-foreground">Load analysis, services, profiles, sample types etc</p>
+      </div>
 
-    <button
-      v-if="!loading"
-      type="button"
-      @click.prevent="loadDefault"
-      class="mt-4 px-2 py-1 border border-primary bg-primary text-primary-foreground rounded-sm transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-    >
-      load setup data
-    </button>
-    <div v-else class="mt-4">
-      <LoadingMessage message="Loading default setup data ..." />
+      <div class="mt-6">
+        <button
+          v-if="!loading"
+          type="button"
+          @click.prevent="loadDefault"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+        >
+          Load Setup Data
+        </button>
+        <div v-else class="rounded-lg border border-border bg-card p-4">
+          <fel-loader message="Loading default setup data ..." />
+        </div>
+      </div>
     </div>
   </div>
 </template>

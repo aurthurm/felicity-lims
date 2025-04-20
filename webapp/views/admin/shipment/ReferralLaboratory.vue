@@ -58,154 +58,164 @@
 </script>
 
 <template>
+  <div>
+    <fel-heading title="Referral Labs">
+      <fel-button @click="FormManager(true)">Add Referral Laboratory</fel-button>
+    </fel-heading>
 
-    <div class="container w-full my-4">
-        <hr>
-          <button @click="FormManager(true)"
-           class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add Referral Laboratory</button>
-        <hr>
-
-        <div class="overflow-x-auto mt-4">
-            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-            <table class="min-w-full">
-                <thead>
-                <tr>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Code</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">url</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">is refferal</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">is reference</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">has username</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">has password</th>
-                    <th class="px-1 py-1 border-b-2 border-border"></th>
-                </tr>
-                </thead>
-                <tbody class="bg-background">
-                <tr v-for="laboratory in referralLaboratories" :key="laboratory?.uid">
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="flex items-center">
-                          <div class="text-sm leading-5 text-foreground">{{ laboratory?.name }}</div>
-                      </div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="text-sm leading-5 text-primary">{{ laboratory?.code }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="text-sm leading-5 text-primary">{{ laboratory?.url }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="text-sm leading-5 text-primary">{{ laboratory?.isReferral }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="text-sm leading-5 text-primary">{{ laboratory?.isReference }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="text-sm leading-5 text-primary">{{ !!laboratory?.username ? "yes" : "no"  }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                      <div class="text-sm leading-5 text-primary">{{ !laboratory?.password ? "yes" : "no" }}</div>
-                    </td>
-                    <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                        <button @click="FormManager(false, laboratory)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            </div>
-        </div>
+    <div class="overflow-x-auto mt-4">
+      <div class="align-middle inline-block min-w-full rounded-lg shadow-md bg-card p-6">
+        <table class="min-w-full">
+          <thead class="bg-muted">
+            <tr>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Code</th>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">URL</th>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Referral</th>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Reference</th>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Username</th>
+              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Password</th>
+              <th class="px-3 py-3 border-b border-border"></th>
+            </tr>
+          </thead>
+          <tbody class="bg-background divide-y divide-border">
+            <tr v-for="laboratory in referralLaboratories" :key="laboratory?.uid" class="hover:bg-muted/50 transition-colors">
+              <td class="px-3 py-2 text-sm text-foreground break-words">
+                {{ laboratory?.name }}
+              </td>
+              <td class="px-3 py-2 text-sm text-foreground break-words">
+                {{ laboratory?.code }}
+              </td>
+              <td class="px-3 py-2 text-sm text-foreground break-words">
+                {{ laboratory?.url }}
+              </td>
+              <td class="px-3 py-2 text-sm text-foreground">
+                 {{ laboratory?.isReferral ? 'Yes' : 'No' }}
+              </td>
+              <td class="px-3 py-2 text-sm text-foreground">
+                 {{ laboratory?.isReference ? 'Yes' : 'No' }}
+              </td>
+              <td class="px-3 py-2 text-sm text-foreground">
+                 {{ !!laboratory?.username ? "Yes" : "No" }}
+              </td>
+              <td class="px-3 py-2 text-sm text-foreground">
+                 {{ !!laboratory?.password ? "Yes" : "No" }}
+              </td>
+              <td class="px-3 py-2 text-right text-sm">
+                <button
+                  @click="FormManager(false, laboratory)"
+                  class="rounded-md border border-secondary px-2 py-1 text-xs font-medium text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                 >
+                   Edit
+                 </button>
+              </td>
+            </tr>
+            <tr v-if="!referralLaboratories || referralLaboratories.length === 0">
+               <td :colspan="8" class="px-3 py-4 text-center text-sm text-muted-foreground">
+                 No referral laboratories found.
+               </td>
+             </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
-      <!-- Location Edit Form Modal -->
   <modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-card-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Laboratory Name</span>
+      <form action="post" class="p-4 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="block col-span-1">
+            <span class="text-sm font-medium text-foreground">Laboratory Name</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="form.name"
               placeholder="Name ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Code</span>
+          <label class="block col-span-1">
+            <span class="text-sm font-medium text-foreground">Code</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="form.code"
-              placeholder="Prefix ..."
+              placeholder="Code ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Url</span>
+          <label class="block col-span-1 md:col-span-2">
+            <span class="text-sm font-medium text-foreground">URL</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="form.url"
-              placeholder="Prefix ..."
+              placeholder="https://example.com ..."
+              type="url"
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Username</span>
+          <label class="block col-span-1">
+            <span class="text-sm font-medium text-foreground">Username</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="form.username"
-              placeholder="Prefix ..."
+              placeholder="Optional username ..."
+              autocomplete="off"
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Password</span>
+          <label class="block col-span-1">
+            <span class="text-sm font-medium text-foreground">Password</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="form.password"
-              placeholder="Prefix ..."
+              placeholder="Optional password ..."
+              type="password"
+              autocomplete="new-password"
             />
           </label>
-          <label for="toggle" class="text-xs text-foreground mr-4">Is Referral
-            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input 
-                type="checkbox" 
-                name="toggle" id="toggle" 
+
+          <label for="isReferralToggle" class="flex items-center cursor-pointer col-span-1">
+            <div class="relative">
+              <input
+                type="checkbox"
+                id="isReferralToggle"
                 v-model="form.isReferral"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"/>
-                <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"></label>
+                class="sr-only peer"
+              />
+              <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary transition"></div>
+              <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background border border-border transition-transform peer-checked:translate-x-full"></div>
             </div>
+            <span class="ml-3 text-sm font-medium text-foreground">Is Referral</span>
           </label>
-          <label for="toggle" class="text-xs text-foreground mr-4">Is Reference
-            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input 
-                type="checkbox" 
-                name="toggle" id="toggle" 
-                v-model="form.isReference"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"/>
-                <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"></label>
-            </div>
-          </label>
+
+          <label for="isReferenceToggle" class="flex items-center cursor-pointer col-span-1">
+             <div class="relative">
+               <input
+                 type="checkbox"
+                 id="isReferenceToggle"
+                 v-model="form.isReference"
+                 class="sr-only peer"
+               />
+               <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary transition"></div>
+               <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background border border-border transition-transform peer-checked:translate-x-full"></div>
+             </div>
+             <span class="ml-3 text-sm font-medium text-foreground">Is Reference</span>
+           </label>
+
         </div>
-        <hr />
+        <hr class="border-t border-border" />
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Save Laboratory
         </button>
       </form>
     </template>
   </modal>
-
 </template>
 
-
 <style scoped>
-  .toggle-checkbox:checked {
-    right: 0;
-    border-color: #68D391;
-  }
-  .toggle-checkbox:checked + .toggle-label {
-    background-color: #68D391;
-  }
+/* Minimal scoped styles - toggle handled by utilities now */
 </style>

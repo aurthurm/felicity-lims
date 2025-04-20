@@ -134,30 +134,30 @@
 <template>
     <div class="grid grid-cols-12">
       <section class="col-span-6 gap-x-4 pr-4 mb-2">
-        <h3 class="font-semibold text-l text-foreground">Pricing Information</h3>
+        <h3 class="font-semibold text-l text-gray-600">Pricing Information</h3>
         <hr>
         <form class="mt-4">
           <div class="">
             <label class="flex justify-start items-center gap-x-4 mb-4">
-              <span class="col-span-1 text-foreground">Amount: $</span>
+              <span class="col-span-1 text-gray-700">Amount: $</span>
               <input class="form-input mt-1" v-model="formPricing.amount" type="number" min="0.0" step="0.1" />
             </label>
           </div>
           <button type="button" @click.prevent="updatePricing()"
-            class="border border-primary bg-primary text-primary-foreground rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+            class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
             Update Pricing
           </button>
         </form>
       </section>
 
       <section class="col-span-6 gap-x-4 mb-2 border-l-2 border-l-gray-500 pl-4">
-        <h3 class="font-semibold text-l text-foreground">Discounts Information</h3>
+        <h3 class="font-semibold text-l text-gray-600">Discounts Information</h3>
         <hr>
 
         <form class="mt-4">
           <div class="grid grid-cols-2 gap-4">
             <label class="col-span-1 whitespace-nowrap mb-2 w-full">
-              <span class="text-foreground w-4/12">Discount Type</span>
+              <span class="text-gray-700 w-4/12">Discount Type</span>
               <div class="w-full">
                 <select class="form-select mt-1 w-full"
                 v-model="formDiscount.discountType">
@@ -169,7 +169,7 @@
               </div>
             </label>
             <label class="col-span-1 whitespace-nowrap mb-2 w-full">
-              <span class="text-foreground w-4/12">Value Type</span>
+              <span class="text-gray-700 w-4/12">Value Type</span>
               <div class="w-full">
                 <select class="form-select mt-1 w-full"
                 v-model="formDiscount.valueType">
@@ -183,16 +183,16 @@
           </div>
           <div class="grid grid-cols-4 gap-4 mt-1">
             <label class="col-span-2">
-              <span class="col-span-1 text-foreground">Start Date</span>
+              <span class="col-span-1 text-gray-700">Start Date</span>
               <input class="form-input w-full" v-model="formDiscount.startDate" type="date"/>
             </label>
             <label class="col-span-2">
-              <span class="col-span-1 text-foreground">End Date</span>
+              <span class="col-span-1 text-gray-700">End Date</span>
               <input class="form-input w-full" v-model="formDiscount.endDate" type="date"/>
             </label>
             <label v-show="formDiscount.discountType === 'voucher'"
              class="col-span-2 whitespace-nowrap w-full mb-2">
-              <span class="text-foreground w-4/12">Voucher</span>
+              <span class="text-gray-700 w-4/12">Voucher</span>
               <div class="w-full">
                 <select class="form-select mt-1 w-full"
                 v-model="formDiscount.voucherUid">
@@ -206,24 +206,24 @@
           </div>
           <div class="grid grid-cols-2 gap-x-4 mt-1">
             <label v-show="formDiscount.valueType === 'percentage'" class="col-span-1">
-              <span class="text-foreground">Value Percent</span>
+              <span class="text-gray-700">Value Percent</span>
               <input class="form-input w-full" v-model="formDiscount.valuePercent" type="number" step="0.01" min="0.00" max="1" />
               <span class="italic leading text-xs">Example: 0.05 for 5%</span>
             </label>
             <label v-show="formDiscount.valueType === 'amount'" class="col-span-1">
-              <span class="text-foreground">Value Amount</span>
+              <span class="text-gray-700">Value Amount</span>
               <input class="form-input w-full" v-model="formDiscount.valueAmount" type="number" step="0.1" min="0.0" />
             </label>
           </div>
           <div class="grid grid-cols-2 gap-4 mt-4 mb-2">
             <label class="col-span-4 flex justify-start items-center gap-x-4">
-              <span class="col-span-1 text-foreground">Is Active</span>
+              <span class="col-span-1 text-gray-700">Is Active</span>
               <input class="form-checkbox" v-model="formDiscount.isActive" type="checkbox"/>
             </label>
           </div>
           <hr>
           <button type="button" @click.prevent="updateDiscounting()"
-            class="border border-primary bg-primary text-primary-foreground rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+            class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
             Update Discount
           </button>
         </form>

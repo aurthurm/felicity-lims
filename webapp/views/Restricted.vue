@@ -1,15 +1,19 @@
 <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  import { pages } from "@/router/constants";
+import { useRouter } from 'vue-router'
+import { pages } from "@/router/constants"
 
-  const router = useRouter();
-  const goHome = () => router.push({ name: pages.DASHBOARD });
+// Initialize router
+const router = useRouter()
+
+// Navigation handler
+const goHome = () => router.push({ name: pages.DASHBOARD })
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-screen bg-muted px-6">
-    <div class="p-6 max-w-sm w-full bg-background shadow-md rounded-sm">
-      <div class="flex justify-center items-center mb-2">
+  <div class="flex h-screen items-center justify-center bg-muted px-6">
+    <div class="w-full max-w-sm rounded-sm bg-background p-6 shadow-md">
+      <!-- Logo Section -->
+      <div class="mb-2 flex items-center justify-center">
         <svg class="h-10 w-10" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M364.61 390.213C304.625 450.196 207.37 450.196 147.386 390.213C117.394 360.22 102.398 320.911 102.398 281.6C102.398 242.291 117.394 202.981 147.386 172.989C147.386 230.4 153.6 281.6 230.4 307.2C230.4 256 256 102.4 294.4 76.7999C320 128 334.618 142.997 364.608 172.989C394.601 202.981 409.597 242.291 409.597 281.6C409.597 320.911 394.601 360.22 364.61 390.213Z"
@@ -24,20 +28,20 @@
             fill="white"
           />
         </svg>
-        <span class="text-foreground font-semibold text-2xl">FelicityLIMS</span>
+        <span class="text-2xl font-semibold text-foreground">FelicityLIMS</span>
       </div>
-      <hr>
-      <section class="flex justify-center items-center mt-4">
-        <h1>Sorry You are not Authorised to access this resource</h1>
-
+      <hr class="border-border" />
+      <!-- Error Message Section -->
+      <section class="mt-4 flex items-center justify-center">
+        <h1 class="text-foreground">Sorry You are not Authorised to access this resource</h1>
         <div>
           <button 
-          @click="goHome"
-          class="ml-4 py-2 px-4 text-center border-border border rounded-sm w-full text-accent text-sm hover:bg-accent hover:text-primary-foreground">
-            Go Home /
+            @click="goHome"
+            class="ml-4 w-full rounded-sm border border-border px-4 py-2 text-center text-sm text-accent hover:bg-accent hover:text-primary-foreground"
+          >
+            Go Home
           </button>
         </div>
-
       </section>
     </div>
   </div>

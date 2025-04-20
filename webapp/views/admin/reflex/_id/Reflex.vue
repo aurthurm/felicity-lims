@@ -19,7 +19,7 @@ import {
   EditReflexBrainDocument, EditReflexBrainMutation, EditReflexBrainMutationVariables,
   DeleteReflexBrainDocument, DeleteReflexBrainMutation, DeleteReflexBrainMutationVariables
 } from "@/graphql/operations/reflex.mutations";
-import { stringifyNumber } from "@/utils/helpers";
+import { stringifyNumber } from "@/utils";
 import { IAnalysisService, IResultOption } from "@/models/analysis";
 import Swal from "sweetalert2";
 const modal = defineAsyncComponent(
@@ -243,403 +243,411 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
 </script>
 
 <template>
-  <h3 class="mt-4 mb-2 text-xl text-foreground font-semibold tracking-wide">
-    {{ reflexStore.reflexRule?.name }}
-  </h3>
-  <p class="leading-2 text-md italic tracking-wide">
-    {{ reflexStore.reflexRule?.description }}
-  </p>
-  <hr />
+  <div class="space-y-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-2xl font-semibold text-foreground">{{ reflexStore.reflexRule?.name }}</h2>
+        <p class="mt-2 text-muted-foreground">{{ reflexStore.reflexRule?.description }}</p>
+      </div>
+      <button
+        @click="reflexActionFormManager(true)"
+        class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      >
+        Add Reflex Action
+      </button>
+    </div>
 
-  <button
-    @click="reflexActionFormManager(true)"
-    class="my-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-  >
-    Add Reflex Action
-  </button>
-  <hr />
+    <div class="space-y-4">
+      <section
+        v-for="action in reflexStore.reflexRule?.reflexActions"
+        :key="action?.uid"
+        class="rounded-md border border-border"
+      >
+        <Accordion>
+          <template v-slot:title>
+            <div class="flex items-center space-x-2 p-4">
+              <button
+                @click="reflexActionFormManager(false, action)"
+                class="text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                <font-awesome-icon icon="edit" class="text-md" />
+              </button>
+              <span class="text-foreground">
+                Reflex Action Level {{ action?.level }} targeting
+                <span v-for="anal in action?.analyses" :key="anal.uid" class="text-primary">
+                  {{ anal?.name }}{{ action?.analyses?.indexOf(anal) !== action?.analyses?.length - 1 ? ', ' : '' }}
+                </span>
+              </span>
+            </div>
+          </template>
+          <template v-slot:body>
+            <div class="p-4 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-foreground">Reflex Action Brains</h3>
+                <button
+                  @click="reflexBrainFormManager(true, action?.uid!, {})"
+                  class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                >
+                  Add Brain
+                </button>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                  v-for="(brain, index) in action?.brains"
+                  :key="brain?.uid"
+                  class="rounded-md border border-border p-4 space-y-2"
+                >
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-lg font-medium text-foreground">
+                      {{ stringToNum(index + 1) }} Brain
+                    </h4>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        @click="reflexBrainFormManager(false, action.uid!, brain)"
+                        class="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      >
+                        <font-awesome-icon icon="edit" class="text-md" />
+                      </button>
+                      <button
+                        @click="deleteReflexBrain(action.uid!, brain.uid!)"
+                        class="text-destructive hover:text-destructive/80 transition-colors duration-200"
+                      >
+                        <font-awesome-icon icon="trash" class="text-md" />
+                      </button>
+                    </div>
+                  </div>
+                  <p class="text-sm text-muted-foreground">{{ brain?.description }}</p>
+                </div>
+              </div>
+            </div>
+          </template>
+        </Accordion>
+      </section>
+    </div>
 
-  <section
-    class="col-span-1"
-    v-for="action in reflexStore.reflexRule?.reflexActions"
-    :key="action?.uid"
-  >
-    <Accordion>
-      <template v-slot:title>
-        <span class="p-2" @click="reflexActionFormManager(false, action)"
-          ><font-awesome-icon icon="edit" class="text-md text-muted-foreground mr-1"
-        /></span>
-        Reflex Action Level {{ action?.level }} targeting
-        <span v-for="anal in action?.analyses" :key="anal.uid" class="ml-1">{{ anal?.name }},</span>
+    <!-- Reflex Action Edit Form Modal -->
+    <fel-modal v-if="showActionModal" @close="showActionModal = false">
+      <template v-slot:header>
+        <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
       </template>
+
       <template v-slot:body>
-        <div class="flex justify-start items-center mb-2">
-          <h4 class="text-l leading-4 italic">Reflex Action Brains</h4>
-          <button
-            @click="reflexBrainFormManager(true, action?.uid!, {})"
-            class="ml-4 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-          >
-            Add Brain
-          </button>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-          <div
-            v-for="(brain, index) in action?.brains"
-            :key="brain?.uid"
-            class="block col-span-1 bg-background py-2 px-4 m"
-          >
-            <div class="flex justify-between items-center">
-              <h2 class="my-2 text-l text-foreground font-bold">
-                {{ stringToNum(index + 1) }} Brain
-              </h2>
-              <div>
-                <span class="p-2" @click="reflexBrainFormManager(false, action.uid!, brain)"
-                ><font-awesome-icon icon="edit" class="text-md text-muted-foreground mr-1"
-              /></span>
-              <span class="p-2" @click="deleteReflexBrain(action.uid!, brain.uid!)"
-                ><font-awesome-icon icon="trash" class="text-md text-destructive mr-1"
-              /></span>
-              </div>
-            </div>
-            <p class="text-muted-foreground text-sm">{{ brain?.description }}</p>
+        <form @submit.prevent="saveActionForm" class="space-y-6 p-4">
+          <div class="grid grid-cols-1 gap-4">
+            <label class="block">
+              <span class="text-sm font-medium text-foreground">Level</span>
+              <input
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                v-model="actionForm.level"
+                type="number"
+                min="1"
+                placeholder="Level ..."
+              />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-foreground">Target Analyses</span>
+              <select
+                v-model="actionForm.analyses"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                multiple
+              >
+                <option
+                  v-for="analysis in analysesServices"
+                  :key="analysis.uid"
+                  :value="analysis.uid"
+                >
+                  {{ analysis.name }}
+                </option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-foreground">Description</span>
+              <textarea
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                v-model="actionForm.description"
+                placeholder="Description ..."
+                rows="3"
+              />
+            </label>
           </div>
-        </div>
-      </template>
-    </Accordion>
-  </section>
 
-  <!-- Reflex Action Edit Form Modal -->
-  <modal v-if="showActionModal" @close="showActionModal = false">
-    <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
-    </template>
-
-    <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Level</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="actionForm.level"
-              type="number"
-              min=1
-              placeholder="Name ..."
-            />
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Target Analyses</span>
-            <select
-              name="analyses"
-              id="analyses"
-              v-model="actionForm.analyses"
-              class="form-input mt-1 block w-full"
-              multiple
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <option value=""></option>
-              <option
-                v-for="analysis in analysesServices"
-                :key="analysis.uid"
-                :value="analysis.uid"
-              >
-                {{ analysis.name }}
-              </option>
-            </select>
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Description</span>
+              Save Reflex Action
+            </button>
+          </div>
+        </form>
+      </template>
+    </fel-modal>
+
+    <!-- Reflex Brain Edit Form Modal -->
+    <fel-modal v-if="showBrainModal" @close="showBrainModal = false" :content-width="'w-4/5'">
+      <template v-slot:header>
+        <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
+      </template>
+
+      <template v-slot:body>
+        <form @submit.prevent="saveBrainForm" class="space-y-6 p-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Description</span>
             <textarea
-              cols="2"
-              class="form-input mt-1 block w-full"
-              v-model="actionForm.description"
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="brainForm.description"
               placeholder="Description ..."
+              rows="3"
             />
           </label>
-        </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveActionForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
-      </form>
-    </template>
-  </modal>
 
-  <!-- Reflex Brain Edit Form Modal -->
-  <modal v-if="showBrainModal" @close="showBrainModal = false" contentWidth="w-4/5">
-    <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
-    </template>
-
-    <template v-slot:body>
-      <form action="post" class="p-1">
-        <label class="mb-2">
-          <span class="text-foreground">Description</span>
-          <textarea
-            cols="2"
-            class="form-input mt-1 block w-full"
-            v-model="brainForm.description"
-            placeholder="Description ..."
-          />
-        </label>
-
-        <h3 class="flex items-center justify-start my-4 font-bold text-l text-foreground">
-          <span>Conditions (OR)</span>
-          <button
-            @click.prevent="addCondition()"
-            class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-          >
-            Add
-          </button>
-        </h3>
-        <p class="italic text-sm text-muted-foreground">Criteria under a condition are evaluated as AND whilst conditions are evaluated as OR</p>
-        <div class="grid grid-cols-2 gap-4 my-4">
-          <section class="bg-secondary px-1" id="criteria" v-for="(condition, conIdx) in brainForm.conditions" :key="conIdx">
-            <hr />
-            <div class="flex justify-between items-center">
-              <div class="flex justify-start items-center py-2">
-                <h5>Criteria (AND)</h5>
-                <button
-                  @click.prevent="addCriteria(conIdx)"
-                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                >
-                  + criteria
-                </button>
-              </div>
-              
-              <button
-                @click.prevent="removeCondition(conIdx)"
-                class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
-              >
-                - condition
-              </button>
-            </div>
-            <hr class="mb-4" />
-
-            <div v-for="(anVal, index) in condition.criteria" :key="index">
-              <div class="flex items-center justify-between">
-                <div class="flex items-bottom gap-x-2">
-                  <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-foreground">Analysis</span>
-                    <select
-                      name="analysisService"
-                      id="analysisService"
-                      v-model="anVal.analysisUid"
-                      class="form-input mt-1"
-                      @change="setCriteriaResultOptions($event, anVal)"
-                    >
-                      <option value=""></option>
-                      <option
-                        v-for="service in analysesServices"
-                        :key="service.uid"
-                        :value="service.uid"
-                      >
-                        {{ service.name }}
-                      </option>
-                    </select>
-                  </label>
-                  <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-primary-foreground">.</span>
-                    <select
-                      name="operator"
-                      id="operator"
-                      v-model="anVal.operator"
-                      class="form-input mt-1"
-                    >
-                      <option value="eq">&equals;</option>
-                      <option value="gt">&gt;</option>
-                      <option value="lt">&lt;</option>
-                      <option value="neq">&ne;</option>
-                    </select>
-                  </label>
-                  <label class="block col-span-1 mt-1">
-                    <span class="text-foreground">Result</span>
-                    <input
-                      v-if="criteriaResultOptions.length == 0"
-                      class="form-input mt-1 block w-full"
-                      v-model="anVal.value"
-                      type="text"
-                      placeholder="Result ..."
-                    />
-                    <select
-                      v-else
-                      name="criteriaValue"
-                      id="criteriaValue"
-                      v-model="anVal.value"
-                      class="form-input"
-                    >
-                      <option value=""></option>
-                      <option
-                        v-for="result in criteriaResultOptions"
-                        :key="result.uid"
-                        :value="result.value"
-                      >
-                        {{ result.value }}
-                      </option>
-                    </select>
-                  </label>
-                </div>
-                <div class="">
-                  <button
-                    @click.prevent="removeCriteria(conIdx, index)"
-                    class="px-2 py-1 mt-5 ml-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
-                  >
-                    - criteria
-                  </button>
-                </div>
-              </div>
-              <hr />
-            </div>
-          </section>
-        </div>
-
-        <h3 class="mt-4 font-bold text-l text-foreground">Actions</h3>
-
-        <p class="italic text-sm text-muted-foreground">If conditions are met, auto create new analyses  and or set final results</p>
-        <section class="grid grid-cols-2 gap-x-4 my-4" v-for="(action, actIdx) in brainForm.actions" :key="actIdx">
-          <!-- Add New -->
-          <div class=" bg-secondary px-1" v-for="(addNu, adIn) in action.addNew" :key="adIn">
-            <div class="flex justify-start items-center py-2">
-              <h5>Create Analyses</h5>
-              <span class="text-destructive"></span>
-              <button
-                @click.prevent="addNew(adIn)"
-                class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-              >
-                Add
-              </button>
-            </div>
-            <hr>
+          <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <div class="flex items-top gap-x-4">
-                <label class="flex flex-col whitespace-nowrap mb-2">
-                  <span class="text-foreground">Analysis</span>
-                  <select
-                    name="analysisService"
-                    id="analysisService"
-                    v-model="addNu.analysisUid"
-                    class="form-input mt-1"
-                  >
-                    <option value=""></option>
-                    <option
-                      v-for="service in analysesServices"
-                      :key="service.uid"
-                      :value="service.uid"
-                    >
-                      {{ service.name }}
-                    </option>
-                  </select>
-                </label>
-                <label class="block col-span-1 mb-2">
-                  <span class="text-foreground">Count</span>
-                  <input
-                    class="form-input mt-1 block w-full"
-                    v-model="addNu.count"
-                    type="number"
-                    placeholder="How Many ..."
-                    default="1"
-                  />
-                </label>
-              </div>
-              <div class="">
-                <button
-                  @click.prevent="removeNew(adIn)"
-                  class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
-                >
-                  Remove
-                </button>
-              </div>
+              <h3 class="text-lg font-medium text-foreground">Conditions (OR)</h3>
+              <button
+                @click.prevent="addCondition()"
+                class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                Add Condition
+              </button>
             </div>
-          </div>
-
-          <!-- Finalise -->
-          <div v-for="(action, actIdx) in brainForm.actions" :key="actIdx">
-            <div class=" bg-secondary px-1" v-for="(final, fiIn) in action.finalise" :key="fiIn">
-              <div class="flex justify-start items-center py-2">
-                <h5>Set Final Analyses</h5>
-                <span class="text-destructive"></span>
-                <button
-                  @click.prevent="addFinal(fiIn)"
-                  class="px-2 py-1 ml-4 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                >
-                  Add
-                </button>
-              </div>
-              <hr>
-              <div class="flex items-center justify-between">
-                <div class="flex items-top gap-x-4">
-                  <label class="flex flex-col whitespace-nowrap mb-2">
-                    <span class="text-foreground">Analysis</span>
-                    <select
-                      name="analysisService"
-                      id="analysisService"
-                      v-model="final.analysisUid"
-                      class="form-input mt-1"
-                      @change="setFinalResultOptions($event, final)"
+            <p class="text-sm text-muted-foreground">Criteria under a condition are evaluated as AND whilst conditions are evaluated as OR</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <section
+                v-for="(condition, conIdx) in brainForm.conditions"
+                :key="conIdx"
+                class="rounded-md border border-border p-4 space-y-4"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <h4 class="text-md font-medium text-foreground">Criteria (AND)</h4>
+                    <button
+                      @click.prevent="addCriteria(conIdx)"
+                      class="bg-primary text-primary-foreground px-3 py-1 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                     >
-                      <option value=""></option>
-                      <option
-                        v-for="service in analysesServices"
-                        :key="service.uid"
-                        :value="service.uid"
-                      >
-                        {{ service.name }}
-                      </option>
-                    </select>
-                  </label>
-                  <label class="block col-span-1 mb-2">
-                    <span class="text-foreground">Result</span>
-                    <input
-                      v-if="finalResultOptions.length == 0"
-                      class="form-input mt-1 block w-full"
-                      v-model="final.value"
-                      type="text"
-                      placeholder="Result ..."
-                    />
-                    <select
-                      v-else
-                      name="finalValue"
-                      id="finalValue"
-                      v-model="final.value"
-                      class="form-input mt-1"
-                    >
-                      <option value=""></option>
-                      <option
-                        v-for="result in finalResultOptions"
-                        :key="result.uid"
-                        :value="result.value"
-                      >
-                        {{ result.value }}
-                      </option>
-                    </select>
-                  </label>
-                </div>
-                <div class="">
+                      Add Criteria
+                    </button>
+                  </div>
                   <button
-                    @click.prevent="removeFinal(fiIn)"
-                    class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
+                    @click.prevent="removeCondition(conIdx)"
+                    class="bg-destructive text-destructive-foreground px-3 py-1 rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2"
                   >
-                    Remove
+                    Remove Condition
                   </button>
+                </div>
+
+                <div v-for="(anVal, index) in condition.criteria" :key="index" class="space-y-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Analysis</span>
+                      <select
+                        v-model="anVal.analysisUid"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        @change="setCriteriaResultOptions($event, anVal)"
+                      >
+                        <option value=""></option>
+                        <option
+                          v-for="service in analysesServices"
+                          :key="service.uid"
+                          :value="service.uid"
+                        >
+                          {{ service.name }}
+                        </option>
+                      </select>
+                    </label>
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Operator</span>
+                      <select
+                        v-model="anVal.operator"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                      >
+                        <option value="eq">&equals;</option>
+                        <option value="gt">&gt;</option>
+                        <option value="lt">&lt;</option>
+                        <option value="neq">&ne;</option>
+                      </select>
+                    </label>
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Result</span>
+                      <input
+                        v-if="criteriaResultOptions.length == 0"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        v-model="anVal.value"
+                        type="text"
+                        placeholder="Result ..."
+                      />
+                      <select
+                        v-else
+                        v-model="anVal.value"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                      >
+                        <option value=""></option>
+                        <option
+                          v-for="result in criteriaResultOptions"
+                          :key="result.uid"
+                          :value="result.value"
+                        >
+                          {{ result.value }}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="flex justify-end">
+                    <button
+                      @click.prevent="removeCriteria(conIdx, index)"
+                      class="bg-destructive text-destructive-foreground px-3 py-1 rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2"
+                    >
+                      Remove Criteria
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-lg font-medium text-foreground">Actions</h3>
+            <p class="text-sm text-muted-foreground">If conditions are met, auto create new analyses and or set final results</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Add New -->
+              <div
+                v-for="(action, actIdx) in brainForm.actions"
+                :key="actIdx"
+                class="rounded-md border border-border p-4 space-y-4"
+              >
+                <div v-for="(addNu, adIn) in action.addNew" :key="adIn">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-md font-medium text-foreground">Create Analyses</h4>
+                    <button
+                      @click.prevent="addNew(adIn)"
+                      class="bg-primary text-primary-foreground px-3 py-1 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                      Add Analysis
+                    </button>
+                  </div>
+                  <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Analysis</span>
+                      <select
+                        v-model="addNu.analysisUid"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                      >
+                        <option value=""></option>
+                        <option
+                          v-for="service in analysesServices"
+                          :key="service.uid"
+                          :value="service.uid"
+                        >
+                          {{ service.name }}
+                        </option>
+                      </select>
+                    </label>
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Count</span>
+                      <input
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        v-model="addNu.count"
+                        type="number"
+                        placeholder="How Many ..."
+                        default="1"
+                      />
+                    </label>
+                  </div>
+                  <div class="flex justify-end mt-2">
+                    <button
+                      @click.prevent="removeNew(adIn)"
+                      class="bg-destructive text-destructive-foreground px-3 py-1 rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              <!-- Finalise -->
+              <div
+                v-for="(action, actIdx) in brainForm.actions"
+                :key="actIdx"
+                class="rounded-md border border-border p-4 space-y-4"
+              >
+                <div v-for="(final, fiIn) in action.finalise" :key="fiIn">
+                  <div class="flex items-center justify-between">
+                    <h4 class="text-md font-medium text-foreground">Set Final Analyses</h4>
+                    <button
+                      @click.prevent="addFinal(fiIn)"
+                      class="bg-primary text-primary-foreground px-3 py-1 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                      Add Analysis
+                    </button>
+                  </div>
+                  <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Analysis</span>
+                      <select
+                        v-model="final.analysisUid"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        @change="setFinalResultOptions($event, final)"
+                      >
+                        <option value=""></option>
+                        <option
+                          v-for="service in analysesServices"
+                          :key="service.uid"
+                          :value="service.uid"
+                        >
+                          {{ service.name }}
+                        </option>
+                      </select>
+                    </label>
+                    <label class="block">
+                      <span class="text-sm font-medium text-foreground">Result</span>
+                      <input
+                        v-if="finalResultOptions.length == 0"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        v-model="final.value"
+                        type="text"
+                        placeholder="Result ..."
+                      />
+                      <select
+                        v-else
+                        v-model="final.value"
+                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                      >
+                        <option value=""></option>
+                        <option
+                          v-for="result in finalResultOptions"
+                          :key="result.uid"
+                          :value="result.value"
+                        >
+                          {{ result.value }}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="flex justify-end mt-2">
+                    <button
+                      @click.prevent="removeFinal(fiIn)"
+                      class="bg-destructive text-destructive-foreground px-3 py-1 rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
 
-
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveBrainForm()"
-          class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save
-        </button>
-      </form>
-    </template>
-  </modal>
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              Save Reflex Brain
+            </button>
+          </div>
+        </form>
+      </template>
+    </fel-modal>
+  </div>
 </template>

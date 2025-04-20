@@ -6,7 +6,7 @@
   >
     <div 
       v-if="true"
-      class="modal-mask fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 backdrop-blur-sm"
+      class="modal-mask fixed inset-0 z-50 overflow-y-auto bg-muted/50 backdrop-blur-sm"
       @click="handleOutsideClick"
       role="dialog"
       aria-modal="true"
@@ -20,7 +20,7 @@
         >
           <div 
             :class="[
-              'modal-container bg-background rounded-lg shadow-xl transform',
+              'modal-container bg-card text-card-foreground rounded-lg shadow-xl transform',
               'max-h-[90vh] overflow-y-auto',
               contentWidth ? contentWidth : 'w-full max-w-2xl'
             ]"
@@ -32,7 +32,7 @@
               <div class="flex items-center justify-between mb-4">
                 <div class="flex-1">
                   <slot name="header">
-                    <h3 class="text-lg font-semibold text-foreground">
+                    <h3 class="text-lg font-semibold text-card-foreground">
                       Default Header
                     </h3>
                   </slot>
@@ -40,8 +40,8 @@
                 <button
                   @click="$emit('close')"
                   class="inline-flex items-center justify-center w-8 h-8 ml-4 text-muted-foreground 
-                         transition-colors duration-200 rounded-full hover:text-destructive 
-                         hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-red-500"
+                         transition-colors duration-200 rounded-full hover:text-destructive-foreground 
+                         hover:bg-destructive focus:outline-none focus:ring-2 focus:ring-ring"
                   aria-label="Close modal"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@
               </div>
 
               <!-- Divider -->
-              <div class="h-px bg-muted my-4"></div>
+              <div class="h-px bg-border my-4"></div>
 
               <!-- Body -->
               <div class="modal-body">
@@ -61,16 +61,16 @@
               </div>
 
               <!-- Divider -->
-              <div class="h-px bg-muted my-4"></div>
+              <div class="h-px bg-border my-4"></div>
 
               <!-- Footer -->
               <div class="modal-footer">
                 <slot name="footer">
                   <div class="flex justify-end space-x-3">
                     <button
-                      class="px-4 py-2 text-sm font-medium text-foreground bg-background border 
-                             border-border rounded-md shadow-sm hover:bg-background 
-                             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      class="px-4 py-2 text-sm font-medium text-secondary-foreground bg-secondary border 
+                             border-border rounded-lg shadow-sm hover:bg-secondary/80 
+                             focus:outline-none focus:ring-2 focus:ring-ring"
                       @click="$emit('close')"
                     >
                       Cancel

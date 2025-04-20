@@ -51,15 +51,28 @@ const columns = [
 </script>
 
 <template>
-    <h4 class="mt-4 font-bold text-xl text-muted-foreground">Result Mutations</h4>
-    <hr class="mb-2">
-    <FelDataTable v-if="(mutations?.length ?? 0) > 0"
-    :columns="columns"
-    :data="mutations || []"
-    :toggleColumns="false"
-    />
-    <span v-else>No Mutations for this result</span>
-    <h4 class="mt-4 font-bold text-xl text-muted-foreground">Result Audit Log</h4>
-    <hr>
-    <FelAuditLog targetType="analysis_result" :targetUid="analysisResultesultUid" />
+    <div class="space-y-6">
+        <div class="space-y-2">
+            <h4 class="text-lg font-semibold text-foreground">Result Mutations</h4>
+            <div class="h-px bg-border" />
+        </div>
+        
+        <FelDataTable 
+            v-if="(mutations?.length ?? 0) > 0"
+            :columns="columns"
+            :data="mutations || []"
+            :toggleColumns="false"
+        />
+        <p v-else class="text-sm text-muted-foreground">No Mutations for this result</p>
+        
+        <div class="space-y-2">
+            <h4 class="text-lg font-semibold text-foreground">Result Audit Log</h4>
+            <div class="h-px bg-border" />
+        </div>
+        
+        <FelAuditLog 
+            targetType="analysis_result" 
+            :targetUid="analysisResultesultUid" 
+        />
+    </div>
 </template>

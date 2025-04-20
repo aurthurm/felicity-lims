@@ -16,5 +16,5 @@ const tabs = computed(() => [
 </script>
 
 <template>
-  <FelTabs :tabs="tabs" initial-tab="abx-qc-range"/>
+  <FelTabs :tabs="tabs" initial-tab="abx-qc-range" class="space-y-6"/>
 </template>

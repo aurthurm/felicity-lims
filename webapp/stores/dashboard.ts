@@ -17,7 +17,7 @@ import {
     SampleProcessPeformanceQueryVariables,
     SampleProcessPeformanceDocument,
 } from '@/graphql/operations/dashboard.queries';
-import { mapOrder } from '@/utils/helpers';
+import { mapOrder } from '@/utils';
 
 import  useApiUtil  from '@/composables/api_util';
 const { withClientQuery } = useApiUtil();

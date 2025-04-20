@@ -2,26 +2,26 @@
 import { IGrindErrandDiscussion } from '@/models/grind';
 import CommentItem from './CommentItem.vue';
 
-const props = defineProps({
-    comments: {
-        type: Array as () => IGrindErrandDiscussion[],
-        required: true
-    },
-    replyingTo: {
-        type: Object as () => IGrindErrandDiscussion | null,
-        default: null
-    },
-    editingComment: {
-        type: Object as () => IGrindErrandDiscussion | null,
-        default: null
-    },
-    level: {
-        type: Number,
-        default: 0
-    }
+interface Props {
+    comments: IGrindErrandDiscussion[];
+    replyingTo: IGrindErrandDiscussion | null;
+    editingComment: IGrindErrandDiscussion | null;
+    level: number;
+    errandUid: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    replyingTo: null,
+    editingComment: null,
+    level: 0
 });
 
-const emit = defineEmits(['setReplyingTo', 'setEditingComment', 'commentAdded', 'commentUpdated']);
+const emit = defineEmits<{
+    (e: 'setReplyingTo', discussion: IGrindErrandDiscussion | null): void;
+    (e: 'setEditingComment', discussion: IGrindErrandDiscussion | null): void;
+    (e: 'commentAdded'): void;
+    (e: 'commentUpdated'): void;
+}>();
 
 function handleSetReplyingTo(discussion: IGrindErrandDiscussion | null) {
     emit('setReplyingTo', discussion);
@@ -41,19 +41,22 @@ function handleCommentUpdated() {
 </script>
 
 <template>
-    <div :class="`space-y-${level === 0 ? '6' : '4'}`">
+    <div 
+        :class="`space-y-${level === 0 ? '6' : '4'}`" 
+        role="list" 
+        :aria-label="`${level === 0 ? 'Top-level comments' : 'Nested comments'}`"
+    >
         <div 
             v-for="comment in comments" 
             :key="comment.uid" 
             :class="level === 0 ? 'border-b border-border pb-4' : ''"
+            role="listitem"
         >
             <CommentItem 
-                :comment="comment"
-                :replying-to="replyingTo"
-                :editing-comment="editingComment"
-                :level="level"
-                @set-replying-to="handleSetReplyingTo"
-                @set-editing-comment="handleSetEditingComment"
+                :discussion="comment"
+                :errand-uid="errandUid"
+                @reply="handleSetReplyingTo"
+                @edit="handleSetEditingComment"
                 @comment-added="handleCommentAdded"
                 @comment-updated="handleCommentUpdated"
             />

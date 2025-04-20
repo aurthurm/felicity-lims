@@ -56,58 +56,50 @@ const closeForm = () => {
 </script>
 
 <template>
-  <div class="">
-    <div class="container w-full my-4">
-      <hr>
-      <button
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-        @click="FormManager(true)"
-      > Add Method</button>
-      <hr>
-    </div>
-    <hr />
-
-    <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
-            <thead>
-            <tr>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Instruments</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Analyses</th>
-                <th class="px-1 py-1 border-b-2 border-border"></th>
+  <div class="space-y-6">
+    <fel-heading title="Methods">
+      <fel-button @click="FormManager(true)"> Add Method</fel-button>
+    </fel-heading>
+    
+    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
+      <div class="relative w-full overflow-auto">
+        <table class="w-full caption-bottom text-sm">
+          <thead class="[&_tr]:border-b">
+            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Name</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Instruments</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Analyses</th>
+              <th class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</th>
             </tr>
-            </thead>
-            <tbody class="bg-background">
-            <tr v-for="meth in methods" :key="meth?.uid">
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm leading-5 text-foreground">{{ meth?.name }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm leading-5 text-foreground">{{ meth?.instruments?.map(inst => inst?.name)?.join(",") }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm leading-5 text-primary">{{ getAnalyses(meth) }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button @click="FormManager(false, meth)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
-                </td>
+          </thead>
+          <tbody class="[&_tr:last-child]:border-0">
+            <tr v-for="meth in methods" :key="meth?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <td class="px-4 py-2 align-middle">{{ meth?.name }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ meth?.instruments?.map(inst => inst?.name)?.join(", ") }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ getAnalyses(meth) }}</td>
+              <td class="px-4 py-2 align-middle text-right">
+                <button 
+                  @click="FormManager(false, meth)"
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                >
+                  Edit
+                </button>
+              </td>
             </tr>
-            </tbody>
+          </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- AnaltsisProfile Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <!-- Method Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <method-form :method="method" :methodUid="method?.uid"  @close="closeForm" />
+      <method-form :method="method" :methodUid="method?.uid" @close="closeForm" />
     </template>
-  </modal>
-
+  </fel-modal>
 </template>

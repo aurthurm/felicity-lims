@@ -14,50 +14,32 @@ const Hazard = defineAsyncComponent(
     () => import('./Hazard')
 )
 
+
+
 const InventoryHome = defineComponent({
     name: 'InventoryHome',
     setup(props) {
         const setupStore = useSetupStore();
         const sampleStore = useSampleStore();
 
-        let currentTab = ref('stock-categories');
-        const tabs = ['stock-categories', 'hazards', 'stock-units', 'stock-items' ];
-        let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+        const tabs = [
+            { id: 'stock-categories', label: 'stock-categories', component: StockCategory },
+            { id: 'hazards', label: 'hazards', component: Hazard },
+            { id: 'stock-units', label: 'stock-units', component: StockUnit },
+            { id: 'stock-items', label: 'stock-items', component: StockItem }
+        ]
 
         sampleStore.fetchSampleTypes();
         setupStore.fetchDepartments({});
 
-        return { exposed: { currentTab, tabs } };
+        return { exposed: { tabs } };
     },
     render() {
-        const { currentTab, tabs } = this.exposed;
+        const {  tabs } = this.exposed;
         return (
-            <div class="mt-4">
-                <nav class="bg-background shadow-md mt-2">
-                    <div class="-mb-px flex justify-start" role="tablist">
-                        {tabs.map(tab => {
-                            return (
-                                <a
-                                    key={tab}
-                                    class={[
-                                        'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                                        { 'tab-active': currentTab.value === tab },
-                                    ]}
-                                    onClick={() => (currentTab.value = tab)}
-                                   
-                                    role="tab"
-                                >
-                                    {tab}
-                                </a>
-                            );
-                        })}
-                    </div>
-                </nav>
-
-                {currentTab.value === 'stock-items' ? <StockItem /> : null}
-                {currentTab.value === 'stock-categories' ? <StockCategory /> : null}
-                {currentTab.value === 'stock-units' ? <StockUnit /> : null}
-                {currentTab.value === 'hazards' ? <Hazard /> : null}
+            <div class="space-y-6">
+                <fel-heading title="Inventory Management" />
+                <fel-tabs tabs={tabs} />
             </div>
         );
     },

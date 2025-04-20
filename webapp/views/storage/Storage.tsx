@@ -14,12 +14,7 @@ import {
 import { useStorageStore } from '@/stores/storage';
 import  useApiUtil  from '@/composables/api_util';
 import { useRouter } from 'vue-router';
-const Modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-)
-const PageHeading = defineAsyncComponent(
-    () => import('@/components/common/FelPageHeading.vue')
-)
+
 const ContainerView = defineAsyncComponent(
     () => import('./ContainerView')
 )
@@ -304,277 +299,277 @@ const StorageHome = defineComponent({
     render() {
         return (
             <>
-                <PageHeading title="Storage " />
-                <div class="grid grid-cols-12 gap-4 min-h-full bg-background">
-                    <div class="col-span-2 pt-4 pl-2">
-                        <button
-                            onClick={() => this.roomFormManager(true, null)}
-                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                        >
-                            Add Store Room
-                        </button>
-                        <hr class="mt-2 mb-4" />
-                        <ul>
+                <fel-heading title="Storage">
+                    <button
+                        onClick={() => this.roomFormManager(true, null)}
+                        class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                        Add Store Room
+                    </button>
+                </fel-heading>
+                
+                <div class="grid grid-cols-12 gap-6 min-h-full bg-background p-6">
+                    <div class="col-span-2 space-y-4">                  
+                        <ul class="space-y-2">
                             {this.treeData.map(_tree => (
                                 <TreeItem tree={_tree} />
                             ))}
                         </ul>
                     </div>
                     {this.activeTree?.name && (
-                        <div class="col-span-10 pt-4">
-                            <div class="mb-2">Selected: {this.activeTree.name}</div>
-                            <hr />
-                            <div class="my-4">
+                        <div class="col-span-10 space-y-6">
+                            <div class="text-lg font-medium text-foreground">Selected: {this.activeTree.name}</div>
+                            <div class="border-t border-border" />
+                            <div class="space-y-6">
                                 {this.nextTreeType === this.tags.storageLocation ? (
-                                    <>
-                                        <button
-                                            onClick={() => this.locationFormManager(true, null)}
-                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                                        >
-                                            Add Storage Location
-                                        </button>
-                                    </>
+                                    <button
+                                        onClick={() => this.locationFormManager(true, null)}
+                                        class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                    >
+                                        Add Storage Location
+                                    </button>
                                 ) : null}
                                 {this.nextTreeType === this.tags.storageSection ? (
-                                    <>
-                                        <button
-                                            onClick={() => this.sectionFormManager(true, null)}
-                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                                        >
-                                            Add Storage Section
-                                        </button>
-                                    </>
+                                    <button
+                                        onClick={() => this.sectionFormManager(true, null)}
+                                        class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                    >
+                                        Add Storage Section
+                                    </button>
                                 ) : null}
                                 {this.nextTreeType === this.tags.storageContainer ? (
-                                    <>
-                                        <button
-                                            onClick={() => this.containerFormManager(true, null)}
-                                            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                                        >
-                                            Add Storage Container
-                                        </button>
-                                    </>
+                                    <button
+                                        onClick={() => this.containerFormManager(true, null)}
+                                        class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                    >
+                                        Add Storage Container
+                                    </button>
                                 ) : null}
                                 {this.nextTreeType === this.tags.containerView ? <ContainerView /> : null}
                             </div>
-                            <hr />
+                            <div class="border-t border-border" />
                         </div>
                     )} 
                 </div>
 
                 {/* Store Room Form Modal */}
                 {this.roomModalShow ? (
-                    <Modal onClose={() => (this.roomModalShow = false)} contentWidth="w-1/4">
+                    <fel-modal onClose={() => (this.roomModalShow = false)} contentWidth="w-1/3">
                         {{
-                            header: () => <h3>{this.roomFormTitle}</h3>,
+                            header: () => <h3 class="text-lg font-medium">{this.roomFormTitle}</h3>,
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <div class="grid grid-cols-2 gap-x-4 mb-4">
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Store Room Name</span>
+                                    <form action="post" class="space-y-6 p-4">
+                                        <div class="space-y-4">
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Store Room Name</span>
                                                 <input
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                     v-model={this.roomForm.name}
                                                     placeholder="Name ..."
                                                 />
                                             </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Description</span>
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    cols="2"
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
                                                     v-model={this.roomForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                         </div>
-                                        <hr />
-                                        <button
-                                            type="button"
-                                            onClick={() => this.saveStoreRoomForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-                                        >
-                                            Save Form
-                                        </button>
+                                        <div class="border-t border-border pt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => this.saveStoreRoomForm()}
+                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                            >
+                                                Save Form
+                                            </button>
+                                        </div>
                                     </form>
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 ) : null}
+
                 {/* Storage Location Form Modal */}
                 {this.locationModalShow ? (
-                    <Modal onClose={() => (this.locationModalShow = false)} contentWidth="w-1/4">
+                    <fel-modal onClose={() => (this.locationModalShow = false)} contentWidth="w-1/3">
                         {{
-                            header: () => <h3>{this.locationFormTitle}</h3>,
+                            header: () => <h3 class="text-lg font-medium">{this.locationFormTitle}</h3>,
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <div class="grid grid-cols-2 gap-x-4 mb-4">
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Storage Location Name</span>
+                                    <form action="post" class="space-y-6 p-4">
+                                        <div class="space-y-4">
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Storage Location Name</span>
                                                 <input
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                     v-model={this.locationForm.name}
                                                     placeholder="Name ..."
                                                 />
                                             </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Description</span>
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    cols="2"
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
                                                     v-model={this.locationForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                         </div>
-                                        <hr />
-                                        <button
-                                            type="button"
-                                            onClick={() => this.saveLocationForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-                                        >
-                                            Save Form
-                                        </button>
+                                        <div class="border-t border-border pt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => this.saveLocationForm()}
+                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                            >
+                                                Save Form
+                                            </button>
+                                        </div>
                                     </form>
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 ) : null}
+
                 {/* Storage Section Form Modal */}
                 {this.sectionModalShow ? (
-                    <Modal onClose={() => (this.sectionModalShow = false)} contentWidth="w-1/4">
+                    <fel-modal onClose={() => (this.sectionModalShow = false)} contentWidth="w-1/3">
                         {{
-                            header: () => <h3>{this.sectionFormTitle}</h3>,
+                            header: () => <h3 class="text-lg font-medium">{this.sectionFormTitle}</h3>,
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <div class="grid grid-cols-2 gap-x-4 mb-4">
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Storage Section Name</span>
+                                    <form action="post" class="space-y-6 p-4">
+                                        <div class="space-y-4">
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Storage Section Name</span>
                                                 <input
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                     v-model={this.sectionForm.name}
                                                     placeholder="Name ..."
                                                 />
                                             </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Description</span>
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    cols="2"
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
                                                     v-model={this.sectionForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                         </div>
-                                        <hr />
-                                        <button
-                                            type="button"
-                                            onClick={() => this.saveStorageSectionForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-                                        >
-                                            Save Form
-                                        </button>
+                                        <div class="border-t border-border pt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => this.saveStorageSectionForm()}
+                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                            >
+                                                Save Form
+                                            </button>
+                                        </div>
                                     </form>
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 ) : null}
+
                 {/* Storage Container Form Modal */}
                 {this.containerModalShow ? (
-                    <Modal onClose={() => (this.containerModalShow = false)} contentWidth="w-1/2">
+                    <fel-modal onClose={() => (this.containerModalShow = false)} contentWidth="w-1/2">
                         {{
-                            header: () => <h3>{this.containerFormTitle}</h3>,
+                            header: () => <h3 class="text-lg font-medium">{this.containerFormTitle}</h3>,
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <div class="grid grid-cols-2 gap-x-4 mb-4">
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Storage Location Name</span>
+                                    <form action="post" class="space-y-6 p-4">
+                                        <div class="space-y-4">
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Storage Container Name</span>
                                                 <input
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                     v-model={this.containerForm.name}
                                                     placeholder="Name ..."
                                                 />
                                             </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Description</span>
+                                            <label class="block space-y-2">
+                                                <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    cols="2"
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
                                                     v-model={this.containerForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-foreground">Number of Slots</span>
+                                                <span class="text-sm font-medium">Number of Slots</span>
                                                 <input
-                                                    class="form-input mt-1 block w-full"
+                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                     v-model={this.containerForm.slots}
                                                     placeholder="Slots ..."
                                                     type="number"
                                                 />
                                             </label>
-                                            <label class="block col-span-1 mt-10">
+                                            <label class="flex justify-start items-center col-span-1 mt-10 gap-x-2">
                                                 <input
                                                     type="checkbox"
                                                     class=""
                                                     onChange={e => this.changeContainerType(e)}
                                                     v-model={this.containerForm.grid}
                                                 />
-                                                <span class="text-foreground ml-3">Add Grid View</span>
+                                                <span class="text-sm font-medium">Add Grid View</span>
                                             </label>
                                         </div>
+
                                         <div class="grid grid-cols-4 gap-x-4 mb-4">
                                             {this.containerForm.grid ? (
                                                 <>
                                                     <span class="col-span-3">
-                                                        <div class="grid grid-cols-3 gap-x-4">
+                                                        <div class="grid grid-cols-2 gap-x-4">
                                                             <label class="block col-span-1 mb-2">
-                                                                <span class="text-foreground">Cols</span>
+                                                                <span class="text-sm font-medium">Cols</span>
                                                                 <input
-                                                                    class="form-input mt-1 block w-full"
+                                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                                     v-model={this.containerForm.cols}
                                                                     onKeyup={e => this.calculateRows(e)}
                                                                     type="number"
                                                                 />
                                                             </label>
                                                             <label class="block col-span-1 mb-2">
-                                                                <span class="text-foreground">Rows</span>
+                                                                <span class="text-sm font-medium">Rows</span>
                                                                 <input
-                                                                    class="form-input mt-1 block w-full bg-secondary"
+                                                                    class="w-full px-3 py-2 border border-input rounded-md bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                                     v-model={this.containerForm.rows}
                                                                     type="number"
                                                                     disabled
                                                                 />
                                                             </label>
-                                                            <label class="block col-span-1 mt-10">
+                                                            <label class="block col-span-1 mt-2">
                                                                 <input type="checkbox" class="" v-model={this.containerForm.rowWise} />
-                                                                <span class="text-foreground ml-3">Row Wise</span>
+                                                                <span class="text-sm font-medium ml-3">Row Wise</span>
                                                             </label>
                                                         </div>
                                                     </span>
                                                 </>
                                             ) : null}
                                         </div>
-                                        <hr />
-                                        <button
-                                            type="button"
-                                            onClick={() => this.saveStorageContainerForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-                                        >
-                                            Save Form
-                                        </button>
+
+                                        <div class="border-t border-border pt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => this.saveStorageContainerForm()}
+                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                            >
+                                                Save Form
+                                            </button>
+                                        </div>
                                     </form>
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 ) : null}
             </>
         );

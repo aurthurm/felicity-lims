@@ -1,4 +1,4 @@
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import { IUser } from "./auth";
 
   export interface IGrindScheme {

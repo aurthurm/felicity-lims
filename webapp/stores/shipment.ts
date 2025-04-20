@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import { ISample } from '@/models/analysis';
 import { IShipment, IReferralLaboratory, IShippedSample } from '@/models/shipment';
 import { IPageInfo } from '@/models/pagination';

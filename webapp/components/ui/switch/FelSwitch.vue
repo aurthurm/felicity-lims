@@ -7,13 +7,13 @@
   >
     <label 
       :for="id" 
-      class="text-medium text-foreground flex items-center"
+      class="text-sm font-medium text-foreground flex items-center"
       :class="[
         reverse ? 'gap-x-reverse gap-x-2' : 'gap-x-2'
       ]"
     >
       <div 
-        class="relative inline-block w-8 align-middle select-none transition duration-200 ease-in"
+        class="relative inline-block w-9 h-5 align-middle select-none transition duration-200 ease-in"
         :class="[
           reverse ? 'order-first' : 'order-last'
         ]"
@@ -24,21 +24,21 @@
           type="checkbox"
           :checked="modelValue"
           @change="updateValue"
-          class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-background border-4 border-border appearance-none cursor-pointer outline-none transition duration-200 ease-in"
-          :class="{
-            'translate-x-full': modelValue,
-            'border-accent': modelValue,
-            'bg-background border-border': !modelValue
-          }"
+          class="peer sr-only"
         />
-        <label
-          :for="id"
-          class="toggle-label block overflow-hidden h-4 rounded-full cursor-pointer"
+        <div
+          class="absolute inset-0 rounded-full transition-colors duration-200 ease-in"
           :class="{
-            'bg-muted': modelValue,
+            'bg-primary': modelValue,
             'bg-muted': !modelValue
           }"
-        ></label>
+        ></div>
+        <div
+          class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full transition-transform duration-200 ease-in bg-background shadow-sm ring-0"
+          :class="{
+            'translate-x-4': modelValue
+          }"
+        ></div>
       </div>
       <span>{{ label }}</span>
     </label>

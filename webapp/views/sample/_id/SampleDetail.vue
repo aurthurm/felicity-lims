@@ -50,10 +50,13 @@ const handleTabChange = (tabId: string) => {
 </script>
 
 <template>
-   <FelTabs
-    :tabs="tabs"
-    initial-tab="analysis-results"
-    :hide-tab="hideTab"
-    @tab-change="handleTabChange"
-  />
+  <div class="space-y-6">
+    <FelTabs
+      :tabs="tabs"
+      initial-tab="analysis-results"
+      :hide-tab="hideTab"
+      @tab-change="handleTabChange"
+      class="bg-background rounded-lg shadow-sm p-6"
+    />
+  </div>
 </template>

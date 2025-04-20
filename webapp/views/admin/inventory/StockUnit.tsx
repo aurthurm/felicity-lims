@@ -1,4 +1,4 @@
-import {computed, defineAsyncComponent, defineComponent, reactive, ref} from 'vue';
+import {computed, defineComponent, reactive, ref} from 'vue';
 import {
     AddStockUnitDocument,
     AddStockUnitMutation,
@@ -10,10 +10,6 @@ import {
 import {useInventoryStore} from '@/stores/inventory';
 import useApiUtil from '@/composables/api_util';
 import {IStockUnit} from '@/models/inventory';
-
-const Modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-)
 
 const StockUnit = defineComponent({
     name: 'stock-unit',
@@ -74,89 +70,77 @@ const StockUnit = defineComponent({
     },
     render() {
         return (
-            <div class="container w-full my-4">
-                <hr/>
-                <button
-                    onClick={() => this.FormManager(true, null)}
-                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                >
-                    Add Stock Unit
-                </button>
-                <hr/>
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-semibold text-foreground">Stock Units</h2>
+                    <button
+                        onClick={() => this.FormManager(true, null)}
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                    >
+                        Add Stock Unit
+                    </button>
+                </div>
 
-                <div class="overflow-x-auto mt-4">
-                    <div
-                        class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-                        <table class="min-w-full">
-                            <thead>
-                            <tr>
-                                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                    Unit Name
-                                </th>
-                                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"></th>
-                                <th class="px-1 py-1 border-b-2 border-border"></th>
-                            </tr>
+                <div class="rounded-md border border-border bg-card p-6">
+                    <div class="relative w-full overflow-auto">
+                        <table class="w-full caption-bottom text-sm">
+                            <thead class="[&_tr]:border-b">
+                                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                    <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Unit Name</th>
+                                    <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
+                                </tr>
                             </thead>
-                            <tbody class="bg-background">
-                            {this.stockUnits.map(unit => {
-                                return (
-                                    <tr key={unit?.uid}>
-                                        <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                                            <div class="flex items-center">
-                                                <div class="text-sm leading-5 text-foreground">{unit?.name}</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                                            <div class="text-sm leading-5 text-primary"></div>
-                                        </td>
-                                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+                            <tbody class="[&_tr:last-child]:border-0">
+                                {this.stockUnits.map(unit => (
+                                    <tr key={unit?.uid} class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                        <td class="p-4 align-middle">{unit?.name}</td>
+                                        <td class="p-4 align-middle text-right">
                                             <button
                                                 onClick={() => this.FormManager(false, unit)}
-                                                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+                                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
                                             >
                                                 Edit
                                             </button>
                                         </td>
                                     </tr>
-                                );
-                            })}
+                                ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                {/* StockUnit Form Modal */}
-                {this.showModal ? (
-                    <Modal onClose={() => (this.showModal = false)} contentWidth="w-1/4">
+                {this.showModal && (
+                    <fel-modal onClose={() => (this.showModal = false)}>
                         {{
-                            header: () => <h3>{this.formTitle}</h3>,
-                            body: () => {
-                                return (
-                                    <form action="post" class="p-1">
-                                        <div class="grid grid-cols-2 gap-x-4 mb-4">
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Stock Unit Name</span>
-                                                <input
-                                                    class="form-input mt-1 block w-full"
-                                                    v-model={this.form.name}
-                                                    placeholder="Name ..."
-                                                />
+                            header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
+                            body: () => (
+                                <form onSubmit={(e) => { e.preventDefault(); this.saveForm(); }} class="space-y-6">
+                                    <div class="space-y-4">
+                                        <div class="space-y-2">
+                                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                Stock Unit Name
                                             </label>
+                                            <input
+                                                value={this.form.name}
+                                                onChange={(e) => this.form.name = e.target.value}
+                                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                placeholder="Enter unit name..."
+                                            />
                                         </div>
-                                        <hr/>
+                                    </div>
+                                    <div class="flex justify-end">
                                         <button
-                                            type="button"
-                                            onClick={() => this.saveForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+                                            type="submit"
+                                            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
                                         >
-                                            Save Form
+                                            Save Changes
                                         </button>
-                                    </form>
-                                );
-                            },
+                                    </div>
+                                </form>
+                            )
                         }}
-                    </Modal>
-                ) : null}
+                    </fel-modal>
+                )}
             </div>
         );
     },

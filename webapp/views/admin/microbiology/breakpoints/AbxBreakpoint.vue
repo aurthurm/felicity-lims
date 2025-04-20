@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { IAbxBreakpoint, IAbxBreakpointType, IAbxGuideline, IAbxHost, IAbxSiteOfInfection, IAbxTestMethod } from "@/models/microbiology";
 import { GetAbxBreakpointAllDocument, GetAbxBreakpointAllQuery, GetAbxBreakpointAllQueryVariables, GetAbxBreakpointTypeAllDocument, GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxHostAllDocument, GetAbxHostAllQuery, GetAbxHostAllQueryVariables, GetAbxSiteOfInfectionAllDocument, GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxBreakpointMutation, AddAbxBreakpointMutationVariables, AddAbxBreakpointDocument, EditAbxBreakpointMutation, EditAbxBreakpointMutationVariables, EditAbxBreakpointDocument } from '@/graphql/operations/microbiology.mutations';
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import('@/components/ui/datatable/FelDataTable.vue')
 )
@@ -346,63 +343,61 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Antibiotic Breakpoints">
+      <fel-button @click="FormManager(true)">Add Breakpoint</fel-button>
+    </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add Breakpoint
-    </button> -->
-    <hr>
-
-    <DataTable 
-    :columns="tableColumns" 
-    :data="antibiotics" 
-    :toggleColumns="true" 
-    :loading="fetchingBreakpoints" 
-    :paginable="true"
-    :pageMeta="{
-      fetchCount: abxParams.first,
-      hasNextPage: true,
-      countNone,
-    }" 
-    :searchable="true" 
-    :filterable="false" 
-    @onSearchKeyUp="searchBreakpoints" 
-    @onSearchFocus="resetBreakpoint"
-    @onPaginate="showMoreBreakpoints" 
-    :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
-
+    <div class="rounded-lg shadow-sm bg-card p-6">
+      <DataTable 
+        :columns="tableColumns" 
+        :data="antibiotics" 
+        :toggleColumns="true" 
+        :loading="fetchingBreakpoints" 
+        :paginable="true"
+        :pageMeta="{
+          fetchCount: abxParams.first,
+          hasNextPage: true,
+          countNone,
+        }" 
+        :searchable="true" 
+        :filterable="false" 
+        @onSearchKeyUp="searchBreakpoints" 
+        @onSearchFocus="resetBreakpoint"
+        @onPaginate="showMoreBreakpoints" 
+        :selectable="false">
+        <template v-slot:footer></template>
+      </DataTable>
+    </div>
   </div>
 
   <!-- Breakpoint Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-4">
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <!-- Basic Information -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <label class="block">
-              <span class="text-foreground">Guidelines</span>
+              <span class="text-sm font-medium text-foreground">Guidelines</span>
               <VueMultiselect
-              v-model="form.guidelines"
-              :options="abxGuidelines"
-              :searchable="true"
-              label="name"
+                v-model="form.guidelines"
+                :options="abxGuidelines"
+                :searchable="true"
+                label="name"
+                class="mt-1 multiselect-blue"
               >
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-foreground">Year</span>
+              <span class="text-sm font-medium text-foreground">Year</span>
               <input type="number"
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.year"
                 placeholder="Year"
               />
@@ -411,140 +406,96 @@ function saveForm(): void {
         </div>
 
         <!-- Coding Systems -->
-        <div class="mb-6">
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Coding Systems</h4>
           <div class="grid grid-cols-3 gap-4">
             <label class="block">
-              <span class="text-foreground">Test Method</span>
+              <span class="text-sm font-medium text-foreground">Test Method</span>
               <VueMultiselect
-              v-model="form.testMethod"
-              :options="abxTestMethods"
-              :searchable="true"
-              label="name"
+                v-model="form.testMethod"
+                :options="abxTestMethods"
+                :searchable="true"
+                label="name"
+                class="mt-1 multiselect-blue"
               >
               </VueMultiselect>
             </label>
             <label class="block">
-              <span class="text-foreground">Potency</span>
+              <span class="text-sm font-medium text-foreground">Potency</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.potency"
                 placeholder="Potency"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Organism Code</span>
+              <span class="text-sm font-medium text-foreground">Organism Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.organismCode"
                 placeholder="Organism Code"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Organism Code Type</span>
+              <span class="text-sm font-medium text-foreground">Organism Code Type</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.organismCodeType"
                 placeholder="Organism Code Type"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">Breakpoint Type</span>
-              <VueMultiselect
-              v-model="form.breakpointType"
-              :options="abxBreakpointTypes"
-              :searchable="true"
-              label="name"
-              >
-              </VueMultiselect>
-            </label>
-            <label class="block">
-              <span class="text-foreground">Host</span>
-              <VueMultiselect
-              v-model="form.host"
-              :options="abxHosts"
-              :searchable="true"
-              label="name"
-              >
-              </VueMultiselect>
-            </label>
-            <label class="block">
-              <span class="text-foreground">Site Of Infection</span>
-              <VueMultiselect
-              v-model="form.siteOfInfection"
-              :options="abxSiteOfInfections"
-              :searchable="true"
-              label="name"
-              >
-              </VueMultiselect>
-            </label>
-            <label class="block">
-              <span class="text-foreground">Reference Table</span>
+              <span class="text-sm font-medium text-foreground">Whonet AbxCode</span>
               <input
-                class="form-input mt-1 block w-full"
-                v-model="form.referenceTable"
-                placeholder="Reference Table"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Reference Sequence</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.referenceSequence"
-                placeholder="Reference Sequence"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Whonet AbxCode</span>
-              <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.whonetAbxCode"
                 placeholder="Whonet AbxCode"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">R</span>
+              <span class="text-sm font-medium text-foreground">R</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.r"
                 placeholder="R"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">I</span>
+              <span class="text-sm font-medium text-foreground">I</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.i"
                 placeholder="I"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">SDD</span>
+              <span class="text-sm font-medium text-foreground">SDD</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.sdd"
                 placeholder="SDD"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">S</span>
+              <span class="text-sm font-medium text-foreground">S</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.s"
                 placeholder="S"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">EcvEcoff</span>
+              <span class="text-sm font-medium text-foreground">EcvEcoff</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.ecvEcoff"
                 placeholder="EcvEcoff"
               />
             </label>
             <label class="block">
-              <span class="text-foreground">EcvEcoff Tentative</span>
+              <span class="text-sm font-medium text-foreground">EcvEcoff Tentative</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                 v-model="form.ecvEcoffTentative"
                 placeholder="EcvEcoff Tentative"
               />
@@ -552,29 +503,45 @@ function saveForm(): void {
           </div>
         </div>
 
-        <hr class="my-6"/>
+        <hr class="border-border"/>
         
         <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          type="submit"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Save Breakpoint
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
-
 <style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
+.multiselect-blue {
+  @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
 }
 
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+.multiselect-blue :deep(.multiselect__tags) {
+  @apply border-border rounded-md;
+}
+
+.multiselect-blue :deep(.multiselect__single) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__input) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option) {
+  @apply text-foreground hover:bg-primary/10;
+}
+
+.multiselect-blue :deep(.multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option--selected) {
+  @apply bg-primary/20 text-foreground;
 }
 </style>

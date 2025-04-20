@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { IAbxKingdom, IAbxOrganism, IAbxOrganismSerotype } from "@/models/microbiology";
 import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismSerotypeAllDocument, GetAbxOrganismSerotypeAllQuery, GetAbxOrganismSerotypeAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxOrganismSerotypeMutation, AddAbxOrganismSerotypeMutationVariables, AddAbxOrganismSerotypeDocument, EditAbxOrganismSerotypeMutation, EditAbxOrganismSerotypeMutationVariables, EditAbxOrganismSerotypeDocument } from '@/graphql/operations/microbiology.mutations';
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import('@/components/ui/datatable/FelDataTable.vue')
 )
@@ -256,118 +253,166 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Organism Serotypes">
+      <fel-button @click="FormManager(true)">Add Organism Serotype</fel-button>
+    </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add OrganismSerotype
-    </button> -->
-    <hr>
-
-    <DataTable 
-    :columns="tableColumns" 
-    :data="abxOrganismSerotypes" 
-    :toggleColumns="true" 
-    :loading="fetchingOrganismSerotypes" 
-    :paginable="true"
-    :pageMeta="{
-      fetchCount: abxParams.first,
-      hasNextPage: true,
-      countNone,
-    }" 
-    :searchable="true" 
-    :filterable="false" 
-    @onSearchKeyUp="searchOrganismSerotypes" 
-    @onSearchFocus="resetOrganismSerotype"
-    @onPaginate="showMoreOrganismSerotypes" 
-    :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
+    <div class="bg-card p-6 shadow-sm rounded-lg">
+      <DataTable 
+      :columns="tableColumns" 
+      :data="abxOrganismSerotypes" 
+      :toggleColumns="true" 
+      :loading="fetchingOrganismSerotypes" 
+      :paginable="true"
+      :pageMeta="{
+        fetchCount: abxParams.first,
+        hasNextPage: true,
+        countNone,
+      }" 
+      :searchable="true" 
+      :filterable="false" 
+      @onSearchKeyUp="searchOrganismSerotypes" 
+      @onSearchFocus="resetOrganismSerotype"
+      @onPaginate="showMoreOrganismSerotypes" 
+      :selectable="false">
+      <template v-slot:footer> </template>
+    </DataTable>
+  </div>
 
   </div>
 
-  <!-- OrganismSerotype Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <!-- Organism Serotype Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-4">
-        <!-- Basic Information -->
-        <div class="mb-6">
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-                <span class="text-foreground">Organism</span>
-                <VueMultiselect
-                v-model="form.organism"
-                :options="abxOrganisms"
-                :searchable="true"
-                :close-on-select="true"
-                :clear-on-select="false"
-                @search-change="organismSearch"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-            <label class="block">
-              <span class="text-foreground">Serotype</span>
-              <input class="form-input mt-1 block w-full" v-model="form.serotype" placeholder="Serotype" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Serogroup</span>
-              <input class="form-input mt-1 block w-full" v-model="form.serogroup" placeholder="Serogroup" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Subspecies</span>
-              <input class="form-input mt-1 block w-full" v-model="form.subspecies" placeholder="Subspecies" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">O Antigens</span>
-              <input class="form-input mt-1 block w-full" v-model="form.oAntigens" placeholder="O Antigens" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">H Phase1</span>
-              <input class="form-input mt-1 block w-full" v-model="form.hPhase1" placeholder="H Phase1" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">H Phase2</span>
-              <input class="form-input mt-1 block w-full" v-model="form.hPhase2" placeholder="H Phase2" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">X997 Check</span>
-              <input class="form-input mt-1 block w-full" v-model="form.x997Check" placeholder="X997 Check" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Fate</span>
-              <input class="form-input mt-1 block w-full" v-model="form.fate" placeholder="fate" />
-            </label>
-          </div>
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Organism</span>
+            <VueMultiselect
+              v-model="form.organism"
+              :options="abxOrganisms"
+              :searchable="true"
+              :close-on-select="true"
+              :clear-on-select="false"
+              @search-change="organismSearch"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Serotype</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.serotype" 
+              placeholder="Serotype ..." />
+          </label>
         </div>
 
-        <hr class="my-6"/>
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Serogroup</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.serogroup" 
+              placeholder="Serogroup ..." />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Subspecies</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.subspecies" 
+              placeholder="Subspecies ..." />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">O Antigens</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.oAntigens" 
+              placeholder="O Antigens ..." />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">H Phase1</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.hPhase1" 
+              placeholder="H Phase1 ..." />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">H Phase2</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.hPhase2" 
+              placeholder="H Phase2 ..." />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">X997 Check</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.x997Check" 
+              placeholder="X997 Check ..." />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Fate</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.fate" 
+              placeholder="Fate ..." />
+          </label>
+        </div>
+
+        <hr class="border-border"/>
         
         <button
           type="submit"
-          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          Save OrganismSerotype
+          Save Serotype
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
-
 <style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
+.multiselect-blue {
+  @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
 }
 
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+.multiselect-blue :deep(.multiselect__tags) {
+  @apply border-border rounded-md;
+}
+
+.multiselect-blue :deep(.multiselect__single) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__input) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option) {
+  @apply text-foreground hover:bg-primary/10;
+}
+
+.multiselect-blue :deep(.multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option--selected) {
+  @apply bg-primary/20 text-foreground;
 }
 </style>

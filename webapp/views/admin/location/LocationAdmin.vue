@@ -167,71 +167,70 @@ function saveForm(): void {
 
 
 <template>
-  <div class="mt-4">
-    <div class="grid grid-cols-12 gap-4 mt-2">
+  <div class="space-y-6">
+    <div class="grid grid-cols-12 gap-6">
       <section class="col-span-3">
-        <div class="w-full flex justify-between items-center pr-4">
-          <h2 class="text-l font-semibold inline uppercase">Countries</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-semibold text-foreground">Countries</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
             @click="FormManager(true, 'country')">
             Add Country
           </button>
         </div>
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+        <div class="rounded-md border h-[70vh] overflow-y-auto">
           <div v-for="c in countries" :key="c.uid"
-            :class="country?.uid === c.uid ? 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a @click.prevent.stop="selectLocation('country', c)" class="font-semibold text-foreground">
+            :class="country?.uid === c.uid ? 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted bg-muted' : 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted'">
+            <a @click.prevent.stop="selectLocation('country', c)" class="font-medium text-foreground">
               <span>{{ c.name }}</span>
             </a>
-            <a @click="FormManager(false, 'country', c)" class="px-2 cursor">
+            <button @click="FormManager(false, 'country', c)" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
               <font-awesome-icon icon="pen" />
-            </a>
+            </button>
           </div>
         </div>
       </section>
 
       <section class="col-span-4" v-if="isCountrySelected()">
-        <div class="w-full flex justify-between items-center pr-4">
-          <h2 class="text-l font-semibold inline uppercase">Provinces</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-semibold text-foreground">Provinces</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
             @click="FormManager(true, 'province')">
             Add Province
           </button>
         </div>
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+        <div class="rounded-md border h-[70vh] overflow-y-auto">
           <div v-for="p in provinces" :key="p.uid"
-            :class="province?.uid === p.uid ? 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a @click.prevent.stop="selectLocation('province', p)" class="font-semibold text-foreground">
+            :class="province?.uid === p.uid ? 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted bg-muted' : 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted'">
+            <a @click.prevent.stop="selectLocation('province', p)" class="font-medium text-foreground">
               <span>{{ p.name }}</span>
-
             </a>
-            <a @click="FormManager(false, 'province', p)" class="px-2 cursor">
+            <button @click="FormManager(false, 'province', p)" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
               <font-awesome-icon icon="pen" />
-            </a>
+            </button>
           </div>
         </div>
       </section>
 
       <section class="col-span-5" v-if="isProvinceSelected()">
-        <div class="w-full flex justify-between items-center pr-4">
-          <h2 class="text-l font-semibold inline uppercase">Districts</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-semibold text-foreground">Districts</h2>
           <button
-            class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
             @click="FormManager(true, 'district')">
             Add District
           </button>
         </div>
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+        <div class="rounded-md border h-[70vh] overflow-y-auto">
           <div v-for="d in districts" :key="d.uid"
-            :class="district?.uid === d.uid ? 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-background w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a @click.prevent.stop="selectLocation('district', d)" class="font-semibold text-foreground">
+            :class="district?.uid === d.uid ? 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted bg-muted' : 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted'">
+            <a @click.prevent.stop="selectLocation('district', d)" class="font-medium text-foreground">
               <span>{{ d.name }}</span>
             </a>
-            <a @click="FormManager(false, 'district', d)" class="px-2 cursor">
+            <button @click="FormManager(false, 'district', d)" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
               <font-awesome-icon icon="pen" />
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -239,44 +238,41 @@ function saveForm(): void {
   </div>
 
   <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Name</span>
-            <input class="form-input mt-1 block w-full" v-model="form.name" placeholder="Name ..." />
+      <form class="space-y-6">
+        <div class="grid grid-cols-2 gap-6">
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Name</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.name" 
+              placeholder="Name ..." />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Code</span>
-            <input class="form-input mt-1 block w-full" v-model="form.code" placeholder="Code ..." />
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Code</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.code" 
+              placeholder="Code ..." />
           </label>
         </div>
-        <hr />
-        <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
+        <hr class="border-border" />
+        <button 
+          type="button" 
+          @click.prevent="saveForm()"
+          class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           Save Form
         </button>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 </template>
 
 <style lang="postcss" scoped>
-.scroll-section {
-  height: 70vh;
-}
-
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
-
-.c-active {
-  background-color: lightblue;
-}
+/* Removed custom styles as they're now handled by the style guide classes */
 </style>

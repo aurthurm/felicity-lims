@@ -134,12 +134,12 @@ const toCapitalize = (str) => {
   <div class="relative">
     <div
       v-if="loading"
-      class="absolute bg-black bg-opacity-60 z-10 h-full w-full flex items-center justify-center"
+      class="absolute bg-background/80 z-10 h-full w-full flex items-center justify-center"
     >
-      <div class="flex items-center">
+      <div class="flex items-center text-primary">
         <svg
           aria-hidden="true"
-          class="w-8 h-8 mr-2 text-muted-foreground animate-spin text-foreground fill-accent"
+          class="w-8 h-8 mr-2 animate-spin"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -147,24 +147,27 @@ const toCapitalize = (str) => {
           <path
             d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
             fill="currentColor"
+            class="text-muted-foreground/30"
           />
           <path
             d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-            fill="currentFill"
+            fill="currentColor"
           />
         </svg>
+        <span class="text-foreground">Loading...</span>
       </div>
     </div>
-    <div>
-      <section class="my-2 flex justify-between items-center w-full">
-        <div class="w-2/4">
-          <div class="flex sm:flex-row flex-col">
+
+    <div :class="{ 'opacity-50 blur-sm': loading }">
+      <section class="my-2 flex flex-wrap justify-between items-center w-full gap-4">
+        <div class="flex-grow-0">
+          <div class="flex sm:flex-row flex-col items-center gap-2">
             <div class="flex flex-row mb-1 sm:mb-0" v-if="filterable">
               <div class="relative flex justify-between items-center">
                 <div><slot name="pre-filter"></slot></div>
                 <select
                   v-model="filterStatus"
-                  class="appearance-none h-full rounded-l-sm border block w-full bg-background border-border text-foreground py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-background focus:border-border"
+                  class="appearance-none rounded-l-lg border border-input bg-background text-foreground py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring"
                 >
                   <option
                     v-for="filterValue in filterMeta?.filters"
@@ -175,7 +178,7 @@ const toCapitalize = (str) => {
                   </option>
                 </select>
                 <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-foreground"
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground"
                 >
                   <svg
                     class="fill-current h-4 w-4"
@@ -189,7 +192,7 @@ const toCapitalize = (str) => {
                 </div>
               </div>
             </div>
-            <div class="block relative" v-if="searchable">
+            <div class="block relative w-64" v-if="searchable">
               <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
                 <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-muted-foreground">
                   <path
@@ -200,57 +203,57 @@ const toCapitalize = (str) => {
               <input
                 placeholder="Search ..."
                 v-model="filterText"
-                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-border border-b block pl-8 pr-6 py-2 w-full bg-background text-sm placeholder-muted-foreground text-foreground focus:bg-background focus:placeholder-foreground focus:text-foreground focus:outline-none"
+                class="appearance-none rounded-r-lg border border-input block pl-8 pr-6 py-2 w-full bg-background text-sm placeholder:text-muted-foreground text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring"
+                :class="{'rounded-l-lg': !filterable, 'sm:rounded-l-none': filterable}"
                 @keyup="searchKeyUp()"
                 @focus="searchFocus()"
               />
             </div>
             <button
+              v-if="searchable || filterable"
               @click.prevent="searchEntries()"
-              class="px-2 py-1 ml-2 border-primary border text-sky-800rounded-smtransition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-              v-if="searchable || filterable">
+              class="px-3 py-2 ml-2 border border-secondary bg-secondary text-secondary-foreground rounded-lg transition duration-300 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
               Search
             </button>
           </div>
         </div>
 
-        <div>
-          <div v-if="toggleColumns" class="flex justify-between items-center">
-            <div>
-              <div v-show="openColumns">
-                <button
-                  v-for="(column, columnIdx) in defaultColumns"
-                  :key="columnIdx"
-                  class="inline-flex items-center px-2 py-1 mr-2 text-sm font-medium rounded border"
-                  :class="[
-                    {
-                      'text-muted-foreground bg-secondary border-border': column.hidden,
-                      'text-primary bg-secondary border-primary': !column.hidden,
-                      hidden: !(column.showInToggler ?? true),
-                    },
-                  ]"
-                  @click="toggleColumn(columnIdx)"
+        <div class="flex-1">
+          <div v-if="toggleColumns" class="flex justify-end items-center">
+            <div class="flex flex-wrap gap-2 w-full" v-show="openColumns">
+              <button
+                v-for="(column, columnIdx) in defaultColumns"
+                :key="columnIdx"
+                class="inline-flex items-center px-2 py-1 text-sm font-medium rounded-lg border transition-colors duration-200"
+                :class="[
+                  {
+                    'bg-muted/50 border-border text-muted-foreground hover:bg-muted': column.hidden,
+                    'bg-primary/10 border-primary/30 text-primary hover:bg-primary/20': !column.hidden,
+                    'hidden': !(column.showInToggler ?? true),
+                  },
+                ]"
+                @click="toggleColumn(columnIdx)"
+              >
+                <svg
+                  v-show="!column.hidden"
+                  aria-hidden="true"
+                  class="w-3 h-3 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    v-show="!column.hidden"
-                    aria-hidden="true"
-                    class="w-3 h-3"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                  <span class="ml-1">{{ column.name }}</span>
-                </button>
-              </div>
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>{{ column.name }}</span>
+              </button>
             </div>
             <button
-              class="ml-4 text-xl font-semibold text-primary"
+              class="ml-4 text-xl font-semibold text-muted-foreground hover:text-primary rounded-lg p-1"
               @click="openColumns = !openColumns"
               v-tooltip="'manage table columns'"
             >
@@ -260,120 +263,128 @@ const toCapitalize = (str) => {
         </div>
       </section>
 
-      <hr class="mb-4" />
+      <hr class="mb-4 border-t border-border" />
 
-      <table class="min-w-full">
-        <thead>
-          <tr>
-            <th
-              v-if="selectable"
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
-              <input type="checkbox" :checked="allChecked" @click="(e) => checkAll(e)" />
-            </th>
-            <th
-              v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
-              :key="columnIdx"
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
-              <div class="flex items-center cursor-pointer" @click="setSorting(column)">
-                <span class="mr-1">{{ column.name }}</span>
-                <span class="font-thin text-sm" v-if="column.sortable">
-                  <font-awesome-icon
-                    v-if="!isSorter(column)"
-                    icon="fa-sort"
-                    class="text-muted-foreground"
+      <div class="overflow-x-auto">
+          <table class="min-w-full border-collapse">
+            <thead class="bg-muted">
+              <tr>
+                <th
+                  v-if="selectable"
+                  class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider"
+                >
+                  <input type="checkbox" :checked="allChecked" @click="(e) => checkAll(e)" class="rounded border-input text-primary focus:ring-primary" />
+                </th>
+                <th
+                  v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
+                  :key="columnIdx"
+                  class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider"
+                >
+                  <div class="flex items-center cursor-pointer group" @click="setSorting(column)">
+                    <span class="mr-1">{{ column.name }}</span>
+                    <span class="font-thin text-sm" v-if="column.sortable">
+                      <font-awesome-icon
+                        v-if="!isSorter(column)"
+                        icon="fa-sort"
+                        class="text-muted-foreground/60 group-hover:text-foreground"
+                      />
+                      <font-awesome-icon
+                        v-else-if="sorting?.sortBy === 'asc'"
+                        icon="fa-solid fa-arrow-up-wide-short"
+                        class="text-foreground"
+                      />
+                      <font-awesome-icon
+                        v-else
+                        icon="fa-solid fa-arrow-down-wide-short"
+                        class="text-foreground"
+                      />
+                    </span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-background divide-y divide-border">
+              <tr v-for="(entry, entryIdx) in entries" :key="entryIdx" class="hover:bg-muted transition-colors duration-150">
+                <td
+                  v-if="selectable"
+                  class="px-3 py-2 whitespace-nowrap text-sm text-foreground"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="entry.checked"
+                    @click="(e) => check(entry, e)"
+                    class="rounded border-input text-primary focus:ring-primary"
                   />
-                  <font-awesome-icon
-                    v-else-if="sorting?.sortBy === 'asc'"
-                    icon="fa-solid fa-arrow-up-wide-short"
-                    class="text-foreground"
-                  />
-                  <font-awesome-icon
-                    v-else
-                    icon="fa-solid fa-arrow-down-wide-short"
-                    class="text-foreground"
-                  />
-                </span>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-background">
-          <tr v-for="(entry, entryIdx) in entries" :key="entryIdx">
-            <td
-              v-if="selectable"
-              class="px-1 py-1 whitespace-no-wrap border-b border-border"
-            >
-              <input
-                type="checkbox"
-                :checked="entry.checked"
-                @click="(e) => check(entry, e)"
-              />
-            </td>
-            <td
-              v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
-              :key="`${entryIdx}_${columnIdx}`"
-              class="px-1 py-1 whitespace-no-wrap border-b border-border"
-            >
-              <span v-if="column.customRender && column">
-                <component :is="getValue(entry, column)" />
-              </span>
-              <span v-else>{{ getValue(entry, column) }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                </td>
+                <td
+                  v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
+                  :key="`${entryIdx}_${columnIdx}`"
+                  class="px-3 py-2 whitespace-nowrap text-sm text-foreground"
+                >
+                  <span v-if="column.customRender && column">
+                    <component :is="getValue(entry, column)" />
+                  </span>
+                  <span v-else>{{ getValue(entry, column) }}</span>
+                </td>
+              </tr>
+               <tr v-if="!loading && (!entries || entries.length === 0)">
+                <td :colspan="defaultColumns.filter(c => !c.hidden).length + (selectable ? 1 : 0)"
+                    class="px-3 py-4 text-center text-muted-foreground">
+                  No data available.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
 
-      <section class="flex justify-between my-4">
+      <section class="flex flex-wrap justify-between items-center my-4 gap-4">
         <div><slot name="footer"></slot></div>
-        <div v-if="paginable" class="flex sm:flex-row flex-col">
+        <div v-if="paginable" class="flex sm:flex-row flex-col items-center gap-2">
           <div>
             <button
               v-show="pageMeta?.hasNextPage"
-              class="px-2 py-1 mr-2 border-primary border text-sky-800rounded-smtransition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+              class="px-3 py-2 border border-secondary text-secondary rounded-lg transition duration-300 hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               @click.prevent="paginate"
+              :disabled="loading"
             >
               Show More
             </button>
           </div>
-          <div>
-            <div class="flex flex-row mb-1 sm:mb-0">
-              <div class="relative">
-                <select
-                  class="appearance-none h-full rounded-l-sm border block w-full bg-background border-border text-foreground py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-background focus:border-border"
-                  v-model.number="fetchCount"
-                  :disabled="!pageMeta?.hasNextPage"
+          <div class="flex flex-row">
+            <div class="relative">
+              <select
+                class="appearance-none h-full rounded-lg border border-input bg-background text-foreground py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                v-model.number="fetchCount"
+                :disabled="loading || !pageMeta?.hasNextPage"
+              >
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+                <option value="5000">5000</option>
+                <option value="10000">10000</option>
+              </select>
+              <div
+                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground"
+              >
+                <svg
+                  class="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
                 >
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="250">250</option>
-                  <option value="500">500</option>
-                  <option value="1000">1000</option>
-                  <option value="5000">5000</option>
-                  <option value="10000">10000</option>
-                </select>
-                <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-foreground"
-                >
-                  <svg
-                    class="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                    />
-                  </svg>
-                </div>
+                  <path
+                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                  />
+                </svg>
               </div>
             </div>
           </div>
-          <div class="block relative">
+           <div class="block relative" v-if="pageMeta?.countNone">
             <input
               :placeholder="pageMeta?.countNone"
-              class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-border border-b block pl-8 pr-6 py-2 w-full bg-background text-sm placeholder-muted-foreground text-foreground focus:bg-background focus:placeholder-foreground focus:text-foreground focus:outline-none"
+              class="appearance-none rounded-lg border border-input block pl-3 pr-3 py-2 w-full bg-background text-sm placeholder:text-muted-foreground text-foreground focus:outline-none disabled:opacity-70"
               disabled
             />
           </div>

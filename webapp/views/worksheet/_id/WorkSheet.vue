@@ -31,82 +31,77 @@ const canApprove = computed(() => {
 </script>
 
 <template>
-  <div class="">
+  <div class="space-y-6">
     <div
-      class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4"
+      class="bg-background rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-6"
       v-motion-slide-top
     >
-      <div class="grid grid-cols-12 gap-1">
+      <div class="grid grid-cols-12 gap-4">
         <!-- Meta Column -->
-        <div class="col-span-12 flex justify-between font-bold text-medium mb-2">
-          <h3>{{ worksheet?.worksheetId }}</h3>
-          <div>
+        <div class="col-span-12 flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold text-foreground">{{ worksheet?.worksheetId }}</h3>
+          <div class="relative">
             <div @click="dropdownOpen = !dropdownOpen"
-              class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
+              class="hidden md:flex md:items-center space-x-2">
+              <button 
+                type="button" 
+                class="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                :aria-expanded="dropdownOpen"
+                :aria-haspopup="true"
+              >
                 {{ worksheet?.state }}
+                <font-awesome-icon icon="chevron-down" class="ml-2 text-primary-foreground/70" />
               </button>
-              <div class="ml-2">
-                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
-              </div>
             </div>
             <div v-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
             </div>
-            <div v-show="dropdownOpen" class="absolute mt-4 py-0 bg-muted rounded-sm shadow-xl z-20">
-              <div v-show="canSubmit" @click="actionWorksheets([worksheet.uid], 'submit')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
+            <div v-show="dropdownOpen" 
+              class="absolute right-0 mt-2 py-2 bg-background rounded-lg shadow-lg border border-border z-20 min-w-[200px]">
+              <button v-show="canSubmit" 
+                @click="actionWorksheets([worksheet.uid], 'submit')"
+                class="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
                 Submit
-              </div>
-              <div v-show="canApprove" @click="actionWorksheets([worksheet.uid], 'approve')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
+              </button>
+              <button v-show="canApprove" 
+                @click="actionWorksheets([worksheet.uid], 'approve')"
+                class="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
                 Approve
-              </div>
+              </button>
             </div>
           </div>
         </div>
         <!-- Summary Column -->
-        <div class="col-span-12 sm:col-end-13 px-3 sm:px-0">
-          <hr />
-          <div class="grid grid-cols-2 mt-2">
-            <div class="col-span-1">
-              <!-- Client Details -->
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Analyst</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  worksheet?.analyst?.firstName
-                }}</span>
+        <div class="col-span-12">
+          <div class="border-t border-border pt-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-3">
+                <!-- Client Details -->
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-muted-foreground w-1/4">Analyst</span>
+                  <span class="text-sm text-foreground">{{ worksheet?.analyst?.firstName }}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-muted-foreground w-1/4">Instrument</span>
+                  <span class="text-sm text-foreground">{{ worksheet?.instrument?.name }}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-muted-foreground w-1/4">Method</span>
+                  <span class="text-sm text-foreground">{{ worksheet?.method?.name }}</span>
+                </div>
               </div>
-              <div class="flex">
-                <span class="text-foreground text-md font-semibold w-1/6">Instrument:</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  worksheet?.instrument?.name
-                }}</span>
-              </div>
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Method:</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  worksheet?.method?.name
-                }}</span>
-              </div>
-            </div>
-            <div class="col-span-1">
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Analyses:</span>
-                <span class="text-foreground text-sm md:text-md"
-                  >{{ worksheet?.analysis?.name }}
-                </span>
-              </div>
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Samples:</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  worksheet?.assignedCount
-                }}</span>
-              </div>
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Template:</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  worksheet?.template?.name
-                }}</span>
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-muted-foreground w-1/4">Analyses</span>
+                  <span class="text-sm text-foreground">{{ worksheet?.analysis?.name }}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-muted-foreground w-1/4">Samples</span>
+                  <span class="text-sm text-foreground">{{ worksheet?.assignedCount }}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-muted-foreground w-1/4">Template</span>
+                  <span class="text-sm text-foreground">{{ worksheet?.template?.name }}</span>
+                </div>
               </div>
             </div>
           </div>

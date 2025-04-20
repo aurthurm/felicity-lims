@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useSampleStore } from "@/stores/sample";
-import { isNullOrWs, parseDate } from "@/utils/helpers";
+import { isNullOrWs, parseDate } from "@/utils";
 import useAnalysisComposable from "@/composables/analysis";
 import { IAnalysisResult, IQCLevel, IQCSet, ISample } from "@/models/analysis";
 

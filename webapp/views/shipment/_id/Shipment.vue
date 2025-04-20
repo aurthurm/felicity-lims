@@ -47,90 +47,112 @@ const shipmentActor = (action: string) => {
 </script>
 
 <template>
-  <div class="">
+  <div class="space-y-6">
     <div
-      class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4"
+      class="bg-background rounded-lg shadow-sm border border-border p-6 transition-all duration-200 hover:shadow-md"
       v-motion-slide-top
     >
-      <div class="grid grid-cols-12 gap-1">
-        <!-- Meta Column -->
-        <div class="col-span-12 flex justify-between font-bold text-medium mb-2">
-          <div class="flex">
-            <h3 class="mr-10">{{ shipment?.shipmentId }}</h3>
-            <h3>{{ shipment?.incoming ? "InBound" : "OutBound" }}</h3>
+      <div class="space-y-6">
+        <!-- Header Section -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-6">
+            <h3 class="text-lg font-semibold text-foreground">{{ shipment?.shipmentId }}</h3>
+            <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+              {{ shipment?.incoming ? "InBound" : "OutBound" }}
+            </span>
           </div>
-          <div>
-            <div @click="state.dropdownOpen = !state.dropdownOpen"
-              class="hidden md:block md:flex md:items-center ml-2 mt-2">
-              <button type="button" class="bg-primary text-primary-foreground px-2 py-1 rounded-sm leading-none">
-                {{ shipment?.state || "unknown" }}
-              </button>
-              <div class="ml-2">
-                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
-              </div>
-            </div>
-            <div v-show="state.dropdownOpen" @click="state.dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
-            </div>
-            <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-muted rounded-sm shadow-xl z-20">
-              <div v-show="canReceive" @click="shipmentActor('reject')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
-                Reject
-              </div>
-              <div v-show="canReceive" @click="shipmentActor('receive')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
-                Receive
-              </div>
-              <div v-show="canFinalise" @click="shipmentActor('finalise')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
-                Finalise
-              </div>
-              <div v-show="canDispatch" @click="shipmentActor('dispatch')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
-                Dispatch
-              </div>
-              <div v-show="canRetryDispatch" @click="shipmentActor('dispatch-now')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
-                Retry Notification
-              </div>
-              <div v-show="canCancel" @click="shipmentActor('cancel')"
-                class="no-underline text-foreground py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-border hover:bg-primary hover:text-primary-foreground">
-                Cancel
+          
+          <!-- Actions Dropdown -->
+          <div class="relative">
+            <button 
+              @click="state.dropdownOpen = !state.dropdownOpen"
+              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4"
+            >
+              {{ shipment?.state || "unknown" }}
+              <font-awesome-icon icon="chevron-down" class="ml-2 h-4 w-4" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div v-show="state.dropdownOpen" 
+              class="absolute right-0 mt-2 w-56 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="menu-button"
+            >
+              <div class="py-1" role="none">
+                <button
+                  v-show="canReceive"
+                  @click="shipmentActor('reject')"
+                  class="block w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted hover:text-foreground"
+                  role="menuitem"
+                >
+                  Reject
+                </button>
+                <button
+                  v-show="canReceive"
+                  @click="shipmentActor('receive')"
+                  class="block w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted hover:text-foreground"
+                  role="menuitem"
+                >
+                  Receive
+                </button>
+                <button
+                  v-show="canFinalise"
+                  @click="shipmentActor('finalise')"
+                  class="block w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted hover:text-foreground"
+                  role="menuitem"
+                >
+                  Finalise
+                </button>
+                <button
+                  v-show="canDispatch"
+                  @click="shipmentActor('dispatch')"
+                  class="block w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted hover:text-foreground"
+                  role="menuitem"
+                >
+                  Dispatch
+                </button>
+                <button
+                  v-show="canRetryDispatch"
+                  @click="shipmentActor('dispatch-now')"
+                  class="block w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted hover:text-foreground"
+                  role="menuitem"
+                >
+                  Retry Notification
+                </button>
+                <button
+                  v-show="canCancel"
+                  @click="shipmentActor('cancel')"
+                  class="block w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted hover:text-foreground"
+                  role="menuitem"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
         </div>
-        <!-- Summary Column -->
-        <div class="col-span-12 sm:col-end-13 px-3 sm:px-0">
-          <hr />
-          <div class="grid grid-cols-2 mt-2">
-            <div class="col-span-1">
-              <!-- Client Details -->
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">External Laboratory</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  shipment?.laboratory?.name
-                }}</span>
-              </div>
-              <div class="flex">
-                <span class="text-foreground text-md font-semibold w-1/6">Courier:</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  shipment?.courier
-                }}</span>
-              </div>
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Assigned Count:</span>
-                <span class="text-foreground text-sm md:text-md">{{
-                  shipment?.assignedCount
-                }}</span>
-              </div>
+
+        <!-- Details Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-border">
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <span class="w-1/3 text-sm font-medium text-muted-foreground">External Laboratory</span>
+              <span class="text-sm text-foreground">{{ shipment?.laboratory?.name }}</span>
             </div>
-            <div class="col-span-1">
-              <div class="flex">
-                <span class="text-foreground text-sm font-semibold w-1/6">Comment:</span>
-                <span class="text-foreground text-sm md:text-md"
-                  >{{ shipment?.comment }}
-                </span>
-              </div>
+            <div class="flex items-center">
+              <span class="w-1/3 text-sm font-medium text-muted-foreground">Courier</span>
+              <span class="text-sm text-foreground">{{ shipment?.courier }}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="w-1/3 text-sm font-medium text-muted-foreground">Assigned Count</span>
+              <span class="text-sm text-foreground">{{ shipment?.assignedCount }}</span>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <span class="w-1/3 text-sm font-medium text-muted-foreground">Comment</span>
+              <span class="text-sm text-foreground">{{ shipment?.comment }}</span>
             </div>
           </div>
         </div>

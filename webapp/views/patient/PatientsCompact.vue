@@ -23,23 +23,11 @@ const GENDER_LABELS: Record<number, string> = {
 
 // Lazy-loaded components
 const components = {
-  LoadingMessage: defineAsyncComponent(() => 
-    import("@/components/ui/spinners/FelLoadingMessage.vue")
-  ),
-  PageHeading: defineAsyncComponent(() => 
-    import("@/components/common/FelPageHeading.vue")
-  ),
-  Modal: defineAsyncComponent(() => 
-    import("@/components/ui/FelModal.vue")
-  ),
   PatientForm: defineAsyncComponent(() => 
     import("@/components/person/PatientForm.vue")
   ),
   PatientInfo: defineAsyncComponent(() => 
     import("@/components/person/PatientInfo.vue")
-  ),
-  Tabs: defineAsyncComponent(() => 
-    import("@/components/ui/tabs/FelTabs.vue")
   )
 };
 
@@ -143,15 +131,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <components.PageHeading title="Patients Quick View" />
+  <div class="space-y-6">
+    <fel-heading title="Patients Quick View" />
     <!-- Header Actions -->
-    <div class="flex justify-between mb-4">
-      <div class="flex items-center gap-4">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-4">
         <router-link
           v-if="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           to="/patients/search"
-          class="px-4 py-2 text-sm border border-primary text-dark-800 rounded-sm hover:bg-primary hover:text-primary-foreground transition-colors duration-150"
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
         >
           Add Patient
         </router-link>
@@ -159,7 +147,7 @@ onMounted(() => {
         <input
           type="text"
           placeholder="Search patients..."
-          class="w-64 px-4 py-2 text-sm text-foreground placeholder-muted-foreground border border-border rounded-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+          class="w-64 px-4 py-2 text-sm text-foreground placeholder-muted-foreground border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           @keyup="handleSearch"
           @focus="resetPatient"
         />
@@ -167,54 +155,54 @@ onMounted(() => {
       
       <button
         v-if="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
-        class="px-4 py-2 text-sm border border-primary text-dark-700 rounded-sm hover:bg-primary hover:text-primary-foreground transition-colors duration-150"
+        class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
         @click="handleQuickRegistration"
       >
         Quick Registration
       </button>
     </div>
 
-    <hr class="my-4" />
-
     <!-- Main Content -->
-    <div class="grid grid-cols-12 gap-4">
+    <div class="grid grid-cols-12 gap-6">
       <!-- Patient List -->
       <section 
         v-motion
         :initial="{ opacity: 0, y: 100 }"
         :enter="{ opacity: 1, y: 0 }"
         :delay="400"
-        class="col-span-3 h-screen overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        class="col-span-3 h-[calc(100vh-200px)] overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       >
-        <components.LoadingMessage 
+        <fel-loader 
           v-if="fetchingPatients"
           message="Fetching patients..." 
         />
         
         <template v-else>
-          <div
-            v-for="patient in patients"
-            :key="patient.patientId"
-            @click="selectPatient(patient)"
-            class="bg-background w-full flex items-center mb-1 rounded-sm shadow border cursor-pointer transition-colors duration-150 hover:border-primary hover:bg-sky-50"
-            :class="{ 'border-primary bg-emerald-200': patient.uid === patientForm?.uid }"
-          >
-            <div class="flex-grow p-3">
-              <div class="flex justify-between font-semibold">
-                <span>{{ getPatientFullName(patient) }}</span>
-                <span class="text-sm text-muted-foreground">
-                  {{ patient.age }} yrs, {{ getGender(patient.gender) }}
-                </span>
-              </div>
-              
-              <div class="text-sm text-muted-foreground flex justify-between mt-1">
-                <span>{{ patient.patientId }}</span>
-                <span>{{ patient.clientPatientId }}</span>
-              </div>
-              
-              <div class="text-sm text-muted-foreground flex justify-between mt-1">
-                <span>{{ patient?.client?.district?.province?.name }}</span>
-                <span>{{ patient?.client?.name }}</span>
+          <div class="space-y-2">
+            <div
+              v-for="patient in patients"
+              :key="patient.patientId"
+              @click="selectPatient(patient)"
+              class="bg-background p-4 rounded-lg shadow-sm border border-border cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary"
+              :class="{ 'border-primary bg-primary/5': patient.uid === patientForm?.uid }"
+            >
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="font-semibold text-foreground">{{ getPatientFullName(patient) }}</span>
+                  <span class="text-sm text-muted-foreground">
+                    {{ patient.age }} yrs, {{ getGender(patient.gender) }}
+                  </span>
+                </div>
+                
+                <div class="flex justify-between text-sm text-muted-foreground">
+                  <span>{{ patient.patientId }}</span>
+                  <span>{{ patient.clientPatientId }}</span>
+                </div>
+                
+                <div class="flex justify-between text-sm text-muted-foreground">
+                  <span>{{ patient?.client?.district?.province?.name }}</span>
+                  <span>{{ patient?.client?.name }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -228,31 +216,32 @@ onMounted(() => {
         :initial="{ opacity: 0, y: -100 }"
         :enter="{ opacity: 1, y: 0 }"
         :delay="400"
-        class="col-span-9"
+        class="col-span-9 space-y-6"
       >
         <components.PatientInfo @editPatient="showModal = true" />
-        <components.Tabs :tabs="tabs" initial-tab="samples" />
+        <fel-tabs :tabs="tabs" initial-tab="samples" class="rounded-lg" />
       </section>
     </div>
 
     <!-- Edit Modal -->
-    <components.Modal
+    <fel-modal
       v-if="showModal"
       @close="showModal = false"
       content-width="w-3/6"
+      class="bg-background"
     >
       <template #header>
-        <h3>Patient Form</h3>
+        <h3 class="text-xl font-semibold text-foreground">Patient Form</h3>
       </template>
       
       <template #body>
         <components.PatientForm
-          :patient="patientForm"
-          :navigate="false"
-          @close="handlePatientUpdate"
-        />
+            :patient="patientForm"
+            :navigate="false"
+            @close="handlePatientUpdate"
+          />
       </template>
-    </components.Modal>
+    </fel-modal>
   </div>
 </template>
 
@@ -262,11 +251,15 @@ onMounted(() => {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
+  background-color: hsl(var(--background));
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d1d1d1;
+  background-color: hsl(var(--muted));
   border-radius: 9999px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground));
 }
 </style>

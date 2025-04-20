@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { parseEdgeNodeToList, addListsUnique } from '@/utils/helpers';
+import { parseEdgeNodeToList, addListsUnique } from '@/utils';
 
 import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '@/models/analysis';
 import { IPageInfo, IPaginationMeta } from '@/models/pagination';

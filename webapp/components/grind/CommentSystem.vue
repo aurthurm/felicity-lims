@@ -7,26 +7,46 @@ import CommentForm from './CommentForm.vue';
 import CommentList from './CommentList.vue';
 import { RequestPolicy } from '@urql/vue';
 
-const props = defineProps(["errandUid"]);
+interface Props {
+    errandUid: string;
+}
+
+const props = defineProps<Props>();
 const { withClientQuery } = useApiUtil();
 
 // Discussions
 const discussions = ref<IGrindErrandDiscussion[]>([]);
 const replyingTo = ref<IGrindErrandDiscussion | null>(null);
 const editingComment = ref<IGrindErrandDiscussion | null>(null);
+const isLoading = ref(false);
+const error = ref<string | null>(null);
 
 onMounted(() => {
     getDiscussions();
 });
 
-function getDiscussions(requestPolicy: RequestPolicy = 'cache-first') {
-    withClientQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables>(
-        GetGrindErrandDiscussionsDocument, { errandUid: props.errandUid }, "grindErrandDiscussions", requestPolicy
-    ).then((res: any) => {
-        if (res) {
-            discussions.value = res as IGrindErrandDiscussion[];
+async function getDiscussions(requestPolicy: RequestPolicy = 'cache-first') {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+        const result = await withClientQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables>(
+            GetGrindErrandDiscussionsDocument, 
+            { errandUid: props.errandUid }, 
+            "grindErrandDiscussions", 
+            requestPolicy
+        );
+
+        if (result && typeof result === 'object' && 'grindErrandDiscussions' in result) {
+            discussions.value = result.grindErrandDiscussions as unknown as IGrindErrandDiscussion[];
+        } else {
+            error.value = 'Failed to load discussions';
         }
-    });
+    } catch (e) {
+        error.value = e instanceof Error ? e.message : 'An error occurred while loading discussions';
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 // Filter top-level comments (no parent)
@@ -54,21 +74,43 @@ function setEditingComment(discussion: IGrindErrandDiscussion | null) {
 </script>
 
 <template>
-    <!-- Main comment input -->
-    <CommentForm 
-        :errand-uid="errandUid" 
-        @comment-added="handleCommentAdded" 
-    />
+    <div role="region" aria-label="Comments section">
+        <!-- Loading state -->
+        <div v-if="isLoading" class="flex items-center justify-center py-4">
+            <div class="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" role="status" aria-label="Loading comments"></div>
+        </div>
 
-    <!-- Comments and replies -->
-    <CommentList 
-        :comments="getTopLevelComments()" 
-        :replying-to="replyingTo"
-        :editing-comment="editingComment"
-        :errand-uid="errandUid"
-        @set-replying-to="setReplyingTo"
-        @set-editing-comment="setEditingComment"
-        @comment-added="handleCommentAdded"
-        @comment-updated="handleCommentUpdated"
-    />
+        <!-- Error state -->
+        <div v-else-if="error" class="p-4 border border-destructive bg-destructive/10 text-destructive rounded-md" role="alert">
+            {{ error }}
+        </div>
+
+        <!-- Content -->
+        <div v-else>
+            <!-- Main comment input -->
+            <CommentForm 
+                :errand-uid="errandUid" 
+                @comment-added="handleCommentAdded" 
+            />
+
+            <!-- Comments and replies -->
+            <CommentList 
+                v-if="getTopLevelComments().length > 0"
+                :comments="getTopLevelComments()" 
+                :replying-to="replyingTo"
+                :editing-comment="editingComment"
+                :errand-uid="errandUid"
+                :level="0"
+                @set-replying-to="setReplyingTo"
+                @set-editing-comment="setEditingComment"
+                @comment-added="handleCommentAdded"
+                @comment-updated="handleCommentUpdated"
+            />
+
+            <!-- Empty state -->
+            <div v-else class="text-center py-8 text-muted-foreground">
+                <p>No comments yet. Be the first to comment!</p>
+            </div>
+        </div>
+    </div>
 </template>

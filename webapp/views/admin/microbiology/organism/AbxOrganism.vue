@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { IAbxClass, IAbxFamily, IAbxGenus, IAbxKingdom, IAbxOrder, IAbxOrganism, IAbxPhylum } from "@/models/microbiology";
 import { GetAbxFamilyAllDocument, GetAbxFamilyAllQuery, GetAbxFamilyAllQueryVariables, GetAbxOrderAllDocument, GetAbxOrderAllQuery, GetAbxOrderAllQueryVariables, GetAbxKingdomAllDocument, GetAbxKingdomAllQuery, GetAbxKingdomAllQueryVariables, GetAbxPhylumAllDocument, GetAbxPhylumAllQuery, GetAbxPhylumAllQueryVariables, GetAbxClassAllDocument, GetAbxClassAllQuery, GetAbxClassAllQueryVariables, GetAbxGenusAllDocument, GetAbxGenusAllQuery, GetAbxGenusAllQueryVariables, GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxOrganismMutation, AddAbxOrganismMutationVariables, AddAbxOrganismDocument, EditAbxOrganismMutation, EditAbxOrganismMutationVariables, EditAbxOrganismDocument } from '@/graphql/operations/microbiology.mutations';
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import('@/components/ui/datatable/FelDataTable.vue')
 )
@@ -436,248 +433,203 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Organisms">
+      <fel-button @click="FormManager(true)">Add Organism</fel-button>
+    </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add Organism
-    </button> -->
-    <hr>
-
-    <DataTable 
-    :columns="tableColumns" 
-    :data="abxOrganisms" 
-    :toggleColumns="true" 
-    :loading="fetchingOrganisms" 
-    :paginable="true"
-    :pageMeta="{
-      fetchCount: abxParams.first,
-      hasNextPage: true,
-      countNone,
-    }" 
-    :searchable="true" 
-    :filterable="false" 
-    @onSearchKeyUp="searchOrganisms" 
-    @onSearchFocus="resetOrganism"
-    @onPaginate="showMoreOrganisms" 
-    :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
+    <div class="bg-card p-6 shadow-sm rounded-lg">
+      <DataTable 
+      :columns="tableColumns" 
+      :data="abxOrganisms" 
+      :toggleColumns="true" 
+      :loading="fetchingOrganisms" 
+      :paginable="true"
+      :pageMeta="{
+        fetchCount: abxParams.first,
+        hasNextPage: true,
+        countNone,
+      }" 
+      :searchable="true" 
+      :filterable="false" 
+      @onSearchKeyUp="searchOrganisms" 
+      @onSearchFocus="resetOrganism"
+      @onPaginate="showMoreOrganisms" 
+      :selectable="false">
+        <template v-slot:footer> </template>
+      </DataTable>
+    </div>
 
   </div>
 
-  <!-- Organism Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <!-- Organism Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-4">
-        <!-- Basic Information -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Organism Name</span>
-              <input class="form-input mt-1 block w-full" v-model="form.name" placeholder="Enter organism name" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">WHONET Code</span>
-              <input class="form-input mt-1 block w-full" v-model="form.whonetOrgCode" placeholder="WHONET code" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Replaced By</span>
-              <input class="form-input mt-1 block w-full" v-model="form.replacedBy" placeholder="Replaced by" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Taxonomic Status</span>
-              <input class="form-input mt-1 block w-full" v-model="form.taxonomicStatus" placeholder="Taxonomic status" />
-            </label>
-          </div>
-        </div>
-
-        <!-- Classification -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Classification</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Common</span>
-              <input class="form-input mt-1 block w-full" v-model="form.common" placeholder="Common" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Organism Type</span>
-              <input class="form-input mt-1 block w-full" v-model="form.organismType" placeholder="Organism type" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Anaerobe</span>
-              <input type="checkbox" class="form-checkbox mt-1" v-model="form.anaerobe" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Morphology</span>
-              <input class="form-input mt-1 block w-full" v-model="form.morphology" placeholder="Morphology" />
-            </label>
-          </div>
-        </div>
-
-        <!-- Taxonomy -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Taxonomy</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Subkingdom Code</span>
-              <input class="form-input mt-1 block w-full" v-model="form.subkingdomCode" placeholder="Subkingdom code" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Family Code</span>
-              <input class="form-input mt-1 block w-full" v-model="form.familyCode" placeholder="Family code" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Genus Group</span>
-              <input class="form-input mt-1 block w-full" v-model="form.genusGroup" placeholder="Genus group" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Genus Code</span>
-              <input class="form-input mt-1 block w-full" v-model="form.genusCode" placeholder="Genus code" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Species Group</span>
-              <input class="form-input mt-1 block w-full" v-model="form.speciesGroup" placeholder="Species group" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Serovar Group</span>
-              <input class="form-input mt-1 block w-full" v-model="form.serovarGroup" placeholder="Serovar group" />
-            </label>
-          </div>
-        </div>
-
-        <!-- Additional Details -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Additional Details</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">GBIF Taxon ID</span>
-              <input class="form-input mt-1 block w-full" v-model="form.gbifTaxonId" placeholder="GBIF Taxon ID" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">GBIF Dataset ID</span>
-              <input class="form-input mt-1 block w-full" v-model="form.gbifDatasetId" placeholder="GBIF Dataset ID" />
-            </label>
-            <label class="block">
-              <span class="text-foreground">GBIF Taxonomic Status</span>
-              <input class="form-input mt-1 block w-full" v-model="form.gbifTaxonomicStatus" placeholder="GBIF Taxonomic Status" />
-            </label>
-          </div>
-        </div>
-
-        <div  class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Additional Details</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-                <span class="text-foreground">Kingdom</span>
-                <VueMultiselect
-                v-model="form.kingdom"
-                :options="abxKingdoms"
-                :multiple="false"
-                :searchable="true"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-            <label class="block">
-                <span class="text-foreground">Phylum</span>
-                <VueMultiselect
-                v-model="form.phylum"
-                :options="phylums"
-                :multiple="false"
-                :searchable="true"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-                <span class="text-foreground">Class</span>
-                <VueMultiselect
-                v-model="form.class_"
-                :options="classes"
-                :multiple="false"
-                :searchable="true"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-            <label class="block">
-                <span class="text-foreground">Order</span>
-                <VueMultiselect
-                v-model="form.Order"
-                :options="orders"
-                :multiple="false"
-                :searchable="true"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-                <span class="text-foreground">Family</span>
-                <VueMultiselect
-                v-model="form.family"
-                :options="familys"
-                :multiple="false"
-                :searchable="true"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-            <label class="block">
-                <span class="text-foreground">Genus</span>
-                <VueMultiselect
-                v-model="form.genus"
-                :options="genuses"
-                :multiple="false"
-                :searchable="true"
-                label="name"
-                >
-                </VueMultiselect>
-            </label>
-          </div>
-        </div>
-
-        <!-- Comments -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Comments</h4>
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+        <div class="grid grid-cols-2 gap-4">
           <label class="block">
-            <span class="text-foreground">Additional Comments</span>
-            <textarea class="form-textarea mt-1 block w-full" v-model="form.comments" rows="3" placeholder="Additional comments..."></textarea>
+            <span class="text-sm font-medium text-foreground">Name</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.name" 
+              placeholder="Name ..." />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Whonet Org Code</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.whonetOrgCode" 
+              placeholder="Whonet Org Code ..." />
           </label>
         </div>
 
-        <hr class="my-6"/>
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Kingdom</span>
+            <VueMultiselect
+              v-model="form.kingdom"
+              :options="abxKingdoms"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              track-by="uid"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Phylum</span>
+            <VueMultiselect
+              v-model="form.phylum"
+              :options="phylums"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              track-by="uid"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Class</span>
+            <VueMultiselect
+              v-model="form.class"
+              :options="classes"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              track-by="uid"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Order</span>
+            <VueMultiselect
+              v-model="form.order"
+              :options="orders"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              track-by="uid"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Family</span>
+            <VueMultiselect
+              v-model="form.family"
+              :options="familys"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              track-by="uid"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Genus</span>
+            <VueMultiselect
+              v-model="form.genus"
+              :options="genuses"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              track-by="uid"
+              label="name"
+              class="mt-1 multiselect-blue"
+            />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Organism Type</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.organismType" 
+              placeholder="Organism Type ..." />
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Anaerobe</span>
+            <input 
+              type="checkbox"
+              class="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" 
+              v-model="form.anaerobe" />
+          </label>
+        </div>
+
+        <hr class="border-border"/>
         
         <button
           type="submit"
-          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Save Organism
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
-
 <style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
+.multiselect-blue {
+  @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
 }
 
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+.multiselect-blue :deep(.multiselect__tags) {
+  @apply border-border rounded-md;
+}
+
+.multiselect-blue :deep(.multiselect__single) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__input) {
+  @apply text-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option) {
+  @apply text-foreground hover:bg-primary/10;
+}
+
+.multiselect-blue :deep(.multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue :deep(.multiselect__option--selected) {
+  @apply bg-primary/20 text-foreground;
 }
 </style>

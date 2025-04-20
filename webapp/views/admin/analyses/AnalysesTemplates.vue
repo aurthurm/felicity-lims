@@ -113,14 +113,14 @@ function saveForm(): void {
     <div class="container w-full my-4">
       <hr />
       <button
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         @click="FormManager(true)"
       >
         Add Analyses Template
       </button>
       <hr />
       <!-- <input
-        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-foreground placeholder-foreground border-1 border-border rounded-sm  focus:placeholder-gray-500 focus:border-emerald-200 focus:outline-none focus:shadow-outline-purple form-input"
+        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-sm  focus:placeholder-gray-500 focus:border-emerald-200 focus:outline-none focus:shadow-outline-purple form-input"
         type="text" placeholder="Search ..." aria-label="Search"
         @keyup="searchProfile($event)"
         @focus="setProfileToNull()"
@@ -137,17 +137,17 @@ function saveForm(): void {
            
             @click.prevent.stop="select(template)"
             :class="[
-              'bg-background w-full p-1 mb-1 rounded',
-              { 'border-border bg-emerald-200': template?.uid === analysisTemplate?.uid },
+              'bg-white w-full p-1 mb-1 rounded',
+              { 'border-gray-100 bg-emerald-200': template?.uid === analysisTemplate?.uid },
             ]"
           >
             <a class="cursor-pointer">
               <div class="flex-grow p-1">
                 <div
-                  class="font-medium text-muted-foreground hover:text-foreground flex justify-between"
+                  class="font-medium text-gray-500 hover:text-gray-700 flex justify-between"
                 >
                   <span>{{ template?.name }}</span>
-                  <span class="text-sm text-muted-foreground"></span>
+                  <span class="text-sm text-gray-500"></span>
                 </div>
               </div>
             </a>
@@ -157,18 +157,18 @@ function saveForm(): void {
 
       <section class="col-span-9" v-if="analysisTemplate?.uid !== undefined">
         <div
-          class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
+          class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
         >
           <div class="grid grid-cols-12 gap-3">
             <div class="col-span-12 px-3 sm:px-0">
               <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold"
+                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
               >
                 <span>{{ analysisTemplate?.name }}</span>
                 <div>
                   <button
                     @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-foreground transition-colors duration-150 bg-background rounded-full focus:outline-none hover:bg-muted"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -182,13 +182,13 @@ function saveForm(): void {
           </div>
         </div>
 
-        <nav class="bg-background shadow-md mt-2">
+        <nav class="bg-white shadow-md mt-2">
           <div class="-mb-px flex justify-start">
             <a
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
+                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
@@ -199,12 +199,12 @@ function saveForm(): void {
           </div>
         </nav>
 
-        <section class="mt-2 p-2 bg-background">
+        <section class="mt-2 p-2 bg-white">
           <div v-if="currentTab === 'analyses-services'">
             <h3>Analyses</h3>
             <hr />
             <section
-              class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-background p-1"
+              class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1"
             >
               <div class="grid grid-cols-6 gap-2 w-full">
                 <div
@@ -222,14 +222,14 @@ function saveForm(): void {
                             :key="service?.uid"
                             class="cursor-pointer"
                             :class="[
-                              { 'border-primary bg-muted underline pl-3': false },
+                              { 'border-sky-800 bg-gray-200 underline pl-3': false },
                             ]"
                           >
                             <div class="flex-grow p-1">
                               <div
                                 :class="[
-                                  'font-medium text-muted-foreground hover:text-foreground',
-                                  { 'text-foreground font-medium': false },
+                                  'font-medium text-gray-500 hover:text-gray-700',
+                                  { 'text-gray-700 font-medium': false },
                                 ]"
                               >
                                 <input
@@ -240,7 +240,7 @@ function saveForm(): void {
                                 />
                                 <label
                                   :for="`toggle-${service?.uid}`"
-                                  class="text-foreground ml-4"
+                                  class="text-gray-700 ml-4"
                                   >{{ service?.name }}</label
                                 >
                               </div>
@@ -254,7 +254,7 @@ function saveForm(): void {
                 </div>
               </div>
               <button
-                class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                 @click="updateTemplate()"
               >
                 Update Template
@@ -276,7 +276,7 @@ function saveForm(): void {
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Analysis Template Name</span>
+            <span class="text-gray-700">Analysis Template Name</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="analysisTemplate.name"
@@ -284,7 +284,7 @@ function saveForm(): void {
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Description</span>
+            <span class="text-gray-700">Description</span>
             <textarea
               cols="2"
               class="form-input mt-1 block w-full"
@@ -293,7 +293,7 @@ function saveForm(): void {
             />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Department</span>
+            <span class="text-gray-700">Department</span>
             <select
               class="form-select block w-full mt-1"
               v-model="analysisTemplate.departmentUid"
@@ -313,7 +313,7 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

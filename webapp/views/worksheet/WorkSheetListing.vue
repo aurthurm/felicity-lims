@@ -12,14 +12,8 @@ import { useField, useForm } from "vee-validate";
 import { object, number } from "yup";
 import * as shield from "@/guards";
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
-)
-const PageHeading = defineAsyncComponent(
-  () => import("@/components/common/FelPageHeading.vue")
 )
 
 const worksheetStore = useWorksheetStore();
@@ -205,84 +199,106 @@ const countNone = computed(
 </script>
 
 <template>
-  <PageHeading title="Worksheets" />
-  <div class="flex justify-between items-center">
-    <div>
-      <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" @click.prevent="showModal = true"
-        class="p-2 h-10 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-        Add WorkSheet
-      </button>
+  <fel-heading title="Worksheets">
+    <button 
+      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" 
+      @click.prevent="showModal = true"
+      class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+    >
+      Add WorkSheet
+    </button>
+  </fel-heading>
+  
+  <div class="space-y-6">
+    <div class="rounded-lg border border-border bg-card shadow-sm p-6">
+      <DataTable 
+        :columns="tableColumns" 
+        :data="workSheets" 
+        :toggleColumns="true" 
+        :loading="fetchingWorkSheets"
+        :paginable="true" 
+        :pageMeta="{
+            fetchCount: workSheetParams.first,
+            hasNextPage: workSheetPageInfo?.hasNextPage,
+            countNone,
+        }" 
+        :searchable="true" 
+        :filterable="true" 
+        :filterMeta="{  
+            defaultFilter: workSheetParams.status,
+            filters: filterOptions,
+        }" 
+        @onSearch="searchWorkSheets" 
+        @onPaginate="showMoreWorkSheets" 
+        :selectable="false"
+        class="bg-background rounded-lg shadow-sm"
+      >
+        <template v-slot:footer> </template>
+      </DataTable>
     </div>
-  </div>
-  <DataTable 
-  :columns="tableColumns" 
-  :data="workSheets" 
-  :toggleColumns="true" 
-  :loading="fetchingWorkSheets"
-  :paginable="true" 
-  :pageMeta="{
-      fetchCount: workSheetParams.first,
-      hasNextPage: workSheetPageInfo?.hasNextPage,
-      countNone,
-  }" 
-  :searchable="true" 
-  :filterable="true" 
-  :filterMeta="{  
-      defaultFilter: workSheetParams.status,
-      filters: filterOptions,
-  }" 
-  @onSearch="searchWorkSheets" 
-  @onPaginate="showMoreWorkSheets" 
-  :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
 
-  <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
-    <template v-slot:header>
-      <div>
-        <h3>Create Worksheet</h3>
-        <hr />
-        <ul>
-          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-destructive">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-    </template>
-
-    <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Analyst</span>
-            <select class="form-select block w-full mt-1" v-model="analystUid">
-              <option v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
-                {{ analystName(analyst) }}
-              </option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Worksheet Template</span>
-            <select class="form-select block w-full mt-1" v-model="templateUid">
-              <option value="undefined"></option>
-              <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
-                {{ template.name }}
-              </option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">How Many</span>
-            <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" />
-          </label>
+    <!-- Location Edit Form Modal -->
+    <fel-modal v-if="showModal" @close="showModal = false" contentWidth="w-1/2">
+      <template v-slot:header>
+        <div class="space-y-4">
+          <h3 class="text-lg font-medium">Create Worksheet</h3>
+          <div class="border-t border-border" />
+          <ul v-if="Object.keys(errors).length > 0" class="space-y-1">
+            <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-destructive text-sm">
+              {{ error }}
+            </li>
+          </ul>
         </div>
+      </template>
 
-        <hr />
-        <button type="button" @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline">
-          Save Form
-        </button>
-      </form>
-    </template>
-  </modal>
+      <template v-slot:body>
+        <form action="post" class="space-y-6 p-4">
+          <div class="grid grid-cols-3 gap-4">
+            <label class="block space-y-2">
+              <span class="text-sm font-medium">Analyst</span>
+              <select 
+                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
+                v-model="analystUid"
+              >
+                <option v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
+                  {{ analystName(analyst) }}
+                </option>
+              </select>
+            </label>
+            <label class="block space-y-2">
+              <span class="text-sm font-medium">Worksheet Template</span>
+              <select 
+                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
+                v-model="templateUid"
+              >
+                <option value="undefined"></option>
+                <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
+                  {{ template.name }}
+                </option>
+              </select>
+            </label>
+            <label class="block space-y-2">
+              <span class="text-sm font-medium">How Many</span>
+              <input 
+                type="number" 
+                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
+                v-model="count" 
+                min="1" 
+              />
+            </label>
+          </div>
+
+          <div class="border-t border-border pt-4">
+            <button 
+              type="button" 
+              @click.prevent="saveForm()"
+              class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              Save Form
+            </button>
+          </div>
+        </form>
+      </template>
+    </fel-modal>
+  </div>
 </template>

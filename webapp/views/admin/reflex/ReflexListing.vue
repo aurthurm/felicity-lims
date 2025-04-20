@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, defineAsyncComponent } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { IReflexRule } from "@/models/reflex";
 import useApiUtil  from "@/composables/api_util";
 import { useReflexStore } from "@/stores/reflex";
 import { AddReflexRuleDocument, AddReflexRuleMutation, AddReflexRuleMutationVariables, EditReflexRuleDocument, EditReflexRuleMutation, EditReflexRuleMutationVariables } from "@/graphql/operations/reflex.mutations";
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 
 const { withClientMutation } = useApiUtil();
 const reflexStore = useReflexStore();
@@ -51,57 +48,38 @@ function saveForm(): void {
 </script>
 
 <template>
-  <h4>Reflex Rules</h4>
+  <div class="space-y-6">
+    <fel-heading title="Reflex Rules">
+      <fel-button @click="FormManager(true)">Add Reflex Rule</fel-button>
+    </fel-heading>
 
-  <div class="container w-full my-4">
-    <hr />
-    <button
-      @click="FormManager(true)"
-      class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-    >
-      Add Reflex Rule
-    </button>
-    <hr />
-
-    <div class="overflow-x-auto mt-4">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-      >
-        <table class="min-w-full">
+    <div class="rounded-md border border-border bg-card p-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border">
           <thead>
             <tr>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Title
+              <th class="px-4 py-2 text-left text-sm font-semibold text-foreground">Title</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-foreground">Description</th>
+              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span class="sr-only">Actions</span>
               </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Description
-              </th>
-              <th class="px-1 py-1 border-b-2 border-border"></th>
             </tr>
           </thead>
-          <tbody class="bg-background">
-            <tr v-for="rule in reflexStore.reflexRules" :key="rule?.uid">
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+          <tbody class="divide-y divide-border bg-background">
+            <tr v-for="rule in reflexStore.reflexRules" :key="rule?.uid" class="hover:bg-muted/50">
+              <td class="whitespace-nowrap px-4 py-2 text-sm text-foreground">
                 <router-link
                   :to="{ name: 'reflex-detail', params: { uid: rule?.uid } }"
-                  class="text-sm leading-5 text-foreground"
-                  >{{ rule?.name }}</router-link
+                  class="text-primary hover:text-primary/80"
                 >
+                  {{ rule?.name }}
+                </router-link>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">{{ rule?.description }}</div>
-              </td>
-              <td
-                class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5"
-              >
-                <button
+              <td class="whitespace-nowrap px-4 py-2 text-sm text-foreground">{{ rule?.description }}</td>
+              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <button 
                   @click="FormManager(false, rule)"
-                  class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                >
+                  class="text-primary hover:text-primary/80">
                   Edit
                 </button>
               </td>
@@ -112,42 +90,42 @@ function saveForm(): void {
     </div>
   </div>
 
-  <!-- Refecx Rule Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <!-- Reflex Rule Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Name</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="form.name"
-              placeholder="Name ..."
-            />
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+        <div class="grid grid-cols-1 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Name</span>
+            <input 
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              v-model="form.name" 
+              placeholder="Name ..." />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Description</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Description</span>
             <textarea
-              cols="2"
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               v-model="form.description"
               placeholder="Description ..."
+              rows="3"
             />
           </label>
         </div>
-        <hr />
+
+        <hr class="border-border"/>
+        
         <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          type="submit"
+          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          Save Form
+          Save Reflex Rule
         </button>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 </template>

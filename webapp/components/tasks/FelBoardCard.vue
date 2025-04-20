@@ -8,11 +8,11 @@
 </script>
 
 <template>
-  <div class="bg-background shadow rounded-sm px-3 pt-3 pb-5 border border-foreground">
-    <div class="">
-      <h3 class="h2 font-bold text-foreground">{{ board?.title?.toUpperCase() }}</h3>
-      <hr class="my-2">
-      <p class="text-muted-foreground font-semibold font-sans tracking-wide text-sm">{{ board?.description || '---' }}</p>
+  <div class="bg-card rounded-lg border border-border p-4 shadow-sm">
+    <div class="space-y-2">
+      <h3 class="text-lg font-semibold text-foreground">{{ board?.title?.toUpperCase() }}</h3>
+      <div class="h-px bg-border" />
+      <p class="text-sm text-muted-foreground">{{ board?.description || '---' }}</p>
     </div>
   </div>
 </template>

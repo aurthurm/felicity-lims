@@ -8,17 +8,9 @@ import { useNoticeStore } from "@/stores/notice";
 import { useSetupStore} from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
 import Swal from 'sweetalert2';
-const PageHeading = defineAsyncComponent(
-  () => import("@/components/common/FelPageHeading.vue")
-)
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
+
 const NoticeForm = defineAsyncComponent(
   () => import("./NoticeForm.vue")
-)
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
 )
 
 let setupStore = useSetupStore();
@@ -77,48 +69,46 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
 </script>
 
 <template>
-  <PageHeading title="Notice Manager" />
-  <button @click.prevent="FormManager(true)"
-    class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground">
-    New Notice
-  </button>
+  <div class="space-y-4">
+    <fel-heading title="Notice Manager">
+      <button 
+        @click.prevent="FormManager(true)"
+        class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+      >
+        New Notice
+      </button>
+    </fel-heading>
 
-  <!-- Notice Table View -->
-  <div class="overflow-x-auto mt-4">
-    <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <table class="min-w-full">
-        <thead>
+    <!-- Notice Table View -->
+    <div class="overflow-hidden shadow ring-1 ring-border ring-opacity-5 rounded-lg">
+      <table class="min-w-full divide-y divide-border">
+        <thead class="bg-muted">
           <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Notice Title
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Expiration
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
+            <th class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Notice Title</th>
+            <th class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Expiration</th>
+            <th class="px-3 py-3.5 text-right text-sm font-medium text-foreground">Actions</th>
           </tr>
         </thead>
-        <tbody class="bg-background">
-          <tr v-for="notice in notices" :key="notice.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+        <tbody class="divide-y divide-border bg-background">
+          <tr v-for="notice in notices" :key="notice.uid" class="hover:bg-muted/50 transition-colors duration-150">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
               <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground" @click="FormManager(false, notice)">
+                <div class="cursor-pointer" @click="FormManager(false, notice)">
                   {{ notice.title }}
                 </div>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
               {{ notice.status }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-right">
               <button
-                class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-secondary hover:text-foreground-700 focus:outline-none"
+                class="px-3 py-1.5 mr-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
                 @click="FormManager(false, notice)">
                 View/Edit
               </button>
               <button
-                class="px-2 py-1 mr-2 ml-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-foreground-700 focus:outline-none"
+                class="px-3 py-1.5 text-sm font-medium text-destructive-foreground bg-destructive border border-transparent rounded-md shadow-sm hover:bg-destructive/90 focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 transition-colors duration-200"
                 @click="deleteNotice(notice.uid)">
                 Delete
               </button>
@@ -127,19 +117,19 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
         </tbody>
       </table>
       <div v-if="fetchingNotices" class="py-4 text-center">
-        <LoadingMessage message="Fetching notices ..." />
+        <fel-loader message="Fetching notices ..." />
       </div>
     </div>
   </div>
 
   <!-- Notice Form Modal -->
-  <modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
+  <fel-modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ modalState.title }}</h3>
+      <h3 class="text-lg font-medium text-foreground">{{ modalState.title }}</h3>
     </template>
 
     <template v-slot:body>
       <NoticeForm :notice="modalState.notice" @close="modalState.showModal = false" />
     </template>
-  </modal>
+  </fel-modal>
 </template>

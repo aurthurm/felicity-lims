@@ -3,8 +3,9 @@ import { defineStore } from 'pinia';
 import useApiUtil from '@/composables/api_util';
 import useTreeStateComposable from '@/composables/tree-state';
 import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '@/models/storage';
-import { GetAllStorageContainersDocument, GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables, GetAllStorageLocationsDocument, GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables, GetAllStorageSectionsDocument, GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables, GetAllStoreRoomsDocument, GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables, GetStoreRoomsTreeDocument, GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables } from '@/graphql/operations/storage.queries';
+import { GetAllStorageContainersDocument, GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables, GetAllStorageLocationsDocument, GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables, GetAllStorageSectionsDocument, GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables, GetAllStoreRoomsDocument, GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables, GetSrorageContainerByUidDocument, GetStoreRoomsTreeDocument, GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables } from '@/graphql/operations/storage.queries';
 import { GetSamplesByStorageContainerUidDocument, GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables } from '@/graphql/operations/analyses.queries';
+import { GetSrorageContainerByUidQuery } from '@/types/gqlops';
 
 const { withClientQuery } = useApiUtil();
 const { setTree } = useTreeStateComposable();
@@ -137,7 +138,7 @@ export const useStorageStore = defineStore('storage', {
         async fetchStorageContainer(uid: string) {
             if (!uid) return;
             this.fetchingStorageContainer = true;
-            await withClientQuery<GetSamplesByStorageContainerUidQuery,GetSamplesByStorageContainerUidQueryVariables>(GetSamplesByStorageContainerUidDocument, { uid }, 'storageContainerByUid', 'network-only')
+            await withClientQuery<GetSrorageContainerByUidQuery, GetSrorageContainerByUidQuery>(GetSrorageContainerByUidDocument, { uid }, 'storageContainerByUid', 'network-only')
                 .then(async payload => {
                     this.fetchingStorageContainer = false;
                     this.storageContainer = payload;

@@ -8,14 +8,9 @@ import useApiUtil  from "@/composables/api_util";
 import { IVoucher } from "@/models/billing";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";
-import { formatDate } from "@/utils/helpers";
+import { formatDate } from "@/utils";
+import { VoucherInput } from '@/types/gql';
 
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const VoucherCodes = defineAsyncComponent(
   () => import("./VoucherCodes.vue")
 )
@@ -116,161 +111,164 @@ const updateVoucher = (vocher: IVoucher) => {
 </style>
 
 <template>
-  <div class="mt-4">
-    <div class="flex justify-between">
-      <button
-        class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
-        @click="newVoucher">
-        Add Voucher
-      </button>
-    </div>
+  <div class="space-y-6">
+    <fel-heading title="Vouchers">
+      <fel-button @click="newVoucher">Add Voucher</fel-button>
+    </fel-heading>
 
-    <hr />
-
-    <div class="grid grid-cols-12 gap-4 mt-2">
-      <section v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
-        :variants="{ custom: { scale: 2 } }" :delay="400"
-        class="col-span-3 overflow-y-scroll overscroll-contain voucher-scroll">
-        <div v-if="fetchingVouchers" class="py-4 text-center bg-background w-full mb-1 rounded-sm shadow border">
-          <LoadingMessage message="Fetching vouchers ..." />
-        </div>
-        <div v-else>
-          <a v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" :class="[
-            'bg-background w-full flex items-center p-1 mb-1 rounded-sm shadow border',
-            { 'border-primary bg-emerald-200': voucher.uid === uid },
-          ]">
-            <div class="flex-grow p-1">
-              <div class="font-semibold text-foreground flex justify-between">
-                <span>{{ voucher.name }}</span>
-                <span class="text-sm text-muted-foreground">{{ voucher.used }} of {{ voucher.usageLimit }}</span>
-              </div>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      <section v-if="vouchers?.length > 0 && uid" v-motion :initial="{ opacity: 0, y: -100 }"
-        :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" class="col-span-9">
-        
-        <div class="bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
-          <div class="flex justify-between items-center">
-            <h4 class="text-foreground text-l font-bold">{{ name?.toUpperCase() }}</h4>
-            <a @click="showModal = true" class="px-2 cursor text-muted-foreground hover:text-foreground">
-                <font-awesome-icon icon="pen" />
-            </a>
+    <div class="rounded-lg border border-border bg-card p-6">
+      <div class="grid grid-cols-12 gap-6">
+        <section v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
+          :variants="{ custom: { scale: 2 } }" :delay="400"
+          class="col-span-3 overflow-y-auto overscroll-contain voucher-scroll">
+          <div v-if="fetchingVouchers" class="rounded-lg border border-border bg-card p-4">
+            <fel-loader message="Fetching vouchers ..." />
           </div>
-          <hr>
-          <section class="grid grid-cols-3 gap-x-8">
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Start Date:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ startDate }}</span>
+          <div v-else class="space-y-2">
+            <button v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" 
+              class="w-full flex items-center p-4 rounded-lg border transition-colors hover:bg-accent hover:text-accent-foreground"
+              :class="[
+                voucher.uid === uid 
+                  ? 'border-primary bg-primary/10' 
+                  : 'border-border bg-card'
+              ]">
+              <div class="flex-grow">
+                <div class="flex justify-between items-center">
+                  <span class="font-medium text-foreground">{{ voucher.name }}</span>
+                  <span class="text-sm text-muted-foreground">{{ voucher.used }} of {{ voucher.usageLimit }}</span>
+                </div>
               </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">End Date:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ endDate }}</span>
+            </button>
+          </div>
+        </section>
+
+        <section v-if="vouchers?.length > 0 && uid" v-motion :initial="{ opacity: 0, y: -100 }"
+          :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" 
+          class="col-span-9 space-y-6">
+          
+          <div class="rounded-lg border border-border bg-card p-6" v-motion-slide-top>
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="text-lg font-semibold text-foreground">{{ name?.toUpperCase() }}</h4>
+              <button @click="showModal = true" 
+                class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9">
+                <font-awesome-icon icon="pen" class="text-muted-foreground" />
+              </button>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-8">
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-muted-foreground">Start Date:</span> 
+                  <span class="text-sm text-foreground">{{ startDate }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-muted-foreground">End Date:</span> 
+                  <span class="text-sm text-foreground">{{ endDate }}</span>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-muted-foreground">Usage Limit:</span> 
+                  <span class="text-sm text-foreground">{{ usageLimit }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-muted-foreground">Used:</span> 
+                  <span class="text-sm text-foreground">{{ used }}</span>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-muted-foreground">Once per customer:</span> 
+                  <span class="text-sm text-foreground">{{ oncePerCustomer ? "Yes" : "No" }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-muted-foreground">Once per order:</span> 
+                  <span class="text-sm text-foreground">{{ oncePerOrder ? "Yes" : "No" }}</span>
+                </div>
               </div>
             </div>
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Usage Limit:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ usageLimit }}</span>
-              </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Used:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ used }}</span>
-              </div>
-            </div>
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Once per customer:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ oncePerCustomer ? "Yes" : "No" }}</span>
-              </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Once per order:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ oncePerOrder ? "Yes" : "No" }}</span>
-              </div>
-            </div>
-          </section>
-        </div>
-        <VoucherCodes :voucherUid="uid" />
-      </section>
+          </div>
+          <VoucherCodes :voucherUid="uid" />
+        </section>
+      </div>
     </div>
 
     <!-- Voucher Form Modal -->
-    <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
-        <h3>Voucher Form</h3>
+        <h3 class="text-lg font-semibold text-foreground">Voucher Form</h3>
       </template>
       <template v-slot:body>
-        <form>
-          <div class="grid grid-cols-4 gap-x-4 mb-4">
-            <label class="block col-span-2 mb-2">
-              <span class="text-foreground">Voucher Name</span>
+        <form class="space-y-6">
+          <div class="grid grid-cols-4 gap-4">
+            <label class="block col-span-2 space-y-2">
+              <span class="text-sm font-medium text-foreground">Voucher Name</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.name }]"
+                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.name }]"
                 type="text"
                 v-model="name"
                 placeholder="Name ..."
               />
             </label>
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Start Date</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Start Date</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.startDate }]"
+                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.startDate }]"
                 type="date"
                 v-model="startDate"
               />
             </label>
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">End Date</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">End Date</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.endDate }]"
+                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.endDate }]"
                 type="date"
                 v-model="endDate"
               />
             </label>
           </div>
-          <div class="grid grid-cols-4 gap-x-4 mb-4">
-            <label class="block col-span-2 mb-2">
-              <span class="text-foreground">Usage Limit</span>
+          <div class="grid grid-cols-4 gap-4">
+            <label class="block col-span-2 space-y-2">
+              <span class="text-sm font-medium text-foreground">Usage Limit</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.usageLimit }]"
+                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.usageLimit }]"
                 type="number"
                 min="1"
                 v-model="usageLimit"
               />
             </label>
           </div>
-          <div class="grid grid-cols-2 gap-x-4 mb-4">
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Once Per Customer</span>
+          <div class="grid grid-cols-2 gap-4">
+            <label class="flex items-center space-x-2">
               <input
-                class="form-checkbox ml-4"
+                class="form-checkbox h-4 w-4 rounded border-input text-primary focus:ring-primary"
                 type="checkbox"
                 v-model="oncePerCustomer"
                 checked
               />
+              <span class="text-sm font-medium text-foreground">Once Per Customer</span>
             </label>
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Once Per Order</span>
+            <label class="flex items-center space-x-2">
               <input
-                class="form-checkbox ml-4"
+                class="form-checkbox h-4 w-4 rounded border-input text-primary focus:ring-primary"
                 type="checkbox"
                 v-model="oncePerOrder"
                 checked
               />
+              <span class="text-sm font-medium text-foreground">Once Per Order</span>
             </label>
           </div>
 
-          <hr />
-          <button type="submit"
-            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-            @click.prevent="submitVoucherForm">
-            Save Voucher
-          </button>
+          <div class="flex justify-end">
+            <button 
+              type="submit"
+              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+              @click.prevent="submitVoucherForm">
+              Save Voucher
+            </button>
+          </div>
         </form>
       </template>
-    </modal>
+    </fel-modal>
   </div>
 </template>

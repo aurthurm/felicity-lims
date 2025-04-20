@@ -1,3 +1,4 @@
+/* Base app styles */
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -5,6 +6,7 @@
     color: #2c3e50;
 }
 
+/* Active tab styles */
 .tab-active {
     border-bottom: 2px solid black !important;
     font-weight: bold !important;

@@ -44,46 +44,46 @@ function handlePermissionToggle(group: IGroup, perm: IPermission, value: boolean
 </script>
 
 <template>
-  <div class="overflow-x-auto mt-4">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+  <div class="space-y-6">
+    <div class="bg-background rounded-lg shadow-sm overflow-hidden">
       <div class="relative">
         <!-- Fixed Header -->
-        <table class="min-w-full">
+        <table class="w-full">
           <thead>
             <tr>
               <th
-                class="sticky top-0 z-10 bg-background px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
+                class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
                 Permissions
               </th>
               <th 
                 v-for="group in groups" 
                 :key="group.uid"
-                class="sticky top-0 z-10 bg-background px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
+                class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-right text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
                 {{ group.name }}
               </th>
-              <th class="sticky top-0 z-10 bg-background px-1 py-1 border-b-2 border-border"></th>
+              <th class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border"></th>
             </tr>
           </thead>
         </table>
         
         <!-- Scrollable Body -->
-        <div class="flex-1 overflow-y-auto max-h-[700px]">
-          <table class="min-w-full">
-            <tbody class="bg-background">
+        <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
+          <table class="w-full">
+            <tbody class="divide-y divide-border">
               <template v-for="category in permissions" :key="category[0]">
-                <tr class="bg-secondary" >
-                  <td class="py-1 font-bold px-1 text-foreground ">{{ category[0] }}</td>
-                  <td class="py-1 font-medium px-1 text-muted-foreground" v-for="group in groups" :key="group.uid">
-                    {{ group.name }}
+                <tr class="bg-muted/50">
+                  <td class="px-4 py-3 font-medium text-sm text-foreground">{{ category[0] }}</td>
+                  <td class="px-4 py-3 font-medium text-sm text-muted-foreground" v-for="group in groups" :key="group.uid">
+                    <!-- {{ group.name }} -->
                   </td>
                 </tr>
-                <tr v-for="perm in category[1]" :key="perm.uid" class="border-b border-border">
-                  <td class="py-1 font-sm italic text-muted-foreground px-1">
+                <tr v-for="perm in category[1]" :key="perm.uid">
+                  <td class="px-4 py-2 text-sm text-muted-foreground">
                     {{ perm.action }}
                   </td>
-                  <td v-for="group in groups" :key="group.uid" class="px-1">
+                  <td v-for="group in groups" :key="group.uid" class="px-4 py-2">
                     <FelSwitch
                       :model-value="hasPermission(group, perm)"
                       @update:model-value="handlePermissionToggle(group, perm, $event)"

@@ -31,7 +31,7 @@
 </script>
 
 <template>
-  <section class="col-span-12" >
+  <section class="col-span-12 bg-background rounded-lg shadow-sm p-6">
     <FelTabs :tabs="tabs" initial-tab="default" />
   </section>
 </template>

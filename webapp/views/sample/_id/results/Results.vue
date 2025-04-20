@@ -35,15 +35,27 @@ watch(
 </script>
 
 <template>
-   <div v-if="sample">
-    <!-- generic result -->
-    <GenericResults :sample="sample" :analysisResults="genericResults" :fetchingResults="fetchingResults" />
-    <!-- organism result -->
-    <OrganismResults v-if="organismResults.length > 0"
-    :sample="sample" :analysisResults="organismResults" />
-    <!-- antibiotic result -->
-    <ASTResults v-if="astResults.length > 0 || organismResults.length > 0"
-    :sample="sample" :organismAnalysisResults="organismResults" />
+  <div class="space-y-6">
+    <div v-if="sample" class="space-y-6">
+      <!-- generic result -->
+      <GenericResults 
+        :sample="sample" 
+        :analysisResults="genericResults" 
+        :fetchingResults="fetchingResults" 
+      />
+      <!-- organism result -->
+      <OrganismResults 
+        v-if="organismResults.length > 0"
+        :sample="sample" 
+        :analysisResults="organismResults" 
+      />
+      <!-- antibiotic result -->
+      <ASTResults 
+        v-if="astResults.length > 0 || organismResults.length > 0"
+        :sample="sample" 
+        :organismAnalysisResults="organismResults" 
+      />
+    </div>
+    <div v-else class="text-muted-foreground">No sample data</div>
   </div>
-  <span v-else>No sample data</span>
 </template>

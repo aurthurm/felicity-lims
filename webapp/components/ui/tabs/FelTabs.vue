@@ -44,15 +44,17 @@ watch(visibleTabs, (newTabs) => {
 
 <template>
   <section class="col-span-12">
-    <nav class="bg-background shadow-md mt-2" v-motion-slide-left>
+    <nav class="bg-background border-b border-border" v-motion-slide-left>
       <div class="-mb-px flex justify-start">
         <a
           v-for="tab in visibleTabs"
           :key="tab.id"
           :class="[
-            'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4',
-            'tab hover:bg-primary hover:text-muted-foreground cursor-pointer',
-            { 'tab-active': currentTabId === tab.id }
+            'no-underline text-muted-foreground uppercase tracking-wide font-medium text-sm py-2 px-4',
+            'border-b-2 transition-colors duration-200',
+            currentTabId === tab.id 
+              ? 'border-primary text-primary font-medium' 
+              : 'border-transparent hover:border-primary/50 hover:text-primary/80'
           ]"
           @click="setCurrentTab(tab.id)"
         >
@@ -60,7 +62,7 @@ watch(visibleTabs, (newTabs) => {
         </a>
       </div>
     </nav>
-    <div>
+    <div class="mt-4">
       <component
         v-if="currentTab"
         :is="currentTab.component"
@@ -72,6 +74,6 @@ watch(visibleTabs, (newTabs) => {
 
 <style scoped>
 .tab-active {
-  @apply bg-primary text-muted-foreground;
+  @apply border-primary text-primary;
 }
 </style>

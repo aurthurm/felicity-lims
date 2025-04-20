@@ -119,134 +119,118 @@ const sampleManager = (action: string) => {
 </script>
 
 <template>
-  <div class="">
-    <hr class="mt-4" />
-    <div v-show="viewShipmentModifier" class="flex justify-between items-center" v-motion-slide-left>
-      <form action="post" class="p-1" v-show="!applying && !shipmentStore.shipment?.incoming">
-        <div class="flex justify-start items-center mb-4">
-          <label class="flex justify-between items-center">
-            <span class="text-foreground mr-2 whitespace-nowrap">Reference Laboratory</span>
-            <select
-              name="laboratory_uid"
-              v-model="form.laboratoryUid"
-              class="form-input mt-1 block w-full py-1"
+  <div class="space-y-6">
+    <div v-show="viewShipmentModifier" class="space-y-4" v-motion-slide-left>
+      <form action="post" class="space-y-4" v-show="!applying && !shipmentStore.shipment?.incoming">
+        <div class="flex flex-wrap gap-4 items-end">
+          <div class="flex-1 min-w-[200px]">
+            <label class="block space-y-1.5">
+              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Reference Laboratory</span>
+              <select
+                name="laboratory_uid"
+                v-model="form.laboratoryUid"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
+                  {{ laboratory.name }}
+                </option>
+              </select>
+            </label>
+          </div>
+          
+          <div class="flex-1 min-w-[200px]">
+            <label class="block space-y-1.5">
+              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Courier</span>
+              <input
+                type="text"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                v-model="form.courier"
+              />
+            </label>
+          </div>
+
+          <div>
+            <FButton 
+              @click.prevent="applyChanges()" 
+              :color="'sky-800'" 
+              class="h-10 px-4"
             >
-              <option v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
-                {{ laboratory.name }}
-              </option>
-            </select>
-          </label>
-          <label class="flex justify-between items-center ml-4">
-            <span class="text-foreground mr-2">Courier</span>
-            <input
-              type="text"
-              class="form-input mt-1 block w-full py-1"
-              v-model="form.courier"
-            />
-          </label>
-          <div class="ml-6 mt-2">
-            <FButton @click.prevent="applyChanges()" :color="'sky-800'" class="p-1"
-              >Apply</FButton
-            >
+              Apply
+            </FButton>
           </div>
         </div>
       </form>
-      <p v-show="applying">updating ...</p>
+      <p v-show="applying" class="text-sm text-muted-foreground">Updating...</p>
 
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-9 px-4"
         >
           Refresh
         </button>
       </div>
     </div>
-    <hr class="mb-4" />
 
-    <!-- Sampe Table View -->
-    <div class="overflow-x-auto">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-      >
-        <table class="min-w-full">
+    <!-- Sample Table View -->
+    <div class="rounded-md border border-border">
+      <div class="overflow-x-auto">
+        <table class="w-full">
           <thead>
-            <tr>
+            <tr class="border-b border-border bg-muted/50">
               <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
+                class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
                 v-show="shipment?.state === 'preperation'"
               >
                 <input
                   type="checkbox"
-                  class=""
+                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                   @change="toggleCheckAll()"
                   v-model="allChecked"
                 />
               </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-              ></th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-              >
-                Sample ID
-              </th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"></th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample ID</th>
               <th 
                 v-show="shipment?.incoming"
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
+                class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
               >
-                Exernal SID
+                External SID
               </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-              >
-                Client Request Id
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Date Collected
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Analysis
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-              >
-                Status
-              </th>
-              <!-- <th class="px-1 py-1 border-b-2 border-border"></th> -->
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Client Request Id</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Collected</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Analysis</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
             </tr>
           </thead>
-          <tbody class="bg-background">
+          <tbody class="divide-y divide-border">
             <tr
               v-for="shipped in shipment?.shippedSamples"
               :key="shipped.sampleUid"
               v-motion-slide-right
+              class="hover:bg-muted/50"
             >
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border" v-show="shipment?.state === 'preperation'">
+              <td class="p-4 align-middle" v-show="shipment?.state === 'preperation'">
                 <input
                   type="checkbox"
-                  class=""
+                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                   v-model="shipped.checked"
                   @change="checkCheck()"
                 />
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+              <td class="p-4 align-middle">
                 <span
                   v-if="shipped.sample?.priority ?? 0 > 0"
                   :class="[
-                        'font-small',
-                        { 'text-destructive': shipped.sample?.priority ?? 0 > 1 },
-                    ]"
+                    'text-sm',
+                    { 'text-destructive': shipped.sample?.priority ?? 0 > 1 }
+                  ]"
                 >
                   <font-awesome-icon icon="fa-star" />
                 </span>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-foreground font-semibold">
+              <td class="p-4 align-middle">
+                <div class="text-sm font-medium">
                   <router-link
                     v-if="shipped.sample?.analysisRequest?.patient?.uid"
                     :to="{
@@ -256,31 +240,34 @@ const sampleManager = (action: string) => {
                         sampleUid: shipped.sample?.uid,
                       },
                     }"
-                    >{{ shipped.sample?.sampleId }}
+                    class="text-primary hover:underline"
+                  >
+                    {{ shipped.sample?.sampleId }}
                   </router-link>
                   <div v-else>{{ shipped.sample?.sampleId }}</div>
                 </div>
               </td>
-              <td v-show="shipment?.incoming"
-                class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div>{{ shipped.extSampleId }}</div>
+              <td 
+                v-show="shipment?.incoming"
+                class="p-4 align-middle"
+              >
+                <div class="text-sm">{{ shipped.extSampleId }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div>{{ shipped.sample?.analysisRequest?.clientRequestId }}</div>
+              <td class="p-4 align-middle">
+                <div class="text-sm">{{ shipped.sample?.analysisRequest?.clientRequestId }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div>{{ shipped.sample?.dateCollected }}</div>
+              <td class="p-4 align-middle">
+                <div class="text-sm">{{ shipped.sample?.dateCollected }}</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div>tests</div>
+              <td class="p-4 align-middle">
+                <div class="text-sm">tests</div>
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <button
-                  type="button"
-                  class="bg-primary text-primary-foreground py-1 px-2 rounded-sm leading-none"
+              <td class="p-4 align-middle">
+                <span
+                  class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary"
                 >
                   {{ shipped.sample?.status || "unknown" }}
-                </button>
+                </span>
               </td>
             </tr>
           </tbody>
@@ -288,18 +275,18 @@ const sampleManager = (action: string) => {
       </div>
     </div>
 
-    <section class="my-4">
+    <section class="flex gap-2">
       <button
         v-show="can_recover"
         @click.prevent="sampleManager('recover')"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+        class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-9 px-4"
       >
         Remove
       </button>
       <button
         v-show="can_recall"
         @click.prevent="sampleManager('recall')"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+        class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-9 px-4"
       >
         Pair
       </button>

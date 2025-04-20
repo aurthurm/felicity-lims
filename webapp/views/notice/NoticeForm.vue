@@ -12,7 +12,7 @@ import useApiUtil  from "@/composables/api_util";
 
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number, date } from "yup";
-import { formatDate } from "@/utils/helpers";
+import { formatDate } from "@/utils";
 import {
 	ClassicEditor,
 	AccessibilityHelp,
@@ -217,19 +217,20 @@ function updateNotice(payload: INotice) {
 </script>
 
 <template>
-  <form action="post" class="p-1" @submit.prevent="submitNoticeForm">
-    <div class="grid grid-cols-2 gap-x-4 mb-4">
-      <label class="block col-span-2 mb-2">
-        <span class="text-foreground">Title</span>
+  <form action="post" class="space-y-4 p-4" @submit.prevent="submitNoticeForm">
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-foreground">Title</label>
         <input
-          class="form-input mt-1 block w-full"
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
           v-model="title"
-          placeholder="Name ..."
+          placeholder="Notice title..."
         />
-        <div class="text-destructive w-4/12">{{ errors.title }}</div>
-      </label>
-      <label class="block col-span-2 mb-2">
-        <span class="text-foreground">Body</span>
+        <div v-if="errors.title" class="text-sm text-destructive">{{ errors.title }}</div>
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-foreground">Body</label>
         <div class="main-container min-w-full prose prose-slate">
           <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
             <div class="editor-container__editor">
@@ -244,22 +245,28 @@ function updateNotice(payload: INotice) {
             </div>
           </div>
         </div>
-        <div class="text-destructive w-4/12">{{ errors.body }}</div>
-      </label>
-      <label class="block col-span-2 mb-2">
-        <span class="text-foreground">Expiration</span>
-        <VueDatePicker class="z-60" 
-        v-model="expiry"
-        :min-date="minDateTime" placeholder="Select Expiry Date"></VueDatePicker>
-        <div class="text-destructive w-4/12">{{ errors.expiry }}</div>
-      </label>
+        <div v-if="errors.body" class="text-sm text-destructive">{{ errors.body }}</div>
+      </div>
+      
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-foreground">Expiration</label>
+        <VueDatePicker 
+          class="w-full" 
+          v-model="expiry"
+          :min-date="minDateTime" 
+          placeholder="Select Expiry Date"
+        ></VueDatePicker>
+        <div v-if="errors.expiry" class="text-sm text-destructive">{{ errors.expiry }}</div>
+      </div>
     </div>
-    <hr />
+    
+    <div class="border-t border-border my-4"></div>
+    
     <button
       type="submit"
-      class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+      class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
     >
-      Save Form
+      Save Notice
     </button>
   </form>
 </template>

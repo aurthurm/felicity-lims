@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { INotice } from '@/models/notice';
-import { subtractDates } from '@/utils/helpers';
+import { subtractDates } from '@/utils';
 
 import  useApiUtil  from '@/composables/api_util';
 import { GetNoticesByCreatorUidDocument, GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables } from '@/graphql/operations/notice.queries';

@@ -110,13 +110,15 @@ const applyChanges = async () => {
 </script>
 
 <template>
-  <section>
-    <hr />
-    <form action="post" class="mt-4" v-motion-slide-right>
-      <div class="flex justify-start items-center mr-4">
-        <span class="text-foreground">Analyses Template (Auto)</span>
-        <label class="block mx-4">
-          <select class="form-select block w-full py-1" v-model="templateUid">
+  <div class="space-y-6">
+    <section class="bg-background rounded-lg shadow-sm p-6 space-y-6">
+      <form @submit.prevent class="space-y-4" v-motion-slide-right>
+        <div class="flex items-center space-x-4">
+          <span class="text-sm font-medium text-foreground">Analyses Template (Auto)</span>
+          <select 
+            v-model="templateUid"
+            class="w-64 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
             <option></option>
             <option
               v-for="template in analysisStore.analysesTemplates"
@@ -126,59 +128,86 @@ const applyChanges = async () => {
               {{ template.name }}
             </option>
           </select>
-        </label>
-        <button
-          type="button"
-          @click.prevent="applyTemplate()"
-          class="border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Apply Template
-        </button>
+          <button
+            type="button"
+            @click.prevent="applyTemplate()"
+            class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          >
+            Apply Template
+          </button>
+        </div>
+      </form>
+
+      <div class="border-t border-border" />
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-foreground">
+            Manually Modify Analyses: ({{ selectedAnalyses?.length }})
+          </h3>
+        </div>
+
+        <div class="border-t border-border" />
+
+        <div class="max-h-[540px] overflow-y-auto rounded-md border border-border">
+          <div class="w-full">
+            <accordion v-for="(category, idx) in analysesServices" :key="idx">
+              <template v-slot:title>{{ category[0] }}</template>
+              <template v-slot:body>
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead>
+                      <tr class="border-b border-border bg-muted/50">
+                        <th class="px-4 py-2 text-left">
+                          <input 
+                            type="checkbox" 
+                            :checked="isSelectedCategory(category[1])" 
+                            @change="selectCategory(category[1])"
+                            class="rounded border-input"
+                          />
+                        </th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Analysis</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Keyword</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr 
+                        v-for="service in category[1]" 
+                        :key="service?.uid" 
+                        v-motion-slide-right
+                        class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
+                      >
+                        <td class="px-4 py-2">
+                          <input 
+                            type="checkbox" 
+                            :checked="isSelectedAnalysis(service?.uid)" 
+                            @change="selectAnalysis(service?.uid)"
+                            class="rounded border-input"
+                          />
+                        </td>
+                        <td class="px-4 py-2 text-sm text-foreground">{{ service?.name }}</td>
+                        <td class="px-4 py-2 text-sm text-muted-foreground">{{ service?.keyword }}</td>
+                        <td class="px-4 py-2 text-sm text-muted-foreground">{{ service?.description }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </accordion>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button
+            type="button"
+            @click.prevent="applyChanges()"
+            class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          >
+            Apply Changes
+          </button>
+        </div>
       </div>
-    </form>
-  </section>
-
-  <hr class="mt-4 mb-2" />
-  <h3 class="font-bold">Manually Modify Analyses: ({{ selectedAnalyses?.length }})</h3>
-  <hr class="mb-4 mt-2" />
-
-  <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-background">
-    <div class="w-full">
-        <accordion v-for="(category, idx) in analysesServices" :key="idx">
-          <template v-slot:title>{{ category[0] }}</template>
-          <template v-slot:body>
-            <table class="min-w-full">
-              <thead>
-                <tr>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
-                    <input type="checkbox" class="" :checked="isSelectedCategory(category[1])" @change="selectCategory(category[1])"/>
-                  </th>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Analysis</th>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Keyword</th>
-                  <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Description</th>
-                </tr>
-              </thead>
-              <tbody class="bg-background">
-                <tr v-for="service in category[1]" :key="service?.uid" v-motion-slide-right>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <input type="checkbox" class="border-destructive" :checked="isSelectedAnalysis(service?.uid)" @change="selectAnalysis(service?.uid)" />
-                  </td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">{{ service?.name }}</td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">{{ service?.keyword }}</td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">{{ service?.description }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </template>
-        </accordion>
-        <hr>
-        <button
-          type="button"
-          @click.prevent="applyChanges()"
-          class="border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Apply Changes
-        </button>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>

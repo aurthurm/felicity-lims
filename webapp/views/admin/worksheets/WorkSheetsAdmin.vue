@@ -202,286 +202,240 @@ const qcLevels = computed<IQCLevel[]>(() => analysisStore.getQCLevels);
 const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
 </script>
 
+
 <template>
-  <div class="mt-4">
-    <div class="flex items-center">
-      <h1 class="h1 my-4 font-bold text-dark-700">WorkSheet Templates</h1>
-      <button
-        class="p-2 my-2 ml-8 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
-        @click="FormManager(true)"
-      >
-        Add Template
-      </button>
-    </div>
-    <hr />
+  <div>
+    <fel-heading title="WorkSheet Templates">
+      <fel-button @click="FormManager(true)">Add Template</fel-button>
+    </fel-heading>
+
+    <hr class="my-4 border-t border-border" />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-3">
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+      <section class="col-span-12 md:col-span-4 lg:col-span-3">
+        <div class="overflow-y-scroll overscroll-contain scroll-section pr-2 space-y-1">
           <div
             v-for="wst in workSheetTemplates"
             :key="wst.uid"
-            :class="
+            :class="[
+              'w-full flex justify-between items-center p-2 rounded-lg border shadow-sm transition-colors',
               workSheetTemplate?.uid === wst.uid
-                ? 'w-full flex justify-between p-2 mb-1 rounded-sm shadow border border-primary bg-emerald-200'
-                : 'bg-background w-full flex justify-between p-2 mb-1 rounded-sm shadow border'
-            "
+                ? 'border-primary bg-primary/10'
+                : 'border-border bg-card hover:bg-muted/50'
+            ]"
           >
             <a
-             
+              href="#"
               @click.prevent.stop="selectWorkSheetTemplate(wst)"
-              class="font-semibold text-foreground"
+              :class="[
+                'font-medium cursor-pointer',
+                 workSheetTemplate?.uid === wst.uid ? 'text-primary' : 'text-card-foreground' // Conditional text color
+              ]"
             >
               <span>{{ wst.name }}</span>
             </a>
-            <a @click="FormManager(false, wst)" class="px-2 cursor">
+            <a
+              href="#"
+              @click.prevent.stop="FormManager(false, wst)"
+              class="px-2 cursor-pointer text-muted-foreground hover:text-accent-foreground"
+            >
               <font-awesome-icon icon="pen" />
             </a>
           </div>
+           <div v-if="!workSheetTemplates || workSheetTemplates.length === 0" class="p-4 text-center text-muted-foreground text-sm">
+             No templates found.
+           </div>
         </div>
       </section>
 
-      <section
-        class="col-span-9 overflow-y-scroll overscroll-contain scroll-section"
-        v-if="workSheetTemplate.uid"
-      >
-        <!-- Listing Item Card -->
-        <div
-          class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
-        >
-          <div class="grid grid-cols-12 gap-3">
-            <!-- Summary Column -->
-            <div class="col-span-12 px-3 sm:px-0">
-              <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold"
-              >
-                <span>{{ workSheetTemplate.name }}</span>
-                <div>
-                  <button
-                    @click="FormManager(false, workSheetTemplate)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-primary border text-foreground transition-colors duration-150 bg-background rounded-full focus:outline-none hover:bg-muted"
-                  >
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                    </svg>
-                  </button>
+      <div class="col-span-12 md:col-span-8 lg:col-span-9 overflow-y-scroll overscroll-contain scroll-section pl-2" 
+        v-if="workSheetTemplate?.uid">
+        <div class="bg-card text-card-foreground rounded-lg shadow-md p-4 sm:p-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-semibold text-card-foreground">{{ workSheetTemplate.name }}</span>
+              <div>
+                <button
+                  @click="FormManager(false, workSheetTemplate)"
+                  class="ml-4 inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  aria-label="Edit Template"
+                >
+                  <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <hr class="border-t border-border" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              <div>
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Instrument:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.instrument?.name || 'N/A' }}</span>
+                </div>
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Analysis Service:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.analysis?.name || 'N/A' }}</span>
                 </div>
               </div>
-              <hr />
-              <div class="grid grid-cols-2 mt-2">
-                <div class="col-span-1">
-                  <!-- Client Details -->
-                  <div class="flex">
-                    <span class="text-foreground text-sm font-medium w-1/2"
-                      >Instrument:</span
-                    >
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.instrument?.name
-                    }}</span>
-                  </div>
-                  <div class="flex">
-                    <span class="text-foreground text-sm font-medium w-1/2"
-                      >Analyses Service:</span
-                    >
-                    <span class="text-foreground text-sm md:text-md ml-1">{{
-                      workSheetTemplate?.analysis?.name
-                    }}</span>
-                  </div>
+              <div>
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Samples:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.numberOfSamples }}</span>
                 </div>
-                <div class="col-span-1">
-                  <!-- Communication Details -->
-                  <div class="flex">
-                    <span class="text-foreground text-sm font-medium w-1/2"
-                      >Number of Samples:</span
-                    >
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.numberOfSamples
-                    }}</span>
-                  </div>
-                  <div class="flex">
-                    <span class="text-foreground text-sm font-medium w-1/2"
-                      >Number of Reserved:</span
-                    >
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.reserved?.length
-                    }}</span>
-                  </div>
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Reserved:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.reserved?.length ?? 0 }}</span>
                 </div>
               </div>
+            </div>
 
-              <hr class="my-4" />
+            <hr class="border-t border-border" />
 
-              <div class="grid grid-cols-2 mt-2">
-                <div class="col-span-1">
-                  <div class="flex w-full">
-                    <span class="text-foreground text-sm font-medium w-1/2"
-                      >WorkSheet type</span
-                    >
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.worksheetType
-                    }}</span>
-                  </div>
-                  <div
-                    class="flex w-full"
-                    v-if="workSheetTemplate.worksheetType == 'grid'"
-                  >
-                    <span class="text-foreground text-sm font-medium w-1/2"
-                      >Direction:</span
-                    >
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.rowWise ? "row-wise" : "column-wise"
-                    }}</span>
-                  </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              <div>
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">WorkSheet type:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.worksheetType }}</span>
                 </div>
-                <div class="col-span-1" v-if="workSheetTemplate.worksheetType == 'grid'">
-                  <div class="flex w-full">
-                    <span class="text-foreground text-sm font-medium w-1/2">Rows:</span>
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.rows
-                    }}</span>
-                  </div>
-                  <div class="flex w-full">
-                    <span class="text-foreground text-sm font-medium w-1/2">Columns:</span>
-                    <span class="text-foreground text-sm md:text-md">{{
-                      workSheetTemplate.cols
-                    }}</span>
-                  </div>
+                <div class="flex" v-if="workSheetTemplate.worksheetType == 'grid'">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Direction:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.rowWise ? "row-wise" : "column-wise" }}</span>
+                </div>
+              </div>
+              <div v-if="workSheetTemplate.worksheetType == 'grid'">
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Rows:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.rows }}</span>
+                </div>
+                <div class="flex">
+                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Columns:</span>
+                  <span class="text-foreground">{{ workSheetTemplate.cols }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Sample and Case Data -->
-        <nav class="bg-background shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
+        <div class="mt-6">
+          <h3 class="text-lg font-semibold text-foreground">WorkSheet Layout Preview</h3>
+          <hr class="my-2 border-t border-border" />
 
-        <section class="mt-4">
-          <div v-if="currentTab === 'preview'">
-            <h3 class="my-4">WorkSheet Layout Preview</h3>
-            <hr class="my-2" />
-
-            <div v-if="workSheetTemplate.worksheetType == 'flat'">
-              <div
-                class="grid grid-cols-6 gap-x-2 w-1/2"
+          <div v-if="workSheetTemplate.worksheetType == 'flat'" class="space-y-1">
+             <div
+                class="grid grid-cols-6 gap-x-2 items-center"
                 v-for="(item, index) in workSheetTemplate?.preview || []"
+                :key="`flat-${index}`"
               >
-                <span class="col-span-1 my-1">{{ item.position }}:</span>
+                <span class="col-span-1 my-1 text-xs text-muted-foreground text-right pr-1">{{ item.position }}:</span>
                 <span
                   :class="[
-                    'col-span-5 my-1 p-1 text-primary-foreground rounded-xl flex justify-center',
-                    { 'bg-success': item.name !== 'sample' },
-                    { 'bg-primary': item.name === 'sample' },
+                    'col-span-5 my-1 p-1 rounded-md flex justify-center text-xs font-medium',
+                    item.name !== 'sample'
+                      ? 'bg-success text-success-foreground'
+                      : 'bg-primary text-primary-foreground',
                   ]"
                   >{{ item.name }}</span
                 >
-              </div>
-            </div>
+             </div>
+          </div>
 
-            <div v-if="workSheetTemplate.worksheetType == 'grid'">
-              <div
-                v-if="workSheetTemplate.rowWise"
-                :class="[true ? 'grid grid-cols-' + workSheetTemplate.cols : '', 'gap-2']"
-                v-for="(row, index) in workSheetTemplate.rows"
-                :key="index + 'x'"
-              >
+          <div v-if="workSheetTemplate.worksheetType == 'grid'">
+            <div v-if="workSheetTemplate.rowWise">
                 <div
-                  v-for="(col, idx) in workSheetTemplate.cols"
-                  :key="idx"
-                  class="col-span-1 w-full"
+                  v-for="(row, rIndex) in workSheetTemplate.rows"
+                  :key="`row-${rIndex}`"
+                  :class="['grid gap-2 mb-1', `grid-cols-${workSheetTemplate.cols}`]"
                 >
+                  <div
+                    v-for="(col, cIndex) in workSheetTemplate.cols"
+                    :key="`row-${rIndex}-col-${cIndex}`"
+                    class="col-span-1 w-full"
+                  >
+                     <span
+                       :class="[
+                         'my-1 p-1 rounded-md flex justify-center text-xs font-medium',
+                         workSheetTemplate?.preview?.[rIndex * workSheetTemplate.cols + cIndex]?.name !== 'sample'
+                           ? 'bg-success text-success-foreground'
+                           : 'bg-primary text-primary-foreground',
+                       ]"
+                     >
+                       ({{ rIndex * workSheetTemplate.cols + cIndex + 1 }})
+                       {{ workSheetTemplate?.preview?.[rIndex * workSheetTemplate.cols + cIndex]?.name ?? 'Error' }}
+                     </span>
+                  </div>
+                </div>
+             </div>
+
+            <div v-else :class="['grid gap-2', `grid-cols-${workSheetTemplate.cols}`]">
+              <div
+                class="col-span-1 space-y-1"
+                v-for="(col, cIndex) in workSheetTemplate.cols"
+                :key="`col-${cIndex}`"
+              >
+                <div v-for="(row, rIndex) in workSheetTemplate.rows" :key="`col-${cIndex}-row-${rIndex}`">
                   <span
                     :class="[
-                        'my-1 p-1 text-primary-foreground rounded-xl flex justify-center',
-                        { 'bg-success': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
-                        { 'bg-primary': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
-                        ]"
-                    >({{ index*workSheetTemplate.cols! + col }})
-                    {{ workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name }}</span
+                      'p-1 rounded-md flex justify-center text-xs font-medium',
+                      workSheetTemplate?.preview?.[cIndex * workSheetTemplate.rows + rIndex]?.name !== 'sample'
+                        ? 'bg-success text-success-foreground'
+                        : 'bg-primary text-primary-foreground',
+                    ]"
                   >
-                </div>
-              </div>
-
-              <div
-                v-else
-                :class="[true ? 'grid grid-cols-' + workSheetTemplate.cols : '', 'gap-2']"
-              >
-                <div
-                  class="col-span-1"
-                  v-for="(col, index) in workSheetTemplate.cols"
-                  :key="index + 'y'"
-                >
-                  <div v-for="(row, idx) in workSheetTemplate.rows" :key="idx">
-                    <!-- <span class="my-1 flex justify-center" >{{ index*workSheetTemplate.rows + row }}</span> -->
-                    <span
-                      :class="[
-                          'my-1 p-1 text-primary-foreground rounded-xl flex justify-center',
-                          { 'bg-success': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
-                          { 'bg-primary': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
-                          ]"
-                      >({{ index*workSheetTemplate.rows! + row }})
-                      {{ workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name }}</span
-                    >
-                  </div>
+                    ({{ cIndex * workSheetTemplate.rows + rIndex + 1 }})
+                    {{ workSheetTemplate?.preview?.[cIndex * workSheetTemplate.rows + rIndex]?.name ?? 'Error' }}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </section>
+        </div>
+      </div>
+
+      <div class="col-span-12 md:col-span-8 lg:col-span-9 p-10 text-center" v-else>
+          <p class="text-muted-foreground">Select a template from the left to view details.</p>
+      </div>
+      
     </div>
   </div>
 
-  <!-- WS Template Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <modal v-if="showModal" @close="showModal = false" content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-card-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Template Name</span>
+      <form action="post" class="p-4 space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <label class="block md:col-span-2">
+            <span class="text-sm font-medium text-foreground">Template Name</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="workSheetTemplate.name"
               placeholder="Name ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Number of Samples</span>
-            <span class="text-destructive ml-2 italic">(less reserved)</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Number of Samples</span>
+            <span class="ml-2 text-xs italic text-muted-foreground">(less reserved)</span>
             <input
-              class="form-input mt-1 block w-full"
-              v-model="workSheetTemplate.numberOfSamples"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+              v-model.number="workSheetTemplate.numberOfSamples" 
               placeholder="Count ..."
               type="number"
             />
           </label>
         </div>
 
-        <div class="grid grid-cols-4 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Template Type</span>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Template Type</span>
             <select
-              class="form-select block w-full mt-1"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               @change="changeWorkSheetType($event)"
               v-model="workSheetTemplate.worksheetType"
             >
@@ -489,56 +443,52 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               <option value="grid">GRID</option>
             </select>
           </label>
-          <span class="col-span-3" v-if="workSheetTemplate.worksheetType === 'grid'">
-            <div class="grid grid-cols-3 gap-x-4">
-              <label class="block col-span-1 mb-2">
-                <span class="text-foreground">Cols</span>
+          <div class="md:col-span-3" v-if="workSheetTemplate.worksheetType === 'grid'">
+            <div class="grid grid-cols-3 gap-4 items-end">
+              <label class="block">
+                <span class="text-sm font-medium text-foreground">Cols</span>
                 <input
-                  class="form-input mt-1 block w-full"
-                  v-model="workSheetTemplate.cols"
+                  class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                  v-model.number="workSheetTemplate.cols"
                   @keyup="calculateRows()"
                   type="number"
                 />
               </label>
-              <label class="block col-span-1 mb-2">
-                <span class="text-foreground">Rows</span>
+              <label class="block">
+                <span class="text-sm font-medium text-foreground">Rows</span>
                 <input
-                  class="form-input mt-1 block w-full bg-secondary"
-                  v-model="workSheetTemplate.rows"
+                  class="mt-1 block w-full rounded-lg border border-input bg-muted px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed"
+                  v-model.number="workSheetTemplate.rows"
                   type="number"
                   disabled
                 />
               </label>
-              <label for="toggle" class="text-foreground mt-8 ml-4">
-                <div
-                  class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-                >
+              <label for="toggle" class="flex items-center cursor-pointer">
+                <div class="relative">
                   <input
                     type="checkbox"
                     name="toggle"
                     id="toggle"
                     v-model="workSheetTemplate.rowWise"
-                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none"
+                    class="sr-only peer"
                   />
-                  <label
-                    for="toggle"
-                    class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer"
-                  ></label>
+                  <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary"></div>
+                  <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background transition-transform peer-checked:translate-x-full border border-border"></div>
                 </div>
-                <span class="text-foreground text-base">Row Wise</span>
+                <span class="ml-2 text-sm font-medium text-foreground">Row Wise</span>
               </label>
             </div>
-          </span>
+          </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Instrument</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Instrument</span>
             <select
-              class="form-select block w-full mt-1"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="workSheetTemplate.instrumentUid"
             >
-              <option></option>
+              <option value="">Select Instrument</option> 
               <option
                 v-for="instrument in instruments"
                 :key="instrument.uid"
@@ -548,25 +498,25 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
               </option>
             </select>
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">SampleType</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Sample Type</span>
             <select
-              class="form-select block w-full mt-1"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="workSheetTemplate.sampleTypeUid"
             >
-              <option></option>
+              <option value="">Select Sample Type</option> 
               <option v-for="stype in sampleTypes" :key="stype.uid" :value="stype.uid">
                 {{ stype.name }}
               </option>
             </select>
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Anslysis Service</span>
+          <label class="block">
+            <span class="text-sm font-medium text-foreground">Analysis Service</span>
             <select
-              class="form-select block w-full mt-1"
+              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               v-model="workSheetTemplate.analysisUid"
             >
-              <option></option>
+              <option value="">Select Service</option> 
               <option v-for="service in services" :key="service.uid" :value="service.uid">
                 {{ service.name }}
               </option>
@@ -574,18 +524,18 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
           </label>
         </div>
 
-        <section id="samples">
-          <hr />
-          <div class="flex justify-between items-center py-2">
-            <h5>Reserved Positions</h5>
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">QC Template</span>
-              <div class="flex items-center">
+        <section id="samples" class="space-y-4">
+          <hr class="border-t border-border" />
+          <div class="flex flex-wrap justify-between items-end gap-4">
+            <h5 class="text-base font-semibold text-foreground w-full md:w-auto">Reserved Positions</h5>
+            <label class="block flex-grow">
+              <span class="text-sm font-medium text-foreground">QC Template</span>
+              <div class="flex items-center gap-2 mt-1">
                 <select
-                  class="form-select block w-full mt-1"
+                  class="block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
                   v-model="workSheetTemplate.qcTemplateUid"
                 >
-                  <option></option>
+                  <option value="">Select QC Template</option> 
                   <option
                     v-for="templ in qcTemplates"
                     :key="templ.uid"
@@ -596,7 +546,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 </select>
                 <button
                   @click.prevent="appyQCTemplate()"
-                  class="px-2 py-1 ml-2 h-auto border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+                  class="flex-shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   Apply
                 </button>
@@ -604,30 +554,32 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             </label>
             <button
               @click.prevent="addReserved()"
-              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+              class="flex-shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               Add Reserve Slot
             </button>
           </div>
-          <hr class="mb-4" />
-          <div v-for="(reserved, index) in workSheetTemplate.reserved" :key="index">
-            <div class="flex items-center justify-between">
-              <div class="">
-                <div class="grid grid-cols-6 gap-x-4">
-                  <label class="block col-span-2 mb-2">
-                    <span class="text-foreground">Position</span>
+          <hr class="border-t border-border" v-if="workSheetTemplate.reserved?.length > 0"/>
+
+          <div v-for="(reserved, index) in workSheetTemplate.reserved" :key="index" class="space-y-4 py-2">
+            <div class="flex flex-wrap items-end justify-between gap-4"> 
+              <div class="flex-grow">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label class="block">
+                    <span class="text-sm font-medium text-foreground">Position</span>
                     <input
-                      class="form-input mt-1 block w-full"
-                      v-model="reserved.position"
+                      class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                      v-model.number="reserved.position"
                       type="number"
                     />
                   </label>
-                  <label class="block col-span-2 mb-2">
-                    <span class="text-foreground">Blank/Control</span>
+                  <label class="block">
+                    <span class="text-sm font-medium text-foreground">Blank/Control Level</span>
                     <select
                       v-model="reserved.levelUid"
-                      class="form-input mt-1 block w-full"
+                      class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
                     >
+                      <option value="">Select Level</option>
                       <option
                         v-for="level in qcLevels"
                         :key="level.uid"
@@ -639,24 +591,24 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                   </label>
                 </div>
               </div>
-              <div class="">
+              <div class="flex-shrink-0">
                 <button
                   @click.prevent="removeReserved(index)"
-                  class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
+                  class="rounded-lg border border-destructive px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   Remove
                 </button>
               </div>
             </div>
-            <hr />
+            <hr class="border-t border-border"/> 
           </div>
         </section>
 
-        <hr />
+        <hr class="border-t border-border" />
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Save Form
         </button>

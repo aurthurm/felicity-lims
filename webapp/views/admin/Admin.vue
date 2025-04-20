@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
 import { useLocationStore } from '@/stores/location';
-const PageHeading = defineAsyncComponent(
-  () => import("@/components/common/FelPageHeading.vue")
-)
 const VersionDisplay = defineAsyncComponent(
   () => import("./VersionDisplay.vue")
 )
@@ -14,20 +11,22 @@ const selectedRoute = computed(() => locationStore.getConfRoute)
 </script>
 
 <template>
-  <div class="flex justify-between items-center">
-    <PageHeading title="Felicity Configurations" />
-    <VersionDisplay />
-  </div>
-  <div class="flex justify-start italic uppercase text-md text-foreground font-bold">
-    <span @click="resetSelected">
-      <router-link to="/admin" class="no-underline">
-        <h4 class="text-foreground">Home:</h4>
-      </router-link>
-    </span>
-    <span v-if="selectedRoute" class="mx-4 font-extrabold">&rarr;</span>
-    <span class="text-muted-foreground"> {{ selectedRoute }}</span>
-  </div>
-  <hr class="my-4">
+  <div class="space-y-6">
+    <fel-heading title="Felicity Configurations">
+      <VersionDisplay />
+    </fel-heading>
 
-  <router-view />
+    <div class="flex items-center text-sm">
+      <span @click="resetSelected" class="cursor-pointer">
+        <router-link to="/admin" class="no-underline">
+          <h4 class="text-foreground font-medium">Home</h4>
+        </router-link>
+      </span>
+      <span v-if="selectedRoute" class="mx-2 text-muted-foreground">&rarr;</span>
+      <span v-if="selectedRoute" class="text-muted-foreground font-medium">{{ selectedRoute }}</span>
+    </div>
+    
+    <hr>
+    <router-view />
+  </div>
 </template>

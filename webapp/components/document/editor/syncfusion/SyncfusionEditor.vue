@@ -7,9 +7,6 @@ import useApiUtil from '@/composables/api_util';
 import { EditDocumentVersionMutation, EditDocumentVersionMutationVariables, EditDocumentVersionDocument } from '@/graphql/operations/document.mutations';
 import { IDocumentVersion } from '@/models/document';
 import { useRouter } from 'vue-router';
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 const props = defineProps({
   document: {
     type: Object as PropType<IDocumentVersion>,
@@ -158,38 +155,61 @@ const goBack = () => router.back();
 </script>
 
 <template>
-    <div class="max-w-[99%]">
-        <header class="bg-background border-b border-border py-3 px-4 flex items-center justify-between">
+    <div class="max-w-[99%]" role="region" aria-label="Document editor">
+        <header class="bg-card border-b border-border py-3 px-4 flex items-center justify-between">
             <div class="flex items-center">
-                <button @click="goBack" class="mr-4 text-muted-foreground hover:text-foreground">
-                    <ArrowLeftIcon class="w-5 h-5" />
+                <button 
+                    @click="goBack" 
+                    class="mr-4 text-muted-foreground hover:text-card-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    aria-label="Go back to previous page"
+                >
+                    <ArrowLeftIcon class="w-5 h-5" aria-hidden="true" />
                 </button>
-                <h1 class="uppercase text-xl font-semibold text-foreground">{{ document?.document?.name }}</h1>
+                <h1 class="uppercase text-xl font-semibold text-card-foreground">{{ document?.document?.name }}</h1>
             </div>        
-            <div v-if="isSaving" class="text-center">
-                <LoadingMessage message="Saving..." />
+            <div v-if="isSaving" class="text-center" role="status" aria-label="Saving document">
+                <fel-loader message="Saving..." />
             </div>
-            <div class="flex justify-start items-center gap-x-8">
-                <button v-on:click="printBtnClick" title="Print this document (Ctrl+P).">Print</button>
-                <DropDownButtonComponent ref="de-export" class="bg-primary" :items="exportItems" cssClass="e-caret-hide" content="Download" v-bind:select="onExport" :open="openExportDropDown" title="Download this document."></DropDownButtonComponent>
-                <button @click="saveChanges" title="Save changes" class="flex items-center">
-                    <span v-show="contentChanged" class="h-2 w-2 rounded-full bg-success animate-pulse"></span>
+            <div class="flex justify-start items-center gap-x-4">
+                <button 
+                    v-on:click="printBtnClick" 
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                    aria-label="Print document"
+                >
+                    Print
+                </button>
+                <DropDownButtonComponent 
+                    ref="de-export" 
+                    class="bg-primary text-primary-foreground hover:bg-primary/90" 
+                    :items="exportItems" 
+                    cssClass="e-caret-hide" 
+                    content="Download" 
+                    v-bind:select="onExport" 
+                    :open="openExportDropDown" 
+                    aria-label="Download document"
+                />
+                <button 
+                    @click="saveChanges" 
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                    aria-label="Save document changes"
+                >
+                    <span v-show="contentChanged" class="h-2 w-2 rounded-full bg-success animate-pulse" aria-hidden="true"></span>
                     <span class="ml-2">Save</span>
                 </button>
-        
             </div>
         </header>
         <DocumentEditorContainerComponent 
-        ref="documentEditorContainer"
-        :serviceUrl='serviceUrl' 
-        :enableToolbar='true'
-        :enableWordExport='true'
-        :enablePrint='true'> </DocumentEditorContainerComponent>
+            ref="documentEditorContainer"
+            :serviceUrl='serviceUrl' 
+            :enableToolbar='true'
+            :enableWordExport='true'
+            :enablePrint='true'
+            aria-label="Document editor"
+        />
     </div>
-  </template>
-  
-  
-  <style>
+</template>
+
+<style>
     @import '../../../../../node_modules/@syncfusion/ej2-base/styles/material.css';
     @import '../../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css';
     @import '../../../../../node_modules/@syncfusion/ej2-inputs/styles/material.css';
@@ -199,13 +219,14 @@ const goBack = () => router.back();
     @import '../../../../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css';
     @import '../../../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css';
     @import "../../../../../node_modules/@syncfusion/ej2-vue-documenteditor/styles/material.css";
+
     .e-de-tool-ctnr-properties-pane {
         min-height: 700px !important;
     }
 
     [contenteditable="true"].single-line {
         white-space: nowrap;
-        border-color: #e4e4e4 !important;
+        border-color: var(--border) !important;
     }
 
     [class^="e-de-icon-"],
@@ -220,4 +241,29 @@ const goBack = () => router.back();
     .e-de-icon-Download:before {
         content: "\e728";
     }
-  </style>
+
+    /* Override Syncfusion styles to match our theme */
+    .e-de-tool-ctnr {
+        background-color: var(--card) !important;
+        border-color: var(--border) !important;
+    }
+
+    .e-de-tool-ctnr .e-toolbar-items {
+        background-color: var(--card) !important;
+        border-color: var(--border) !important;
+    }
+
+    .e-de-tool-ctnr .e-toolbar-items .e-toolbar-item button {
+        color: var(--card-foreground) !important;
+    }
+
+    .e-de-tool-ctnr .e-toolbar-items .e-toolbar-item button:hover {
+        background-color: var(--accent) !important;
+        color: var(--accent-foreground) !important;
+    }
+
+    .e-de-tool-ctnr .e-toolbar-items .e-toolbar-item button:focus {
+        outline: 2px solid var(--ring) !important;
+        outline-offset: 2px !important;
+    }
+</style>

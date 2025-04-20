@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import { IIdentification, IPatient } from '@/models/patient';
 import { IPageInfo } from '@/models/pagination';
 

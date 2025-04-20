@@ -3,7 +3,7 @@ import { defineAsyncComponent, ref, computed, h } from "vue";
 import { useBillingStore } from "@/stores/billing";
 import { useSampleStore } from "@/stores/sample";
 import { storeToRefs } from "pinia";
-import { parseDate } from "@/utils/helpers";
+import { parseDate } from "@/utils";
 import { ITestBill, ITestBillTransaction } from "@/models/billing";
 import { 
   AddTestBillTransactionDocument, AddTestBillTransactionMutation, AddTestBillTransactionMutationVariables,
@@ -16,15 +16,6 @@ import useNotifyToast from "@/composables/alert_toast";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
-const FelButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
 )
@@ -221,32 +212,31 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
 <style lang="css" scoped>
 .billing-scroll {
   min-height: 350px;
+  max-height: calc(100vh - 200px);
 }
 </style>
 
 <template>
-  <div class="mt-4">
-    <h4 class="text-sm text-foreground font-bold">Patient's Order Bills</h4>
-    <hr>
-    <div class="grid grid-cols-12 gap-4 mt-2">
+  <div class="space-y-6">
+    <div class="grid grid-cols-12 gap-6">
       <section v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
         :variants="{ custom: { scale: 2 } }" :delay="400"
-        class="col-span-3 overflow-y-scroll overscroll-contain billing-scroll">
-        <div v-if="fetchingBills" class="py-4 text-center bg-background w-full mb-1 rounded-sm shadow border">
-          <LoadingMessage message="Fetching bills ..." />
+        class="col-span-3 overflow-y-auto overscroll-contain billing-scroll">
+        <div v-if="fetchingBills" class="py-4 text-center bg-background w-full mb-2 rounded-lg shadow-sm border border-border">
+          <fel-loader message="Fetching bills ..." />
         </div>
         <div v-else>
-          <ul>
+          <ul class="space-y-2">
             <li v-for="bill in bills" :key="bill.uid" :class="[
-              'bg-background w-full flex items-center p-1 mb-1 rounded-sm shadow border',
-              { 'border-primary bg-emerald-200': bill.uid === testBill.uid },
+              'bg-background w-full p-3 rounded-lg shadow-sm border border-border transition-all duration-200 hover:shadow-md',
+              { 'border-primary bg-primary/5': bill.uid === testBill.uid },
               ]" 
               @click="selectTestBill(bill)">
-              <div class="flex-grow p-1">
+              <div class="space-y-1">
                 <div class="font-semibold text-foreground">
-                  <div>{{ bill.billId?.toLocaleUpperCase() }}</div>
-                  <div class="text-sm text-muted-foreground">{{ parseDate(bill.createdAt) }}</div>
+                  Bill {{ bill.billId?.toLocaleUpperCase() }}
                 </div>
+                <div class="text-sm text-muted-foreground">{{ parseDate(bill.createdAt) }}</div>
               </div>
             </li>
           </ul>
@@ -254,94 +244,94 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
       </section>
 
       <section v-show="bills?.length > 0 && testBill.uid" v-motion :initial="{ opacity: 0, y: -100 }"
-        :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" class="col-span-9">
+        :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" class="col-span-9 space-y-6">
 
-        <div class="bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4" v-motion-slide-top>
+        <div class="bg-background rounded-lg shadow-sm p-6 space-y-4" v-motion-slide-top>
           <div class="flex justify-between items-center">
-            <h4 class="text-foreground text-l font-bold">{{ testBill.billId?.toLocaleUpperCase() }}</h4>
+            <h4 class="text-lg font-semibold text-foreground">{{ testBill.billId?.toLocaleUpperCase() }}</h4>
           </div>
-          <hr>
-          <section class="grid grid-cols-3 gap-x-8">
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Active:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ testBill.isActive ? "Yes" : "No" }}</span>
+          <div class="grid grid-cols-3 gap-8">
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-foreground">Active:</span> 
+                <span class="text-sm text-foreground">{{ testBill.isActive ? "Yes" : "No" }}</span>
               </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Confirmed:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ testBill?.toConfirm ? "No" : "Yes" }}</span>
-              </div>
-            </div>
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Total Charged:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ testBill?.totalCharged }}</span>
-              </div>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Total Paid:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ testBill?.totalPaid }}</span>
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-foreground">Confirmed:</span> 
+                <span class="text-sm text-foreground">{{ testBill?.toConfirm ? "No" : "Yes" }}</span>
               </div>
             </div>
-            <div class="col-span-1">
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-foreground text-sm font-semibold">Partial:</span> 
-                <span class="text-foreground text-sm md:text-md">{{ testBill?.totalPaid < testBill?.totalCharged ? "Yes" : "No" }}</span>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-foreground">Total Charged:</span> 
+                <span class="text-sm text-foreground">{{ testBill?.totalCharged }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-foreground">Total Paid:</span> 
+                <span class="text-sm text-foreground">{{ testBill?.totalPaid }}</span>
               </div>
             </div>
-          </section>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-foreground">Partial:</span> 
+                <span class="text-sm text-foreground">{{ testBill?.totalPaid < testBill?.totalCharged ? "Yes" : "No" }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="mt-4">
+
+        <div class="space-y-4">
           <div class="flex justify-between items-center">
-            <h4 class=" text-foreground text-l font-semibold">Order Items</h4>
+            <h4 class="text-lg font-semibold text-foreground">Order Items</h4>
             <button
-                class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 @click.prevent="invoice(testBill)">
                 Invoice
             </button>
           </div>
-          <hr>
-          <ul class="mt-4 bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4">
-            <li class="font-semibold" v-for="order in orders" :key="order.uid">
-              <div>{{ order?.requestId }} ({{ order?.clientRequestId }})</div>
-              <div class="ml-4 text-sm" v-for="sample in order.samples" :key="sample.uid" v-motion-slide-right>
+          <ul class="bg-background rounded-lg shadow-sm p-6 space-y-4">
+            <li class="space-y-2" v-for="order in orders" :key="order.uid">
+              <div class="font-semibold text-foreground">{{ order?.requestId }} ({{ order?.clientRequestId }})</div>
+              <div class="space-y-1 pl-4" v-for="sample in order.samples" :key="sample.uid" v-motion-slide-right>
                 <span class="text-muted-foreground">
                     {{ sample.sampleId }}
                 </span> 
                 &rArr;
-                <span class="ml-2 text-md leading-5 text-primary">
+                <span class="ml-2 text-primary">
                     {{ profileAnalysesText(sample.profiles ?? [], sample.analyses ?? []) }}
                 </span>
               </div>
             </li>
           </ul>
         </div>
-        <div class="mt-4">
+
+        <div class="space-y-4">
           <div class="flex justify-between items-center">
-            <h4 class="text-foreground text-l font-semibold">Transactions</h4>
-            <div>
+            <h4 class="text-lg font-semibold text-foreground">Transactions</h4>
+            <div class="space-x-4">
               <button v-show="testBill.isActive"
-              class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-              @click.prevent="newTransaction">
-              Add Transaction
-            </button>
-            <button v-show="testBill.isActive"
-              class="ml-4 px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-              @click.prevent="applyVoucher">
-              Apply Voucher
-            </button>
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                @click.prevent="newTransaction">
+                Add Transaction
+              </button>
+              <button v-show="testBill.isActive"
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                @click.prevent="applyVoucher">
+                Apply Voucher
+              </button>
             </div>
           </div>
-          <hr>
-          <div class="mt-4 bg-background rounded-sm shadow-sm hover:shadow-xs duration-500 px-4 sm:px-6 md:px-2 py-4">
+          <div class="bg-background rounded-lg shadow-sm p-6">
             <DataTable 
-            :columns="tableColumns" 
-            :data="transactions" 
-            :toggleColumns="false" 
-            :loading="fetchingTransactions"
-            :paginable="false" 
-            :searchable="false" :filterable="false" 
-            :selectable="false">
-                <template v-slot:footer> </template>
+              :columns="tableColumns" 
+              :data="transactions" 
+              :toggleColumns="false" 
+              :loading="fetchingTransactions"
+              :paginable="false" 
+              :searchable="false" 
+              :filterable="false" 
+              :selectable="false">
+              <template v-slot:footer> </template>
             </DataTable>
           </div>
         </div>
@@ -350,111 +340,106 @@ const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
   </div>
 
   <!-- New Transaction Form Modal -->
-  <modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'">
-      <template v-slot:header>
-        <h3>Transaction Form</h3>
-      </template>
-
-      <template v-slot:body>
-        <form>
-          <div class="grid grid-cols-2 gap-x-4 mb-4">
-            <label class="whitespace-nowrap mb-2 w-full">
-              <span class="text-foreground w-4/12">Kind of payment</span>
-              <div class="w-full">
-                <select 
-                :class="['form-select mt-1 w-full', {'border-destructive animate-pulse': errors.kind }]"
-                v-model="kind" 
-                :disabled="processing">
-                  <option></option>
-                  <option v-for="kind of kinds" :key="kind" :value="kind">
-                    {{ kind }}
-                  </option>
-                </select>
-                <div class="text-destructive w-4/12">{{ errors.gender }}</div>
-              </div>
-            </label>
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Amount</span>
-              <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.amount }]"
-                type="number"
-                v-model="amount"
-                :disabled="processing"
-              />
-            </label>
-          </div>
-          <div class="grid grid-cols-4 gap-x-4 mb-4">
-            <label class="block col-span-4 mb-2">
-              <span class="text-foreground">Notes</span>
-              <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.notes }]"
-                v-model="notes"
-                :disabled="processing"
-              />
-            </label>
-          </div>
-
-          <hr class="mb-4" />
-          <FelButton :color="'sky-800'" type="submit" :loading="processing" @click.prevent="submitTransactionForm">
-            Save Transaction
-          </FelButton>
-        </form>
-      </template>
-  </modal>
-
-  <!-- Confirm Transaction Form Modal -->
-  <modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'">
+  <fel-modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
     <template v-slot:header>
-      <h3>Confirm Tranaction</h3>
+      <h3 class="text-xl font-semibold text-foreground">Transaction Form</h3>
     </template>
 
     <template v-slot:body>
-      <form>
-        <h4>{{ kind }} Transaction </h4>
-        <div class="grid grid-cols-4 gap-x-4 mb-4">
-          <label class="block col-span-4 mb-2">
-            <span class="text-foreground">Notes</span>
+      <form class="space-y-6 p-6">
+        <div class="grid grid-cols-2 gap-6">
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-foreground">Kind of payment</span>
+            <select 
+              :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.kind }]"
+              v-model="kind" 
+              :disabled="processing">
+              <option></option>
+              <option v-for="kind of kinds" :key="kind" :value="kind">
+                {{ kind }}
+              </option>
+            </select>
+            <div class="text-sm text-destructive">{{ errors.gender }}</div>
+          </label>
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-foreground">Amount</span>
             <input
-              :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.notes }]"
-              v-model="confirmTransaction.notes"
+              :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.amount }]"
+              type="number"
+              v-model="amount"
               :disabled="processing"
             />
           </label>
         </div>
-        <hr class="mb-4" />
-        <FelButton :color="'sky-800'" type="submit" :loading="processing" @click.prevent="submitConfirmTransaction">
-          Confirm Transaction
-        </FelButton>
+        <label class="space-y-2">
+          <span class="text-sm font-medium text-foreground">Notes</span>
+          <input
+            :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.notes }]"
+            v-model="notes"
+            :disabled="processing"
+          />
+        </label>
+
+        <div class="flex justify-end">
+          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitTransactionForm">
+            Save Transaction
+          </fel-button>
+        </div>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 
+  <!-- Confirm Transaction Form Modal -->
+  <fel-modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
+    <template v-slot:header>
+      <h3 class="text-xl font-semibold text-foreground">Confirm Transaction</h3>
+    </template>
+
+    <template v-slot:body>
+      <form class="space-y-6 p-6">
+        <h4 class="text-lg font-medium text-foreground">{{ kind }} Transaction</h4>
+        <label class="space-y-2">
+          <span class="text-sm font-medium text-foreground">Notes</span>
+          <input
+            :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.notes }]"
+            v-model="confirmTransaction.notes"
+            :disabled="processing"
+          />
+        </label>
+
+        <div class="flex justify-end">
+          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitConfirmTransaction">
+            Confirm Transaction
+          </fel-button>
+        </div>
+      </form>
+    </template>
+  </fel-modal>
 
   <!-- Voucher Code Form Modal -->
-  <modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'">
-      <template v-slot:header>
-        <h3>Apply Voucher Code Form</h3>
-      </template>
+  <fel-modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'" class="bg-background">
+    <template v-slot:header>
+      <h3 class="text-xl font-semibold text-foreground">Apply Voucher Code</h3>
+    </template>
 
-      <template v-slot:body>
-        <form>
-          <div class="grid grid-cols-2 gap-x-4 mb-4">
-            <label class="block col-span-2 mb-2">
-              <span class="text-foreground">Voucher Code:</span>
-              <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': !voucherCodeForm.code }]"
-                type="text"
-                v-model="voucherCodeForm.code"
-                :disabled="processing"
-              />
-            </label>
-          </div>
+    <template v-slot:body>
+      <form class="space-y-6 p-6">
+        <label class="space-y-2">
+          <span class="text-sm font-medium text-foreground">Voucher Code</span>
+          <input
+            :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': !voucherCodeForm.code }]"
+            type="text"
+            v-model="voucherCodeForm.code"
+            :disabled="processing"
+          />
+        </label>
 
-          <hr class="mb-4"/>
-          <FelButton :color="'sky-800'" type="submit" :loading="processing" @click.prevent="submitVoucherCodeForm">
+        <div class="flex justify-end">
+          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitVoucherCodeForm">
             Apply Voucher
-          </FelButton>
-        </form>
-      </template>
-  </modal>
+          </fel-button>
+        </div>
+      </form>
+    </template>
+  </fel-modal>
 </template>

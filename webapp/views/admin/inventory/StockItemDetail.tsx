@@ -5,9 +5,6 @@ import { AddStockItemVariantDocument, AddStockItemVariantMutation, AddStockItemV
 import { useInventoryStore } from '@/stores/inventory';
 import  useApiUtil  from '@/composables/api_util';
 import { IStockItemVariant, IStockItem } from '@/models/inventory';
-const Modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-)
 
 const StockItemDetail = defineComponent({
     name: 'StockItemDetail',
@@ -76,54 +73,42 @@ const StockItemDetail = defineComponent({
     },
     render() {
         return (
-            <div class="container w-full my-4">
-                <section>
-                    <h3 class="text-xl font-semibold text-foreground">{this.stockItem?.name}</h3>
-                    <p class="mt-2 italic leading-3 text-muted-foreground">{this.stockItem?.description}</p>
+            <div class="space-y-6">
+                <section class="space-y-2">
+                    <h2 class="text-2xl font-semibold text-foreground">{this.stockItem?.name}</h2>
+                    <p class="text-sm text-muted-foreground">{this.stockItem?.description}</p>
                 </section>
 
-                <hr class="mt-8 " />
-                <div className="py-1 flex justify-between items-center">
-                    <h3 class="text-xl font-semibold">Item Variants</h3>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-foreground">Item Variants</h3>
                     <button
                         onClick={() => this.FormManager(true, null)}
-                        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
                     >
-                    Add New {this.stockItem?.name}
+                        Add New {this.stockItem?.name}
                     </button>
                 </div>
-                <hr />
 
-                <div class="overflow-x-auto mt-4">
-                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-                        <table class="min-w-full">
-                            <thead>
-                                <tr>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                        Variant Name
-                                    </th>
-                                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                        Description
-                                    </th>
-                                    <th class="px-1 py-1 border-b-2 border-border"></th>
+                <div class="rounded-md border border-border bg-card p-6">
+                    <div class="relative w-full overflow-auto">
+                        <table class="w-full caption-bottom text-sm">
+                            <thead class="[&_tr]:border-b">
+                                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                    <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Variant Name</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</th>
+                                    <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-background">
+                            <tbody class="[&_tr:last-child]:border-0">
                                 {this.stockItem?.variants?.map(variant => {
                                     return (
-                                        <tr key={variant?.uid}>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                                                <div class="flex items-center">
-                                                    <div class="text-sm leading-5 text-foreground">{variant?.name}</div>
-                                                </div>
-                                            </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                                                <div class="text-sm leading-5 text-primary">{variant?.description}</div>
-                                            </td>
-                                            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+                                        <tr key={variant?.uid} class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                            <td class="p-4 align-middle">{variant?.name}</td>
+                                            <td class="p-4 align-middle text-primary">{variant?.description}</td>
+                                            <td class="p-4 align-middle text-right">
                                                 <button
                                                     onClick={() => this.FormManager(false, variant)}
-                                                    class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+                                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
                                                 >
                                                     Edit
                                                 </button>
@@ -136,64 +121,81 @@ const StockItemDetail = defineComponent({
                     </div>
                 </div>
 
-                {/* Hazard Form Modal */}
+                {/* Stock Item Variant Form Modal */}
                 {this.showModal ? (
-                    <Modal onClose={() => (this.showModal = false)} contentWidth="w-1/4">
+                    <fel-modal onClose={() => (this.showModal = false)}>
                         {{
-                            header: () => <h3>{this.formTitle}</h3>,
+                            header: () => (
+                                <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>
+                            ),
                             body: () => {
                                 return (
-                                    <form action="post" class="p-1">
-                                        <div class="grid grid-cols-2 gap-x-4 mb-4">
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Variant Name</span>
+                                    <form onSubmit={(e) => { e.preventDefault(); this.saveForm(); }} class="space-y-6">
+                                        <div class="space-y-4">
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                    Variant Name
+                                                </label>
                                                 <input
-                                                    class="form-input mt-1 block w-full"
-                                                    v-model={this.form.name}
-                                                    placeholder="Name ..."
+                                                    value={this.form.name}
+                                                    onChange={(e) => this.form.name = e.target.value}
+                                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    placeholder="Enter variant name..."
                                                 />
-                                            </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Description</span>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                    Description
+                                                </label>
                                                 <textarea
-                                                    cols="2"
-                                                    class="form-input mt-1 block w-full"
-                                                    v-model={this.form.description}
-                                                    placeholder="Description ..."
+                                                    value={this.form.description}
+                                                    onChange={(e) => this.form.description = e.target.value}
+                                                    class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    placeholder="Enter description..."
                                                 />
-                                            </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Minimum Level</span>
-                                                <input
-                                                    type="number"
-                                                    class="form-input mt-1 block w-full"
-                                                    v-model={this.form.minimumLevel}
-                                                    default={0}
-                                                />
-                                            </label>
-                                            <label class="block col-span-2 mb-2">
-                                                <span class="text-foreground">Maximum Level</span>
-                                                <input
-                                                    type="number"
-                                                    class="form-input mt-1 block w-full"
-                                                    v-model={this.form.maximumLevel}
-                                                    default={0}
-                                                />
-                                            </label>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                        Minimum Level
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        value={this.form.minimumLevel}
+                                                        onChange={(e) => this.form.minimumLevel = Number(e.target.value)}
+                                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                        min="0"
+                                                        placeholder="0"
+                                                    />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                        Maximum Level
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        value={this.form.maximumLevel}
+                                                        onChange={(e) => this.form.maximumLevel = Number(e.target.value)}
+                                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                        min="0"
+                                                        placeholder="0"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                        <hr />
-                                        <button
-                                            type="button"
-                                            onClick={() => this.saveForm()}
-                                            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-                                        >
-                                            Save Form
-                                        </button>
+                                        <div class="flex justify-end">
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                                            >
+                                                Save Changes
+                                            </button>
+                                        </div>
                                     </form>
                                 );
                             },
                         }}
-                    </Modal>
+                    </fel-modal>
                 ) : null}
             </div>
         );

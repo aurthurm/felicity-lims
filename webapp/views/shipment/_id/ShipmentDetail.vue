@@ -28,40 +28,38 @@
 </script>
 
 <template>
-  <div class="">
-      <section class="col-span-12" >
+  <div class="space-y-6">
+    <section class="col-span-12">
+      <!-- Sample and Case Data -->
+      <nav class="bg-background rounded-lg shadow-sm border border-border">
+        <div class="flex">
+          <button
+            v-for="tab in tabs"
+            :key="tab"
+            :class="[
+              'px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
+              currentTab === tab
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            ]"
+            @click="currentTab = tab"
+            :aria-current="currentTab === tab ? 'page' : undefined"
+          >
+            {{ tab }}
+          </button>
+        </div>
+      </nav>
 
-        <!-- Sample and Case Data -->
-        <nav class="bg-background shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <div>
-          <tab-shipment-samples v-if="currentTab === 'detail'" />
-          <tab-assign-samples v-if="currentTab === 'assign-samples'"/>
-          <tab-manifest v-if="currentTab === 'manifest'"/>
-          <tab-logs 
+      <div class="mt-6">
+        <tab-shipment-samples v-if="currentTab === 'detail'" />
+        <tab-assign-samples v-if="currentTab === 'assign-samples'"/>
+        <tab-manifest v-if="currentTab === 'manifest'"/>
+        <tab-logs 
           v-if="currentTab === 'logs'"
           targetType="shipment"
           :targetUid="shipment?.uid"
-          />
-        </div>
-
-      </section>
-
+        />
+      </div>
+    </section>
   </div>
-
 </template>

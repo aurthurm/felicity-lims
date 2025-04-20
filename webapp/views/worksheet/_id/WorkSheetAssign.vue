@@ -15,13 +15,6 @@ import {
 import * as shield from "@/guards";
 import { IAnalysisResult } from "@/models/analysis";
 
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-const FButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
-)
-
 const worksheetStore = useWorksheetStore();
 const analysisStore = useAnalysisStore();
 const sampleStore = useSampleStore();
@@ -170,33 +163,37 @@ function areAllChecked(): Boolean {
 </script>
 
 <template>
-  <section>
-    <hr />
-    <form action="post" class="mt-4" v-motion-slide-right>
-      <div class="flex justify-start items-center mr-4">
-        <span class="text-foreground">Worksheet Template</span>
-        <label class="block mx-4">
-          <select class="form-select block w-full py-1" v-model="templateUid">
-            <option></option>
-            <option
-              v-for="template in workSheetTemplates"
-              :key="template.uid"
-              :value="template.uid"
+  <section class="space-y-6">
+    <div class="border-t border-border pt-6">
+      <form action="post" class="space-y-4" v-motion-slide-right>
+        <div class="flex items-center space-x-4">
+          <span class="text-sm font-medium text-foreground">Worksheet Template</span>
+          <label class="flex-1 max-w-xs">
+            <select 
+              class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
+              v-model="templateUid"
             >
-              {{ template.name }}
-            </option>
-          </select>
-        </label>
-        <button
-          v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
-          type="button"
-          @click.prevent="applyTemplate()"
-          class="border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Apply Template
-        </button>
-      </div>
-    </form>
+              <option value=""></option>
+              <option
+                v-for="template in workSheetTemplates"
+                :key="template.uid"
+                :value="template.uid"
+              >
+                {{ template.name }}
+              </option>
+            </select>
+          </label>
+          <button
+            v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
+            type="button"
+            @click.prevent="applyTemplate()"
+            class="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+          >
+            Apply Template
+          </button>
+        </div>
+      </form>
+    </div>
   </section>
 
   <hr class="mt-4 mb-2" />
@@ -256,7 +253,7 @@ function areAllChecked(): Boolean {
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
       <div v-if="worksheetStore.fetchingAnalysisResults" class="py-4 text-center">
-        <LoadingMessage message="Fetching analytes ..." />
+        <fel-loader message="Fetching analytes ..." />
       </div>
       <table class="min-w-full" v-else>
         <thead>

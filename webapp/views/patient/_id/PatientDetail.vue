@@ -6,7 +6,6 @@
   import { usePatientStore } from "@/stores/patient";
   import * as shield from "@/guards";
 
-  const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.vue"));
   const patientStore = usePatientStore();
   const router = useRouter();
   const { patient } = storeToRefs(patientStore);
@@ -61,16 +60,16 @@
 </script>
 
 <template>
-  <section class="col-span-12">
-    <section class="my-4">
+  <section class="col-span-12 space-y-6">
+    <section class="flex items-center space-x-4">
       <button
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
-        class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
+        class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
         @click.prevent="addSample(patient)"
       >
         Add Sample
       </button>
     </section>
-    <FelTabs :tabs="tabs" initial-tab="samples" />
+    <fel-tabs :tabs="tabs" initial-tab="samples" class="rounded-lg" />
   </section>
 </template>

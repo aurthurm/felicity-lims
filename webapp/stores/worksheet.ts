@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { parseData, keysToCamel, addListsUnique } from '@/utils/helpers';
+import { parseData, keysToCamel, addListsUnique } from '@/utils';
 import { IAnalysisResult } from '@/models/analysis';
 import { IWorkSheetTemplate, IWorkSheet, IReserved } from '@/models/worksheet';
 import { IPageInfo } from '@/models/pagination';

@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { IAbxAntibiotic, IAbxGuideline } from "@/models/microbiology";
 import { GetAbxAntibioticAllDocument, GetAbxAntibioticAllQuery, GetAbxAntibioticAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxLaboratoryAntibioticsDocument, GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables, AddAbxAntibioticDocument, EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables, EditAbxAntibioticDocument, UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables, UseAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import('@/components/ui/datatable/FelDataTable.vue')
 )
@@ -499,123 +496,116 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Antibiotics">
+      <fel-button @click="FormManager(true)">Add Antibiotic</fel-button>
+    </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add Antibiotic
-    </button> -->
-    <hr>
-
-    <DataTable 
-    :columns="tableColumns" 
-    :data="antibiotics" 
-    :toggleColumns="true" 
-    :loading="fetchingAntibiotics" 
-    :paginable="true"
-    :pageMeta="{
-      fetchCount: abxParams.first,
-      hasNextPage: true,
-      countNone,
-    }" 
-    :searchable="true" 
-    :filterable="false" 
-    @onSearchKeyUp="searchAntibiotics" 
-    @onSearchFocus="resetAntibiotic"
-    @onPaginate="showMoreAntibiotics" 
-    :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
-
+    <div class="shadow-sm rounded-lg bg-card p-6">
+      <DataTable 
+        :columns="tableColumns" 
+        :data="antibiotics" 
+        :toggleColumns="true" 
+        :loading="fetchingAntibiotics" 
+        :paginable="true"
+        :pageMeta="{
+          fetchCount: abxParams.first,
+          hasNextPage: true,
+          countNone,
+        }" 
+        :searchable="true" 
+        :filterable="false" 
+        @onSearchKeyUp="searchAntibiotics" 
+        @onSearchFocus="resetAntibiotic"
+        @onPaginate="showMoreAntibiotics" 
+        :selectable="false">
+        <template v-slot:footer> </template>
+      </DataTable>
+    </div>
   </div>
 
   <!-- Antibiotic Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-4">
+      <form class="space-y-6">
         <!-- Basic Information -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Basic Information</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Antibiotic Name</span>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
+          <div class="grid grid-cols-2 gap-6">
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Antibiotic Name</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.name"
                 placeholder="Enter antibiotic name"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">Guidelines</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Guidelines</span>
               <VueMultiselect
-              v-model="form.guidelines"
-              :options="abxGuidelines"
-              :multiple="true"
-              :searchable="true"
-              label="name"
-              >
-              <!-- track-by="uid" -->
-              </VueMultiselect>
+                v-model="form.guidelines"
+                :options="abxGuidelines"
+                :multiple="true"
+                :searchable="true"
+                label="name"
+                class="multiselect-blue"
+              />
             </label>
           </div>
         </div>
 
-        <div class="mb-6">
-        </div>
-
         <!-- Coding Systems -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Coding Systems</h4>
-          <div class="grid grid-cols-3 gap-4">
-            <label class="block">
-              <span class="text-foreground">WHONET Code</span>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Coding Systems</h4>
+          <div class="grid grid-cols-3 gap-6">
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">WHONET Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.whonetAbxCode"
                 placeholder="WHONET code"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">WHO Code</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">WHO Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.whoCode"
                 placeholder="WHO code"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">DIN Code</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">DIN Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.dinCode"
                 placeholder="DIN code"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">JAC Code</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">JAC Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.jacCode"
                 placeholder="JAC code"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">EUCAST Code</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">EUCAST Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.eucastCode"
                 placeholder="EUCAST code"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">User Code</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">User Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.userCode"
                 placeholder="User code"
               />
@@ -624,37 +614,37 @@ function saveForm(): void {
         </div>
 
         <!-- Classification -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Classification</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Class</span>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Classification</h4>
+          <div class="grid grid-cols-2 gap-6">
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Class</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.class"
                 placeholder="Antibiotic class"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">Subclass</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Subclass</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.subclass"
                 placeholder="Antibiotic subclass"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">Professional Class</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Professional Class</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.profClass"
                 placeholder="Professional class"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">CIA Category</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">CIA Category</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.ciaCategory"
                 placeholder="CIA category"
               />
@@ -663,29 +653,29 @@ function saveForm(): void {
         </div>
 
         <!-- Technical Details -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Technical Details</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">ABX Number</span>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Technical Details</h4>
+          <div class="grid grid-cols-2 gap-6">
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">ABX Number</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.abxNumber"
                 placeholder="ABX number"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">Potency</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">Potency</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.potency"
                 placeholder="Potency"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">ATC Code</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">ATC Code</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.atcCode"
                 placeholder="ATC code"
               />
@@ -694,29 +684,29 @@ function saveForm(): void {
         </div>
 
         <!-- Usage -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Usage</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex items-center">
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Usage</h4>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="flex items-center space-x-2">
               <input
                 type="checkbox"
-                class="form-checkbox"
+                class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                 v-model="form.human"
               />
-              <span class="ml-2 text-foreground">Human Use</span>
+              <span class="text-sm font-medium text-foreground">Human Use</span>
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center space-x-2">
               <input
                 type="checkbox"
-                class="form-checkbox"
+                class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                 v-model="form.veterinary"
               />
-              <span class="ml-2 text-foreground">Veterinary Use</span>
+              <span class="text-sm font-medium text-foreground">Veterinary Use</span>
             </div>
-            <label class="block col-span-2">
-              <span class="text-foreground">Animal Group</span>
+            <label class="block col-span-2 space-y-2">
+              <span class="text-sm font-medium text-foreground">Animal Group</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.animalGp"
                 placeholder="Animal group"
               />
@@ -725,77 +715,77 @@ function saveForm(): void {
         </div>
 
         <!-- LOINC Codes -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">LOINC Codes</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">LOINC Comp</span>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">LOINC Codes</h4>
+          <div class="grid grid-cols-2 gap-6">
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC Comp</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loinccomp"
                 placeholder="LOINC comp"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC Gen</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC Gen</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincgen"
                 placeholder="LOINC gen"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC Disk</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC Disk</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincdisk"
                 placeholder="LOINC disk"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC MIC</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC MIC</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincmic"
                 placeholder="LOINC MIC"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC E-Test</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC E-Test</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincetest"
                 placeholder="LOINC E-test"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC Slow</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC Slow</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincslow"
                 placeholder="LOINC slow"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC AFB</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC AFB</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincafb"
                 placeholder="LOINC AFB"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC SBT</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC SBT</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincsbt"
                 placeholder="LOINC SBT"
               />
             </label>
-            <label class="block">
-              <span class="text-foreground">LOINC MLC</span>
+            <label class="block col-span-1 space-y-2">
+              <span class="text-sm font-medium text-foreground">LOINC MLC</span>
               <input
-                class="form-input mt-1 block w-full"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.loincmlc"
                 placeholder="LOINC MLC"
               />
@@ -804,12 +794,12 @@ function saveForm(): void {
         </div>
 
         <!-- Additional Information -->
-        <div class="mb-6">
-          <h4 class="text-lg font-semibold mb-4">Additional Information</h4>
-          <label class="block">
-            <span class="text-foreground">Comments</span>
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Additional Information</h4>
+          <label class="block space-y-2">
+            <span class="text-sm font-medium text-foreground">Comments</span>
             <textarea
-              class="form-textarea mt-1 block w-full"
+              class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.comments"
               rows="3"
               placeholder="Additional comments..."
@@ -817,29 +807,46 @@ function saveForm(): void {
           </label>
         </div>
 
-        <hr class="my-6"/>
+        <hr class="border-border" />
         
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
         >
           Save Antibiotic
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
-
-<style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
+<style lang="postcss" scoped>
+.multiselect-blue {
+  @apply rounded-md border border-input bg-background;
 }
 
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+.multiselect-blue .multiselect__tags {
+  @apply border-0 bg-transparent px-3 py-2 text-sm;
+}
+
+.multiselect-blue .multiselect__single {
+  @apply mb-0 text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__input {
+  @apply text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__option {
+  @apply text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__option--highlight {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue .multiselect__option--selected {
+  @apply bg-primary/20 text-primary;
 }
 </style>

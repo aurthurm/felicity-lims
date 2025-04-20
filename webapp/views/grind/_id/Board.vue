@@ -39,9 +39,25 @@ const tabs = computed(() => [
 </script>
 
 <template>
-    <hr class="mt-2 mb-2">
-    <p class="leading-2 bg-background p-2 italic font-medium text-muted-foreground">{{ board?.description }}</p>
-    <hr class="mt-2 mb-2">
+  <div class="space-y-4">
+    <div class="border-t border-border my-4"></div>
+    
+    <p class="bg-background p-4 rounded-lg text-muted-foreground italic font-medium leading-relaxed">
+      {{ board?.description }}
+    </p>
+    
+    <div class="border-t border-border my-4"></div>
 
-    <fel-tabs :tabs="tabs" initial-tab="board-view" />
+    <fel-tabs 
+      :tabs="tabs" 
+      initial-tab="board-view"
+      class="mt-4"
+    />
+  </div>
 </template>
+
+<style scoped>
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+</style>

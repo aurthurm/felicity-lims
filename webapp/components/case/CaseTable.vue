@@ -1,114 +1,77 @@
 <script setup lang="ts">
+interface Case {
+  id: string;
+  type: string;
+  created: string;
+  creator: string;
+}
 
+interface Props {
+  cases: Case[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  cases: () => []
+});
+
+const emit = defineEmits<{
+  (e: 'view', caseId: string): void;
+  (e: 'cancel', caseId: string): void;
+}>();
 </script>
 
 <template>
-    <!-- Cases Table View -->
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
-            <thead>
-            <tr>
-                <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">ID</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Case Type</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Created</th>
-                <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Creator</th>
-                <th class="px-1 py-1 border-b-2 border-border"></th>
-            </tr>
-            </thead>
-            <tbody class="bg-background">
-            <tr>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="flex items-center">
-                    <div>
-                    <div class="text-sm leading-5 text-foreground">C21-00032</div>
-                    </div>
-                </div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">Viral Load</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">10/10/2020</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">Amos T ...</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">View</button>
-                    <button class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Cancel</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="flex items-center">
-                    <div>
-                    <div class="text-sm leading-5 text-foreground">WB21-00032</div>
-                    </div>
-                </div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">Viral Load</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">10/10/2020</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">Amos T ...</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">View</button>
-                    <button class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Cancel</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="flex items-center">
-                    <div>
-                    <div class="text-sm leading-5 text-foreground">WB21-00032</div>
-                    </div>
-                </div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">TB</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">10/10/2020</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">Amos T ...</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">View</button>
-                    <button class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Cancel</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="flex items-center">
-                    <div>
-                    <div class="text-sm leading-5 text-foreground">C21-00032</div>
-                    </div>
-                </div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">EID</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">10/10/2020</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">Amos T ...</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">View</button>
-                    <button class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Cancel</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        </div>
+  <div class="overflow-x-auto mt-4" role="region" aria-label="Cases table">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card border border-border rounded-lg">
+      <table class="min-w-full divide-y divide-border">
+        <thead class="bg-muted/50">
+          <tr>
+            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">ID</th>
+            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Case Type</th>
+            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</th>
+            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Creator</th>
+            <th scope="col" class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-card divide-y divide-border">
+          <tr v-for="case_ in cases" :key="case_.id" class="hover:bg-muted/50">
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="text-sm text-card-foreground">{{ case_.id }}</div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="text-sm text-primary">{{ case_.type }}</div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="text-sm text-primary">{{ case_.created }}</div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="text-sm text-primary">{{ case_.creator }}</div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
+              <button 
+                @click="emit('view', case_.id)"
+                class="px-3 py-1.5 mr-2 border border-destructive text-destructive rounded-md transition-colors hover:bg-destructive hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                :aria-label="`View case ${case_.id}`"
+              >
+                View
+              </button>
+              <button 
+                @click="emit('cancel', case_.id)"
+                class="px-3 py-1.5 mr-2 border border-primary text-primary rounded-md transition-colors hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                :aria-label="`Cancel case ${case_.id}`"
+              >
+                Cancel
+              </button>
+            </td>
+          </tr>
+          <tr v-if="cases.length === 0">
+            <td colspan="5" class="px-4 py-8 text-center text-sm text-muted-foreground">
+              No cases found
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
+  </div>
 </template>
 

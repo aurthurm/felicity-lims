@@ -8,6 +8,8 @@ import userPreferenceComposable from "@/composables/preferences";
 
 const { currentRoute, push } = useRouter();
 const authStore = useAuthStore();
+const streamStore = useStreamStore();
+const { loadPreferedTheme } = userPreferenceComposable();
 
 if (!authStore.auth.isAuthenticated) {
   push({ name: "LOGIN" });
@@ -15,7 +17,7 @@ if (!authStore.auth.isAuthenticated) {
 
 watch(
   () => authStore.auth.isAuthenticated,
-  (newAuth, oldAuth) => {
+  (newAuth) => {
     if (!newAuth) {
       push({ name: "LOGIN" });
     } else {
@@ -23,9 +25,6 @@ watch(
     }
   }
 );
-
-const streamStore = useStreamStore();
-const { loadPreferedTheme } = userPreferenceComposable();
 
 onBeforeMount(() => {
   axios.get("setup/installation").then((resp) => {
@@ -51,17 +50,15 @@ if (
 
 const mobileLayout = "mobile";
 const defaultLayout = "default";
-let layout = computed(
-  () => {
-    const isMobile = (navigator as any)?.userAgentData?.mobile ?? false;
-    return `${isMobile ? mobileLayout : (currentRoute.value.meta.layout || defaultLayout)}-layout`;
-  }
-);
+const layout = computed(() => {
+  const isMobile = (navigator as any)?.userAgentData?.mobile ?? false;
+  return `${isMobile ? mobileLayout : (currentRoute.value.meta.layout || defaultLayout)}-layout`;
+});
 </script>
 
 <template>
   <component :is="layout">
-    <notifications position="bottom right"  /> <!-- @kyvg/vue3-notification -->
+    <notifications position="bottom right" />
     <router-view />
   </component>
 </template>

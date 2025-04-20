@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { onMounted, watch, ref, defineAsyncComponent } from "vue";
+import { onMounted, watch, ref } from "vue";
 import { Chart } from "@antv/g2";
 import { useDashBoardStore } from "@/stores/dashboard";
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);
@@ -62,7 +59,7 @@ watch(
       "number of samples"
     );
 
-    // Authosised already delayed
+    // Authorised already delayed
     totalIncompleteAAD.value = aad?.counts?.totalIncomplete ?? 0;
     const donutData2 = [
       {
@@ -89,7 +86,6 @@ watch(
       { type: "20 - 30", value: aad?.counts?.twentyToThirty },
       { type: "> 30", value: aad?.counts?.graterThanThirty },
     ];
-
     plotLateSince(
       sinceData2,
       "late-auth-since",
@@ -128,6 +124,7 @@ const plotLateSince = (data: any, elem: string, xAlias: string, yAlias: string) 
     tickLine: null,
     line: null,
   });
+
   chart.axis("value", {
     label: null,
     title: {
@@ -138,6 +135,7 @@ const plotLateSince = (data: any, elem: string, xAlias: string, yAlias: string) 
       },
     },
   });
+
   chart.legend(false);
   chart.coordinate().transpose();
   chart
@@ -150,6 +148,7 @@ const plotLateSince = (data: any, elem: string, xAlias: string, yAlias: string) 
       },
       offset: 10,
     });
+
   chart.interaction("element-active");
   chart.render();
 };
@@ -161,52 +160,46 @@ const plotLateDonut = (data: any, elem: string) => {
     height: 150,
     width: 300,
   });
+
   chart.data(data);
   chart.scale("percent", {
-    formatter: (val) => {
-      val = val * 100 + "%";
-      return val;
-    },
+    formatter: (val: number) => `${(val * 100).toFixed(2)}%`,
   });
+
   chart.coordinate("theta", {
     radius: 0.75,
     innerRadius: 0.6,
   });
+
   chart.tooltip({
     showTitle: false,
     showMarkers: false,
     itemTpl:
       '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
   });
+
   chart.annotation();
   chart
     .interval()
     .adjust("stack")
     .position("percent")
     .color("item")
-    .label("percent", (percent) => {
-      return {
-        content: (data) => {
-          return `${data.item}: ${percent * 100}%`;
-        },
-      };
+    .label("percent", {
+      content: (data: any) => `${data.item}: ${(data.percent * 100).toFixed(2)}%`,
     })
-    .tooltip("item*percent", (item, percent) => {
-      percent = percent * 100 + "%";
-      return {
-        name: item,
-        value: percent,
-      };
-    });
+    .tooltip("item*percent", (item: string, percent: number) => ({
+      name: item,
+      value: `${(percent * 100).toFixed(2)}%`,
+    }));
 
   chart.interaction("element-active");
-
   chart.render();
 };
 
 const resetLateActive = () => {
-  document.getElementById("late-active")!.innerHTML = "";
-  const template = `
+  const lateActive = document.getElementById("late-active");
+  if (lateActive) {
+    lateActive.innerHTML = `
       <div class="mx-8">
         <div id="late-active-donut"></div>
       </div>
@@ -214,12 +207,13 @@ const resetLateActive = () => {
         <div id="late-active-since"></div>
       </div>
     `;
-  document.getElementById("late-active")!.innerHTML = template;
+  }
 };
 
 const resetLateAuth = () => {
-  document.getElementById("late-auth")!.innerHTML = "";
-  const template = `
+  const lateAuth = document.getElementById("late-auth");
+  if (lateAuth) {
+    lateAuth.innerHTML = `
       <div class="mx-8">
         <div id="late-auth-donut"></div>
       </div>
@@ -227,51 +221,56 @@ const resetLateAuth = () => {
         <div id="late-auth-since"></div>
       </div>
     `;
-  document.getElementById("late-auth")!.innerHTML = template;
+  }
 };
 </script>
 
 <template>
-  <div v-if="dashboard.fetchingLaggards" class="text-start my-4 w-100">
-    <LoadingMessage message="fetching laggard stats ..." />
-  </div>
-  <section class="mt-4">
-    <h1 class="text-xl text-foreground font-semibold">Delayed and incomplete</h1>
-    <hr class="my-2" />
-    <div class="flex justify-start items-center">
-      <div
-        class="content-middle bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center"
-      >
-        <div class="mr-4 font-bold text-foreground text-2xl">{{ totalIncompleteDAI }}</div>
-        <div class="font-semibold text-muted-foreground text-l">Already Delayed</div>
-      </div>
-      <div id="late-active" class="flex justify-start items-center ms-8">
-        <div class="me-8">
-          <div id="late-active-donut"></div>
-        </div>
-        <div>
-          <div id="late-active-since"></div>
-        </div>
-      </div>
+  <div class="mt-4">
+    <div v-if="dashboard.fetchingLaggards" class="text-start my-4">
+      <fel-loader message="Fetching laggard stats..." />
     </div>
 
-    <h1 class="mt-4 text-xl text-foreground font-semibold">Authosised already delayed</h1>
-    <hr class="my-2" />
-    <div class="flex justify-start items-center">
-      <div
-        class="content-middle bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8 text-center"
-      >
-        <div class="mr-4 font-bold text-foreground text-2xl">{{ totalIncompleteAAD }}</div>
-        <div class="font-semibold text-muted-foreground text-l">Released as Delayed</div>
-      </div>
-      <div id="late-auth" class="flex justify-start items-center ms-8">
-        <div class="me-8">
-          <div id="late-auth-donut"></div>
+    <section>
+      <h1 class="text-xl text-foreground font-semibold">Delayed and incomplete</h1>
+      <hr class="my-2" />
+      <div class="flex justify-start items-center">
+        <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
+          <div class="font-bold text-foreground text-2xl">{{ totalIncompleteDAI }}</div>
+          <div class="font-semibold text-muted-foreground">Already Delayed</div>
         </div>
-        <div>
-          <div id="late-auth-since"></div>
+        <div id="late-active" class="flex justify-start items-center ms-8">
+          <div class="me-8">
+            <div id="late-active-donut"></div>
+          </div>
+          <div>
+            <div id="late-active-since"></div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="mt-8">
+      <h1 class="text-xl text-foreground font-semibold">Authorised already delayed</h1>
+      <hr class="my-2" />
+      <div class="flex justify-start items-center">
+        <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
+          <div class="font-bold text-foreground text-2xl">{{ totalIncompleteAAD }}</div>
+          <div class="font-semibold text-muted-foreground">Authorised Already Delayed</div>
+        </div>
+        <div id="late-auth" class="flex justify-start items-center ms-8">
+          <div class="me-8">
+            <div id="late-auth-donut"></div>
+          </div>
+          <div>
+            <div id="late-auth-since"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
+
+<style lang="postcss">
+/* Component-specific styles can be added here */
+</style>

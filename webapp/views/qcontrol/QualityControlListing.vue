@@ -9,19 +9,14 @@
   import * as shield from '@/guards'
   import useApiUtil from '@/composables/api_util';
   import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { parseDate } from '@/utils/helpers';
+  import { parseDate } from '@/utils';
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
   const DataTable = defineAsyncComponent(
     () => import('@/components/ui/datatable/FelDataTable.vue')
   )
-  const PageHeader = defineAsyncComponent(
-    () => import("@/components/common/FelPageHeading.vue")
-  )
-  const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-  )
+ 
 
   const filterOptions = ref([
     { name: "All", value: "" },
@@ -249,47 +244,46 @@
 </script>
 
 <template>
-  <PageHeader title="Reference Runs (QC)" />
+  <fel-heading title="Reference Runs (QC)">
+    <div class="flex justify-start items-start gap-x-4">
+      <fel-button
+        v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
+        @click.prevent="showModal = !showModal">
+        Add Reference Runs
+      </fel-button>
+      <router-link to="/quality-control/charts" id="control-charts"
+      class="px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent/50">
+        View Run Charts
+      </router-link>
+    </div>
+  </fel-heading>
 
-  <div>
-    <button 
-      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
-      type="button" 
-      class="border border-primary text-primary rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-primary hover:text-primary-foreground focus:outline-none focus:shadow-outline"
-      @click.prevent="showModal = !showModal">
-      Add Reference Runs
-    </button>
-    <router-link to="/quality-control/charts" id="control-charts"
-    class="border border-destructive text-destructive rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-destructive hover:text-primary-foreground focus:outline-none focus:shadow-outline">
-      View Run Charts
-    </router-link>
+  <div class="rounded-lg border border-border bg-card shadow-sm p-6">
+    <DataTable 
+    :columns="tableColumns" 
+    :data="qcSets" 
+    :toggleColumns="true" 
+    :loading="fetchingQCSets" 
+    :paginable="true"
+    :pageMeta="{
+        fetchCount: qcSetParams.first,
+        hasNextPage: pageInfo?.pageInfo?.hasNextPage,
+        qcSetCount,
+    }" 
+    :searchable="false"
+    @onSearch="searchQCSets" 
+    :filterable="true" 
+    :filterMeta="{  
+        defaultFilter: qcSetParams.status,
+        filters: filterOptions,
+    }" 
+    @onPaginate="showMoreQCSets" 
+    :selectable="false">
+      <template v-slot:footer> </template>
+    </DataTable>
   </div>
-  <hr>
 
-  <DataTable 
-  :columns="tableColumns" 
-  :data="qcSets" 
-  :toggleColumns="true" 
-  :loading="fetchingQCSets" 
-  :paginable="true"
-  :pageMeta="{
-      fetchCount: qcSetParams.first,
-      hasNextPage: pageInfo?.pageInfo?.hasNextPage,
-      qcSetCount,
-  }" 
-  :searchable="false"
-  @onSearch="searchQCSets" 
-  :filterable="true" 
-  :filterMeta="{  
-      defaultFilter: qcSetParams.status,
-      filters: filterOptions,
-  }" 
-  @onPaginate="showMoreQCSets" 
-  :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
-
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
+  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
     <template v-slot:header>
       <h3>Create QC Analyses Requests</h3>
     </template>
@@ -395,7 +389,7 @@
         </button>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 
 
 </template>

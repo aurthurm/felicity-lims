@@ -1,43 +1,27 @@
-
 <script setup lang="ts">
-  import { ref, computed, defineAsyncComponent } from 'vue';
-  const tabSuppliers = defineAsyncComponent(
-    () => import('./SuppliersListing.vue')
+  import { defineAsyncComponent } from 'vue';
+  const SuppliersListing = defineAsyncComponent(
+        () => import('./SuppliersListing.vue')
   )
-  const tabManufacturers = defineAsyncComponent(
-    () => import('./Manufacturers.vue')
+  const Manufacturers = defineAsyncComponent(
+        () => import('./Manufacturers.vue')
   )
 
-
-  let currentTab = ref<string>('suppliers');
-  const tabs: string[] = ['suppliers', 'manufacturers'];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+  const tabs = [
+    { 
+      id:"suppliers", 
+      label: 'suppliers', 
+      component: SuppliersListing
+    },
+    { 
+      id:"manufacturers", 
+      label: 'manufacturers', 
+      component: Manufacturers
+    },  
+  ];
 </script>
 
 <template>
-  <div class="mt-4">
-
-        <nav class="bg-background shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <tab-suppliers v-if="currentTab === 'suppliers'"/>
-        <tab-manufacturers v-if="currentTab === 'manufacturers'" />
-
-  </div>
-
+  <fel-tabs :tabs="tabs" />
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, defineAsyncComponent, onMounted, computed } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { AddVoucherCodeDocument, AddVoucherCodeMutation, AddVoucherCodeMutationVariables,
   EditVoucherCodeDocument, EditVoucherCodeMutation, EditVoucherCodeMutationVariables } from '@/graphql/operations/billing.mutations'; 
 import { storeToRefs } from "pinia"
@@ -8,14 +8,6 @@ import useApiUtil  from "@/composables/api_util";
 import { IVoucherCode } from "@/models/billing";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number } from "yup";
-
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
-
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 
 const props = defineProps({
   voucherUid: String
@@ -111,81 +103,88 @@ const updateVoucherCode = (vocher: IVoucherCode) => {
 </style>
 
 <template>
-  <div class="mt-4">
-    <div v-if="fetchingVoucherCodes">
-      <LoadingMessage message="Fetching voucher codes ..." />
+  <div class="space-y-6">
+    <div v-if="fetchingVoucherCodes" class="rounded-lg border border-border bg-card p-4">
+      <fel-loader message="Fetching voucher codes ..." />
     </div>
-    <section v-else>
-          <div class="flex justify-between">
-            <h4 class="text-foreground text-l font-semibold">Voucher Codes</h4>
-            <button
-              class="px-4 my-2 p-1 text-sm border-primary border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-primary hover:text-primary-foreground"
-              @click="newVoucherCode">
-              Add Voucher Code
+    <section v-else class="space-y-6">
+      <div class="flex justify-between items-center">
+        <h4 class="text-lg font-semibold text-foreground">Voucher Codes</h4>
+        <button
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+          @click="newVoucherCode">
+          Add Voucher Code
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div 
+          v-for="vcode in codes" 
+          :key="vcode.uid"
+          class="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent hover:text-accent-foreground">
+          <div class="flex items-center justify-between">
+            <div class="space-y-1">
+              <h5 class="font-medium text-foreground">{{ vcode.code }}</h5>
+              <p class="text-sm text-muted-foreground">{{ vcode.used }} of {{ vcode.usageLimit }}</p>
+            </div>
+            <button 
+              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+              @click="editCode(vcode)">
+              <font-awesome-icon icon="pen" class="text-muted-foreground" />
             </button>
           </div>
-          <hr>
-          <div class="grid grid-cols-5 gap-2 mt-2">
-            <div 
-            v-for="vcode in codes" :key="vcode.uid"
-            class="col-span-1 bg-background rounded-sm shadow-sm hover:shadow-md duration-500 px-2 py-2">
-              <div class="font-semibold text-foreground flex justify-between items-center">
-                <h5>{{ vcode.code }}</h5>
-                <div class="text-sm text-muted-foreground flex-grow text-right">{{ vcode.used }} of {{ vcode.usageLimit }}</div>
-                <a class="ml-2 pl-2 text-muted-foreground border-l-2 border-l-gray-400" @click="editCode(vcode)">
-                  <font-awesome-icon class="text-xs hover:text-foreground" icon="pen" />
-                </a>
-              </div>
-            </div>
-          </div>
-      </section>
-    </div>
+        </div>
+      </div>
+    </section>
 
-    <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/6'">
+    <!-- Voucher Code Form Modal -->
+    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
-        <h3>Voucher Code Form</h3>
+        <h3 class="text-lg font-semibold text-foreground">Voucher Code Form</h3>
       </template>
       <template v-slot:body>
-        <form>
-          <div class="grid grid-cols-2 gap-x-4 mb-4">
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Voucher Code</span>
+        <form class="space-y-6">
+          <div class="grid grid-cols-2 gap-4">
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Voucher Code</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.code }]"
+                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.code }]"
                 type="text"
                 v-model="code"
                 placeholder="Code ..."
               />
             </label>
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Usage Limit</span>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Usage Limit</span>
               <input
-                :class="['form-input mt-1 block w-full', {'border-destructive animate-pulse': errors.usageLimit }]"
+                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.usageLimit }]"
                 type="number"
                 min="1"
                 v-model="usageLimit"
               />
             </label>
           </div>
-          <div class="grid grid-cols-2 gap-x-4 mb-4">
-            <label class="block col-span-1 mb-2">
-              <span class="text-foreground">Is Active</span>
-              <input
-                class="form-checkbox ml-4"
-                type="checkbox"
-                v-model="isActive"
-                checked
-              />
-            </label>
+          
+          <div class="flex items-center space-x-2">
+            <input
+              class="form-checkbox h-4 w-4 rounded border-input text-primary focus:ring-primary"
+              type="checkbox"
+              v-model="isActive"
+              checked
+            />
+            <label class="text-sm font-medium text-foreground">Is Active</label>
           </div>
 
-          <hr />
-          <button type="submit"
-            class="-mb-4 border border-primary bg-primary text-primary-foreground rounded-sm px-2 py-1 mt-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-            @click.prevent="submitVoucherForm">
-            Save Voucher
-          </button>
+          <div class="flex justify-end">
+            <button 
+              type="submit"
+              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+              @click.prevent="submitVoucherForm">
+              Save Voucher Code
+            </button>
+          </div>
         </form>
       </template>
-    </modal>
+    </fel-modal>
+  </div>
 </template>

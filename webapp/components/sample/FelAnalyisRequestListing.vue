@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { defineAsyncComponent, toRefs, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { parseDate } from "@/utils/helpers";
+import { parseDate } from "@/utils";
 import { useSampleStore } from "@/stores/sample";
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 
 const props = defineProps({
   target: String,
@@ -43,116 +40,125 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
 
 <template>
   <div class="overflow-x-auto mt-4">
-    <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard p-2 rounded-bl-sm rounded-br-sm">
-      <table class="min-w-full">
+    <div class="rounded-lg border border-border bg-card shadow-sm">
+      <table class="w-full">
         <thead>
           <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
-              Sampe ID
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground"></th>
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
+              Sample ID
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Test(s)
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Patient
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Client Patient ID
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Client
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Created
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Creator
             </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground">
               Status
             </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
+            <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground"></th>
           </tr>
         </thead>
-        <tbody class="bg-background" v-for="request in analysisRequests" :key="request.uid">
-          <tr class="bg-muted" v-motion-slide-left>
-            <td colspan="10" class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground">
+        <tbody class="[&_tr:last-child]:border-0">
+          <template v-for="request in analysisRequests" :key="request.uid">
+            <tr class="border-b border-border bg-muted/50" v-motion-slide-left>
+              <td colspan="10" class="p-4">
+                <div class="text-sm text-foreground">
                   {{ request.clientRequestId }}
                 </div>
-              </div>
-            </td>
-          </tr>
-          <tr v-for="sample in request.samples" :key="sample.uid" v-motion-slide-right>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <span v-if="sample.priority ?? 0 < 1" :class="[
-                'font-small',
-                { 'text-destructive': sample.priority ?? 0 == 0 },
-              ]">
-                <font-awesome-icon icon="fa-star" />
-              </span>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="font-semibold">
-                  <router-link :to="{
-                    name: 'sample-detail',
-                    params: {
-                      patientUid: request.patient?.uid,
-                      sampleUid: sample?.uid,
-                    },
-                  }">{{ sample.sampleId }}</router-link>
+              </td>
+            </tr>
+            <tr v-for="sample in request.samples" :key="sample.uid" v-motion-slide-right class="border-b border-border">
+              <td class="p-4">
+                <span v-if="sample.priority ?? 0 < 1" :class="[
+                  'text-sm',
+                  { 'text-destructive': sample.priority ?? 0 == 0 },
+                ]">
+                  <font-awesome-icon icon="fa-star" />
+                </span>
+              </td>
+              <td class="p-4">
+                <div class="font-medium">
+                  <router-link 
+                    :to="{
+                      name: 'sample-detail',
+                      params: {
+                        patientUid: request.patient?.uid,
+                        sampleUid: sample?.uid,
+                      },
+                    }"
+                    class="text-primary hover:underline"
+                  >
+                    {{ sample.sampleId }}
+                  </router-link>
                 </div>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ profileAnalysesText(sample.profiles ?? [], sample.analyses ?? []) }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ request.patient?.firstName }} {{ request.patient?.lastName }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ request.patient?.clientPatientId }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ request.client?.name }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ parseDate(sample?.createdAt) }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ sample?.createdBy?.firstName }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <button type="button" class="bg-primary text-primary-foreground p-1 rounded-sm leading-none">
-                {{ sample.status }}
-              </button>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-              <router-link :to="{
-                name: 'sample-detail',
-                params: { patientUid: request.patient?.uid, sampleUid: sample?.uid },
-              }"
-                class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">View</router-link>
-            </td>
-          </tr>
+              </td>
+              <td class="p-4">
+                <div class="text-sm text-primary">
+                  {{ profileAnalysesText(sample.profiles ?? [], sample.analyses ?? []) }}
+                </div>
+              </td>
+              <td class="p-4">
+                <div class="text-sm text-primary">
+                  {{ request.patient?.firstName }} {{ request.patient?.lastName }}
+                </div>
+              </td>
+              <td class="p-4">
+                <div class="text-sm text-primary">
+                  {{ request.patient?.clientPatientId }}
+                </div>
+              </td>
+              <td class="p-4">
+                <div class="text-sm text-primary">{{ request.client?.name }}</div>
+              </td>
+              <td class="p-4">
+                <div class="text-sm text-primary">
+                  {{ parseDate(sample?.createdAt) }}
+                </div>
+              </td>
+              <td class="p-4">
+                <div class="text-sm text-primary">
+                  {{ sample?.createdBy?.firstName }}
+                </div>
+              </td>
+              <td class="p-4">
+                <button 
+                  type="button" 
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-3"
+                >
+                  {{ sample.status }}
+                </button>
+              </td>
+              <td class="p-4 text-right">
+                <router-link 
+                  :to="{
+                    name: 'sample-detail',
+                    params: { patientUid: request.patient?.uid, sampleUid: sample?.uid },
+                  }"
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
+                >
+                  View
+                </router-link>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
-      <div v-if="fetchingAnalysisRequests" class="py-4 text-center">
-        <LoadingMessage message="Fetching Analysis Requests ..." />
+      <div v-if="fetchingAnalysisRequests" class="p-4 text-center">
+        <fel-loader message="Fetching Analysis Requests ..." />
       </div>
     </div>
   </div>

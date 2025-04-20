@@ -91,115 +91,132 @@ function saveForm(): void {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Antibiotic Guidelines">
+      <fel-button @click="FormManager(true)">Add Guideline</fel-button>      
+    </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add Abx Guideline
-    </button> -->
-    <hr>
-
-    <div class="overflow-x-auto mt-4">
-      <div
-          class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
+    <div class="border shadow-sm rounded-lg bg-card p-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border">
           <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Name
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Code
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Description
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
+            <tr>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Code</th>
+              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
           </thead>
-          <tbody class="bg-background">
-          <tr v-for="guideline in abxGuidelines" :key="guideline?.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground">{{ guideline?.name }}</div>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ guideline?.code }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ guideline?.description }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-              <!-- <button @click="FormManager(false, guideline)"
-                      class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-                Edit
-              </button> -->
-            </td>
-          </tr>
+          <tbody class="divide-y divide-border bg-background">
+            <tr v-for="guideline in abxGuidelines" :key="guideline?.uid" class="hover:bg-muted/50">
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.description }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.code }}</td>
+              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <button 
+                  @click="FormManager(false, guideline)"
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 mr-2">
+                  Edit
+                </button>
+                <button 
+                  @click="deleteGuideline(guideline)"
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground h-9 px-4 py-2">
+                  Delete
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
+
+    <!-- Modal -->
+    <fel-modal v-if="showModal" @close="showModal = false">
+      <template v-slot:header>
+        <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
+      </template>
+
+      <template v-slot:body>
+        <form @submit.prevent="saveForm" class="space-y-4">
+          <div class="space-y-2">
+            <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Name</label>
+            <input 
+              id="name"
+              v-model="form.name"
+              type="text"
+              class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              required
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="description" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</label>
+            <textarea 
+              id="description"
+              v-model="form.description"
+              class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label for="code" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Code</label>
+            <input 
+              id="code"
+              v-model="form.code"
+              type="text"
+              class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              required
+            />
+          </div>
+
+          <div class="flex justify-end space-x-2">
+            <button 
+              type="button"
+              @click="showModal = false"
+              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+              Cancel
+            </button>
+            <button 
+              type="submit"
+              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
+              Save
+            </button>
+          </div>
+        </form>
+      </template>
+    </fel-modal>
   </div>
-
-  <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
-    <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
-    </template>
-
-    <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Laboratory Name</span>
-            <input
-                class="form-input mt-1 block w-full"
-                v-model="form.name"
-                placeholder="Name ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Code</span>
-            <input
-                class="form-input mt-1 block w-full"
-                v-model="form.code"
-                placeholder="Prefix ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Url</span>
-            <input
-                class="form-input mt-1 block w-full"
-                v-model="form.description"
-                placeholder="Begin typing ..."
-            />
-          </label>
-        </div>
-        <hr/>
-        <button
-            type="button"
-            @click.prevent="saveForm()"
-            class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save Abx Guideline
-        </button>
-      </form>
-    </template>
-  </modal>
-
 </template>
 
-
-<style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
+<style lang="postcss" scoped>
+.multiselect-blue {
+  @apply rounded-md border border-input bg-background;
 }
 
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+.multiselect-blue .multiselect__tags {
+  @apply border-0 bg-transparent px-3 py-2 text-sm;
+}
+
+.multiselect-blue .multiselect__single {
+  @apply mb-0 text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__input {
+  @apply text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__option {
+  @apply text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__option--highlight {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue .multiselect__option--selected {
+  @apply bg-primary/20 text-primary;
 }
 </style>

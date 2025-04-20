@@ -5,7 +5,7 @@ import {
     GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables,
     GetAllStockAdjustmentsDocument, GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables
  } from '@/graphql/operations/inventory.queries';
-import { parseDate } from '@/utils/helpers';
+import { parseDate } from '@/utils';
 import { IPagination } from '@/models/pagination';
 
 const ProductDetail = defineComponent({
@@ -58,97 +58,98 @@ const ProductDetail = defineComponent({
     render() {
         return (
             <>
-                <h3 class="font-bold text-l text-foreground">Stock Item: {this.props.product?.stockItem?.name}</h3>
-                <p class="italic text-muted-foreground">{this.props.product?.stockItem?.description}</p>
-                <hr class="my-2" />
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-foreground">Stock Item: {this.props.product?.stockItem?.name}</h3>
+                    <p class="text-sm text-muted-foreground">{this.props.product?.stockItem?.description}</p>
+                    <div class="border-t border-border my-4"></div>
 
-                <h3 class="font-bold text-l text-foreground">Stock Variant: {this.props.product?.name}</h3>
-                <p class="italic text-muted-foreground">{this.props.product?.description}</p>
-                <hr class="mt-2 mb-4" />
+                    <h3 class="text-lg font-medium text-foreground">Stock Variant: {this.props.product?.name}</h3>
+                    <p class="text-sm text-muted-foreground">{this.props.product?.description}</p>
+                    <div class="border-t border-border my-4"></div>
 
-                <nav class="flex justify-between bg-background shadow-md mt-2">
-                    <div class="-mb-px flex justify-start">
-                        {this.inventoryTabs?.map(tab => (
-                            <a
-                                key={tab}
-                                class={[
-                                    'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                                    { 'tab-active': this.currentTab === tab },
-                                ]}
-                                onClick={() => (this.currentTab = tab)}
-                                
-                            >
-                                {tab}
-                            </a>
-                        ))}
-                    </div>
-                </nav>
-
-                <div class="pt-2">
-                    {this.currentTab === 'stock-lots' && (<>
-                        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard p-2 rounded-bl-lg rounded-br-lg">
-                            <table class="min-w-full">
-                                <thead>
-                                    <tr>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Lot Number
-                                        </th>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Quantity
-                                        </th>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Expiry Date
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.stockLots?.map(lot => (
-                                        <tr key={lot.uid}>
-                                            <td class="border-b-2 border-border p-1 text-sm">{lot.lotNumber}</td>
-                                            <td class="border-b-2 border-border p-1 text-sm">{lot.quantity}</td>
-                                            <td class="border-b-2 border-border p-1 text-sm">{parseDate(lot.expiryDate, false)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                    <nav class="flex justify-between bg-background shadow-md rounded-md">
+                        <div class="flex justify-start">
+                            {this.inventoryTabs?.map(tab => (
+                                <a
+                                    key={tab}
+                                    class={[
+                                        'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-2 px-4 rounded-md transition-colors duration-200',
+                                        { 'bg-primary text-primary-foreground': this.currentTab === tab, 'hover:bg-muted': this.currentTab !== tab },
+                                    ]}
+                                    onClick={() => (this.currentTab = tab)}
+                                >
+                                    {tab}
+                                </a>
+                            ))}
                         </div>
-                    </>)}
-                    {this.currentTab === 'ledger' && (<>
-                        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard p-2 rounded-bl-lg rounded-br-lg">
-                            <table class="min-w-full">
-                                <thead>
-                                    <tr>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Date
-                                        </th>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Lot
-                                        </th>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Transaction Type
-                                        </th>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            Quantity
-                                        </th>
-                                        <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-                                            By
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.stockAdjustments?.map(adjustment => (<>
+                    </nav>
+
+                    <div class="pt-4">
+                        {this.currentTab === 'stock-lots' && (<>
+                            <div class="overflow-hidden bg-background shadow-md rounded-lg">
+                                <table class="min-w-full divide-y divide-border">
+                                    <thead class="bg-muted">
                                         <tr>
-                                            <td class="border-b-2 border-border p-1 text-sm">{parseDate(adjustment?.adjustmentDate)}</td>
-                                            <td class="border-b-2 border-border p-1 text-sm">{adjustment?.lotNumber}</td>
-                                            <td class="border-b-2 border-border p-1 text-sm">{adjustment?.adjustmentType}</td>
-                                            <td class="border-b-2 border-border p-1 text-sm">{adjustment?.adjust}</td>
-                                            <td class="border-b-2 border-border p-1 text-sm">{adjustment?.adjustmentBy?.firstName}</td>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Lot Number
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Quantity
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Expiry Date
+                                            </th>
                                         </tr>
-                                    </>))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </>)}
+                                    </thead>
+                                    <tbody class="bg-background divide-y divide-border">
+                                        {this.stockLots?.map(lot => (
+                                            <tr key={lot.uid} class="hover:bg-muted transition-colors duration-150">
+                                                <td class="px-4 py-3 text-sm text-foreground">{lot.lotNumber}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{lot.quantity}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{parseDate(lot.expiryDate, false)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>)}
+                        {this.currentTab === 'ledger' && (<>
+                            <div class="overflow-hidden bg-background shadow-md rounded-lg">
+                                <table class="min-w-full divide-y divide-border">
+                                    <thead class="bg-muted">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Date
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Lot
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Transaction Type
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                Quantity
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                By
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-background divide-y divide-border">
+                                        {this.stockAdjustments?.map(adjustment => (<>
+                                            <tr key={adjustment.uid} class="hover:bg-muted transition-colors duration-150">
+                                                <td class="px-4 py-3 text-sm text-foreground">{parseDate(adjustment?.adjustmentDate)}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{adjustment?.lotNumber}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjustmentType}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjust}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjustmentBy?.firstName}</td>
+                                            </tr>
+                                        </>))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>)}
+                    </div>
                 </div>
             </>
         );

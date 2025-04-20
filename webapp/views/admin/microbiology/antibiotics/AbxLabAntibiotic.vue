@@ -32,66 +32,43 @@ function discardAntibiotic(antibiotic) {
 </script>
 
 <template>
+  <div class="space-y-6">
+    <fel-heading title="Laboratory Antibiotics"></fel-heading>
 
-  <div class="w-full my-4">
-    <div class="overflow-x-auto mt-4">
-      <div
-          class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
+    <div class="border shadow-sm rounded-lg bg-card p-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border">
           <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Name
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Guidelines
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              Potency
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              LOINC MIC
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              LOINC DISK
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
-              LOINC ETEST
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
+            <tr>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Guidelines</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Potency</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC MIC</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC DISK</th>
+              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC ETEST</th>
+              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
           </thead>
-          <tbody class="bg-background">
-          <tr v-for="abx in abxlabAntibiotics" :key="abx?.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="flex items-center">
-                <div class="text-sm leading-5 text-foreground">{{ abx?.name }}</div>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
+          <tbody class="divide-y divide-border bg-background">
+            <tr v-for="abx in abxlabAntibiotics" :key="abx?.uid" class="hover:bg-muted/50">
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.name }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm">
                 <span class="px-2 py-1 mr-2 text-sm bg-muted rounded-md font-medium" v-for="gl in abx?.guidelines" :key="gl.name">{{ gl.name }}</span>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ abx?.potency }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ abx?.loincmic }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ abx?.loincdisk }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">{{ abx?.loincetest }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-               <button @click="discardAntibiotic(abx)"
-                      class="px-2 py-1 mr-2 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">
-                remove
-              </button>
-            </td>
-          </tr>
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.potency }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincmic }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincdisk }}</td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincetest }}</td>
+              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <button 
+                  @click="discardAntibiotic(abx)"
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground h-9 px-4 py-2">
+                  Remove
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -99,14 +76,32 @@ function discardAntibiotic(antibiotic) {
   </div>
 </template>
 
-
-<style scoped>
-.toggle-checkbox:checked {
-  right: 0;
-  border-color: #68D391;
+<style lang="postcss" scoped>
+.multiselect-blue {
+  @apply rounded-md border border-input bg-background;
 }
 
-.toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+.multiselect-blue .multiselect__tags {
+  @apply border-0 bg-transparent px-3 py-2 text-sm;
+}
+
+.multiselect-blue .multiselect__single {
+  @apply mb-0 text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__input {
+  @apply text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__option {
+  @apply text-sm text-foreground;
+}
+
+.multiselect-blue .multiselect__option--highlight {
+  @apply bg-primary text-primary-foreground;
+}
+
+.multiselect-blue .multiselect__option--selected {
+  @apply bg-primary/20 text-primary;
 }
 </style>

@@ -2,6 +2,7 @@
 import { ref, computed, defineAsyncComponent } from "vue";
 import { useClientStore } from "@/stores/client";
 
+// Lazy load components
 const tabSamples = defineAsyncComponent(
     () => import('@/components/sample/FelSampleListing.vue')
 )
@@ -11,13 +12,18 @@ const tabContacts = defineAsyncComponent(
 const tabLogs = defineAsyncComponent(
     () => import('@/components/audit/FelAuditLog.vue')
 )
+
+// Initialize store
 const clientStore = useClientStore();
 
-let currentTab = ref("samples");
-const tabs = ["samples", "contacts", "logs"];
-let currentTabComponent = computed(() => "tab-" + currentTab.value);
+// Tab state
+const currentTab = ref("samples");
+const tabs = ["samples", "contacts", "logs"] as const;
+type TabType = typeof tabs[number];
 
-let client = computed(() => clientStore.getClient);
+// Computed properties
+const currentTabComponent = computed(() => "tab-" + currentTab.value);
+const client = computed(() => clientStore.getClient);
 </script>
 
 <template>
@@ -25,7 +31,7 @@ let client = computed(() => clientStore.getClient);
     <nav class="bg-background shadow-md mt-2">
       <div class="-mb-px flex justify-start">
         <a v-for="tab in tabs" :key="tab" :class="[
-          'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
+          'tab no-underline px-4 py-1 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:bg-primary hover:text-muted-foreground',
           { 'tab-active': currentTab === tab },
         ]" @click="currentTab = tab">
           {{ tab }}

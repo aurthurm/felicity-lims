@@ -1,18 +1,18 @@
-
 <template>
-  <div class="h-full overflow-hidden flex flex-col">
-    <div class="pr-4 py-3 flex items-center justify-between">
-      <h2 class="font-semibold text-sm">Folders</h2>
+  <div class="h-full overflow-hidden flex flex-col bg-card border border-border rounded-lg" role="navigation" aria-label="Folder navigation">
+    <div class="p-4 flex items-center justify-between border-b border-border">
+      <h2 class="font-semibold text-sm text-card-foreground">Folders</h2>
       <button 
         @click="openAddFolderDialog(null)"
         class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-accent hover:text-accent-foreground h-8 w-8"
+        aria-label="Add new folder"
       >
-        <Plus class="w-4 h-4" />
+        <Plus class="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
     
-    <div class="flex-1 overflow-auto">
-      <div class="pr-2 py-1">
+    <div class="flex-1 overflow-auto p-2">
+      <div class="space-y-1">
         <FolderItem 
           v-for="folder in rootFolders" 
           :key="folder.uid" 
@@ -24,9 +24,18 @@
 
     <!-- Add Folder Dialog -->
     <teleport to="body">
-      <div v-if="isAddFolderOpen" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-        <div class="bg-background rounded-lg shadow-lg p-6 max-w-md w-full mx-4" @click.stop>
-          <h3 class="text-lg font-medium mb-4">
+      <div 
+        v-if="isAddFolderOpen" 
+        class="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center"
+        role="dialog"
+        aria-labelledby="add-folder-title"
+        aria-modal="true"
+      >
+        <div 
+          class="bg-card rounded-lg shadow-lg p-6 max-w-md w-full mx-4 border border-border" 
+          @click.stop
+        >
+          <h3 id="add-folder-title" class="text-lg font-medium text-card-foreground mb-4">
             {{ parentFolderId 
               ? `Add subfolder to ${folderById(parentFolderId)?.name}` 
               : 'Add new folder' 
@@ -34,12 +43,14 @@
           </h3>
           
           <div class="mb-4">
-            <label for="folderName" class="block text-sm font-medium mb-1">Folder Name</label>
+            <label for="folderName" class="block text-sm font-medium text-card-foreground mb-1">Folder Name</label>
             <input
               id="folderName"
               v-model="folderName"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter folder name"
+              @keyup.enter="handleAddFolder"
+              aria-required="true"
             />
           </div>
           
@@ -53,8 +64,9 @@
             <button 
               @click="handleAddFolder"
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+              :disabled="!folderName.trim()"
             >
-              <FolderPlus class="w-4 h-4 mr-2" />
+              <FolderPlus class="w-4 h-4 mr-2" aria-hidden="true" />
               Add Folder
             </button>
           </div>
@@ -91,31 +103,44 @@ function openAddFolderDialog(parentId: string | null) {
 function closeAddFolderDialog() {
   isAddFolderOpen.value = false
   folderName.value = ''
+  parentFolderId.value = null
 }
 
-function handleAddFolder() {
-  if (folderName.value.trim()) {
-    withClientMutation<AddDocumentFolderMutation, AddDocumentFolderMutationVariables>(
+async function handleAddFolder() {
+  if (!folderName.value.trim()) return;
+  
+  try {
+    const response = await withClientMutation<AddDocumentFolderMutation, AddDocumentFolderMutationVariables>(
       AddDocumentFolderDocument,
-      { payload: {name: folderName.value, parentUid: parentFolderId.value}}, 
+      { 
+        payload: {
+          name: folderName.value.trim(), 
+          parentUid: parentFolderId.value
+        }
+      }, 
       "createDocumentFolder"
-    ).then((resp: any) => store.addFolder(resp))
+    );
     
-    // If parent folder isn't expanded, expand it
-    if (parentFolderId.value) {
-      const parentFolder = store.folders.find(f => f.uid === parentFolderId.value)
-      if (parentFolder && !parentFolder.expanded) {
-        store.toggleFolderExpanded(parentFolderId.value)
+    if (response && 'uid' in response) {
+      store.addFolder(response as IDocumentFolder);
+      
+      // If parent folder isn't expanded, expand it
+      if (parentFolderId.value) {
+        const parentFolder = store.folders.find(f => f.uid === parentFolderId.value);
+        if (parentFolder && !parentFolder.expanded) {
+          store.toggleFolderExpanded(parentFolderId.value);
+        }
       }
     }
-    
+  } catch (error) {
+    console.error('Failed to create folder:', error);
+  } finally {
     // Reset form and close dialog
-    folderName.value = ''
-    isAddFolderOpen.value = false
+    closeAddFolderDialog();
   }
 }
 
 function folderById(uid: string): IDocumentFolder | undefined {
-  return store.folders.find(f => f.uid === uid)
+  return store.folders.find(f => f.uid === uid);
 }
 </script>

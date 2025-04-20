@@ -16,8 +16,8 @@ import { AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables, Ad
 const modal = defineAsyncComponent(
     () => import("@/components/ui/FelModal.vue")
 )
-const FelButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
+const fel-button = defineAsyncComponent(
+  () => import("@/components/ui/buttons/fel-button.vue")
 )
 
 const { withClientMutation, withClientQuery } = useApiUtil()
@@ -176,134 +176,158 @@ const approveResults = () =>
 </script>
 
 <template>
-  <h3 class="flex justify-between items-center">
-    <span class="font-bold">Organisms</span>
-    <button @click="addOrganism()" v-if="analysisResult.status == 'pending'"
-    class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-    :disabled="addingOrganism">
-      add organism
-    </button>
-  </h3>
+  <div class="space-y-6">
+    <div class="bg-background rounded-lg shadow-sm">
+      <div class="p-6 space-y-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-foreground">Organisms</h3>
+          <fel-button 
+            v-if="analysisResult.status == 'pending'"
+            @click="addOrganism()"
+            :disabled="addingOrganism"
+            :color="'primary'"
+          >
+            Add Organism
+          </fel-button>
+        </div>
 
-  <hr class="mt-1" />
+        <div class="border-t border-border" />
 
-  <div class="overflow-x-auto mt-2">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <table class="min-w-full">
-        <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Isolate Number</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Organism Name</th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
-        </thead>
-        <tbody class="bg-background">
-          <tr v-for="(orgResult, idx) in organismResults" :key="orgResult?.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-foreground">#{{ orgResult?.isolateNumber }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div v-if="orgResult?.organism"
-              class="text-sm leading-5 text-primary">{{ orgResult?.organism?.name }}</div>
-              <button v-else
-                class="px-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                @click="pickOrganism(idx)">
-                pick organism
-              </button>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-              <span v-if="orgResult?.organism && !orgResult?.organismUid">
-                <button 
-                class="px-2 py-1 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
-                @click="pickOrganism(idx)">
-                  change
-                </button>
-                <button
-                class="ml-2 px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-                @click="saveOrgResult(orgResult)">
-                  save
-                </button>
-              </span>
-              <span v-if="analysisResult.status == 'pending' && organismResults.length > 1">
-                <button 
-                class="px-2 py-1 border-destructive border text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none"
-                @click="removeOrgResult(orgResult)">
-                  delete
-                </button>
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-border bg-muted/50">
+                <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Isolate Number</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Organism Name</th>
+                <th class="px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr 
+                v-for="(orgResult, idx) in organismResults" 
+                :key="orgResult?.uid"
+                class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
+              >
+                <td class="px-4 py-2">
+                  <span class="text-sm text-foreground">#{{ orgResult?.isolateNumber }}</span>
+                </td>
+                <td class="px-4 py-2">
+                  <span 
+                    v-if="orgResult?.organism"
+                    class="text-sm text-primary"
+                  >
+                    {{ orgResult?.organism?.name }}
+                  </span>
+                  <fel-button 
+                    v-else
+                    @click="pickOrganism(idx)"
+                    :color="'outline'"
+                  >
+                    Pick Organism
+                  </fel-button>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <template v-if="orgResult?.organism && !orgResult?.organismUid">
+                      <fel-button 
+                        @click="pickOrganism(idx)"
+                        :color="'destructive'"
+                      >
+                        Change
+                      </fel-button>
+                      <fel-button 
+                        @click="saveOrgResult(orgResult)"
+                        :color="'primary'"
+                      >
+                        Save
+                      </fel-button>
+                    </template>
+                    <fel-button 
+                      v-if="analysisResult.status == 'pending' && organismResults.length > 1"
+                      @click="removeOrgResult(orgResult)"
+                      :color="'destructive'"
+                    >
+                      Delete
+                    </fel-button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="mt-4">
-    <div class="flex justify-start items-center">
-      <h4 class="font-semibold text-l flex-1 mb-2">Culture</h4>
-      <button type="button" class="bg-primary text-primary-foreground ml-4 px-2 py-1 rounded-sm leading-none">
-        {{ analysisResult.status }}
-      </button>
+    <div class="bg-background rounded-lg shadow-sm p-6 space-y-6">
+      <div class="flex items-center justify-between">
+        <h4 class="text-lg font-semibold text-foreground">Culture</h4>
+        <span 
+          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground"
+        >
+          {{ analysisResult.status }}
+        </span>
+      </div>
+
+      <div class="border-t border-border" />
+
+      <div class="space-y-4">
+        <textarea 
+          v-if="analysisResult.status == 'pending'"
+          v-model="analysisResult.result"
+          rows="4"
+          class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder="Enter culture results..."
+        ></textarea>
+        <p v-else class="text-sm text-muted-foreground">{{ analysisResult.result }}</p>
+
+        <div class="flex justify-end space-x-4">
+          <fel-button 
+            v-if="state.can_submit"
+            @click="submitResults"
+            :color="'primary'"
+          >
+            Submit Results
+          </fel-button>
+          <fel-button 
+            v-if="state.can_approve"
+            @click="approveResults"
+            :color="'primary'"
+          >
+            Approve Results
+          </fel-button>
+        </div>
+      </div>
     </div>
-    <hr>
-    <textarea 
-    v-if="analysisResult.status == 'pending'"
-    name="culture" 
-    id="culture" 
-    class="mt-2 p-2 w-full" 
-    rows="2"
-    v-model="analysisResult.result"></textarea>
-    <p v-else class="py-2 w-full leading italic bg-background p-2">{{ analysisResult.result }}</p>
-  </div>
 
-  <div class="mt-2">
-    <!-- Submit and Verify Section -->
-    <FelButton 
-    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit && sample.status != 'submitting'" 
-    key="submit" 
-    @click.prevent="submitResults" :color="'orange-600'">Submit culture</FelButton>
-
-    <FelButton 
-    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve && sample.status != 'approving'" 
-    key="approve" 
-    @click.prevent="approveResults" :color="'orange-600'">Approve culture</FelButton>
-  </div>
-
-  <!-- Panel Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
-    <template v-slot:header>
-      <h3>Search Organism</h3>
-    </template>
-
-    <template v-slot:body>
-      <form class="">
-        <div class="w-full">
-          <label class="block mb-4">
+    <fel-modal v-if="showModal" @close="showModal = false">
+      <template v-slot:header>
+        <h3 class="text-xl font-semibold text-foreground">Select Organism</h3>
+      </template>
+      
+      <template v-slot:body>
+        <div class="p-6 space-y-6">
+          <div class="flex items-center space-x-4">
             <input
-                v-model="searchOrgText"
-                @input="searchOrganisms"
-                class="form-input mt-1 block w-full"
-                placeholder="Search organisms..."
+              type="text"
+              v-model="searchOrgText"
+              @input="searchOrganisms"
+              placeholder="Search organisms..."
+              class="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
-          </label>
-          <div class="border p-2 h-64 overflow-y-auto">
-              <table class="w-full">
-                <tr v-for="org in organisms" :key="org.uid">
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="text-sm leading-5 text-foreground">{{ org.name }}</div>
-                  </td>
-                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                    <button 
-                    @click="selectOrganism(org)"
-                    class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-                      pick
-                    </button>
-                  </td>
-                </tr>
-              </table>
+          </div>
+
+          <div class="space-y-2">
+            <button
+              v-for="org in organisms"
+              :key="org.uid"
+              @click="selectOrganism(org)"
+              class="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted/50 rounded-md transition-colors duration-200"
+            >
+              {{ org.name }}
+            </button>
           </div>
         </div>
-      </form>
-    </template>
-  </modal>
+      </template>
+    </fel-modal>
+  </div>
 </template>

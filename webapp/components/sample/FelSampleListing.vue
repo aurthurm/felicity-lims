@@ -4,7 +4,7 @@ import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
-import { ifZeroEmpty, parseDate } from "@/utils/helpers";
+import { ifZeroEmpty, parseDate } from "@/utils";
 import { useSampleStore } from "@/stores/sample";
 import { useAnalysisStore } from "@/stores/analysis";
 import useSampleComposable from "@/composables/samples";
@@ -70,20 +70,22 @@ const tableColumns = ref([
     showInToggler: false,
     hidden: false,
     customRender: function (sample, _) {
-      return h("div", [
+      return h("div", { class: "flex items-center gap-2" }, [
         sample.priority! > 1
           ? h(
             "span",
-            { class: [{ "text-destructive": sample.priority! > 1 }] },
+            { class: "text-destructive" },
             h("i", { class: "fa fa-star" })
           )
           : "",
-        sample.status === "stored" ? h("span", h("i", { class: "fa-briefcase" })) : "",
+        sample.status === "stored" 
+          ? h("span", { class: "text-muted-foreground" }, h("i", { class: "fa-briefcase" })) 
+          : "",
       ]);
     },
   },
   {
-    name: "Sampe ID",
+    name: "Sample ID",
     value: "sampleId",
     sortable: true,
     sortBy: "asc",
@@ -97,6 +99,7 @@ const tableColumns = ref([
             sampleUid: sample?.uid,
           },
         },
+        class: "text-primary hover:underline",
         innerHTML: sample?.sampleId,
       });
     },
@@ -601,105 +604,112 @@ const printBarCodes = async () => router.push({
   name: "print-barcodes",
   state: { sampleUids: JSON.stringify(getSampleUids()) }}
 )
-
 </script>
 
 <template>
-  <div class="mb-4 flex justify-start">
-    <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)" to="/patients/search"
-      class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add
-      Laboratory Request</router-link>
+  <div class="rounded-lg border border-border bg-card shadow-sm p-6">
+    <DataTable 
+    :columns="tableColumns" 
+    :data="samples" 
+    :toggleColumns="true" 
+    :loading="fetchingSamples" 
+    :paginable="true"
+      :pageMeta="{
+        fetchCount: sampleParams.first,
+        hasNextPage: samplePageInfo?.hasNextPage,
+        countNone,
+      }" :searchable="true" 
+    :filterable="true" 
+    :filterMeta="{
+      defaultFilter: sampleParams.status,
+      filters: filterOptions,
+    }" 
+    :selectable="true" 
+    :allChecked="allChecked" 
+    @onSearch="filterSamples" 
+    @onPaginate="showMoreSamples"
+    @onCheck="toggleCheck" 
+    @onCheckAll="toggleCheckAll">
+      <template v-slot:footer>
+        <div>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_cancel
+          " @click.prevent="cancelSamples_()"
+            >
+            Cancel
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_reinstate
+          " @click.prevent="reInstateSamples_()"
+            >
+            ReInstate
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_receive
+          " @click.prevent="receiveSamples_()"
+            >
+            Reveive
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_store
+          " @click.prevent="prepareStorages()"
+            >
+            Store
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_recover
+          " @click.prevent="recoverSamples_()"
+            >
+            Recover
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_reject
+          " @click.prevent="prepareRejections()"
+            >
+            Reject
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_copy_to
+          " @click.prevent="cloneSamples_()"
+            >
+            Copy to New
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_download
+          " @click.prevent="impressDownload_()"
+            >
+            Download
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_publish
+          " @click.prevent="publishReports_()"
+            >
+            Publish
+          </fel-button>
+          <fel-button v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_print
+          " @click.prevent="printReports_()"
+            >
+            Print
+          </fel-button>
+          <fel-button 
+            v-show="state.barcodes"
+            @click.prevent="printBarCodes"
+            >
+            Print Barcodes
+          </fel-button>
+        </div>
+      </template>
+    </DataTable>
   </div>
-  <hr />
-  <DataTable :columns="tableColumns" :data="samples" :toggleColumns="true" :loading="fetchingSamples" :paginable="true"
-    :pageMeta="{
-      fetchCount: sampleParams.first,
-      hasNextPage: samplePageInfo?.hasNextPage,
-      countNone,
-    }" :searchable="true" :filterable="true" :filterMeta="{
-  defaultFilter: sampleParams.status,
-  filters: filterOptions,
-}" :selectable="true" :allChecked="allChecked" @onSearch="filterSamples" @onPaginate="showMoreSamples"
-    @onCheck="toggleCheck" @onCheckAll="toggleCheckAll">
-    <template v-slot:footer>
-      <div>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_cancel
-        " @click.prevent="cancelSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Cancel
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_reinstate
-        " @click.prevent="reInstateSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          ReInstate
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_receive
-        " @click.prevent="receiveSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Reveive
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_store
-        " @click.prevent="prepareStorages()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Store
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_recover
-        " @click.prevent="recoverSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Recover
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_reject
-        " @click.prevent="prepareRejections()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Reject
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_copy_to
-        " @click.prevent="cloneSamples_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Copy to New
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_download
-        " @click.prevent="impressDownload_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Download
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_publish
-        " @click.prevent="publishReports_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Publish
-        </button>
-        <button v-show="
-          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-          state.can_print
-        " @click.prevent="printReports_()"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Print
-        </button>
-        <button 
-          v-show="state.barcodes"
-          @click.prevent="printBarCodes"
-          class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-          Print Barcodes
-        </button>
-      </div>
-    </template>
-  </DataTable>
 </template>

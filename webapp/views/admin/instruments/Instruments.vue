@@ -81,126 +81,157 @@
 </script>
 
 <template>
-  <div class="">
-    <div class="container w-full my-4">
-      <hr>
-      <button
-        class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
-        @click="FormManager(true)"
-      > Add Instrument</button>
-      <hr>
-    </div>
-    <hr />
+  <div class="space-y-6">
+    <fel-heading title="Instruments">
+      <fel-button @click="FormManager(true)"> Add Instrument</fel-button>
+    </fel-heading>
 
-    <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <table class="min-w-full">
-          <thead>
+    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
+      <table class="min-w-full divide-y divide-border">
+        <thead>
           <tr>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Name</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Type</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Manufacturer</th>
-              <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Supplier</th>
-              <th class="px-1 py-1 border-b-2 border-border"></th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Type</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Manufacturer</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Supplier</th>
+            <th class="px-4 py-2 text-right text-sm font-medium text-muted-foreground tracking-wider">Actions</th>
           </tr>
-          </thead>
-          <tbody class="bg-background">
-          <tr v-for="inst in instruments" :key="inst?.uid">
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-foreground">{{ inst?.name }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-foreground">{{ inst?.instrumentType?.name }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">{{ inst?.manufacturer?.name }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                <div class="text-sm leading-5 text-primary">{{ inst?.supplier?.name }}</div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                  <button @click="FormManager(false, inst)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
-              </td>
+        </thead>
+        <tbody class="bg-background divide-y divide-border">
+          <tr v-for="inst in instruments" :key="inst?.uid" class="hover:bg-muted/50">
+            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.name }}</td>
+            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.instrumentType?.name }}</td>
+            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.manufacturer?.name }}</td>
+            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.supplier?.name }}</td>
+            <td class="px-4 py-2 whitespace-nowrap text-sm text-right">
+              <button 
+                @click="FormManager(false, inst)" 
+                class="text-primary hover:text-primary/80 focus:outline-none focus:underline"
+                aria-label="Edit instrument"
+              >
+                Edit
+              </button>
+            </td>
           </tr>
-          </tbody>
+        </tbody>
       </table>
-      </div>
+    </div>
   </div>
 
-  </div>
-
-  <!-- AnaltsisProfile Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
-    <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
-    </template>
-
+  <!-- Instrument Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = fasle" :title="formTitle">
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Instrument Name</span>
+      <form @submit.prevent="saveForm()" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2 md:col-span-2">
+            <label for="name" class="block text-sm font-medium text-foreground">
+              Instrument Name
+            </label>
             <input
-              class="form-input mt-1 block w-full"
+              id="name"
               v-model="instrument.name"
-              placeholder="Name ..."
+              type="text"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter instrument name"
             />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">keyword</span>
+          </div>
+          
+          <div class="space-y-2">
+            <label for="keyword" class="block text-sm font-medium text-foreground">
+              Keyword
+            </label>
             <input
-              class="form-input mt-1 block w-full"
+              id="keyword"
               v-model="instrument.keyword"
-              placeholder="Keyword ..."
+              type="text"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter keyword"
             />
-          </label>
-          <label class="block col-span-1 mb-2" >
-            <span class="text-foreground w-4/12">Instrument Type</span>
-            <div class="w-full">
-              <select class="form-select mt-1 w-full" v-model="instrument.instrumentTypeUid">
-                <option></option>
-                <option v-for="instrumentType in instrumentTypes" :key="instrumentType?.uid" :value="instrumentType.uid"> {{ instrumentType?.name }}</option>
-              </select>
-            </div>
-          </label>
-          <label class="block col-span-1 mb-2" >
-            <span class="text-foreground w-4/12">Manufacturer</span>
-            <div class="w-full">
-              <select class="form-select mt-1 w-full" v-model="instrument.manufacturerUid">
-                <option></option>
-                <option v-for="manufacturer in manufacturers" :key="manufacturer?.uid" :value="manufacturer.uid"> {{ manufacturer?.name }}</option>
-              </select>
-            </div>
-          </label>
-          <label class="block col-span-1 mb-2" >
-            <span class="text-foreground w-4/12">Supplier</span>
-            <div class="w-full">
-              <select class="form-select mt-1 w-full" v-model="instrument.supplierUid">
-                <option></option>
-                <option v-for="supplier in suppliers" :key="supplier?.uid" :value="supplier.uid"> {{ supplier?.name }}</option>
-              </select>
-            </div>
-          </label>
-          <label class="block col-span-3 mb-2">
-            <span class="text-foreground">Description</span>
+          </div>
+          
+          <div class="space-y-2">
+            <label for="instrumentType" class="block text-sm font-medium text-foreground">
+              Instrument Type
+            </label>
+            <select
+              id="instrumentType"
+              v-model="instrument.instrumentTypeUid"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">Select instrument type</option>
+              <option 
+                v-for="instrumentType in instrumentTypes" 
+                :key="instrumentType?.uid" 
+                :value="instrumentType.uid"
+              >
+                {{ instrumentType?.name }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="space-y-2">
+            <label for="manufacturer" class="block text-sm font-medium text-foreground">
+              Manufacturer
+            </label>
+            <select
+              id="manufacturer"
+              v-model="instrument.manufacturerUid"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">Select manufacturer</option>
+              <option 
+                v-for="manufacturer in manufacturers" 
+                :key="manufacturer?.uid" 
+                :value="manufacturer.uid"
+              >
+                {{ manufacturer?.name }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="space-y-2">
+            <label for="supplier" class="block text-sm font-medium text-foreground">
+              Supplier
+            </label>
+            <select
+              id="supplier"
+              v-model="instrument.supplierUid"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">Select supplier</option>
+              <option 
+                v-for="supplier in suppliers" 
+                :key="supplier?.uid" 
+                :value="supplier.uid"
+              >
+                {{ supplier?.name }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="space-y-2 md:col-span-2">
+            <label for="description" class="block text-sm font-medium text-foreground">
+              Description
+            </label>
             <textarea
-            cols="2"
-              class="form-input mt-1 block w-full"
+              id="description"
               v-model="instrument.description"
-              placeholder="Description ..."
-            />
-          </label>
+              rows="3"
+              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Enter description"
+            ></textarea>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="flex justify-end pt-6">
+          <button
+            type="submit"
+            class="inline-flex justify-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            {{ formAction ? 'Create' : 'Update' }} Instrument
+          </button>
+        </div>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>

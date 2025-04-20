@@ -94,7 +94,6 @@ const InventoryAdjustments = defineComponent({
     render() {
         return (
             <>
-                <div></div>
                 <DataTable
                     columns={this.tableColumns}
                     data={this.inventoryStore.adjustments}

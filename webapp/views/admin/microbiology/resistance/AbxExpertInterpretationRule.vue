@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { addListsUnique } from '@/utils/helpers';
+import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { IAbxExpertInterpretationRule, IAbxGuideline } from "@/models/microbiology";
 import { GetAbxExpertInterpretationRuleAllDocument, GetAbxExpertInterpretationRuleAllQuery, GetAbxExpertInterpretationRuleAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxExpertInterpretationRuleMutation, AddAbxExpertInterpretationRuleMutationVariables, AddAbxExpertInterpretationRuleDocument, EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables, EditAbxExpertInterpretationRuleDocument } from '@/graphql/operations/microbiology.mutations';
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const DataTable = defineAsyncComponent(
   () => import('@/components/ui/datatable/FelDataTable.vue')
 )
@@ -222,202 +219,111 @@ function saveForm(): void {
 </script>
 
 <template>
+  <fel-heading title="Expert Interpretation Rules">
+    <fel-button @click="FormManager(true)">Add Expert Interpretation Rule</fel-button>
+  </fel-heading>
 
-  <div class="w-full my-4">
-    <!-- <hr>
-    <button @click="FormManager(true)"
-            class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">
-      Add ExpertInterpretationRule
-    </button> -->
-    <hr>
-
+  <div class="rounded-lg bg-card p-6 shadow-sm">
     <DataTable 
-    :columns="tableColumns" 
-    :data="abxExptResPhenotypes" 
-    :toggleColumns="true" 
-    :loading="fetchingExpertInterpretationRules" 
-    :paginable="true"
-    :pageMeta="{
-      fetchCount: abxParams.first,
-      hasNextPage: true,
-      countNone,
-    }" 
-    :searchable="true" 
-    :filterable="false" 
-    @onSearchKeyUp="searchExpertInterpretationRules" 
-    @onSearchFocus="resetExpertInterpretationRule"
-    @onPaginate="showMoreExpertInterpretationRules" 
-    :selectable="false">
-    <template v-slot:footer> </template>
-  </DataTable>
-
+      :columns="tableColumns" 
+      :data="abxExptResPhenotypes" 
+      :toggleColumns="true" 
+      :loading="fetchingExpertInterpretationRules" 
+      :paginable="true"
+      :pageMeta="{
+        fetchCount: abxParams.first,
+        hasNextPage: true,
+        countNone,
+      }" 
+      :searchable="true" 
+      :filterable="false" 
+      @onSearchKeyUp="searchExpertInterpretationRules" 
+      @onSearchFocus="resetExpertInterpretationRule"
+      @onPaginate="showMoreExpertInterpretationRules" 
+      :selectable="false">
+      <template v-slot:footer> </template>
+    </DataTable>
   </div>
 
-  <!-- ExpertInterpretationRule Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <!-- Expert Interpretation Rule Edit Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-4">
-        <!-- Basic Information -->
-        <div class="mb-6">
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Rule Code</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.ruleCode"
-                placeholder="Rule Code"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Description</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.description"
-                placeholder="Description"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Organism Code</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.organismCode"
-                placeholder="Organism Code"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Organism Code Type</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.organismCodeType"
-                placeholder="Organism Code Type"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Rule Criteria</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.ruleCriteria"
-                placeholder="Rule Criteria"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Affected Antibiotics</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.affectedAntibiotics"
-                placeholder="Affected Antibiotics"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Antibiotic Exceptions</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.antibioticExceptions"
-                placeholder="Antibiotic Exceptions"
-              />
-            </label>
-          </div>
-        </div>
-        <!-- Coding Systems -->
-        <div class="mb-6">
-          <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-foreground">Strain</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.strain"
-                placeholder="Strain"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Organism Code</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.organismCode"
-                placeholder="Organism Code"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Organism Code Type</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.organismCodeType"
-                placeholder="Organism Code Type"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Exception Organism Code</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.exceptionOrganismCode"
-                placeholder="Exception Organism Code"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Exception Organism Code Type</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.exceptionOrganismCodeType"
-                placeholder="Exception Organism Code Type"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Abx Code</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.abxCode"
-                placeholder="Abx Code"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Abx Code Type</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.abxCodeType"
-                placeholder="Abx Code Type"
-              />
-            </label>
-            <label class="block">
-              <span class="text-foreground">Antibiotic Exceptions</span>
-              <input
-                class="form-input mt-1 block w-full"
-                v-model="form.antibioticExceptions"
-                placeholder="Antibiotic Exceptions"
-              />
-            </label>
-          </div>
-        </div>
-
-        <!-- Additional Information -->
-        <div class="mb-6">
-          <label class="block">
-            <span class="text-foreground">Comments</span>
-            <textarea
-              class="form-textarea mt-1 block w-full"
-              v-model="form.comments"
-              rows="3"
-              placeholder="Additional comments..."
-            ></textarea>
+      <form class="space-y-6">
+        <div class="grid grid-cols-2 gap-6">
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Rule Code</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.ruleCode" 
+              placeholder="Rule Code ..." />
+          </label>
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Description</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.description" 
+              placeholder="Description ..." />
           </label>
         </div>
 
-        <hr class="my-6"/>
-        
-        <button
-          type="button"
+        <div class="grid grid-cols-2 gap-6">
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Organism Code</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.organismCode" 
+              placeholder="Organism Code ..." />
+          </label>
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Organism Code Type</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.organismCodeType" 
+              placeholder="Organism Code Type ..." />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Rule Criteria</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.ruleCriteria" 
+              placeholder="Rule Criteria ..." />
+          </label>
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Affected Antibiotics</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.affectedAntibiotics" 
+              placeholder="Affected Antibiotics ..." />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Antibiotic Exceptions</span>
+            <input 
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+              v-model="form.antibioticExceptions" 
+              placeholder="Antibiotic Exceptions ..." />
+          </label>
+        </div>
+
+        <hr class="border-border" />
+        <button 
+          type="button" 
           @click.prevent="saveForm()"
-          class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-300 ease-in-out hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
-        >
-          Save ExpertInterpretationRule
+          class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+          Save Form
         </button>
       </form>
     </template>
-  </modal>
-
+  </fel-modal>
 </template>
 
 

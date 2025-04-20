@@ -4,33 +4,15 @@
     () => import('./ReferralLaboratory.vue')
   )
 
-  let currentTab = ref<string>('referral-laboratories');
-  const tabs: string[] = ['referral-laboratories']; 
-
+  const tabs = [
+    {
+      id: 'referral-laboratories',
+      label: 'Referral Laboratories',
+      component: tabReferralLaboratory
+    }
+  ]
  </script>
 
 <template>
-  <div class="mt-4">
-
-        <nav class="bg-background shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-primary hover:text-muted-foreground',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <tab-referral-laboratory v-if="currentTab === 'referral-laboratories'"/>
-
-  </div>
-
+  <fel-tabs :tabs="tabs"></fel-tabs>
 </template>

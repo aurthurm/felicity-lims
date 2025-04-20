@@ -73,41 +73,41 @@
     <div class="container w-full my-4">
         <hr>
           <button @click="FormManager(true)"
-           class="px-2 py-1 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add QC Template</button>
+           class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add QC Template</button>
         <hr>
 
         <div class="overflow-x-auto mt-4">
-            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+            <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
             <table class="min-w-full">
                 <thead>
                 <tr>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">QC Template Name</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Quality Control level(s)</th>
-                    <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Department(s)</th>
-                    <th class="px-1 py-1 border-b-2 border-border"></th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">QC Template Name</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Quality Control level(s)</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Department(s)</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300"></th>
                 </tr>
                 </thead>
-                <tbody class="bg-background">
+                <tbody class="bg-white">
                 <tr v-for="templt in qcTemplates"  :key="templt?.uid">
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                    <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-foreground">{{ templt?.name }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ templt?.name }}</div>
                         </div>
                     </div>
                     </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+                    <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-foreground">{{ levelsNames(templt?.qcLevels ?? []) }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt?.qcLevels ?? []) }}</div>
                         </div>
                     </div>
                     </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-                    <div class="text-sm leading-5 text-primary">{{ templt?.category }}</div>
+                    <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                    <div class="text-sm leading-5 text-sky-800">{{ templt?.category }}</div>
                     </td>
-                    <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
-                        <button @click="FormManager(false, templt)" class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Edit</button>
+                    <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                        <button @click="FormManager(false, templt)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
                     </td>
                 </tr>
                 </tbody>
@@ -126,7 +126,7 @@
       <form action="post" class="p-1">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
-            <span class="text-foreground">QC Template Name</span>
+            <span class="text-gray-700">QC Template Name</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="form.name"
@@ -134,7 +134,7 @@
             />
           </label>
           <label class="block col-span-2 mb-2">
-            <span class="text-foreground">Description</span>
+            <span class="text-gray-700">Description</span>
             <textarea
             cols="2"
               class="form-input mt-1 block w-full"
@@ -143,7 +143,7 @@
             />
           </label>
           <label class="block col-span-2 mb-2">
-              <span class="text-foreground">Quality Control Sample Levels</span>
+              <span class="text-gray-700">Quality Control Sample Levels</span>
               <select 
               name="controlLevels" 
               id="controlLevels" 
@@ -161,7 +161,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -170,4 +170,3 @@
   </modal>
 
 </template>
-

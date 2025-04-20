@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div class="mt-4">
+  <div class="space-y-6">
     <FelTabs :tabs="tabs" initial-tab="laboratory" />
   </div>
 </template>

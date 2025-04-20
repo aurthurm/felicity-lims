@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useApiUtil from '@/composables/api_util'
-import { formatDate, getUserInitials, parseDate} from '@/utils/helpers'
+import { formatDate, getUserInitials, parseDate} from '@/utils'
 import { AddGrindStampDocument, AddGrindStampMutation, AddGrindStampMutationVariables, EditGrindErrandDocument, EditGrindErrandMutation, EditGrindErrandMutationVariables } from '@/graphql/operations/grind.mutations'
 import { GetGrindErrandDocument, GetGrindErrandQuery, GetGrindErrandQueryVariables, GetGrindPostersByBoardDocument, GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables, GetGrindStampByCategoryDocument, GetGrindStampByCategoryQuery, GetGrindStampByCategoryQueryVariables } from '@/graphql/operations/grind.queries'
 import { IGrindErrand, IGrindPoster, IGrindStamp } from '@/models/grind'
@@ -323,278 +323,351 @@ function goBack() {
 </script>
 
 <template>
-    <div class="bg-background rounded-lg shadow" v-if="errand">
-      
-      <!-- Content area with sidebar -->
-      <div class="flex flex-col md:flex-row">
-
-        <!-- Main content -->
-        <div class="flex-1 p-6 border-r">
-            <!-- Header -->
-            <div class="p-2 border-b">
-                <div class="flex justify-between items-center">
-                    <div class="relative w-full">
-                        <button @click="goBack" class="-mt-8 mr-4 text-muted-foreground hover:text-foreground">
-                          <ArrowLeftIcon class="w-5 h-5" />
-                        </button>
-                        <h1 
-                        v-if="!editingTitle" 
-                        @click="startEditingTitle" 
-                        class="text-3xl font-bold text-foreground cursor-pointer hover:bg-background rounded"
-                        >
-                            {{ errand.title }}
-                        </h1>
-                        <input 
-                        v-else 
-                        type="text" 
-                        v-model="errand.title" 
-                        @blur="endEditingTitle" 
-                        @keyup.enter="endEditingTitle"
-                        ref="titleInput"
-                        class="text-2xl font-semibold text-foreground w-full px-2 py-1 border border-border rounded focus:outline-none focus:ring-2 focus:ring-ring"
-                        />
-                    </div>
-                </div>
-                
-                <div class="mt-4 text-xs flex items-center gap-2">
-                    <div class="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-destructive">
-                        {{ getUserInitials(errand.createdBy?.firstName, errand.createdBy?.lastName) }}
-                    </div>
-                    by
-                    <span class="my-1 font-semibold">{{ errand.createdBy?.firstName }} {{ errand.createdBy?.lastName }}</span>
-                    <span class="text-sm text-foreground">on {{ formatDate(errand.createdAt, 'D MMMM YYYY') }}</span>
-                </div>
-                
-                <div class="mt-6 prose" @click="startEditingBody" v-if="!editingBody">
-                    <article v-if="errand.description" class="text-lg text-foreground" v-html="errand.description"></article>
-                </div>
-                
-                <div class="mt-6" v-else>
-                    <div class="main-container min-w-full prose prose-slate">
-                        <p>isLayoutReady : {{ isLayoutReady }}</p>
-                        <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
-                            <div class="editor-container__editor">
-                            <div ref="editorElement">
-                                <ckeditor 
-                                v-if="isLayoutReady" 
-                                v-model="errand.description" 
-                                :editor="editor" 
-                                :config="config"
-                                tag-name="textarea"/>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex gap-2">
-                        <button 
-                        @click="saveDescription" 
-                        class="px-3 py-1 bg-accent text-primary-foreground rounded hover:bg-primary text-sm"
-                        >
-                        Save
-                        </button>
-                        <button 
-                        @click="cancelEditing" 
-                        class="px-3 py-1 bg-muted text-foreground rounded hover:bg-muted text-sm"
-                        >
-                        Cancel
-                        </button>
-                    </div>
-                </div>
+  <div class="bg-background rounded-lg shadow-sm border border-border" v-if="errand">
+    <!-- Content area with sidebar -->
+    <div class="flex flex-col md:flex-row">
+      <!-- Main content -->
+      <div class="flex-1 p-6 border-r border-border">
+        <!-- Header -->
+        <div class="space-y-6 pb-6 border-b border-border">
+          <div class="flex justify-between items-center">
+            <div class="relative w-full">
+              <button 
+                @click="goBack" 
+                class="absolute -left-2 -top-2 p-1 text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                <ArrowLeftIcon class="w-5 h-5" />
+              </button>
+              <h1 
+                v-if="!editingTitle" 
+                @click="startEditingTitle" 
+                class="text-3xl font-bold text-foreground cursor-pointer hover:bg-muted rounded px-2 py-1 transition-colors duration-200"
+              >
+                {{ errand.title }}
+              </h1>
+              <input 
+                v-else 
+                type="text" 
+                v-model="errand.title" 
+                @blur="endEditingTitle" 
+                @keyup.enter="endEditingTitle"
+                ref="titleInput"
+                class="text-2xl font-semibold text-foreground w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background"
+              />
             </div>
-      
-            <!-- Progress Bar -->
-            <div class="flex justify-start items-center gap-x-2 mt-1" v-show="errand?.milestonesAt">
-              <div class="my-2 w-full bg-muted rounded-full h-1 bg-muted">
-                  <div class="bg-success h-1 rounded-full" :style="`width: ${errand?.milestonesAt}%`"></div>
+          </div>
+          
+          <div class="flex items-center space-x-2 text-sm text-muted-foreground">
+            <div class="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-destructive font-medium">
+              {{ getUserInitials(errand.createdBy?.firstName, errand.createdBy?.lastName) }}
+            </div>
+            <span>by</span>
+            <span class="font-medium text-foreground">{{ errand.createdBy?.firstName }} {{ errand.createdBy?.lastName }}</span>
+            <span>on {{ formatDate(errand.createdAt, 'D MMMM YYYY') }}</span>
+          </div>
+          
+          <div class="prose max-w-none" @click="startEditingBody" v-if="!editingBody">
+            <article v-if="errand.description" class="text-lg text-foreground" v-html="errand.description"></article>
+          </div>
+          
+          <div v-else class="space-y-4">
+            <div class="prose max-w-none">
+              <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
+                <div class="editor-container__editor">
+                  <div ref="editorElement">
+                    <ckeditor 
+                      v-if="isLayoutReady" 
+                      v-model="errand.description" 
+                      :editor="editor" 
+                      :config="config"
+                      tag-name="textarea"
+                      class="ck-editor"
+                    />
+                  </div>
+                </div>
               </div>
-              <span class="text-xs">{{ errand?.milestonesAt }}%</span>
             </div>
-            
-            <!-- Tabs -->
-            <div class="border-b border-border">
-                <div class="flex">
-                <button 
-                    @click="activeTab = 'discussions'" 
-                    :class="[
-                    'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'discussions' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
-                    ]"
-                >
-                    Discussions
-                </button>
-                <button 
-                    @click="activeTab = 'milestones'" 
-                    :class="[
-                    'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'milestones' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
-                    ]"
-                >
-                    Milestones
-                </button>
-                <!-- <button 
-                    @click="activeTab = 'activity'" 
-                    :class="[
-                    'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'activity' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
-                    ]"
-                >
-                    Activity Stream
-                </button> -->
-                <button 
-                    @click="activeTab = 'files'" 
-                    :class="[
-                    'py-3 px-4 text-sm font-medium border-b-2 focus:outline-none',
-                    activeTab === 'files' ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'
-                    ]"
-                >
-                    Files
-                </button>
-                </div>
+            <div class="flex space-x-3">
+              <button 
+                @click="saveDescription" 
+                class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+              >
+                Save
+              </button>
+              <button 
+                @click="cancelEditing" 
+                class="px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+              >
+                Cancel
+              </button>
             </div>
-            
-            <!-- Tab Content -->
-            <div class="py-4">
-                <!-- Discussions Tab -->
-                <div v-if="activeTab === 'discussions'" class="space-y-6">
-                  <ErrandDiscussion :errandUid="errand.uid" />
-                </div>
-                
-                <!-- Milestones Tab -->
-                <div v-if="activeTab === 'milestones'" class="space-y-4">
-                  <ErrandMilestone  :errandUid="errand.uid" @milestone-updated="handleMilestoneUpdated" />
-                </div>
-                
-                <!-- Activity Stream Tab -->
-                <!-- <div v-if="activeTab === 'activity'" class="space-y-4">
-                  <ErrandActivity :errandUid="errand.uid"  />
-                </div> -->
-                
-                <!-- Files Tab -->
-                <div v-if="activeTab === 'files'">
-                  <ErrandFile :errandUid="errand.uid"  />
-                </div>
-            </div>
+          </div>
+        </div>
+  
+        <!-- Progress Bar -->
+        <div class="flex items-center space-x-3 mt-6" v-show="errand?.milestonesAt">
+          <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+            <div 
+              class="h-full bg-success rounded-full transition-all duration-300" 
+              :style="`width: ${errand?.milestonesAt}%`"
+            ></div>
+          </div>
+          <span class="text-sm font-medium text-muted-foreground">{{ errand?.milestonesAt }}%</span>
         </div>
         
-        <!-- Sidebar -->
-        <div class="w-full md:w-80 p-6">
-          <div class="space-y-6">
-
-            <!-- Dates -->
+        <!-- Tabs -->
+        <div class="border-b border-border mt-6">
+          <div class="flex space-x-1">
+            <button 
+              @click="activeTab = 'discussions'" 
+              :class="[
+                'py-3 px-4 text-sm font-medium border-b-2 transition-colors duration-200 focus:outline-none',
+                activeTab === 'discussions' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+              ]"
+            >
+              Discussions
+            </button>
+            <button 
+              @click="activeTab = 'milestones'" 
+              :class="[
+                'py-3 px-4 text-sm font-medium border-b-2 transition-colors duration-200 focus:outline-none',
+                activeTab === 'milestones' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+              ]"
+            >
+              Milestones
+            </button>
+            <button 
+              @click="activeTab = 'files'" 
+              :class="[
+                'py-3 px-4 text-sm font-medium border-b-2 transition-colors duration-200 focus:outline-none',
+                activeTab === 'files' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+              ]"
+            >
+              Files
+            </button>
+          </div>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="py-6">
+          <!-- Discussions Tab -->
+          <div v-if="activeTab === 'discussions'" class="space-y-6">
+            <ErrandDiscussion :errandUid="errand.uid" />
+          </div>
+          
+          <!-- Milestones Tab -->
+          <div v-if="activeTab === 'milestones'" class="space-y-6">
+            <ErrandMilestone :errandUid="errand.uid" @milestone-updated="handleMilestoneUpdated" />
+          </div>
+          
+          <!-- Files Tab -->
+          <div v-if="activeTab === 'files'" class="space-y-6">
+            <ErrandFile :errandUid="errand.uid" />
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sidebar -->
+      <div class="w-full md:w-80 p-6 border-l border-border">
+        <div class="space-y-8">
+          <!-- Dates -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Date Range</label>
             <VueDatePicker 
-            class="z-60" 
-            v-model="dateRange" 
-            @update:model-value="handleDate"
-            range 
-            :format="rangeFormat"></VueDatePicker>
+              class="w-full" 
+              v-model="dateRange" 
+              @update:model-value="handleDate"
+              range 
+              :format="rangeFormat"
+            />
+          </div>
 
-            <!-- Status -->
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">Status</label>
-              <multiselect 
-                v-model="errand.poster" 
-                :options="posters" 
-                label="title" 
-                track-by="uid"
-                placeholder="Select status"
-                @update:modelValue="updateStatus"
-              />
-            </div>
-            
-            <!-- Assignee -->
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">Assignee</label>
-              <multiselect 
-                v-model="errand.assignee" 
-                :options="users"
-                track-by="uid"
-                :searchable="true"
-                :custom-label="customLabel"
-                placeholder="Select assignee"
-                @update:modelValue="updateAssignee"
-              >
-              </multiselect>
-            </div>
-            
-            <!-- Reporter -->
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">Reporter</label>
-              <multiselect 
-                v-model="errand.reporter" 
-                :options="users"
-                track-by="uid"
-                :searchable="true"
-                :custom-label="customLabel"
-                placeholder="Select reporter"
-                @update:modelValue="updateReporter"
-              />
-            </div>
-            
-            <!-- Team Members -->
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">Team Members</label>
-              <multiselect 
-                v-model="errand.members" 
-                :options="users"
-                :multiple="true"
-                :searchable="true"
-                :custom-label="customLabel"
-                track-by="uid"
-                placeholder="Select members"
-                @update:modelValue="updateMembers"
-              >
-                <template #tag="{ option, remove }">
-                  <div class="multiselect-tag">
-                    {{ option.firstName }} {{ option.lastName }}
-                    <i class="multiselect-tag-remove" @click="remove(option)">×</i>
-                  </div>
-                </template>
-              </multiselect>
-            </div>
-            
-            <!-- Priority -->
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">Priority</label>
-              <multiselect 
-                v-model="errand.priority" 
-                :options="priorities" 
-                :searchable="false" 
-                :show-labels="false"
-                placeholder="Select priority"
-                @update:modelValue="updatePriority"
-              />
-            </div>
-            
-            <!-- Tags -->
-            <div>
-              <label class="block text-sm font-medium text-foreground mb-1">Tags</label>
-              <multiselect 
-                v-model="errand.stamps" 
-                :options="stamps"
-                :multiple="true"
-                :taggable="true"
-                :searchable="true"
-                track-by="uid"
-                :show-labels="false"
-                placeholder="Select or add tags"
-                @update:modelValue="updateStamps"
-                @tag="addStamp"
-                :custom-label="({title}) => (`${title}`)"
-              >
-                <template #tag="{ option, remove }">
-                  <div class="multiselect-tag">
-                    {{ option.title }}
-                    <i class="multiselect-tag-remove" @click="remove(option)">×</i>
-                  </div>
-                </template>
-              </multiselect>
-            </div>
+          <!-- Status -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Status</label>
+            <multiselect 
+              v-model="errand.poster" 
+              :options="posters" 
+              label="title" 
+              track-by="uid"
+              placeholder="Select status"
+              @update:modelValue="updateStatus"
+              class="multiselect-primary"
+            />
+          </div>
+          
+          <!-- Assignee -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Assignee</label>
+            <multiselect 
+              v-model="errand.assignee" 
+              :options="users"
+              track-by="uid"
+              :searchable="true"
+              :custom-label="customLabel"
+              placeholder="Select assignee"
+              @update:modelValue="updateAssignee"
+              class="multiselect-primary"
+            />
+          </div>
+          
+          <!-- Reporter -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Reporter</label>
+            <multiselect 
+              v-model="errand.reporter" 
+              :options="users"
+              track-by="uid"
+              :searchable="true"
+              :custom-label="customLabel"
+              placeholder="Select reporter"
+              @update:modelValue="updateReporter"
+              class="multiselect-primary"
+            />
+          </div>
+          
+          <!-- Team Members -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Team Members</label>
+            <multiselect 
+              v-model="errand.members" 
+              :options="users"
+              :multiple="true"
+              :searchable="true"
+              :custom-label="customLabel"
+              track-by="uid"
+              placeholder="Select members"
+              @update:modelValue="updateMembers"
+              class="multiselect-primary"
+            >
+              <template #tag="{ option, remove }">
+                <div class="multiselect-tag bg-primary/10 text-primary px-2 py-1 rounded-md text-sm flex items-center space-x-1 hover:bg-primary/20 transition-colors duration-200">
+                  <span>{{ option.firstName }} {{ option.lastName }}</span>
+                  <button 
+                    @click="remove(option)" 
+                    class="text-primary hover:text-primary/80 focus:outline-none transition-colors duration-200"
+                  >
+                    ×
+                  </button>
+                </div>
+              </template>
+            </multiselect>
+          </div>
+          
+          <!-- Priority -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Priority</label>
+            <multiselect 
+              v-model="errand.priority" 
+              :options="priorities" 
+              :searchable="false" 
+              :show-labels="false"
+              placeholder="Select priority"
+              @update:modelValue="updatePriority"
+              class="multiselect-primary"
+            />
+          </div>
+          
+          <!-- Tags -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-foreground">Tags</label>
+            <multiselect 
+              v-model="errand.stamps" 
+              :options="stamps"
+              :multiple="true"
+              :taggable="true"
+              :searchable="true"
+              track-by="uid"
+              :show-labels="false"
+              placeholder="Select or add tags"
+              @update:modelValue="updateStamps"
+              @tag="addStamp"
+              :custom-label="({title}) => (`${title}`)"
+              class="multiselect-primary"
+            >
+              <template #tag="{ option, remove }">
+                <div class="multiselect-tag bg-primary/10 text-primary px-2 py-1 rounded-md text-sm flex items-center space-x-1 hover:bg-primary/20 transition-colors duration-200">
+                  <span>{{ option.title }}</span>
+                  <button 
+                    @click="remove(option)" 
+                    class="text-primary hover:text-primary/80 focus:outline-none transition-colors duration-200"
+                  >
+                    ×
+                  </button>
+                </div>
+              </template>
+            </multiselect>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1.5rem;
+}
 
+.space-y-8 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 2rem;
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
+}
+
+/* Multiselect styling */
+:deep(.multiselect-primary) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__tags) {
+  @apply border-border bg-background text-foreground rounded-md transition-colors duration-200;
+}
+
+:deep(.multiselect-primary .multiselect__tags:focus-within) {
+  @apply ring-2 ring-primary ring-offset-2;
+}
+
+:deep(.multiselect-primary .multiselect__single) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__input) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__option) {
+  @apply bg-background text-foreground hover:bg-muted transition-colors duration-200;
+}
+
+:deep(.multiselect-primary .multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+
+/* CKEditor styling */
+:deep(.ck-editor) {
+  @apply border border-border rounded-md transition-colors duration-200;
+}
+
+:deep(.ck-editor:focus-within) {
+  @apply ring-2 ring-primary ring-offset-2;
+}
+
+:deep(.ck-editor__editable) {
+  @apply bg-background text-foreground min-h-[200px] p-4;
+}
+
+:deep(.ck-toolbar) {
+  @apply bg-muted border-border;
+}
+
+:deep(.ck-button) {
+  @apply text-foreground hover:bg-background transition-colors duration-200;
+}
+
+:deep(.ck-button.ck-on) {
+  @apply bg-primary text-primary-foreground;
+}
 </style>

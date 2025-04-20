@@ -4,9 +4,6 @@ import { useRoute } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
 import { IPatient } from "@/models/patient";
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
 const PatientForm = defineAsyncComponent(
   () => import("@/components/person/PatientForm.vue")
 )
@@ -27,20 +24,20 @@ const updatePatient = (res: IPatient) => {
 </script>
 
 <template>
-  <div class="">
+  <div class="space-y-6">
     <PatientInfo @editPatient="() => (showModal = true)" />
     <router-view />
   </div>
 
   <!-- Patient Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
-      <h3>Patient Form</h3>
+      <h3 class="text-xl font-semibold text-foreground">Patient Form</h3>
     </template>
 
     <template v-slot:body>
       <PatientForm :patient="patientStore.patient" :navigate="false" @close="updatePatient" />
     </template>
-  </modal>
+  </fel-modal>
 </template>
 

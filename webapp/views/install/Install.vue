@@ -4,9 +4,6 @@ import axios from "@/composables/axios";
 import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
 import { object, string } from "yup";
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 
 const router = useRouter();
 const loading = ref(false);
@@ -39,8 +36,8 @@ const initInstall = handleSubmit((values) => {
 
 <template>
   <div class="flex justify-center items-center h-screen bg-primary px-6">
-    <div class="p-6 max-w-sm w-full bg-background shadow-md rounded-sm">
-      <div class="flex justify-center items-center">
+    <div class="p-6 max-w-sm w-full bg-background shadow-md rounded-md border border-border">
+      <div class="flex justify-center items-center space-x-3">
         <svg
           class="h-10 w-10"
           viewBox="0 0 512 512"
@@ -63,31 +60,42 @@ const initInstall = handleSubmit((values) => {
         <span class="text-foreground font-semibold text-2xl">Install Felicity LIMS</span>
       </div>
 
-      <form class="mt-4" @submit.prevent="initInstall">
-        <label class="block">
-          <span class="text-foreground text-sm">Laboratory Name</span>
+      <form class="mt-6 space-y-4" @submit.prevent="initInstall">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-foreground">Laboratory Name</label>
           <input
             type="text"
-            class="form-input mt-1 block w-full rounded-sm focus:border-primary"
+            class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
             v-model="name"
             :disabled="loading"
+            placeholder="Enter laboratory name"
           />
-          <div class="text-destructive w-4/12">{{ errors.name }}</div>
-        </label>
+          <div v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</div>
+        </div>
 
-        <div class="mt-6">
+        <div class="pt-4">
           <button
             v-if="!loading"
             type="submit"
-            class="py-2 px-4 text-center bg-primary rounded-sm w-full text-primary-foreground text-sm hover:bg-primary"
+            class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
           >
             Install
           </button>
           <div v-else class="text-center">
-            <LoadingMessage message="Installing felicity lims ..." />
+            <fel-loader message="Installing felicity lims ..." />
           </div>
         </div>
       </form>
     </div>
   </div>
 </template>
+
+<style scoped>
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
+}
+</style>

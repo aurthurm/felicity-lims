@@ -48,11 +48,14 @@ const configs = ref([
 </script>
 
 <template>
-  <div class="w-full my-4">
-    <ul class="grid grid-cols-12 gap-4 my-2.5">
-      <item-setting v-for="setting in configs" :key="setting.path" :title="setting.title" :path="setting.path"
-                    :icon="setting.icon"/>
-    </ul>
-    <hr/>
+  <div class="grid grid-cols-4 gap-4">
+    <div v-for="setting in configs" class="col-span-1">
+      <item-setting 
+      :key="setting.path" 
+      :title="setting.title" 
+      :path="setting.path"
+      :icon="setting.icon"
+      />
+    </div>
   </div>
 </template>

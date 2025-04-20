@@ -45,18 +45,18 @@ const getComponent = (sectionId: string): any => {
   <div class="flex w-full h-full mt-4">
     <!-- Sidebar -->
     <aside class="w-48 sticky top-0">
-      <nav class="p-4">
-        <h2 v-if="!hideTitle" class="text-lg font-semibold text-foreground mb-4">{{ title }}</h2>
-        <hr class="my-1">
-        <ul class="space-y-2">
+      <nav class="p-4 bg-card rounded-lg">
+        <h2 v-if="!hideTitle" class="text-lg font-semibold text-card-foreground mb-4">{{ title }}</h2>
+        <div class="h-px bg-border my-4"></div>
+        <ul class="space-y-1">
           <li v-for="item in items" :key="item.id">
             <button 
               @click="updateCurrentSection(item.id)" 
               :class="[
-                'w-full text-left p-2  transition-colors duration-150 flex items-center gap-2',
+                'w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2',
                 {
                   'bg-primary text-primary-foreground': modelValue === item.id,
-                  'text-foreground hover:bg-secondary': modelValue !== item.id,
+                  'text-muted-foreground hover:bg-accent hover:text-accent-foreground': modelValue !== item.id,
                 },
               ]"
             >
@@ -69,7 +69,7 @@ const getComponent = (sectionId: string): any => {
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8 bg-background">
+    <main class="flex-1 p-8 bg-background rounded-lg">
       <!-- Render component if available -->
       <component
         v-if="shouldRenderComponent(modelValue)"

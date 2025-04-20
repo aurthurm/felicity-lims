@@ -246,7 +246,7 @@ const InventoryOrders = defineComponent({
                     onOnPaginate={x => this.showMoreStockOrders(x)}
                 ></DataTable>
                 {/* Drawer */}
-                <Drawer contentWidth="w-1/2"
+                <fel-drawer contentWidth="w-1/2"
                 show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => `Order: ${this.slectedStockOrder?.order.orderNumber}`,
@@ -454,7 +454,7 @@ const InventoryOrders = defineComponent({
                         ),
                         footer: () => [],
                     }}
-                </Drawer>
+                </fel-drawer>
             </div>
         );
     },

@@ -11,9 +11,6 @@ import { useStorageStore } from "@/stores/storage";
 import { useSetupStore } from "@/stores/setup";
 import { useUserStore } from "@/stores/user";
 import { defineAsyncComponent, ref } from "vue";
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 
 const emit = defineEmits(["close"])
 
@@ -117,165 +114,238 @@ const updateQuantityReceived = () => {
 </script>
 
 <template>
-  <form @submit.prevent="submitStockForm" class="rounded-sm py-2" autocomplete="off" :inert="addingProduct">
-    {{ errors }}
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Reveice Type</span>
-      <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="receiptType">
+  <form @submit.prevent="submitStockForm" class="rounded-md py-4 space-y-4" autocomplete="off" :inert="addingProduct">
+    <div v-if="Object.keys(errors).length > 0" class="p-3 bg-destructive/10 text-destructive rounded-md mb-4">
+      <p class="text-sm font-medium">Please correct the following errors:</p>
+      <ul class="mt-2 list-disc list-inside text-sm">
+        <li v-for="(error, key) in errors" :key="key">{{ error }}</li>
+      </ul>
+    </div>
+    
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Receipt Type</label>
+      <select 
+        class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+        v-model="receiptType"
+        aria-label="Receipt Type"
+      >
         <option value="null"></option>
         <option value="purchase">Purchased</option>
         <option value="pushed">Pushed</option>
         <option value="transfer_in">Transfer In</option>
       </select>
-    </label>
-    <div class="text-destructive w-4/12">{{ errors.receiptType }}</div>
+      <div v-if="errors.receiptType" class="text-sm text-destructive">{{ errors.receiptType }}</div>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Stock Item</span>
-      <div class="w-full col-span-4">
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Stock Item</label>
+      <div class="w-full">
         <VueMultiselect 
-        placeholder="Select a Stock Item" 
-        v-model="stockItemVariant" 
-        :options="stockItems"
-        :searchable="true" 
-        track-by="uid"
-        :customLabel="customLabel"
-        @search-change="findProduct">
-        <!-- <template v-slot:option="slotProps">
-          {{ `${slotProps.option?.stockItem?.name} ${slotProps.option?.name}` }}
-        </template> -->
+          placeholder="Select a Stock Item" 
+          v-model="stockItemVariant" 
+          :options="stockItems"
+          :searchable="true" 
+          track-by="uid"
+          :customLabel="customLabel"
+          @search-change="findProduct"
+          class="multiselect-primary"
+        >
         </VueMultiselect>
-        <div class="text-destructive w-4/12">{{ errors.stockItemVariantUid }}</div>
+        <div v-if="errors.stockItemVariantUid" class="text-sm text-destructive">{{ errors.stockItemVariantUid }}</div>
       </div>
-    </label>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Supplier</span>
-      <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="supplierUid">
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Supplier</label>
+      <select 
+        class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+        v-model="supplierUid"
+        aria-label="Supplier"
+      >
         <option value="null"></option>
         <option v-for="supplier in setupStore.suppliers" :key="supplier.uid" :value="supplier.uid">
           {{ supplier.name }}
         </option>
       </select>
-    </label>
-    <div class="text-destructive w-4/12">{{ errors.supplierUid }}</div>
+      <div v-if="errors.supplierUid" class="text-sm text-destructive">{{ errors.supplierUid }}</div>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Unit (Single)</span>
-      <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="unitUid">
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Unit (Single)</label>
+      <select 
+        class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+        v-model="unitUid"
+        aria-label="Unit"
+      >
         <option value="null"></option>
         <option v-for="unit in inventoryStore.units" :key="unit.uid" :value="unit.uid">
           {{ unit.name }}
         </option>
       </select>
-    </label>
-    <div class="text-destructive w-4/12">{{ errors.unitUid }}</div>
+      <div v-if="errors.unitUid" class="text-sm text-destructive">{{ errors.unitUid }}</div>
+    </div>
 
-    <!-- <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Store Room</span>
-      <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="storeRoomUid">
-        <option value="null"></option>
-        <option v-for="storeRoom in storageStore.storeRooms" :key="storeRoom.uid" :value="storeRoom.uid">
-          {{ storeRoom.name }}
-        </option>
-      </select>
-    </label>
-    <div class="text-destructive w-4/12">{{ errors.storeRoomUid }}</div> -->
-
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Lot Number</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" v-model="lotNumber" placeholder="Lot Number..." />
-        <div class="text-destructive w-4/12">{{ errors.lotNumber }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Lot Number</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          v-model="lotNumber" 
+          placeholder="Lot Number..." 
+        />
+        <div v-if="errors.lotNumber" class="text-sm text-destructive">{{ errors.lotNumber }}</div>
       </div>
-    </label>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Packages Received</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" type="number" v-model="packagesReceived"
-          placeholder="Quantity Received..." @keyup="updateQuantityReceived" @focus="(e: any) => (e.target.select())"/>
-        <div class="text-destructive w-4/12">{{ errors.packagesReceived }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Packages Received</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          type="number" 
+          v-model="packagesReceived"
+          placeholder="Quantity Received..." 
+          @keyup="updateQuantityReceived" 
+          @focus="(e: any) => (e.target.select())"
+        />
+        <div v-if="errors.packagesReceived" class="text-sm text-destructive">{{ errors.packagesReceived }}</div>
       </div>
-    </label>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Package Factor</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" type="number" v-model="packageFactor"
-          placeholder="Quantity Received..."  @keyup="updateQuantityReceived" @focus="(e: any) => (e.target.select())" />
-        <div class="text-destructive w-4/12">{{ errors.packageFactor }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Package Factor</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          type="number" 
+          v-model="packageFactor"
+          placeholder="Package Factor..." 
+          @keyup="updateQuantityReceived" 
+          @focus="(e: any) => (e.target.select())" 
+        />
+        <div v-if="errors.packageFactor" class="text-sm text-destructive">{{ errors.packageFactor }}</div>
       </div>
-    </label>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Singles Received</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" type="number" v-model="singlesReceived"
-          placeholder="Quantity Received..." @keyup="updateQuantityReceived" @focus="(e: any) => (e.target.select())" />
-        <div class="text-destructive w-4/12">{{ errors.singlesReceived }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Singles Received</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          type="number" 
+          v-model="singlesReceived"
+          placeholder="Quantity Received..." 
+          @keyup="updateQuantityReceived" 
+          @focus="(e: any) => (e.target.select())" 
+        />
+        <div v-if="errors.singlesReceived" class="text-sm text-destructive">{{ errors.singlesReceived }}</div>
       </div>
-    </label>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Quantity Received</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" type="number" v-model="quantityReceived" disabled/>
-        <div class="text-destructive w-4/12">{{ errors.quantityReceived }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Quantity Received</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-muted border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          type="number" 
+          v-model="quantityReceived" 
+          disabled
+        />
+        <div v-if="errors.quantityReceived" class="text-sm text-destructive">{{ errors.quantityReceived }}</div>
       </div>
-    </label>
+    </div>
 
-    <!-- <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Unit Price</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" type="number" v-model="unitPrice" placeholder="Size..." />
-        <div class="text-destructive w-4/12">{{ errors.unitPrice }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Expiry Date</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          type="date" 
+          v-model="expiryDate" 
+          placeholder="Expiry Date" 
+        />
+        <div v-if="errors.expiryDate" class="text-sm text-destructive">{{ errors.expiryDate }}</div>
       </div>
-    </label>
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Total Price</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 block w-full" type="number" v-model="totalPrice"
-          placeholder="Quantity Received..." />
-        <div class="text-destructive w-4/12">{{ errors.totalPrice }}</div>
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Received Date</label>
+      <div class="w-full">
+        <input 
+          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+          type="date" 
+          v-model="receiptDate" 
+          placeholder="Received Date" 
+        />
+        <div v-if="errors.receiptDate" class="text-sm text-destructive">{{ errors.receiptDate }}</div>
       </div>
-    </label> -->
+    </div>
 
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Expiry Date</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 w-full" type="date" v-model="expiryDate" placeholder="Expiry Date" />
-        <div class="text-destructive w-4/12">{{ errors.expiryDate }}</div>
-      </div>
-    </label>
-
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Received Date</span>
-      <div class="w-full col-span-4">
-        <input class=" form-input mt-1 w-full" type="date" v-model="receiptDate" placeholder="Expiry Date" />
-        <div class="text-destructive w-4/12">{{ errors.receiptDate }}</div>
-      </div>
-    </label>
-
-    <label class="mt-2 grid grid-cols-6 whitespace-nowrap w-full">
-      <span class="col-span-2 text-foreground w-4/12">Received By</span>
-      <select class="col-span-4 form-select ml-1 mt-1 w-full" v-model="receiptByUid">
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-foreground">Received By</label>
+      <select 
+        class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+        v-model="receiptByUid"
+        aria-label="Received By"
+      >
         <option value="null"></option>
         <option v-for="user in userStore.users" :key="user.uid" :value="user.uid">
           {{ user.firstName }} {{ user.lastName }}
         </option>
       </select>
-    </label>
-    <div class="text-destructive w-4/12">{{ errors.receiptByUid }}</div>
+      <div v-if="errors.receiptByUid" class="text-sm text-destructive">{{ errors.receiptByUid }}</div>
+    </div>
     
-    <hr class="my-4" />
+    <div class="border-t border-border my-6"></div>
 
-    <button type="submit"
-      class="-mb-4 w-1/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-      v-show="!addingProduct">
-      Save
-    </button>
-    <LoadingMessage message="Adding Inventory ..." v-show="addingProduct" />
+    <div class="flex justify-end">
+      <button 
+        type="submit"
+        class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+        v-show="!addingProduct"
+      >
+        Save
+      </button>
+      <fel-loader message="Adding Inventory ..." v-show="addingProduct" />
+    </div>
   </form>
 </template>
+
+<style scoped>
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
+}
+
+/* Multiselect styling */
+:deep(.multiselect-primary) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__tags) {
+  @apply border-border bg-background text-foreground rounded-md transition-colors duration-200;
+}
+
+:deep(.multiselect-primary .multiselect__tags:focus-within) {
+  @apply ring-2 ring-primary ring-offset-2;
+}
+
+:deep(.multiselect-primary .multiselect__single) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__input) {
+  @apply bg-background text-foreground;
+}
+
+:deep(.multiselect-primary .multiselect__option) {
+  @apply bg-background text-foreground hover:bg-muted transition-colors duration-200;
+}
+
+:deep(.multiselect-primary .multiselect__option--highlight) {
+  @apply bg-primary text-primary-foreground;
+}
+</style>

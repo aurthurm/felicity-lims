@@ -152,29 +152,39 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav id="main-nav" class="flex items-center px-6 bg-primary shadow-md" role="navigation" aria-label="Main Navigation">
+  <nav 
+    id="main-nav" 
+    class="flex items-center px-6 bg-primary border-b border-border " 
+    role="navigation" 
+    aria-label="Main Navigation"
+  >
     <!-- Brand and menu section -->
     <div class="flex-1">
       <div class="flex text-right align-middle">
         <!-- Logo and brand name -->
-        <router-link to="/" id="brand" class="flex items-center md:w-auto text-primary-foreground" aria-label="Felicity LIMS Home">
+        <router-link 
+          to="/" 
+          id="brand" 
+          class="flex items-center md:w-auto text-primary-foreground hover:text-primary transition-colors" 
+          aria-label="Felicity LIMS Home"
+        >
           <Logo />
-          <h1 class="text-left text-2xl font-medium mx-2 transition-all duration-500">Felicity LIMS</h1>
+          <h1 class="text-left text-2xl font-medium mx-2">Felicity LIMS</h1>
         </router-link>
 
-        <span class="mx-8 border-l-2 border-border my-2" aria-hidden="true"></span>
+        <span class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
         
         <!-- Main menu dropdown trigger -->
         <button 
           @click="menuOpen = !menuOpen" 
-          class="hidden md:flex md:items-center focus:outline-none rounded p-1"
+          class="hidden md:flex md:items-center focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md p-2"
           :aria-expanded="menuOpen"
           aria-controls="main-menu"
         >
-          <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Menu</span>
+          <span class="text-primary-foreground text-xl font-medium mr-2">Menu</span>
           <font-awesome-icon 
             :icon="menuOpen ? 'chevron-up' : 'chevron-down'" 
-            class="text-muted-foreground transition-transform" 
+            class="text-muted-foreground transition-transform duration-200" 
             aria-hidden="true" 
           />
         </button>
@@ -183,7 +193,7 @@ onMounted(() => {
         <div 
           v-show="menuOpen" 
           id="main-menu"
-          class="absolute left-64 top-12 mt-1 p-4 w-1/2 bg-primary rounded-sm shadow-xl z-20"
+          class="absolute left-64 top-12 mt-1 p-4 w-1/2 bg-primary rounded-md shadow-lg border border-border z-20"
           @click.away="menuOpen = false"
         >
           <div 
@@ -197,14 +207,14 @@ onMounted(() => {
               v-show="guards.canAccessPage(item.guard)" 
               :to="item.route" 
               :id="`${item.id}-link`"
-              class="flex items-center mt-1 py-2 px-6 text-primary-foreground hover:bg-secondary hover:bg-opacity-25 hover:text-primary-foreground rounded transition-colors focus:outline-none"
+              class="flex items-center py-2 px-4 text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               role="menuitem"
               @click="menuOpen = false"
             >
               <span class="mr-4" aria-hidden="true">
                 <font-awesome-icon :icon="item.icon" />
               </span>
-              <span class="text-xl font-bold uppercase">{{ item.label }}</span>
+              <span class="text-lg font-medium">{{ item.label }}</span>
             </router-link>
           </div>
         </div>
@@ -212,94 +222,48 @@ onMounted(() => {
     </div>
 
     <!-- User section and actions -->
-    <div class="flex items-center">
+    <div class="flex items-center space-x-4">
       <!-- Errors button -->
       <button
         v-if="errors.length > 0"
-        class="no-underline text-primary-foreground opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-border transition-opacity focus:outline-none rounded"
+        class="flex items-center px-4 py-2 text-primary-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
         @click="showErrors = true"
         aria-label="Show errors"
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
-        <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Errors</span>
-        <span class="bg-destructive text-primary-foreground text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
+        <span class="text-lg font-medium mr-2">Errors</span>
+        <span class="bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
       </button>
       
-      <span v-if="errors.length > 0" class="mx-4 border-l-2 border-border" aria-hidden="true"></span>
+      <span v-if="errors.length > 0" class="border-l border-border h-6" aria-hidden="true"></span>
 
       <!-- Notifications button -->
       <button
-        class="no-underline text-primary-foreground opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-border transition-opacity focus:outline-none rounded"
+        class="flex items-center px-4 py-2 text-primary-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
         @click="toggleNotifications(true)"
         aria-label="Show notifications"
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
-        <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Notifications</span>
+        <span class="text-lg font-medium">Notifications</span>
       </button>
       
-      <span class="mx-4 border-l-2 border-border" aria-hidden="true"></span>
+      <span class="border-l border-border h-6" aria-hidden="true"></span>
 
       <!-- Admin settings link -->
       <router-link 
         v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)" 
         to="/admin"
-        class="no-underline text-primary-foreground opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 hover:border-border transition-opacity focus:outline-none rounded"
+        class="flex items-center px-4 py-2 text-primary-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
         aria-label="Settings"
       >
         <font-awesome-icon icon="cog" class="mr-2" aria-hidden="true" />
-        <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">Settings</span>
+        <span class="text-lg font-medium">Settings</span>
       </router-link>
-      
-      <span class="mx-4 border-l-2 border-border" aria-hidden="true"></span>
-
-      <!-- User profile section -->
-      <div class="px-4 flex text-right align-middle relative">
-        <span
-          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-border hover:border-border text-primary-foreground"
-          aria-hidden="true"
-        >
-          <font-awesome-icon icon="user" />
-        </span>
-        
-        <!-- User menu dropdown -->
-        <div class="relative">
-          <button 
-            @click="dropdownOpen = !dropdownOpen" 
-            class="hidden md:flex md:items-center ml-2 focus:outline-none rounded p-1"
-            :aria-expanded="dropdownOpen"
-            aria-controls="user-menu"
-          >
-            <span class="text-primary-foreground text-xl font-bold mr-2 uppercase">{{ userFullName }}</span>
-            <font-awesome-icon 
-              :icon="dropdownOpen ? 'chevron-up' : 'chevron-down'" 
-              class="text-muted-foreground transition-transform" 
-              aria-hidden="true" 
-            />
-          </button>
-
-          <!-- User dropdown menu -->
-          <div 
-            v-show="dropdownOpen" 
-            id="user-menu"
-            class="absolute right-0 top-11 py-2 w-48 bg-primary rounded-sm shadow-xl z-20"
-            @click.away="dropdownOpen = false"
-          >
-            <button 
-              @click="authStore.logout()"
-              class="w-full text-left cursor-pointer py-2 px-4 text-primary-foreground opacity-80 flex items-center border-b border-transparent hover:bg-secondary hover:bg-opacity-25 hover:text-primary-foreground uppercase transition-colors focus:outline-none"
-              role="menuitem"
-            >
-              <font-awesome-icon icon="sign-out-alt" class="mr-2" aria-hidden="true" />
-              Log out
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </nav>
 
   <!-- Error drawer -->
-  <Drawer :show="showErrors" @close="showErrors = false">
+  <fel-drawer :show="showErrors" @close="showErrors = false">
     <template v-slot:header>
       <div class="flex items-center justify-between">
         <h3 class="font-semibold text-lg">Errors List</h3>
@@ -328,5 +292,5 @@ onMounted(() => {
         </li>
       </ul>
     </template>
-  </Drawer>
+  </fel-drawer>
 </template>

@@ -5,9 +5,6 @@ import { useSampleStore } from "@/stores/sample";
 import { useShipmentStore } from "@/stores/shipment";
 import useShipmentComposable from "@/composables/shipment";
 import {  ISample } from "@/models/analysis";
-const LoadingMessage = defineAsyncComponent(
-  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
-)
 
 const shipmentStore = useShipmentStore();
 const sampleStore = useSampleStore();
@@ -92,176 +89,145 @@ function areAllChecked(): Boolean {
 </script>
 
 <template>
-  <div class="overflow-x-auto mt-4">
-    <form action="post" class="p-1" v-motion-slide-left>
-      <div class="flex justify-start mb-4">
-        <label class="flex justify-between items-center">
-          <span class="text-foreground mr-2 whitespace-nowrap">Sample Type</span>
-          <select
-            name="analyses_uids"
-            v-model="filterForm.sampleTypeUid"
-            class="form-input mt-1 block w-full py-1"
-          >
-            <option
-              v-for="sampleType in sampleStore.sampleTypes"
-              :key="sampleType.uid"
-              :value="sampleType.uid"
+  <div class="space-y-6">
+    <form action="post" class="space-y-4" v-motion-slide-left>
+      <div class="flex flex-wrap gap-4 items-end">
+        <div class="flex-1 min-w-[200px]">
+          <label class="block space-y-1.5">
+            <span class="text-sm font-medium leading-none">Sample Type</span>
+            <select
+              name="analyses_uids"
+              v-model="filterForm.sampleTypeUid"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              {{ sampleType.name }}
-            </option>
-          </select>
-        </label>
-        <!-- <label class="flex justify-between items-center ml-6">
-          <span class="text-foreground mr-2">Analyses</span>
-          <select
-            name="analyses_uids"
-            v-model="filterForm.analysisUid"
-            class="form-input mt-1 block w-full py-1"
-          >
-            <option
-              v-for="service in analysisStore.analysesServices"
-              :key="service.uid"
-              :value="service.uid"
-            >
-              {{ service.name }}
-            </option>
-          </select>
-        </label> -->
-        <div class="ml-6 mt-2">
+              <option
+                v-for="sampleType in sampleStore.sampleTypes"
+                :key="sampleType.uid"
+                :value="sampleType.uid"
+              >
+                {{ sampleType.name }}
+              </option>
+            </select>
+          </label>
+        </div>
+
+        <div>
           <FButton
             v-show="true"
             @click.prevent="filterSamples()"
             :color="'sky-800'"
-            class="p-1"
-            >Apply Filters</FButton
+            class="h-10 px-4"
           >
+            Apply Filters
+          </FButton>
         </div>
       </div>
     </form>
-  </div>
 
-  <div class="overflow-x-auto mt-4">
-    <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-    >
-      <div v-if="shipmentStore.fetchingSamples" class="py-4 text-center">
-        <LoadingMessage message="Fetching samples ..." />
+    <div class="rounded-md border border-border">
+      <div class="overflow-x-auto">
+        <div v-if="shipmentStore.fetchingSamples" class="p-4 text-center">
+          <fel-loader message="Fetching samples ..." />
+        </div>
+        <table class="w-full" v-else>
+          <thead>
+            <tr class="border-b border-border bg-muted/50">
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">
+                <input 
+                  type="checkbox" 
+                  @change="toggleCheckAll" 
+                  v-model="allChecked"
+                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                />
+              </th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"></th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample ID</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample Type</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Client Sample ID</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Analysis</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Created</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Received</th>
+              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border" v-motion-slide-right>
+            <tr v-for="sample in shipmentStore.samples" :key="sample?.uid" class="hover:bg-muted/50">
+              <td class="p-4 align-middle">
+                <input
+                  type="checkbox"
+                  v-model="sample.checked"
+                  @change="checkCheck(sample)"
+                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                />
+              </td>
+              <td class="p-4 align-middle"></td>
+              <td class="p-4 align-middle">
+                <div class="text-sm font-medium text-foreground">
+                  {{ sample?.sampleId }}
+                </div>
+              </td>
+              <td class="p-4 align-middle">
+                <div class="text-sm font-medium text-foreground">
+                  {{ sample?.sampleType?.name }}
+                </div>
+              </td>
+              <td class="p-4 align-middle">
+                <div class="text-sm font-medium text-foreground">
+                  {{ sample?.analysisRequest?.clientRequestId }}
+                </div>
+              </td>
+              <td class="p-4 align-middle">
+                <div class="text-sm text-foreground">
+                  <ul class="space-y-2">
+                    <li 
+                      v-for="analyte in sample?.analysisResults" 
+                      :key="analyte.uid"
+                      class="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        v-model="analyte.checked"
+                        class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                        :disabled="!sample.checked"
+                      />
+                      <span class="flex-1">{{ analyte?.analysis?.name }}</span>
+                      <span class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                        {{ analyte?.status }}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+              <td class="p-4 align-middle">
+                <div class="text-sm text-foreground">
+                  {{ sample?.createdAt }}
+                </div>
+              </td>
+              <td class="p-4 align-middle">
+                <div class="text-sm text-foreground">
+                  {{ sample?.dateReceived }}
+                </div>
+              </td>
+              <td class="p-4 align-middle">
+                <span class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                  {{ sample?.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <table class="min-w-full" v-else>
-        <thead>
-          <tr>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
-              <input type="checkbox" @change="toggleCheckAll" v-model="allChecked" />
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            ></th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
-              Sample ID
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
-              Sample Type
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
-              Client Sample ID
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
-              Analysis
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
-              Date Created
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
-              Date Received
-            </th>
-            <th
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
-              Status
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-background" v-motion-slide-right>
-          <tr v-for="sample in shipmentStore.samples" :key="sample?.uid">
-            <td>
-              <input
-                type="checkbox"
-                v-model="sample.checked"
-                @change="checkCheck(sample)"
-              />
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary font-semibold">
-                {{ sample?.sampleId }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary font-semibold">
-                {{ sample?.sampleType?.name }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary font-semibold">
-                {{ sample?.analysisRequest?.clientRequestId }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                <ul>
-                  <li 
-                  class="flex justify-start items-center"
-                  v-for="analyte in sample?.analysisResults" :key="analyte.uid">
-                    <input
-                      type="checkbox"
-                      v-model="analyte.checked"
-                      class="mr-2"
-                      :disabled="!sample.checked"
-                    />
-                    <span>{{ analyte?.analysis?.name }}</span>
-                    <span>{{ analyte?.status }}</span>
-                  </li>
-                </ul>
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ sample?.createdAt }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ sample?.dateReceived }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
-              <div class="text-sm leading-5 text-primary">
-                {{ sample?.status }}
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
-  </div>
 
-  <section class="my-4">
-    <FButton v-show="true" @click.prevent="assignToShipment" :color="'orange-600'"
-      >Assign Samples</FButton
-    >
-  </section>
+    <section class="flex justify-end">
+      <FButton 
+        v-show="true" 
+        @click.prevent="assignToShipment" 
+        :color="'orange-600'"
+        class="h-10 px-4"
+      >
+        Assign Samples
+      </FButton>
+    </section>
+  </div>
 </template>

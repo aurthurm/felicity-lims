@@ -1,13 +1,15 @@
 <template>
-    <label class="flex justify-between items-center">
-      <span class="text-foreground mr-2">{{ label }}</span>
+    <label class="flex flex-col space-y-2">
+      <span class="text-sm font-medium text-foreground">{{ label }}</span>
       <select
         :name="name"
         v-model="modelValue"
-        class="form-input mt-1 block w-full py-1 disabled:opacity-50"
+        class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground 
+               placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring 
+               disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="disabled"
       >
-        <option v-for="(option, idx) in options" :key="idx" :value="option.value">
+        <option v-for="(option, idx) in options" :key="idx" :value="option.value" class="bg-background text-foreground">
           {{ option.label }}
         </option>
       </select>
