@@ -53,6 +53,7 @@ import {
     faQuestion,
     faRobot,
     faScaleBalanced,
+    faSignOutAlt,
     faSort,
     faStar,
     faTablets,
@@ -92,7 +93,7 @@ const icons = [
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
     faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH, faTablets, faScaleBalanced, faLifeRing,
     faBacteria, faCircleDot, faPills, faExclamationCircle, faRobot, faProjectDiagram, faFile, faStar,
-    faColumns, faTrashAlt, faChevronUp
+    faColumns, faTrashAlt, faChevronUp, faSignOutAlt
 ]
 library.add(...icons);
 

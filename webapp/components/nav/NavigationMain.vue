@@ -181,7 +181,7 @@ onMounted(() => {
           :aria-expanded="menuOpen"
           aria-controls="main-menu"
         >
-          <span class="text-xl font-medium mr-2 text-primary-foreground/80 hover:text-primary-foreground">Menu</span>
+          <span class="text-xl font-medium mr-2 text-primary-foreground/80 hover:text-primary-foreground uppercase">Menu</span>
           <font-awesome-icon 
             :icon="menuOpen ? 'chevron-up' : 'chevron-down'" 
             class="text-muted-foreground transition-transform duration-200" 
@@ -231,7 +231,7 @@ onMounted(() => {
         aria-label="Show errors"
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
-        <span class="text-lg font-medium mr-2">Errors</span>
+        <span class="text-lg font-medium mr-2 uppercase">Errors</span>
         <span class="bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-1">{{ errors.length }}</span>
       </button>
       
@@ -244,7 +244,7 @@ onMounted(() => {
         aria-label="Show notifications"
       >
         <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true" />
-        <span class="text-lg font-medium">Notifications</span>
+        <span class="text-lg font-medium uppercase">Notifications</span>
       </button>
       
       <span class="border-l border-border h-6" aria-hidden="true"></span>
@@ -257,8 +257,45 @@ onMounted(() => {
         aria-label="Settings"
       >
         <font-awesome-icon icon="cog" class="mr-2" aria-hidden="true" />
-        <span class="text-lg font-medium">Settings</span>
+        <span class="text-lg font-medium uppercase">Settings</span>
       </router-link>
+
+      <div class="px-4 flex text-right items-center relative"> 
+        <span
+          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-border hover:border-primary text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary cursor-pointer" aria-hidden="true"
+          tabindex="0" >
+          <font-awesome-icon icon="user" />
+        </span>
+
+        <div class="relative">
+          <button
+            @click="dropdownOpen = !dropdownOpen"
+            class=" text-primary-foreground/80 hover:text-primary-foreground hidden md:flex md:items-center ml-2 focus:outline-none rounded-lg p-1 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary" :aria-expanded="dropdownOpen"
+            aria-controls="user-menu"
+          >
+            <span class="text-lg font-medium uppercase">{{ userFullName }}</span>
+            <font-awesome-icon
+              :icon="dropdownOpen ? 'chevron-up' : 'chevron-down'"
+              class="ml-2 text-primary-foreground/80 transition-transform" aria-hidden="true"
+            />
+          </button>
+
+          <div
+            v-show="dropdownOpen"
+            id="user-menu"
+            class="absolute right-0 top-11 py-2 w-48 bg-popover text-popover-foreground rounded-lg shadow-xl z-20" @click.away="dropdownOpen = false"
+            role="menu" >
+            <button
+              @click="authStore.logout()"
+              class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded" role="menuitem"
+            >
+              <font-awesome-icon icon="sign-out-alt" class="mr-2" aria-hidden="true" />
+              Log out
+            </button>
+            </div>
+        </div>
+      </div>
+
     </div>
   </nav>
 
