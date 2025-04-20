@@ -89,79 +89,79 @@
       showModal.value = false;
   }
 
-  const methodName = (uid: string): string => {
-    const index = methods?.value?.findIndex(item => item.uid === uid)
-    return methods?.value[index]?.name as string;
+  const methodName = (uid: string | undefined): string => {
+    if (!uid || !methods.value) return '';
+    const index = methods.value.findIndex(item => item.uid === uid);
+    return methods.value[index]?.name || '';
   }
 
 </script>
 
 <template>
-     <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        @click="FormManager(true)"
-      >Add Specification</button>
-    <hr class="mt-2">
+    <fel-heading title="Specifications">
+      <fel-button @click="FormManager(true)">Add Specification</fel-button>
+    </fel-heading>
+    
     <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-orange-600 tracking-wider">Min Report</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-amber-500 tracking-wider">Min Warn</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Min</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Max</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-amber-500 tracking-wider">Max Warn</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-orange-600 tracking-wider">Max Report</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Warn Texts</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Text Report</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Method</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Gender</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Age Min</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Age Max</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Min Report</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Min Warn</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Min</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Max</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Max Warn</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Max Report</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Warn Texts</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Text Report</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Method</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Gender</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Min</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Max</th>
+                <th class="px-4 py-2 border-b border-border"></th>
             </tr>
             </thead>
-            <tbody class="bg-white">
-            <tr v-for="specification in analysis?.specifications"  :key="specification?.uid">
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-orange-600">{{ specification.minReport  }}</div>
+            <tbody class="bg-card">
+            <tr v-for="specification in analysis?.specifications" :key="specification?.uid" class="hover:bg-accent/50">
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-destructive">{{ specification.minReport }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-amber-500">{{ specification.minWarn  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-warning">{{ specification.minWarn }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ specification.min  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.min }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ specification.max  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.max }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-amber-500">{{ specification.maxWarn }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-warning">{{ specification.maxWarn }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-orange-600">{{ specification.maxReport  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-destructive">{{ specification.maxReport }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ specification.warnValues  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.warnValues }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ specification.warnReport  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.warnReport }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-black">{{ methodName(specification?.methodUid) }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ methodName(specification?.methodUid) || '' }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-black">{{ specification.gender  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.gender }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-black">{{ specification.ageMin  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.ageMin }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-black">{{ specification.ageMax  }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ specification.ageMax }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, specification)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <button @click="FormManager(false, specification)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
                 </td>
             </tr>
             </tbody>
@@ -172,144 +172,154 @@
   <!-- Detection Limit Form Modal -->
   <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/4'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
-    <template v-slot:body >
-      <form action="post" class="p-1">
-        <h4 class="font-semibold">Numerical Results</h4>
-        <hr class="mb-4">
-        <div class="grid grid-cols-6 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-orange-600">Min Report</span>
-            <input
-             type="text"
-              class="form-input mt-1 block w-full"
-              v-model="form.minReport"
-              placeholder="Value ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-amber-500">Min Warn</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.minWarn"
-              placeholder="Value ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-sky-800">Min</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.min"
-              placeholder="Value ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-sky-800">Max</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.max"
-              placeholder="Value ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-amber-500">Max Warn</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.maxWarn"
-              placeholder="Value ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-orange-600">Max Report</span>
-            <input
-             type="text"
-              class="form-input mt-1 block w-full"
-              v-model="form.maxReport"
-              placeholder="Value ..."
-            />
-          </label>
+    <template v-slot:body>
+      <form action="post" class="p-6 space-y-6">
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Numerical Results</h4>
+          <hr class="border-border">
+          <div class="grid grid-cols-6 gap-4">
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-destructive">Min Report</span>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.minReport"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-warning">Min Warn</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.minWarn"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Min</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.min"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Max</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.max"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-warning">Max Warn</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.maxWarn"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-destructive">Max Report</span>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.maxReport"
+                placeholder="Value ..."
+              />
+            </label>
+          </div>
         </div>
-        <h4 class="font-semibold">Textual Results</h4>
-        <hr class="mb-4">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2" >
-            <span class="text-sky-800 w-4/12">Textual Results (comma seperated)</span>
-            <div class="w-full">
-            <input
-             type="text"
-              class="form-input mt-1 block w-full"
-              v-model="form.warnValues"
-              placeholder="Value ..."
-            />
-            </div>
-          </label>
-          <label class="block col-span-1 mb-2" >
-            <span class="text-sky-800 w-4/12">Report Message</span>
-            <div class="w-full">
-            <input
-             type="text"
-              class="form-input mt-1 block w-full"
-              v-model="form.warnReport"
-              placeholder="Value ..."
-            />
-            </div>
-          </label>
+
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Textual Results</h4>
+          <hr class="border-border">
+          <div class="grid grid-cols-2 gap-4">
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Textual Results (comma separated)</span>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.warnValues"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Report Message</span>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.warnReport"
+                placeholder="Value ..."
+              />
+            </label>
+          </div>
         </div>
-        <h4 class="font-semibold">Conditions if Any</h4>
-        <hr class="mb-4">
-        <div class="grid grid-cols-4 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2" >
-            <span class="text-black w-4/12">Method</span>
-            <div class="w-full">
-              <select class="form-select mt-1 w-full" v-model="form.methodUid">
-                <option></option>
-                <option v-for="method in methods" :key="method?.uid" :value="method.uid"> {{ method?.name }}</option>
+
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-foreground">Conditions if Any</h4>
+          <hr class="border-border">
+          <div class="grid grid-cols-4 gap-4">
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Method</span>
+              <select 
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.methodUid"
+              >
+                <option value="">Select Method</option>
+                <option v-for="method in methods" :key="method?.uid" :value="method.uid">
+                  {{ method?.name }}
+                </option>
               </select>
-            </div>
-          </label>
-          <label class="block col-span-1 mb-2" >
-            <span class="text-black w-4/12">Gender</span>
-            <div class="w-full">
-              <select class="form-select mt-1 w-full" v-model="form.gender">
-                <option value="all" selected>All</option>
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Gender</span>
+              <select 
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.gender"
+              >
+                <option value="all">All</option>
                 <option value="male">Male</option>
-                <option value="male">Female</option>
+                <option value="female">Female</option>
               </select>
-            </div>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-black">Age Min</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.ageMin"
-              placeholder="Value ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-black">Age Max</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.ageMax"
-              placeholder="Value ..."
-            />
-          </label>
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Age Min</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.ageMin"
+                placeholder="Value ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-foreground">Age Max</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.ageMax"
+                placeholder="Value ..."
+              />
+            </label>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="pt-4">
+          <button
+            type="button"
+            @click.prevent="saveForm()"
+            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Save Form
+          </button>
+        </div>
       </form>
     </template>
   </modal>

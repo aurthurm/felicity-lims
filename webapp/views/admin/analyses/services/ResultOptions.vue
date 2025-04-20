@@ -80,39 +80,47 @@
 </script>
 
 <template>
-     <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        @click="FormManager(true)"
-      >Add Result Option</button>
-    <hr>
+    <fel-heading title="Result Options">
+      <fel-button @click="FormManager(true)">Add Result Option</fel-button>
+    </fel-heading>
+
     <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result Key</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result Value</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Sample Tyes</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Result Key</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Result Value</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Sample Types</th>
+                <th class="px-4 py-2 border-b border-border"></th>
             </tr>
             </thead>
-            <tbody class="bg-white">
-            <tr v-for="option in analysis?.resultOptions"  :key="option?.uid">
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="flex items-center">
-                    <div>
-                    <div class="text-sm leading-5 text-gray-800">{{ option?.optionKey }}</div>
-                    </div>
-                </div>
+            <tbody class="bg-card">
+            <tr v-for="option in analysis?.resultOptions" :key="option?.uid" class="hover:bg-accent/50">
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ option?.optionKey }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ option?.value }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ option?.value }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <span class="p-1 rounded-sm text-sm leading-5 text-sky-800 bg-gray-200 mr-2" v-for="stype of option?.sampleTypes" :key="stype.uid">{{ stype.name }}</span>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="flex flex-wrap gap-2">
+                    <span 
+                      v-for="stype of option?.sampleTypes" 
+                      :key="stype.uid"
+                      class="px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-md"
+                    >
+                      {{ stype.name }}
+                    </span>
+                  </div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, option)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <button 
+                      @click="FormManager(false, option)" 
+                      class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
+                    >
+                      Edit
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -123,52 +131,63 @@
   <!-- Result Options Form Modal -->
   <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
-    <template v-slot:body >
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Result Key</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.optionKey"
-              placeholder="Key ..."
-            />
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Result Value</span>
-            <input
-             type="text"
-              class="form-input mt-1 block w-full"
-              v-model="form.value"
-              placeholder="Value ..."
-            />
-          </label>      
-          <label class="block col-span-3 mb-2">
-            <span class="text-gray-700">Sample Types</span>
+    <template v-slot:body>
+      <form action="post" class="p-6 space-y-6">
+        <div class="space-y-4">
+          <div class="grid grid-cols-3 gap-4">
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-muted-foreground">Result Key</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.optionKey"
+                placeholder="Key ..."
+              />
+            </label>
+            <label class="col-span-2 space-y-2">
+              <span class="text-sm font-medium text-muted-foreground">Result Value</span>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.value"
+                placeholder="Value ..."
+              />
+            </label>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Sample Types</span>
             <VueMultiselect
-            v-model="form.sampleTypes"
-            :options="sampleTypes"
-            :multiple="true"
-            :searchable="true"
-            label="name"
-            track-by="uid">
+              v-model="form.sampleTypes"
+              :options="sampleTypes"
+              :multiple="true"
+              :searchable="true"
+              label="name"
+              track-by="uid"
+              class="multiselect-primary"
+            >
             </VueMultiselect>
-          </label>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="pt-4">
+          <button
+            type="button"
+            @click.prevent="saveForm()"
+            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Save Form
+          </button>
+        </div>
       </form>
     </template>
   </modal>
 
 </template>
+
+<style>
+
+</style>

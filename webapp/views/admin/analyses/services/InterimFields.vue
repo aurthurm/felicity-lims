@@ -81,39 +81,39 @@
 </script>
 
 <template>
-     <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        @click="FormManager(true)"
-      >Add Interim Field</button>
-    <hr>
+    <fel-heading title="Interim Fields">
+      <fel-button @click="FormManager(true)">Add Interim Field</fel-button>
+    </fel-heading>
+
     <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Interim Key</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result Value</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Intrument</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Interim Key</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Result Value</th>
+                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</th>
+                <th class="px-4 py-2 border-b border-border"></th>
             </tr>
             </thead>
-            <tbody class="bg-white">
-            <tr v-for="interim in analysis?.interims"  :key="interim?.uid">
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="flex items-center">
-                    <div>
-                    <div class="text-sm leading-5 text-gray-800">{{ interim?.key }}</div>
-                    </div>
-                </div>
+            <tbody class="bg-card">
+            <tr v-for="interim in analysis?.interims" :key="interim?.uid" class="hover:bg-accent/50">
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ interim?.key }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ interim?.value }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ interim?.value }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ instrumentName(interim?.instrumentUid) }}</div>
+                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                  <div class="text-sm text-foreground">{{ instrumentName(interim?.instrumentUid) }}</div>
                 </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, interim)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <button 
+                      @click="FormManager(false, interim)" 
+                      class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
+                    >
+                      Edit
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -124,48 +124,55 @@
   <!-- Result Options Form Modal -->
   <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
-    <template v-slot:body >
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2" >
-            <span class="text-gray-700 w-4/12">Instrument</span>
-            <div class="w-full">
-              <select class="form-select mt-1 w-full" v-model="form.instrumentUid">
-                <option></option>
-                <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid"> {{ instrument?.name }}</option>
+    <template v-slot:body>
+      <form action="post" class="p-6 space-y-6">
+        <div class="space-y-4">
+          <div class="grid grid-cols-3 gap-4">
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-muted-foreground">Instrument</span>
+              <select 
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.instrumentUid"
+              >
+                <option value="">Select Instrument</option>
+                <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
+                  {{ instrument?.name }}
+                </option>
               </select>
-            </div>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Interim</span>
-            <input
-             type="number"
-              class="form-input mt-1 block w-full"
-              v-model="form.key"
-              placeholder="Interim Key ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Result</span>
-            <input
-             type="text"
-              class="form-input mt-1 block w-full"
-              v-model="form.value"
-              placeholder="Resut Value ..."
-            />
-          </label>
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-muted-foreground">Interim</span>
+              <input
+                type="number"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.key"
+                placeholder="Interim Key ..."
+              />
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-medium text-muted-foreground">Result</span>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="form.value"
+                placeholder="Result Value ..."
+              />
+            </label>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="pt-4">
+          <button
+            type="button"
+            @click.prevent="saveForm()"
+            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Save Form
+          </button>
+        </div>
       </form>
     </template>
   </modal>

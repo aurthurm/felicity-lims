@@ -132,101 +132,159 @@
 </script>
 
 <template>
-    <div class="grid grid-cols-12">
-      <section class="col-span-6 gap-x-4 pr-4 mb-2">
-        <h3 class="font-semibold text-l text-gray-600">Pricing Information</h3>
-        <hr>
-        <form class="mt-4">
-          <div class="">
-            <label class="flex justify-start items-center gap-x-4 mb-4">
-              <span class="col-span-1 text-gray-700">Amount: $</span>
-              <input class="form-input mt-1" v-model="formPricing.amount" type="number" min="0.0" step="0.1" />
-            </label>
+    <div class="grid grid-cols-12 gap-8 p-6">
+      <section class="col-span-6">
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-foreground">Pricing Information</h3>
           </div>
-          <button type="button" @click.prevent="updatePricing()"
-            class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
-            Update Pricing
-          </button>
-        </form>
+          <div class="rounded-lg border border-border bg-card p-6">
+            <form class="space-y-6">
+              <div class="space-y-4">
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">Amount ($)</span>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                    <input 
+                      class="w-full pl-8 px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground" 
+                      v-model="formPricing.amount" 
+                      type="number" 
+                      min="0.0" 
+                      step="0.1" 
+                      placeholder="0.00"
+                    />
+                  </div>
+                </label>
+              </div>
+              <button 
+                type="button" 
+                @click.prevent="updatePricing()"
+                class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                Update Pricing
+              </button>
+            </form>
+          </div>
+        </div>
       </section>
 
-      <section class="col-span-6 gap-x-4 mb-2 border-l-2 border-l-gray-500 pl-4">
-        <h3 class="font-semibold text-l text-gray-600">Discounts Information</h3>
-        <hr>
+      <section class="col-span-6">
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-foreground">Discounts Information</h3>
+          </div>
+          <div class="rounded-lg border border-border bg-card p-6">
+            <form class="space-y-6">
+              <div class="grid grid-cols-2 gap-4">
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">Discount Type</span>
+                  <select 
+                    class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    v-model="formDiscount.discountType"
+                  >
+                    <option value="">Select type</option>
+                    <option v-for="dtype of discountTypes" :key="dtype" :value="dtype" class="capitalize">
+                      {{ dtype }}
+                    </option>
+                  </select>
+                </label>
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">Value Type</span>
+                  <select 
+                    class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    v-model="formDiscount.valueType"
+                  >
+                    <option value="">Select type</option>
+                    <option v-for="vtype of valueTypes" :key="vtype" :value="vtype" class="capitalize">
+                      {{ vtype }}
+                    </option>
+                  </select>
+                </label>
+              </div>
 
-        <form class="mt-4">
-          <div class="grid grid-cols-2 gap-4">
-            <label class="col-span-1 whitespace-nowrap mb-2 w-full">
-              <span class="text-gray-700 w-4/12">Discount Type</span>
-              <div class="w-full">
-                <select class="form-select mt-1 w-full"
-                v-model="formDiscount.discountType">
-                  <option></option>
-                  <option v-for="dtype of discountTypes" :key="dtype" :value="dtype">
-                    {{ dtype }}
-                  </option>
-                </select>
+              <div class="grid grid-cols-2 gap-4">
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">Start Date</span>
+                  <input 
+                    class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" 
+                    v-model="formDiscount.startDate" 
+                    type="date"
+                  />
+                </label>
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">End Date</span>
+                  <input 
+                    class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" 
+                    v-model="formDiscount.endDate" 
+                    type="date"
+                  />
+                </label>
               </div>
-            </label>
-            <label class="col-span-1 whitespace-nowrap mb-2 w-full">
-              <span class="text-gray-700 w-4/12">Value Type</span>
-              <div class="w-full">
-                <select class="form-select mt-1 w-full"
-                v-model="formDiscount.valueType">
-                  <option></option>
-                  <option v-for="vtype of valueTypes" :key="vtype" :value="vtype">
-                    {{ vtype }}
-                  </option>
-                </select>
+
+              <div v-show="formDiscount.discountType === 'voucher'" class="space-y-2">
+                <label>
+                  <span class="text-sm font-medium text-muted-foreground">Voucher</span>
+                  <select 
+                    class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mt-2"
+                    v-model="formDiscount.voucherUid"
+                  >
+                    <option value="">Select voucher</option>
+                    <option v-for="voucher of billingStore.vouchers" :key="voucher.uid" :value="voucher.uid">
+                      {{ voucher.code }}
+                    </option>
+                  </select>
+                </label>
               </div>
-            </label>
-          </div>
-          <div class="grid grid-cols-4 gap-4 mt-1">
-            <label class="col-span-2">
-              <span class="col-span-1 text-gray-700">Start Date</span>
-              <input class="form-input w-full" v-model="formDiscount.startDate" type="date"/>
-            </label>
-            <label class="col-span-2">
-              <span class="col-span-1 text-gray-700">End Date</span>
-              <input class="form-input w-full" v-model="formDiscount.endDate" type="date"/>
-            </label>
-            <label v-show="formDiscount.discountType === 'voucher'"
-             class="col-span-2 whitespace-nowrap w-full mb-2">
-              <span class="text-gray-700 w-4/12">Voucher</span>
-              <div class="w-full">
-                <select class="form-select mt-1 w-full"
-                v-model="formDiscount.voucherUid">
-                  <option></option>
-                  <option v-for="voucher of billingStore.vouchers" :key="voucher.uid" :value="voucher.uid">
-                    {{ voucher.name }}
-                  </option>
-                </select>
+
+              <div class="grid grid-cols-2 gap-4">
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">Value Percentage (%)</span>
+                  <input 
+                    class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" 
+                    v-model="formDiscount.valuePercent" 
+                    type="number" 
+                    min="0" 
+                    max="100" 
+                    step="0.1"
+                    placeholder="0.00"
+                  />
+                </label>
+                <label class="space-y-2">
+                  <span class="text-sm font-medium text-muted-foreground">Value Amount ($)</span>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                    <input 
+                      class="w-full pl-8 px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" 
+                      v-model="formDiscount.valueAmount" 
+                      type="number" 
+                      min="0" 
+                      step="0.1"
+                      placeholder="0.00"
+                    />
+                  </div>
+                </label>
               </div>
-            </label>
+
+              <div class="flex items-center space-x-2">
+                <input 
+                  type="checkbox" 
+                  id="isActive"
+                  v-model="formDiscount.isActive"
+                  class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                />
+                <label for="isActive" class="text-sm font-medium text-muted-foreground">Active</label>
+              </div>
+
+              <button 
+                type="button" 
+                @click.prevent="updateDiscounting()"
+                class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                Update Discount
+              </button>
+            </form>
           </div>
-          <div class="grid grid-cols-2 gap-x-4 mt-1">
-            <label v-show="formDiscount.valueType === 'percentage'" class="col-span-1">
-              <span class="text-gray-700">Value Percent</span>
-              <input class="form-input w-full" v-model="formDiscount.valuePercent" type="number" step="0.01" min="0.00" max="1" />
-              <span class="italic leading text-xs">Example: 0.05 for 5%</span>
-            </label>
-            <label v-show="formDiscount.valueType === 'amount'" class="col-span-1">
-              <span class="text-gray-700">Value Amount</span>
-              <input class="form-input w-full" v-model="formDiscount.valueAmount" type="number" step="0.1" min="0.0" />
-            </label>
-          </div>
-          <div class="grid grid-cols-2 gap-4 mt-4 mb-2">
-            <label class="col-span-4 flex justify-start items-center gap-x-4">
-              <span class="col-span-1 text-gray-700">Is Active</span>
-              <input class="form-checkbox" v-model="formDiscount.isActive" type="checkbox"/>
-            </label>
-          </div>
-          <hr>
-          <button type="button" @click.prevent="updateDiscounting()"
-            class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-4 px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
-            Update Discount
-          </button>
-        </form>
+        </div>
       </section>
     </div>
 </template>

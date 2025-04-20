@@ -15,12 +15,6 @@ import useApiUtil  from "@/composables/api_util";
 const VueMultiselect = defineAsyncComponent(
   () => import("vue-multiselect")
 )
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
-const accordion = defineAsyncComponent(
-  () => import("@/components/ui/FelAccordion.vue")
-)
 
 const Billing = defineAsyncComponent(
   () => import("./Billing.vue")
@@ -185,363 +179,368 @@ function saveMappingForm(): void {
 </script>
 
 <template>
-  <div class="">
-    <div class="container w-full my-4">
-      <hr />
-      <button
-        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        @click="FormManager(true)"
-      >
-        Add Analyses Profile
-      </button>
-      <hr />
-      <!-- <input
-        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-sm  focus:placeholder-gray-500 focus:border-emerald-200 focus:outline-none focus:shadow-outline-purple form-input"
-        type="text" placeholder="Search ..." aria-label="Search"
-        @keyup="searchProfile($event)"
-        @focus="setProfileToNull()"
-      /> -->
-    </div>
-    <hr />
+  <div class="space-y-6">
+    <fel-heading title="Analyses Profiles">
+      <fel-button @click="FormManager(true)">Add Analyses Profile</fel-button>
+    </fel-heading>
 
-    <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-3 overflow-y-scroll overscroll-contain max-h-[540px]">
-        <ul>
-          <li
-            v-for="profile in analysesProfiles"
-            :key="profile.uid"
-           
-            @click.prevent.stop="selectProfile(profile)"
-            :class="[
-              'bg-white w-full p-1 mb-1 rounded',
-              { 'border-gray-100 bg-emerald-200': profile?.uid === analysisProfile?.uid },
-            ]"
-          >
-            <a class="cursor-pointer">
-              <div class="flex-grow p-1">
-                <div
-                  class="font-medium text-gray-500 hover:text-gray-700 flex justify-between"
-                >
-                  <span>{{ profile?.name }}</span>
-                  <span class="text-sm text-gray-500"></span>
+    <div class="grid grid-cols-12 gap-6">
+      <!-- Profiles List -->
+      <section class="col-span-3">
+        <div class="rounded-lg border border-border bg-card">
+          <div class="p-4 border-b border-border">
+            <h3 class="text-sm font-medium text-muted-foreground">Profiles</h3>
+          </div>
+          <div class="overflow-y-auto max-h-[540px] p-2">
+            <ul class="space-y-1">
+              <li
+                v-for="profile in analysesProfiles"
+                :key="profile.uid"
+                @click.prevent.stop="selectProfile(profile)"
+                :class="[
+                  'rounded-md p-2 cursor-pointer transition-colors duration-200',
+                  profile?.uid === analysisProfile?.uid 
+                    ? 'bg-accent text-accent-foreground' 
+                    : 'hover:bg-accent/50'
+                ]"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium">{{ profile?.name }}</span>
+                  <span v-if="profile?.keyword" class="text-xs text-muted-foreground">{{ profile?.keyword }}</span>
                 </div>
-              </div>
-            </a>
-          </li>
-        </ul>
+                <p v-if="profile?.description" class="text-xs text-muted-foreground mt-1 line-clamp-2">
+                  {{ profile?.description }}
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
+      <!-- Profile Details -->
       <section class="col-span-9" v-if="analysisProfile?.uid !== undefined">
-        <div
-          class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
-        >
-          <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-12 px-3 sm:px-0">
-              <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
+        <div class="space-y-6">
+          <!-- Header -->
+          <div class="rounded-lg border border-border bg-card p-6">
+            <div class="flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <h2 class="text-xl font-semibold text-foreground">{{ analysisProfile?.name }}</h2>
+                  <span v-if="analysisProfile?.keyword" class="px-2 py-0.5 text-xs font-medium bg-accent text-accent-foreground rounded">
+                    {{ analysisProfile?.keyword }}
+                  </span>
+                </div>
+                <p v-if="analysisProfile?.description" class="text-sm text-muted-foreground">
+                  {{ analysisProfile?.description }}
+                </p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button
+                  @click="FormManager(false, analysisProfile)"
+                  class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <svg class="w-4 h-4" viewBox="0 0 20 20">
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <nav class="border-b border-border">
+            <div class="flex space-x-2">
+              <button
+                v-for="tab in tabs"
+                :key="tab"
+                :class="[
+                  'px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                  currentTab === tab
+                    ? 'border-b-2 border-primary text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                ]"
+                @click="currentTab = tab"
               >
-                <span>{{ analysisProfile?.name }}</span>
-                <div>
+                {{ tab }}
+              </button>
+            </div>
+          </nav>
+
+          <!-- Content -->
+          <div class="rounded-lg border border-border bg-card">
+            <div class="p-6">
+              <!-- Analyses Services Tab -->
+              <div v-if="currentTab === 'analyses-services'" class="space-y-6">
+                <div class="grid grid-cols-3 gap-6">
+                  <div v-for="category in analysesServices" :key="category[0]" class="space-y-4">
+                    <fel-accordion>
+                      <template v-slot:title>
+                        <span class="text-sm font-medium">{{ category[0] }}</span>
+                      </template>
+                      <template v-slot:body>
+                        <ul class="space-y-2 pt-2">
+                          <li v-for="service in category[1]" :key="service?.uid" class="flex items-start space-x-2">
+                            <div class="flex items-center h-5">
+                              <input
+                                type="checkbox"
+                                :id="`toggle-${service?.uid}`"
+                                v-model="service.checked"
+                                class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                              />
+                            </div>
+                            <label :for="`toggle-${service?.uid}`" class="text-sm text-foreground">
+                              {{ service?.name }}
+                            </label>
+                          </li>
+                        </ul>
+                      </template>
+                    </fel-accordion>
+                  </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
                   <button
-                    @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    @click="updateProfile()"
+                    class="inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                    </svg>
+                    Update Profile
                   </button>
                 </div>
+              </div>
+
+              <!-- Mappings Tab -->
+              <div v-if="currentTab === 'mappings'" class="space-y-6">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-medium text-foreground">Concept Mappings</h3>
+                  <button
+                    @click="MappingFormManager(true)"
+                    class="inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <span class="mr-2">+</span> Add Mapping
+                  </button>
+                </div>
+
+                <div class="overflow-hidden rounded-lg border border-border">
+                  <table class="w-full">
+                    <thead>
+                      <tr class="border-b border-border bg-muted/50">
+                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Code</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Standard</th>
+                        <th class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="mapping in mappings" :key="mapping.uid" class="hover:bg-accent/50 transition-colors duration-200">
+                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                          <div class="font-medium text-foreground">{{ mapping?.name }}</div>
+                          <div class="text-sm text-muted-foreground" v-if="mapping?.description">{{ mapping?.description }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
+                          {{ mapping?.code }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
+                          {{ mapping?.codingStandard?.name }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
+                          <button 
+                            @click="MappingFormManager(false, mapping)"
+                            class="inline-flex items-center px-3 py-1.5 border border-input bg-background text-foreground text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Billing Tab -->
+              <div v-if="currentTab === 'billing'" class="space-y-6">
+                <Billing :target="'profile'" :targetUid="analysisProfile?.uid" />
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <nav class="bg-white shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <section class="mt-2 p-2 bg-white">
-          <div v-if="currentTab === 'analyses-services'">
-            <h3>Analyses</h3>
-            <hr />
-            <section
-              class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1"
-            >
-              <div class="grid grid-cols-6 gap-2 w-full">
-                <div
-                  class="col-span-2"
-                  v-for="category in analysesServices"
-                  :key="category[0]"
-                >
-                  <accordion>
-                    <template v-slot:title>{{ category[0] }}</template>
-                    <template v-slot:body>
-                      <div>
-                        <ul>
-                          <li
-                            v-for="service in category[1]"
-                            :key="service?.uid"
-                            class="cursor-pointer"
-                            :class="[
-                              { 'border-sky-800 bg-gray-200 underline pl-3': false },
-                            ]"
-                          >
-                            <div class="flex-grow p-1">
-                              <div
-                                :class="[
-                                  'font-medium text-gray-500 hover:text-gray-700',
-                                  { 'text-gray-700 font-medium': false },
-                                ]"
-                              >
-                                <input
-                                  type="checkbox"
-                                  :id="`toggle-${service?.uid}`"
-                                  class="form-control"
-                                  v-model="service.checked"
-                                />
-                                <label
-                                  :for="`toggle-${service?.uid}`"
-                                  class="text-gray-700 ml-4"
-                                  >{{ service?.name }}</label
-                                >
-                              </div>
-                            </div>
-                            <hr />
-                          </li>
-                        </ul>
-                      </div>
-                    </template>
-                  </accordion>
-                </div>
-              </div>
-              <button
-                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                @click="updateProfile()"
-              >
-                Update Analtsis Profile
-              </button>
-            </section>
-          </div>
-          <div v-if="currentTab == 'mappings'">
-            <div class="flex justify-between items-center mb-2">
-              <h3>Concept Mappings</h3>
-              <button @click="MappingFormManager(true)"
-                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Mapping</button>
-            </div>
-            <hr />
-            <div class="overflow-x-auto mt-4">
-              <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-                <table class="min-w-full">
-                    <thead>
-                    <tr>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Coding Standard</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Code</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
-                        <th class="px-1 py-1 border-b-2 border-gray-300"></th>
-                    </tr>
-                    </thead>
-                    <tbody class="bg-white">
-                    <tr v-for="mapp in mappings"  :key="mapp">
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="flex items-center">
-                            <div class="text-sm leading-5 text-gray-800">{{ mapp.codingStandard?.name }}</div>
-                          </div>
-                        </td>
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-sky-800">{{ mapp.name }}</div>
-                        </td>
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-sky-800">{{ mapp.code }}</div>
-                        </td>
-                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-sky-800">{{ mapp.description }}</div>
-                        </td>
-                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                            <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div v-if="currentTab == 'billing'">
-            <Billing target="profile" :targetUid="analysisProfile.uid" />
-          </div>
-        </section>
+      <!-- Empty State -->
+      <section v-else class="col-span-9">
+        <div class="rounded-lg border border-border bg-card p-6 flex flex-col items-center justify-center space-y-4 min-h-[400px]">
+          <div class="text-4xl text-muted-foreground">📋</div>
+          <h3 class="text-lg font-medium text-foreground">No Profile Selected</h3>
+          <p class="text-sm text-muted-foreground">Select a profile from the list to view its details</p>
+        </div>
       </section>
     </div>
   </div>
 
-  <!-- AnaltsisProfile Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <!-- Profile Form Modal -->
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Analysis Profile Name</span>
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+        <div class="space-y-4">
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Profile Name</span>
             <input
-              class="form-input mt-1 block w-full"
               v-model="analysisProfile.name"
-              placeholder="Name ..."
+              type="text"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+              placeholder="Enter profile name"
             />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">keyword</span>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Keyword</span>
             <input
-              class="form-input mt-1 block w-full"
               v-model="analysisProfile.keyword"
-              placeholder="Keyword ..."
+              type="text"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+              placeholder="Enter keyword"
             />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Sample Types</span>
-            <VueMultiselect
-              v-model="analysisProfile.sampleTypes"
-              :options="sampleTypes"
-              :multiple="true"
-              :searchable="true"
-              label="name"
-              track-by="uid"
-            >
-            </VueMultiselect>
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Description</span>
-            <textarea
-              cols="2"
-              class="form-input mt-1 block w-full"
-              v-model="analysisProfile.description"
-              placeholder="Description ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Department</span>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Department</span>
             <select
-              class="form-select block w-full mt-1"
               v-model="analysisProfile.departmentUid"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <option></option>
-              <option
-                v-for="department in departments"
-                :key="department.uid"
-                :value="department?.uid"
-              >
+              <option value="">Select department</option>
+              <option v-for="department in departments" :key="department.uid" :value="department.uid">
                 {{ department.name }}
               </option>
             </select>
           </label>
-          <label for="toggle" class="text-xs text-gray-700 mr-4"
-            >Active
-            <div
-              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-            >
-              <input
-                type="checkbox"
-                name="toggle"
-                id="toggle"
-                v-model="analysisProfile.active"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
-              />
-              <label
-                for="toggle"
-                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-              ></label>
-            </div>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Sample Types</span>
+            <VueMultiselect
+              v-model="analysisProfile.sampleTypes"
+              :options="sampleTypes"
+              :multiple="true"
+              track-by="uid"
+              label="name"
+              placeholder="Select sample types"
+              class="multiselect-primary"
+            />
           </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Description</span>
+            <textarea
+              v-model="analysisProfile.description"
+              rows="3"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
+              placeholder="Enter profile description"
+            ></textarea>
+          </label>
+
+          <div class="flex items-center space-x-2">
+            <input 
+              type="checkbox" 
+              id="isActive"
+              v-model="analysisProfile.active"
+              class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            />
+            <label for="isActive" class="text-sm font-medium text-muted-foreground">Active</label>
+          </div>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="pt-4">
+          <button
+            type="submit"
+            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Save Changes
+          </button>
+        </div>
       </form>
     </template>
-  </modal>
+  </fel-modal>
 
-    <!-- MappingForm Modal -->
-  <modal v-if="showMappingModal" @close="showMappingModal = false">
+  <!-- Mapping Form Modal -->
+  <fel-modal v-if="showMappingModal" @close="showMappingModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3 class="text-xl font-semibold text-foreground">{{ mappingFormTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Coding Standard</span>
+      <form @submit.prevent="saveMappingForm" class="p-6 space-y-6">
+        <div class="space-y-4">
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Coding Standard</span>
             <select
-              class="form-select block w-full mt-1"
               v-model="mappingForm.codingStandardUid"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <option></option>
-              <option
-                v-for="c_standard in analysisStore.codingStandards"
-                :key="c_standard.uid"
-                :value="c_standard?.uid"
-              >
-                {{ c_standard.name }}
+              <option value="">Select standard</option>
+              <option v-for="standard in analysisStore.codingStandards" :key="standard.uid" :value="standard.uid">
+                {{ standard.name }}
               </option>
             </select>
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Standard Name</span>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Name</span>
             <input
-              class="form-input mt-1 block w-full"
               v-model="mappingForm.name"
-              placeholder="Keyword ..."
+              type="text"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+              placeholder="Enter mapping name"
             />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Standard Code</span>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Code</span>
             <input
-              class="form-input mt-1 block w-full"
               v-model="mappingForm.code"
-              placeholder="Keyword ..."
+              type="text"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+              placeholder="Enter mapping code"
             />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Standard Description</span>
+
+          <label class="space-y-2">
+            <span class="text-sm font-medium text-muted-foreground">Description</span>
             <textarea
-              cols="2"
-              class="form-input mt-1 block w-full"
               v-model="mappingForm.description"
-              placeholder="Description ..."
-            />
+              rows="3"
+              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
+              placeholder="Enter mapping description"
+            ></textarea>
           </label>
         </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveMappingForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
+
+        <div class="pt-4">
+          <button
+            type="submit"
+            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Save Changes
+          </button>
+        </div>
       </form>
     </template>
-  </modal>
+  </fel-modal>
+
 </template>
+
+<style>
+.multiselect-primary {
+  --ms-tag-bg: hsl(var(--primary));
+  --ms-tag-color: hsl(var(--primary-foreground));
+  --ms-ring-color: hsl(var(--ring));
+  --ms-option-bg-selected: hsl(var(--accent));
+  --ms-option-color-selected: hsl(var(--accent-foreground));
+  --ms-bg: hsl(var(--background));
+  --ms-border: hsl(var(--input));
+}
+</style>

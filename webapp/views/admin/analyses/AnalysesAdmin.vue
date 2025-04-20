@@ -40,7 +40,6 @@
     'quality-control-templates',
     'rejection-reasons',
   ];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
   sampleStore.fetchSampleTypes();    
   setupStore.fetchDepartments({});   
@@ -48,37 +47,38 @@
 </script>
 
 <template>
-  <div class="mt-4">
+  <div class="space-y-6">
+    <fel-heading title="Analyses Administration"></fel-heading>
 
-        <nav class="bg-white shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-             
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
+    <!-- Tabs -->
+    <nav class="border-b border-border">
+      <div class="flex space-x-2">
+        <button
+          v-for="tab in tabs"
+          :key="tab"
+          :class="[
+            'px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+            currentTab === tab
+              ? 'border-b-2 border-primary text-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          ]"
+          @click="currentTab = tab"
+        >
+          {{ tab.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') }}
+        </button>
+      </div>
+    </nav>
 
-        <tab-analyses-profiles v-if="currentTab === 'analyses-profiles'"/>
-        <tab-analyses-services v-else-if="currentTab === 'analyses-services'" />
-        <tab-analyses-templates v-else-if="currentTab === 'analyses-templates'" />
-        <tab-analyses-categories v-else-if="currentTab === 'analyses-categories'" />
-        <tab-quality-control-levels v-else-if="currentTab === 'quality-control-levels'" />
-        <tab-quality-control-templates v-else-if="currentTab === 'quality-control-templates'" />
-        <tab-rejection-reasons v-else-if="currentTab === 'rejection-reasons'" />
-
+    <!-- Tab Content -->
+    <div class="mt-6">
+      <tab-analyses-profiles v-if="currentTab === 'analyses-profiles'"/>
+      <tab-analyses-services v-else-if="currentTab === 'analyses-services'" />
+      <tab-analyses-templates v-else-if="currentTab === 'analyses-templates'" />
+      <tab-analyses-categories v-else-if="currentTab === 'analyses-categories'" />
+      <tab-quality-control-levels v-else-if="currentTab === 'quality-control-levels'" />
+      <tab-quality-control-templates v-else-if="currentTab === 'quality-control-templates'" />
+      <tab-rejection-reasons v-else-if="currentTab === 'rejection-reasons'" />
+    </div>
   </div>
-
 </template>
 
-<style lang="postcss">
-
-</style>
