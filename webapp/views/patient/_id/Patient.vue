@@ -15,7 +15,7 @@ const route = useRoute();
 const patientStore = usePatientStore();
 
 let showModal = ref<boolean>(false);
-patientStore.fetchPtientByUid(route.params.patientUid);
+patientStore.fetchPatientByUid(route.params.patientUid);
 
 const updatePatient = (res: PatientType) => {
   patientStore.updatePatient(res);

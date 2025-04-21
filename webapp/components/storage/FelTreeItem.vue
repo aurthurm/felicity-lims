@@ -1,7 +1,8 @@
-<script setup>
-import { computed } from 'vue';
+<script setup lang="ts">
+import { computed, PropType } from 'vue';
 import useTreeStateComposable from "@/composables/tree-state";
 import type { TreeDataType } from "@/types/storage";
+
 const props = defineProps({
   tree: {
     type: Object as PropType<TreeDataType>,
@@ -68,7 +69,7 @@ const isSelected = computed(() => {
   </li>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'TreeItem'
 }

@@ -25,7 +25,7 @@ const { targetType, targetUid } = toRefs(props);
 
 const userStore = useUserStore();
 const auditLogStore = useAuditLogStore();
-auditLogStore.restLogs();
+auditLogStore.resetLogs();
 
 const { auditLogs, fetchingAudits } = storeToRefs(auditLogStore);
 

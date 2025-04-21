@@ -136,7 +136,7 @@ let shipmentParams = reactive({
   sort: ["-uid"],
   filterAction: false,
 });
-shipmentStore.fetcShipments(shipmentParams);
+shipmentStore.fetchShipments(shipmentParams);
 shipmentStore.fetchReferralLaboratories();
 
 //
@@ -199,47 +199,56 @@ const countNone = computed(
 
 <template>
   <div class="space-y-6">
-    <fel-heading>
-      <template v-slot:title>Shipments</template>
-      <template v-slot:buttons>
-        <button
-          @click="showModal = true"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
-          aria-label="Create New Shipment"
-        >
-          Create New
-        </button>
-      </template>
-    </page-heading>
+    <fel-heading title="Shipments">
+      <fel-button @click="showModal = true">Create New</fel-button>
+    </fel-heading>
 
     <div class="flex items-center space-x-4 mb-4">
-      <button
+      <fel-button
         @click="viewIncoming = !viewIncoming"
-        :class="[
-          'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background h-10 py-2 px-4',
-          viewIncoming
+        :class="[viewIncoming
             ? 'bg-primary text-primary-foreground hover:bg-primary/90'
             : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
         ]"
         :aria-pressed="viewIncoming"
       >
         {{ viewIncoming ? 'Incoming' : 'Outgoing' }}
-      </button>
+      </fel-button>
     </div>
 
-    <data-table
-      :columns="columns"
-      :data="shipmentStore.shipments"
-      :loading="loading"
-      :total="shipmentStore.total"
-      :filter-options="filterOptions"
-      @load-more="showMoreShipments"
-      @search="searchShipments"
-      class="bg-background rounded-lg shadow-sm"
-    />
+    <div class="bg-card rounded-lg shadow-sm p-6">
+      <DataTable 
+      :columns="tableColumns" 
+      :data="shipments" 
+      :toggleColumns="true" 
+      :loading="fetchingShipments"
+      :paginable="true" 
+      :pageMeta="{
+          fetchCount: shipmentParams.first,
+          hasNextPage: shipmentPageInfo?.hasNextPage,
+          countNone,
+      }" 
+      :searchable="true" 
+      :filterable="true" 
+      :filterMeta="{
+        defaultFilter: shipmentParams.status,
+        filters: filterOptions,
+      }" 
+      @onSearch="searchShipments" 
+      @onPaginate="showMoreShipments" 
+      :selectable="false"
+      >
+        <template v-slot:pre-filter>
+          <label class="flex">
+            <input type="checkbox" v-model="viewIncoming"> <span class="mx-2">InBound</span>
+          </label>
+        </template>
+        <template v-slot:footer> </template>
+      </DataTable>
+    </div>
   </div>
 
-  <fel-modal v-if="showModal" @close="showModal = false" class="max-w-2xl">
+  <fel-modal v-if="showModal" @close="showModal = false" >
     <template v-slot:header>
       <h3 class="text-lg font-medium leading-6 text-foreground">Create New Shipment</h3>
     </template>
