@@ -2,7 +2,7 @@
   import { ref, computed, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { AddResultOptionDocument, AddResultOptionMutation, AddResultOptionMutationVariables,
     EditResultOptionDocument, EditResultOptionMutation, EditResultOptionMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { IResultOption } from '@/models/analysis';
+  import { ResultOptionType } from '@/types/gql';
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSampleStore } from '@/stores/sample';
   import  useApiUtil  from '@/composables/api_util';
@@ -35,7 +35,7 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IResultOption;
+  let form = reactive({}) as ResultOptionType;
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
@@ -60,7 +60,7 @@
       .then((result) => analysisStore.updateResultOption(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IResultOption):void {
+  function FormManager(create: boolean, obj = {} as ResultOptionType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";

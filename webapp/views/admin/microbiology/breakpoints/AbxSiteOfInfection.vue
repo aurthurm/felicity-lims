@@ -2,7 +2,7 @@
 import {onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxSiteOfInfection} from "@/models/microbiology";
+import {AbxSiteOfInfectionType} from "@/types/gql";
 import {
   AddAbxSiteOfInfectionDocument,
   AddAbxSiteOfInfectionMutation,
@@ -17,27 +17,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxSiteOfInfection;
+let form = reactive({}) as AbxSiteOfInfectionType;
 const formAction = ref<boolean>(true);
 
-const abxSiteOfInfections = ref<IAbxSiteOfInfection[]>([]);
+const abxSiteOfInfections = ref<AbxSiteOfInfectionType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables>(
       GetAbxSiteOfInfectionAllDocument, {}, "abxSiteOfInfectionAll"
   ).then((result) => {
     if (result) {
-      abxSiteOfInfections.value = result as IAbxSiteOfInfection[]
+      abxSiteOfInfections.value = result as AbxSiteOfInfectionType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxSiteOfInfection): void {
+function FormManager(create: boolean, obj = {} as AbxSiteOfInfectionType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx SiteOfInfection";
   if (create) {
-    Object.assign(form, {} as IAbxSiteOfInfection);
+    Object.assign(form, {} as AbxSiteOfInfectionType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -54,7 +54,7 @@ function saveForm(): void {
         AddAbxSiteOfInfectionDocument, {payload}, "createAbxSiteOfInfection"
     ).then((result) => {
       if (result) {
-        abxSiteOfInfections.value.unshift(result as IAbxSiteOfInfection);
+        abxSiteOfInfections.value.unshift(result as AbxSiteOfInfectionType);
       }
     });
   }
@@ -70,7 +70,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxSiteOfInfections.value = [
                 ...abxSiteOfInfections.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxSiteOfInfection[];
+              ] as AbxSiteOfInfectionType[];
             }
           }
         });

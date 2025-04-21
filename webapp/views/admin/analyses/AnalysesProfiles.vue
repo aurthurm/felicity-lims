@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
-import { IAnalysisProfile, IAnalysisService } from "@/models/analysis";
+import { ProfileType, AnalysisType } from "@/types/gql";
 import {
   AddAnalysisProfileDocument, AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables,
   EditAnalysisProfileDocument, EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables,
@@ -32,7 +32,7 @@ let showModal = ref(false);
 let formTitle = ref("");
 const formAction = ref(true);
 
-let analysisProfile = reactive({}) as IAnalysisProfile;
+let analysisProfile = reactive({}) as ProfileType;
 
 const sampleTypes = computed<any[]>(() => sampleStore.getSampleTypes);
 const departments = computed<any[]>(() => setupStore.getDepartments);
@@ -71,11 +71,11 @@ function editAnalysisProfile(): void {
   ).then((result) => analysisStore.updateAnalysesProfile(result));
 }
 
-function selectProfile(profile: IAnalysisProfile): void {
+function selectProfile(profile: ProfileType): void {
   Object.assign(analysisProfile, { ...profile });
   // get services that fall into this profile
   analysesServices.value?.forEach((item) => {
-    item[1].forEach((service: IAnalysisService) => {
+    item[1].forEach((service: AnalysisType) => {
       service.checked = false;
       if (service.profiles?.some((p) => p.uid === analysisProfile.uid) || false) {
         service.checked = true;
@@ -87,9 +87,9 @@ function selectProfile(profile: IAnalysisProfile): void {
 }
 
 function updateProfile(): void {
-  const analyses: IAnalysisService[] = [];
+  const analyses: AnalysisType[] = [];
   analysesServices.value?.forEach((item) => {
-    item[1].forEach((service: IAnalysisService) => {
+    item[1].forEach((service: AnalysisType) => {
       if (service.checked) {
         analyses.push(service);
       }
@@ -99,12 +99,12 @@ function updateProfile(): void {
   editAnalysisProfile();
 }
 
-function FormManager(create: boolean, obj = {} as IAnalysisProfile): void {
+function FormManager(create: boolean, obj = {} as ProfileType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES PROFILE";
   if (create) {
-    Object.assign(analysisProfile, {} as IAnalysisProfile);
+    Object.assign(analysisProfile, {} as ProfileType);
   } else {
     Object.assign(analysisProfile, { ...obj });
   }

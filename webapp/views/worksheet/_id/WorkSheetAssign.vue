@@ -13,7 +13,7 @@ import {
 } from "@/graphql/operations/worksheet.mutations";
 
 import * as shield from "@/guards";
-import { IAnalysisResult } from "@/models/analysis";
+import { AnalysisResultType } from "@/types/gql";
 
 const worksheetStore = useWorksheetStore();
 const analysisStore = useAnalysisStore();
@@ -117,10 +117,10 @@ const assignToWorkSheet = () => {
 };
 
 // Analysis CheckMark Management
-let checkedAnalyses: IAnalysisResult[] = [];
+let checkedAnalyses: AnalysisResultType[] = [];
 
 function getResultsChecked(): any {
-  let results: IAnalysisResult[] = [];
+  let results: AnalysisResultType[] = [];
   analysisResults?.value?.forEach((result) => {
     if (result.checked) results.push(result);
   });
@@ -131,11 +131,11 @@ function getResultsChecked(): any {
 function getResultsUids(): string[] {
   const results = getResultsChecked();
   let ready: string[] = [];
-  results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
+  results?.forEach((result: AnalysisResultType) => ready.push(result.uid!));
   return ready;
 }
 
-function checkCheck(result: IAnalysisResult): void {
+function checkCheck(result: AnalysisResultType): void {
   if (areAllChecked()) {
     allChecked.value = true;
   } else {
@@ -143,11 +143,11 @@ function checkCheck(result: IAnalysisResult): void {
   }
 }
 
-function check(result: IAnalysisResult): void {
+function check(result: AnalysisResultType): void {
   result.checked = true;
 }
 
-function unCheck(result: IAnalysisResult): void {
+function unCheck(result: AnalysisResultType): void {
   result.checked = false;
 }
 
@@ -158,7 +158,7 @@ async function toggleCheckAll() {
 }
 
 function areAllChecked(): Boolean {
-  return analysisResults?.value?.every((item: IAnalysisResult) => item.checked === true);
+  return analysisResults?.value?.every((item: AnalysisResultType) => item.checked === true);
 }
 </script>
 

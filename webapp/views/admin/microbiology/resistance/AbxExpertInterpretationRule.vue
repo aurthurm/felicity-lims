@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxExpertInterpretationRule, IAbxGuideline } from "@/models/microbiology";
+import { AbxExpertInterpretationRuleType, AbxGuidelineType } from "@/types/gql";
 import { GetAbxExpertInterpretationRuleAllDocument, GetAbxExpertInterpretationRuleAllQuery, GetAbxExpertInterpretationRuleAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxExpertInterpretationRuleMutation, AddAbxExpertInterpretationRuleMutationVariables, AddAbxExpertInterpretationRuleDocument, EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables, EditAbxExpertInterpretationRuleDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -14,13 +14,13 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxExpertInterpretationRule;
+let form = reactive({}) as AbxExpertInterpretationRuleType;
 const formAction = ref<boolean>(true);
 
 const fetchingExpertInterpretationRules = ref<boolean>(false);
-const abxExptResPhenotypes = ref<IAbxExpertInterpretationRule[]>([]);
+const abxExptResPhenotypes = ref<AbxExpertInterpretationRuleType[]>([]);
 
-const abxGuidelines = ref<IAbxGuideline[]>([]);
+const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -167,14 +167,14 @@ function showMoreExpertInterpretationRules(opts: any): void {
   fetchExpertInterpretationRules(abxParams);
 }
 
-const resetExpertInterpretationRule = () => Object.assign(form, {}) as IAbxExpertInterpretationRule;
+const resetExpertInterpretationRule = () => Object.assign(form, {}) as AbxExpertInterpretationRuleType;
 
-function FormManager(create: boolean, obj = {} as IAbxExpertInterpretationRule): void {
+function FormManager(create: boolean, obj = {} as AbxExpertInterpretationRuleType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "ExpertInterpretationRule";
   if (create) {
-    Object.assign(form, {} as IAbxExpertInterpretationRule);
+    Object.assign(form, {} as AbxExpertInterpretationRuleType);
   } else {
     Object.assign(form, {...obj});
   }

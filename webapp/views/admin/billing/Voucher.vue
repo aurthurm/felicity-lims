@@ -5,11 +5,10 @@ import { AddVoucherDocument, AddVoucherMutation, AddVoucherMutationVariables,
 import { storeToRefs } from "pinia"
 import { useBillingStore } from "@/stores/billing";
 import useApiUtil  from "@/composables/api_util";
-import { IVoucher } from "@/models/billing";
+import { VoucherType } from "@/types/gql";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";
 import { formatDate } from "@/utils";
-import { VoucherInput } from '@/types/gql';
 
 const VoucherCodes = defineAsyncComponent(
   () => import("./VoucherCodes.vue")
@@ -54,11 +53,11 @@ const { value: oncePerCustomer } = useField("oncePerCustomer");
 const { value: oncePerOrder } = useField("oncePerOrder");
 
 const submitVoucherForm = handleSubmit((values) => {
-  if (!values.uid) addVoucher(values as IVoucher);
-  if (values.uid) updateVoucher(values as IVoucher);
+  if (!values.uid) addVoucher(values as VoucherType);
+  if (values.uid) updateVoucher(values as VoucherType);
 });
 
-let selectVoucher = (voucher: IVoucher) => {
+let selectVoucher = (voucher: VoucherType) => {
   setFieldValue("uid", voucher.uid)
   setFieldValue("name", voucher.name)
   setFieldValue("startDate", formatDate(voucher.startDate, 'DD/MM/YYYY'))
@@ -84,14 +83,14 @@ const newVoucher = () => {
   showModal.value = true
 }
 
-const addVoucher = (vocher: IVoucher) => {
+const addVoucher = (vocher: VoucherType) => {
   delete vocher['uid'];
   withClientMutation<AddVoucherMutation, AddVoucherMutationVariables>(AddVoucherDocument, { payload: vocher },"createVoucher")
   .then((result) => billingStore.addVoucher(result))
   .finally(() => (showModal.value = false));
 };
 
-const updateVoucher = (vocher: IVoucher) => {
+const updateVoucher = (vocher: VoucherType) => {
   delete vocher['uid'];
   delete vocher['used'];
   withClientMutation<EditVoucherMutation, EditVoucherMutationVariables>(EditVoucherDocument, 

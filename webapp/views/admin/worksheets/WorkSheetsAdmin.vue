@@ -5,14 +5,15 @@ import { useAnalysisStore } from "@/stores/analysis";
 import { useSampleStore } from "@/stores/sample";
 import { useSetupStore } from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
-import { IReserved, IWorkSheetTemplate } from "@/models/worksheet";
+import { WorkSheetTemplateType } from "@/types/gql";
+import { ReservedType } from "@/types/worksheet"
 import {
-  IAnalysisService,
-  IQCLevel,
-  IQCTemplate,
-  ISampleType,
-} from "@/models/analysis";
-import { IInstrument } from "@/models/setup";
+  AnalysisType,
+  QCLevelLevel,
+  QCTemplateType,
+  SampleTypeTyp,
+} from "@/types/gql";
+import { InstrumentType } from "@/types/gql";
 import { AddWorkSheetTemplateDocument, AddWorkSheetTemplateMutation, AddWorkSheetTemplateMutationVariables, EditWorkSheetTemplateDocument, EditWorkSheetTemplateMutation, EditWorkSheetTemplateMutationVariables } from "@/graphql/operations/worksheet.mutations";
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
@@ -31,7 +32,7 @@ let currentTabComponent = computed(() => "tab-" + currentTab.value);
 
 let showModal = ref<boolean>(false);
 let createItem = ref<any>(null);
-let workSheetTemplate = reactive({}) as IWorkSheetTemplate;
+let workSheetTemplate = reactive({}) as WorkSheetTemplateType;
 let formTitle = ref<string>("");
 
 let analysesParams = reactive({
@@ -47,8 +48,8 @@ analysisStore.fetchQCTemplates();
 analysisStore.fetchQCLevels();
 worksheetStore.fetchWorkSheetTemplates();
 
-const qcTemplates = computed<IQCTemplate[]>(() => analysisStore.getQCTemplates);
-const workSheetTemplates = computed<IWorkSheetTemplate[]>(
+const qcTemplates = computed<QCTemplateType[]>(() => analysisStore.getQCTemplates);
+const workSheetTemplates = computed<WorkSheetTemplateType[]>(
   () => worksheetStore.getWorkSheetTemplates
 );
 
@@ -94,8 +95,8 @@ function editWorksheetTemplate() {
   ).then((result) => worksheetStore.updateWorksheetTemplate(result));
 }
 
-function generatePreview(wst: IWorkSheetTemplate): IReserved[] {
-  let items: IReserved[] = [];
+function generatePreview(wst: WorkSheetTemplateType): ReservedType[] {
+  let items: ReservedType[] = [];
   const indexes: number[] = Array.from(
     { length: wst?.numberOfSamples! + wst?.reserved!?.length },
     (x, i) => i + 1
@@ -132,14 +133,14 @@ function calculateRows(): void {
   }
 }
 
-function selectWorkSheetTemplate(ws: IWorkSheetTemplate): void {
+function selectWorkSheetTemplate(ws: WorkSheetTemplateType): void {
   Object.assign(workSheetTemplate, ws);
   const items = generatePreview(ws);
   workSheetTemplate!.preview = items;
 }
 
 function addReserved(): void {
-  workSheetTemplate.reserved?.push({} as IReserved);
+  workSheetTemplate.reserved?.push({} as ReservedType);
   calculateRows();
 }
 
@@ -150,14 +151,14 @@ function removeReserved(index: number): void {
 function appyQCTemplate(): void {
   workSheetTemplate.reserved = [];
   if (!workSheetTemplate.qcTemplateUid) return;
-  const template: IQCTemplate | undefined = qcTemplates.value?.find(
-    (item: IQCTemplate) => item.uid === workSheetTemplate.qcTemplateUid
+  const template: QCTemplateType | undefined = qcTemplates.value?.find(
+    (item: QCTemplateType) => item.uid === workSheetTemplate.qcTemplateUid
   );
   template?.qcLevels!.forEach((level, index) => {
     workSheetTemplate.reserved?.push({
       position: index + 1,
       levelUid: level.uid,
-    } as IReserved);
+    } as ReservedType);
   });
   calculateRows();
 }
@@ -169,15 +170,15 @@ function changeWorkSheetType(event: any): void {
   }
 }
 
-function FormManager(create: boolean, obj = {} as IWorkSheetTemplate) {
+function FormManager(create: boolean, obj = {} as WorkSheetTemplateType) {
   createItem.value = create;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "WOKKSHEET TEMPLATE";
   showModal.value = true;
   if (create) {
-    let wst = {} as IWorkSheetTemplate;
-    wst.instrument = {} as IInstrument;
-    wst.sampleType = {} as ISampleType;
-    wst.analysis = {} as IAnalysisService;
+    let wst = {} as WorkSheetTemplateType;
+    wst.instrument = {} as InstrumentType;
+    wst.sampleType = {} as SampleTypeTyp;
+    wst.analysis = {} as AnalysisType;
     Object.assign(workSheetTemplate, { ...wst });
   } else {
     selectWorkSheetTemplate(obj);
@@ -190,16 +191,16 @@ function saveForm() {
   showModal.value = false;
 }
 
-const instruments = computed<IInstrument[]>(() => setupStore.getInstruments);
+const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments);
 const services = computed(() => {
-  const services: IAnalysisService[] = analysisStore.getAnalysesServicesSimple;
+  const services: AnalysisType[] = analysisStore.getAnalysesServicesSimple;
   const forQC = services?.filter(
     (service) => service?.category?.name !== "Quality Control"
   );
   return forQC;
 });
-const qcLevels = computed<IQCLevel[]>(() => analysisStore.getQCLevels);
-const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
+const qcLevels = computed<QCLevelLevel[]>(() => analysisStore.getQCLevels);
+const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
 </script>
 
 

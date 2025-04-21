@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxTestMethod} from "@/models/microbiology";
+import {AbxTestMethodType} from "@/types/gql";
 import {
   AddAbxTestMethodDocument,
   AddAbxTestMethodMutation,
@@ -17,27 +17,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxTestMethod;
+let form = reactive({}) as AbxTestMethodType;
 const formAction = ref<boolean>(true);
 
-const abxTestMethods = ref<IAbxTestMethod[]>([]);
+const abxTestMethods = ref<AbxTestMethodType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables>(
       GetAbxTestMethodAllDocument, {}, "abxTestMethodAll"
   ).then((result) => {
     if (result) {
-      abxTestMethods.value = result as IAbxTestMethod[]
+      abxTestMethods.value = result as AbxTestMethodType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxTestMethod): void {
+function FormManager(create: boolean, obj = {} as AbxTestMethodType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx TestMethod";
   if (create) {
-    Object.assign(form, {} as IAbxTestMethod);
+    Object.assign(form, {} as AbxTestMethodType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -54,7 +54,7 @@ function saveForm(): void {
         AddAbxTestMethodDocument, {payload}, "createAbxTestMethod"
     ).then((result) => {
       if (result) {
-        abxTestMethods.value.unshift(result as IAbxTestMethod);
+        abxTestMethods.value.unshift(result as AbxTestMethodType);
       }
     });
   }
@@ -70,7 +70,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxTestMethods.value = [
                 ...abxTestMethods.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxTestMethod[];
+              ] as AbxTestMethodType[];
             }
           }
         });

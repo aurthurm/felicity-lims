@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import 'ckeditor5/ckeditor5.css';
 import { PropType, toRefs, ref, onMounted } from "vue";
-import { INotice } from "@/models/notice";
+import { NoticeType } from "@/types/gql";
 import { 
 	AddNoticeDocument, AddNoticeMutation, AddNoticeMutationVariables,
 	EditNoticeDocument, EditNoticeMutation, EditNoticeMutationVariables
@@ -135,7 +135,7 @@ onMounted(( )=>{
 
 
 const props = defineProps({
-  notice: Object as PropType<INotice>,
+  notice: Object as PropType<NoticeType>,
 });
 
 const emit = defineEmits(["close"]);
@@ -173,12 +173,12 @@ const { value: body } = useField<string>("body");
 const { value: expiry } = useField("expiry");
 
 const submitNoticeForm = handleSubmit((values) => {
-  if (!values.uid) addNotice(values as INotice);
-  if (values.uid) updateNotice(values as INotice);
+  if (!values.uid) addNotice(values as NoticeType);
+  if (values.uid) updateNotice(values as NoticeType);
 });
 
 //
-function addNotice(payload: INotice) {
+function addNotice(payload: NoticeType) {
   withClientMutation<AddNoticeMutation, AddNoticeMutationVariables>(AddNoticeDocument,
     {
       payload: {
@@ -196,7 +196,7 @@ function addNotice(payload: INotice) {
   });
 }
 
-function updateNotice(payload: INotice) {
+function updateNotice(payload: NoticeType) {
   withClientMutation<EditNoticeMutation, EditNoticeMutationVariables>(EditNoticeDocument,
     {
       uid: payload.uid,

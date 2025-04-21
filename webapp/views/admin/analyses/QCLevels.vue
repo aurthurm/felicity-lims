@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue';
-  import { IQCLevel } from '@/models/analysis';
+  import { QCLevelType } from '@/types/gql';
   import { AddQcLevelDocument, AddQcLevelMutation, AddQcLevelMutationVariables,
     EditQcLevelDocument, EditQcLevelMutation, EditQcLevelMutationVariables } from '@/graphql/operations/analyses.mutations';
 
@@ -12,7 +12,7 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IQCLevel;
+  let form = reactive({}) as QCLevelType;
   const formAction = ref(true);
 
   analysisStore.fetchQCLevels();
@@ -28,12 +28,12 @@
     .then((result) => analysisStore.updateQcLevel(result));
   }
 
-  function FormManager(create: boolean, obj: IQCLevel = {}):void {
+  function FormManager(create: boolean, obj: QCLevelType = {} as QCLevelType):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
     if (create) {
-      Object.assign(form, { ...({} as IQCLevel) });
+      Object.assign(form, { ...({} as QCLevelType) });
     } else {
       Object.assign(form, { ...obj });
     }

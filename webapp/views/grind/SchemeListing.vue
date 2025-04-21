@@ -2,12 +2,11 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import useApiUtil from '@/composables/api_util';
-import { IGrindScheme } from '@/models/grind';
+import { GrindSchemeType, UserType } from '@/types/gql';
 import { formatDate, stringToColor, getUserInitials } from '@/utils'
 import { AddGrindSchemeDocument, AddGrindSchemeMutation, AddGrindSchemeMutationVariables, EditGrindSchemeDocument, EditGrindSchemeMutation, EditGrindSchemeMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindSchemeAllDocument, GetGrindSchemeAllQuery, GetGrindSchemeAllQueryVariables } from '@/graphql/operations/grind.queries';
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries';
-import { IUser } from '@/models/auth';
 
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -18,12 +17,12 @@ const { withClientMutation, withClientQuery } = useApiUtil();
 // State variables
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IGrindScheme;
+let form = reactive({}) as GrindSchemeType;
 const formAction = ref<boolean>(true);
 
 const fetchingSchemes = ref<boolean>(false);
-const schemes = ref<IGrindScheme[]>([]);
-const users = ref<IUser[]>([]);
+const schemes = ref<GrindSchemeType[]>([]);
+const users = ref<UserType[]>([]);
 
 // Search and pagination parameters
 let schemeParams = reactive({
@@ -122,7 +121,7 @@ function resetForm() {
     endDate: '',
     assignee: null,
     members: [],
-  } as unknown as IGrindScheme);
+  } as unknown as GrindSchemeType);
 }
 
 function openCreateForm() {
@@ -132,7 +131,7 @@ function openCreateForm() {
   resetForm();
 }
 
-function openEditForm(scheme: IGrindScheme) {
+function openEditForm(scheme: GrindSchemeType) {
   formAction.value = false;
   showModal.value = true;
   formTitle.value = 'Edit Scheme';
@@ -158,7 +157,7 @@ function saveForm() {
         AddGrindSchemeDocument, { payload }, "createGrindScheme"
     ).then((result) => {
       if (result) {
-        schemes.value.unshift(result as IGrindScheme);
+        schemes.value.unshift(result as GrindSchemeType);
       }
     });
   } else {
@@ -169,7 +168,7 @@ function saveForm() {
       if (result) {
         const index = schemes.value.findIndex(s => s.uid === result.uid);
         if (index !== -1) {
-          schemes.value[index] = result as IGrindScheme;
+          schemes.value[index] = result as GrindSchemeType;
         }
       }
     });

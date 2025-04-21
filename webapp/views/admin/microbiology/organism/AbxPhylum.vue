@@ -2,7 +2,7 @@
 import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import { IAbxKingdom, IAbxPhylum } from "@/models/microbiology";
+import { AbxKingdomType, AbxPhylumType } from "@/types/gql";
 import {
   AddAbxPhylumDocument,
   AddAbxPhylumMutation,
@@ -27,35 +27,35 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxPhylum;
+let form = reactive({}) as AbxPhylumType;
 const formAction = ref<boolean>(true);
 
-const abxPhylums = ref<IAbxPhylum[]>([]);
-const abxKingdoms = ref<IAbxKingdom[]>([]);
+const abxPhylums = ref<AbxPhylumType[]>([]);
+const abxKingdoms = ref<AbxKingdomType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxKingdomAllQuery, GetAbxKingdomAllQueryVariables>(
       GetAbxKingdomAllDocument, {}, "abxKingdomAll"
   ).then((result) => {
     if (result) {
-      abxKingdoms.value = result as IAbxKingdom[]
+      abxKingdoms.value = result as AbxKingdomType[]
     }
   })
   withClientQuery<GetAbxPhylumAllQuery, GetAbxPhylumAllQueryVariables>(
       GetAbxPhylumAllDocument, {}, "abxPhylumAll"
   ).then((result) => {
     if (result) {
-      abxPhylums.value = result as IAbxPhylum[]
+      abxPhylums.value = result as AbxPhylumType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxPhylum): void {
+function FormManager(create: boolean, obj = {} as AbxPhylumType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Phylum";
   if (create) {
-    Object.assign(form, {} as IAbxPhylum);
+    Object.assign(form, {} as AbxPhylumType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -72,7 +72,7 @@ function saveForm(): void {
         AddAbxPhylumDocument, {payload}, "createAbxPhylum"
     ).then((result) => {
       if (result) {
-        abxPhylums.value.unshift(result as IAbxPhylum);
+        abxPhylums.value.unshift(result as AbxPhylumType);
       }
     });
   }
@@ -88,7 +88,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxPhylums.value = [
                 ...abxPhylums.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxPhylum[];
+              ] as AbxPhylumType[];
             }
           }
         });

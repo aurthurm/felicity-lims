@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
-  import { IInstrumentType } from '@/models/setup'
+  import { InstrumentTypeType } from '@/types/gql'
   import { AddInstrumentTypeDocument, AddInstrumentTypeMutation, AddInstrumentTypeMutationVariables,
     EditInstrumentTypeDocument, EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
@@ -21,7 +21,7 @@
   })
    
   const instrumentTypes = computed(() => setupStore.getInstrumentTypes);
-  let instrumentType = reactive({}) as IInstrumentType;
+  let instrumentType = reactive({}) as InstrumentTypeType;
 
   function addInstrumentType(): void {
     const payload = { name: instrumentType.name, description: instrumentType.description }
@@ -35,20 +35,20 @@
     .then((result) => setupStore.updateInstrumentType(result));
   }
 
-  function selectInstrumentType(obj: IInstrumentType): void {
+  function selectInstrumentType(obj: InstrumentTypeType): void {
     Object.assign(instrumentType, { ...obj})
   }
   
   function resetInstrumentType(): void {
-    Object.assign(instrumentType, { ...({} as IInstrumentType)})
+    Object.assign(instrumentType, { ...({} as InstrumentTypeType)})
   }
 
-  function FormManager(create: boolean, obj = {} as IInstrumentType): void {
+  function FormManager(create: boolean, obj = {} as InstrumentTypeType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT TYPE";
     if (create) {
-      Object.assign(instrumentType, { ...({} as IInstrumentType) });
+      Object.assign(instrumentType, { ...({} as InstrumentTypeType) });
     } else {
       Object.assign(instrumentType, { ...obj });
     }

@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxKingdom, IAbxOrganism, IAbxOrganismSerotype } from "@/models/microbiology";
+import { AbxOrganismType, AbxOrganismSerotypeType } from "@/types/gql";
 import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismSerotypeAllDocument, GetAbxOrganismSerotypeAllQuery, GetAbxOrganismSerotypeAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxOrganismSerotypeMutation, AddAbxOrganismSerotypeMutationVariables, AddAbxOrganismSerotypeDocument, EditAbxOrganismSerotypeMutation, EditAbxOrganismSerotypeMutationVariables, EditAbxOrganismSerotypeDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -17,12 +17,12 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxOrganismSerotype;
+let form = reactive({}) as AbxOrganismSerotypeType;
 const formAction = ref<boolean>(true);
 
 const fetchingOrganismSerotypes = ref<boolean>(false);
-const abxOrganismSerotypes = ref<IAbxOrganismSerotype[]>([]);
-const abxOrganisms = ref<IAbxOrganism[]>([]);
+const abxOrganismSerotypes = ref<AbxOrganismSerotypeType[]>([]);
+const abxOrganisms = ref<AbxOrganismType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -199,14 +199,14 @@ function showMoreOrganismSerotypes(opts: any): void {
   fetchOrganismSerotypes(abxParams);
 }
 
-const resetOrganismSerotype = () => Object.assign(form, {}) as IAbxOrganismSerotype;
+const resetOrganismSerotype = () => Object.assign(form, {}) as AbxOrganismSerotypeType;
 
-function FormManager(create: boolean, obj = {} as IAbxOrganismSerotype): void {
+function FormManager(create: boolean, obj = {} as AbxOrganismSerotypeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "OrganismSerotype";
   if (create) {
-    Object.assign(form, {} as IAbxOrganismSerotype);
+    Object.assign(form, {} as AbxOrganismSerotypeType);
   } else {
     Object.assign(form, {...obj});
   }

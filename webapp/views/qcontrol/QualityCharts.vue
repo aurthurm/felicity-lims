@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { defineAsyncComponent, onMounted, ref, computed, watch } from 'vue';
   import { useAnalysisStore } from '@/stores/analysis';
-  import { IAnalysisService } from '@/models/analysis';
+  import { ProfileType } from '@/types/gql';
   import  useApiUtil  from '@/composables/api_util';
   import { GetReferenceRunsDocument, GetReferenceRunsQuery, GetReferenceRunsQueryVariables } from '@/graphql/operations/analyses.queries';
 
@@ -39,15 +39,15 @@
   onMounted(() => {
     analysisStore.fetchAnalysesServices({})
   })
-  const analysesServices = computed<IAnalysisService[]>(() => analysisStore.getAnalysesServicesSimple )
+  const analysesServices = computed<ProfileType[]>(() => analysisStore.getAnalysesServicesSimple )
   
   const rawData = ref<QCDataPoint[]>([]);
   const today = new Date()
   let selectedMonth = ref({"month": today.getMonth(), "year": today.getFullYear()});
-  let selectedAnalyses = ref<IAnalysisService | null>(null);
+  let selectedAnalyses = ref<ProfileType | null>(null);
   const isLoading = ref(false);
 
-  const handleAnalysisChange = async (newValue: IAnalysisService) => {
+  const handleAnalysisChange = async (newValue: ProfileType) => {
     if(!selectedMonth.value) return;
     const filters = {
       analyses: [newValue.uid],

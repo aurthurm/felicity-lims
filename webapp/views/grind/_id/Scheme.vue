@@ -2,7 +2,7 @@
 import useApiUtil from "@/composables/api_util";
 import { AddGrindBoardMutation, AddGrindBoardMutationVariables, AddGrindBoardDocument, EditGrindBoardMutation, EditGrindBoardMutationVariables, EditGrindBoardDocument } from "@/graphql/operations/grind.mutations";
 import { GetGrindSchemeDocument, GetGrindSchemeQuery, GetGrindSchemeQueryVariables } from "@/graphql/operations/grind.queries";
-import { IGrindBoard, IGrindScheme } from "@/models/grind";
+import { GrindBoardType, GrindSchemeType } from "@/types/gql";
 import { resetForm, mutateForm } from "@/utils";
 import { RequestPolicy } from "@urql/vue";
 import { defineAsyncComponent, onMounted, reactive, ref } from "vue";
@@ -14,7 +14,7 @@ const Board = defineAsyncComponent(() => import("./Board.vue"));
 const { withClientMutation, withClientQuery } = useApiUtil();
 
 const route = useRoute();
-const scheme = ref<IGrindScheme>();
+const scheme = ref<GrindSchemeType>();
 
 onMounted(async () => {
   await getScheme();
@@ -34,7 +34,7 @@ function getScheme(requestPolicy: RequestPolicy = 'cache-first'): Promise<void> 
     "grindSchemeByUid",
     requestPolicy
   ).then((data) => {
-    scheme.value = data as IGrindScheme;
+    scheme.value = data as GrindSchemeType;
   });
 }
 
@@ -43,7 +43,7 @@ let boardAction = ref<boolean>(false);
 let showBoardModal = ref<boolean>(false);
 let formAction = ref<boolean>(false);
 let boardFormTitle = ref<string>("");
-let boardForm = reactive({}) as IGrindBoard;
+let boardForm = reactive({}) as GrindBoardType;
 
 const openCreateBoardForm = () => {
     boardAction.value = true;
@@ -63,7 +63,7 @@ const saveBoardForm = () => {
           if (!scheme.value!.boards) {
               scheme.value!.boards = [];
           }
-          scheme.value!.boards.push(board as IGrindBoard);
+          scheme.value!.boards.push(board as GrindBoardType);
       });
     } else {
       withClientMutation<EditGrindBoardMutation, EditGrindBoardMutationVariables>(
@@ -78,7 +78,7 @@ const saveBoardForm = () => {
     boardAction.value = false;
 };
 
-const updateBoard = (board: IGrindBoard) => {
+const updateBoard = (board: GrindBoardType) => {
   boardAction.value = false;
   mutateForm(boardForm, board, true)
   boardFormTitle.value = "Update Board";
@@ -86,7 +86,7 @@ const updateBoard = (board: IGrindBoard) => {
 }
 
 // Board Selection
-let selectedBoard = ref<IGrindBoard>();
+let selectedBoard = ref<GrindBoardType>();
 const selectBoard =(board) => {
   selectedBoard.value = board
   router.push({query: {board: board.uid}})

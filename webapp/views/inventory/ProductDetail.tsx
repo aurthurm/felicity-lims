@@ -1,31 +1,30 @@
 import { defineComponent, computed, ref, watch, PropType } from 'vue';
 import  useApiUtil  from '@/composables/api_util';
-import { IStockAdjustment, IStockLot, IStockProduct } from '@/models/inventory';
+import { StockAdjustmentType, StockLotType, StockItemVariantType, StockAdjustmentCursorPage } from '@/types/gql';
 import { 
     GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables,
     GetAllStockAdjustmentsDocument, GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables
  } from '@/graphql/operations/inventory.queries';
 import { parseDate } from '@/utils';
-import { IPagination } from '@/models/pagination';
 
 const ProductDetail = defineComponent({
     name: 'product-detail',
     emits: ["close"],  
     props: {
         product: {
-            type: Object as PropType<IStockProduct>,
+            type: Object as PropType<StockItemVariantType>,
         },
     },
     setup(props, { emit }) {
         const { withClientQuery } = useApiUtil();
 
         // Prefetch data
-        const stockLots = ref([] as IStockLot[]);
-        const stockAdjustments = ref([] as IStockAdjustment[]);
+        const stockLots = ref([] as StockLotType[]);
+        const stockAdjustments = ref([] as StockAdjustmentType[]);
         watch(() => props.product?.uid, async (newUid, old) => {
             if (newUid) {
                 withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid: newUid }, 'stockLots').then(result => {
-                    stockLots.value = result;
+                    stockLots.value = result as StockLotType[];
                 })
                 withClientQuery<GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables>(GetAllStockAdjustmentsDocument, {
                     first: 25,
@@ -34,8 +33,8 @@ const ProductDetail = defineComponent({
                     sortBy: ['-uid'],
                     productUid: newUid
                 }, 'stockAdjustmentAll')
-                .then((paging: IPagination<IStockAdjustment>) => {
-                    stockAdjustments.value = paging.items ?? [];
+                .then((paging) => {
+                    stockAdjustments.value = (paging as StockAdjustmentCursorPage).items || [];
                 })
             }
         });
@@ -139,7 +138,7 @@ const ProductDetail = defineComponent({
                                         {this.stockAdjustments?.map(adjustment => (<>
                                             <tr key={adjustment.uid} class="hover:bg-muted transition-colors duration-150">
                                                 <td class="px-4 py-3 text-sm text-foreground">{parseDate(adjustment?.adjustmentDate)}</td>
-                                                <td class="px-4 py-3 text-sm text-foreground">{adjustment?.lotNumber}</td>
+                                                <td class="px-4 py-3 text-sm text-foreground">{adjustment?.stockLot?.lotNumber}</td>
                                                 <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjustmentType}</td>
                                                 <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjust}</td>
                                                 <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjustmentBy?.firstName}</td>

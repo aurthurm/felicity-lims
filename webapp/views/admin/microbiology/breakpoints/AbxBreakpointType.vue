@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxBreakpointType} from "@/models/microbiology";
+import {AbxBreakpointTypeType} from "@/types/gql";
 import {
   AddAbxBreakpointTypeDocument,
   AddAbxBreakpointTypeMutation,
@@ -17,27 +17,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxBreakpointType;
+let form = reactive({}) as AbxBreakpointTypeType;
 const formAction = ref<boolean>(true);
 
-const abxBreakpointTypes = ref<IAbxBreakpointType[]>([]);
+const abxBreakpointTypes = ref<AbxBreakpointTypeType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables>(
       GetAbxBreakpointTypeAllDocument, {}, "abxBreakpointTypeAll"
   ).then((result) => {
     if (result) {
-      abxBreakpointTypes.value = result as IAbxBreakpointType[]
+      abxBreakpointTypes.value = result as AbxBreakpointTypeType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxBreakpointType): void {
+function FormManager(create: boolean, obj = {} as AbxBreakpointTypeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx BreakpointType";
   if (create) {
-    Object.assign(form, {} as IAbxBreakpointType);
+    Object.assign(form, {} as AbxBreakpointTypeType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -54,7 +54,7 @@ function saveForm(): void {
         AddAbxBreakpointTypeDocument, {payload}, "createAbxBreakpointType"
     ).then((result) => {
       if (result) {
-        abxBreakpointTypes.value.unshift(result as IAbxBreakpointType);
+        abxBreakpointTypes.value.unshift(result as AbxBreakpointTypeType);
       }
     });
   }
@@ -70,7 +70,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxBreakpointTypes.value = [
                 ...abxBreakpointTypes.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxBreakpointType[];
+              ] as AbxBreakpointTypeType[];
             }
           }
         });

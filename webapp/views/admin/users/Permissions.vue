@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent } from 'vue';
 import { useUserStore } from '@/stores/user';
 import  useApiUtil  from '@/composables/api_util';
-import { IGroup, IPermission } from '@/models/auth';
+import { GroupType, PermissionType } from '@/types/gql';
 import { UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, UpdateGroupsAndPermissionsDocument } from '@/graphql/operations/_mutations';
 
 const FelSwitch = defineAsyncComponent(
@@ -15,7 +15,7 @@ const { withClientMutation } = useApiUtil()
 userStore.fetchGroupsAndPermissions();
 const groups = computed(() => userStore.getGroups)
 
-function hasPermission(group: IGroup, perm: IPermission): boolean {
+function hasPermission(group: GroupType, perm: PermissionType): boolean {
   return group?.permissions?.some(p => p?.uid === perm?.uid) ?? false;
 }
 
@@ -28,7 +28,7 @@ const groupBy = (xs, key):Map<any, any> => {
 
 const permissions = computed(() => Array.from(Object.entries(groupBy(userStore.getPermissions, 'target'))))
 
-function updateGroupPerms(group: IGroup, permission: IPermission): void {
+function updateGroupPerms(group: GroupType, permission: PermissionType): void {
   withClientMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument, { 
     groupUid: group?.uid, 
     permissionUid: permission?.uid 
@@ -36,7 +36,7 @@ function updateGroupPerms(group: IGroup, permission: IPermission): void {
   .then((result) => userStore.updateGroupsAndPermissions(result));
 }
 
-function handlePermissionToggle(group: IGroup, perm: IPermission, value: boolean): void {
+function handlePermissionToggle(group: GroupType, perm: PermissionType, value: boolean): void {
   if (value !== hasPermission(group, perm)) {
     updateGroupPerms(group, perm);
   }

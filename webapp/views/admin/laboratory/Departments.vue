@@ -2,7 +2,7 @@
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { AddDepartmentDocument, AddDepartmentMutation, AddDepartmentMutationVariables,
     EditDepartmentDocument, EditDepartmentMutation, EditDepartmentMutationVariables } from '@/graphql/operations/_mutations';
-  import { IDepartment } from '@/models/setup';
+  import { DepartmentType } from '@/types/gql';
 
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
@@ -12,7 +12,7 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as IDepartment;
+  let form = reactive({}) as DepartmentType;
   const formAction = ref(true);
 
   setupStore.fetchDepartments({})

@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxClass, IAbxFamily, IAbxGenus, IAbxKingdom, IAbxOrder, IAbxOrganism, IAbxPhylum } from "@/models/microbiology";
+import { AbxClassType, AbxFamilyType, AbxGenusType, AbxKingdomType, AbxOrderType, AbxOrganismType, AbxPhylumType } from "@/types/gql";
 import { GetAbxFamilyAllDocument, GetAbxFamilyAllQuery, GetAbxFamilyAllQueryVariables, GetAbxOrderAllDocument, GetAbxOrderAllQuery, GetAbxOrderAllQueryVariables, GetAbxKingdomAllDocument, GetAbxKingdomAllQuery, GetAbxKingdomAllQueryVariables, GetAbxPhylumAllDocument, GetAbxPhylumAllQuery, GetAbxPhylumAllQueryVariables, GetAbxClassAllDocument, GetAbxClassAllQuery, GetAbxClassAllQueryVariables, GetAbxGenusAllDocument, GetAbxGenusAllQuery, GetAbxGenusAllQueryVariables, GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxOrganismMutation, AddAbxOrganismMutationVariables, AddAbxOrganismDocument, EditAbxOrganismMutation, EditAbxOrganismMutationVariables, EditAbxOrganismDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -17,21 +17,21 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxOrganism;
+let form = reactive({}) as AbxOrganismType;
 const formAction = ref<boolean>(true);
 
 const fetchingOrganisms = ref<boolean>(false);
-const abxOrganisms = ref<IAbxOrganism[]>([]);
-const abxKingdoms = ref<IAbxKingdom[]>([]);
-const abxPhylums = ref<IAbxPhylum[]>([]);
+const abxOrganisms = ref<AbxOrganismType[]>([]);
+const abxKingdoms = ref<AbxKingdomType[]>([]);
+const abxPhylums = ref<AbxPhylumType[]>([]);
 const phylums = computed(() => abxPhylums.value.filter((phylum) => phylum.kingdomUid === form.kingdom?.uid));
-const abxClasss = ref<IAbxClass[]>([]);
+const abxClasss = ref<AbxClassType[]>([]);
 const classes = computed(() => abxClasss.value.filter((clas_) => clas_.phylumUid === form.phylum?.uid));
-const abxOrders = ref<IAbxOrder[]>([]);
+const abxOrders = ref<AbxOrderType[]>([]);
 const orders = computed(() => abxOrders.value.filter((order) => order.classUid === form.class?.uid));
-const abxFamilys = ref<IAbxFamily[]>([]);
+const abxFamilys = ref<AbxFamilyType[]>([]);
 const familys = computed(() => abxFamilys.value.filter((family) => family.orderUid === form.order?.uid));
-const abxGenuss = ref<IAbxGenus[]>([]);
+const abxGenuss = ref<AbxGenusType[]>([]);
 const genuses = computed(() => abxGenuss.value.filter((genus) => genus.familyUid === form.family?.uid));
 
 
@@ -299,7 +299,7 @@ onMounted(() =>  {
         GetAbxOrderAllDocument, {}, "abxOrderAll"
     ).then((result) => {
       if (result) {
-        abxOrders.value = result as IAbxOrder[]
+        abxOrders.value = result as AbxOrderType[]
       }
     })
     //
@@ -307,7 +307,7 @@ onMounted(() =>  {
         GetAbxFamilyAllDocument, {}, "abxFamilyAll"
     ).then((result) => {
       if (result) {
-        abxFamilys.value = result as IAbxFamily[]
+        abxFamilys.value = result as AbxFamilyType[]
       }
     })
     //
@@ -315,7 +315,7 @@ onMounted(() =>  {
         GetAbxKingdomAllDocument, {}, "abxKingdomAll"
     ).then((result) => {
       if (result) {
-        abxKingdoms.value = result as IAbxKingdom[]
+        abxKingdoms.value = result as AbxKingdomType[]
       }
     })
     //
@@ -323,7 +323,7 @@ onMounted(() =>  {
         GetAbxPhylumAllDocument, {}, "abxPhylumAll"
     ).then((result) => {
       if (result) {
-        abxPhylums.value = result as IAbxPhylum[]
+        abxPhylums.value = result as AbxPhylumType[]
       }
     })
     //
@@ -331,7 +331,7 @@ onMounted(() =>  {
         GetAbxGenusAllDocument, {}, "abxGenusAll"
     ).then((result) => {
       if (result) {
-        abxGenuss.value = result as IAbxGenus[]
+        abxGenuss.value = result as AbxGenusType[]
       }
     })
     //
@@ -339,7 +339,7 @@ onMounted(() =>  {
       GetAbxClassAllDocument, {}, "abxClassAll"
     ).then((result) => {
       if (result) {
-        abxClasss.value = result as IAbxClass[]
+        abxClasss.value = result as AbxClassType[]
       }
     })
   }
@@ -361,14 +361,14 @@ function showMoreOrganisms(opts: any): void {
   fetchOrganisms(abxParams);
 }
 
-const resetOrganism = () => Object.assign(form, {}) as IAbxOrganism;
+const resetOrganism = () => Object.assign(form, {}) as AbxOrganismType;
 
-function FormManager(create: boolean, obj = {} as IAbxOrganism): void {
+function FormManager(create: boolean, obj = {} as AbxOrganismType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Organism";
   if (create) {
-    Object.assign(form, {} as IAbxOrganism);
+    Object.assign(form, {} as AbxOrganismType);
   } else {
     Object.assign(form, {...obj});
   }

@@ -1,6 +1,6 @@
 import { computed, watch, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '@/stores/inventory';
-import { IStockLot, IStockProduct } from '@/models/inventory';
+import { StockLotType, StockItemVariantType } from '@/types/gql';
 import  useApiUtil  from '@/composables/api_util';
 import { AddStockAdjustmentDocument, AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables } from '@/graphql/operations/inventory.mutations';
 import { GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables } from '@/graphql/operations/inventory.queries';
@@ -29,7 +29,7 @@ const InventoryListing = defineComponent({
         });
 
         const choiceProduct = reactive({
-            product: {} as IStockProduct,
+            product: {} as StockItemVariantType,
             quantity: 0,
             stockLotUid: "",
             type: "",
@@ -37,10 +37,10 @@ const InventoryListing = defineComponent({
         });
         const openAddProduct = ref(false);
 
-        const stockLots = ref([]);
+        const stockLots = ref([] as StockLotType[]);
         const fetchLots = (productUid: string) => {
             withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid }, 'stockLots').then(result => {
-                stockLots.value = result;
+                stockLots.value = result as StockLotType[];
             })
         }
 
@@ -48,7 +48,7 @@ const InventoryListing = defineComponent({
         
         const openAdjustProduct = ref(false);
         const openProductDetail = ref(false);
-        const productDetailItem = ref({} as IStockProduct);
+        const productDetailItem = ref({} as StockItemVariantType);
         
         const tableColumns = ref([
             {
@@ -212,7 +212,7 @@ const InventoryListing = defineComponent({
                         remarks: choiceProduct.remarks
                       }
                     },
-                    'createStockAjustment'
+                    'createStockAdjustment'
                 ).then(result => {
                 });
             },
@@ -278,7 +278,7 @@ const InventoryListing = defineComponent({
                                                 aria-label="Product Lot"
                                             >
                                                 <option value=""></option>
-                                                {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>
+                                                {this.stockLots?.map((lot: StockLotType) => (<option key={lot.uid} value={lot.uid}>
                                                     {lot.lotNumber} ({lot.quantity}) [{parseDate(lot.expiryDate, false)}]
                                                 </option>))}
                                             </select>
@@ -330,7 +330,7 @@ const InventoryListing = defineComponent({
                                                 aria-label="Product Lot"
                                             >
                                                 <option value=""></option>
-                                                {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
+                                                {this.stockLots?.map((lot: StockLotType) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
                                             </select>
                                         </div>
                                         <div class="space-y-2">

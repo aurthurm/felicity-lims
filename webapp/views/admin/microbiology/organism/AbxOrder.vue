@@ -2,7 +2,7 @@
 import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import { IAbxClass, IAbxOrder } from "@/models/microbiology";
+import { AbxClassType, AbxOrderType } from "@/types/gql";
 import {
   AddAbxOrderDocument,
   AddAbxOrderMutation,
@@ -27,35 +27,35 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxOrder;
+let form = reactive({}) as AbxOrderType;
 const formAction = ref<boolean>(true);
 
-const abxClasses = ref<IAbxClass[]>([]);
-const abxOrders = ref<IAbxOrder[]>([]);
+const abxClasses = ref<AbxClassType[]>([]);
+const abxOrders = ref<AbxOrderType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxOrderAllQuery, GetAbxOrderAllQueryVariables>(
       GetAbxOrderAllDocument, {}, "abxOrderAll"
   ).then((result) => {
     if (result) {
-      abxOrders.value = result as IAbxOrder[]
+      abxOrders.value = result as AbxOrderType[]
     }
   })
   withClientQuery<GetAbxClassAllQuery, GetAbxClassAllQueryVariables>(
       GetAbxClassAllDocument, {}, "abxClassAll"
   ).then((result) => {
     if (result) {
-      abxClasses.value = result as IAbxClass[]
+      abxClasses.value = result as AbxClassType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxOrder): void {
+function FormManager(create: boolean, obj = {} as AbxOrderType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Order";
   if (create) {
-    Object.assign(form, {} as IAbxOrder);
+    Object.assign(form, {} as AbxOrderType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -72,7 +72,7 @@ function saveForm(): void {
         AddAbxOrderDocument, {payload}, "createAbxOrder"
     ).then((result) => {
       if (result) {
-        abxOrders.value.unshift(result as IAbxOrder);
+        abxOrders.value.unshift(result as AbxOrderType);
       }
     });
   }
@@ -88,7 +88,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxOrders.value = [
                 ...abxOrders.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxOrder[];
+              ] as AbxOrderType[];
             }
           }
         });

@@ -2,7 +2,7 @@
   import { storeToRefs } from "pinia";
   import { defineAsyncComponent, computed } from "vue";
   import { useRouter } from "vue-router";
-  import { IPatient } from "@/models/patient";
+  import { PatientType } from "@/types/gql";
   import { usePatientStore } from "@/stores/patient";
   import * as shield from "@/guards";
 
@@ -10,7 +10,7 @@
   const router = useRouter();
   const { patient } = storeToRefs(patientStore);
 
-  function addSample(patient?: IPatient): void {
+  function addSample(patient?: PatientType): void {
     router?.push({
       name: "samples-add",
       params: {

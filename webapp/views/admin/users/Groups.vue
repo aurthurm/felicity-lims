@@ -3,7 +3,7 @@
   import { useUserStore } from '@/stores/user';
   import  useApiUtil  from '@/composables/api_util';
   import { AddGroupDocument, AddGroupMutation, AddGroupMutationVariables, EditGroupDocument, EditGroupMutation, EditGroupMutationVariables, UpdateGroupsAndPermissionsDocument, UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, } from '@/graphql/operations/_mutations';
-  import { IGroup, IPermission } from '@/models/auth';
+  import { GroupType, PermissionType } from '@/types/gql';
   import * as shield from '@/guards'
 
   const FelSwitch = defineAsyncComponent(
@@ -46,16 +46,16 @@
   let showModal = ref(false);
   let formTitle = ref('');
   const formAction = ref(true);
-  let userGroup = reactive({}) as IGroup;
+  let userGroup = reactive({}) as GroupType;
 
-  function selectGroup(group: IGroup): void {
+  function selectGroup(group: GroupType): void {
     const pgs = group.pages as string;
     Object.assign(userGroup, { 
       ...group, 
       pages: pgs?.split(",") || [],
     })
     permissions.value?.forEach(item => {
-      item[1].forEach((perm: IPermission) => {
+      item[1].forEach((perm: PermissionType) => {
         perm.checked = false;
         if(userGroup.permissions?.some(p => {
           return (p?.uid == perm?.uid) || false;
@@ -66,12 +66,12 @@
     })
   }
 
-  function FormManager(create: boolean, obj = {} as IGroup): void {
+  function FormManager(create: boolean, obj = {} as GroupType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
     if (create) {
-      Object.assign(userGroup, { name: "", pages: [] } as IGroup);
+      Object.assign(userGroup, { name: "", pages: [] } as GroupType);
     } else {
       Object.assign(userGroup, { ...obj });
     }
@@ -107,7 +107,7 @@
 
   const permissions = computed(() => Array.from(Object.entries(groupBy(userStore.getPermissions, 'target'))))
   
-  function updateGroupPerms(group: IGroup, permission: IPermission): void {
+  function updateGroupPerms(group: GroupType, permission: PermissionType): void {
       withClientMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument, {  groupUid: group?.uid, permissionUid: permission?.uid }, "updateGroupPermissions")
       .then((result) => userStore.updateGroupsAndPermissions(result));
   }

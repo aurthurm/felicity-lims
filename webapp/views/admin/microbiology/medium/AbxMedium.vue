@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxMedium} from "@/models/microbiology";
+import {AbxMediumType} from "@/types/gql";
 import {
   AddAbxMediumDocument,
   AddAbxMediumMutation,
@@ -17,27 +17,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxMedium;
+let form = reactive({}) as AbxMediumType;
 const formAction = ref<boolean>(true);
 
-const abxMediums = ref<IAbxMedium[]>([]);
+const abxMediums = ref<AbxMediumType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxMediumAllQuery, GetAbxMediumAllQueryVariables>(
       GetAbxMediumAllDocument, {}, "abxMediumAll"
   ).then((result) => {
     if (result) {
-      abxMediums.value = result as IAbxMedium[]
+      abxMediums.value = result as AbxMediumType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxMedium): void {
+function FormManager(create: boolean, obj = {} as AbxMediumType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx Medium";
   if (create) {
-    Object.assign(form, {} as IAbxMedium);
+    Object.assign(form, {} as AbxMediumType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -54,7 +54,7 @@ function saveForm(): void {
         AddAbxMediumDocument, {payload}, "createAbxMedium"
     ).then((result) => {
       if (result) {
-        abxMediums.value.unshift(result as IAbxMedium);
+        abxMediums.value.unshift(result as AbxMediumType);
       }
     });
   }
@@ -70,7 +70,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxMediums.value = [
                 ...abxMediums.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxMedium[];
+              ] as AbxMediumType[];
             }
           }
         });

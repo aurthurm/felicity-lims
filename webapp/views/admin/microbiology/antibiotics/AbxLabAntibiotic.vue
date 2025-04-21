@@ -2,20 +2,20 @@
 import {onMounted, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxAntibiotic} from "@/models/microbiology";
+import {AbxAntibioticType} from "@/types/gql";
 import { GetAbxLaboratoryAntibioticsDocument, GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables } from '@/graphql/operations/microbiology.queries';
 import { DiscardAbxAntibioticMutation, DiscardAbxAntibioticMutationVariables, DiscardAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
 
 const {withClientMutation, withClientQuery} = useApiUtil()
 
-const abxlabAntibiotics = ref<IAbxAntibiotic[]>([]);
+const abxlabAntibiotics = ref<AbxAntibioticType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables>(
         GetAbxLaboratoryAntibioticsDocument, {}, "abxLaboratoryAntibiotics"
     ).then((result) => {
       if (result) {
-        abxlabAntibiotics.value  = result as IAbxAntibiotic[]
+        abxlabAntibiotics.value  = result as AbxAntibioticType[]
       }
   })
 })

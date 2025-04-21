@@ -7,16 +7,16 @@ import { useSampleStore } from "@/stores/sample";
 import { useAnalysisStore } from "@/stores/analysis";
 import { useClientStore } from "@/stores/client";
 import {
-  IAnalysisProfile,
-  IAnalysisRequest,
-  IAnalysisService,
-  ISample,
-  ISampleType,
-} from "@/models/analysis";
+  ProfileType,
+  AnalysisRequestType,
+  AnalysisType,
+  SampleType,
+  SampleTypetyp,
+} from "@/types/gql";
 import { AddAnalysisRequestDocument, AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables } from "@/graphql/operations/analyses.mutations";
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number } from "yup";
-import { IClient } from "@/models/client";
+import { ClientType } from "@/types/gql";
 import useNotifyToast from "@/composables/alert_toast";
 import useApiUtil from "@/composables/api_util";
 import { formatDate } from "@/utils";
@@ -44,8 +44,8 @@ let clientParams = reactive({
 clientStore.fetchClients(clientParams);
 
 const clients = computed(() => clientStore.getClients);
-const selectedClient = ref<IClient | null>(null);
-const selectContact = (client: IClient) => {
+const selectedClient = ref<ClientType | null>(null);
+const selectContact = (client: ClientType) => {
   selectedClient.value = client;
 };
 
@@ -62,10 +62,10 @@ let analysesParams = reactive({
 });
 analysisStore.fetchAnalysesServices(analysesParams);
 
-const analysesServices = computed<IAnalysisService[]>(() => {
-  const services: IAnalysisService[] = analysisStore.getAnalysesServicesSimple;
-  let s = new Set<IAnalysisService>();
-  services.forEach((service: IAnalysisService, index: number) => {
+const analysesServices = computed<AnalysisType[]>(() => {
+  const services: AnalysisType[] = analysisStore.getAnalysesServicesSimple;
+  let s = new Set<AnalysisType>();
+  services.forEach((service: AnalysisType, index: number) => {
     if (service.profiles?.length === 0) {
       s.add(service);
     }
@@ -101,10 +101,10 @@ const { handleSubmit, errors } = useForm({
 
 const { value: clientRequestId } = useField("clientRequestId");
 const { value: clinicalData } = useField<string>("clinicalData");
-const { value: client } = useField<IClient>("client");
+const { value: client } = useField<ClientType>("client");
 const { value: clientContactUid } = useField("clientContactUid");
 const { value: priority } = useField("priority");
-const { value: samples } = useField<ISample[]>("samples");
+const { value: samples } = useField<SampleType[]>("samples");
 
 const submitARForm = handleSubmit((values) => {
   arSaving.value = true;
@@ -124,14 +124,14 @@ const submitARForm = handleSubmit((values) => {
 });
 
 // Analysis Request Add
-function addAnalysesRequest(request: IAnalysisRequest): void {
+function addAnalysesRequest(request: AnalysisRequestType): void {
   const payload = {
     patientUid: patient.value?.uid,
     clientRequestId: request.clientRequestId,
     clinicalData: request.clinicalData,
     clientUid: client?.value?.uid,
     clientContactUid: request.clientContactUid,
-    samples: request.samples?.map((s: ISample) => {
+    samples: request.samples?.map((s: SampleType) => {
       return {
         ...s,
         dateCollected: formatDate(s.dateCollected, "YYYY-MM-DD HH:mm"),
@@ -150,11 +150,11 @@ function addAnalysesRequest(request: IAnalysisRequest): void {
 
 function addSample(): void {
   const sample = {
-    sampleType: {} as ISampleType,
+    sampleType: {} as SampleTypetyp,
     dateCollected: "",
-    profiles: [] as IAnalysisProfile[],
-    analyses: [] as IAnalysisService[],
-  } as ISample;
+    profiles: [] as ProfileType[],
+    analyses: [] as AnalysisType[],
+  } as SampleType;
   samples.value.push(sample);
 }
 

@@ -4,11 +4,11 @@ import type { PropType } from 'vue'
 import { useSampleStore } from "@/stores/sample";
 import useAnalysisComposable from "@/composables/analysis";
 import {
-  IAnalysisProfile,
-  IAnalysisResult,
-  IAnalysisService,
-  ISample,
-} from "@/models/analysis";
+  ProfileType,
+  AnalysisResultType,
+  AnalysisType,
+  SampleType,
+} from "@/types/gql";
 import { isNullOrWs, parseDate } from "@/utils";
 
 import * as shield from "@/guards";
@@ -25,8 +25,8 @@ const {
   analysisResults,
   fetchingResults,
 } = defineProps({
-  sample: Object as PropType<ISample>,
-  analysisResults: Object as PropType<IAnalysisResult[]>,
+  sample: Object as PropType<SampleType>,
+  analysisResults: Object as PropType<AnalysisResultType[]>,
   fetchingResults: Boolean,
 });
 
@@ -43,17 +43,17 @@ const state = reactive({
 });
 
 function getResultsChecked(): any {
-  let results: IAnalysisResult[] = [];
+  let results: AnalysisResultType[] = [];
   analysisResults?.forEach((result) => {
     if (result.checked) results.push(result);
   });
   return results;
 }
 
-function prepareResults(): IAnalysisResult[] {
+function prepareResults(): AnalysisResultType[] {
   let results = getResultsChecked();
   let ready: any[] = [];
-  results?.forEach((result: IAnalysisResult) =>
+  results?.forEach((result: AnalysisResultType) =>
     ready.push({ uid: result.uid, result: result.result, methodUid: result.methodUid, laboratoryInstrumentUid: result.laboratoryInstrumentUid })
   );
   return ready;
@@ -62,12 +62,12 @@ function prepareResults(): IAnalysisResult[] {
 function getResultsUids(): string[] {
   const results = getResultsChecked();
   let ready: string[] = [];
-  results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
+  results?.forEach((result: AnalysisResultType) => ready.push(result.uid!));
   return ready;
 }
 
 // Analysis CheckMark Management
-function checkCheck(result: IAnalysisResult): void {
+function checkCheck(result: AnalysisResultType): void {
   if (areAllChecked()) {
     state.allChecked = true;
   } else {
@@ -76,14 +76,14 @@ function checkCheck(result: IAnalysisResult): void {
   resetAnalysesPermissions();
 }
 
-function check(result: IAnalysisResult): void {
+function check(result: AnalysisResultType): void {
   if(isDisabledRowCheckBox(result)) return;
   // if(!result.editable) return;
   result.checked = true;
   resetAnalysesPermissions();
 }
 
-function unCheck(result: IAnalysisResult): void {
+function unCheck(result: AnalysisResultType): void {
   result.checked = false;
   resetAnalysesPermissions();
 }
@@ -101,7 +101,7 @@ async function unCheckAll() {
 }
 
 function areAllChecked(): Boolean {
-  return analysisResults?.every((item: IAnalysisResult) => item.checked === true) || false;
+  return analysisResults?.every((item: AnalysisResultType) => item.checked === true) || false;
 }
 
 function isDisabledRowCheckBox(result: any): boolean {
@@ -123,7 +123,7 @@ function editResult(result: any): void {
   result.editable = true;
 }
 
-function isEditable(result: IAnalysisResult): Boolean {
+function isEditable(result: AnalysisResultType): Boolean {
   if (!["received", "paired"].includes(sample?.status ?? "")) {
     return false;
   }
@@ -167,26 +167,26 @@ function resetAnalysesPermissions(): void {
   if (checked.length === 0) return;
 
   // can reinstate
-  if (checked.every((result: IAnalysisResult) => result.status === "cancelled")) {
+  if (checked.every((result: AnalysisResultType) => result.status === "cancelled")) {
     state.can_reinstate = true;
   }
 
   // can cancel
-  if (checked.every((result: IAnalysisResult) => result.status === "pending")) {
+  if (checked.every((result: AnalysisResultType) => result.status === "pending")) {
     state.can_cancel = true;
   }
 
   // can submit
   if (
     checked.every(
-      (result: IAnalysisResult) => ["pending"].includes(result.status ?? "") && !isNullOrWs(result.result)
+      (result: AnalysisResultType) => ["pending"].includes(result.status ?? "") && !isNullOrWs(result.result)
     )
   ) {
     state.can_submit = true;
   }
 
   // can verify/retract/retest
-  if (checked.every((result: IAnalysisResult) => result.status === "resulted")) {
+  if (checked.every((result: AnalysisResultType) => result.status === "resulted")) {
     state.can_retract = true;
     state.can_approve = true;
     state.can_retest = true;
@@ -202,8 +202,8 @@ const _updateSample = async () => {
 };
 
 const profileAnalysesText = (
-  profiles: IAnalysisProfile[],
-  analyses: IAnalysisService[]
+  profiles: ProfileType[],
+  analyses: AnalysisType[]
 ) => {
   let names: string[] = [];
   profiles?.forEach((p) => names.push(p.name!));
@@ -213,8 +213,8 @@ const profileAnalysesText = (
 
 // viewAnalysisInfo
 const viewInfo = ref(false)
-const viewResultInfo = ref<IAnalysisResult | undefined>(undefined)
-const viewAnalysisInfo = (result: IAnalysisResult,) => {
+const viewResultInfo = ref<AnalysisResultType | undefined>(undefined)
+const viewAnalysisInfo = (result: AnalysisResultType,) => {
   viewInfo.value = true
   viewResultInfo.value = result;
 }

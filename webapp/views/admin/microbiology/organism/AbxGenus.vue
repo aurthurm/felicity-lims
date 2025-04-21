@@ -2,7 +2,7 @@
 import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import { IAbxFamily, IAbxGenus } from "@/models/microbiology";
+import { AbxFamilyType, AbxGenusType } from "@/types/gql";
 import {
   AddAbxGenusDocument,
   AddAbxGenusMutation,
@@ -27,35 +27,35 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxGenus;
+let form = reactive({}) as AbxGenusType;
 const formAction = ref<boolean>(true);
 
-const abxGenuss = ref<IAbxGenus[]>([]);
-const abxFamilys = ref<IAbxFamily[]>([]);
+const abxGenuss = ref<AbxGenusType[]>([]);
+const abxFamilys = ref<AbxFamilyType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxGenusAllQuery, GetAbxGenusAllQueryVariables>(
       GetAbxGenusAllDocument, {}, "abxGenusAll"
   ).then((result) => {
     if (result) {
-      abxGenuss.value = result as IAbxGenus[]
+      abxGenuss.value = result as AbxGenusType[]
     }
   })
   withClientQuery<GetAbxFamilyAllQuery, GetAbxFamilyAllQueryVariables>(
       GetAbxFamilyAllDocument, {}, "abxFamilyAll"
   ).then((result) => {
     if (result) {
-      abxFamilys.value = result as IAbxFamily[]
+      abxFamilys.value = result as AbxFamilyType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxGenus): void {
+function FormManager(create: boolean, obj = {} as AbxGenusType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Genus";
   if (create) {
-    Object.assign(form, {} as IAbxGenus);
+    Object.assign(form, {} as AbxGenusType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -72,7 +72,7 @@ function saveForm(): void {
         AddAbxGenusDocument, {payload}, "createAbxGenus"
     ).then((result) => {
       if (result) {
-        abxGenuss.value.unshift(result as IAbxGenus);
+        abxGenuss.value.unshift(result as AbxGenusType);
       }
     });
   }
@@ -88,7 +88,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxGenuss.value = [
                 ...abxGenuss.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxGenus[];
+              ] as AbxGenusType[];
             }
           }
         });

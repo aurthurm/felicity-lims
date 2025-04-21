@@ -4,13 +4,13 @@ import { AddStockItemVariantDocument, AddStockItemVariantMutation, AddStockItemV
   EditStockItemVariantDocument, EditStockItemVariantMutation, EditStockItemVariantMutationVariables } from '@/graphql/operations/inventory.mutations';
 import { useInventoryStore } from '@/stores/inventory';
 import  useApiUtil  from '@/composables/api_util';
-import { IStockItemVariant, IStockItem } from '@/models/inventory';
+import { StockItemVariantType, StockItemType, StockItemVariantInputType } from '@/types/gql';
 
 const StockItemDetail = defineComponent({
     name: 'StockItemDetail',
     props: {
         stockItem: {
-            type: Object as PropType<IStockItem>,
+            type: Object as PropType<StockItemType>,
         },
     },
     setup(props, ctx) {
@@ -27,12 +27,13 @@ const StockItemDetail = defineComponent({
 
         let showModal = ref(false);
         let formTitle = ref('');
-        let form = reactive({} as IStockItemVariant);
+        let form = reactive({} as StockItemVariantType);
         const formAction = ref(true);
 
         function addStockItemVariant(): void {
-            const payload = { ...form };
-            withClientMutation<AddStockItemVariantMutation, AddStockItemVariantMutationVariables>(AddStockItemVariantDocument, { stockItemUid: stockItem?.value?.uid, payload }, 'createStockItemVariant').then(result => inventoryStore.addItemVariant(result));
+            const payload = { ...form } as StockItemVariantInputType;
+            withClientMutation<AddStockItemVariantMutation, AddStockItemVariantMutationVariables>(AddStockItemVariantDocument, { stockItemUid: stockItem?.value?.uid!, payload }, 'createStockItemVariant')
+            .then(result => inventoryStore.addItemVariant(result));
         }
 
         function editStockItemVariant(): void {
@@ -41,16 +42,17 @@ const StockItemDetail = defineComponent({
                 description: form.description,
                 minimumLevel: form.minimumLevel,
                 maximumLevel: form.maximumLevel,
-            };
-            withClientMutation<EditStockItemVariantMutation, EditStockItemVariantMutationVariables>(EditStockItemVariantDocument, { uid: form.uid, payload }, 'updateStockItemVariant').then(result => inventoryStore.updateItemVariant(result));
+            } as StockItemVariantInputType;
+            withClientMutation<EditStockItemVariantMutation, EditStockItemVariantMutationVariables>(EditStockItemVariantDocument, { uid: form.uid, payload }, 'updateStockItemVariant')
+            .then(result => inventoryStore.updateItemVariant(result));
         }
 
-        function FormManager(create: boolean, obj: IStockItemVariant | null): void {
+        function FormManager(create: boolean, obj: StockItemVariantType | null): void {
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'A VARIANT';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as IStockItemVariant);
+                Object.assign(form, {} as StockItemVariantType);
             } else {
                 Object.assign(form, { ...obj });
             }

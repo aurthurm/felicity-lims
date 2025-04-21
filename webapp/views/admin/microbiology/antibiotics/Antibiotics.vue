@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxAntibiotic, IAbxGuideline } from "@/models/microbiology";
+import { AbxAntibioticType, AbxGuidelineType } from "@/types/gql";
 import { GetAbxAntibioticAllDocument, GetAbxAntibioticAllQuery, GetAbxAntibioticAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxLaboratoryAntibioticsDocument, GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables, AddAbxAntibioticDocument, EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables, EditAbxAntibioticDocument, UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables, UseAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -17,14 +17,14 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxAntibiotic;
+let form = reactive({}) as AbxAntibioticType;
 const formAction = ref<boolean>(true);
 
 const fetchingAntibiotics = ref<boolean>(false);
-const antibiotics = ref<IAbxAntibiotic[]>([]);
-const laboratoryAntibiotics = ref<IAbxAntibiotic[]>([]);
+const antibiotics = ref<AbxAntibioticType[]>([]);
+const laboratoryAntibiotics = ref<AbxAntibioticType[]>([]);
 
-const abxGuidelines = ref<IAbxGuideline[]>([]);
+const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -355,7 +355,7 @@ function useAntibiotic(abx) {
         UseAbxAntibioticDocument, { uid: abx.uid }, "useAbxAntibiotic"
     ).then((result) => {
       if(result) {
-        laboratoryAntibiotics.value.push(result as IAbxAntibiotic);
+        laboratoryAntibiotics.value.push(result as AbxAntibioticType);
       }
     });
 }
@@ -389,7 +389,7 @@ onMounted(() =>  {
         GetAbxGuidelinesAllDocument, {}, "abxGuidelinesAll"
     ).then((result) => {
       if (result) {
-        abxGuidelines.value = result as IAbxGuideline[]
+        abxGuidelines.value = result as AbxGuidelineType[]
       }
     })
     //
@@ -399,7 +399,7 @@ onMounted(() =>  {
         GetAbxLaboratoryAntibioticsDocument, {}, "abxLaboratoryAntibiotics"
     ).then((result) => {
       if (result) {
-        laboratoryAntibiotics.value  = result as IAbxAntibiotic[]
+        laboratoryAntibiotics.value  = result as AbxAntibioticType[]
       }
     })
   }
@@ -421,14 +421,14 @@ function showMoreAntibiotics(opts: any): void {
   fetchAntibiotics(abxParams);
 }
 
-const resetAntibiotic = () => Object.assign(form, {}) as IAbxAntibiotic;
+const resetAntibiotic = () => Object.assign(form, {}) as AbxAntibioticType;
 
-function FormManager(create: boolean, obj = {} as IAbxAntibiotic): void {
+function FormManager(create: boolean, obj = {} as AbxAntibioticType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Antibiotic";
   if (create) {
-    Object.assign(form, {} as IAbxAntibiotic);
+    Object.assign(form, {} as AbxAntibioticType);
   } else {
     Object.assign(form, {...obj});
   }

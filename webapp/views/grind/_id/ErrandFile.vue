@@ -3,7 +3,7 @@ import useApiUtil from '@/composables/api_util';
 import { AddGrindMediaMutation, AddGrindMediaMutationVariables, AddGrindMediaDocument, 
   DeleteGrindMediaDocument, DeleteGrindMediaMutation, DeleteGrindMediaMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindMediaQuery, GetGrindMediaQueryVariables, GetGrindMediaDocument, DownloadGrindMediaFileQuery, DownloadGrindMediaFileQueryVariables, DownloadGrindMediaFileDocument } from '@/graphql/operations/grind.queries';
-import { IGrindMedia } from '@/models/grind';
+import { GrindMediaType } from '@/types/gql';
 import { ref, computed, onMounted } from 'vue';
 import { MediaTarget} from '@/graphql/schema'
 
@@ -30,13 +30,13 @@ const isUploading = ref(false);
 const uploadError = ref<string | null>(null);
 const uploadSuccess = ref(false);
 
-const errandFiles = ref<IGrindMedia[]>([]);
+const errandFiles = ref<GrindMediaType[]>([]);
 const getFiles = () => {
     withClientQuery<GetGrindMediaQuery, GetGrindMediaQueryVariables>(
         GetGrindMediaDocument, {target: MediaTarget.Errand, targetUid: props.errandUid}, "grindMediaByTarget"
     ).then((res) => {
         if(res) {
-            errandFiles.value = res as IGrindMedia[];
+            errandFiles.value = res as GrindMediaType[];
         }
     });
 };
@@ -46,7 +46,7 @@ const uploadFile = (payload: any) => {
         AddGrindMediaDocument, {payload}, "createGrindMedia"
     ).then((res) => {
         if(res) {
-            errandFiles.value = [res as IGrindMedia, ...errandFiles.value];
+            errandFiles.value = [res as GrindMediaType, ...errandFiles.value];
         }
     });
 };
@@ -76,7 +76,7 @@ const formatFileSize = (sizeInBytes: string): string => {
 };
 
 // Get file icon based on mimetype or filename
-const getFileIcon = (file: IGrindMedia): string => {
+const getFileIcon = (file: GrindMediaType): string => {
   const { mimetype, filename } = file;
   if (mimetype?.startsWith('image/')) {
     return 'image';
@@ -92,7 +92,7 @@ const getFileIcon = (file: IGrindMedia): string => {
 };
 
 // Download file
-const downloadFile = (file: IGrindMedia) => {
+const downloadFile = (file: GrindMediaType) => {
   try {
     withClientQuery<DownloadGrindMediaFileQuery, DownloadGrindMediaFileQueryVariables>(
       DownloadGrindMediaFileDocument, {uid: file.uid}, "downloadGrindMediaFile"

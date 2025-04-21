@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue';
-  import { IAnalysisCategory } from '@/models/analysis';
+  import { AnalysisCategoryType } from '@/types/gql';
   import { AddAnalysisCategoryDocument, AddAnalysisCategoryMutation, AddAnalysisCategoryMutationVariables,
     EditAnalysisCategoryDocument, EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useSetupStore } from '@/stores/setup';
@@ -13,7 +13,7 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({} as IAnalysisCategory);
+  let form = reactive({} as AnalysisCategoryType);
   const formAction = ref(true);
 
   const departments = computed<any[]>(() => setupStore.getDepartments);
@@ -43,12 +43,12 @@
     .then((result) => analysisStore.updateAnalysisCategory(result));
   }
 
-  function FormManager(create: boolean, obj: IAnalysisCategory | null):void {
+  function FormManager(create: boolean, obj: AnalysisCategoryType | null):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
     if (create) {
-      Object.assign(form, {} as IAnalysisCategory);
+      Object.assign(form, {} as AnalysisCategoryType);
     } else {
       Object.assign(form, { ...obj });
     }

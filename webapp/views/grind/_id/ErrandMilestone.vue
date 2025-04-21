@@ -3,8 +3,7 @@ import useApiUtil from '@/composables/api_util';
 import { UserAllQuery, UserAllQueryVariables, UserAllDocument } from '@/graphql/operations/_queries';
 import { AddGrindMilestoneDocument, AddGrindMilestoneMutation, AddGrindMilestoneMutationVariables, EditGrindMilestoneDocument, EditGrindMilestoneMutation, EditGrindMilestoneMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindMilestonesByErrandDocument, GetGrindMilestonesByErrandQuery, GetGrindMilestonesByErrandQueryVariables } from '@/graphql/operations/grind.queries';
-import { IUser } from '@/models/auth';
-import { IGrindMilestone } from '@/models/grind';
+import { GrindMilestoneType, UserType } from '@/types/gql';
 import { mutateForm, resetForm } from '@/utils';
 import { RequestPolicy } from '@urql/core';
 import { onMounted, reactive, ref } from 'vue';
@@ -25,13 +24,13 @@ onMounted(() => {
 
 const emit = defineEmits(['milestoneUpdated']);
 
-const milestones = ref<IGrindMilestone[]>([]);
+const milestones = ref<GrindMilestoneType[]>([]);
 function fetchMilestones(requestPolicy: RequestPolicy = 'cache-first') {
     withClientQuery<GetGrindMilestonesByErrandQuery, GetGrindMilestonesByErrandQueryVariables>(
         GetGrindMilestonesByErrandDocument,{ errandUid: props.errandUid }, "grindMilestonesByErrand", requestPolicy
     ).then((res: any) => {
         if(res){
-            milestones.value = res as IGrindMilestone[];
+            milestones.value = res as GrindMilestoneType[];
         }
     });
 }
@@ -40,7 +39,7 @@ function fetchMilestones(requestPolicy: RequestPolicy = 'cache-first') {
 const showForm = ref(false);
 const formAction = ref(false);
 const formTitle = ref('');
-const form = reactive({} as IGrindMilestone)
+const form = reactive({} as GrindMilestoneType)
 
 function addMilestone(){
     showForm.value = true;
@@ -49,7 +48,7 @@ function addMilestone(){
     resetForm(form);
 }
 
-function editMilestone(milestone: IGrindMilestone){
+function editMilestone(milestone: GrindMilestoneType){
     showForm.value = true;
     formTitle.value = 'Edit Milestone';
     formAction.value = false;
@@ -90,14 +89,14 @@ function customLabel ({firstName, lastName}) {
   return `${firstName} ${lastName}`
 }
 
-const users = ref<IUser[]>()
+const users = ref<UserType[]>()
 function getUsers() {
   withClientQuery<UserAllQuery, UserAllQueryVariables>(
     UserAllDocument,
     { first: 100 },
     "userAll"
   ).then((res: any) => {
-    users.value = res.items as IUser[];
+    users.value = res.items as UserType[];
   });
 }
 

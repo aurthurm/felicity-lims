@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import useApiUtil from "@/composables/api_util";
 import { GetGrindPostersByBoardDocument, GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables } from "@/graphql/operations/grind.queries";
-import { IGrindBoard, IGrindPoster } from "@/models/grind";
+import { GrindBoardType, GrindPosterType } from "@/types/gql";
 import { computed, defineAsyncComponent, PropType, ref, toRef, watch } from "vue";
-const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.vue"))
+
 const { withClientQuery } = useApiUtil();
 
 const props = defineProps({
   board:{
-    type: Object as PropType<IGrindBoard>,
+    type: Object as PropType<GrindBoardType>,
     required: true
   }
 });
 
 // Use props directly, not destructured
-const posters = ref<IGrindPoster[]>([]);
+const posters = ref<GrindPosterType[]>([]);
 
 watch(() => props.board?.uid, (newBoardUid) => {
   if (!newBoardUid) return;
@@ -24,7 +24,7 @@ watch(() => props.board?.uid, (newBoardUid) => {
     { boardUid: newBoardUid },
     "grindPostersByBoard"
   ).then((res) => {
-    posters.value = res as IGrindPoster[];
+    posters.value = res as GrindPosterType[];
   });
 }, { immediate: true });
 

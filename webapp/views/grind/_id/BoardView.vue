@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import useApiUtil from '@/composables/api_util'
 import { AddGrindPosterMutation, AddGrindPosterMutationVariables, AddGrindPosterDocument } from '@/graphql/operations/grind.mutations'
-import { GrindPosterType, PosterCategory } from '@/graphql/schema'
-import { IGrindPoster } from '@/models/grind'
+import { GrindPosterType, PosterCategory } from '@/types/gql'
 import { resetForm } from '@/utils'
 import { defineAsyncComponent, PropType, reactive, ref, watch } from 'vue'
 const Poster = defineAsyncComponent(() => import("./Poster.vue"))
 
 const props = defineProps({
     posters: {
-      type: Array as PropType<IGrindPoster[]>,
+      type: Array as PropType<GrindPosterType[]>,
       required: true
     },
     boardUid: String
 })
 
 const { withClientMutation, withClientQuery } = useApiUtil();
-const boardPosters = ref<IGrindPoster[]>(props.posters);
+const boardPosters = ref<GrindPosterType[]>(props.posters);
 
-watch(() => props.posters, (newPosters: IGrindPoster[]) => {
+watch(() => props.posters, (newPosters: GrindPosterType[]) => {
     boardPosters.value = newPosters;
   }
 );
@@ -27,7 +26,7 @@ watch(() => props.posters, (newPosters: IGrindPoster[]) => {
 let showPosterModal = ref<boolean>(false);
 let formAction = ref<boolean>(false);
 let posterFormTitle = ref<string>("");
-let posterForm = reactive({}) as IGrindPoster;
+let posterForm = reactive({}) as GrindPosterType;
 
 const openCreatePosterForm = () => {
   formAction.value = true;

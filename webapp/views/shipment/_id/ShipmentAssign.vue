@@ -4,7 +4,7 @@ import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useSampleStore } from "@/stores/sample";
 import { useShipmentStore } from "@/stores/shipment";
 import useShipmentComposable from "@/composables/shipment";
-import {  ISample } from "@/models/analysis";
+import {  SampleType } from "@/types/gql";
 
 const shipmentStore = useShipmentStore();
 const sampleStore = useSampleStore();
@@ -22,7 +22,7 @@ const filterForm = reactive({
 const allChecked = ref(false);
 
 const samples = computed(() => {
-  const samples: ISample[] = [];
+  const samples: SampleType[] = [];
   const incoming = shipmentStore.getSamples;
   incoming?.forEach((result) => {
     if (!samples?.some((item) => item.uid === result.uid)) {
@@ -48,7 +48,7 @@ const assignToShipment = () => {
   manageSamples(shipment?.value?.uid, samples, "assign")
 };
 
-function getSamplesChecked(): ISample[] {
+function getSamplesChecked(): SampleType[] {
   return  shipmentStore.samples?.filter(s => s.checked);
 }
 
@@ -61,7 +61,7 @@ function getSelectedMetadata(): any[] {
   )?.filter(m => m?.analyses?.length! > 0);
 }
 
-function checkCheck(result: ISample): void {
+function checkCheck(result: SampleType): void {
   if (areAllChecked()) {
     allChecked.value = true;
   } else {
@@ -69,11 +69,11 @@ function checkCheck(result: ISample): void {
   }
 }
 
-function check(result: ISample): void {
+function check(result: SampleType): void {
   result.checked = true;
 }
 
-function unCheck(result: ISample): void {
+function unCheck(result: SampleType): void {
   result.checked = false;
 }
 
@@ -84,7 +84,7 @@ async function toggleCheckAll() {
 }
 
 function areAllChecked(): Boolean {
-  return samples?.value?.every((item: ISample) => item.checked === true);
+  return samples?.value?.every((item: SampleType) => item.checked === true);
 }
 </script>
 

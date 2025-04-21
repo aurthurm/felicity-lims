@@ -2,7 +2,7 @@
 import VueMultiselect from "vue-multiselect";
 import { useField, useForm } from "vee-validate";
 import { object, string, number, date } from "yup";
-import { IStockItemVariant, IStockReceive } from '@/models/inventory';
+import { StockItemVariantType, StockReceiptType } from '@/types/gql';
 import { GetAllStockProductsDocument, GetAllStockProductsQuery, GetAllStockProductsQueryVariables } from "@/graphql/operations/inventory.queries";
 import { ReceiveStockProductDocument, ReceiveStockProductMutation, ReceiveStockProductMutationVariables } from '@/graphql/operations/inventory.mutations';
 import useApiUtil  from "@/composables/api_util";
@@ -20,7 +20,7 @@ const storageStore = useStorageStore()
 const userStore = useUserStore()
 const { withClientMutation, withClientQuery } = useApiUtil();
 // 
-const stockItems = ref<IStockItemVariant[]>([])
+const stockItems = ref<StockItemVariantType[]>([])
 const addingProduct = ref(false);
 
 const stockSchema = object({
@@ -41,7 +41,7 @@ const stockSchema = object({
   expiryDate: date().required("Date expiring is required"),
 });
 
-const { handleSubmit, errors } = useForm<IStockReceive>({
+const { handleSubmit, errors } = useForm<StockReceiptType>({
   validationSchema: stockSchema,
   initialValues: {
     singlesReceived: 0,
@@ -51,7 +51,7 @@ const { handleSubmit, errors } = useForm<IStockReceive>({
   },
 });
 
-const { value: stockItemVariant } = useField<IStockItemVariant>("stockItemVariant");
+const { value: stockItemVariant } = useField<StockItemVariantType>("stockItemVariant");
 const { value: supplierUid } = useField<string>("supplierUid");
 const { value: unitUid } = useField<string>("unitUid");
 // const { value: storeRoomUid } = useField<string>("storeRoomUid");
@@ -67,9 +67,9 @@ const { value: receiptDate } = useField<Date>("receiptDate");
 const { value: receiptByUid } = useField<string>("receiptByUid");
 const { value: expiryDate } = useField<Date>("expiryDate");
 
-const submitStockForm = handleSubmit((values) => receiveStockProduct(values as IStockReceive));
+const submitStockForm = handleSubmit((values) => receiveStockProduct(values as StockReceiptType));
 
-function receiveStockProduct(payload: IStockReceive) {
+function receiveStockProduct(payload: StockReceiptType) {
   addingProduct.value = true;
   const  receivable = { 
       ...payload, productUid: stockItemVariant?.value?.uid,
@@ -94,7 +94,7 @@ const findProduct = async (search: string) => {
   }
 }
 
-const customLabel = (option: IStockItemVariant, label) => {
+const customLabel = (option: StockItemVariantType, label) => {
   return `${option.stockItem?.name} - ${option.name}`
 }
 

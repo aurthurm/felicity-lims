@@ -1,7 +1,8 @@
 import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '@/stores/inventory';
 import { useSetupStore } from '@/stores/setup';
-import { IStockOrder, IStockOrderProduct } from '@/models/inventory';
+import { StockOrderProductType, StockOrderType } from '@/types/gql';
+import { ExtStockOrderProductType } from '@/types/ext';
 import  useApiUtil  from '@/composables/api_util';
 import { GetAllStockOrderProductsDocument, GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables } from '@/graphql/operations/inventory.queries';
 import { EditStockOrderDocument, EditStockOrderMutation, EditStockOrderMutationVariables,
@@ -32,15 +33,15 @@ const InventoryOrders = defineComponent({
 
         const openDrawer = ref(false);
         const slectedStockOrder = reactive({
-            order: {} as IStockOrder,
-            products: [] as IStockOrderProduct[],
+            order: {} as StockOrderType,
+            products: [] as ExtStockOrderProductType[],
             departmentUid: "",
         });
 
-        const getOrderProducts = async (stockOrderUid: number) => {
-            await withClientQuery<GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables>(GetAllStockOrderProductsDocument, { stockOrderUid }, 'stockOrderProductAll').then(
-                (products: IStockOrderProduct[]) => {
-                    slectedStockOrder.products = products?.map(op => ({ ...op, issue: op.quantity }));
+        const getOrderProducts = async (stockOrderUid: string) => {
+            await withClientQuery<GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables>(GetAllStockOrderProductsDocument, { stockOrderUid }, 'stockOrderProductAll')
+            .then(products => {
+                    slectedStockOrder.products = (products as StockOrderProductType[])?.map(op => ({ ...op, issue: op.quantity })) as ExtStockOrderProductType[];
                 }
             );
         };
@@ -162,9 +163,9 @@ const InventoryOrders = defineComponent({
                 const payload: any[] = [];
                 for (const orderProduct of slectedStockOrder.products) {
                     payload.push({
-                        productUid: orderProduct.product.uid,
+                        productUid: orderProduct.product?.uid,
                         stockLotUid: orderProduct.stockLot?.uid,
-                        quantity: orderProduct.issue,
+                        quantity: orderProduct?.issue,
                         remarks: 'issue stock',
                     });
                 }
@@ -180,16 +181,16 @@ const InventoryOrders = defineComponent({
                 });
             },
             removeOrderProduct: (productUid: string) => {
-                slectedStockOrder.products = [...slectedStockOrder.products.filter(oi => oi.product.uid !== productUid)];
+                slectedStockOrder.products = [...slectedStockOrder.products.filter(oi => oi?.product?.uid !== productUid)];
             },
             updateOrder: () => {
                 const product_lines: any[] = [];
 
                 for (const op of slectedStockOrder.products) {
                     product_lines.push({
-                        productUid: op.product.uid,
-                        stockLotUid: op.stockLot?.uid,
-                        quantity: op.quantity,
+                        productUid: op?.product?.uid,
+                        stockLotUid: op?.stockLot?.uid,
+                        quantity: op?.quantity,
                         remarks: '',
                     });
                 }
@@ -282,12 +283,12 @@ const InventoryOrders = defineComponent({
                                                     </thead>
                                                     <tbody class="bg-background">
                                                         {this.slectedStockOrder.products.map(item => (
-                                                            <tr key={item.product.uid} v-motion-slide-right>
+                                                            <tr key={item?.product?.uid} v-motion-slide-right>
                                                                 <td>
-                                                                    <p>{item.product.name}</p>
+                                                                    <p>{item?.product?.name}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{item.stockLot.lotNumber} ({item.stockLot.quantity})</p>
+                                                                    <p>{item?.stockLot?.lotNumber} ({item?.stockLot?.quantity})</p>
                                                                 </td>
                                                                 <td class="px-1 py-1">
                                                                     <input
@@ -301,7 +302,7 @@ const InventoryOrders = defineComponent({
                                                                     <button
                                                                         type="button"
                                                                         class="w-16 bg-primary text-primary-foreground rounded-sm leading-none px-2 py-1"
-                                                                        onClick={() => this.removeOrderProduct(item.product.uid)}
+                                                                        onClick={() => this.removeOrderProduct(item?.product?.uid ?? '')}
                                                                     >
                                                                         Remove
                                                                     </button>
@@ -368,16 +369,16 @@ const InventoryOrders = defineComponent({
                                                         {this.slectedStockOrder.products.map(orderProduct => (
                                                             <tr key={orderProduct.uid} v-motion-slide-right>
                                                                 <td>
-                                                                    <p>{orderProduct.product.name}</p>
+                                                                    <p>{orderProduct?.product?.name}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{orderProduct.stockLot.lotNumber}</p>
+                                                                    <p>{orderProduct?.stockLot?.lotNumber}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{orderProduct.stockLot.quantity}</p>
+                                                                    <p>{orderProduct?.stockLot?.quantity}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{orderProduct.quantity}</p>
+                                                                    <p>{orderProduct?.quantity}</p>
                                                                 </td>
                                                                 <td class="px-1 py-1 whitespace-no-wrap">
                                                                     <label class="block">
@@ -430,13 +431,13 @@ const InventoryOrders = defineComponent({
                                                         </tr>
                                                     </thead>
                                                     <tbody class="bg-background">
-                                                        {this.slectedStockOrder.products.map(orderProduct => (
+                                                        {this.slectedStockOrder.products.map((orderProduct: ExtStockOrderProductType) => (
                                                             <tr key={orderProduct.uid} v-motion-slide-right>
                                                                 <td>
-                                                                    <p>{orderProduct.product.name}</p>
+                                                                    <p>{orderProduct?.product?.name}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{orderProduct.product?.remaining}</p>
+                                                                    {/* <p>{orderProduct?.product?.remaining}</p> */}
                                                                 </td>
                                                                 <td>
                                                                     <p>{orderProduct.quantity}</p>

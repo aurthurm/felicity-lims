@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-import { IReflexRule } from "@/models/reflex";
+import { ReflexRuleType } from "@/types/reflex";
 import useApiUtil  from "@/composables/api_util";
 import { useReflexStore } from "@/stores/reflex";
 import { AddReflexRuleDocument, AddReflexRuleMutation, AddReflexRuleMutationVariables, EditReflexRuleDocument, EditReflexRuleMutation, EditReflexRuleMutationVariables } from "@/graphql/operations/reflex.mutations";
@@ -10,7 +10,7 @@ const reflexStore = useReflexStore();
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>("");
-let form = reactive({}) as IReflexRule;
+let form = reactive({}) as ReflexRuleType;
 const formAction = ref<boolean>(true);
 
 onMounted(async () => {
@@ -29,12 +29,12 @@ function editReflexRule(): void {
   withClientMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(EditReflexRuleDocument, { uid: form.uid, payload }, "updateReflexRule").then((payload) => reflexStore.updateReflexRule(payload));
 }
 
-function FormManager(create: boolean, obj = {} as IReflexRule): void {
+function FormManager(create: boolean, obj = {} as ReflexRuleType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX RULE";
   if (create) {
-    Object.assign(form, {} as IReflexRule);
+    Object.assign(form, {} as ReflexRuleType);
   } else {
     Object.assign(form, { ...obj });
   }

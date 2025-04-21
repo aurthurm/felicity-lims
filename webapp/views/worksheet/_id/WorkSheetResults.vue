@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { isNullOrWs } from "@/utils";
-import { IAnalysisResult, IAnalysisService } from "@/models/analysis";
+import { AnalysisResultType, AnalysisType } from "@/types/gql";
 import useWorkSheetComposable from "@/composables/worksheet";
 import useAnalysisComposable from "@/composables/analysis";
 import { useWorksheetStore } from "@/stores/worksheet";
@@ -67,7 +67,7 @@ function areAllChecked(): boolean {
 }
 
 function getResultsChecked(): any {
-  let results: IAnalysisResult[] = [];
+  let results: AnalysisResultType[] = [];
   worksheet.value?.analysisResults?.forEach((result) => {
     if (result.checked) results.push(result);
   });
@@ -83,7 +83,7 @@ function checkCheck(): void {
   checkUserActionPermissios();
 }
 
-function check(result: IAnalysisResult): void {
+function check(result: AnalysisResultType): void {
   if (checkDisabled(result)) {
     unCheck(result);
     return;
@@ -92,11 +92,11 @@ function check(result: IAnalysisResult): void {
   checkUserActionPermissios();
 }
 
-function checkDisabled(result: IAnalysisResult): boolean {
+function checkDisabled(result: AnalysisResultType): boolean {
   return ["retracted", "approved"].includes(result.status!);
 }
 
-function unCheck(result: IAnalysisResult): void {
+function unCheck(result: AnalysisResultType): void {
   result.checked = false;
   checkUserActionPermissios();
 }
@@ -113,7 +113,7 @@ function unCheckAll(): void {
   checkUserActionPermissios();
 }
 
-function analysesText(analyses: IAnalysisService[]): string {
+function analysesText(analyses: AnalysisType[]): string {
   let names: string[] = [];
   analyses?.forEach((a) => names.push(a.name!));
   return names.join(", ");
@@ -123,7 +123,7 @@ function editResult(result: any): void {
   result.editable = true;
 }
 
-function isEditable(result: IAnalysisResult): Boolean {
+function isEditable(result: AnalysisResultType): Boolean {
   if (result.status !== "pending") {
     return false;
   }
@@ -136,14 +136,14 @@ function isEditable(result: IAnalysisResult): Boolean {
 
 function prepareResults(): any[] {
   let results = getResultsChecked();
-  let ready: IAnalysisResult[] = [];
-  results?.forEach((result: IAnalysisResult) =>
+  let ready: AnalysisResultType[] = [];
+  results?.forEach((result: AnalysisResultType) =>
     ready.push({ 
       uid: result.uid, 
       result: result.result,
       laboratoryInstrumentUid: result.laboratoryInstrumentUid,
       methodUid: result.methodUid
-    } as IAnalysisResult)
+    } as AnalysisResultType)
   );
   return ready;
 }
@@ -151,14 +151,14 @@ function prepareResults(): any[] {
 function getResultsUids(): string[] {
   const results = getResultsChecked();
   let ready: string[] = [];
-  results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
+  results?.forEach((result: AnalysisResultType) => ready.push(result.uid!));
   return ready;
 }
 
 function getSampleUids(): string[] {
   const results = getResultsChecked();
   let ready: string[] = [];
-  results?.forEach((result: IAnalysisResult) => ready.push(result.sample?.uid!));
+  results?.forEach((result: AnalysisResultType) => ready.push(result.sample?.uid!));
   return ready;
 }
 
@@ -203,12 +203,12 @@ function checkUserActionPermissios(): void {
   };
 
   // can submit
-  if (checked.every((result: IAnalysisResult) => result.status === "pending")) {
+  if (checked.every((result: AnalysisResultType) => result.status === "pending")) {
     can_submit.value = true;
     can_unassign.value = true;
   }
   // can verify/ retract/ retest
-  if (checked.every((result: IAnalysisResult) => result.status === "resulted")) {
+  if (checked.every((result: AnalysisResultType) => result.status === "resulted")) {
     can_retract.value = true;
     can_approve.value = true;
     can_retest.value = true;

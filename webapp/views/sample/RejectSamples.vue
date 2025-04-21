@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from "vue";
-import { IAnalysisProfile, IAnalysisService } from "@/models/analysis";
+import { ProfileType, AnalysisType } from "@/types/gql";
 import useSampleComposable from "@/composables/samples";
 import { useAnalysisStore } from "@/stores/analysis";
 import { useRoute, useRouter } from "vue-router";
@@ -27,8 +27,8 @@ state.rejections = coll;
 onMounted(() => analysisStore.fetchRejectionReasons());
 
 const profileAnalysesText = (
-  profiles: IAnalysisProfile[],
-  analyses: IAnalysisService[]
+  profiles: ProfileType[],
+  analyses: AnalysisType[]
 ) => {
   let names: string[] = [];
   profiles?.forEach((p) => names.push(p.name!));

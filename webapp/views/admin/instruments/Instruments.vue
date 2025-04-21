@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IInstrument } from '@/models/setup'
+  import { InstrumentType } from '@/types/gql'
   import { AddInstrumentDocument, AddInstrumentMutation, AddInstrumentMutationVariables,
     EditInstrumentDocument, EditInstrumentMutation, EditInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useUserStore } from '@/stores/user';
@@ -22,7 +22,7 @@
   let formTitle = ref('');
   const formAction = ref(true);
 
-  let instrument = reactive({})  as IInstrument;
+  let instrument = reactive({})  as InstrumentType;
 
   setupStore.fetchInstrumentTypes();    
   const instrumentTypes = computed(() => setupStore.getInstrumentTypes)
@@ -62,12 +62,12 @@
     .then((result) => setupStore.updateInstrument(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IInstrument): void {
+  function FormManager(create: boolean, obj = {} as InstrumentType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
     if (create) {
-      Object.assign(instrument, { ...({} as IInstrument) });
+      Object.assign(instrument, { ...({} as InstrumentType) });
     } else {
       Object.assign(instrument, { ...obj });
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, defineAsyncComponent, computed, watch } from "vue";
-import { ILaboratory, ILaboratorySetting } from "@/models/setup";
+import { LaboratoryType, LaboratorySettingType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import { useSetupStore } from "@/stores/setup";
 import useApiUtil from "@/composables/api_util";
@@ -17,7 +17,7 @@ const setupStore = useSetupStore();
 
 setupStore.fetchLaboratory();
 const laboratory = computed(() => setupStore.getLaboratory);
-const formLaboratory = reactive({ ...laboratory.value }) as ILaboratory;
+const formLaboratory = reactive({ ...laboratory.value }) as LaboratoryType;
 
 watch(
   () => laboratory.value?.uid,
@@ -41,7 +41,7 @@ const saveLaboratoryForm = () => {
 
 setupStore.fetchLaboratorySetting();
 const laboratorySetting = computed(() => setupStore.getLaboratorySetting);
-const formSettings = reactive({ ...laboratorySetting.value }) as ILaboratorySetting;
+const formSettings = reactive({ ...laboratorySetting.value }) as LaboratorySettingType;
 
 watch(
   () => laboratorySetting.value?.uid,

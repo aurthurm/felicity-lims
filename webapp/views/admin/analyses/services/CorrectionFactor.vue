@@ -2,8 +2,7 @@
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { AddAnalysisCorrectionFactorDocument, AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables,
     EditAnalysisCorrectionFactorDocument, EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { IAnalysisCorrectionFactor } from '@/models/analysis';
-  import { IInstrument, IMethod } from '@/models/setup';
+  import { AnalysisCorrectionFactorType, InstrumentType, MethodType } from '@/types/gql';
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
@@ -31,7 +30,7 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IAnalysisCorrectionFactor;
+  let form = reactive({}) as AnalysisCorrectionFactorType;
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
@@ -39,10 +38,10 @@
   })
 
   setupStore.fetchInstruments();
-  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
+  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
 
   setupStore.fetchMethods()
-  const methods = computed<IMethod[]>(() => setupStore.getMethods)
+  const methods = computed<MethodType[]>(() => setupStore.getMethods)
 
   function addAnalysisCorrectionFactor(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
@@ -59,7 +58,7 @@
       .then((result) => analysisStore.updateAnalysisCorrectionFactor(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IAnalysisCorrectionFactor):void {
+  function FormManager(create: boolean, obj = {} as AnalysisCorrectionFactorType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS CORRECTION FACTOR";

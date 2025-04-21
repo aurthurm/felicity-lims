@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { DeleteNoticeDocument, DeleteNoticeMutation, DeleteNoticeMutationVariables } from "@/graphql/operations/notice.mutations";
 import { onMounted, reactive, computed, defineAsyncComponent } from "vue";
-import { INotice } from "@/models/notice";
+import { NoticeType } from "@/types/gql";
 import { useAuthStore } from "@/stores/auth";
 import { useNoticeStore } from "@/stores/notice";
 import { useSetupStore} from "@/stores/setup";
@@ -21,7 +21,7 @@ const { withClientMutation } = useApiUtil();
 const { fetchingNotices } = storeToRefs(noticeStore);
 
 const modalState = reactive({
-  notice: {} as INotice,
+  notice: {} as NoticeType,
   title: "",
   showModal: false,
   newNotice: true,
@@ -55,17 +55,17 @@ async function deleteNotice(uid: string) {
 
 }
 
-function FormManager(create: boolean, obj: INotice = {} as INotice): void {
+function FormManager(create: boolean, obj: NoticeType = {} as NoticeType): void {
   modalState.showModal = true;
   modalState.title = (create ? "ADD" : "EDIT") + " " + "Notice";
   if (create) {
-    modalState.notice = {} as INotice;
+    modalState.notice = {} as NoticeType;
   } else {
     modalState.notice = { ...obj };
   }
 }
 
-const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.uid));
+const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value?.uid));
 </script>
 
 <template>

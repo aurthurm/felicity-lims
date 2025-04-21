@@ -2,7 +2,7 @@
 import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import { IAbxClass, IAbxPhylum } from "@/models/microbiology";
+import { AbxClassType, AbxPhylumType } from "@/types/gql";
 import {
   AddAbxClassDocument,
   AddAbxClassMutation,
@@ -27,35 +27,35 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxClass;
+let form = reactive({}) as AbxClassType;
 const formAction = ref<boolean>(true);
 
-const abxClasss = ref<IAbxClass[]>([]);
-const abxPhylums = ref<IAbxPhylum[]>([]);
+const abxClasss = ref<AbxClassType[]>([]);
+const abxPhylums = ref<AbxPhylumType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxClassAllQuery, GetAbxClassAllQueryVariables>(
       GetAbxClassAllDocument, {}, "abxClassAll"
   ).then((result) => {
     if (result) {
-      abxClasss.value = result as IAbxClass[]
+      abxClasss.value = result as AbxClassType[]
     }
   })
   withClientQuery<GetAbxPhylumAllQuery, GetAbxPhylumAllQueryVariables>(
       GetAbxPhylumAllDocument, {}, "abxPhylumAll"
   ).then((result) => {
     if (result) {
-      abxPhylums.value = result as IAbxPhylum[]
+      abxPhylums.value = result as AbxPhylumType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxClass): void {
+function FormManager(create: boolean, obj = {} as AbxClassType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Class";
   if (create) {
-    Object.assign(form, {} as IAbxClass);
+    Object.assign(form, {} as AbxClassType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -72,7 +72,7 @@ function saveForm(): void {
         AddAbxClassDocument, {payload}, "createAbxClass"
     ).then((result) => {
       if (result) {
-        abxClasss.value.unshift(result as IAbxClass);
+        abxClasss.value.unshift(result as AbxClassType);
       }
     });
   }
@@ -88,7 +88,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxClasss.value = [
                 ...abxClasss.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxClass[];
+              ] as AbxClassType[];
             }
           }
         });

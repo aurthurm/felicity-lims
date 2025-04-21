@@ -4,7 +4,7 @@ import { useBillingStore } from "@/stores/billing";
 import { useSampleStore } from "@/stores/sample";
 import { storeToRefs } from "pinia";
 import { parseDate } from "@/utils";
-import { ITestBill, ITestBillTransaction } from "@/models/billing";
+import { TestBillType, TestBillTransactionType } from "@/types/gql";
 import { 
   AddTestBillTransactionDocument, AddTestBillTransactionMutation, AddTestBillTransactionMutationVariables,
   ConfirmTestBillTransactionDocument, ConfirmTestBillTransactionMutation, ConfirmTestBillTransactionMutationVariables,
@@ -34,8 +34,8 @@ billingStore.fetchBillsForPatient(props?.patientUid!);
 
 const kinds = ref(["cash", "medical-aid", "e-payment"])
 const showTransactionModal = ref(false);
-const testBill = ref({} as ITestBill);
-const selectTestBill = (tb: ITestBill) => {
+const testBill = ref({} as TestBillType);
+const selectTestBill = (tb: TestBillType) => {
   testBill.value = {...tb};
   billingStore.fetchBillTransactions(tb.uid)
 }
@@ -73,7 +73,7 @@ const { value: notes } = useField("notes");
 const processing = ref(false);
 const submitTransactionForm = handleSubmit((values) => {
   processing.value = true;
-  addTransaction(values as ITestBillTransaction)
+  addTransaction(values as TestBillTransactionType)
 });
 
 const newTransaction = () => {
@@ -84,7 +84,7 @@ const newTransaction = () => {
   showTransactionModal.value = true;
 }
 
-const addTransaction = (values: ITestBillTransaction) => {
+const addTransaction = (values: TestBillTransactionType) => {
   withClientMutation<AddTestBillTransactionMutation, AddTestBillTransactionMutationVariables>(AddTestBillTransactionDocument, {payload: values}, "createTestBillTransaction"
   ).then((result) => {
     billingStore.addTransaction(result);
@@ -95,7 +95,7 @@ const addTransaction = (values: ITestBillTransaction) => {
 }
 
 const showConfirmTransactionModal = ref(false);
-const confirmTransaction = ref({} as ITestBillTransaction);
+const confirmTransaction = ref({} as TestBillTransactionType);
 const submitConfirmTransaction = () => {
   processing.value = true;
   withClientMutation<ConfirmTestBillTransactionMutation, ConfirmTestBillTransactionMutationVariables>(ConfirmTestBillTransactionDocument, 
@@ -206,7 +206,7 @@ const submitVoucherCodeForm = () => {
 }
 
 const { downloadInvoice } = useBillComposable();
-const invoice = async (bill: ITestBill) => await downloadInvoice(bill.uid);
+const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
 </script>
 
 <style lang="css" scoped>

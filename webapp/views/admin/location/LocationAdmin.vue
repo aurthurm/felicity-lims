@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 import {
-  ICountry,
-  IProvince,
-  IDistrict
-} from '@/models/location';
+  CountryType,
+  ProvinceType,
+  DistrictType
+} from '@/types/gql';
 import {
   AddCountryDocument, AddCountryMutation, AddCountryMutationVariables,
   EditCountryDocument, EditCountryMutation, EditCountryMutationVariables,
@@ -23,7 +23,7 @@ const modal = defineAsyncComponent(
 const locationStore = useLocationStore()
 const { withClientMutation } = useApiUtil()
 
-interface IForm extends ICountry, IProvince, IDistrict {
+interface IForm extends CountryType, ProvinceType, DistrictType {
   countryUid: string,
   provinceUid: string
 };
@@ -32,9 +32,9 @@ let createLocation = ref<boolean>(true);
 let showModal = ref<boolean>(false);
 let targetLocation = ref<string>('');
 
-let country = reactive({}) as ICountry;
-let province = reactive({}) as IProvince;
-let district = reactive({}) as IDistrict;
+let country = reactive({}) as CountryType;
+let province = reactive({}) as ProvinceType;
+let district = reactive({}) as DistrictType;
 let form = reactive({}) as IForm;
 let formTitle = ref<string>('');
 

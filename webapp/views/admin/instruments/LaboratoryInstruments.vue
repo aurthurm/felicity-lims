@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ILaboratoryInstrument } from '@/models/setup'
+  import { LaboratoryInstrumentType } from '@/types/gql'
   import { AddLaboratoryInstrumentDocument, AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables,
     EditLaboratoryInstrumentDocument, EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
@@ -16,7 +16,7 @@
   let formTitle = ref('');
   const formAction = ref(true);
 
-  let instrument = reactive({})  as ILaboratoryInstrument;
+  let instrument = reactive({})  as LaboratoryInstrumentType;
 
   setupStore.fetchInstruments();    
   setupStore.fetchLaboratoryInstruments();   
@@ -47,12 +47,12 @@
     .then((result) => setupStore.updateLaboratoryInstrument(result));
   }
 
-  function FormManager(create: boolean, obj = {} as ILaboratoryInstrument): void {
+  function FormManager(create: boolean, obj = {} as LaboratoryInstrumentType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "LABORATORY INSTRUMENT";
     if (create) {
-      Object.assign(instrument, { ...({} as ILaboratoryInstrument) });
+      Object.assign(instrument, { ...({} as LaboratoryInstrumentType) });
     } else {
       Object.assign(instrument, { ...obj });
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue';
-  import { IQCTemplate, IQCLevel } from '@/models/analysis';
+  import { IQCTemplateType, IQCLevelType } from '@/types/gql';
   import { AddQcTemplateDocument, AddQcTemplateMutation, AddQcTemplateMutationVariables,
     EditQcTemplateDocument, EditQcTemplateMutation, EditQcTemplateMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useAnalysisStore } from '@/stores/analysis';
@@ -11,7 +11,7 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IQCTemplate;
+  let form = reactive({}) as IQCTemplateType;
   const formAction = ref(true);
 
   analysisStore.fetchQCLevels();
@@ -32,25 +32,25 @@
     .then((result) => analysisStore.updateQcTemplate(result));
   }
 
-  function levelsUids(levels: IQCLevel[]): string[] {
+  function levelsUids(levels: IQCLevelType[]): string[] {
     if (levels?.length <= 0 ) return [];
     let qcLevels: string[] = [];
     levels?.forEach(level => qcLevels.push(level.uid!));
     return qcLevels;
   }
 
-  function FormManager(create: boolean, obj = {} as IQCTemplate): void {
+  function FormManager(create: boolean, obj = {} as IQCTemplateType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";
     if (create) {
-      Object.assign(form, { ...({} as IQCTemplate) });
+      Object.assign(form, { ...({} as IQCTemplateType) });
     } else {
       Object.assign(form, { ...obj });
     }
   }
 
-  function levelsNames(levels: IQCLevel[]): string {
+  function levelsNames(levels: IQCLevelType[]): string {
     if (levels?.length <= 0 ) return '';
     let qcLevels: string[] = [];
     levels?.forEach(level => qcLevels.push(level.level!));

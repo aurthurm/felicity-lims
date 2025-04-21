@@ -2,7 +2,7 @@
 import { defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
-import { IPatient } from "@/models/patient";
+import { PatientType } from "@/types/gql";
 
 const PatientForm = defineAsyncComponent(
   () => import("@/components/person/PatientForm.vue")
@@ -17,7 +17,7 @@ const patientStore = usePatientStore();
 let showModal = ref<boolean>(false);
 patientStore.fetchPtientByUid(route.params.patientUid);
 
-const updatePatient = (res: IPatient) => {
+const updatePatient = (res: PatientType) => {
   patientStore.updatePatient(res);
   showModal.value = false;
 };

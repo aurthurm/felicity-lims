@@ -1,6 +1,6 @@
 import { defineComponent, computed, reactive, toRefs, ref, watch, defineAsyncComponent } from 'vue';
 import useTreeStateComposable from '@/composables/tree-state';
-import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '@/models/storage';
+import { StorageContainerInputType, StorageContainerType, StorageLocationInputType, StorageLocationType, StorageSectionInputType, StorageSectionType, StoreRoomInputType, StoreRoomType } from '@/types/gql';
 import {
     AddStoreRoomDocument, AddStoreRoomMutationVariables, AddStoreRoomMutation,             
     EditStoreRoomDocument, EditStoreRoomMutationVariables, EditStoreRoomMutation,
@@ -36,7 +36,7 @@ const StorageHome = defineComponent({
             () => activeTree.value,
             (treeIn, _) => {
                 if (!treeIn) return;
-                if (treeIn.tag === tags.storageContainer) {
+                if (treeIn.tag === tags.STORAGE_CONTAINER) {
                     storageStore.fetchStorageContainer(treeIn.uid!);
                 }
             }
@@ -53,26 +53,26 @@ const StorageHome = defineComponent({
                     const ss = sc?.storageSection;
                     const sl = ss?.storageLocation;
                     const sr = sl?.storeRoom;
-                    setActiveTree({ ...sr, tag: tags.storeRoom });
-                    setActiveTree({ ...sl, tag: tags.storageLocation });
-                    setActiveTree({ ...ss, tag: tags.storageSection });
-                    setActiveTree({ ...sc, tag: tags.storageContainer });
+                    setActiveTree({ ...sr, tag: tags.STORE_ROOM });
+                    setActiveTree({ ...sl, tag: tags.STORAGE_LOCATION });
+                    setActiveTree({ ...ss, tag: tags.STORAGE_SECTION });
+                    setActiveTree({ ...sc, tag: tags.STORAGE_CONTAINER });
                 }
             }
         );
 
         const nextTreeType = computed(() => {
-            if (activeTree.value?.tag === tags.storeRoom) {
-                return tags.storageLocation;
+            if (activeTree.value?.tag === tags.STORE_ROOM) {
+                return tags.STORAGE_LOCATION;
             }
-            if (activeTree.value?.tag === tags.storageLocation) {
-                return tags.storageSection;
+            if (activeTree.value?.tag === tags.STORAGE_LOCATION) {
+                return tags.STORAGE_SECTION;
             }
-            if (activeTree.value?.tag === tags.storageSection) {
-                return tags.storageContainer;
+            if (activeTree.value?.tag === tags.STORAGE_SECTION) {
+                return tags.STORAGE_CONTAINER;
             }
-            if (activeTree.value?.tag === tags.storageContainer) {
-                return tags.containerView;
+            if (activeTree.value?.tag === tags.STORAGE_CONTAINER) {
+                return tags.CONTAINER_VIEW;
             }
             return null;
         });
@@ -80,25 +80,25 @@ const StorageHome = defineComponent({
         const state = reactive({
             roomModalShow: false,
             roomFormTitle: '',
-            roomForm: {} as IStoreRoom,
+            roomForm: {} as StoreRoomType,
             roomFormAction: true,
             locationModalShow: false,
             locationFormTitle: '',
-            locationForm: {} as IStorageLocation,
+            locationForm: {} as StorageLocationType,
             locationFormAction: true,
             sectionModalShow: false,
             sectionFormTitle: '',
-            sectionForm: {} as IStorageSection,
+            sectionForm: {} as StorageSectionType,
             sectionFormAction: true,
             containerModalShow: false,
             containerFormTitle: '',
-            containerForm: {} as IStorageContainer,
+            containerForm: {} as StorageContainerType,
             containerFormAction: true,
         });
 
         // Store Room
         function addStoreRoom(): void {
-            const payload = { ...state.roomForm };
+            const payload = { ...state.roomForm } as StoreRoomInputType;
             withClientMutation<AddStoreRoomMutation, AddStoreRoomMutationVariables>(
                 AddStoreRoomDocument,
                 { payload },
@@ -113,7 +113,7 @@ const StorageHome = defineComponent({
             const payload = {
                 name: state.roomForm.name,
                 description: state.roomForm.description,
-            };
+            } as StoreRoomInputType;
             withClientMutation<EditStoreRoomMutation, EditStoreRoomMutationVariables>(
                 EditStoreRoomDocument,
                 { uid: state.roomForm.uid, payload },
@@ -121,12 +121,12 @@ const StorageHome = defineComponent({
             ).then(result => storageStore.updateStoreRoom(result));
         }
 
-        function roomFormManager(create: boolean, obj: IStoreRoom | null): void {
+        function roomFormManager(create: boolean, obj: StoreRoomType | null): void {
             state.roomFormAction = create;
             state.roomFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORE ROOM';
             state.roomModalShow = true;
             if (create) {
-                Object.assign(state.roomForm, {} as IStoreRoom);
+                Object.assign(state.roomForm, {} as StoreRoomType);
             } else {
                 Object.assign(state.roomForm, { ...obj });
             }
@@ -155,7 +155,7 @@ const StorageHome = defineComponent({
             const payload = {
                 name: state.locationForm.name,
                 description: state.locationForm.description,
-            };
+            } as StorageLocationInputType;
             withClientMutation<EditStorageLocationMutation, EditStorageLocationMutationVariables>(
                 EditStorageLocationDocument,
                 { uid: state.locationForm.uid, payload },
@@ -163,12 +163,12 @@ const StorageHome = defineComponent({
             ).then(result => storageStore.updateStorageLocation(result));
         }
 
-        function locationFormManager(create: boolean, obj: IStorageLocation | null): void {
+        function locationFormManager(create: boolean, obj: StorageLocationType | null): void {
             state.locationFormAction = create;
             state.locationFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORAGE LOCATION';
             state.locationModalShow = true;
             if (create) {
-                Object.assign(state.locationForm, {} as IStorageLocation);
+                Object.assign(state.locationForm, {} as StorageLocationType);
             } else {
                 Object.assign(state.locationForm, { ...obj });
             }
@@ -197,7 +197,7 @@ const StorageHome = defineComponent({
             const payload = {
                 name: state.sectionForm.name,
                 description: state.sectionForm.description,
-            };
+            } as StorageSectionInputType;
             withClientMutation<EditStorageSectionMutation, EditStorageSectionMutationVariables>(
                 EditStorageSectionDocument,
                 { uid: state.sectionForm.uid, payload },
@@ -205,12 +205,12 @@ const StorageHome = defineComponent({
             ).then(result => storageStore.updateStorageSection(result));
         }
 
-        function sectionFormManager(create: boolean, obj: IStorageSection | null): void {
+        function sectionFormManager(create: boolean, obj: StorageSectionType | null): void {
             state.sectionFormAction = create;
             state.sectionFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORAGE SECTION';
             state.sectionModalShow = true;
             if (create) {
-                Object.assign(state.sectionForm, {} as IStorageSection);
+                Object.assign(state.sectionForm, {} as StorageSectionType);
             } else {
                 Object.assign(state.sectionForm, { ...obj });
             }
@@ -239,7 +239,7 @@ const StorageHome = defineComponent({
             const payload = {
                 name: state.containerForm.name,
                 description: state.containerForm.description,
-            };
+            } as StorageContainerInputType;
             withClientMutation<EditStorageContainerMutation, EditStorageContainerMutationVariables>(
                 EditStorageContainerDocument,
                 { uid: state.containerForm.uid, payload },
@@ -247,12 +247,12 @@ const StorageHome = defineComponent({
             ).then(result => storageStore.updateStorageContainer(result));
         }
 
-        function containerFormManager(create: boolean, obj: IStorageContainer | null): void {
+        function containerFormManager(create: boolean, obj: StorageContainerType | null): void {
             state.containerFormAction = create;
             state.containerFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORAGE CONTAINER';
             state.containerModalShow = true;
             if (create) {
-                Object.assign(state.containerForm, {} as IStorageContainer);
+                Object.assign(state.containerForm, {} as StorageContainerType);
             } else {
                 Object.assign(state.containerForm, { ...obj });
             }
@@ -321,7 +321,7 @@ const StorageHome = defineComponent({
                             <div class="text-lg font-medium text-foreground">Selected: {this.activeTree.name}</div>
                             <div class="border-t border-border" />
                             <div class="space-y-6">
-                                {this.nextTreeType === this.tags.storageLocation ? (
+                                {this.nextTreeType === this.tags.STORAGE_LOCATION ? (
                                     <button
                                         onClick={() => this.locationFormManager(true, null)}
                                         class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -329,7 +329,7 @@ const StorageHome = defineComponent({
                                         Add Storage Location
                                     </button>
                                 ) : null}
-                                {this.nextTreeType === this.tags.storageSection ? (
+                                {this.nextTreeType === this.tags.STORAGE_SECTION ? (
                                     <button
                                         onClick={() => this.sectionFormManager(true, null)}
                                         class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -337,7 +337,7 @@ const StorageHome = defineComponent({
                                         Add Storage Section
                                     </button>
                                 ) : null}
-                                {this.nextTreeType === this.tags.storageContainer ? (
+                                {this.nextTreeType === this.tags.STORAGE_CONTAINER ? (
                                     <button
                                         onClick={() => this.containerFormManager(true, null)}
                                         class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -345,7 +345,7 @@ const StorageHome = defineComponent({
                                         Add Storage Container
                                     </button>
                                 ) : null}
-                                {this.nextTreeType === this.tags.containerView ? <ContainerView /> : null}
+                                {this.nextTreeType === this.tags.CONTAINER_VIEW ? <ContainerView /> : null}
                             </div>
                             <div class="border-t border-border" />
                         </div>

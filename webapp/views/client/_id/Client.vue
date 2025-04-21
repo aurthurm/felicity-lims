@@ -6,7 +6,7 @@ import { AddClientDocument, AddClientMutation, AddClientMutationVariables,
   EditClientDocument, EditClientMutation, EditClientMutationVariables } from '@/graphql/operations/clients.mutations';
 import { useLocationStore } from '@/stores/location';
 import { useClientStore } from '@/stores/client';
-import { IClient } from '@/models/client';
+import { ClientType } from '@/types/gql';
 import useApiUtil  from '@/composables/api_util'
 
 import * as shield from '@/guards'
@@ -26,7 +26,7 @@ let createItem = ref<boolean>(false);
 
 
 let formTitle = ref<string>('');
-let form = ref<IClient>({} as IClient);
+let form = ref<ClientType>({} as ClientType);
 let countryUid = ref<string>();
 let provinceUid = ref<string>();
 
@@ -38,12 +38,12 @@ function getDistricts(event: Event) {
   locationStore.filterDistrictsByProvince(provinceUid.value!)
 }
 
-function FormManager(create: boolean, obj: IClient = {} as IClient) {
+function FormManager(create: boolean, obj: ClientType = {} as ClientType) {
   createItem.value = create;
   formTitle.value = `${create ? 'CREATE' : 'EDIT'} CLIENT`;
   showClientModal.value = true;
   if (create) {
-    form.value = {} as IClient;
+    form.value = {} as ClientType;
   } else {
     countryUid.value = obj?.district?.province?.countryUid;
     provinceUid.value = obj?.district?.provinceUid
@@ -72,7 +72,7 @@ function saveForm() {
   if (createItem.value) addClient();
   if (!createItem.value) editClient();
   showClientModal.value = false;
-  form.value = {} as IClient;
+  form.value = {} as ClientType;
 }
 
 </script>

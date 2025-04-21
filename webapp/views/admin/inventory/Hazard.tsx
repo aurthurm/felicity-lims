@@ -4,7 +4,7 @@ import { AddHazardDocument, AddHazardMutation, AddHazardMutationVariables,
   EditHazardDocument, EditHazardMutation, EditHazardMutationVariables } from '@/graphql/operations/inventory.mutations';
 import { useInventoryStore } from '@/stores/inventory';
 import  useApiUtil  from '@/composables/api_util';
-import { IHazard } from '@/models/inventory';
+import { HazardInputType, HazardType } from '@/types/gql';
 
 const Hazard = defineComponent({
     name: 'hazard',
@@ -14,14 +14,14 @@ const Hazard = defineComponent({
 
         let showModal = ref(false);
         let formTitle = ref('');
-        let form = reactive({} as IHazard);
+        let form = reactive({} as HazardType);
         const formAction = ref(true);
 
         inventoryStore.fetchHazards();
         const hazards = computed(() => inventoryStore.getHazards);
 
         function addHazard(): void {
-            const payload = { ...form };
+            const payload = { ...form } as HazardInputType;
             withClientMutation<AddHazardMutation, AddHazardMutationVariables>(AddHazardDocument, { payload }, 'createHazard').then(result => inventoryStore.addHazard(result));
         }
 
@@ -29,16 +29,16 @@ const Hazard = defineComponent({
             const payload = {
                 name: form.name,
                 description: form.description,
-            };
+            } as HazardInputType;
             withClientMutation<EditHazardMutation, EditHazardMutationVariables>(EditHazardDocument, { uid: form.uid, payload }, 'updateHazard').then(result => inventoryStore.updateHazard(result));
         }
 
-        function FormManager(create: boolean, obj: IHazard | null): void {
+        function FormManager(create: boolean, obj: HazardType | null): void {
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'A HAZARD';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as IHazard);
+                Object.assign(form, {} as HazardType);
             } else {
                 Object.assign(form, { ...obj });
             }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, reactive, watch } from "vue";
-import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
+import { ProfileType, AnalysisType, SampleType } from "@/types/gql";
 import useSampleComposable from "@/composables/samples";
 import { useSampleStore } from "@/stores/sample";
 import { useRoute, useRouter } from "vue-router";
@@ -51,8 +51,8 @@ watch(
 );
 
 function profileAnalysesText(
-  profiles?: IAnalysisProfile[],
-  analyses?: IAnalysisService[]
+  profiles?: ProfileType[],
+  analyses?: AnalysisType[]
 ): string {
   let names: string[] = [];
   profiles?.forEach((p) => names.push(p.name!));
@@ -128,7 +128,7 @@ const publishSample = async () => {
   };
 
 const invalidateSample = async () =>
-  invalidateSamples([sample?.value?.uid!]).then((res: ISample[]) => {
+  invalidateSamples([sample?.value?.uid!]).then((res: SampleType[]) => {
     let inv = res?.filter((s) => s.uid !== sample?.value?.uid);
     if (inv.length > 0) sampleStore.setRepeatSample(inv[0]);
   });
@@ -156,7 +156,7 @@ const canRecover = computed(() => {
 const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
 
 // sample storage
-const goToStorage = async (sample?: ISample) => {
+const goToStorage = async (sample?: SampleType) => {
   router.push({ path: "/bio-banking", state: { sample: JSON.stringify(sample) } });
 };
 </script>

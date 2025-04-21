@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
-import { ISample } from "@/models/analysis";
+import { SampleType } from "@/types/gql";
 import useShipmentComposable from "@/composables/shipment";
 import { useShipmentStore } from "@/stores/shipment";
 const FButton = defineAsyncComponent(
@@ -42,7 +42,7 @@ function areAllChecked(): boolean {
 }
 
 function getSamplesChecked(): any {
-  let samples: ISample[] = [];
+  let samples: SampleType[] = [];
   shipment.value?.shippedSamples?.forEach((shipped) => {
     if (shipped?.checked) samples.push(shipped.sample!);
   });
@@ -58,7 +58,7 @@ function checkCheck(): void {
   checkUserActionPermissios();
 }
 
-function check(sample: ISample): void {
+function check(sample: SampleType): void {
   if (checkDisabled(sample) || shipment.value?.state !== "preperation") {
     unCheck(sample);
     return;
@@ -67,11 +67,11 @@ function check(sample: ISample): void {
   checkUserActionPermissios();
 }
 
-function checkDisabled(sample: ISample): boolean {
+function checkDisabled(sample: SampleType): boolean {
   return ["retracted", "approved"].includes(sample.status!);
 }
 
-function unCheck(sample: ISample): void {
+function unCheck(sample: SampleType): void {
   sample.checked = false;
   checkUserActionPermissios();
 }
@@ -100,10 +100,10 @@ function checkUserActionPermissios(): void {
   can_recall.value = false;
   const checked = getSamplesChecked();
   if (checked.length === 0) return;
-  if (checked.every((sample: ISample) => ["referred", "paired"].includes(sample.status ?? ""))) {
+  if (checked.every((sample: SampleType) => ["referred", "paired"].includes(sample.status ?? ""))) {
     can_recover.value = true;
   }
-  if (checked.every((sample: ISample) => sample.status === "referred")) {
+  if (checked.every((sample: SampleType) => sample.status === "referred")) {
     can_recall.value = true;
   }
 }

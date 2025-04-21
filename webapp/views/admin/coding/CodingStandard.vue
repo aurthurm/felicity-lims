@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ICodingStandard } from '@/models/analysis'
+  import { CodingStandardType } from '@/types/gql'
   import { AddCodingStandardDocument, AddCodingStandardMutation, AddCodingStandardMutationVariables,
     EditCodingStandardDocument, EditCodingStandardMutation, EditCodingStandardMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useAnalysisStore } from '@/stores/analysis';
@@ -14,18 +14,18 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as ICodingStandard;
+  let form = reactive({}) as CodingStandardType;
   const formAction = ref<boolean>(true);
 
   analyisStore.fetchCodingStandards();
   const codindStandards = computed(() => analyisStore.getCodingStandards)
 
-  function FormManager(create: boolean, obj = {} as ICodingStandard):void {
+  function FormManager(create: boolean, obj = {} as CodingStandardType):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "CODING STANDARD";
     if (create) {
-      Object.assign(form, {} as ICodingStandard);
+      Object.assign(form, {} as CodingStandardType);
     } else {
       Object.assign(form, { ...obj });
     }

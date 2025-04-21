@@ -4,13 +4,13 @@ import { computed, defineAsyncComponent, ref, onMounted, watch } from "vue";
 import type { PropType } from 'vue'
 import Swal from 'sweetalert2';
 
-import {IAnalysisResult,ISample} from "@/models/analysis";
+import {AnalysisResultType,SampleType} from "@/types/gql";
 import useApiUtil from '@/composables/api_util';
 import useAnalysisComposable from "@/composables/analysis";
 
 import * as shield from "@/guards";
 import { GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables, GetAbxOrganismResultAllDocument, GetAbxAstPanelFilterDocument, GetAbxAstPanelFilterQuery, GetAbxAstPanelFilterQueryVariables, GetAbxAstResultAllDocument, GetAbxAstResultAllQuery, GetAbxAstResultAllQueryVariables, GetAbxGuidelineYearAllDocument, GetAbxGuidelineYearAllQuery, GetAbxGuidelineYearAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
-import { IAbxASTPanel, IAbxASTResult, IAbxGuidelineYear, IAbxOrganismResult, IAbxTestMethod } from "@/models/microbiology";
+import { AbxASTPanelType, AbxASTResultType, AbxGuidelineYearType, AbxOrganismResultType, AbxTestMethodType } from "@/types/gql";
 import { ApplyAbxAstPanelDocument, ApplyAbxAstPanelMutation, ApplyAbxAstPanelMutationVariables, UpdateAbxAstResultsDocument, UpdateAbxAstResultsMutation, UpdateAbxAstResultsMutationVariables } from "@/graphql/operations/microbiology.mutations";
 
 const modal = defineAsyncComponent(
@@ -25,11 +25,11 @@ const {
   organismAnalysisResults,
 } = defineProps({
   sample: {
-    type: Object as PropType<ISample>,
+    type: Object as PropType<SampleType>,
     required: true,
   },
   organismAnalysisResults: { // OrganismResults
-    type: Object as PropType<IAnalysisResult[]>,
+    type: Object as PropType<AnalysisResultType[]>,
     required: true,
   },
 });
@@ -38,17 +38,17 @@ const sampleStore = useSampleStore();
 
 const { withClientMutation, withClientQuery } = useApiUtil()
 const organismResult = computed(() => organismAnalysisResults[0]);
-const astResults = ref<IAbxASTResult[]>([]);
-const pickedOrganisms = ref<IAbxOrganismResult[]>([]);
-const guidelines = ref<IAbxGuidelineYear[]>([]);
-const testMethods = ref<IAbxTestMethod[]>([]);
+const astResults = ref<AbxASTResultType[]>([]);
+const pickedOrganisms = ref<AbxOrganismResultType[]>([]);
+const guidelines = ref<AbxGuidelineYearType[]>([]);
+const testMethods = ref<AbxTestMethodType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables>(
     GetAbxOrganismResultAllDocument, { analysisResultUid: organismResult.value.uid! }, "abxOrganismResultAll"
   ).then((result) => {
     if (result) {
-      pickedOrganisms.value = (result as unknown || []) as IAbxOrganismResult[];
+      pickedOrganisms.value = (result as unknown || []) as AbxOrganismResultType[];
     }
   }).finally(() => processASTResults())
 
@@ -58,7 +58,7 @@ onMounted(() => {
     GetAbxGuidelineYearAllDocument, {}, "abxGuidelineYearAll"
   ).then((result) => {
     if (result) {
-      guidelines.value = (result as unknown || []) as IAbxGuidelineYear[];
+      guidelines.value = (result as unknown || []) as AbxGuidelineYearType[];
     }
   })
 
@@ -66,7 +66,7 @@ onMounted(() => {
     GetAbxTestMethodAllDocument, {}, "abxTestMethodAll"
   ).then((result) => {
     if (result) {
-      testMethods.value = (result as unknown || []) as IAbxTestMethod[];
+      testMethods.value = (result as unknown || []) as AbxTestMethodType[];
     }
   })
 });
@@ -74,25 +74,25 @@ onMounted(() => {
 const showModal = ref<boolean>(false);
 const loadingPanels = ref(false);
 const searchPanelText = ref<string>('');
-const panels = ref<IAbxASTPanel[]>([]);
-const choiceOrganism = ref<IAbxOrganismResult>();
+const panels = ref<AbxASTPanelType[]>([]);
+const choiceOrganism = ref<AbxOrganismResultType>();
 
 function fetchAstResultAll() {
   withClientQuery<GetAbxAstResultAllQuery, GetAbxAstResultAllQueryVariables>(
     GetAbxAstResultAllDocument, { sampleUid: sample.uid! }, "abxAstResultAll"
   ).then((result) => {
     if (result) {
-      astResults.value = (result as unknown || []) as IAbxASTResult[];
+      astResults.value = (result as unknown || []) as AbxASTResultType[];
     }
   }).finally(() => processASTResults())
 }
 
-function choosePanel(pickedOrg: IAbxOrganismResult) {
+function choosePanel(pickedOrg: AbxOrganismResultType) {
   choiceOrganism.value = pickedOrg;
   showModal.value = true;
 }
 
-function canAddPanel(pickedOrg: IAbxOrganismResult) {
+function canAddPanel(pickedOrg: AbxOrganismResultType) {
   const orgResults = organismResults.value[pickedOrg.uid];
   if(!orgResults) return false;
   return Object.values(orgResults)?.every(ast => ast.status == "pending");
@@ -106,7 +106,7 @@ function searchPanels() {
     "abxAstPanelFilter"
   ).then((result) => {
     if (result) {
-      panels.value = (result as unknown || []) as IAbxASTPanel[];
+      panels.value = (result as unknown || []) as AbxASTPanelType[];
     }
   }).finally(() => {
     loadingPanels.value = false;

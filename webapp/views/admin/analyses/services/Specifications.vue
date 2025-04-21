@@ -2,8 +2,7 @@
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { AddAnalysisSpecificationDocument, AddAnalysisSpecificationMutation, AddAnalysisSpecificationMutationVariables,
     EditAnalysisSpecificationDocument, EditAnalysisSpecificationMutation, EditAnalysisSpecificationMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { IAnalysisSpecification } from '@/models/analysis';
-  import { IMethod } from '@/models/setup';
+  import { AnalysisSpecificationType, MethodType } from '@/types/gql';
   import { useSetupStore } from '@/stores/setup';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
@@ -32,7 +31,7 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IAnalysisSpecification;
+  let form = reactive({}) as AnalysisSpecificationType;
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
@@ -40,7 +39,7 @@
   })
 
   setupStore.fetchMethods();
-  const methods = computed<IMethod[]>(() => setupStore.getMethods)
+  const methods = computed<MethodType[]>(() => setupStore.getMethods)
 
   function addAnalysisSpecification(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
@@ -58,7 +57,7 @@
       .then((result) => analysisStore.updateAnalysisSpecification(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IAnalysisSpecification):void {
+  function FormManager(create: boolean, obj = {} as AnalysisSpecificationType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS SPECIFICATION";

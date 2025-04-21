@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxQCRange, IAbxGuideline, IAbxMedium } from "@/models/microbiology";
+import { AbxQCRangeType, AbxGuidelineType, AbxMediumType } from "@/types/gql";
 import { GetAbxQcRangeAllDocument, GetAbxQcRangeAllQuery, GetAbxQcRangeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxMediumAllDocument, GetAbxMediumAllQuery, GetAbxMediumAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxQcRangeMutation, AddAbxQcRangeMutationVariables, AddAbxQcRangeDocument, EditAbxQcRangeMutation, EditAbxQcRangeMutationVariables, EditAbxQcRangeDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -20,14 +20,14 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxQCRange;
+let form = reactive({}) as AbxQCRangeType;
 const formAction = ref<boolean>(true);
 
 const fetchingQcRanges = ref<boolean>(false);
-const qcRanges = ref<IAbxQCRange[]>([]);
+const qcRanges = ref<AbxQCRangeType[]>([]);
 
-const abxGuidelines = ref<IAbxGuideline[]>([]);
-const abxMediums = ref<IAbxMedium[]>([]);
+const abxGuidelines = ref<AbxGuidelineType[]>([]);
+const abxMediums = ref<AbxMediumType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -193,7 +193,7 @@ onMounted(() =>  {
         GetAbxGuidelinesAllDocument, {}, "abxGuidelinesAll"
     ).then((result) => {
       if (result) {
-        abxGuidelines.value = result as IAbxGuideline[]
+        abxGuidelines.value = result as AbxGuidelineType[]
       }
     })
     fetchQcRanges(abxParams);
@@ -201,7 +201,7 @@ onMounted(() =>  {
         GetAbxMediumAllDocument, {}, "abxMediumAll"
     ).then((result) => {
       if (result) {
-        abxMediums.value = result as IAbxMedium[]
+        abxMediums.value = result as AbxMediumType[]
       }
     })
   }
@@ -223,14 +223,14 @@ function showMoreQcRanges(opts: any): void {
   fetchQcRanges(abxParams);
 }
 
-const resetQcRange = () => Object.assign(form, {}) as IAbxQCRange;
+const resetQcRange = () => Object.assign(form, {}) as AbxQCRangeType;
 
-function FormManager(create: boolean, obj = {} as IAbxQCRange): void {
+function FormManager(create: boolean, obj = {} as AbxQCRangeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "QcRange";
   if (create) {
-    Object.assign(form, {} as IAbxQCRange);
+    Object.assign(form, {} as AbxQCRangeType);
   } else {
     Object.assign(form, {...obj});
   }

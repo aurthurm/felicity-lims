@@ -2,7 +2,7 @@
 import {onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxHost} from "@/models/microbiology";
+import {AbxHostType} from "@/types/gql";
 import {
   AddAbxHostDocument,
   AddAbxHostMutation,
@@ -17,27 +17,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxHost;
+let form = reactive({}) as AbxHostType;
 const formAction = ref<boolean>(true);
 
-const abxHosts = ref<IAbxHost[]>([]);
+const abxHosts = ref<AbxHostType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxHostAllQuery, GetAbxHostAllQueryVariables>(
       GetAbxHostAllDocument, {}, "abxHostAll"
   ).then((result) => {
     if (result) {
-      abxHosts.value = result as IAbxHost[]
+      abxHosts.value = result as AbxHostType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxHost): void {
+function FormManager(create: boolean, obj = {} as AbxHostType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx Host";
   if (create) {
-    Object.assign(form, {} as IAbxHost);
+    Object.assign(form, {} as AbxHostType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -54,7 +54,7 @@ function saveForm(): void {
         AddAbxHostDocument, {payload}, "createAbxHost"
     ).then((result) => {
       if (result) {
-        abxHosts.value.unshift(result as IAbxHost);
+        abxHosts.value.unshift(result as AbxHostType);
       }
     });
   }
@@ -70,7 +70,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxHosts.value = [
                 ...abxHosts.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxHost[];
+              ] as AbxHostType[];
             }
           }
         });

@@ -2,8 +2,8 @@
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { AddAnalysisUncertaintyDocument, AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables,
     EditAnalysisUncertaintyDocument, EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { IAnalysisUncertainty } from '@/models/analysis';
-  import { IInstrument, IMethod } from '@/models/setup';
+  import { AnalysisUncertaintyType } from '@/types/gql';
+  import { InstrumentType, MethodType } from '@/types/gql';
   import { useSetupStore } from '@/stores/setup';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
@@ -28,7 +28,7 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IAnalysisUncertainty;
+  let form = reactive({}) as AnalysisUncertaintyType;
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
@@ -56,7 +56,7 @@
       .then((result) => analysisStore.updateAnalysisUncertainty(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IAnalysisUncertainty):void {
+  function FormManager(create: boolean, obj = {} as AnalysisUncertaintyType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS UNCERTAINTY";

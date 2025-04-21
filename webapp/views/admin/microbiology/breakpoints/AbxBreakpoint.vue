@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxBreakpoint, IAbxBreakpointType, IAbxGuideline, IAbxHost, IAbxSiteOfInfection, IAbxTestMethod } from "@/models/microbiology";
+import { AbxBreakpointType, AbxBreakpointTypeType, AbxGuidelineType, AbxHostType, AbxSiteOfInfectionType, AbxTestMethodType } from "@/types/gql";
 import { GetAbxBreakpointAllDocument, GetAbxBreakpointAllQuery, GetAbxBreakpointAllQueryVariables, GetAbxBreakpointTypeAllDocument, GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxHostAllDocument, GetAbxHostAllQuery, GetAbxHostAllQueryVariables, GetAbxSiteOfInfectionAllDocument, GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxBreakpointMutation, AddAbxBreakpointMutationVariables, AddAbxBreakpointDocument, EditAbxBreakpointMutation, EditAbxBreakpointMutationVariables, EditAbxBreakpointDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -17,17 +17,17 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxBreakpoint;
+let form = reactive({}) as AbxBreakpointType;
 const formAction = ref<boolean>(true);
 
 const fetchingBreakpoints = ref<boolean>(false);
-const antibiotics = ref<IAbxBreakpoint[]>([]);
+const antibiotics = ref<AbxBreakpointType[]>([]);
 
-const abxGuidelines = ref<IAbxGuideline[]>([]);
-const abxHosts = ref<IAbxHost[]>([]);
-const abxBreakpointTypes = ref<IAbxBreakpointType[]>([]);
-const abxSiteOfInfections = ref<IAbxSiteOfInfection[]>([]);
-const abxTestMethods = ref<IAbxTestMethod[]>([]);
+const abxGuidelines = ref<AbxGuidelineType[]>([]);
+const abxHosts = ref<AbxHostType[]>([]);
+const abxBreakpointTypes = ref<AbxBreakpointTypeType[]>([]);
+const abxSiteOfInfections = ref<AbxSiteOfInfectionType[]>([]);
+const abxTestMethods = ref<AbxTestMethodType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -228,7 +228,7 @@ onMounted(() =>  {
         GetAbxGuidelinesAllDocument, {}, "abxGuidelinesAll"
     ).then((result) => {
       if (result) {
-        abxGuidelines.value = result as IAbxGuideline[]
+        abxGuidelines.value = result as AbxGuidelineType[]
       }
     })
     fetchBreakpoints(abxParams);
@@ -236,28 +236,28 @@ onMounted(() =>  {
         GetAbxHostAllDocument, {}, "abxHostAll"
     ).then((result) => {
       if (result) {
-        abxHosts.value = result as IAbxHost[]
+        abxHosts.value = result as AbxHostType[]
       }
     })
     withClientQuery<GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables>(
         GetAbxSiteOfInfectionAllDocument, {}, "abxSiteOfInfectionAll"
     ).then((result) => {
       if (result) {
-        abxSiteOfInfections.value = result as IAbxSiteOfInfection[]
+        abxSiteOfInfections.value = result as AbxSiteOfInfectionType[]
       }
     })
     withClientQuery<GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables>(
         GetAbxTestMethodAllDocument, {}, "abxTestMethodAll"
     ).then((result) => {
       if (result) {
-        abxTestMethods.value = result as IAbxTestMethod[]
+        abxTestMethods.value = result as AbxTestMethodType[]
       }
     })
     withClientQuery<GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables>(
         GetAbxBreakpointTypeAllDocument, {}, "abxBreakpointTypeAll"
     ).then((result) => {
       if (result) {
-        abxBreakpointTypes.value = result as IAbxBreakpointType[]
+        abxBreakpointTypes.value = result as AbxBreakpointTypeType[]
       }
     })
   }
@@ -279,14 +279,14 @@ function showMoreBreakpoints(opts: any): void {
   fetchBreakpoints(abxParams);
 }
 
-const resetBreakpoint = () => Object.assign(form, {}) as IAbxBreakpoint;
+const resetBreakpoint = () => Object.assign(form, {}) as AbxBreakpointType;
 
-function FormManager(create: boolean, obj = {} as IAbxBreakpoint): void {
+function FormManager(create: boolean, obj = {} as AbxBreakpointType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Breakpoint";
   if (create) {
-    Object.assign(form, {} as IAbxBreakpoint);
+    Object.assign(form, {} as AbxBreakpointType);
   } else {
     Object.assign(form, {...obj});
   }

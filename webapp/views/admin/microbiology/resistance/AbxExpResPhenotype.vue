@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { IAbxExpResPhenotype, IAbxGuideline } from "@/models/microbiology";
+import { AbxExpResPhenotypeType, AbxGuidelineType } from "@/types/gql";
 import { GetAbxExpResPhenotypeAllDocument, GetAbxExpResPhenotypeAllQuery, GetAbxExpResPhenotypeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxExpResPhenotypeMutation, AddAbxExpResPhenotypeMutationVariables, AddAbxExpResPhenotypeDocument, EditAbxExpResPhenotypeMutation, EditAbxExpResPhenotypeMutationVariables, EditAbxExpResPhenotypeDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -17,13 +17,13 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxExpResPhenotype;
+let form = reactive({}) as AbxExpResPhenotypeType;
 const formAction = ref<boolean>(true);
 
 const fetchingExpResPhenotypes = ref<boolean>(false);
-const abxExptResPhenotypes = ref<IAbxExpResPhenotype[]>([]);
+const abxExptResPhenotypes = ref<AbxExpResPhenotypeType[]>([]);
 
-const abxGuidelines = ref<IAbxGuideline[]>([]);
+const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -176,7 +176,7 @@ onMounted(() =>  {
         GetAbxGuidelinesAllDocument, {}, "abxGuidelinesAll"
     ).then((result) => {
       if (result) {
-        abxGuidelines.value = result as IAbxGuideline[]
+        abxGuidelines.value = result as AbxGuidelineType[]
       }
     })
   }
@@ -198,14 +198,14 @@ function showMoreExpResPhenotypes(opts: any): void {
   fetchExpResPhenotypes(abxParams);
 }
 
-const resetExpResPhenotype = () => Object.assign(form, {}) as IAbxExpResPhenotype;
+const resetExpResPhenotype = () => Object.assign(form, {}) as AbxExpResPhenotypeType;
 
-function FormManager(create: boolean, obj = {} as IAbxExpResPhenotype): void {
+function FormManager(create: boolean, obj = {} as AbxExpResPhenotypeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "ExpResPhenotype";
   if (create) {
-    Object.assign(form, {} as IAbxExpResPhenotype);
+    Object.assign(form, {} as AbxExpResPhenotypeType);
   } else {
     Object.assign(form, {...obj});
   }

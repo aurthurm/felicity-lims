@@ -2,14 +2,14 @@
 import {  computed, defineAsyncComponent, onMounted, reactive, ref } from "vue";
 import type { PropType } from 'vue'
 import {
-  IAnalysisResult,
-  ISample,
-} from "@/models/analysis";
+  AnalysisResultType,
+  SampleType,
+} from "@/types/gql";
 import * as shield from "@/guards";
 import useApiUtil from '@/composables/api_util';
 import useAnalysisComposable from "@/composables/analysis";
 import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismResultAllDocument, GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables } from "@/graphql/operations/microbiology.queries";
-import { IAbxOrganism, IAbxOrganismResult } from "@/models/microbiology";
+import { AbxOrganismType, AbxOrganismResultType } from "@/types/gql";
 import { AbxOrganismCursorPage } from "@/graphql/schema";
 import { AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables, AddAbxOrganismResultDocument, DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables, DeleteAbxOrganismResultDocument, SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables, SaveAbxOrganismResultDocument } from "@/graphql/operations/microbiology.mutations";
 
@@ -21,11 +21,11 @@ const fel-button = defineAsyncComponent(
 )
 
 const { withClientMutation, withClientQuery } = useApiUtil()
-const organismResults = ref<IAbxOrganismResult[]>([]);
+const organismResults = ref<AbxOrganismResultType[]>([]);
 
 const showModal = ref<boolean>(false);
 const searchOrgText = ref<string>('');
-const organisms = ref<IAbxOrganism[]>([]);
+const organisms = ref<AbxOrganismType[]>([]);
 const pickIndex = ref<number | undefined>(undefined);
 const addingOrganism = ref<boolean>(false);
 
@@ -34,11 +34,11 @@ const {
   analysisResults
 } = defineProps({
   sample: {
-    type: Object as PropType<ISample>,
+    type: Object as PropType<SampleType>,
     required: true,
   },
   analysisResults: {
-    type: Object as PropType<IAnalysisResult[]>,
+    type: Object as PropType<AnalysisResultType[]>,
     required: true,
   }
 });
@@ -50,7 +50,7 @@ onMounted(() => {
     GetAbxOrganismResultAllDocument, { analysisResultUid: analysisResult.value.uid! }, "abxOrganismResultAll"
   ).then((result) => {
     if (result) {
-      organismResults.value = (result as unknown || []) as IAbxOrganismResult[];
+      organismResults.value = (result as unknown || []) as AbxOrganismResultType[];
     }
   }).finally(() => resetAnalysesPermissions());
 });
@@ -61,12 +61,12 @@ function addOrganism(){
       AddAbxOrganismResultDocument, { analysisResultUid: analysisResult.value.uid! }, "createAbxOrganismResult"
     ).then((result) => {
       if (result) {
-        organismResults.value.unshift(result as unknown as IAbxOrganismResult);
+        organismResults.value.unshift(result as unknown as AbxOrganismResultType);
       }
     }).finally(() => (addingOrganism.value = false));
 }
 
-function saveOrgResult(orgResult: IAbxOrganismResult) { 
+function saveOrgResult(orgResult: AbxOrganismResultType) { 
   addingOrganism.value = true;
   withClientMutation<SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables>(
       SaveAbxOrganismResultDocument, 
@@ -76,7 +76,7 @@ function saveOrgResult(orgResult: IAbxOrganismResult) {
       if (result) {
         const idx = organismResults.value.findIndex(or => or.uid === orgResult.uid);
         if (idx > -1) {
-          const organism = (result as unknown as IAbxOrganismResult).organism;
+          const organism = (result as unknown as AbxOrganismResultType).organism;
           organismResults.value[idx].organismUid = organism?.uid;
           organismResults.value[idx].organism = organism;
         }
@@ -88,7 +88,7 @@ function saveOrgResult(orgResult: IAbxOrganismResult) {
     });
 }
 
-function removeOrgResult(orgResult: IAbxOrganismResult) {
+function removeOrgResult(orgResult: AbxOrganismResultType) {
   addingOrganism.value = true;
   withClientMutation<DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables>(
       DeleteAbxOrganismResultDocument, { uid: orgResult.uid! }, "removeAbxOrganismResult"
@@ -110,7 +110,7 @@ function pickOrganism(index: number) {
   showModal.value = true;
 }
 
-function selectOrganism(org: IAbxOrganism) {  
+function selectOrganism(org: AbxOrganismType) {  
   showModal.value = false;
   organismResults.value[pickIndex.value!].organism = org;
   pickIndex.value = undefined;
@@ -127,7 +127,7 @@ function searchOrganisms() {
         sortBy: ["name"],
       }, "abxOrganismAll"
   ).then((result) => {
-    organisms.value = (result as AbxOrganismCursorPage)?.items as IAbxOrganism[];
+    organisms.value = (result as AbxOrganismCursorPage)?.items as AbxOrganismType[];
   })
 }
 

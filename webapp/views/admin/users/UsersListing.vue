@@ -4,11 +4,11 @@ import {
     AddUserDocument, AddUserMutation, AddUserMutationVariables,
     EditUserDocument, EditUserMutation, EditUserMutationVariables
 } from "@/graphql/operations/_mutations";
-import { IUser } from "@/models/auth";
+import { UserType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import useApiUtil  from "@/composables/api_util";
 
-interface IUserAuthForm extends IUser {
+type UserAuthForm = UserType & {
   groupUid: string;
 }
 
@@ -18,11 +18,11 @@ onMounted(() => {
   userStore.fetchGroupsAndPermissions();
 })
 
-let users = computed<IUser[]>(() => userStore.getUsers);
+let users = computed<UserType[]>(() => userStore.getUsers);
 const groups = computed(() => userStore.getGroups);
 let showUserModal = ref<boolean>(false);
 let formTitle = ref<string>("");
-let form = reactive({}) as IUserAuthForm;
+let form = reactive({}) as UserAuthForm;
 const formAction = ref<boolean>(true);
 
 const { withClientMutation } = useApiUtil();
@@ -38,18 +38,18 @@ function editUser(): void {
   );
 }
 
-function userGroupsName(user: IUser): string {
+function userGroupsName(user: UserType): string {
   let groups: string[] = [];
   user?.groups?.forEach((g) => groups.push(g?.name!));
   return groups.join(", ");
 }
 
-function UserFormManager(create: boolean, obj: IUser = {} as IUser): void {
+function UserFormManager(create: boolean, obj: UserType = {} as UserType): void {
   formAction.value = create;
   showUserModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
   if (create) {
-    let user = new Object() as IUser;
+    let user = new Object() as UserType;
     user.firstName = undefined;
     user.lastName = undefined;
     user.email = undefined;

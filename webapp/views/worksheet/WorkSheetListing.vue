@@ -7,7 +7,7 @@ import { useWorksheetStore } from "@/stores/worksheet";
 import { useUserStore } from "@/stores/user";
 import useApiUtil  from "@/composables/api_util";
 import { AddWorkSheetDocument, AddWorkSheetMutation, AddWorkSheetMutationVariables } from "@/graphql/operations/worksheet.mutations";
-import { IAnalysisService } from "@/models/analysis";
+import { AnalysisType } from "@/types/gql";
 import { useField, useForm } from "vee-validate";
 import { object, number } from "yup";
 import * as shield from "@/guards";
@@ -161,7 +161,7 @@ const saveForm = handleSubmit((values) => {
   });
 });
 
-function analysesText(analyses: IAnalysisService[]): string {
+function analysesText(analyses: AnalysisType[]): string {
   let names: string[] = [];
   analyses?.forEach((a) => names.push(a.name!));
   return names?.join(", ");

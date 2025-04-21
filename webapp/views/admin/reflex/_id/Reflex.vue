@@ -2,13 +2,14 @@
 import { ref, reactive, onMounted, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
 import {
-  IReflexAction,
-  IReflexBrain,
-  IReflexBrainFinal,
-  IReflexBrainAddition,
-  IReflexBrainCondition,
-  IReflexBrainConditionCriteria,
-} from "@/models/reflex";
+  ReflexActionType,
+  ReflexBrainType,
+  ReflexBrainFinalType,
+  ReflexBrainAdditionType,
+  ReflexBrainConditionType,
+  ReflexBrainConditionCriteriaType,
+  AnalysisType, ResultOptionType
+} from "@/types/gql";
 import useApiUtil  from "@/composables/api_util";
 import { useReflexStore } from "@/stores/reflex";
 import { useAnalysisStore } from "@/stores/analysis";
@@ -20,7 +21,6 @@ import {
   DeleteReflexBrainDocument, DeleteReflexBrainMutation, DeleteReflexBrainMutationVariables
 } from "@/graphql/operations/reflex.mutations";
 import { stringifyNumber } from "@/utils";
-import { IAnalysisService, IResultOption } from "@/models/analysis";
 import Swal from "sweetalert2";
 const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
@@ -38,11 +38,11 @@ const route = useRoute();
 
 let showActionModal = ref<boolean>(false);
 let formTitle = ref<string>("");
-let actionForm = reactive({}) as IReflexAction;
+let actionForm = reactive({}) as ReflexActionType;
 const formAction = ref<boolean>(true);
 
 let showBrainModal = ref<boolean>(false);
-let brainForm = reactive<IReflexBrain>({
+let brainForm = reactive<ReflexBrainType>({
   description: "",
   priority: 0,
   conditions: [],
@@ -80,12 +80,12 @@ function editReflexAction(): void {
   withClientMutation<EditReflexActionMutation, EditReflexActionMutationVariables>(EditReflexActionDocument, { uid: actionForm.uid, payload }, "updateReflexAction").then((payload) => reflexStore.updateReflexAction(payload));
 }
 
-function reflexActionFormManager(create: boolean, obj: IReflexAction = {}): void {
+function reflexActionFormManager(create: boolean, obj: ReflexActionType = {}): void {
   formAction.value = create;
   showActionModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX ACTION";
   if (create) {
-    Object.assign(actionForm, {} as IReflexAction);
+    Object.assign(actionForm, {} as ReflexActionType);
   } else {
     let analyses: string[] = [];
     obj.analyses?.forEach((analysis) => analyses.push(analysis?.uid!));
@@ -160,17 +160,17 @@ function removeCriteria(condIndex: number, index: number): void {
   brainForm.conditions![condIndex].criteria?.splice(index, 1)
 }
 
-let criteriaResultOptions = ref<IResultOption[]>([]);
-function setCriteriaResultOptions(event: any, anal: IReflexBrainConditionCriteria) {
+let criteriaResultOptions = ref<ResultOptionType[]>([]);
+function setCriteriaResultOptions(event: any, anal: ReflexBrainConditionCriteriaType) {
   const analysis = analysesServices?.find(
-    (s: IAnalysisService) => s.uid === anal.analysisUid
+    (s: AnalysisType) => s.uid === anal.analysisUid
   );
   anal.value = undefined;
   criteriaResultOptions.value = analysis?.resultOptions || [];
 }
 
 function addNew(index: number): void {
-  brainForm.actions![index]?.addNew?.push({} as IReflexBrainAddition);
+  brainForm.actions![index]?.addNew?.push({} as ReflexBrainAdditionType);
 }
 
 function removeNew(index: number): void {
@@ -178,23 +178,23 @@ function removeNew(index: number): void {
 }
 
 function addFinal(index: number): void {
-  brainForm.actions![0]?.finalise?.push({} as IReflexBrainFinal);
+  brainForm.actions![0]?.finalise?.push({} as ReflexBrainFinalType);
 }
 
 function removeFinal(index: number): void {
   brainForm.actions![index]?.finalise?.splice(index, 1);
 }
 
-let finalResultOptions = ref<IResultOption[]>([]);
-function setFinalResultOptions(event: any, anal: IReflexBrainFinal) {
+let finalResultOptions = ref<ResultOptionType[]>([]);
+function setFinalResultOptions(event: any, anal: ReflexBrainFinalType) {
   const analysis = analysesServices?.find(
-    (s: IAnalysisService) => s.uid === anal.analysisUid
+    (s: AnalysisType) => s.uid === anal.analysisUid
   );
   anal.value = undefined;
   finalResultOptions.value = analysis?.resultOptions || [];
 }
 
-function reflexBrainFormManager(create: boolean, actionUid?: string, obj: IReflexBrain = {}): void {
+function reflexBrainFormManager(create: boolean, actionUid?: string, obj: ReflexBrainType = {}): void {
   formAction.value = create;
   showBrainModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX BRAIN";

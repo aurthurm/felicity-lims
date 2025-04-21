@@ -2,7 +2,7 @@
 import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import {IAbxGuideline} from "@/models/microbiology";
+import {AbxGuidelineType} from "@/types/gql";
 import {
   AddAbxGuidelineDocument,
   AddAbxGuidelineMutation,
@@ -25,22 +25,22 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxGuideline;
+let form = reactive({}) as AbxGuidelineType;
 const formAction = ref<boolean>(true);
 
-const abxGuidelines = ref<IAbxGuideline[]>([]);
+const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables>(
       GetAbxGuidelinesAllDocument, {}, "abxGuidelinesAll"
   ).then((result) => {
     if (result) {
-      abxGuidelines.value = result as IAbxGuideline[]
+      abxGuidelines.value = result as AbxGuidelineType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxGuideline): void {
+function FormManager(create: boolean, obj = {} as AbxGuidelineType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx Guideline";

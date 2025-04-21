@@ -2,7 +2,7 @@
 import { reactive, onMounted, ref } from "vue";
 import { REST_BASE_URL } from "@/conf";
 import { useAnalysisStore } from "@/stores/analysis";
-import { IReportListing } from "@/models/reports";
+import { ReportListingType } from "@/types/reports";
 import useAnalyticsComposable from "@/composables/analytics";
 import { formatDate } from "@/utils";
 
@@ -19,7 +19,7 @@ const state = reactive({
     date_column: "",
     period_start: "",
     period_end: "",
-  } as IReportListing,
+  } as ReportListingType,
 });
 
 onMounted(async () => {

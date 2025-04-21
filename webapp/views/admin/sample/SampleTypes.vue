@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ISampleType } from '@/models/analysis'
+  import { SampleTypeTyp } from '@/types/gql'
   import { AddSampleTypeDocument, AddSampleTypeMutation, AddSampleTypeMutationVariables,
     EditSampleTypeDocument, EditSampleTypeMutation, EditSampleTypeMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useSampleStore } from '@/stores/sample';
@@ -14,18 +14,18 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as ISampleType;
+  let form = reactive({}) as SampleTypeTyp;
   const formAction = ref<boolean>(true);
 
   sampleStore.fetchSampleTypes();
   const sampleTypes = computed(() => sampleStore.getSampleTypes)
 
-  function FormManager(create: boolean, obj = {} as ISampleType):void {
+  function FormManager(create: boolean, obj = {} as SampleTypeTyp):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";
     if (create) {
-      Object.assign(form, {} as ISampleType);
+      Object.assign(form, {} as SampleTypeTyp);
     } else {
       Object.assign(form, { ...obj });
     }

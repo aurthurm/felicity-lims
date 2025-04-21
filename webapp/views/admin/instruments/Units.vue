@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IUnit } from '@/models/setup'
+  import { UnitType } from '@/types/gql'
   import { AddUnitDocument, AddUnitMutation, AddUnitMutationVariables,
     EditUnitDocument, EditUnitMutation, EditUnitMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
@@ -19,7 +19,7 @@
   setupStore.fetchUnits();    
   const units = computed(() => setupStore.getUnits);
 
-  let unit = reactive({}) as IUnit;
+  let unit = reactive({}) as UnitType;
 
   function addUnit(): void {
     const payload = { name: unit.name, description: unit.description }
@@ -33,12 +33,12 @@
     .then((result) => setupStore.updateUnit(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IUnit): void {
+  function FormManager(create: boolean, obj = {} as UnitType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "UNIT";
     if (create) {
-      Object.assign(unit, { ...({} as IUnit) });
+      Object.assign(unit, { ...({} as UnitType) });
     } else {
       Object.assign(unit, { ...obj });
     }

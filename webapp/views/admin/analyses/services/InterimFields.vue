@@ -2,8 +2,7 @@
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { AddAnalysisInterimDocument, AddAnalysisInterimMutation, AddAnalysisInterimMutationVariables,
     EditAnalysisInterimDocument, EditAnalysisInterimMutation, EditAnalysisInterimMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { IAnalysisInterim } from '@/models/analysis';
-  import { IInstrument } from '@/models/setup';
+  import { AnalysisInterimType, InstrumentType } from '@/types/gql';
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
@@ -31,14 +30,14 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IAnalysisInterim;
+  let form = reactive({}) as AnalysisInterimType;
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
   })
 
   setupStore.fetchInstruments();
-  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
+  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
 
   function addAnalysisInterim(): void {
       form.key = +form.key!;
@@ -56,7 +55,7 @@
       .then((result) => analysisStore.updateAnalysisInterim(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IAnalysisInterim):void {
+  function FormManager(create: boolean, obj = {} as AnalysisInterimType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS INTERIM";

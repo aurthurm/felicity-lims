@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { reactive, computed } from 'vue';
-  import { IRejectionReason } from '@/models/analysis';
+  import { RejectionReasonType } from '@/types/gql';
   import { AddRejectionReasonDocument, AddRejectionReasonMutation, AddRejectionReasonMutationVariables,
     EditRejectionReasonDocument, EditRejectionReasonMutation, EditRejectionReasonMutationVariables } from '@/graphql/operations/analyses.mutations';
 
@@ -13,7 +13,7 @@
   const state = reactive({
     showModal: false,
     formTitle: '',
-    form: {} as IRejectionReason,
+    form: {} as RejectionReasonType,
     formAction: false,
   })
   
@@ -30,12 +30,12 @@
     .then((result) => analysisStore.updateRejectionReason(result));
   }
 
-  function FormManager(create: boolean, obj: IRejectionReason = {} as IRejectionReason):void {
+  function FormManager(create: boolean, obj: RejectionReasonType = {} as RejectionReasonType):void {
     state.formAction = create;
     state.showModal = true;
-    state.formTitle = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
+    state.formTitle = (create ? 'CREATE' : 'EDIT') + ' ' + "REJECTION REASON";
     if (create) {
-      state.form = {} as IRejectionReason
+      state.form = {} as RejectionReasonType
     } else {
       state.form = { ... obj };
     }

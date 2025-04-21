@@ -2,7 +2,7 @@
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
-  import { ISupplier } from '@/models/setup'
+  import { SupplierType } from '@/types/gql'
   import { AddSupplierDocument, AddSupplierMutation, AddSupplierMutationVariables,
     EditSupplierDocument, EditSupplierMutation, EditSupplierMutationVariables } from '@/graphql/operations/instrument.mutations';
   const modal = defineAsyncComponent(
@@ -14,7 +14,7 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as ISupplier;
+  let form = reactive({}) as SupplierTy;
   const formAction = ref<boolean>(true);
 
   setupStore.fetchSuppliers();
@@ -32,12 +32,12 @@
     .then((result) => setupStore.updateSupplier(result));
   }
 
-  function FormManager(create: boolean, obj = {} as ISupplier):void {
+  function FormManager(create: boolean, obj = {} as SupplierTy ):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SUPPLIER";
     if (create) {
-      Object.assign(form, {} as ISupplier);
+      Object.assign(form, {} as SupplierTy );
     } else {
       Object.assign(form, { ...obj });
     }

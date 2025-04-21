@@ -5,18 +5,25 @@
   import { useSetupStore } from '@/stores/setup';
   import { useSampleStore } from '@/stores/sample';
   import { useAnalysisStore } from '@/stores/analysis';
-  import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '@/models/analysis';
+  import { ProfileType, AnalysisType, SampleType, QCTemplateType, QCLevelType } from '@/types/gql';
   import * as shield from '@/guards'
   import useApiUtil from '@/composables/api_util';
   import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { parseDate } from '@/utils';
+
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
   const DataTable = defineAsyncComponent(
     () => import('@/components/ui/datatable/FelDataTable.vue')
   )
- 
+
+ type IQCRequestType = {
+    qcTemplate?: QCTemplateType;
+    qcLevels?: QCLevelType[];
+    analysisProfiles?: ProfileType[]; 
+    analysisServices?: AnalysisType[];
+}
 
   const filterOptions = ref([
     { name: "All", value: "" },
@@ -129,11 +136,11 @@
     sampleStore.fetchQCSets(qcSetParams);
   }
 
-  const analysesProfiles = computed<IAnalysisProfile[]>(() => analysisStore.getAnalysesProfiles);
-  const analysesServices = computed<IAnalysisService[]>(() => {
-    const services: IAnalysisService[] = analysisStore.getAnalysesServicesSimple;
-    let s = new Set<IAnalysisService>();
-    services.forEach((service: IAnalysisService) => {
+  const analysesProfiles = computed<ProfileType[]>(() => analysisStore.getAnalysesProfiles);
+  const analysesServices = computed<AnalysisType[]>(() => {
+    const services: AnalysisType[] = analysisStore.getAnalysesServicesSimple;
+    let s = new Set<AnalysisType>();
+    services.forEach((service: AnalysisType) => {
       if(service.profiles?.length === 0){
         s.add(service)
       }
@@ -147,7 +154,7 @@
   let formAction = ref<boolean>(true);
   let form = reactive({ 
     departmentUid: undefined,
-    samples: [] as IQCRequest[]
+    samples: [] as QCRequestType[]
   });
   // initialise with 1 set
   onMounted(() => addQCSet())
@@ -162,7 +169,7 @@
   }
 
   function addQCRequest(): void {
-    const _samples = form.samples?.map((sample: IQCRequest) => {
+    const _samples = form.samples?.map((sample: QCRequestType) => {
       return {
         qcTemplateUid: sample.qcTemplate?.uid,
         qcLevels: sample.qcLevels?.map(l => l.uid),
@@ -178,11 +185,11 @@
       form.samples?.splice(index, 1);
   }
 
-  function FormManager(create: boolean, obj: IQCRequest):void {
+  function FormManager(create: boolean, obj: QCRequestType):void {
     formAction.value = create;
     showModal.value = true;
     if (create) {
-      Object.assign(form, {} as IQCRequest);
+      Object.assign(form, {} as QCRequestType);
     } else {
       Object.assign(form, { ...obj });
     }
@@ -203,10 +210,10 @@
     sampleStore.fetchQCSets(qcSetParams);
   }
 
-  function qcSetSamples(samples: ISample[]): string {
+  function qcSetSamples(samples: SampleType[]): string {
     let ids:string[] = [];
     let levels:string[] = [];
-    samples?.forEach((sample: ISample) => {
+    samples?.forEach((sample: SampleType) => {
       let sampleId = sample?.sampleId + ' (' + sample.status + ')';
       if(!ids.includes(sampleId)){
         ids.push(sampleId)
@@ -219,9 +226,9 @@
     return levels.join(', ');
   }
 
-  function qcSetProfileAnalyses(samples: ISample[]): string {
+  function qcSetProfileAnalyses(samples: SampleType[]): string {
     let names: string[] = [];
-    samples?.forEach((sample: ISample) => {
+    samples?.forEach((sample: SampleType) => {
         sample?.profiles?.forEach(p => {
           if(!names.includes(p.name!)){
             names.push(p.name!)

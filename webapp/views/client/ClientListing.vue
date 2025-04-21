@@ -2,7 +2,7 @@
 import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
-import { IClient } from "@/models/client";
+import { ClientType } from "@/types/gql";
 import { 
   AddClientDocument, AddClientMutation, AddClientMutationVariables,
   EditClientDocument, EditClientMutation, EditClientMutationVariables
@@ -96,9 +96,9 @@ let showClientModal = ref<boolean>(false);
 let createItem = ref<boolean>(false);
 let targetItem = ref<string>("");
 
-let client = reactive({}) as IClient;
+let client = reactive({}) as ClientType;
 const formTitle = ref<string>("");
-const resetClient = () => Object.assign(client, {}) as IClient;
+const resetClient = () => Object.assign(client, {}) as ClientType;
 
 let clientParams = reactive({
   first: 50,
@@ -160,13 +160,13 @@ function showMoreClients(opts: any): void {
   clientStore.fetchClients(clientParams);
 }
 
-function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
+function FormManager(create: boolean, target: string, obj: ClientType = {} as ClientType) {
   createItem.value = create;
   targetItem.value = target;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + target.toUpperCase();
   if (target == "client") showClientModal.value = true;
   if (create) {
-    if (target == "client") Object.assign(client, {} as IClient);
+    if (target == "client") Object.assign(client, {} as ClientType);
   } else {
     if (target == "client") Object.assign(client, { ...obj });
   }

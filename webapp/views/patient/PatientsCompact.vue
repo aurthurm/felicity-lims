@@ -3,7 +3,7 @@ import { ref, reactive, computed, defineAsyncComponent, onMounted } from "vue";
 import { usePatientStore } from "@/stores/patient";
 import { useLocationStore } from "@/stores/location";
 import { storeToRefs } from "pinia";
-import { IPatient } from "@/models/patient";
+import { PatientType } from "@/types/gql";
 import * as shield from "@/guards";
 
 // Constants
@@ -38,7 +38,7 @@ const { patients, fetchingPatients } = storeToRefs(patientStore);
 
 // State
 const showModal = ref(false);
-const patientForm = ref({} as IPatient);
+const patientForm = ref({} as PatientType);
 const searchParams = reactive({
   first: 25,
   before: "",
@@ -88,19 +88,19 @@ const tabs = computed(() => [
 ]);
 
 // Methods
-const getPatientFullName = (patient: IPatient): string => 
+const getPatientFullName = (patient: PatientType): string => 
   `${patient.firstName} ${patient.lastName}`;
 
 const getGender = (genderCode: number): string => 
   GENDER_LABELS[genderCode] || 'Unknown';
 
-const selectPatient = (patient: IPatient): void => {
+const selectPatient = (patient: PatientType): void => {
   patientForm.value = patient;
   patientStore.setPatient(patient);
 };
 
 const resetPatient = (): void => {
-  patientForm.value = {} as IPatient;
+  patientForm.value = {} as PatientType;
   patientStore.resetPatient();
 };
 
@@ -118,7 +118,7 @@ const handleQuickRegistration = async (): Promise<void> => {
   showModal.value = true;
 };
 
-const handlePatientUpdate = (patient: IPatient): void => {
+const handlePatientUpdate = (patient: PatientType): void => {
   selectPatient(patient);
   showModal.value = false;
 };

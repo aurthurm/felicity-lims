@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import useApiUtil from '@/composables/api_util';
-import { IAbxAntibiotic, IAbxASTPanel, IAbxOrganism } from "@/models/microbiology";
+import { AbxAntibioticType, AbxASTPanelType, AbxOrganismType } from "@/types/gql";
 import {
   AddAbxAstPanelDocument,
   AddAbxAstPanelMutation,
@@ -32,11 +32,11 @@ const formAction = ref<boolean>(true);
 const searchOrgText = ref<string>('');
 const searchAbxText = ref<string>('');
 
-const panels = ref<IAbxASTPanel[]>([]);
-const antibiotics = ref<IAbxAntibiotic[]>([]);
-const filteredAntibiotics = ref<IAbxAntibiotic[]>([]);
-const organisms = ref<IAbxOrganism[]>([]);
-const filteredOrganisms = ref<IAbxOrganism[]>([]);
+const panels = ref<AbxASTPanelType[]>([]);
+const antibiotics = ref<AbxAntibioticType[]>([]);
+const filteredAntibiotics = ref<AbxAntibioticType[]>([]);
+const organisms = ref<AbxOrganismType[]>([]);
+const filteredOrganisms = ref<AbxOrganismType[]>([]);
 
 const form = reactive({
   uid: '',
@@ -59,7 +59,7 @@ function fetchAntibiotics() {
     GetAbxLaboratoryAntibioticsDocument, {}, "abxLaboratoryAntibiotics"
   ).then((result) => {
     if (result) {
-      antibiotics.value = result as IAbxAntibiotic[];
+      antibiotics.value = result as AbxAntibioticType[];
       filteredAntibiotics.value = [...antibiotics.value];
     }
   });
@@ -75,7 +75,7 @@ function fetchOrganisms() {
   ).then((result) => {
     // The organism list can be big, so we need to handle keeping selecteds on each search before replacement
     organisms.value = organisms.value?.filter(org => form.selectedOrganisms.includes(org.uid)) || [];
-    organisms.value = addListsUnique(organisms.value, (result as AbxOrganismCursorPage)?.items as IAbxOrganism[], "uid");
+    organisms.value = addListsUnique(organisms.value, (result as AbxOrganismCursorPage)?.items as AbxOrganismType[], "uid");
     filteredOrganisms.value = [...organisms.value];
   })
 }
@@ -85,14 +85,14 @@ function fetchPanels() {
     GetAbxAstPanelAllDocument, {}, "abxAstPanelAll"
   ).then((result) => {
     if (result) {
-      panels.value = result as IAbxASTPanel[];
+      panels.value = result as AbxASTPanelType[];
       panels.value.forEach(panel => panel.organisms?.forEach(org => organisms.value.push(org)));
     }
   });
 }
 
 // Form management
-function FormManager(create: boolean, panel = {} as IAbxASTPanel): void {
+function FormManager(create: boolean, panel = {} as AbxASTPanelType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' AST Panel';
@@ -125,7 +125,7 @@ function saveForm(): void {
       AddAbxAstPanelDocument, { payload }, "createAbxAstPanel"
     ).then((result) => {
       if (result) {
-        panels.value.unshift(result as IAbxASTPanel);
+        panels.value.unshift(result as AbxASTPanelType);
       }
     });
   } else {
@@ -140,7 +140,7 @@ function saveForm(): void {
         if (idx > -1) {
           panels.value = [
             ...panels.value.map((item, index) => index === idx ? result : item),
-          ] as IAbxASTPanel[];
+          ] as AbxASTPanelType[];
         }
       }
     });

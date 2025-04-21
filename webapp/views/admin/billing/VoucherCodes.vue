@@ -5,7 +5,7 @@ import { AddVoucherCodeDocument, AddVoucherCodeMutation, AddVoucherCodeMutationV
 import { storeToRefs } from "pinia"
 import { useBillingStore } from "@/stores/billing";
 import useApiUtil  from "@/composables/api_util";
-import { IVoucherCode } from "@/models/billing";
+import { VoucherCodeType } from "@/types/gql";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number } from "yup";
 
@@ -17,13 +17,13 @@ const { withClientMutation } = useApiUtil();
 let billingStore = useBillingStore();
 const { fetchingVoucherCodes } = storeToRefs(billingStore);
 
-const codes = computed<IVoucherCode[]>(() => {
+const codes = computed<VoucherCodeType[]>(() => {
   const vouchers = billingStore.getVouchers;
   const index = vouchers?.findIndex(item => item.uid === props.voucherUid);
   if(index > -1) {
     return vouchers[index]?.codes
   };
-  return [] as IVoucherCode[];
+  return [] as VoucherCodeType[];
 })
 
 onMounted(() => billingStore.fetchVoucherCodes(props.voucherUid!))
@@ -57,11 +57,11 @@ const { value: used } = useField("used");
 const { value: isActive } = useField("isActive");
 
 const submitVoucherForm = handleSubmit((values) => {
-  if (!values.uid) addVoucherCode(values as IVoucherCode);
-  if (values.uid) updateVoucherCode(values as IVoucherCode);
+  if (!values.uid) addVoucherCode(values as VoucherCodeType);
+  if (values.uid) updateVoucherCode(values as VoucherCodeType);
 });
 
-let editCode = (vcode: IVoucherCode) => {
+let editCode = (vcode: VoucherCodeType) => {
   setFieldValue("uid", vcode.uid)
   setFieldValue("code", vcode.code)
   setFieldValue("usageLimit", vcode.usageLimit)
@@ -80,14 +80,14 @@ const  newVoucherCode = () => {
   showModal.value = true
 }
 
-const addVoucherCode = (vcode: IVoucherCode) => {
+const addVoucherCode = (vcode: VoucherCodeType) => {
   delete vcode['uid'];
   withClientMutation<AddVoucherCodeMutation, AddVoucherCodeMutationVariables>(AddVoucherCodeDocument, { payload: vcode },"createVoucherCode")
   .then((result) => billingStore.addVoucherCode(result))
   .finally(() => (showModal.value = false));
 };
 
-const updateVoucherCode = (vocher: IVoucherCode) => {
+const updateVoucherCode = (vocher: VoucherCodeType) => {
   delete vocher['uid'];
   delete vocher['used'];
   withClientMutation<EditVoucherCodeMutation, EditVoucherCodeMutationVariables>(EditVoucherCodeDocument, { uid: uid?.value, payload: vocher },"updateVoucherCode")

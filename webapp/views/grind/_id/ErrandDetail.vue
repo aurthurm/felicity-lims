@@ -3,7 +3,7 @@ import useApiUtil from '@/composables/api_util'
 import { formatDate, getUserInitials, parseDate} from '@/utils'
 import { AddGrindStampDocument, AddGrindStampMutation, AddGrindStampMutationVariables, EditGrindErrandDocument, EditGrindErrandMutation, EditGrindErrandMutationVariables } from '@/graphql/operations/grind.mutations'
 import { GetGrindErrandDocument, GetGrindErrandQuery, GetGrindErrandQueryVariables, GetGrindPostersByBoardDocument, GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables, GetGrindStampByCategoryDocument, GetGrindStampByCategoryQuery, GetGrindStampByCategoryQueryVariables } from '@/graphql/operations/grind.queries'
-import { IGrindErrand, IGrindPoster, IGrindStamp } from '@/models/grind'
+import { GrindErrandType, GrindPosterType, GrindStampType } from '@/types/gql'
 import { StampCategory } from '@/graphql/schema'
 import 'ckeditor5/ckeditor5.css';
 import {
@@ -30,7 +30,7 @@ import { ref, onMounted, nextTick, computed, defineAsyncComponent } from 'vue'
 import Multiselect from 'vue-multiselect'
 import { useRoute, useRouter } from 'vue-router'
 import { GrindUpdateErrandInput } from '@/graphql/schema'
-import { IUser } from '@/models/auth'
+import { UserType } from '@/types/gql'
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries'
 import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
 
@@ -152,7 +152,7 @@ const route = useRoute( )
 const errandUid = computed<string>(() => route.params.errandUid as string)
 const boardUid = computed<string>(() => route.params.boardUid as string)
 
-let errand = ref<IGrindErrand>();
+let errand = ref<GrindErrandType>();
 const { withClientQuery, withClientMutation } = useApiUtil()
 
 function getErrand() {
@@ -161,7 +161,7 @@ function getErrand() {
         { uid: errandUid.value },
         'grindErrandByUid'
     ).then((resp: any) => {
-        errand.value = resp as IGrindErrand;
+        errand.value = resp as GrindErrandType;
         // Handle period
         const startDate = parseDate(errand.value.startDate, true) ?? new Date();
         const endDate = parseDate(errand.value.endDate, true) ?? new Date(new Date().setDate(startDate.getDate() + 7));
@@ -169,7 +169,7 @@ function getErrand() {
     })
 }
 
-function updateErrand(payload: Partial<IGrindErrand>) {
+function updateErrand(payload: Partial<GrindErrandType>) {
     withClientMutation<EditGrindErrandMutation, EditGrindErrandMutationVariables>(
         EditGrindErrandDocument,
         { uid: errandUid.value, payload: payload as GrindUpdateErrandInput },
@@ -235,45 +235,45 @@ const handleDate = (dates: Date[]) => {
 }
 
 // Errand Poster a.k.a Status
-const posters = ref<IGrindPoster[]>([])
+const posters = ref<GrindPosterType[]>([])
 function getPosters() {
   withClientQuery<GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables>(
     GetGrindPostersByBoardDocument,
     { boardUid: boardUid.value },
     "grindPostersByBoard"
   ).then((res) => {
-    posters.value = (res as IGrindPoster[]).filter(p => p.uid !== errand.value?.posterUid);
+    posters.value = (res as GrindPosterType[]).filter(p => p.uid !== errand.value?.posterUid);
   });
 }
 
-function updateStatus (poster: IGrindPoster) {
+function updateStatus (poster: GrindPosterType) {
   updateErrand({ posterUid: poster.uid })
 }
 
 // Errand Persons
-const users = ref<IUser[]>()
+const users = ref<UserType[]>()
 function getUsers() {
   withClientQuery<UserAllQuery, UserAllQueryVariables>(
     UserAllDocument,
     { first: 100 },
     "userAll"
   ).then((res: any) => {
-    users.value = res.items as IUser[];
+    users.value = res.items as UserType[];
   });
 }
 function customLabel ({firstName, lastName}) {
   return `${firstName} ${lastName}`
 }
 
-function updateAssignee (user: IUser) {
+function updateAssignee (user: UserType) {
   updateErrand({ assigneeUid: user.uid })
 }
 
-function updateReporter (user: IUser) {
+function updateReporter (user: UserType) {
   updateErrand({ reporterUid: user.uid })
 }
 
-function updateMembers (users: IUser[]) {
+function updateMembers (users: UserType[]) {
   updateErrand({ members: users.map(u => u.uid) as string[] })
 }
 
@@ -284,17 +284,17 @@ function updatePriority (priority: string) {
 }
 
 // Errand Stamps
-const stamps = ref<IGrindStamp[]>([])
+const stamps = ref<GrindStampType[]>([])
 function getStamps() {
   withClientQuery<GetGrindStampByCategoryQuery, GetGrindStampByCategoryQueryVariables>(
     GetGrindStampByCategoryDocument,
     { category: StampCategory.Project },
     "grindStampByCategory"
   ).then((res) => {
-    stamps.value = res as IGrindStamp[];
+    stamps.value = res as GrindStampType[];
   });
 }
-function updateStamps (stamps: IGrindStamp[]) {
+function updateStamps (stamps: GrindStampType[]) {
   updateErrand({ stamps: stamps?.map(s => s.uid) })
 }
 const addStamp = (newTag: string) => {
@@ -305,7 +305,7 @@ const addStamp = (newTag: string) => {
   ).then((resp: any) => {
     if(resp.uid){
       stamps.value.push(resp);
-      const tags = (errand.value?.stamps ?? []) as IGrindStamp[]
+      const tags = (errand.value?.stamps ?? []) as GrindStampType[]
       tags.push(resp);
       updateStamps(tags)
     }

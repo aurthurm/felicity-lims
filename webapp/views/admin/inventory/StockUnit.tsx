@@ -9,7 +9,7 @@ import {
 } from '@/graphql/operations/inventory.mutations';
 import {useInventoryStore} from '@/stores/inventory';
 import useApiUtil from '@/composables/api_util';
-import {IStockUnit} from '@/models/inventory';
+import { StockUnitType } from '@/types/gql';
 
 const StockUnit = defineComponent({
     name: 'stock-unit',
@@ -19,7 +19,7 @@ const StockUnit = defineComponent({
 
         let showModal = ref(false);
         let formTitle = ref('');
-        let form = reactive({} as IStockUnit);
+        let form = reactive({} as StockUnitType);
         const formAction = ref(true);
 
         inventoryStore.fetchUnits();
@@ -42,12 +42,12 @@ const StockUnit = defineComponent({
             );
         }
 
-        function FormManager(create: boolean, obj: IStockUnit | null): void {
+        function FormManager(create: boolean, obj: StockUnitType  | null): void {
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK UNIT';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as IStockUnit);
+                Object.assign(form, {} as StockUnitType);
             } else {
                 Object.assign(form, {...obj});
             }

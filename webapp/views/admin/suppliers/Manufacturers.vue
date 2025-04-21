@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IManufacturer } from '@/models/setup'
+  import { ManufacturerType } from '@/types/gql'
   import { AddManufacturerDocument, AddManufacturerMutation, AddManufacturerMutationVariables,
     EditManufacturerDocument, EditManufacturerMutation, EditManufacturerMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
@@ -14,7 +14,7 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as IManufacturer;
+  let form = reactive({}) as ManufacturerType;
   const formAction = ref<boolean>(true);
 
   setupStore.fetchManufacturers()
@@ -32,12 +32,12 @@
     .then((result) => setupStore.updateManufacturer(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IManufacturer):void {
+  function FormManager(create: boolean, obj = {} as ManufacturerType):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "MANUFACTURER";
     if (create) {
-      Object.assign(form, {} as IManufacturer);
+      Object.assign(form, {} as ManufacturerType);
     } else {
       Object.assign(form, { ...obj });
     }

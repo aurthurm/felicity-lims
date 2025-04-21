@@ -2,7 +2,7 @@
 import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 import { usePatientStore } from '@/stores/patient';
 import  useApiUtil  from '@/composables/api_util';
-import { IIdentification } from '@/models/patient'
+import { IdentificationType } from '@/types/gql'
 import { AddIdentificationDocument, AddIdentificationMutation, AddIdentificationMutationVariables,
   EditIdentificationDocument, EditIdentificationMutation, EditIdentificationMutationVariables } from '@/graphql/operations/patient.mutations';
 const modal = defineAsyncComponent(
@@ -14,7 +14,7 @@ const { withClientMutation } = useApiUtil();
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IIdentification;
+let form = reactive({}) as IdentificationType;
 const formAction = ref<boolean>(true);
 
 patientStore.fetchIdentifications();
@@ -29,12 +29,12 @@ function editIdentification(): void {
     .then((result) => patientStore.updateIdentification(result));
 }
 
-function FormManager(create: boolean, obj = {} as IIdentification): void {
+function FormManager(create: boolean, obj = {} as IdentificationType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "PERSON IDENTIFICATION";
   if (create) {
-    Object.assign(form, {} as IIdentification);
+    Object.assign(form, {} as IdentificationType);
   } else {
     Object.assign(form, { ...obj });
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IReferralLaboratory } from '@/models/shipment'
+  import { ReferralLaboratoryType } from '@/types/gql'
   import { AddReferralLaboratoryDocument, AddReferralLaboratoryMutation, AddReferralLaboratoryMutationVariables,
     EditReferralLaboratoryDocument, EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables } from '@/graphql/operations/shipment.mutations';
   import { useShipmentStore } from '@/stores/shipment';
@@ -14,18 +14,18 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as IReferralLaboratory;
+  let form = reactive({}) as ReferralLaboratoryType;
   const formAction = ref<boolean>(true);
 
   shipmentStore.fetchReferralLaboratories();
   const referralLaboratories = computed(() => shipmentStore.getReferalLaboratories)
 
-  function FormManager(create: boolean, obj = {} as IReferralLaboratory):void {
+  function FormManager(create: boolean, obj = {} as ReferralLaboratoryType):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFERRAL LABORATORY";
     if (create) {
-      Object.assign(form, {} as IReferralLaboratory);
+      Object.assign(form, {} as ReferralLaboratoryType);
     } else {
       Object.assign(form, { ...obj });
     }

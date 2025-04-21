@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
-  import { IMethod } from '@/models/setup'
+  import { MethodType } from '@/types/gql'
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   const modal = defineAsyncComponent(
@@ -17,7 +17,7 @@
   let formTitle = ref('');
   const formAction = ref(true);
 
-  let method = reactive({}) as IMethod;
+  let method = reactive({}) as MethodType;
 
 
   const analysesParams = { first: 1000, after: "", text: "", sortBy: ["name"]}
@@ -28,18 +28,18 @@
 
   const methods = computed(() => setupStore.getMethods)  
 
-  function FormManager(create: boolean, obj = {} as IMethod): void {
+  function FormManager(create: boolean, obj = {} as MethodType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";
     if (create) {
-      Object.assign(method, { ...{} as IMethod });
+      Object.assign(method, { ...{} as MethodType });
     } else {
       Object.assign(method, { ...obj });
     }
   }
 
-  function getAnalyses(method :IMethod) {
+  function getAnalyses(method :MethodType) {
     let final: string[] = [];
     analyses.value?.forEach(an => {
       if(an?.methods?.some(m => m.uid == method?.uid)) {

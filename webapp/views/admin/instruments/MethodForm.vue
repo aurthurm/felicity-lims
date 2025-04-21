@@ -1,9 +1,8 @@
 <script setup lang="ts">
   import { ref, reactive, computed, PropType, watch, toRefs, defineAsyncComponent } from 'vue';
-  import { IInstrument, IMethod } from '@/models/setup'
   import { AddMethodDocument, AddMethodMutation, AddMethodMutationVariables,
     EditMethodDocument, EditMethodMutation, EditMethodMutationVariables } from '@/graphql/operations/instrument.mutations';
-  import { IAnalysisService } from '@/models/analysis';
+  import { AnalysisType, InstrumentType, MethodType } from '@/types/gql';
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
@@ -16,9 +15,9 @@
   const { withClientMutation } = useApiUtil()
 
   const props = defineProps({
-      method: Object as PropType<IMethod>,
+      method: Object as PropType<MethodType>,
       methodUid: String,
-      analysis: Object as PropType<IAnalysisService>,
+      analysis: Object as PropType<AnalysisType>,
       analysisUid: String,
   })
 
@@ -30,8 +29,8 @@
   
   const emit = defineEmits(['close'])
 
-  const analyses = computed<IAnalysisService[]>(() => analysisStore.getAnalysesServicesSimple )
-  let selectedAnalyses = ref<IAnalysisService[]>([]);
+  const analyses = computed<AnalysisType[]>(() => analysisStore.getAnalysesServicesSimple )
+  let selectedAnalyses = ref<AnalysisType[]>([]);
   if(analysis?.value?.uid !== undefined) {
     selectedAnalyses.value.push(analysis.value)
   } else {
@@ -43,10 +42,10 @@
   }
 
   setupStore.fetchInstruments();
-  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
-  let selectedIntsruments = ref<IInstrument[]>([]);
-  const getAnalMethInstruments = (): IInstrument[] => {
-      const final: IInstrument[] = [];
+  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
+  let selectedIntsruments = ref<InstrumentType[]>([]);
+  const getAnalMethInstruments = (): InstrumentType[] => {
+      const final: InstrumentType[] = [];
       method?.value?.instruments?.forEach((instrument: any) => {
           const exist = analysis?.value?.instruments?.some(item => item?.uid === instrument?.uid);
           if (exist) {
@@ -185,12 +184,3 @@
   </form>
 </template>
 
-<style>
-.multiselect-blue {
-  --ms-option-bg-selected: theme('colors.primary.DEFAULT');
-  --ms-option-color-selected: theme('colors.primary.foreground');
-  --ms-tag-bg: theme('colors.primary.DEFAULT');
-  --ms-tag-color: theme('colors.primary.foreground');
-  --ms-ring-color: theme('colors.primary.DEFAULT');
-}
-</style>

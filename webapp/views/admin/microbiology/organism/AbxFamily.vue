@@ -2,7 +2,7 @@
 import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import { IAbxFamily, IAbxOrder } from "@/models/microbiology";
+import { AbxFamilyType, AbxOrderType } from "@/types/gql";
 import {
   AddAbxFamilyDocument,
   AddAbxFamilyMutation,
@@ -27,35 +27,35 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxFamily;
+let form = reactive({}) as AbxFamilyType;
 const formAction = ref<boolean>(true);
 
-const abxFamilys = ref<IAbxFamily[]>([]);
-const abxOrders = ref<IAbxOrder[]>([]);
+const abxFamilys = ref<AbxFamilyType[]>([]);
+const abxOrders = ref<AbxOrderType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxOrderAllQuery, GetAbxOrderAllQueryVariables>(
       GetAbxOrderAllDocument, {}, "abxOrderAll"
   ).then((result) => {
     if (result) {
-      abxOrders.value = result as IAbxOrder[]
+      abxOrders.value = result as AbxOrderType[]
     }
   })
   withClientQuery<GetAbxFamilyAllQuery, GetAbxFamilyAllQueryVariables>(
       GetAbxFamilyAllDocument, {}, "abxFamilyAll"
   ).then((result) => {
     if (result) {
-      abxFamilys.value = result as IAbxFamily[]
+      abxFamilys.value = result as AbxFamilyType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxFamily): void {
+function FormManager(create: boolean, obj = {} as AbxFamilyType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Family";
   if (create) {
-    Object.assign(form, {} as IAbxFamily);
+    Object.assign(form, {} as AbxFamilyType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -72,7 +72,7 @@ function saveForm(): void {
         AddAbxFamilyDocument, {payload}, "createAbxFamily"
     ).then((result) => {
       if (result) {
-        abxFamilys.value.unshift(result as IAbxFamily);
+        abxFamilys.value.unshift(result as AbxFamilyType);
       }
     });
   }
@@ -88,7 +88,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxFamilys.value = [
                 ...abxFamilys.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxFamily[];
+              ] as AbxFamilyType[];
             }
           }
         });

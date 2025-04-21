@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent, watch } from 'vue';
   import { useRoute } from 'vue-router';
-  import { IAnalysisService } from '@/models/analysis';
+  import { AnalysisType } from '@/types/gql';
   import { AddAnalysisMappingDocument, AddAnalysisMappingMutation, AddAnalysisMappingMutationVariables,
     AddAnalysisServiceDocument, AddAnalysisServiceMutation, AddAnalysisServiceMutationVariables,
     EditAnalysisMappingDocument, EditAnalysisMappingMutation, EditAnalysisMappingMutationVariables,
@@ -50,7 +50,7 @@ import { mutateForm, resetForm } from '@/utils';
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let analysisService = reactive({}) as IAnalysisService; 
+  let analysisService = reactive({}) as AnalysisType; 
   const formAction = ref(true);
 
   const sampleTypes = computed<any[]>(() => sampleStore.getSampleTypes);
@@ -129,7 +129,7 @@ import { mutateForm, resetForm } from '@/utils';
     .then((result) => analysisStore.updateAnalysisService(result));
   }
 
-  function selectAnalysisService(service: IAnalysisService):void {
+  function selectAnalysisService(service: AnalysisType):void {
     mutateForm(analysisService, service)
   }
 

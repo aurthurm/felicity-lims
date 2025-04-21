@@ -3,9 +3,8 @@ import { ref, reactive, computed } from 'vue';
 import { AddStockItemDocument, AddStockItemMutation, AddStockItemMutationVariables,
   EditStockItemDocument, EditStockItemMutation, EditStockItemMutationVariables } from '@/graphql/operations/inventory.mutations';   
 import { useInventoryStore } from '@/stores/inventory';
-import { useSetupStore } from '@/stores/setup';
 import  useApiUtil  from '@/composables/api_util';
-import { IStockItem } from '@/models/inventory';
+import { StockItemInputType, StockItemType } from '@/types/gql';
 
 const StockItemDetail = defineAsyncComponent(
     () => import( './StockItemDetail')
@@ -14,12 +13,11 @@ const StockItem = defineComponent({
     name: 'stock-item',
     setup(props, ctx) {
         const inventoryStore = useInventoryStore();
-        const setupStore = useSetupStore();
         const { withClientMutation } = useApiUtil();
 
         let showModal = ref(false);
         let formTitle = ref('');
-        let form = reactive({} as IStockItem);
+        let form = reactive({} as StockItemType);
         const formAction = ref(true);
 
         let itemParams = reactive({
@@ -36,8 +34,9 @@ const StockItem = defineComponent({
         const categories = computed(() => inventoryStore.getCategories);
 
         function addStockItem(): void {
-            const payload = { ...form };
-            withClientMutation<AddStockItemMutation, AddStockItemMutationVariables>(AddStockItemDocument, { payload }, 'createStockItem').then(result => inventoryStore.addItem(result));
+            const payload = { ...form } as StockItemInputType;
+            withClientMutation<AddStockItemMutation, AddStockItemMutationVariables>(AddStockItemDocument, { payload }, 'createStockItem')
+            .then(result => inventoryStore.addItem(result as StockItemType));
         }
 
         function editStockItem(): void {
@@ -46,18 +45,19 @@ const StockItem = defineComponent({
                 description: form.description,
                 hazardUid: form.hazardUid,
                 categoryUid: form.categoryUid,
-            };
-            withClientMutation<EditStockItemMutation, EditStockItemMutationVariables>(EditStockItemDocument, { uid: form.uid, payload }, 'updateStockItem').then(result =>
-                inventoryStore.updateItem(result)
+            } as StockItemInputType;
+            withClientMutation<EditStockItemMutation, EditStockItemMutationVariables>(EditStockItemDocument, { uid: form.uid, payload }, 'updateStockItem')
+            .then(result =>
+                inventoryStore.updateItem(result as StockItemType)
             );
         }
 
-        function FormManager(create: boolean, obj: IStockItem | null): void {
+        function FormManager(create: boolean, obj: StockItemType | null): void {
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK ITEM';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as IStockItem);
+                Object.assign(form, {} as StockItemType);
             } else {
                 Object.assign(form, { ...obj });
             }
@@ -71,8 +71,8 @@ const StockItem = defineComponent({
 
         // Stock Item Detail
         let openDrawer = ref(false);
-        let stockItem = ref<IStockItem>()
-        const viewStockItem = (item: IStockItem) => {
+        let stockItem = ref<StockItemType>()
+        const viewStockItem = (item: StockItemType) => {
             stockItem.value = item;
             openDrawer.value = true;
         }
@@ -220,6 +220,7 @@ const StockItem = defineComponent({
                                                     Hazard
                                                 </label>
                                                 <select
+                                                    title="Hazard"
                                                     value={this.form.hazardUid}
                                                     onChange={(e) => this.form.hazardUid = e.target.value}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -237,6 +238,7 @@ const StockItem = defineComponent({
                                                     Category
                                                 </label>
                                                 <select
+                                                    title="Category"
                                                     value={this.form.categoryUid}
                                                     onChange={(e) => this.form.categoryUid = e.target.value}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"

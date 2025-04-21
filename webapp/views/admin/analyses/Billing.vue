@@ -8,7 +8,7 @@
   } from '@/graphql/operations/billing.mutations'
   import { useBillingStore } from '@/stores/billing';
   import  useApiUtil  from '@/composables/api_util';
-  import { IAnalysisDiscount, IProfileDiscount } from '@/models/billing';
+  import { AnalysisDiscountType, ProfileDiscountType } from '@/types/gql';
 
   const  billingStore = useBillingStore()
   const { withClientMutation } = useApiUtil()
@@ -84,12 +84,12 @@
   });
   watch(() => billingStore.fetchingDiscount, (fetching, old) => {
     if(!fetching) {
-      let discount = {} as IAnalysisDiscount | IProfileDiscount
+      let discount = {} as AnalysisDiscountType | ProfileDiscountType
       if(target?.value === "profile"){
-        discount = { ...billingStore.profileDiscount } as IProfileDiscount
+        discount = { ...billingStore.profileDiscount } as ProfileDiscountType
       }
       if(target?.value === "analysis"){
-        discount = { ...billingStore.analyisDiscount } as IAnalysisDiscount
+        discount = { ...billingStore.analyisDiscount } as AnalysisDiscountType
       }
       formDiscount.discountType = discount.discountType
       formDiscount.valueType = discount.valueType

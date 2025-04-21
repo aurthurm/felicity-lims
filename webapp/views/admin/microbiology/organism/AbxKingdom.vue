@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref} from 'vue';
 
 import useApiUtil from '@/composables/api_util';
-import { IAbxKingdom } from "@/models/microbiology";
+import { AbxKingdomType } from "@/types/gql";
 import {
   AddAbxKingdomDocument,
   AddAbxKingdomMutation,
@@ -21,27 +21,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IAbxKingdom;
+let form = reactive({}) as AbxKingdomType;
 const formAction = ref<boolean>(true);
 
-const abxKingdoms = ref<IAbxKingdom[]>([]);
+const abxKingdoms = ref<AbxKingdomType[]>([]);
 
 onMounted(() => {
   withClientQuery<GetAbxKingdomAllQuery, GetAbxKingdomAllQueryVariables>(
       GetAbxKingdomAllDocument, {}, "abxKingdomAll"
   ).then((result) => {
     if (result) {
-      abxKingdoms.value = result as IAbxKingdom[]
+      abxKingdoms.value = result as AbxKingdomType[]
     }
   })
 })
 
-function FormManager(create: boolean, obj = {} as IAbxKingdom): void {
+function FormManager(create: boolean, obj = {} as AbxKingdomType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "kingdom";
   if (create) {
-    Object.assign(form, {} as IAbxKingdom);
+    Object.assign(form, {} as AbxKingdomType);
   } else {
     Object.assign(form, {...obj});
   }
@@ -57,7 +57,7 @@ function saveForm(): void {
         AddAbxKingdomDocument, {payload}, "createAbxKingdom"
     ).then((result) => {
       if (result) {
-        abxKingdoms.value.unshift(result as IAbxKingdom);
+        abxKingdoms.value.unshift(result as AbxKingdomType);
       }
     });
   }
@@ -73,7 +73,7 @@ function saveForm(): void {
             if (idx > -1) {
               abxKingdoms.value = [
                 ...abxKingdoms.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxKingdom[];
+              ] as AbxKingdomType[];
             }
           }
         });

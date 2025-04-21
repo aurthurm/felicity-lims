@@ -2,8 +2,7 @@
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { AddAnalysisDetectionLimitDocument, AddAnalysisDetectionLimitMutation, AddAnalysisDetectionLimitMutationVariables,
     EditAnalysisDetectionLimitDocument, EditAnalysisDetectionLimitMutation, EditAnalysisDetectionLimitMutationVariables } from '@/graphql/operations/analyses.mutations';
-  import { IAnalysisDetectionLimit } from '@/models/analysis';
-  import { IInstrument, IMethod } from '@/models/setup';
+  import { AnalysisDetectionLimitType, InstrumentType, MethodType } from '@/types/gql';
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
@@ -31,7 +30,7 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IAnalysisDetectionLimit;
+  let form = reactive({}) as AnalysisDetectionLimitType;
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
@@ -39,10 +38,10 @@
   })
 
   setupStore.fetchInstruments();
-  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
+  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
 
   setupStore.fetchMethods();
-  const methods = computed<IMethod[]>(() => setupStore.getMethods)
+  const methods = computed<MethodType[]>(() => setupStore.getMethods)
 
   function addAnalysisDetectionLimit(): void {
       const payload = { ...form, analysisUid: analysis?.value?.uid }
@@ -59,7 +58,7 @@
       .then((result) => analysisStore.updateAnalysisDetectionLimit(result));
   }
 
-  function FormManager(create: boolean, obj = {} as IAnalysisDetectionLimit):void {
+  function FormManager(create: boolean, obj = {} as AnalysisDetectionLimitType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS DETECTION_LIMIT";

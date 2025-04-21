@@ -9,7 +9,7 @@ import {
   EditClientContactDocument, EditClientContactMutation, EditClientContactMutationVariables,
 } from "@/graphql/operations/clients.mutations";
 import { useClientStore } from "@/stores/client";
-import { IClientContact } from "@/models/client";
+import { ClientContactType } from "@/types/gql";
 import useApiUtil  from "@/composables/api_util";
 import * as shield from "@/guards";
 
@@ -22,7 +22,7 @@ const { clientContacts, fetchingClientContacts } = storeToRefs(clientStore);
 let formTitle = ref("");
 let showContactModal = ref(false);
 let createContact = ref(false);
-let contact = ref({} as IClientContact);
+let contact = ref({} as ClientContactType);
 
 const props = defineProps({
   clientUid: String,
@@ -63,12 +63,12 @@ function editClientContact() {
   ).then((res) => clientStore.updateClientContact(res));
 }
 
-function FormManager(create: boolean, obj: IClientContact = {} as IClientContact) {
+function FormManager(create: boolean, obj: ClientContactType = {} as ClientContactType) {
   createContact.value = create;
   formTitle.value = (create ? "CREATE" : "EDIT") + " CONTACT";
   showContactModal.value = true;
   if (create) {
-    Object.assign(contact, {} as IClientContact);
+    Object.assign(contact, {} as ClientContactType);
   } else {
     Object.assign(contact.value, { ...obj });
   }
@@ -80,7 +80,7 @@ function saveForm() {
   showContactModal.value = false;
 }
 
-const deleteClientContact = (contact: IClientContact) => {
+const deleteClientContact = (contact: ClientContactType) => {
   withClientMutation<DeleteClientContactMutation, DeleteClientContactMutationVariables>(
     DeleteClientContactDocument,
     { uid: contact.uid },

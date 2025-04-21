@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
-import { IAnalysisTemplate, IAnalysisService } from "@/models/analysis";
+import { AnalysisTemplateType, AnalysisType } from "@/types/gql";
 import {
   AddAnalysisTemplateDocument, AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables,
   EditAnalysisTemplateDocument, EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables
@@ -21,7 +21,7 @@ let showModal = ref(false);
 let formTitle = ref("");
 const formAction = ref(true);
 
-let analysisTemplate = reactive({}) as IAnalysisTemplate;
+let analysisTemplate = reactive({}) as AnalysisTemplateType;
 
 const departments = computed<any[]>(() => setupStore.getDepartments);
 
@@ -56,11 +56,11 @@ function editAnalysisTemplate(): void {
   ).then((result) => analysisStore.updateAnalysesTemplate(result));
 }
 
-function select(template: IAnalysisTemplate): void {
+function select(template: AnalysisTemplateType): void {
   Object.assign(analysisTemplate, { ...template });
   // get services that fall into this template
   analysesServices.value?.forEach((item) => {
-    item[1].forEach((service: IAnalysisService) => {
+    item[1].forEach((service: AnalysisType) => {
       service.checked = false;
       if (template.analyses?.some((a) => a.uid === service.uid) || false) {
         service.checked = true;
@@ -70,9 +70,9 @@ function select(template: IAnalysisTemplate): void {
 }
 
 function updateTemplate(): void {
-  const analyses: IAnalysisService[] = [];
+  const analyses: AnalysisType[] = [];
   analysesServices.value?.forEach((item) => {
-    item[1].forEach((service: IAnalysisService) => {
+    item[1].forEach((service: AnalysisType) => {
       if (service.checked) {
         analyses.push(service);
       }
@@ -82,12 +82,12 @@ function updateTemplate(): void {
   editAnalysisTemplate();
 }
 
-function FormManager(create: boolean, obj = {} as IAnalysisTemplate): void {
+function FormManager(create: boolean, obj = {} as AnalysisTemplateType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES TEMPLATE";
   if (create) {
-    Object.assign(analysisTemplate, {} as IAnalysisTemplate);
+    Object.assign(analysisTemplate, {} as AnalysisTemplateType);
   } else {
     Object.assign(analysisTemplate, { ...obj });
   }

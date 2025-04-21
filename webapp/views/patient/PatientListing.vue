@@ -4,7 +4,7 @@ import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
 import { useLocationStore } from "@/stores/location";
-import { IPatient } from "@/models/patient";
+import { PatientType } from "@/types/gql";
 import * as shield from "@/guards";
 
 const DataTable = defineAsyncComponent(
@@ -156,7 +156,7 @@ function showMorePatients(opts: any): void {
   patientStore.fetchPatients(patientParams);
 }
 
-let getPatientFullName = (pt: IPatient) => {
+let getPatientFullName = (pt: PatientType) => {
   return pt.firstName + " " + pt.lastName;
 };
 </script>

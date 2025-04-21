@@ -4,7 +4,7 @@ import { AddStockCategoryDocument, AddStockCategoryMutation, AddStockCategoryMut
   EditStockCategoryDocument, EditStockCategoryMutation, EditStockCategoryMutationVariables } from '@/graphql/operations/inventory.mutations';
 import { useInventoryStore } from '@/stores/inventory';
 import  useApiUtil  from '@/composables/api_util';
-import { IStockCategory } from '@/models/inventory';
+import { StockCategoryInputType, StockCategoryType } from '@/types/gql';
 
 const StockCategory = defineComponent({
     name: 'stock-category',
@@ -14,33 +14,35 @@ const StockCategory = defineComponent({
 
         let showModal = ref(false);
         let formTitle = ref('');
-        let form = reactive({} as IStockCategory);
+        let form = reactive({} as StockCategoryType);
         const formAction = ref(true);
 
         inventoryStore.fetchCategories();
         const stockCategories = computed(() => inventoryStore.getCategories);
 
         function addStockCategory(): void {
-            const payload = { ...form };
-            withClientMutation<AddStockCategoryMutation, AddStockCategoryMutationVariables>(AddStockCategoryDocument, { payload }, 'createStockCategory').then(result => inventoryStore.addCategory(result));
+            const payload = { ...form } as StockCategoryInputType;
+            withClientMutation<AddStockCategoryMutation, AddStockCategoryMutationVariables>(AddStockCategoryDocument, { payload }, 'createStockCategory')
+            .then(result => inventoryStore.addCategory(result));
         }
 
         function editStockCategory(): void {
             const payload = {
                 name: form.name,
                 description: form.description,
-            };
-            withClientMutation<EditStockCategoryMutation, EditStockCategoryMutationVariables>(EditStockCategoryDocument, { uid: form.uid, payload }, 'updateStockCategory').then(result =>
+            } as StockCategoryInputType;
+            withClientMutation<EditStockCategoryMutation, EditStockCategoryMutationVariables>(EditStockCategoryDocument, { uid: form.uid, payload }, 'updateStockCategory')
+            .then(result =>
                 inventoryStore.updateCategory(result)
             );
         }
 
-        function FormManager(create: boolean, obj: IStockCategory | null): void {
+        function FormManager(create: boolean, obj: StockCategoryType | null): void {
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK CATEGORY';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as IStockCategory);
+                Object.assign(form, {} as StockCategoryType);
             } else {
                 Object.assign(form, { ...obj });
             }

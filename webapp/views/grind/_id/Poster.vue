@@ -2,7 +2,7 @@
 import useApiUtil from '@/composables/api_util'
 import {  AddGrindErrandDocument, AddGrindErrandMutation, AddGrindErrandMutationVariables, EditGrindErrandDocument, EditGrindErrandMutation, EditGrindErrandMutationVariables } from '@/graphql/operations/grind.mutations'
 import { ErrandCategory, GrindErrandType} from '@/graphql/schema'
-import { IGrindErrand, IGrindPoster } from '@/models/grind'
+import { GrindErrandType, GrindPosterType } from '@/types/gql'
 import { formatDate, resetForm, stringToColor, getUserInitials } from '@/utils'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { PropType, reactive, ref } from 'vue'
@@ -10,13 +10,13 @@ import { VueDraggable } from 'vue-draggable-plus'
 
 const props = defineProps({
     poster: {
-        type: Object as PropType<IGrindPoster>,
+        type: Object as PropType<GrindPosterType>,
         required: true
     }
 })
 
 const { withClientMutation } = useApiUtil();
-const poster = ref<IGrindPoster>(props.poster);
+const poster = ref<GrindPosterType>(props.poster);
 
 function onUpdate() {}
 
@@ -30,7 +30,7 @@ function onAdd(item) {
     if(resp?.uid) {
       const index = poster.value.errands.findIndex(e => e.uid === resp.uid);
       if(index > -1 && resp?.uid) {
-        poster.value.errands[index] = resp as IGrindErrand;
+        poster.value.errands[index] = resp as GrindErrandType;
       }
     }
   });
@@ -42,7 +42,7 @@ function remove() {}
 let showErrandModal = ref<boolean>(false);
 let formAction = ref<boolean>(false);
 let errandFormTitle = ref<string>("");
-let errandForm = reactive({}) as IGrindErrand;
+let errandForm = reactive({}) as GrindErrandType;
 
 const openCreateErrandForm = () => {
   formAction.value = true;

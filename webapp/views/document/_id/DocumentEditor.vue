@@ -3,7 +3,7 @@ import { computed, onMounted, ref, defineAsyncComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import useApiUtil from '@/composables/api_util';
 import { GetDocumentVersionByBidDocument, GetDocumentVersionByBidQuery, GetDocumentVersionByBidQueryVariables } from '@/graphql/operations/document.queries';
-import { IDocumentVersion } from '@/models/document';
+import { DocumentVersionType } from '@/types/gql';
 
 // Lazy load components
 const UmoEditor = defineAsyncComponent(
@@ -21,7 +21,7 @@ const { withClientQuery } = useApiUtil();
 const documentUid = computed(() => route.params.documentVersionUid as string);
 
 // Local state
-const document = ref<IDocumentVersion | null>(null);
+const document = ref<DocumentVersionType | null>(null);
 const isFetching = ref(false);
 
 // Methods
@@ -33,7 +33,7 @@ const fetchDocument = async () => {
       { uid: documentUid.value },
       'documentVersionByUid'
     ).then(doc => {
-      document.value = doc as IDocumentVersion;
+      document.value = doc as DocumentVersionType;
     });
   } catch (error) {
     console.error('Error fetching document:', error);
