@@ -6,16 +6,35 @@ import {
     GetClientByUidDocument, GetClientByUidQuery, GetClientByUidQueryVariables
 } from '@/graphql/operations/clients.queries';
 import { addListsUnique } from '@/utils';
-import { IClient, IClientContact } from '@/models/client';
-import { IPageInfo } from '@/models/pagination';
+import { ClientType, ClientContactType, PageInfo } from '@/types/gql';
 
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import { useLocationStore } from './location';
 
 const { withClientQuery } = useApiUtil();
 
+// Define the state type
+type ClientStateType = {
+    clients: ClientType[];
+    fetchingClients: boolean;
+    client?: ClientType;
+    fetchingClient: boolean;
+    clientContacts: ClientContactType[];
+    fetchingClientContacts: boolean;
+    clientCount?: number;
+    clientPageInfo?: PageInfo;
+};
+
+// Default empty page info
+const defaultPageInfo: PageInfo = {
+    hasNextPage: false,
+    hasPreviousPage: false,
+    startCursor: null,
+    endCursor: null
+};
+
 export const useClientStore = defineStore('client', {
-    state: () => {
+    state: (): ClientStateType => {
         return {
             clients: [],
             fetchingClients: false,
@@ -24,98 +43,176 @@ export const useClientStore = defineStore('client', {
             clientContacts: [],
             fetchingClientContacts: false,
             clientCount: 0,
-            clientPageInfo: {},
-        } as {
-            clients: IClient[];
-            fetchingClients: boolean;
-            client?: IClient;
-            fetchingClient: boolean;
-            clientContacts: IClientContact[];
-            fetchingClientContacts: boolean;
-            clientCount?: number;
-            clientPageInfo?: IPageInfo;
+            clientPageInfo: defaultPageInfo,
         };
     },
     getters: {
-        getClientContacts: state => state.clientContacts,
-        getClients: state => state.clients,
-        getClient: state => state.client,
-        getClientByName: state => (name: string) => state.clients?.find(cl => cl.name === name),
-        getClientCount: state => state.clientCount,
-        getClientPageInfo: state => state.clientPageInfo,
+        getClientContacts: (state): ClientContactType[] => state.clientContacts,
+        getClients: (state): ClientType[] => state.clients,
+        getClient: (state): ClientType | undefined => state.client,
+        getClientByName: (state) => (name: string): ClientType | undefined => 
+            state.clients?.find(cl => cl.name === name),
+        getClientCount: (state): number | undefined => state.clientCount,
+        getClientPageInfo: (state): PageInfo | undefined => state.clientPageInfo,
     },
     actions: {
-        async fetchClients(params) {
-            this.fetchingClients = true;
-            await withClientQuery<GetAllClientsQuery, GetAllClientsQueryVariables>(GetAllClientsDocument, params, undefined)
-                .then(payload => {
-                    this.fetchingClients = false;
-                    const page = payload.clientAll;
-                    const clients = page.items;
+        async fetchClients(params: any): Promise<void> {
+            try {
+                this.fetchingClients = true;
+                const result = await withClientQuery<GetAllClientsQuery, GetAllClientsQueryVariables>(
+                    GetAllClientsDocument, 
+                    params, 
+                    undefined
+                );
+                
+                if (result && typeof result === 'object' && 'clientAll' in result) {
+                    const page = result.clientAll as any;
+                    const clients = page.items || [];
+                    
                     if (params.filterAction) {
                         this.clients = [];
-                        this.clients = clients;
+                        this.clients = clients as ClientType[];
                     } else {
-                        this.clients = addListsUnique(this.clients!, clients, 'uid');
+                        this.clients = addListsUnique(this.clients, clients as ClientType[], 'uid');
                     }
 
                     this.clientCount = page?.totalCount;
-                    this.clientPageInfo = page?.pageInfo;
-                })
-                .catch(err => (this.fetchingClients = false));
+                    this.clientPageInfo = page?.pageInfo || defaultPageInfo;
+                } else {
+                    console.error('Invalid clients data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching clients:', error);
+            } finally {
+                this.fetchingClients = false;
+            }
         },
-        async searchClients(queryString: string) {
-            this.fetchingClients = true;
-            await withClientQuery<SearchClientsQuery, SearchClientsQueryVariables>(SearchClientsDocument, { queryString }, 'clientSearch')
-                .then(payload => {
-                    this.fetchingClients = false;
-                    this.clients = payload;
-                })
-                .catch(err => (this.fetchingClients = false));
+        
+        async searchClients(queryString: string): Promise<void> {
+            try {
+                this.fetchingClients = true;
+                const result = await withClientQuery<SearchClientsQuery, SearchClientsQueryVariables>(
+                    SearchClientsDocument, 
+                    { queryString }, 
+                    'clientSearch'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    // Use type assertion for the search results
+                    this.clients = result as unknown as ClientType[];
+                } else {
+                    console.error('Invalid search results received:', result);
+                }
+            } catch (error) {
+                console.error('Error searching clients:', error);
+            } finally {
+                this.fetchingClients = false;
+            }
         },
-        async fetchClientByUid(uid) {
+        
+        async fetchClientByUid(uid: string): Promise<void> {
             if (!uid) {
+                console.error('Invalid client UID provided to fetchClientByUid');
                 return;
             }
-            this.fetchingClient = true;
-            await withClientQuery<GetClientByUidQuery, GetClientByUidQueryVariables>(GetClientByUidDocument, { uid }, 'clientByUid')
-                .then(payload => {
-                    this.fetchingClient = false;
-                    this.client = payload;
-                    if(payload?.district){
-                        useLocationStore().addDistrict(payload?.district);
+            
+            try {
+                this.fetchingClient = true;
+                const result = await withClientQuery<GetClientByUidQuery, GetClientByUidQueryVariables>(
+                    GetClientByUidDocument, 
+                    { uid }, 
+                    'clientByUid'
+                );
+                
+                if (result && typeof result === 'object') {
+                    // Use type assertion for the client result
+                    this.client = result as unknown as ClientType;
+                    
+                    // Add district to location store if available
+                    if (result.district) {
+                        useLocationStore().addDistrict(result.district);
                     }
-                })
-                .catch(err => (this.fetchingClient = false));
+                } else {
+                    console.error('Invalid client data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching client by UID:', error);
+            } finally {
+                this.fetchingClient = false;
+            }
         },
-        addClient(payload: IClient) {
+        
+        addClient(payload: ClientType): void {
+            if (!payload?.uid) {
+                console.error('Invalid client payload:', payload);
+                return;
+            }
+            
             this.clients?.unshift(payload);
         },
-        updateClient(payload: IClient) {
+        
+        updateClient(payload: ClientType): void {
+            if (!payload?.uid) {
+                console.error('Invalid client payload:', payload);
+                return;
+            }
+            
             this.clients = this.clients?.map(item => (item.uid === payload.uid ? payload : item));
             this.client = { ...this.client, ...payload };
         },
 
-        async fetchClientContacts(clientUid) {
+        async fetchClientContacts(clientUid: string): Promise<void> {
             if (!clientUid) {
+                console.error('Invalid client UID provided to fetchClientContacts');
                 return;
             }
-            this.fetchingClientContacts = true;
-            await withClientQuery<GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables>(GetClientContactsByClientUidDocument, { clientUid }, 'clientContactByClientUid')
-                .then(payload => {
-                    this.fetchingClientContacts = false;
-                    this.clientContacts = payload;
-                })
-                .catch(err => (this.fetchingClientContacts = false));
+            
+            try {
+                this.fetchingClientContacts = true;
+                const result = await withClientQuery<GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables>(
+                    GetClientContactsByClientUidDocument, 
+                    { clientUid }, 
+                    'clientContactByClientUid'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    // Use type assertion for the client contacts
+                    this.clientContacts = result as unknown as ClientContactType[];
+                } else {
+                    console.error('Invalid client contacts data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching client contacts:', error);
+            } finally {
+                this.fetchingClientContacts = false;
+            }
         },
-        addClientContact(payload: IClientContact) {
+        
+        addClientContact(payload: ClientContactType): void {
+            if (!payload?.uid) {
+                console.error('Invalid client contact payload:', payload);
+                return;
+            }
+            
             this.clientContacts?.unshift(payload);
         },
-        updateClientContact(payload: IClientContact) {
+        
+        updateClientContact(payload: ClientContactType): void {
+            if (!payload?.uid) {
+                console.error('Invalid client contact payload:', payload);
+                return;
+            }
+            
             this.clientContacts = this.clientContacts?.map(item => (item.uid === payload.uid ? payload : item));
         },
-        deleteClientContact(uid: string) {
-            this.clientContacts = this.clientContacts?.filter(item => (item.uid !== uid));            
+        
+        deleteClientContact(uid: string): void {
+            if (!uid) {
+                console.error('Invalid client contact UID provided to deleteClientContact');
+                return;
+            }
+            
+            this.clientContacts = this.clientContacts?.filter(item => (item.uid !== uid));
         }
     },
 });

@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Plus, FolderPlus } from 'lucide-vue-next'
-import { useDocumentStore } from '@/stores/documentStore'
+import { useDocumentStore } from '@/stores/document'
 import FolderItem from './FolderItem.vue'
 import useApiUtil from '@/composables/api_util';
 import { AddDocumentFolderDocument, AddDocumentFolderMutation, AddDocumentFolderMutationVariables } from '@/graphql/operations/document.mutations';

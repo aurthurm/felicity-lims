@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, defineAsyncComponent } from 'vue';
-import { useDocumentStore } from '@/stores/documentStore';
+import { useDocumentStore } from '@/stores/document';
 import { Folder } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 

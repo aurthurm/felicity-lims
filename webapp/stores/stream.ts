@@ -5,50 +5,70 @@ import { useWorksheetStore } from './worksheet';
 import { useSampleStore } from './sample';
 import useAnalyticsComposable from '@/composables/analytics';
 import { GetSystemActivityDocument, GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables } from '@/graphql/operations/stream.subscriptions';
+import { ActivityStreamType, WorkSheetType, SampleType } from '@/types/gql';
+
+
+type StreamStateType = {
+    streams: ActivityStreamType[];
+}
 
 export const useStreamStore = defineStore('stream', {
-    state: () =>
-        ({
-            streams: [],
-        } as {
-            streams: any[];
-        }),
+    state: (): StreamStateType => ({
+        streams: []
+    }),
     getters: {
-        getStreams: state => state.streams,
+        getStreams: (state): ActivityStreamType[] => state.streams,
     },
     actions: {
-        addStream(payload) {
+        addStream(payload: ActivityStreamType): void {
+            if (!payload?.actionObjectType || !payload?.actionObject) {
+                console.error('Invalid stream payload:', payload);
+                return;
+            }
+
             const { updateReport } = useAnalyticsComposable();
             const wsStore = useWorksheetStore();
             const sampleStore = useSampleStore();
 
-            this.streams?.unshift(payload);
+            this.streams.unshift(payload);
 
-            if (payload.actionObjectType === 'sample') {
-                sampleStore.updateSampleStatus(payload.actionObject);
-            }
-
-            if (payload.actionObjectType === 'worksheet') {
-                wsStore.updateWorksheetStatus(payload.actionObject);
-            }
-
-            if (payload.actionObjectType === 'report') {
-                updateReport(payload.actionObject);
-            }
-
-            if (payload.actionObjectType === 'result') {
-                sampleStore.updateAnalysesResultsStatus([payload.actionObject]);
-                wsStore.updateWorksheetResultsStatus([payload.actionObject]);
-                // wsStore.updateAnalysesResults([payload.actionObject])
+            try {
+                switch (payload.actionObjectType) {
+                    case 'SampleType':
+                        sampleStore.updateSampleStatus(payload.actionObject as SampleType);
+                        break;
+                    case 'WorkSheetType':
+                        wsStore.updateWorksheetStatus(payload.actionObject as WorkSheetType);
+                        break;
+                    case 'ReportMetaType':
+                        updateReport(payload.actionObject as any); // ReportMetaType
+                        break;
+                    case 'AnalysisResultType':
+                        sampleStore.updateAnalysesResultsStatus([payload.actionObject]);
+                        wsStore.updateWorksheetResultsStatus([payload.actionObject]);
+                        break;
+                    default:
+                        console.warn('Unknown action object type:', payload.actionObjectType);
+                }
+            } catch (error) {
+                console.error('Error processing stream payload:', error);
             }
         },
-        subscribeToActivityStream() {
-            pipe(
-                urqlClient.subscription<GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables>(GetSystemActivityDocument, {}),
+
+        subscribeToActivityStream(): () => void {
+            return pipe(
+                urqlClient.subscription<GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables>(
+                    GetSystemActivityDocument, 
+                    {}
+                ),
                 subscribe(result => {
+                    if (result.error) {
+                        console.error('Stream subscription error:', result.error);
+                        return;
+                    }
+
                     if (result.data?.latestActivity) {
-                        this.addStream(result.data?.latestActivity);
-                    } else {
+                        this.addStream(result.data.latestActivity as ActivityStreamType);
                     }
                 })
             ).unsubscribe;

@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
-import { INotice } from '@/models/notice';
+import { ExtNoticeType } from '@/types/ext';
 import { subtractDates } from '@/utils';
 
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
+import useNotifyToast from '@/composables/alert_toast';
 import { GetNoticesByCreatorUidDocument, GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables } from '@/graphql/operations/notice.queries';
 
 const { withClientQuery } = useApiUtil();
+const { toastError } = useNotifyToast();
 
 export const useNoticeStore = defineStore('notice', {
     state: () =>
@@ -15,7 +17,7 @@ export const useNoticeStore = defineStore('notice', {
             filterBy: 'all',
             filters: ['all', 'active', 'expired'],
         } as {
-            notices: INotice[];
+            notices: ExtNoticeType[];
             fetchingNotices: boolean;
             filterBy: string;
             filters: string[];
@@ -29,33 +31,53 @@ export const useNoticeStore = defineStore('notice', {
     },
     actions: {
         async fetchMyNotices(uid: string) {
-            this.fetchingNotices = true;
-            await withClientQuery<GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables>(GetNoticesByCreatorUidDocument, { uid }, 'noticesByCreator')
-                .then(payload => {
-                    this.fetchingNotices = false;
-                    this.notices = payload?.map(n => modifyExpiry(n)).sort((a, b) => a.expiry > b.expiry ? 1 : -1);
-                })
-                .catch(err => (this.fetchingNotices = false));
+            try {
+                this.fetchingNotices = true;
+                const payload = await withClientQuery<GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables>(
+                    GetNoticesByCreatorUidDocument, 
+                    { uid }, 
+                    'noticesByCreator'
+                );
+                
+                // Check if payload is an array before mapping
+                if (Array.isArray(payload)) {
+                    // Cast each notice to ExtNoticeType before modifying
+                    this.notices = payload.map(n => modifyExpiry(n as unknown as ExtNoticeType)).sort((a, b) => a.expiry > b.expiry ? 1 : -1);
+                } else {
+                    this.notices = [];
+                    console.error('Expected array of notices but got:', payload);
+                }
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.notices = [];
+            } finally {
+                this.fetchingNotices = false;
+            }
         },
-        addNotice(notice: INotice) {
+        
+        addNotice(notice: ExtNoticeType) {
             this.notices?.unshift(modifyExpiry(notice));
         },
-        updateNotice(notice: INotice) {
+        
+        updateNotice(notice: ExtNoticeType) {
             const index = this.notices?.findIndex(x => x.uid === notice.uid);
             if (index > -1) this.notices[index] = modifyExpiry(notice);
         },
-        deleteNotice(notice: INotice) {
+        
+        deleteNotice(notice: ExtNoticeType) {
             const index = this.notices?.findIndex(x => x.uid === notice.uid);
             if (index > -1) this.notices?.splice(index, 1);
         },
     },
 });
 
-const hasExpired = (notice: INotice) => new Date() > new Date(notice.expiry);
+const hasExpired = (notice: ExtNoticeType) => new Date() > new Date(notice.expiry);
 
-const daysToExpiry = (notice: INotice) => subtractDates(new Date(), new Date(notice.expiry));
+const daysToExpiry = (notice: ExtNoticeType) => subtractDates(new Date(), new Date(notice.expiry));
 
-const modifyExpiry = (notice: INotice): INotice => {
+const modifyExpiry = (notice: ExtNoticeType): ExtNoticeType => {
     const expired = hasExpired(notice);
     const days = +daysToExpiry(notice);
     notice.expired = expired;

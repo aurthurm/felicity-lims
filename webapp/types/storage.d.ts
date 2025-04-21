@@ -6,7 +6,6 @@ type ExtStoreRoomType = StoreRoomType & { isOpen?: boolean };
 type ExtStorageLocationType = StorageLocationType & { isOpen?: boolean };
 type ExtStorageSectionType = StorageSectionType & { isOpen?: boolean };
 type ExtStorageContainerType = StorageContainerType & { isOpen?: boolean };
-type ExtTreeNodeType = TreeNodeType & { isOpen?: boolean };
 
 
 export type ActivePathType = {

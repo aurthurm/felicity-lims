@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IDistrict, IProvince, ICountry } from '@/models/location';
+import { DistrictType, ProvinceType, CountryType } from '@/types/gql';
 
 import {
     GetAllCountriesQuery, GetAllCountriesQueryVariables, GetAllCountriesDocument, 
@@ -9,9 +9,11 @@ import {
     FilterDistrictsByProvinceDocument
 } from '@/graphql/operations/admin.queries';
 
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
+import useNotifyToast from '@/composables/alert_toast';
 
 const { withClientQuery } = useApiUtil();
+const { toastError } = useNotifyToast();
 
 export const useLocationStore = defineStore('location', {
     state: () => {
@@ -25,11 +27,11 @@ export const useLocationStore = defineStore('location', {
             confRoute: '',
         } as {
             confRoute: string;
-            countries: ICountry[];
+            countries: CountryType[];
             fetchingCountries: boolean;
-            provinces: IProvince[];
+            provinces: ProvinceType[];
             fetchingProvinces: boolean;
-            districts: IDistrict[];
+            districts: DistrictType[];
             fetchingDstricts: boolean;
         };
     },
@@ -46,19 +48,29 @@ export const useLocationStore = defineStore('location', {
 
         // COUNTRIES
         async fetchCountries() {
-            this.fetchingCountries = true;
-            await withClientQuery<GetAllCountriesQuery, GetAllCountriesQueryVariables>(GetAllCountriesDocument, {}, 'countryAll')
-                .then(payload => {
-                    this.fetchingCountries = false;
-                    this.countries = payload;
-                    this.provinces = [];
-                })
-                .catch(err => (this.fetchingCountries = false));
+            try {
+                this.fetchingCountries = true;
+                const payload = await withClientQuery<GetAllCountriesQuery, GetAllCountriesQueryVariables>(
+                    GetAllCountriesDocument, 
+                    {}, 
+                    'countryAll'
+                );
+                this.countries = payload as CountryType[];
+                this.provinces = [];
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+            } finally {
+                this.fetchingCountries = false;
+            }
         },
-        async addCountry(country: ICountry) {
+
+        async addCountry(country: CountryType) {
             this.countries.unshift(country);
         },
-        updateCountry(payload: ICountry) {
+
+        updateCountry(payload: CountryType) {
             const index = this.countries?.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.countries[index] = payload;
@@ -67,22 +79,32 @@ export const useLocationStore = defineStore('location', {
 
         // PROVINCES
         async filterProvincesByCountry(countryUid: string) {
-            if (!countryUid) {
-                return;
+            if (!countryUid) return;
+            
+            try {
+                this.fetchingProvinces = true;
+                const payload = await withClientQuery<FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables>(
+                    FilterProvincesByCountryDocument, 
+                    { uid: countryUid }, 
+                    'provincesByCountryUid', 
+                    'network-only'
+                );
+                this.provinces = payload as ProvinceType[];
+                this.districts = [];
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+            } finally {
+                this.fetchingProvinces = false;
             }
-            this.fetchingProvinces = true;
-            await withClientQuery<FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables>(FilterProvincesByCountryDocument, { uid: countryUid }, 'provincesByCountryUid', 'network-only')
-                .then(payload => {
-                    this.fetchingProvinces = false;
-                    this.provinces = payload;
-                    this.districts = [];
-                })
-                .catch(err => (this.fetchingProvinces = false));
         },
-        addProvince(payload: IProvince) {
+
+        addProvince(payload: ProvinceType) {
             this.provinces.unshift(payload);
         },
-        updateProvince(payload: IProvince) {
+
+        updateProvince(payload: ProvinceType) {
             const index = this.provinces?.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.provinces[index] = payload;
@@ -91,24 +113,34 @@ export const useLocationStore = defineStore('location', {
 
         // DISTRICT
         async filterDistrictsByProvince(provinceUid: string) {
-            if (!provinceUid) {
-                return;
+            if (!provinceUid) return;
+            
+            try {
+                this.fetchingDstricts = true;
+                const payload = await withClientQuery<FilterDistrictsByProvinceQuery, FilterDistrictsByProvinceQueryVariables>(
+                    FilterDistrictsByProvinceDocument, 
+                    { uid: provinceUid }, 
+                    'districtsByProvinceUid', 
+                    'network-only'
+                );
+                this.districts = payload as DistrictType[];
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+            } finally {
+                this.fetchingDstricts = false;
             }
-            this.fetchingDstricts = true;
-            await withClientQuery<FilterDistrictsByProvinceQuery, FilterDistrictsByProvinceQueryVariables>(FilterDistrictsByProvinceDocument, { uid: provinceUid }, 'districtsByProvinceUid', 'network-only')
-                .then(payload => {
-                    this.fetchingDstricts = false;
-                    this.districts = payload;
-                })
-                .catch(err => (this.fetchingDstricts = false));
         },
-        addDistrict(payload: IDistrict) {
+
+        addDistrict(payload: DistrictType) {
             this.districts.unshift(payload);
-            if(payload?.province){
-                this.provinces.push(payload?.province)
+            if (payload?.province) {
+                this.provinces.push(payload.province);
             }
         },
-        updateDistrict(payload: IDistrict) {
+
+        updateDistrict(payload: DistrictType) {
             const index = this.districts?.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.districts[index] = payload;

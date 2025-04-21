@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia';
-import { IGroup, IPermission, IUser } from '@/models/auth';
-import { IPagination, IPageInfo } from '@/models/pagination';
-import  useApiUtil  from '@/composables/api_util';
-import { GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllSuppliersQueryVariables } from '@/graphql/operations/instrument.queries';
+
+import useApiUtil from '@/composables/api_util';
+import useNotifyToast from '@/composables/alert_toast';
 import { GroupsAndPermissionsDocument, GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables, UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries';
+import { GroupType, PageInfo, PermissionType, UserCursorPage, UserType } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
-
-interface IUserPage extends IPagination<IUser> {}
+const { toastError } = useNotifyToast();
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -20,13 +19,13 @@ export const useUserStore = defineStore('user', {
             fetchingGroups: false,
             permissions: [],
         } as {
-            users: IUser[];
-            usersPageInfo?: IPageInfo;
+            users: UserType[];
+            usersPageInfo?: PageInfo;
             usersTotalCount?: number;
             fetchingUsers: boolean;
-            groups: IGroup[];
+            groups: GroupType[];
             fetchingGroups: boolean;
-            permissions: IPermission[];
+            permissions: PermissionType[];
         };
     },
     getters: {
@@ -37,43 +36,75 @@ export const useUserStore = defineStore('user', {
     },
     actions: {
         async fetchUsers(params) {
-            this.fetchingUsers = true;
-            await withClientQuery<UserAllQuery,UserAllQueryVariables>(UserAllDocument, params, 'userAll')
-                .then((resp) => {
-                    this.fetchingUsers = false;
-                    this.users = resp.items?.filter(user => user.email != 'system_daemon@system.daemon') ?? [];
-                    this.usersTotalCount = resp.totalCount;
-                    this.usersPageInfo = resp.pageInfo;
-                })
-                .catch(err => {
-                    this.fetchingUsers = false
-                });
+            try {
+                this.fetchingUsers = true;
+                const resp = await withClientQuery<UserAllQuery, UserAllQueryVariables>(
+                    UserAllDocument, 
+                    params, 
+                    'userAll'
+                );
+                
+                const cursor = resp as UserCursorPage;
+                this.users = cursor.items?.filter(user => user.email != 'system_daemon@system.daemon') ?? [];
+                this.usersTotalCount = cursor.totalCount;
+                this.usersPageInfo = cursor.pageInfo;
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.users = [];
+            } finally {
+                this.fetchingUsers = false;
+            }
         },
-        addUser(payload: IUser): void {
+        
+        addUser(payload: UserType): void {
             this.users?.unshift(payload);
         },
-        updateUser(payload: IUser): void {
+        
+        updateUser(payload: UserType): void {
             const index = this.users?.findIndex(user => user.uid === payload?.uid);
             if (index && index > -1) this.users[index] = payload;
         },
 
         async fetchGroupsAndPermissions() {
-            this.fetchingGroups = true;
-            await withClientQuery<GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables>(GroupsAndPermissionsDocument, {}, undefined)
-                .then((resp: any) => {
-                    this.fetchingGroups = false;
-                    this.groups = resp.groupAll;
-                    this.permissions = resp.permissionAll;
-                })
-                .catch(err => (this.fetchingGroups = false));
+            try {
+                this.fetchingGroups = true;
+                const resp = await withClientQuery<GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables>(
+                    GroupsAndPermissionsDocument, 
+                    {}, 
+                    undefined
+                );
+                
+                if (resp && typeof resp === 'object') {
+                    const typedResp = resp as any;
+                    this.groups = typedResp.groupAll || [];
+                    this.permissions = typedResp.permissionAll || [];
+                } else {
+                    this.groups = [];
+                    this.permissions = [];
+                    console.error('Unexpected response format:', resp);
+                }
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.groups = [];
+                this.permissions = [];
+            } finally {
+                this.fetchingGroups = false;
+            }
         },
-        addGroup(payload: IGroup): void {
+        
+        addGroup(payload: GroupType): void {
             this.groups?.unshift(payload);
         },
-        updateGroup(payload: IGroup): void {
+        
+        updateGroup(payload: GroupType): void {
             const index = this.groups?.findIndex(group => group.uid === payload?.uid);
             if (index > -1) this.groups[index] = payload;
         },
+        
         updateGroupsAndPermissions(payload) {
             let group = payload?.group;
             const index = this.groups?.findIndex(g => g.uid === group?.uid);
@@ -82,6 +113,7 @@ export const useUserStore = defineStore('user', {
                 this.groups[index] = group;
             }
         },
+        
         getRoles() {
             const final = new Map();
             for (const role of this.groups) {
@@ -89,7 +121,9 @@ export const useUserStore = defineStore('user', {
             }
             return final;
         },
+        
         addUserAuth(payload) {},
+        
         updateUserAuth(payload) {},
     },
 });

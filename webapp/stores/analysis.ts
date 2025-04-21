@@ -13,22 +13,49 @@ import {
     GetProfileMappingsByProfileUidDocument, GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables,
     GetAnalysisMappingsByAnalysisUidDocument, GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables,
 } from '@/graphql/operations/analyses.queries';
-import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason, ICodingStandard, IAnalysisTemplate } from '@/models/analysis';
 
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
+import { 
+    CodingStandardType, 
+    AnalysisCategoryType, 
+    AnalysisType, 
+    ProfileType, 
+    AnalysisTemplateType, 
+    QcLevelType, 
+    QcTemplateType, 
+    RejectionReasonType,
+    AnalysisMappingType,
+    ProfileMappingType,
+    AnalysisCursorPage
+} from '@/types/gql';
+
 const { withClientQuery } = useApiUtil();
 
-function updateItem(arr, payload) {
+// Helper function to update an item in an array
+function updateItem<T extends { uid: string }>(arr: T[], payload: T): void {
     const index = arr.findIndex(x => x.uid === payload.uid);
     if (index !== -1) {
         arr[index] = payload;
     }
 }
-// Usage:
-// updateItem(this.analysesCategories, payload);
+
+// Define the state type
+type AnalysisStateType = {
+    codingStandards: CodingStandardType[];
+    fetchingCodingStandards: boolean;
+    analysesCategories: AnalysisCategoryType[];
+    analysesServices: AnalysisType[];
+    analysesMappings: AnalysisMappingType[];
+    analysesProfiles: ProfileType[];
+    analysesTemplates: AnalysisTemplateType[];
+    profileMappings: ProfileMappingType[];
+    qcLevels: QcLevelType[];
+    qcTemplates: QcTemplateType[];
+    rejectionReasons: RejectionReasonType[];
+};
 
 export const useAnalysisStore = defineStore('analysis', {
-    state: () => {
+    state: (): AnalysisStateType => {
         return {
             codingStandards: [],
             fetchingCodingStandards: false,
@@ -41,24 +68,12 @@ export const useAnalysisStore = defineStore('analysis', {
             qcLevels: [],
             qcTemplates: [],
             rejectionReasons: [],
-        } as {
-            codingStandards: ICodingStandard[];
-            fetchingCodingStandards: boolean;
-            analysesCategories: IAnalysisCategory[];
-            analysesServices: IAnalysisService[];
-            analysesMappings: any[],
-            analysesProfiles: IAnalysisProfile[];
-            analysesTemplates: IAnalysisTemplate[];
-            profileMappings: any[],
-            qcLevels: IQCLevel[];
-            qcTemplates: IQCTemplate[];
-            rejectionReasons: IRejectionReason[];
         };
     },
     getters: {
-        getCodingStandards: state => state.codingStandards,
-        getAnalysesCategories: state => state.analysesCategories,
-        getAnalysesServices: state => {
+        getCodingStandards: (state): CodingStandardType[] => state.codingStandards,
+        getAnalysesCategories: (state): AnalysisCategoryType[] => state.analysesCategories,
+        getAnalysesServices: (state): { [key: string]: AnalysisType[] }[] => {
             const analyses = state.analysesServices;
             if (analyses?.length > 0) {
                 const profiled = analyses?.reduce((r, obj) => {
@@ -66,287 +81,639 @@ export const useAnalysisStore = defineStore('analysis', {
                     r[key] = r[key] || [];
                     r[key].push(obj);
                     return r;
-                }, {});
-                return Object.entries(profiled || {}).sort() as unknown as { [key: string]: IAnalysisService[] }[]
+                }, {} as Record<string, AnalysisType[]>);
+                return Object.entries(profiled || {}).sort() as unknown as { [key: string]: AnalysisType[] }[];
             } else {
                 return [];
             }
         },
-        getAnalysesServicesSimple: state => state.analysesServices,
-        analysesMapings: state => state.analysesMappings,
-        getAnalysesProfiles: state => state.analysesProfiles,
-        getAnalysesTemplates: state => state.analysesTemplates,
-        profileMapings: state => state.profileMappings,
-        getQCLevels: state => state.qcLevels,
-        getQCTemplates: state => state.qcTemplates,
-        getRejectionReasons: state => state.rejectionReasons,
+        getAnalysesServicesSimple: (state): AnalysisType[] => state.analysesServices,
+        analysesMapings: (state): AnalysisMappingType[] => state.analysesMappings,
+        getAnalysesProfiles: (state): ProfileType[] => state.analysesProfiles,
+        getAnalysesTemplates: (state): AnalysisTemplateType[] => state.analysesTemplates,
+        profileMapings: (state): ProfileMappingType[] => state.profileMappings,
+        getQCLevels: (state): QcLevelType[] => state.qcLevels,
+        getQCTemplates: (state): QcTemplateType[] => state.qcTemplates,
+        getRejectionReasons: (state): RejectionReasonType[] => state.rejectionReasons,
     },
     actions: {     
-        async fetchCodingStandards() {
-            this.fetchingCodingStandards = true;
-            await withClientQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables>(GetAllCodingStandardsDocument, {}, 'codingStandardAll')
-                .then(payload => {
-                    this.fetchingCodingStandards = false;
-                    this.codingStandards = payload;
-                })
-                .catch(err => (this.fetchingCodingStandards = false));
+        async fetchCodingStandards(): Promise<void> {
+            try {
+                this.fetchingCodingStandards = true;
+                const result = await withClientQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables>(
+                    GetAllCodingStandardsDocument, 
+                    {}, 
+                    'codingStandardAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.codingStandards = result as unknown as CodingStandardType[];
+                } else {
+                    console.error('Invalid coding standards data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching coding standards:', error);
+            } finally {
+                this.fetchingCodingStandards = false;
+            }
         },
-        updateCodingStandard(payload) {
-            const index = this.codingStandards.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.codingStandards[index] = payload;
+        
+        updateCodingStandard(payload: CodingStandardType): void {
+            if (!payload?.uid) {
+                console.error('Invalid coding standard payload:', payload);
+                return;
+            }
+            
+            updateItem(this.codingStandards, payload);
         },
-        addCodingStandard(payload) {
+        
+        addCodingStandard(payload: CodingStandardType): void {
+            if (!payload?.uid) {
+                console.error('Invalid coding standard payload:', payload);
+                return;
+            }
+            
             this.codingStandards?.unshift(payload);
         },
-        // analysis categories
-        async fetchAnalysesCategories() {
-            await withClientQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables>(GetAllAnalysesCategoriesDocument, {}, 'analysisCategoryAll')
-                .then(payload => (this.analysesCategories = payload)
-            );
+        
+        // Analysis categories
+        async fetchAnalysesCategories(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables>(
+                    GetAllAnalysesCategoriesDocument, 
+                    {}, 
+                    'analysisCategoryAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.analysesCategories = result as unknown as AnalysisCategoryType[];
+                } else {
+                    console.error('Invalid analysis categories data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching analysis categories:', error);
+            }
         },
-        updateAnalysisCategory(payload) {
-            const index = this.analysesCategories.findIndex(x => x.uid === payload.uid);
-            this.analysesCategories[index] = payload;
+        
+        updateAnalysisCategory(payload: AnalysisCategoryType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis category payload:', payload);
+                return;
+            }
+            
+            updateItem(this.analysesCategories, payload);
         },
-        addAnalysisCategory(payload) {
+        
+        addAnalysisCategory(payload: AnalysisCategoryType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis category payload:', payload);
+                return;
+            }
+            
             this.analysesCategories?.unshift(payload);
         },
 
-        // analysis services
-        async fetchAnalysesServices(params) {
-            await withClientQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables>(GetAllAnalysesServicesDocument, params, 'analysisAll')
-                .then(payload => (this.analysesServices = payload.items)
-            );
+        // Analysis services
+        async fetchAnalysesServices(params: any): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables>(
+                    GetAllAnalysesServicesDocument, 
+                    params, 
+                    'analysisAll'
+                );
+                
+                if (result && typeof result === 'object' && 'items' in result) {
+                    this.analysesServices = result.items as unknown as AnalysisType[] || [];
+                } else {
+                    console.error('Invalid analysis services data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching analysis services:', error);
+            }
         },
-        updateAnalysisService(payload) {
-            const index = this.analysesServices.findIndex(x => x.uid === payload.uid);
-            this.analysesServices[index] = payload;
+        
+        updateAnalysisService(payload: AnalysisType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis service payload:', payload);
+                return;
+            }
+            
+            updateItem(this.analysesServices, payload);
         },
-        addAnalysesService(payload) {
+        
+        addAnalysesService(payload: AnalysisType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis service payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.unshift(payload);
         },
 
-        async fetchAnalysesProfilesAndServices() {
-            await withClientQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables>(GetAllProfilesAndServicesDocument, {}, undefined).then(payload => {
-                this.analysesProfiles = payload.profileAll;
-                this.analysesServices = payload.analysisAll?.items;
-            });
+        async fetchAnalysesProfilesAndServices(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables>(
+                    GetAllProfilesAndServicesDocument, 
+                    {}, 
+                    undefined
+                );
+                
+                if (result && typeof result === 'object') {
+                    if ('profileAll' in result) {
+                        this.analysesProfiles = result.profileAll as ProfileType[];
+                    }
+                    
+                    if ('analysisAll' in result) {
+                        const analysisAll = result.analysisAll as AnalysisCursorPage;
+                        this.analysesServices = analysisAll?.items as Array<AnalysisType>;
+                    }
+                } else {
+                    console.error('Invalid profiles and services data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching profiles and services:', error);
+            }
         },
 
-        async fetchAnalysesMappings(profileUid) {
-            await withClientQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables>(GetAnalysisMappingsByAnalysisUidDocument, { uid: profileUid }, 'analysisMappingsByAnalysis').then(payload => (this.analysesMappings = payload));
+        async fetchAnalysesMappings(profileUid: string): Promise<void> {
+            if (!profileUid) {
+                console.error('Invalid profile UID provided to fetchAnalysesMappings');
+                return;
+            }
+            
+            try {
+                const result = await withClientQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables>(
+                    GetAnalysisMappingsByAnalysisUidDocument, 
+                    { uid: profileUid }, 
+                    'analysisMappingsByAnalysis'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.analysesMappings = result as unknown as AnalysisMappingType[];
+                } else {
+                    console.error('Invalid analysis mappings data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching analysis mappings:', error);
+            }
         },
-        addAnalysesMapping(payload) {
+        
+        addAnalysesMapping(payload: AnalysisMappingType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis mapping payload:', payload);
+                return;
+            }
+            
             this.analysesMappings?.unshift(payload);
         },
-        updateAnalysesMapping(payload) {
-            const index = this.analysesMappings.findIndex(x => x.uid === payload.uid);
-            this.analysesMappings[index] = payload;
+        
+        updateAnalysesMapping(payload: AnalysisMappingType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis mapping payload:', payload);
+                return;
+            }
+            
+            updateItem(this.analysesMappings, payload);
         },
 
-        // analysis profiles
-        async fetchAnalysesProfiles() {
-            await withClientQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables>(GetAllAnalysesProfilesDocument, {}, 'profileAll').then(payload => (this.analysesProfiles = payload));
+        // Analysis profiles
+        async fetchAnalysesProfiles(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables>(
+                    GetAllAnalysesProfilesDocument, 
+                    {}, 
+                    'profileAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.analysesProfiles = result as unknown as ProfileType[];
+                } else {
+                    console.error('Invalid analysis profiles data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching analysis profiles:', error);
+            }
         },
-        updateAnalysesProfile(payload) {
-            const index = this.analysesProfiles.findIndex(x => x.uid === payload.uid);
-            this.analysesProfiles[index] = payload;
+        
+        updateAnalysesProfile(payload: ProfileType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis profile payload:', payload);
+                return;
+            }
+            
+            updateItem(this.analysesProfiles, payload);
         },
-        addAnalysisProfile(payload) {
+        
+        addAnalysisProfile(payload: ProfileType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis profile payload:', payload);
+                return;
+            }
+            
             this.analysesProfiles.unshift(payload);
         },
-        async fetchProfileMappings(profileUid) {
-            await withClientQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables>(GetProfileMappingsByProfileUidDocument, { uid: profileUid }, 'profileMappingsByProfile').then(payload => (this.profileMappings = payload));
+        
+        async fetchProfileMappings(profileUid: string): Promise<void> {
+            if (!profileUid) {
+                console.error('Invalid profile UID provided to fetchProfileMappings');
+                return;
+            }
+            
+            try {
+                const result = await withClientQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables>(
+                    GetProfileMappingsByProfileUidDocument, 
+                    { uid: profileUid }, 
+                    'profileMappingsByProfile'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.profileMappings = result as unknown as ProfileMappingType[];
+                } else {
+                    console.error('Invalid profile mappings data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching profile mappings:', error);
+            }
         },
-        addProfileMapping(payload) {
-            this.profileMapings?.unshift(payload);
+        
+        addProfileMapping(payload: ProfileMappingType): void {
+            if (!payload?.uid) {
+                console.error('Invalid profile mapping payload:', payload);
+                return;
+            }
+            
+            this.profileMappings?.unshift(payload);
         },
-        updateProfileMapping(payload) {
-            const index = this.profileMapings.findIndex(x => x.uid === payload.uid);
-            this.profileMapings[index] = payload;
+        
+        updateProfileMapping(payload: ProfileMappingType): void {
+            if (!payload?.uid) {
+                console.error('Invalid profile mapping payload:', payload);
+                return;
+            }
+            
+            updateItem(this.profileMappings, payload);
         },
 
-        // analysis profiles
-        async fetchAnalysesTemplates() {
-            await withClientQuery<GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables>(GetAllAnalysesTemplatesDocument, {}, 'analysisTemplateAll').then(payload => (this.analysesTemplates = payload));
+        // Analysis templates
+        async fetchAnalysesTemplates(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables>(
+                    GetAllAnalysesTemplatesDocument, 
+                    {}, 
+                    'analysisTemplateAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.analysesTemplates = result as unknown as AnalysisTemplateType[];
+                } else {
+                    console.error('Invalid analysis templates data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching analysis templates:', error);
+            }
         },
-        updateAnalysesTemplate(payload) {
-            const index = this.analysesTemplates.findIndex(x => x.uid === payload.uid);
-            this.analysesTemplates[index] = payload;
+        
+        updateAnalysesTemplate(payload: AnalysisTemplateType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis template payload:', payload);
+                return;
+            }
+            
+            updateItem(this.analysesTemplates, payload);
         },
-        addAnalysisTemplate(payload) {
+        
+        addAnalysisTemplate(payload: AnalysisTemplateType): void {
+            if (!payload?.uid) {
+                console.error('Invalid analysis template payload:', payload);
+                return;
+            }
+            
             this.analysesTemplates.unshift(payload);
         },
 
-        // QC LEVELS
-        async fetchQCLevels() {
-            await withClientQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables>(GetAllQcLevelsDocument, {}, 'qcLevelAll').then(payload => (this.qcLevels = payload));
+        // QC Levels
+        async fetchQCLevels(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables>(
+                    GetAllQcLevelsDocument, 
+                    {}, 
+                    'qcLevelAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.qcLevels = result as unknown as QcLevelType[];
+                } else {
+                    console.error('Invalid QC levels data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching QC levels:', error);
+            }
         },
-        updateQcLevel(payload) {
-            const index = this.qcLevels.findIndex(x => x.uid === payload.uid);
-            this.qcLevels[index] = payload;
+        
+        updateQcLevel(payload: QcLevelType): void {
+            if (!payload?.uid) {
+                console.error('Invalid QC level payload:', payload);
+                return;
+            }
+            
+            updateItem(this.qcLevels, payload);
         },
-        addQcLevel(payload) {
+        
+        addQcLevel(payload: QcLevelType): void {
+            if (!payload?.uid) {
+                console.error('Invalid QC level payload:', payload);
+                return;
+            }
+            
             this.qcLevels.unshift(payload);
         },
 
-        // analysis QC TEMPLATES
-        async fetchQCTemplates() {
-            await withClientQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables>(GetAllQcTemplatesDocument, {}, 'qcTemplateAll').then(payload => {
-                this.qcTemplates = payload.map((qcTemplate: IQCTemplate) => {
-                    qcTemplate.qcLevels = qcTemplate?.qcLevels || [];
-                    qcTemplate.departments = qcTemplate?.departments || [];
-                    return qcTemplate;
-                });
-            });
+        // QC Templates
+        async fetchQCTemplates(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables>(
+                    GetAllQcTemplatesDocument, 
+                    {}, 
+                    'qcTemplateAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.qcTemplates = (result as unknown as QcTemplateType[]).map(qcTemplate => {
+                        qcTemplate.qcLevels = qcTemplate?.qcLevels || [];
+                        qcTemplate.departments = qcTemplate?.departments || [];
+                        return qcTemplate;
+                    });
+                } else {
+                    console.error('Invalid QC templates data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching QC templates:', error);
+            }
         },
-        updateQcTemplate(payload) {
+        
+        updateQcTemplate(payload: QcTemplateType): void {
+            if (!payload?.uid) {
+                console.error('Invalid QC template payload:', payload);
+                return;
+            }
+            
             const index = this.qcTemplates.findIndex(x => x.uid === payload.uid);
-            payload.qcLevels = payload?.qcLevels || [];
-            payload.departments = payload?.departments || [];
-            this.qcTemplates[index] = payload;
+            if (index > -1) {
+                payload.qcLevels = payload?.qcLevels || [];
+                payload.departments = payload?.departments || [];
+                this.qcTemplates[index] = payload;
+            }
         },
-        addQcTemplate(payload) {
+        
+        addQcTemplate(payload: QcTemplateType): void {
+            if (!payload?.uid) {
+                console.error('Invalid QC template payload:', payload);
+                return;
+            }
+            
             payload.qcLevels = payload?.qcLevels || [];
             payload.departments = payload?.departments || [];
             this.qcTemplates.unshift(payload);
         },
 
         // Result Options
-        addResultOption(payload) {
+        addResultOption(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid result option payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
+                if (service?.uid === payload?.analysisUid) {
                     if (service?.resultOptions) {
-                        service?.resultOptions?.push(payload);
+                        service.resultOptions.push(payload);
                     } else {
-                        service!.resultOptions = [payload];
+                        service.resultOptions = [payload];
                     }
                 }
             });
         },
-        updateResultOption(payload) {
+        
+        updateResultOption(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid result option payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
-                    const index = service.resultOptions!.findIndex(ro => ro.uid === payload.uid);
-                    service!.resultOptions![index] = payload;
+                if (service?.uid === payload?.analysisUid) {
+                    const index = service.resultOptions?.findIndex(ro => ro.uid === payload.uid);
+                    if (index !== undefined && index > -1 && service.resultOptions) {
+                        service.resultOptions[index] = payload;
+                    }
                 }
             });
         },
 
         // Interim Fields
-        addAnalysisInterim(payload) {
+        addAnalysisInterim(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis interim payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
+                if (service?.uid === payload?.analysisUid) {
                     if (service?.interims) {
-                        service?.interims?.push(payload);
+                        service.interims.push(payload);
                     } else {
-                        service!.interims = [payload];
+                        service.interims = [payload];
                     }
                 }
             });
         },
-        updateAnalysisInterim(payload) {
+        
+        updateAnalysisInterim(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis interim payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
-                    const index = service.interims!.findIndex(ro => ro.uid === payload.uid);
-                    service!.interims![index] = payload;
+                if (service?.uid === payload?.analysisUid) {
+                    const index = service.interims?.findIndex(ro => ro.uid === payload.uid);
+                    if (index !== undefined && index > -1 && service.interims) {
+                        service.interims[index] = payload;
+                    }
                 }
             });
         },
 
         // Correction Factors
-        AddAnalysisCorrectionFactor(payload) {
+        addAnalysisCorrectionFactor(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis correction factor payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
+                if (service?.uid === payload?.analysisUid) {
                     if (service?.correctionFactors) {
-                        service?.correctionFactors?.push(payload);
+                        service.correctionFactors.push(payload);
                     } else {
-                        service!.correctionFactors = [payload];
+                        service.correctionFactors = [payload];
                     }
                 }
             });
         },
-        updateAnalysisCorrectionFactor(payload) {
+        
+        updateAnalysisCorrectionFactor(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis correction factor payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
-                    const index = service.correctionFactors!.findIndex(ro => ro.uid === payload.uid);
-                    service!.correctionFactors![index] = payload;
+                if (service?.uid === payload?.analysisUid) {
+                    const index = service.correctionFactors?.findIndex(ro => ro.uid === payload.uid);
+                    if (index !== undefined && index > -1 && service.correctionFactors) {
+                        service.correctionFactors[index] = payload;
+                    }
                 }
             });
         },
 
         // Detection Limits
-        addAnalysisDetectionLimit(payload) {
+        addAnalysisDetectionLimit(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis detection limit payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
+                if (service?.uid === payload?.analysisUid) {
                     if (service?.detectionLimits) {
-                        service?.detectionLimits?.push(payload);
+                        service.detectionLimits.push(payload);
                     } else {
-                        service!.detectionLimits = [payload];
+                        service.detectionLimits = [payload];
                     }
                 }
             });
         },
-        updateAnalysisDetectionLimit(payload) {
+        
+        updateAnalysisDetectionLimit(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis detection limit payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
-                    const index = service.detectionLimits!.findIndex(ro => ro.uid === payload.uid);
-                    service!.detectionLimits![index] = payload;
+                if (service?.uid === payload?.analysisUid) {
+                    const index = service.detectionLimits?.findIndex(ro => ro.uid === payload.uid);
+                    if (index !== undefined && index > -1 && service.detectionLimits) {
+                        service.detectionLimits[index] = payload;
+                    }
                 }
             });
         },
 
         // Uncertainties
-        addAnalysisUncertainty(payload) {
+        addAnalysisUncertainty(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis uncertainty payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
+                if (service?.uid === payload?.analysisUid) {
                     if (service?.uncertainties) {
-                        service?.uncertainties?.push(payload);
+                        service.uncertainties.push(payload);
                     } else {
-                        service!.uncertainties = [payload];
+                        service.uncertainties = [payload];
                     }
                 }
             });
         },
-        updateAnalysisUncertainty(payload) {
+        
+        updateAnalysisUncertainty(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis uncertainty payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
-                    const index = service.uncertainties!.findIndex(ro => ro.uid === payload.uid);
-                    service!.uncertainties![index] = payload;
+                if (service?.uid === payload?.analysisUid) {
+                    const index = service.uncertainties?.findIndex(ro => ro.uid === payload.uid);
+                    if (index !== undefined && index > -1 && service.uncertainties) {
+                        service.uncertainties[index] = payload;
+                    }
                 }
             });
         },
 
         // Specifications
-        addAnalysisSpecification(payload) {
+        addAnalysisSpecification(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis specification payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
+                if (service?.uid === payload?.analysisUid) {
                     if (service?.specifications) {
-                        service?.specifications?.push(payload);
+                        service.specifications.push(payload);
                     } else {
-                        service!.specifications = [payload];
+                        service.specifications = [payload];
                     }
                 }
             });
         },
-        updateAnalysisSpecification(payload) {
+        
+        updateAnalysisSpecification(payload: any): void {
+            if (!payload?.uid || !payload?.analysisUid) {
+                console.error('Invalid analysis specification payload:', payload);
+                return;
+            }
+            
             this.analysesServices?.forEach(service => {
-                if (service?.uid == payload?.analysisUid) {
-                    const index = service.specifications!.findIndex(ro => ro.uid === payload.uid);
-                    service!.specifications![index] = payload;
+                if (service?.uid === payload?.analysisUid) {
+                    const index = service.specifications?.findIndex(ro => ro.uid === payload.uid);
+                    if (index !== undefined && index > -1 && service.specifications) {
+                        service.specifications[index] = payload;
+                    }
                 }
             });
         },
 
-        // ReJECTION REASONS
-        async fetchRejectionReasons() {
-            await withClientQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables>(GetAllRejectionReasonsDocument, {}, 'rejectionReasonsAll').then(payload => (this.rejectionReasons = payload));
+        // Rejection Reasons
+        async fetchRejectionReasons(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables>(
+                    GetAllRejectionReasonsDocument, 
+                    {}, 
+                    'rejectionReasonsAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.rejectionReasons = result as unknown as RejectionReasonType[];
+                } else {
+                    console.error('Invalid rejection reasons data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching rejection reasons:', error);
+            }
         },
-        updateRejectionReason(payload) {
-            const index = this.rejectionReasons.findIndex(x => x.uid === payload.uid);
-            this.rejectionReasons[index] = payload;
+        
+        updateRejectionReason(payload: RejectionReasonType): void {
+            if (!payload?.uid) {
+                console.error('Invalid rejection reason payload:', payload);
+                return;
+            }
+            
+            updateItem(this.rejectionReasons, payload);
         },
-        addRejectionReason(payload) {
+        
+        addRejectionReason(payload: RejectionReasonType): void {
+            if (!payload?.uid) {
+                console.error('Invalid rejection reason payload:', payload);
+                return;
+            }
+            
             this.rejectionReasons.unshift(payload);
         },
     },

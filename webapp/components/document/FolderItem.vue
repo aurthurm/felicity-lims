@@ -108,7 +108,7 @@ import {
   MoreHorizontal, 
   Trash 
 } from 'lucide-vue-next'
-import { useDocumentStore } from '@/stores/documentStore'
+import { useDocumentStore } from '@/stores/document'
 import { IDocumentFolder } from '@/models/document';
 
 // Define props

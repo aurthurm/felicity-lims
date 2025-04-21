@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { ChevronDown, Check } from 'lucide-vue-next'
-import { useDocumentStore } from '@/stores/documentStore'
+import { useDocumentStore } from '@/stores/document'
 import useApiUtil from '@/composables/api_util';
 import { AddDocumentDocument, AddDocumentMutation, AddDocumentMutationVariables } from '@/graphql/operations/document.mutations';
 import { IDocument } from '@/models/document';

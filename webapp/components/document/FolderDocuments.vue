@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Folder, Plus } from 'lucide-vue-next'
-import { useDocumentStore } from '@/stores/documentStore'
+import { useDocumentStore } from '@/stores/document'
 import DocumentListing from './DocumentListing.vue'
 import CreateDocumentDialog from './CreateDocumentDialog.vue'
 

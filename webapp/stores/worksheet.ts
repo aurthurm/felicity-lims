@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia';
 import { parseData, keysToCamel, addListsUnique } from '@/utils';
-import { IAnalysisResult } from '@/models/analysis';
-import { IWorkSheetTemplate, IWorkSheet, IReserved } from '@/models/worksheet';
-import { IPageInfo } from '@/models/pagination';
+import type { AnalysisResultType, WorkSheetTemplateType, WorkSheetType, PageInfo } from '@/types/gql';
 
-import useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
+import useNotifyToast from '@/composables/alert_toast';
 import { GetAllWorksheetsDocument, GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables, GetAllWorksheetTemplatesDocument, GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables, GetWorkSheetByUidDocument, GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables } from '@/graphql/operations/worksheet.queries';
 import { UpdateWorkSheetDocument, UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables } from '@/graphql/operations/worksheet.mutations';
 import { GetAnalysesResultsForWsAssignDocument, GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables } from '@/graphql/operations/analyses.queries';
+import { ReservedType } from '@/types/worksheet';
 
 const { withClientQuery, withClientMutation } = useApiUtil();
+const { toastError } = useNotifyToast();
 
 export const useWorksheetStore = defineStore('worksheet', {
     state: () => {
@@ -26,17 +27,17 @@ export const useWorksheetStore = defineStore('worksheet', {
             analysisResultCount: 0,
             analysisResultPageInfo: undefined,
         } as {
-            workSheetTemplates: IWorkSheetTemplate[];
+            workSheetTemplates: WorkSheetTemplateType[];
             fetchingWorkSheetTemplates: boolean;
-            workSheets: IWorkSheet[];
+            workSheets: WorkSheetType[];
             fetchingWorkSheets: boolean;
-            workSheet?: IWorkSheet;
+            workSheet?: WorkSheetType;
             workSheetCount: number;
-            workSheetPageInfo?: IPageInfo;
+            workSheetPageInfo?: PageInfo;
             fetchingAnalysisResults?: boolean;
-            analysisResults: IAnalysisResult[];
+            analysisResults: AnalysisResultType[];
             analysisResultCount: number;
-            analysisResultPageInfo?: IPageInfo;
+            analysisResultPageInfo?: PageInfo;
         };
     },
     getters: {
@@ -53,72 +54,128 @@ export const useWorksheetStore = defineStore('worksheet', {
     actions: {
         // WorkSheet Templates
         async fetchWorkSheetTemplates() {
-            this.fetchingWorkSheetTemplates = true;
-            await withClientQuery<GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables>(GetAllWorksheetTemplatesDocument, {}, 'worksheetTemplateAll')
-                .then(payload => {
-                    this.fetchingWorkSheetTemplates = false;
-                    payload?.forEach((template: IWorkSheetTemplate) => {
+            try {
+                this.fetchingWorkSheetTemplates = true;
+                const payload = await withClientQuery<GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables>(
+                    GetAllWorksheetTemplatesDocument, 
+                    {}, 
+                    'worksheetTemplateAll'
+                );
+
+                if (Array.isArray(payload)) {
+                    payload.forEach(template => {
                         const data: any = template.reserved;
                         const reserved = Object.entries(parseData(data)) as any[];
-                        let new_res: IReserved[] = [];
-                        reserved?.forEach(item => new_res.push((keysToCamel(item[1]) as IReserved) || {}));
-                        template.reserved = new_res;
+                        let new_res: ReservedType[] = [];
+                        reserved?.forEach(item => new_res.push((keysToCamel(item[1]) as ReservedType) || {}));
+                        template.reserved = new_res as any;
                     });
-                    this.workSheetTemplates = payload;
-                })
-                .catch(err => (this.fetchingWorkSheetTemplates = false));
+                    this.workSheetTemplates = payload as WorkSheetTemplateType[];
+                } else {
+                    console.error('Expected array of templates but got:', payload);
+                    this.workSheetTemplates = [];
+                }
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.workSheetTemplates = [];
+            } finally {
+                this.fetchingWorkSheetTemplates = false;
+            }
         },
+
         updateWorksheetTemplate(payload) {
             const index = this.workSheetTemplates.findIndex(x => x.uid === payload.uid);
             const data: any = payload.reserved;
             const reserved = Object.entries(parseData(data)) as any[];
-            let new_res: IReserved[] = [];
-            reserved?.forEach(item => new_res.push((item[1] as IReserved) || {}));
+            let new_res: ReservedType[] = [];
+            reserved?.forEach(item => new_res.push((item[1] as ReservedType) || {}));
             payload.reserved = new_res;
             this.workSheetTemplates[index] = payload;
         },
+
         addWorksheetTemplate(payload) {
             const data: any = payload.reserved;
             const reserved = Object.entries(parseData(data)) as any[];
-            let new_res: IReserved[] = [];
-            reserved?.forEach(item => new_res.push((item[1] as IReserved) || {}));
+            let new_res: ReservedType[] = [];
+            reserved?.forEach(item => new_res.push((item[1] as ReservedType) || {}));
             payload.reserved = new_res;
             this.workSheetTemplates?.push(payload);
         },
 
         // WorkSheets
         async fetchWorkSheets(params) {
-            this.fetchingWorkSheets = true;
-            await withClientQuery<GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables>(GetAllWorksheetsDocument, params, undefined)
-                .then(payload => {
-                    this.fetchingWorkSheets = false;
-                    const page = payload.worksheetAll;
-                    const worksheets = page.items;
-                    if (params.filterAction) {
-                        this.workSheets = [];
-                        this.workSheets = worksheets;
-                    } else {
-                        this.workSheets = addListsUnique(this.workSheets, worksheets, 'uid');
-                    }
-                    this.workSheetCount = page?.totalCount;
-                    this.workSheetPageInfo = page?.pageInfo;
-                })
-                .catch(err => (this.fetchingWorkSheets = false));
+            try {
+                this.fetchingWorkSheets = true;
+                const payload = await withClientQuery<GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables>(
+                    GetAllWorksheetsDocument, 
+                    params, 
+                    undefined
+                );
+
+                const page = (payload as any).worksheetAll;
+                if (!page) {
+                    console.error('Invalid response format:', payload);
+                    return;
+                }
+
+                const worksheets = page.items;
+                if (params.filterAction) {
+                    this.workSheets = worksheets;
+                } else {
+                    this.workSheets = addListsUnique(this.workSheets, worksheets, 'uid');
+                }
+                this.workSheetCount = page?.totalCount;
+                this.workSheetPageInfo = page?.pageInfo;
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.workSheets = [];
+            } finally {
+                this.fetchingWorkSheets = false;
+            }
         },
+
         async fetchWorksheetByUid(worksheetUid: string) {
-            await withClientQuery<GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables>(GetWorkSheetByUidDocument, { worksheetUid }, 'worksheetByUid').then(
-                payload => (this.workSheet = sortAnalysisResults(payload))
-            );
+            try {
+                const payload = await withClientQuery<GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables>(
+                    GetWorkSheetByUidDocument, 
+                    { worksheetUid }, 
+                    'worksheetByUid'
+                );
+                this.workSheet = sortAnalysisResults(payload);
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.workSheet = undefined;
+            }
         },
+
         addWorksheet(payload) {
             payload.worksheets?.forEach(worksheet => this.workSheets?.unshift(worksheet));
         },
+
         removeWorksheet() {
             this.workSheet = undefined;
         },
+
         async updateWorksheet(payload) {
-            await withClientMutation<UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables>(UpdateWorkSheetDocument, payload, 'updateWorksheet').then(payload => {});
+            try {
+                await withClientMutation<UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables>(
+                    UpdateWorkSheetDocument, 
+                    payload, 
+                    'updateWorksheet'
+                );
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+            }
         },
+
         updateWorksheetStatus(worksheet: any) {
             const index = this.workSheets.findIndex(x => x.uid === worksheet.uid);
             if (index > -1) {
@@ -128,9 +185,10 @@ export const useWorksheetStore = defineStore('worksheet', {
                 this.workSheet!.state = worksheet.state;
             }
         },
+
         backgroundProcessing(payload, worksheetUid: any, process) {
             payload?.forEach(result => {
-                this.workSheet?.analysisResults.forEach((wsResult, index) => {
+                this.workSheet?.analysisResults?.forEach((wsResult, index) => {
                     if (wsResult?.uid == result.uid) {
                         wsResult.status = process;
                     }
@@ -149,35 +207,50 @@ export const useWorksheetStore = defineStore('worksheet', {
 
         // Analyses for WS Assign
         async fetchForWorkSheetsAssign(params) {
-            this.fetchingAnalysisResults = true;
-            await withClientQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables>(GetAnalysesResultsForWsAssignDocument, params, undefined)
-                .then(payload => {
-                    this.fetchingAnalysisResults = false;
-                    const page = payload.analysisResultsForWsAssign;
-                    const results = page.items;
-                    if (params.filterAction) {
-                        this.analysisResults = [];
-                        this.analysisResults = results;
-                    } else {
-                        this.analysisResults = results; // addListsUnique(this.analysisResults, results, "uid");
-                    }
-                    this.analysisResultCount = page?.totalCount;
-                    this.analysisResultPageInfo = page?.pageInfo;
-                })
-                .catch(err => (this.fetchingAnalysisResults = false));
+            try {
+                this.fetchingAnalysisResults = true;
+                const payload = await withClientQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables>(
+                    GetAnalysesResultsForWsAssignDocument, 
+                    params, 
+                    undefined
+                );
+
+                const page = (payload as any).analysisResultsForWsAssign;
+                if (!page) {
+                    console.error('Invalid response format:', payload);
+                    return;
+                }
+
+                const results = page.items;
+                if (params.filterAction) {
+                    this.analysisResults = results;
+                } else {
+                    this.analysisResults = results; // addListsUnique(this.analysisResults, results, "uid");
+                }
+                this.analysisResultCount = page?.totalCount;
+                this.analysisResultPageInfo = page?.pageInfo;
+            } catch (error) {
+                if (error instanceof Error) {
+                    toastError(error.message);
+                }
+                this.analysisResults = [];
+            } finally {
+                this.fetchingAnalysisResults = false;
+            }
         },
 
         // analysis results
         updateWorksheetResultsStatus(payload) {
             payload?.forEach(result => {
-                this.workSheet?.analysisResults.forEach((wsResult, index) => {
+                this.workSheet?.analysisResults?.forEach((wsResult, index) => {
                     if (wsResult?.uid == result.uid) {
                         wsResult.status = result.status;
                     }
                 });
             });
         },
-        updateAnalysesResults(payload: IAnalysisResult[]) {
+
+        updateAnalysesResults(payload: AnalysisResultType[]) {
             payload?.forEach(result => {
                 const index = this.analysisResults.findIndex(x => x.uid === result.uid);
                 if (index > -1) {
@@ -191,8 +264,8 @@ export const useWorksheetStore = defineStore('worksheet', {
     },
 });
 
-function sortAnalysisResults(ws: any): IWorkSheet {
-    ws.analysisResults = ws?.analysisResults?.sort((a: IAnalysisResult, b: IAnalysisResult) => {
+function sortAnalysisResults(ws: any): WorkSheetType {
+    ws.analysisResults = ws?.analysisResults?.sort((a: AnalysisResultType, b: AnalysisResultType) => {
         if (a.worksheetPosition === b.worksheetPosition) {
             return (a?.uid || 0) > (b?.uid || 0) ? 1 : -1;
         }
@@ -201,6 +274,6 @@ function sortAnalysisResults(ws: any): IWorkSheet {
     return ws;
 }
 
-function sortWorksheets(ws: IWorkSheet[]): IWorkSheet[] {
-    return ws?.sort((a: IWorkSheet, b: IWorkSheet) => ((a?.uid || 0) < (b?.uid || 0) ? 1 : -1));
+function sortWorksheets(ws: WorkSheetType[]): WorkSheetType[] {
+    return ws?.sort((a: WorkSheetType, b: WorkSheetType) => ((a?.uid || 0) < (b?.uid || 0) ? 1 : -1));
 }

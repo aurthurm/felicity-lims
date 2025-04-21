@@ -1,70 +1,105 @@
 import { defineStore } from 'pinia';
 import { addListsUnique } from '@/utils';
-import { IIdentification, IPatient } from '@/models/patient';
-import { IPageInfo } from '@/models/pagination';
 
-import  useApiUtil  from '@/composables/api_util';
-import { GetAllPatientsDocument, GetAllPatientsQuery, GetAllPatientsQueryVariables, GetPatientByUidDocument, GetPatientByUidQuery, GetPatientByUidQueryVariables, IdentificationTypesDocument, IdentificationTypesQuery, IdentificationTypesQueryVariables, SearchPatientsDocument, SearchPatientsQuery, SearchPatientsQueryVariables, useIdentificationTypesQuery } from '@/graphql/operations/patient.queries';
+import useApiUtil from '@/composables/api_util';
+import { GetAllPatientsDocument, GetAllPatientsQuery, GetAllPatientsQueryVariables, GetPatientByUidDocument, GetPatientByUidQuery, GetPatientByUidQueryVariables, IdentificationTypesDocument, IdentificationTypesQuery, IdentificationTypesQueryVariables, SearchPatientsDocument, SearchPatientsQuery, SearchPatientsQueryVariables } from '@/graphql/operations/patient.queries';
+import { IdentificationType, PatientType, PageInfo } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
 
+type PatientStateType = {
+    identifications: IdentificationType[];
+    patients: PatientType[];
+    searchQuery: string;
+    fetchingPatients: boolean;
+    patient?: PatientType;
+    fetchingPatient: boolean;
+    patientCount?: number;
+    patientPageInfo?: PageInfo;
+};
+
 export const usePatientStore = defineStore('patient', {
-    state: () => {
-        return {
-            identifications: [],
-            patients: [],
-            searchQuery: '',
-            fetchingPatients: false,
-            patient: undefined,
-            fetchingPatient: false,
-            patientCount: 0,
-            patientPageInfo: undefined,
-        } as {
-            identifications: IIdentification[];
-            patients: IPatient[];
-            searchQuery: string;
-            fetchingPatients: boolean;
-            patient?: IPatient;
-            fetchingPatient: boolean;
-            patientCount?: number;
-            patientPageInfo?: IPageInfo;
-        };
-    },
+    state: (): PatientStateType => ({
+        identifications: [],
+        patients: [],
+        searchQuery: '',
+        fetchingPatients: false,
+        patient: undefined,
+        fetchingPatient: false,
+        patientCount: 0,
+        patientPageInfo: undefined,
+    }),
     getters: {
-        getPatients: state => state.patients,
-        getIdentifications: state => state.identifications,
-        getSearchQuery: state => state.searchQuery,
-        getPatientByUid: state => (uid: string) => state.patients?.find(p => p.uid === uid),
-        getPatient: state => state.patient,
-        getPatientCount: state => state.patientCount,
-        getPatientPageInfo: state => state.patientPageInfo,
+        getPatients: (state): PatientType[] => state.patients,
+        getIdentifications: (state): IdentificationType[] => state.identifications,
+        getSearchQuery: (state): string => state.searchQuery,
+        getPatientByUid: (state) => (uid: string): PatientType | undefined => state.patients?.find(p => p.uid === uid),
+        getPatient: (state): PatientType | undefined => state.patient,
+        getPatientCount: (state): number | undefined => state.patientCount,
+        getPatientPageInfo: (state): PageInfo | undefined => state.patientPageInfo,
     },
     actions: {
-        // identifications
-        async fetchIdentifications() {
-            await withClientQuery<IdentificationTypesQuery, IdentificationTypesQueryVariables>(IdentificationTypesDocument, {}, 'identificationAll').then(payload => {
-                this.identifications = payload;
-            });
+        // IDENTIFICATIONS
+        async fetchIdentifications(): Promise<void> {
+            try {
+                const result = await withClientQuery<IdentificationTypesQuery, IdentificationTypesQueryVariables>(
+                    IdentificationTypesDocument, 
+                    {}, 
+                    'identificationAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.identifications = result as IdentificationType[];
+                } else {
+                    console.error('Invalid identifications data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching identifications:', error);
+            }
         },
-        addIdentification(payload) {
-            this.identifications?.unshift(payload);
+        
+        addIdentification(payload: IdentificationType): void {
+            if (!payload?.uid) {
+                console.error('Invalid identification payload:', payload);
+                return;
+            }
+            
+            this.identifications.unshift(payload);
         },
-        updateIdentification(payload) {
-            const index = this.identifications!.findIndex(pt => pt.uid === payload.uid);
-            this.identifications[index] = {
-                ...this.identifications![index],
-                ...payload,
-            };
+        
+        updateIdentification(payload: IdentificationType): void {
+            if (!payload?.uid) {
+                console.error('Invalid identification payload:', payload);
+                return;
+            }
+            
+            const index = this.identifications.findIndex(pt => pt.uid === payload.uid);
+            if (index > -1) {
+                this.identifications[index] = {
+                    ...this.identifications[index],
+                    ...payload,
+                };
+            }
         },
 
-        // patiets
-        async fetchPatients(params) {
-            this.fetchingPatients = true;
-            await withClientQuery<GetAllPatientsQuery, GetAllPatientsQueryVariables>(GetAllPatientsDocument, { ...params, sortBy: ['-uid'] }, undefined)
-                .then(payload => {
-                    this.fetchingPatients = false;
-                    const page = payload.patientAll;
-                    const patients = page.items;
+        // PATIENTS
+        async fetchPatients(params: any): Promise<void> {
+            try {
+                this.fetchingPatients = true;
+                const result = await withClientQuery<GetAllPatientsQuery, GetAllPatientsQueryVariables>(
+                    GetAllPatientsDocument, 
+                    { ...params, sortBy: ['-uid'] }, 
+                    undefined
+                );
+                
+                if (result && typeof result === 'object' && 'patientAll' in result) {
+                    const page = result.patientAll as { 
+                        items?: PatientType[]; 
+                        totalCount?: number; 
+                        pageInfo?: PageInfo 
+                    };
+                    const patients = page.items || [];
+
                     if (params.filterAction) {
                         this.patients = [];
                         this.patients = patients;
@@ -72,50 +107,107 @@ export const usePatientStore = defineStore('patient', {
                         this.patients = addListsUnique(this.patients, patients, 'uid');
                     }
 
-                    this.patientCount = page?.totalCount;
+                    this.patientCount = page?.totalCount || 0;
                     this.patientPageInfo = page?.pageInfo;
-                })
-                .catch(err => (this.fetchingPatients = false));
+                } else {
+                    console.error('Invalid patients data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching patients:', error);
+            } finally {
+                this.fetchingPatients = false;
+            }
         },
-        addPatient(payload) {
-            this.patients?.unshift(payload);
+        
+        addPatient(payload: PatientType): void {
+            if (!payload?.uid) {
+                console.error('Invalid patient payload:', payload);
+                return;
+            }
+            
+            this.patients.unshift(payload);
         },
-        updatePatient(payload) {
-            const index = this.patients!.findIndex(pt => pt.uid === payload.uid);
-            this.patients[index] = { ...this.patients![index], ...payload };
-            this.patient = { ...this.patient, ...payload };
+        
+        updatePatient(payload: PatientType): void {
+            if (!payload?.uid) {
+                console.error('Invalid patient payload:', payload);
+                return;
+            }
+            
+            const index = this.patients.findIndex(pt => pt.uid === payload.uid);
+            if (index > -1) {
+                this.patients[index] = { ...this.patients[index], ...payload };
+            }
+            
+            if (this.patient?.uid === payload.uid) {
+                this.patient = { ...this.patient, ...payload };
+            }
         },
-        async fetchPtientByUid(uid) {
+        
+        async fetchPatientByUid(uid: string): Promise<void> {
             if (!uid) {
+                console.error('Invalid UID provided to fetchPatientByUid');
                 return;
             }
-            this.fetchingPatient = true;
-            await withClientQuery<GetPatientByUidQuery, GetPatientByUidQueryVariables>(GetPatientByUidDocument, { uid }, 'patientByUid')
-                .then(payload => {
-                    this.fetchingPatient = false;
-                    this.patient = payload;
-                })
-                .catch(err => (this.fetchingPatient = false));
+            
+            try {
+                this.fetchingPatient = true;
+                const result = await withClientQuery<GetPatientByUidQuery, GetPatientByUidQueryVariables>(
+                    GetPatientByUidDocument, 
+                    { uid }, 
+                    'patientByUid'
+                );
+                
+                if (result && typeof result === 'object') {
+                    this.patient = result as PatientType;
+                } else {
+                    console.error('Invalid patient data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching patient:', error);
+            } finally {
+                this.fetchingPatient = false;
+            }
         },
-        async setPatient(payload: IPatient) {
-            if (!payload) {
+        
+        async setPatient(payload: PatientType): Promise<void> {
+            if (!payload?.uid) {
+                console.error('Invalid patient payload:', payload);
                 return;
             }
-            this.fetchingPatient = true;
+            
             this.patient = payload;
-            this.fetchingPatient = false;
         },
-
-        async resetPatient() {
+        
+        async resetPatient(): Promise<void> {
             this.patient = undefined;
         },
-
-        async searchPatients(queryString: string) {
-            this.searchQuery = queryString;
-            await withClientQuery<SearchPatientsQuery, SearchPatientsQueryVariables>(SearchPatientsDocument, { queryString }, 'patientSearch').then(payload => (this.patients = payload));
+        
+        async searchPatients(queryString: string): Promise<void> {
+            if (!queryString) {
+                console.error('Invalid query string provided to searchPatients');
+                return;
+            }
+            
+            try {
+                this.searchQuery = queryString;
+                const result = await withClientQuery<SearchPatientsQuery, SearchPatientsQueryVariables>(
+                    SearchPatientsDocument, 
+                    { queryString }, 
+                    'patientSearch'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.patients = result as PatientType[];
+                } else {
+                    console.error('Invalid search results received:', result);
+                }
+            } catch (error) {
+                console.error('Error searching patients:', error);
+            }
         },
-
-        clearSearchQuery() {
+        
+        clearSearchQuery(): void {
             this.searchQuery = '';
         },
     },

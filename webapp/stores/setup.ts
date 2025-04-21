@@ -1,226 +1,428 @@
 import { defineStore } from 'pinia';
-import { IInstrument, IInstrumentType, ILaboratory, ILaboratoryInstrument, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '@/models/setup';
-import { IDepartment } from '@/models/setup';
 
 import  useApiUtil  from '@/composables/api_util';
 import { GetAllDepartmentsDocument, GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables, GetLaboratoryDocument, GetLaboratoryQuery, GetLaboratoryQueryVariables, GetLaboratorySettingDocument, GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables } from '@/graphql/operations/_queries';
 import { GetAllInstrumentsDocument, GetAllInstrumentsQuery, GetAllInstrumentTypesDocument, GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables, GetAllLaboratoryInstrumentsDocument, GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables, GetAllManufacturersDocument, GetAllManufacturersQuery, GetAllManufacturersQueryVariables, GetAllMethodsDocument, GetAllMethodsQuery, GetAllMethodsQueryVariables, GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllUnitsDocument, GetAllUnitsQuery, GetAllUnitsQueryVariables } from '@/graphql/operations/instrument.queries';
 import { GetAllSampleTypesQueryVariables } from '@/graphql/operations/analyses.queries';
+import { DepartmentType, InstrumentType, LaboratoryInstrumentType, LaboratorySettingType, ManufacturerType, MethodType, SupplierType, UnitType, LaboratoryType, InstrumentTypeType } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
 
+type SetupStateType = {
+    laboratory?: LaboratoryType;
+    laboratorySetting?: LaboratorySettingType;
+    departments: DepartmentType[];
+    fetchingDepartments: boolean;
+    suppliers: SupplierType[];
+    fetchingSuppliers: boolean;
+    manufacturers: ManufacturerType[];
+    fetchingManufacturers: boolean;
+    instrumentTypes: InstrumentTypeType[];
+    fetchingInstrumentTypes: boolean;
+    instruments: InstrumentType[];
+    laboratoryInstruments: LaboratoryInstrumentType[];
+    fetchingInstruments: boolean;
+    methods: MethodType[];
+    fetchingMethods: boolean;
+    units: UnitType[];
+    fetchingUnits: boolean;
+};
+
 export const useSetupStore = defineStore('setup', {
-    state: () => {
-        return {
-            laboratory: undefined,
-            laboratorySetting: undefined,
-            departments: [],
-            fetchingDepartments: false,
-            suppliers: [],
-            fetchingSuppliers: false,
-            manufacturers: [],
-            fetchingManufacturers: false,
-            instrumentTypes: [],
-            fetchingInstrumentTypes: false,
-            instruments: [],
-            laboratoryInstruments: [],
-            fetchingInstruments: false,
-            methods: [],
-            fetchingMethods: false,
-            units: [],
-            fetchingUnits: false,
-        } as {
-            laboratory?: ILaboratory;
-            laboratorySetting?: ILaboratorySetting;
-            departments: IDepartment[];
-            fetchingDepartments: boolean;
-            suppliers: ISupplier[];
-            fetchingSuppliers: boolean;
-            manufacturers: IManufacturer[];
-            fetchingManufacturers: boolean;
-            instrumentTypes: IInstrumentType[];
-            fetchingInstrumentTypes: boolean;
-            instruments: IInstrument[];
-            laboratoryInstruments: ILaboratoryInstrument[];
-            fetchingInstruments: boolean;
-            methods: IMethod[];
-            fetchingMethods: boolean;
-            units: IUnit[];
-            fetchingUnits: boolean;
-        };
-    },
+    state: (): SetupStateType => ({
+        laboratory: undefined,
+        laboratorySetting: undefined,
+        departments: [],
+        fetchingDepartments: false,
+        suppliers: [],
+        fetchingSuppliers: false,
+        manufacturers: [],
+        fetchingManufacturers: false,
+        instrumentTypes: [],
+        fetchingInstrumentTypes: false,
+        instruments: [],
+        laboratoryInstruments: [],
+        fetchingInstruments: false,
+        methods: [],
+        fetchingMethods: false,
+        units: [],
+        fetchingUnits: false,
+    }),
     getters: {
-        getLaboratory: state => state.laboratory,
-        getLaboratorySetting: state => state.laboratorySetting,
-        getDepartments: state => state.departments,
-        getSuppliers: state => state.suppliers,
-        getManufacturers: state => state.manufacturers,
-        getInstrumentTypes: state => state.instrumentTypes,
-        getInstruments: state => state.instruments,
-        getLaboratoryInstruments: state => state.laboratoryInstruments,
-        getMethods: state => state.methods,
-        getUnits: state => state.units,
+        getLaboratory: (state): LaboratoryType | undefined => state.laboratory,
+        getLaboratorySetting: (state): LaboratorySettingType | undefined => state.laboratorySetting,
+        getDepartments: (state): DepartmentType[] => state.departments,
+        getSuppliers: (state): SupplierType[] => state.suppliers,
+        getManufacturers: (state): ManufacturerType[] => state.manufacturers,
+        getInstrumentTypes: (state): InstrumentTypeType[] => state.instrumentTypes,
+        getInstruments: (state): InstrumentType[] => state.instruments,
+        getLaboratoryInstruments: (state): LaboratoryInstrumentType[] => state.laboratoryInstruments,
+        getMethods: (state): MethodType[] => state.methods,
+        getUnits: (state): UnitType[] => state.units,
     },
     actions: {
         // DEPARMENT
-        async fetchDepartments(params) {
-            this.fetchingDepartments = true;
-            await withClientQuery<GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables>(GetAllDepartmentsDocument, params, 'departmentAll')
-                .then((depts: IDepartment[]) => {
-                    this.fetchingDepartments = false;
-                    this.departments = depts;
-                })
-                .catch(err => (this.fetchingDepartments = false));
+        async fetchDepartments(params: GetAllDepartmentsQueryVariables): Promise<void> {
+            try {
+                this.fetchingDepartments = true;
+                const result = await withClientQuery<GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables>(
+                    GetAllDepartmentsDocument, 
+                    params, 
+                    'departmentAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.departments = result;
+                } else {
+                    console.error('Invalid departments data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching departments:', error);
+            } finally {
+                this.fetchingDepartments = false;
+            }
         },
-        addDepartment(payload): void {
-            this.departments?.unshift(payload);
+        addDepartment(payload: DepartmentType): void {
+            if (!payload?.uid) {
+                console.error('Invalid department payload:', payload);
+                return;
+            }
+            this.departments.unshift(payload);
         },
-        updateDepartment(payload: IDepartment): void {
-            const index = this.departments?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.departments[index] = payload;
+        updateDepartment(payload: DepartmentType): void {
+            if (!payload?.uid) {
+                console.error('Invalid department payload:', payload);
+                return;
+            }
+            const index = this.departments.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.departments[index] = payload;
+            }
         },
 
         // LABORATORY
-        async fetchLaboratory() {
-            await withClientQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>(GetLaboratoryDocument, {}, 'laboratory').then(payload => (this.laboratory = payload));
+        async fetchLaboratory(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>(
+                    GetLaboratoryDocument, 
+                    {}, 
+                    'laboratory'
+                );
+                
+                if (result && typeof result === 'object') {
+                    this.laboratory = result as LaboratoryType;
+                } else {
+                    console.error('Invalid laboratory data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching laboratory:', error);
+            }
         },
-        updateLaboratory(payload: ILaboratory): void {
+        updateLaboratory(payload: LaboratoryType): void {
+            if (!payload?.uid) {
+                console.error('Invalid laboratory payload:', payload);
+                return;
+            }
             this.laboratory = payload;
         },
 
         // LABORATORY SETTING
-        async fetchLaboratorySetting() {
-            await withClientQuery<GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables>(GetLaboratorySettingDocument, {}, 'laboratorySetting').then(payload => (this.laboratorySetting = payload));
+        async fetchLaboratorySetting(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables>(
+                    GetLaboratorySettingDocument, 
+                    {}, 
+                    'laboratorySetting'
+                );
+                
+                if (result && typeof result === 'object') {
+                    this.laboratorySetting = result as LaboratorySettingType;
+                } else {
+                    console.error('Invalid laboratory setting data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching laboratory setting:', error);
+            }
         },
-        updateLaboratorySetting(payload: ILaboratorySetting) {
+        updateLaboratorySetting(payload: LaboratorySettingType): void {
+            if (!payload?.uid) {
+                console.error('Invalid laboratory setting payload:', payload);
+                return;
+            }
             this.laboratorySetting = payload;
         },
 
         // SUPPLIERS
-        async fetchSuppliers() {
-            this.fetchingSuppliers = true;
-            await withClientQuery<GetAllSuppliersQuery, GetAllSampleTypesQueryVariables>(GetAllSuppliersDocument, {}, 'supplierAll')
-                .then(payload => {
-                    this.fetchingSuppliers = false;
-                    this.suppliers = payload;
-                })
-                .catch(err => (this.fetchingSuppliers = false));
+        async fetchSuppliers(): Promise<void> {
+            try {
+                this.fetchingSuppliers = true;
+                const result = await withClientQuery<GetAllSuppliersQuery, GetAllSampleTypesQueryVariables>(
+                    GetAllSuppliersDocument, 
+                    {}, 
+                    'supplierAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.suppliers = result;
+                } else {
+                    console.error('Invalid suppliers data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching suppliers:', error);
+            } finally {
+                this.fetchingSuppliers = false;
+            }
         },
-        addSupplier(payload): void {
-            this.suppliers?.unshift(payload);
+        addSupplier(payload: SupplierType): void {
+            if (!payload?.uid) {
+                console.error('Invalid supplier payload:', payload);
+                return;
+            }
+            this.suppliers.unshift(payload);
         },
-        updateSupplier(payload: ISupplier): void {
-            const index = this.suppliers?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.suppliers[index] = payload;
+        updateSupplier(payload: SupplierType): void {
+            if (!payload?.uid) {
+                console.error('Invalid supplier payload:', payload);
+                return;
+            }
+            const index = this.suppliers.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.suppliers[index] = payload;
+            }
         },
 
         // MAUFACTURERS
-        async fetchManufacturers() {
-            this.fetchingManufacturers = true;
-            await withClientQuery<GetAllManufacturersQuery, GetAllManufacturersQueryVariables>(GetAllManufacturersDocument, {}, 'manufacturerAll')
-                .then(payload => {
-                    this.fetchingManufacturers = false;
-                    this.manufacturers = payload;
-                })
-                .catch(err => (this.fetchingManufacturers = false));
+        async fetchManufacturers(): Promise<void> {
+            try {
+                this.fetchingManufacturers = true;
+                const result = await withClientQuery<GetAllManufacturersQuery, GetAllManufacturersQueryVariables>(
+                    GetAllManufacturersDocument, 
+                    {}, 
+                    'manufacturerAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.manufacturers = result;
+                } else {
+                    console.error('Invalid manufacturers data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching manufacturers:', error);
+            } finally {
+                this.fetchingManufacturers = false;
+            }
         },
-        addManufacturer(payload) {
-            this.manufacturers?.unshift(payload);
+        addManufacturer(payload: ManufacturerType): void {
+            if (!payload?.uid) {
+                console.error('Invalid manufacturer payload:', payload);
+                return;
+            }
+            this.manufacturers.unshift(payload);
         },
-        updateManufacturer(payload: IManufacturer) {
-            const index = this.manufacturers?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.manufacturers[index] = payload;
+        updateManufacturer(payload: ManufacturerType): void {
+            if (!payload?.uid) {
+                console.error('Invalid manufacturer payload:', payload);
+                return;
+            }
+            const index = this.manufacturers.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.manufacturers[index] = payload;
+            }
         },
 
         // INSTRUMENT TYOES
-        async fetchInstrumentTypes() {
-            this.fetchingInstrumentTypes = true;
-            await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(GetAllInstrumentTypesDocument, {}, 'instrumentTypeAll')
-                .then(({ items }: any) => {
-                    this.instrumentTypes = items;
-                })
-                .finally(() => {
-                    this.fetchingInstrumentTypes = false
-                });
+        async fetchInstrumentTypes(): Promise<void> {
+            try {
+                this.fetchingInstrumentTypes = true;
+                const result = await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(
+                    GetAllInstrumentTypesDocument, 
+                    {}, 
+                    'instrumentTypeAll'
+                );
+                
+                if (result && typeof result === 'object' && 'items' in result) {
+                    this.instrumentTypes = result.items || [];
+                } else {
+                    console.error('Invalid instrument types data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching instrument types:', error);
+            } finally {
+                this.fetchingInstrumentTypes = false;
+            }
         },
-        addInstrumentType(payload) {
-            this.instrumentTypes?.unshift(payload);
+        addInstrumentType(payload: InstrumentTypeType): void {
+            if (!payload?.uid) {
+                console.error('Invalid instrument type payload:', payload);
+                return;
+            }
+            this.instrumentTypes.unshift(payload);
         },
-        updateInstrumentType(payload: IInstrumentType) {
-            const index = this.instrumentTypes?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.instrumentTypes[index] = payload;
+        updateInstrumentType(payload: InstrumentTypeType): void {
+            if (!payload?.uid) {
+                console.error('Invalid instrument type payload:', payload);
+                return;
+            }
+            const index = this.instrumentTypes.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.instrumentTypes[index] = payload;
+            }
         },
 
         // INSTRUMENTS
-        async fetchInstruments() {
-            this.fetchingInstruments = false;
-            await withClientQuery<GetAllInstrumentsQuery, GetAllDepartmentsQueryVariables>(GetAllInstrumentsDocument, {}, 'instrumentAll')
-                .then(payload => {
-                    this.fetchingInstruments = false;
-                    this.instruments = payload?.items;
-                })
-                .catch(err => (this.fetchingInstruments = false));
+        async fetchInstruments(): Promise<void> {
+            try {
+                this.fetchingInstruments = true;
+                const result = await withClientQuery<GetAllInstrumentsQuery, GetAllDepartmentsQueryVariables>(
+                    GetAllInstrumentsDocument, 
+                    {}, 
+                    'instrumentAll'
+                );
+                
+                if (result && typeof result === 'object' && 'items' in result) {
+                    this.instruments = result.items || [];
+                } else {
+                    console.error('Invalid instruments data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching instruments:', error);
+            } finally {
+                this.fetchingInstruments = false;
+            }
         },
-        addInstrument(payload) {
-            this.instruments?.unshift(payload);
+        addInstrument(payload: InstrumentType): void {
+            if (!payload?.uid) {
+                console.error('Invalid instrument payload:', payload);
+                return;
+            }
+            this.instruments.unshift(payload);
         },
-        updateInstrument(payload: IInstrument) {
-            const index = this.instruments?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.instruments[index] = payload;
+        updateInstrument(payload: InstrumentType): void {
+            if (!payload?.uid) {
+                console.error('Invalid instrument payload:', payload);
+                return;
+            }
+            const index = this.instruments.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.instruments[index] = payload;
+            }
         },
 
         // laboratory INSTRUMENTS
-        async fetchLaboratoryInstruments() {
-            this.fetchingInstruments = false;
-            await withClientQuery<GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables>(GetAllLaboratoryInstrumentsDocument, {}, 'laboratoryInstrumentAll')
-                .then(payload => {
-                    this.fetchingInstruments = false;
-                    this.laboratoryInstruments = payload?.items;
-                })
-                .catch(err => (this.fetchingInstruments = false));
+        async fetchLaboratoryInstruments(): Promise<void> {
+            try {
+                this.fetchingInstruments = true;
+                const result = await withClientQuery<GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables>(
+                    GetAllLaboratoryInstrumentsDocument, 
+                    {}, 
+                    'laboratoryInstrumentAll'
+                );
+                
+                if (result && typeof result === 'object' && 'items' in result) {
+                    this.laboratoryInstruments = result.items || [];
+                } else {
+                    console.error('Invalid laboratory instruments data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching laboratory instruments:', error);
+            } finally {
+                this.fetchingInstruments = false;
+            }
         },
-        addLaboratoryInstrument(payload) {
-            this.laboratoryInstruments?.unshift(payload);
+        addLaboratoryInstrument(payload: LaboratoryInstrumentType): void {
+            if (!payload?.uid) {
+                console.error('Invalid laboratory instrument payload:', payload);
+                return;
+            }
+            this.laboratoryInstruments.unshift(payload);
         },
-        updateLaboratoryInstrument(payload: ILaboratoryInstrument) {
-            const index = this.laboratoryInstruments?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.laboratoryInstruments[index] = payload;
+        updateLaboratoryInstrument(payload: LaboratoryInstrumentType): void {
+            if (!payload?.uid) {
+                console.error('Invalid laboratory instrument payload:', payload);
+                return;
+            }
+            const index = this.laboratoryInstruments.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.laboratoryInstruments[index] = payload;
+            }
         },
 
         // METHODS
-        async fetchMethods() {
-            this.fetchingMethods = true;
-            await withClientQuery<GetAllMethodsQuery, GetAllMethodsQueryVariables>(GetAllMethodsDocument, {}, 'methodAll')
-                .then(payload => {
-                    this.fetchingMethods = false;
-                    this.methods = payload?.items;
-                })
-                .catch(err => (this.fetchingMethods = false));
+        async fetchMethods(): Promise<void> {
+            try {
+                this.fetchingMethods = true;
+                const result = await withClientQuery<GetAllMethodsQuery, GetAllMethodsQueryVariables>(
+                    GetAllMethodsDocument, 
+                    {}, 
+                    'methodAll'
+                );
+                
+                if (result && typeof result === 'object' && 'items' in result) {
+                    this.methods = result.items || [];
+                } else {
+                    console.error('Invalid methods data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching methods:', error);
+            } finally {
+                this.fetchingMethods = false;
+            }
         },
-        addMethod(payload) {
-            this.methods?.unshift(payload);
+        addMethod(payload: MethodType): void {
+            if (!payload?.uid) {
+                console.error('Invalid method payload:', payload);
+                return;
+            }
+            this.methods.unshift(payload);
         },
-        updateMethod(payload) {
-            const index = this.methods?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.methods[index] = payload;
+        updateMethod(payload: MethodType): void {
+            if (!payload?.uid) {
+                console.error('Invalid method payload:', payload);
+                return;
+            }
+            const index = this.methods.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.methods[index] = payload;
+            }
         },
 
         // UNITS
-        async fetchUnits() {
-            this.fetchingUnits = true;
-            await withClientQuery<GetAllUnitsQuery, GetAllUnitsQueryVariables>(GetAllUnitsDocument, {}, 'unitAll')
-                .then(payload => {
-                    this.fetchingUnits = false;
-                    this.units = payload;
-                })
-                .catch(err => (this.fetchingUnits = false));
+        async fetchUnits(): Promise<void> {
+            try {
+                this.fetchingUnits = true;
+                const result = await withClientQuery<GetAllUnitsQuery, GetAllUnitsQueryVariables>(
+                    GetAllUnitsDocument, 
+                    {}, 
+                    'unitAll'
+                );
+                
+                if (result && Array.isArray(result)) {
+                    this.units = result;
+                } else {
+                    console.error('Invalid units data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching units:', error);
+            } finally {
+                this.fetchingUnits = false;
+            }
         },
-        addUnit(payload) {
-            this.units?.unshift(payload);
+        addUnit(payload: UnitType): void {
+            if (!payload?.uid) {
+                console.error('Invalid unit payload:', payload);
+                return;
+            }
+            this.units.unshift(payload);
         },
-        updateUnit(payload) {
-            const index = this.units?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.units[index] = payload;
+        updateUnit(payload: UnitType): void {
+            if (!payload?.uid) {
+                console.error('Invalid unit payload:', payload);
+                return;
+            }
+            const index = this.units.findIndex(item => item.uid === payload.uid);
+            if (index > -1) {
+                this.units[index] = payload;
+            }
         },
     },
 });

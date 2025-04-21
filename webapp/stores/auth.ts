@@ -156,8 +156,6 @@ export const useAuthStore = defineStore('auth', () => {
                     isAuthenticated: true,
                     processing: false,
                 };
-                // Start refresh token timer if we have valid auth data
-                startRefreshTokenTimer();
             } else {
                 reset();
             }
