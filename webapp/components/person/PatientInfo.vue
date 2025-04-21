@@ -4,18 +4,17 @@ import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { usePatientStore } from "@/stores/patient";
 import { parseDate } from "@/utils";
-import { IPatient } from "@/models/patient";
-
+import { PatientType } from "@/types/gql";
 
 const route = useRoute();
 const patientStore = usePatientStore();
 const { patient, fetchingPatient } = storeToRefs(patientStore);
 
 const emit = defineEmits<{
-  (e: 'editPatient', patient: IPatient): void;
+  (e: 'editPatient', patient: PatientType): void;
 }>();
 
-const editPatient = (patient: IPatient | undefined) => {
+const editPatient = (patient: PatientType | undefined) => {
   if (patient) {
     emit('editPatient', patient);
   }

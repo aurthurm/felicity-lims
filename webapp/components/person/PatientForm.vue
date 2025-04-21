@@ -2,7 +2,6 @@
 import VueMultiselect from "vue-multiselect";
 import { reactive, computed, onMounted, toRefs, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { IPatient } from "@/models/patient";
 import * as yup from 'yup';
 import useApiUtil from '@/composables/api_util';
 import { 
@@ -16,14 +15,18 @@ import {
 import { useClientStore } from "@/stores/client";
 import { useLocationStore } from "@/stores/location";
 import { usePatientStore } from "@/stores/patient";
-import { IClient } from "@/models/client";
-import { IPatientIdentificationForm } from "@/models/patient";
 import { formatDate, isNullOrWs } from "@/utils";
 import dayjs from "dayjs";
 import { useField, useForm } from "vee-validate";
+import { PatientType, ClientType } from "@/types/gql";
+
+interface IPatientIdentificationForm {
+    identificationUid: string;
+    value: string;
+}
 
 interface Props {
-  patient?: IPatient;
+  patient?: PatientType;
   navigate?: boolean;
 }
 
@@ -47,7 +50,7 @@ const state = reactive({
   countries: computed(() => locationsStore.getCountries),
   provinces: computed(() => locationsStore.getProvinces),
   districts: computed(() => locationsStore.getDistricts),
-  clients: computed<IClient[]>(() => clientStore.getClients),
+  clients: computed<ClientType[]>(() => clientStore.getClients),
 });
 
 let clientParams = reactive({
@@ -142,7 +145,7 @@ const { value: clientPatientId } = useField("clientPatientId");
 const { value: firstName } = useField("firstName");
 const { value: middleName } = useField("middleName");
 const { value: lastName } = useField("lastName");
-const { value: client } = useField<IClient>("client");
+const { value: client } = useField<ClientType>("client");
 const { value: gender } = useField("gender");
 const { value: age } = useField("age");
 const { value: dateOfBirth } = useField("dateOfBirth");
@@ -155,12 +158,12 @@ const { value: countryUid } = useField<string>("countryUid");
 const { value: identifications } = useField<IPatientIdentificationForm[]>("identifications");
 
 const submitPatientForm = handleSubmit((values) => {
-  if (!values.uid) addPatient(values as IPatient);
-  if (values.uid) updatePatient(values as IPatient);
+  if (!values.uid) addPatient(values as PatientType);
+  if (values.uid) updatePatient(values as PatientType);
 });
 
 //
-function addPatient(payload: IPatient) {
+function addPatient(payload: PatientType) {
   withClientMutation<AddPatientMutation, AddPatientMutationVariables>(
     AddPatientDocument,
     {
@@ -193,7 +196,7 @@ function addPatient(payload: IPatient) {
   });
 }
 
-function updatePatient(payload: IPatient) {
+function updatePatient(payload: PatientType) {
   withClientMutation<EditPatientMutation, EditPatientMutationVariables>(
     EditPatientDocument,
     {

@@ -67,12 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import { IAnalysisService } from '@/models/analysis';
-import { IComplexCondition } from '@/models/reflex';
+import { AnalysisServiceType, ComplexConditionType } from '@/types/gql';
 
 const props = defineProps<{
-    condition: IComplexCondition;
-    analysesServices: IAnalysisService[];
+    condition: ComplexConditionType;
+    analysesServices: AnalysisServiceType[];
 }>();
 
 const emit = defineEmits(['remove']);

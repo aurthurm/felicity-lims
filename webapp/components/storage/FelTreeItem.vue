@@ -1,10 +1,10 @@
 <script setup>
 import { computed } from 'vue';
 import useTreeStateComposable from "@/composables/tree-state";
-
+import type { TreeDataType } from "@/types/storage";
 const props = defineProps({
   tree: {
-    type: Object,
+    type: Object as PropType<TreeDataType>,
     required: true
   }
 });

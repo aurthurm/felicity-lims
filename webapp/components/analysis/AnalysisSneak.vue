@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, defineAsyncComponent, ref, computed } from "vue";
 import useApiUtil from "@/composables/api_util";
-import { IAnalysisService } from "@/models/analysis";
+import { AnalysisType } from "@/types/gql";
 import { GetAnalysesServicesByUidDocument, GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables } from "@/graphql/operations/analyses.queries";
 
 const FelLabelValueList = defineAsyncComponent(
@@ -26,7 +26,7 @@ interface AnalysisItem {
 
 const props = defineProps<Props>();
 const { withClientQuery } = useApiUtil();
-const analysis = ref<IAnalysisService | null>(null);
+const analysis = ref<AnalysisType | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
@@ -40,7 +40,7 @@ onMounted(async () => {
     );
     
     if (result) {
-      analysis.value = result as unknown as IAnalysisService;
+      analysis.value = result as unknown as AnalysisType;
     }
     
     isLoading.value = false;

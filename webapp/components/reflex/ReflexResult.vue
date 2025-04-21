@@ -62,17 +62,17 @@
 </template>
 
 <script setup lang="ts">
-import { IAnalysisResult } from '@/models/analysis';
+import { AnalysisResultType } from '@/types/gql';
 import { formatDate } from '@/utils';
 
 interface Props {
-  result: IAnalysisResult;
+  result: AnalysisResultType;
 }
 
 defineProps<Props>();
 defineEmits<{
-  (e: 'edit', result: IAnalysisResult): void;
-  (e: 'verify', result: IAnalysisResult): void;
+  (e: 'edit', result: AnalysisResultType): void;
+  (e: 'verify', result: AnalysisResultType): void;
 }>();
 
 function getStatusClass(status: string | undefined): string {

@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 import useApiUtil from '@/composables/api_util';
 import { AddGrindErrandDiscussionDocument, AddGrindErrandDiscussionMutation, AddGrindErrandDiscussionMutationVariables } from '@/graphql/operations/grind.mutations';
-import { IGrindErrandDiscussion } from '@/models/grind';
+import { GrindErrandDiscussionType } from '@/types/gql';
 
 interface Props {
     errandUid: string;
-    parentDiscussion?: IGrindErrandDiscussion;
+    parentDiscussion?: GrindErrandDiscussionType;
     isReply?: boolean;
 }
 

@@ -3,7 +3,7 @@ import { h, ref, reactive, computed, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
-import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
+import { ProfileType, AnalysisType, SampleType } from "@/types/gql";
 import { ifZeroEmpty, parseDate } from "@/utils";
 import { useSampleStore } from "@/stores/sample";
 import { useAnalysisStore } from "@/stores/analysis";
@@ -37,7 +37,7 @@ const state = reactive({
 });
 
 // samples
-const samples = computed<ISample[]>(() => sampleStore.getSamples);
+const samples = computed<SampleType[]>(() => sampleStore.getSamples);
 const filterOptions = ref([
   { name: "All", value: "" },
   { name: "Expected", value: "expected" },
@@ -375,8 +375,8 @@ analysisStore.fetchAnalysesServices(analysesParams);
 analysisStore.fetchAnalysesProfiles();
 
 function profileAnalysesText(
-  profiles: IAnalysisProfile[],
-  analyses: IAnalysisService[]
+  profiles: ProfileType[],
+  analyses: AnalysisType[]
 ): string {
   let names: string[] = [];
   profiles.forEach((p) => names.push(p.name!));
@@ -414,7 +414,7 @@ function filterSamples(opts: any): void {
 }
 
 // sample tooltip
-const sampleToolTip = (sample: ISample) => {
+const sampleToolTip = (sample: SampleType) => {
   const sc = sample?.storageContainer;
   const ss = sc?.storageSection;
   const sl = ss?.storageLocation;
@@ -426,12 +426,12 @@ const sampleToolTip = (sample: ISample) => {
 
 const allChecked = ref(false);
 function toggleCheckAll(opts: any): void {
-  samples.value?.forEach((sample: ISample) => (sample.checked = opts.checked));
+  samples.value?.forEach((sample: SampleType) => (sample.checked = opts.checked));
   allChecked.value = opts.checked;
   checkUserActionPermissios();
 }
 
-function toggleCheck(sample: ISample): void {
+function toggleCheck(sample: SampleType): void {
   const index = samples.value.findIndex((s) => s.uid === sample.uid);
   samples.value[index].checked = sample.checked;
   if (areAllChecked()) {
@@ -442,7 +442,7 @@ function toggleCheck(sample: ISample): void {
   checkUserActionPermissios();
 }
 
-function unCheck(sample: ISample): void {
+function unCheck(sample: SampleType): void {
   const index = samples.value.findIndex((s) => s.uid === sample.uid);
   samples.value[index].checked = false;
   allChecked.value = false;
@@ -450,18 +450,18 @@ function unCheck(sample: ISample): void {
 }
 
 async function unCheckAll() {
-  samples.value?.forEach((sample: ISample) => (sample.checked = false));
+  samples.value?.forEach((sample: SampleType) => (sample.checked = false));
   allChecked.value = false;
   checkUserActionPermissios();
 }
 
 function areAllChecked(): Boolean {
-  return samples.value?.every((sample: ISample) => sample.checked === true);
+  return samples.value?.every((sample: SampleType) => sample.checked === true);
 }
 
-function getSamplesChecked(): ISample[] {
-  let box: ISample[] = [];
-  samples.value?.forEach((sample: ISample) => {
+function getSamplesChecked(): SampleType[] {
+  let box: SampleType[] = [];
+  samples.value?.forEach((sample: SampleType) => {
     if (sample.checked) box.push(sample);
   });
   return box;
@@ -481,7 +481,7 @@ function checkUserActionPermissios(): void {
   state.can_copy_to = false;
   state.barcodes = false;
 
-  const checked: ISample[] = getSamplesChecked();
+  const checked: SampleType[] = getSamplesChecked();
   if (checked.length === 0) {
     return;
   } else {
@@ -489,61 +489,61 @@ function checkUserActionPermissios(): void {
   };
 
   // can_receive
-  if (checked.every((sample: ISample) => sample.status === "expected")) {
+  if (checked.every((sample: SampleType) => sample.status === "expected")) {
     state.can_receive = true;
   }
 
   // can_cancel
   if (
-    checked.every((sample: ISample) => ["received", "expected"].includes(sample.status!))
+    checked.every((sample: SampleType) => ["received", "expected"].includes(sample.status!))
   ) {
     state.can_cancel = true;
     state.can_reject = true;
   }
 
   // can_store;
-  if (checked.every((sample: ISample) => ["received"].includes(sample.status!))) {
+  if (checked.every((sample: SampleType) => ["received"].includes(sample.status!))) {
     state.can_store = true;
     state.can_copy_to = true;
   }
 
-  if (checked.every((sample: ISample) => ["stored"].includes(sample.status!))) {
+  if (checked.every((sample: SampleType) => ["stored"].includes(sample.status!))) {
     state.can_recover = true;
   }
 
   // can_reinstate
-  if (checked.every((sample: ISample) => sample.status === "cancelled")) {
+  if (checked.every((sample: SampleType) => sample.status === "cancelled")) {
     state.can_reinstate = true;
   }
 
   // can_download
   if (
-    checked.every((sample: ISample) => ["approved", "published"].includes(sample.status!))
+    checked.every((sample: SampleType) => ["approved", "published"].includes(sample.status!))
   ) {
     state.can_copy_to = true;
   }
 
   // can_print
-  if (checked.every((sample: ISample) => sample.status === "approved")) {
+  if (checked.every((sample: SampleType) => sample.status === "approved")) {
     state.can_publish = true;
   }
 
   // can_print
-  if (checked.every((sample: ISample) => sample.status === "published")) {
+  if (checked.every((sample: SampleType) => sample.status === "published")) {
     state.can_print = true;
     state.can_download = true;
   }
 }
 
 function getSampleUids(): string[] {
-  const items: ISample[] = getSamplesChecked();
+  const items: SampleType[] = getSamplesChecked();
   let ready: string[] = [];
   items?.forEach((item) => ready.push(item.uid!));
   return ready;
 }
 
 function getSampleIds(): string[] {
-  const items: ISample[] = getSamplesChecked();
+  const items: SampleType[] = getSamplesChecked();
   let ready: string[] = [];
   items?.forEach((item) => ready.push(item.sampleId!));
   return ready;

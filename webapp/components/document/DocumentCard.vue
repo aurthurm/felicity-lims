@@ -2,10 +2,10 @@
 import { format } from 'date-fns'
 import { File, Edit } from 'lucide-vue-next'
 import { useRouter } from 'vue-router';
-import { IDocument } from '@/models/document';
+import { DocumentType } from '@/types/gql';
 
 interface Props {
-  document: IDocument;
+  document: DocumentType;
 }
 
 const props = defineProps<Props>();

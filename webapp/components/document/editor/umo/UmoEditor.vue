@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, PropType, nextTick, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import { IDocumentVersion } from '@/models/document';
+import { DocumentVersionType } from '@/types/gql';
 import { ArrowLeftIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import { getOptions } from './options';
 import useApiUtil from '@/composables/api_util';
@@ -15,7 +15,7 @@ const { withClientMutation } = useApiUtil();
 
 const props = defineProps({
   document: {
-    type: Object as PropType<IDocumentVersion>,
+    type: Object as PropType<DocumentVersionType>,
     required: true
   }
 })

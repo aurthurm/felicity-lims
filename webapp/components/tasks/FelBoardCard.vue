@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  const props = defineProps({
-    board: {
-      type: Object,
-      default: () => ({})
-    }
-  })
+import type { GrindBoardType } from "@/types/gql";
+
+const props = defineProps({
+  board: {
+    type: Object as PropType<GrindBoardType>,
+    default: () => ({})
+  }
+})
 </script>
 
 <template>

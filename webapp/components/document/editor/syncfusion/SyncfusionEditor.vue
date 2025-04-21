@@ -5,11 +5,11 @@ import { DropDownButtonComponent } from "@syncfusion/ej2-vue-splitbuttons";
 import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
 import useApiUtil from '@/composables/api_util';
 import { EditDocumentVersionMutation, EditDocumentVersionMutationVariables, EditDocumentVersionDocument } from '@/graphql/operations/document.mutations';
-import { IDocumentVersion } from '@/models/document';
+import { DocumentVersionType } from '@/types/gql';
 import { useRouter } from 'vue-router';
 const props = defineProps({
   document: {
-    type: Object as PropType<IDocumentVersion>,
+    type: Object as PropType<DocumentVersionType>,
     required: true
   }
 })

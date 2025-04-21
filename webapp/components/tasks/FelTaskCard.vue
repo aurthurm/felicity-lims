@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineAsyncComponent } from 'vue';
+import type { GrindErrandType } from "@/types/gql";
 const Badge = defineAsyncComponent(
   () => import("@/components/Badge.vue")
 )
@@ -10,7 +11,7 @@ export default {
   },
   props: {
     task: {
-      type: Object,
+      type: Object as PropType<GrindErrandType>,
       default: () => ({})
     }
   },

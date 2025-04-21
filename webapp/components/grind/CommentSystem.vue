@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue';
 import useApiUtil from '@/composables/api_util';
 import { GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables, GetGrindErrandDiscussionsDocument } from '@/graphql/operations/grind.queries';
-import { IGrindErrandDiscussion } from '@/models/grind';
 import CommentForm from './CommentForm.vue';
 import CommentList from './CommentList.vue';
 import { RequestPolicy } from '@urql/vue';
+import { GrindErrandDiscussionType } from '@/types/gql';
 
 interface Props {
     errandUid: string;
@@ -15,9 +15,9 @@ const props = defineProps<Props>();
 const { withClientQuery } = useApiUtil();
 
 // Discussions
-const discussions = ref<IGrindErrandDiscussion[]>([]);
-const replyingTo = ref<IGrindErrandDiscussion | null>(null);
-const editingComment = ref<IGrindErrandDiscussion | null>(null);
+const discussions = ref<GrindErrandDiscussionType[]>([]);
+const replyingTo = ref<GrindErrandDiscussionType | null>(null);
+const editingComment = ref<GrindErrandDiscussionType | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
@@ -38,7 +38,7 @@ async function getDiscussions(requestPolicy: RequestPolicy = 'cache-first') {
         );
 
         if (result && typeof result === 'object' && 'grindErrandDiscussions' in result) {
-            discussions.value = result.grindErrandDiscussions as unknown as IGrindErrandDiscussion[];
+            discussions.value = result.grindErrandDiscussions as unknown as GrindErrandDiscussionType[];
         } else {
             error.value = 'Failed to load discussions';
         }
@@ -50,7 +50,7 @@ async function getDiscussions(requestPolicy: RequestPolicy = 'cache-first') {
 }
 
 // Filter top-level comments (no parent)
-function getTopLevelComments(): IGrindErrandDiscussion[] {
+function getTopLevelComments(): GrindErrandDiscussionType[] {
     return discussions.value.filter(d => !d.parentUid);
 }
 
@@ -64,11 +64,11 @@ function handleCommentUpdated() {
     editingComment.value = null;
 }
 
-function setReplyingTo(discussion: IGrindErrandDiscussion | null) {
+function setReplyingTo(discussion: GrindErrandDiscussionType | null) {
     replyingTo.value = discussion;
 }
 
-function setEditingComment(discussion: IGrindErrandDiscussion | null) {
+function setEditingComment(discussion: GrindErrandDiscussionType | null) {
     editingComment.value = discussion;
 }
 </script>

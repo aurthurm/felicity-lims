@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { IGrindErrandDiscussion } from '@/models/grind';
+import { GrindErrandDiscussionType } from '@/types/gql';
 import CommentItem from './CommentItem.vue';
 
 interface Props {
-    comments: IGrindErrandDiscussion[];
-    replyingTo: IGrindErrandDiscussion | null;
-    editingComment: IGrindErrandDiscussion | null;
+    comments: GrindErrandDiscussionType[];
+    replyingTo: GrindErrandDiscussionType | null;
+    editingComment: GrindErrandDiscussionType | null;
     level: number;
     errandUid: string;
 }
@@ -17,17 +17,17 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: 'setReplyingTo', discussion: IGrindErrandDiscussion | null): void;
-    (e: 'setEditingComment', discussion: IGrindErrandDiscussion | null): void;
+    (e: 'setReplyingTo', discussion: GrindErrandDiscussionType | null): void;
+    (e: 'setEditingComment', discussion: GrindErrandDiscussionType | null): void;
     (e: 'commentAdded'): void;
     (e: 'commentUpdated'): void;
 }>();
 
-function handleSetReplyingTo(discussion: IGrindErrandDiscussion | null) {
+function handleSetReplyingTo(discussion: GrindErrandDiscussionType | null) {
     emit('setReplyingTo', discussion);
 }
 
-function handleSetEditingComment(discussion: IGrindErrandDiscussion | null) {
+function handleSetEditingComment(discussion: GrindErrandDiscussionType | null) {
     emit('setEditingComment', discussion);
 }
 

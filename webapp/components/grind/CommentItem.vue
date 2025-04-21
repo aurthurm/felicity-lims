@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { IGrindErrandDiscussion } from '@/models/grind';
+import { GrindErrandDiscussionType } from '@/types/gql';
 import { GetGrindErrandDiscussionsByParentDocument, GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables } from '@/graphql/operations/grind.queries';
 import useApiUtil from '@/composables/api_util';
 import CommentForm from './CommentForm.vue';
 
 interface Props {
-    discussion: IGrindErrandDiscussion & {
+    discussion: GrindErrandDiscussionType & {
         createdBy?: {
             uid: string;
             firstName?: string | null;
@@ -19,12 +19,12 @@ interface Props {
 
 const props = defineProps<Props>();
 const emit = defineEmits<{
-    (e: 'reply', discussion: IGrindErrandDiscussion): void;
-    (e: 'edit', discussion: IGrindErrandDiscussion): void;
+    (e: 'reply', discussion: GrindErrandDiscussionType): void;
+    (e: 'edit', discussion: GrindErrandDiscussionType): void;
 }>();
 
 const { withClientQuery } = useApiUtil();
-const replies = ref<IGrindErrandDiscussion[]>([]);
+const replies = ref<GrindErrandDiscussionType[]>([]);
 const isLoading = ref(false);
 const showReplies = ref(false);
 const showReplyForm = ref(false);
@@ -43,7 +43,7 @@ function fetchReplies() {
         "grindErrandDiscussionsByParent"
     ).then((result) => {
         if (result && typeof result === 'object' && 'grindErrandDiscussionsByParent' in result) {
-            replies.value = result.grindErrandDiscussionsByParent as IGrindErrandDiscussion[];
+            replies.value = result.grindErrandDiscussionsByParent as GrindErrandDiscussionType[];
         }
         isLoading.value = false;
     });

@@ -2,11 +2,11 @@
 import { format } from 'date-fns'
 import { File, Edit, LayoutGrid, List } from 'lucide-vue-next'
 import { useRouter } from 'vue-router';
-import { IDocument } from '@/models/document';
+import { DocumentType } from '@/types/gql';
 import DocumentCard from './DocumentCard.vue'
 import { ref } from 'vue';
 
-defineProps<{documents: IDocument[]}>()
+defineProps<{documents: DocumentType[]}>()
 
 const isCardView = ref(false)
 
@@ -17,7 +17,7 @@ function formatDate(date: Date) {
 // Document Methods
 const router = useRouter()
 
-function handleEdit(document: IDocument) {
+function handleEdit(document: DocumentType) {
   router.push({ name: 'document-editor', params: { documentVersionUid: document?.latestVersion?.uid } });
 }
 

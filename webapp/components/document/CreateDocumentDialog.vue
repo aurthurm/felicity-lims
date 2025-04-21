@@ -4,7 +4,7 @@ import { ChevronDown, Check } from 'lucide-vue-next'
 import { useDocumentStore } from '@/stores/document'
 import useApiUtil from '@/composables/api_util';
 import { AddDocumentDocument, AddDocumentMutation, AddDocumentMutationVariables } from '@/graphql/operations/document.mutations';
-import { IDocument } from '@/models/document';
+import { DocumentType } from '@/types/gql';
 
 interface Props {
   isOpen: boolean;
@@ -79,7 +79,7 @@ async function handleCreateDocument() {
     
     if (response && typeof response === 'object' && 'uid' in response) {
       // Cast to unknown first to satisfy TypeScript
-      const document = response as unknown as IDocument;
+      const document = response as DocumentType;
       store.addDocument(document);
     }
   } catch (error) {

@@ -109,12 +109,12 @@ import {
   Trash 
 } from 'lucide-vue-next'
 import { useDocumentStore } from '@/stores/document'
-import { IDocumentFolder } from '@/models/document';
+import { DocumentFolderType } from '@/types/gql';
 
 // Define props
 const props = defineProps({
   folder: {
-    type: Object as PropType<IDocumentFolder>,
+    type: Object as PropType<DocumentFolderType>,
     required: true,
   },
   level: {

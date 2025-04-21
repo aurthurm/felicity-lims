@@ -83,7 +83,7 @@ import { useDocumentStore } from '@/stores/document'
 import FolderItem from './FolderItem.vue'
 import useApiUtil from '@/composables/api_util';
 import { AddDocumentFolderDocument, AddDocumentFolderMutation, AddDocumentFolderMutationVariables } from '@/graphql/operations/document.mutations';
-import { IDocumentFolder } from '@/models/document';
+import { DocumentFolderType } from '@/types/gql';
 
 const { withClientMutation } = useApiUtil();    
 const store = useDocumentStore()
@@ -122,7 +122,7 @@ async function handleAddFolder() {
     );
     
     if (response && 'uid' in response) {
-      store.addFolder(response as IDocumentFolder);
+      store.addFolder(response as DocumentFolderType);
       
       // If parent folder isn't expanded, expand it
       if (parentFolderId.value) {
@@ -140,7 +140,7 @@ async function handleAddFolder() {
   }
 }
 
-function folderById(uid: string): IDocumentFolder | undefined {
+function folderById(uid: string): DocumentFolderType | undefined {
   return store.folders.find(f => f.uid === uid);
 }
 </script>
