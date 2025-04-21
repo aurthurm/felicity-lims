@@ -1,4 +1,4 @@
-import { IAnalysisResult } from '@/models/analysis';
+import { ExtAnalysisResultType } from '@/types/result';
 import { useSampleStore } from '@/stores/sample';
 import { useWorksheetStore } from '@/stores/worksheet';
 
@@ -67,7 +67,7 @@ export default function useAnalysisComposable() {
     };
 
     // Submit Single Analysis
-    const submitResult = async (result: IAnalysisResult): Promise<void> => {
+    const submitResult = async (result: ExtAnalysisResultType): Promise<void> => {
         if (result.status !== 'pending') {
             toastError('Cannot submit non-pending analysis');
             return;

@@ -2,7 +2,7 @@ import { toRefs, reactive } from 'vue';
 import axios from "@/composables/axios";
 
 import useNotifyToast from './alert_toast';
-import { IReportListing } from '@/models/reports';
+import type { ReportListingType } from '@/types/report';
 
 interface ReportPayload {
     name: string;
@@ -13,7 +13,7 @@ interface ReportPayload {
 const { toastSuccess, toastError, toastWarning, swalConfirm } = useNotifyToast();
 
 const state = reactive({
-    reports: [] as IReportListing[],
+    reports: [] as ReportListingType[],
 });
 
 export default function useAnalyticsComposable() {
@@ -36,7 +36,7 @@ export default function useAnalyticsComposable() {
         }
     };
 
-    const deleteReport = async (report: IReportListing): Promise<void> => {
+    const deleteReport = async (report: ReportListingType): Promise<void> => {
         try {
             const result = await swalConfirm(
                 'Are you sure you want to delete this report?',
@@ -60,7 +60,7 @@ export default function useAnalyticsComposable() {
         }
     };
 
-    const updateReport = (report: IReportListing): void => {
+    const updateReport = (report: ReportListingType): void => {
         try {
             const index = state.reports.findIndex(x => x.uid === report.uid);
             if (index > -1) {

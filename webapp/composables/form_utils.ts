@@ -1,5 +1,4 @@
 import { ref, computed, watch, UnwrapRef } from 'vue';
-import type { Ref, WatchSource } from 'vue';
 
 export interface FormState<T = any> {
     values: UnwrapRef<T>;

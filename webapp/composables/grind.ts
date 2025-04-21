@@ -3,20 +3,20 @@ import useNotifyToast from './alert_toast';
 import { AddGrindErrandDiscussionDocument, AddGrindErrandDiscussionMutation, AddGrindErrandDiscussionMutationVariables } from '@/graphql/operations/grind.mutations';
 import { EditGrindErrandDiscussionDocument, EditGrindErrandDiscussionMutation, EditGrindErrandDiscussionMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables, GetGrindErrandDiscussionsDocument } from '@/graphql/operations/grind.queries';
-import { IGrindErrandDiscussion } from '@/models/grind';
+import type { GrindErrandDiscussionType } from '@/types/gql';
 
 export function useCommentComposable() {
     const { withClientMutation, withClientQuery } = useApiUtil();
     const { toastSuccess, toastError } = useNotifyToast();
 
-    const getDiscussions = async (errandUid: string): Promise<IGrindErrandDiscussion[]> => {
+    const getDiscussions = async (errandUid: string): Promise<GrindErrandDiscussionType[]> => {
         try {
             const result = await withClientQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables>(
                 GetGrindErrandDiscussionsDocument, 
                 { errandUid }, 
                 "grindErrandDiscussions"
             );
-            return result ? (result as IGrindErrandDiscussion[]) : [];
+            return result ? (result as GrindErrandDiscussionType[]) : [];
         } catch (error) {
             toastError(`Failed to fetch discussions: ${error instanceof Error ? error.message : 'Unknown error'}`);
             return [];
@@ -74,15 +74,15 @@ export function useCommentComposable() {
     };
 
     // Helper functions for comments
-    const getTopLevelComments = (discussions: IGrindErrandDiscussion[]): IGrindErrandDiscussion[] => {
+    const getTopLevelComments = (discussions: GrindErrandDiscussionType[]): GrindErrandDiscussionType[] => {
         return discussions.filter(d => !d.parentUid);
     };
 
-    const getReplies = (discussions: IGrindErrandDiscussion[], parentUid: string): IGrindErrandDiscussion[] => {
+    const getReplies = (discussions: GrindErrandDiscussionType[], parentUid: string): GrindErrandDiscussionType[] => {
         return discussions.filter(d => d.parent?.uid === parentUid);
     };
 
-    const isFirstLevelReply = (discussion: IGrindErrandDiscussion): boolean => {
+    const isFirstLevelReply = (discussion: GrindErrandDiscussionType): boolean => {
         return !!discussion.parent && !discussion.parent.parent;
     };
 

@@ -1,5 +1,6 @@
 import { toRefs, reactive, Ref } from 'vue';
-import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom, ITreeData } from '@/models/storage';
+import type { StorageContainerType, StorageSectionType, StoreRoomType, StorageLocationType } from '@/types/gql'
+import type { TreeStateType, TreeNodeType, ActivePathType, ExtStorageLocationType, ExtStorageSectionType, ExtStoreRoomType } from '@/types/storage'
 
 // Define tag constants
 export const TREE_TAGS = {
@@ -13,25 +14,8 @@ export const TREE_TAGS = {
 // Type for tree tags
 export type TreeTag = typeof TREE_TAGS[keyof typeof TREE_TAGS];
 
-// Type for tree node
-export type TreeNode = IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer;
 
-// Type for active path
-export interface IActivePath {
-    room?: string;
-    location?: string;
-    section?: string;
-    container?: string;
-}
-
-// Type for tree state
-export interface ITreeState extends ITreeData {
-    treeData: IStoreRoom[];
-    activePath: IActivePath;
-    activeTree: TreeNode;
-}
-
-const state = reactive<ITreeState>({
+const state = reactive<TreeStateType>({
     treeData: [],
     activePath: {
         room: undefined,
@@ -39,7 +23,7 @@ const state = reactive<ITreeState>({
         section: undefined,
         container: undefined,
     },
-    activeTree: {} as TreeNode,
+    activeTree: {} as TreeNodeType,
 });
 
 export default function useTreeStateComposable() {
@@ -49,13 +33,13 @@ export default function useTreeStateComposable() {
     const activeTree = toRefs(state).activeTree;
 
     // Set tree data
-    const setTree = (treeData: IStoreRoom[]): void => {
+        const setTree = (treeData: StoreRoomType[]): void => {
         state.treeData = treeData;
     };
 
     // Reset active tree state
     const resetActiveTree = (): void => {
-        state.activeTree = {} as TreeNode;
+        state.activeTree = {} as TreeNodeType;
         state.activePath = {
             room: undefined,
             location: undefined,
@@ -65,7 +49,7 @@ export default function useTreeStateComposable() {
     };
 
     // Set active tree node
-    const setActiveTree = (activeTree: TreeNode): void => {
+    const setActiveTree = (activeTree: TreeNodeType): void => {
         state.activeTree = activeTree;
 
         // Update active path based on node type
@@ -104,7 +88,7 @@ export default function useTreeStateComposable() {
     };
 
     // Helper to update tree open state
-    const _openTree = (activeTree: TreeNode): void => {
+    const _openTree = (activeTree: TreeNodeType): void => {
         if (!activeTree.uid) return;
 
         state.treeData = state.treeData.map(room => {
@@ -127,13 +111,13 @@ export default function useTreeStateComposable() {
 
             return {
                 ...room,
-                children: room.children?.map(location => {
+                children: room.children?.map((location: ExtStorageLocationType) => {
                     if (activeTree.tag === TREE_TAGS.STORAGE_LOCATION) {
                         return location.uid === activeTree.uid
                             ? { ...location, isOpen: !location.isOpen }
                             : {
                                   ...location,
-                                  children: location.children?.map(section => ({
+                                  children: location.children?.map((section: ExtStorageSectionType) => ({
                                       ...section,
                                       isOpen: false,
                                   })),
@@ -143,7 +127,7 @@ export default function useTreeStateComposable() {
 
                     return {
                         ...location,
-                        children: location.children?.map(section => {
+                        children: location.children?.map((section: ExtStorageSectionType) => {
                             if (activeTree.tag === TREE_TAGS.STORAGE_SECTION) {
                                 return section.uid === activeTree.uid
                                     ? { ...section, isOpen: !section.isOpen }
@@ -158,12 +142,12 @@ export default function useTreeStateComposable() {
     };
 
     // Add new store room
-    const newStoreRoom = (room: IStoreRoom): void => {
+    const newStoreRoom = (room: StoreRoomType): void => {
         state.treeData.push({ ...room, tag: TREE_TAGS.STORE_ROOM });
     };
 
     // Add new storage location
-    const newStorageLocation = (location: IStorageLocation): void => {
+    const newStorageLocation = (location: StorageLocationType): void => {
         const roomIndex = state.treeData.findIndex(x => x.uid === location.storeRoomUid);
         if (roomIndex >= 0) {
             state.treeData[roomIndex].children = [
@@ -174,7 +158,7 @@ export default function useTreeStateComposable() {
     };
 
     // Add new storage section
-    const newStorageSection = (section: IStorageSection): void => {
+    const newStorageSection = (section: StorageSectionType): void => {
         const roomIndex = state.treeData.findIndex(x => x.uid === section.storageLocation?.storeRoomUid);
         if (roomIndex >= 0) {
             const locationIndex = state.treeData[roomIndex].children?.findIndex(
@@ -190,7 +174,7 @@ export default function useTreeStateComposable() {
     };
 
     // Add new storage container
-    const newStorageContainer = (container: IStorageContainer): void => {
+        const newStorageContainer = (container: StorageContainerType): void => {
         const roomIndex = state.treeData.findIndex(
             x => x.uid === container.storageSection?.storageLocation?.storeRoomUid
         );
@@ -216,23 +200,23 @@ export default function useTreeStateComposable() {
     };
 
     // Get node by path
-    const getNodeByPath = (path: IActivePath): TreeNode | null => {
+    const getNodeByPath = (path: ActivePathType): TreeNodeType | null => {
         if (!path.room) return null;
 
-        const room = state.treeData.find(r => r.uid === path.room);
+        const room = state.treeData.find(r => r.uid === path.room) as ExtStoreRoomType;
         if (!room || !path.location) return room;
 
-        const location = room.children?.find(l => l.uid === path.location);
+        const location = room.children?.find(l => l.uid === path.location) as ExtStorageLocationType;
         if (!location || !path.section) return location;
 
-        const section = location.children?.find(s => s.uid === path.section);
+        const section = location.children?.find(s => s.uid === path.section) as ExtStorageSectionType;
         if (!section || !path.container) return section;
 
         return section.children?.find(c => c.uid === path.container) ?? null;
     };
 
     // Check if node is active
-    const isNodeActive = (node: TreeNode): boolean => {
+    const isNodeActive = (node: TreeNodeType): boolean => {
         switch (node.tag) {
             case TREE_TAGS.STORE_ROOM:
                 return activePath.value.room === node.uid;

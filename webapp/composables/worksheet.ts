@@ -1,5 +1,5 @@
 import useNotifyToast from './alert_toast';
-import type { WorkSheetType } from '@/graphql/schema';
+import type { WorkSheetType } from '@/types/gql';
 import { UpdateWorkSheetDocument, ActionAssignWorsheetDocument } from '@/graphql/operations/worksheet.mutations';
 import useApiUtil from './api_util';
 
