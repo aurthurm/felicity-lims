@@ -1,26 +1,26 @@
-import Swal from 'sweetalert2';
 import { toRefs, computed, reactive } from 'vue';
 import { useSampleStore } from '@/stores/sample';
-import { ISample } from '@/models/analysis';
 import useApiUtil  from './api_util';
 import useNotifyToast from './alert_toast';
 import { CancelSamplesDocument, CancelSamplesMutation, CancelSamplesMutationVariables, CloneSamplesDocument, CloneSamplesMutation, CloneSamplesMutationVariables, InvalidateSamplesDocument, InvalidateSamplesMutation, InvalidateSamplesMutationVariables, PrintSamplesDocument, PrintSamplesMutation, PrintSamplesMutationVariables, PublishSamplesDocument, PublishSamplesMutation, PublishSamplesMutationVariables, ReceiveSamplesDocument, ReceiveSamplesMutation, ReceiveSamplesMutationVariables, ReInstateSamplesDocument, ReInstateSamplesMutation, ReInstateSamplesMutationVariables, RejectSamplesDocument, RejectSamplesMutation, RejectSamplesMutationVariables, VerifySamplesDocument, VerifySamplesMutation, VerifySamplesMutationVariables } from '@/graphql/operations/analyses.mutations';
 import { RecoverSamplesDocument, RecoverSamplesMutation, RecoverSamplesMutationVariables, StoreSamplesDocument, StoreSamplesMutation, StoreSamplesMutationVariables } from '@/graphql/operations/storage.mutations';
 import { BarcodeSamplesDocument, BarcodeSamplesQuery, BarcodeSamplesQueryVariables, ImpressSampleReportDocument, ImpressSampleReportQuery, ImpressSampleReportQueryVariables, ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables } from '@/graphql/operations/analyses.queries';
+import { Maybe, SampleRejectInputType, SampleType, StoreSamplesInputType } from '@/types/gql';
+
 
 export default function useSampleComposable() {
     const sampleStore = useSampleStore();
     const { withClientMutation, withClientQuery } = useApiUtil();
-    const { toastInfo } = useNotifyToast();
+    const { toastSuccess, toastError, toastInfo, swalConfirm } = useNotifyToast();
 
     const state = reactive({
         samples: computed(() => sampleStore.getSamples),
     });
 
-    const _updateSamplesStatus = async (samples: ISample[]) => sampleStore.updateSamplesStatus(samples);
-    const _updateSampleStatus = async (sample: ISample) => sampleStore.updateSampleStatus(sample);
-    const _updateSamples = async (samples: ISample[]) => sampleStore.updateSamples(samples);
-    const _addSampleClones = async (samples: ISample[]) => sampleStore.addSampleClones(samples);
+    const _updateSamplesStatus = async (samples: SampleType[]) => sampleStore.updateSamplesStatus(samples);
+    const _updateSampleStatus = async (sample: SampleType) => sampleStore.updateSampleStatus(sample);
+    const _updateSamples = async (samples: Array<SampleType>) => sampleStore.updateSamples(samples);
+    const _addSampleClones = async (samples: Array<SampleType>) => sampleStore.addSampleClones(samples);
 
     const _fetchAnalysesResultsFor = async (uid: number) => {
         if (!uid) return;
@@ -28,380 +28,391 @@ export default function useSampleComposable() {
     };
 
     // CANCEL_SAMPLES
-    const cancelSamples = async (uids: string[]) => {
+    const cancelSamples = async (uids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to cancel these samples',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, cancel now!',
-                cancelButtonText: 'No, do not cancel!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<CancelSamplesMutation, CancelSamplesMutationVariables>(CancelSamplesDocument, { samples: uids }, 'cancelSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                        _updateSampleStatus(resp.samples[0]);
-                        if (resp.samples.length !== 1) return;
-                        _fetchAnalysesResultsFor(resp.samples[0].uid);
-                    });
+            const result = await swalConfirm(
+                'You want to cancel these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your samples have been cancelled.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<CancelSamplesMutation, CancelSamplesMutationVariables>(
+                    CancelSamplesDocument, 
+                    { samples: uids }, 
+                    'cancelSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamplesStatus(response.samples);
+                    _updateSampleStatus(response.samples[0]);
+                    if (response.samples.length === 1) {
+                        _fetchAnalysesResultsFor(response.samples[0].uid);
+                    }
+                    toastSuccess('Samples have been cancelled successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to cancel samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     // CLONE_SAMPLES
-    const cloneSamples = async (uids: string[]) => {
+    const cloneSamples = async (uids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to clone these samples',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, clone now!',
-                cancelButtonText: 'No, do not clone!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(CloneSamplesDocument, { samples: uids }, 'cloneSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _addSampleClones(resp.samples);
-                    });
+            const result = await swalConfirm(
+                'You want to clone these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Processing in the background...', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(
+                    CloneSamplesDocument, 
+                    { samples: uids }, 
+                    'cloneSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _addSampleClones(response.samples);
+                    toastSuccess('Samples have been cloned successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to clone samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     // REINSTATE_SAMPLES
-    const reInstateSamples = async (uids: string[]) => {
+    const reInstateSamples = async (uids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to reinstate samples',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, reinstate now!',
-                cancelButtonText: 'No, do not reinstate!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<ReInstateSamplesMutation, ReInstateSamplesMutationVariables>(ReInstateSamplesDocument, { samples: uids }, 'reInstateSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                        _updateSampleStatus(resp.samples[0]);
-                        if (resp.samples.length !== 1) return;
-                        _fetchAnalysesResultsFor(resp.samples[0].uid);
-                    });
+            const result = await swalConfirm(
+                'You want to reinstate samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your samples have been reinstated.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<ReInstateSamplesMutation, ReInstateSamplesMutationVariables>(
+                    ReInstateSamplesDocument, 
+                    { samples: uids }, 
+                    'reInstateSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamplesStatus(response.samples);
+                    _updateSampleStatus(response.samples[0]);
+                    if (response.samples.length === 1) {
+                        _fetchAnalysesResultsFor(response.samples[0].uid);
+                    }
+                    toastSuccess('Samples have been reinstated successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to reinstate samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     // RECEIVE_SAMPLES
-    const receiveSamples = async (uids: string[]) => {
+    const receiveSamples = async (uids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to receive samples',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, receice now!',
-                cancelButtonText: 'No, do not receive!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<ReceiveSamplesMutation, ReceiveSamplesMutationVariables>(ReceiveSamplesDocument, { samples: uids }, 'receiveSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                        _updateSampleStatus(resp.samples[0]);
-                        if (resp.samples.length !== 1) return;
-                        _fetchAnalysesResultsFor(resp.samples[0].uid);
-                    });
+            const result = await swalConfirm(
+                'You want to receive samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your samples have been received.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<ReceiveSamplesMutation, ReceiveSamplesMutationVariables>(
+                    ReceiveSamplesDocument, 
+                    { samples: uids }, 
+                    'receiveSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamplesStatus(response.samples);
+                    _updateSampleStatus(response.samples[0]);
+                    if (response.samples.length === 1) {
+                        _fetchAnalysesResultsFor(response.samples[0].uid);
+                    }
+                    toastSuccess('Samples have been received successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to receive samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
-    // RECOVER
-    const recoverSamples = async (sampleUids: string[]) => {
+    // RECOVER_SAMPLES
+    const recoverSamples = async (sampleUids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to recover these samples from storage',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, recover now!',
-                cancelButtonText: 'No, do not recover!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<RecoverSamplesMutation, RecoverSamplesMutationVariables>(RecoverSamplesDocument, { sampleUids }, 'recoverSamples').then(resp => {
-                        if (resp.length <= 0) return;
-                        _updateSamples(resp.samples);
-                        if (resp.samples.length !== 1) return;
-                        _fetchAnalysesResultsFor(resp.samples[0].uid);
-                    });
+            const result = await swalConfirm(
+                'You want to recover these samples from storage',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your samples have been recovered.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<RecoverSamplesMutation, RecoverSamplesMutationVariables>(
+                    RecoverSamplesDocument, 
+                    { sampleUids }, 
+                    'recoverSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamples(response.samples);
+                    if (response.samples.length === 1) {
+                        _fetchAnalysesResultsFor(response.samples[0].uid);
+                    }
+                    toastSuccess('Samples have been recovered successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to recover samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     // PUBLISH_SAMPLES
-    const publishSamples = async (samples: any[]) => {
+    const publishSamples = async (samples: Array<SampleType>): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to publish samples',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, publish now!',
-                cancelButtonText: 'No, do not publish!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(PublishSamplesDocument, { samples }, 'publishSamples').then(resp => {
-                        toastInfo(resp.message);
-                    });
+            const result = await swalConfirm(
+                'You want to publish samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your sample were submitted for impress', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(
+                    PublishSamplesDocument, 
+                    { samples }, 
+                    'publishSamples'
+                );
+
+                if (response?.message) {
+                    toastSuccess(response.message);
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to publish samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     // DOWNLOAD_IMPRESS by SAMPLES
-    const downloadSamplesImpress = async (sampleIds: string[]) => {
+    const downloadSamplesImpress = async (sampleIds: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to download pdfs',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, download now!',
-                cancelButtonText: 'No, do not download!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(ImpressSampleReportDocument, { sampleIds }, 'impressReportsDownload').then(resp => {
-                        const tempLink = document.createElement('a');
-                        tempLink.href = `data:application/pdf;base64,${resp}`;
-                        tempLink.setAttribute('download', 'impress-report.pdf');
-                        tempLink.click();
-                    });
+            const result = await swalConfirm(
+                'You want to download PDFs',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Downloading .....', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(
+                    ImpressSampleReportDocument, 
+                    { sampleIds }, 
+                    'impressReportsDownload'
+                );
+
+                if (response) {
+                    const tempLink = document.createElement('a');
+                    tempLink.href = `data:application/pdf;base64,${response}`;
+                    tempLink.setAttribute('download', 'impress-report.pdf');
+                    tempLink.click();
+                    toastSuccess('Reports downloaded successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to download reports: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     // DOWNLOAD_IMPRESS
-    const downloadImpress = async impressUid => {
+    const downloadImpress = async (impressUid: string): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to download this report',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, download now!',
-                cancelButtonText: 'No, do not download!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables>(ImpressSampleReportDocument, { impressUid }, 'impressReportDownload').then(resp => {
-                        const tempLink = document.createElement('a');
-                        tempLink.href = `data:application/pdf;base64,${resp}`;
-                        tempLink.setAttribute('download', 'impress-report.pdf');
-                        tempLink.click();
-                    });
+            const result = await swalConfirm(
+                'You want to download this report',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Downloading .....', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables>(
+                    ImpressSampleReportDocument, 
+                    { impressUid }, 
+                    'impressReportDownload'
+                );
+
+                if (response) {
+                    const tempLink = document.createElement('a');
+                    tempLink.href = `data:application/pdf;base64,${response}`;
+                    tempLink.setAttribute('download', 'impress-report.pdf');
+                    tempLink.click();
+                    toastSuccess('Report downloaded successfully');
                 }
-            });
-        } catch (error) {}
-    };    
+            }
+        } catch (error) {
+            toastError(`Failed to download report: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    };
 
-    const barcodeSamples = async (sampleUids: string[]) => {
-        let data = [];
+    const barcodeSamples = async (sampleUids: string[]): Promise<"Query" | Maybe<never[]> | undefined> => {
         try {
-            await withClientQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables>(BarcodeSamplesDocument, { sampleUids }, 'barcodeSamples')
-            .then(resp => (data = resp));
-        } catch (error) {}
-        return data
+            const response = await withClientQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables>(
+                BarcodeSamplesDocument, 
+                { sampleUids }, 
+                'barcodeSamples'
+            );
+            return response || [];
+        } catch (error) {
+            toastError(`Failed to generate barcodes: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            return [];
+        }
     };
 
     // PRINT_SAMPLES
-    const printSamples = async (uids: string[]) => {
+    const printSamples = async (uids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to flag as printed',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, flag now!',
-                cancelButtonText: 'No, do not flag!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<PrintSamplesMutation, PrintSamplesMutationVariables>(PrintSamplesDocument, { samples: uids }, 'printSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                        _updateSampleStatus(resp.samples[0]);
-                        if (resp.samples.length !== 1) return;
-                        _fetchAnalysesResultsFor(resp.samples[0].uid);
-                    });
+            const result = await swalConfirm(
+                'You want to print these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your sample have been marked as printed.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<PrintSamplesMutation, PrintSamplesMutationVariables>(
+                    PrintSamplesDocument, 
+                    { samples: uids }, 
+                    'printSamples'
+                );
+
+                if (response?.message) {
+                    toastSuccess(response.message);
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to print samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
-    // verify sample(s) incase it did not auto transition
-    const verifySamples = async (uids: string[]) => {
+    // VERIFY_SAMPLES
+    const verifySamples = async (uids: string[]): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to verify sample',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, verify now!',
-                cancelButtonText: 'No, do not verify!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<VerifySamplesMutation, VerifySamplesMutationVariables>(VerifySamplesDocument, { samples: uids }, 'verifySamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                        _updateSampleStatus(resp.samples[0]);
-                    });
+            const result = await swalConfirm(
+                'You want to verify these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your sample have been verified.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<VerifySamplesMutation, VerifySamplesMutationVariables>(
+                    VerifySamplesDocument, 
+                    { samples: uids }, 
+                    'verifySamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamplesStatus(response.samples);
+                    _updateSampleStatus(response.samples[0]);
+                    if (response.samples.length === 1) {
+                        _fetchAnalysesResultsFor(response.samples[0].uid);
+                    }
+                    toastSuccess('Samples have been verified successfully');
                 }
-            });
-        } catch (error) {}
+            }
+        } catch (error) {
+            toastError(`Failed to verify samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
-    // reject sample(s)
-    const rejectSamples = async (samples: any[]) => {
-        let rejected = false;
+    // REJECT_SAMPLES
+    const rejectSamples = async (samples: Array<SampleRejectInputType>): Promise<void> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to invalidate sample',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Reject  now!',
-                cancelButtonText: 'No, do not reject!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<RejectSamplesMutation, RejectSamplesMutationVariables>(RejectSamplesDocument, { samples }, 'rejectSamples').then(resp => {
-                        rejected = true;
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                    });
+            const result = await swalConfirm(
+                'You want to reject these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your sample(s) have been rejected.', 'success').then(_ => {}); // router.push({ name: "samples-listing" })
+            if (result.isConfirmed) {
+                const response = await withClientMutation<RejectSamplesMutation, RejectSamplesMutationVariables>(
+                    RejectSamplesDocument, 
+                    { samples }, 
+                    'rejectSamples'
+                );
+
+                if (response?.message) {
+                    toastSuccess(response.message);
                 }
-            });
-        } catch (error) {}
-        return rejected;
+            }
+        } catch (error) {
+            toastError(`Failed to reject samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
-    // invalidate sample
-    const invalidateSamples = async (uids: string[]): Promise<ISample[]> => {
-        let invalidated: ISample[] = [];
+    // INVALIDATE_SAMPLES
+    const invalidateSamples = async (uids: string[]): Promise<Array<SampleType>> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to invalidate sample',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, invalidate now!',
-                cancelButtonText: 'No, do not invalidate!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<InvalidateSamplesMutation, InvalidateSamplesMutationVariables>(InvalidateSamplesDocument, { samples: uids }, 'invalidateSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                        _updateSampleStatus(resp.samples[0]);
-                    });
+            const result = await swalConfirm(
+                'You want to invalidate these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your sample(s) have been invalidated.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<InvalidateSamplesMutation, InvalidateSamplesMutationVariables>(
+                    InvalidateSamplesDocument, 
+                    { samples: uids }, 
+                    'invalidateSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamplesStatus(response.samples);
+                    _updateSampleStatus(response.samples[0]);
+                    if (response.samples.length === 1) {
+                        _fetchAnalysesResultsFor(response.samples[0].uid);
+                    }
+                    toastSuccess('Samples have been invalidated successfully');
+                    return response.samples;
                 }
-            });
-        } catch (error) {}
-        return invalidated;
+            }
+            return [];
+        } catch (error) {
+            toastError(`Failed to invalidate samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            return [];
+        }
     };
 
-    // store samples
-    const storeSamples = async (storageParams): Promise<ISample[]> => {
-        let stored: ISample[] = [];
+    // STORE_SAMPLES
+    const storeSamples = async (params: Array<StoreSamplesInputType>): Promise<Array<SampleType>> => {
         try {
-            await Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to store these samples',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, store now!',
-                cancelButtonText: 'No, do not store!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    withClientMutation<StoreSamplesMutation, StoreSamplesMutationVariables>(StoreSamplesDocument, { payload: storageParams }, 'storeSamples').then(resp => {
-                        if (resp.samples.length <= 0) return;
-                        _updateSamplesStatus(resp.samples);
-                    });
+            const result = await swalConfirm(
+                'You want to store these samples',
+                'Are you sure?'
+            );
 
-                    await Swal.fire('Its Happening!', 'Your sample(s) have been added to storage.', 'success').then(_ => {});
+            if (result.isConfirmed) {
+                const response = await withClientMutation<StoreSamplesMutation, StoreSamplesMutationVariables>(
+                    StoreSamplesDocument, 
+                    { payload: params }, 
+                    'storeSamples'
+                );
+
+                if (response?.samples?.length > 0) {
+                    _updateSamples(response.samples);
+                    toastSuccess('Samples have been stored successfully');
+                    return response.samples;
                 }
-            });
-        } catch (error) {}
-        return stored;
+            }
+            return [];
+        } catch (error) {
+            toastError(`Failed to store samples: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            return [];
+        }
     };
 
     return {
         ...toRefs(state),
         cancelSamples,
+        cloneSamples,
         reInstateSamples,
         receiveSamples,
         recoverSamples,
-        verifySamples,
-        printSamples,
         publishSamples,
         downloadSamplesImpress,
         downloadImpress,
         barcodeSamples,
-        invalidateSamples,
+        printSamples,
+        verifySamples,
         rejectSamples,
-        storeSamples,
-        cloneSamples,
+        invalidateSamples,
+        storeSamples
     };
-}
+}   

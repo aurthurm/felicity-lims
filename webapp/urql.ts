@@ -4,8 +4,6 @@ import {
     fetchExchange,
     errorExchange,
     subscriptionExchange,
-    CombinedError,
-    Operation,
     Exchange,
 } from '@urql/vue';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
@@ -24,10 +22,10 @@ const subscriptionClient = new SubscriptionClient(WS_BASE_URL, {
         const authData = getAuthData();
         return {
             headers: {
-                ...(authData?.auth?.token && {
+                ...(authData?.token && {
                     'x-felicity-user-id': 'felicity-user-x',
                     'x-felicity-role': 'felicity-role-x',
-                    Authorization: `Bearer ${authData?.auth?.token}`,
+                    Authorization: `Bearer ${authData?.token}`,
                 }),
             },
         };
@@ -86,8 +84,8 @@ export const urqlClient = createClient({
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-                ...(authData?.auth?.token && {
-                    Authorization: `Bearer ${authData?.auth?.token}`,
+                ...(authData?.token && {
+                    Authorization: `Bearer ${authData?.token}`,
                 }),
             },
         };

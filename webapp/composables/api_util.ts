@@ -1,10 +1,11 @@
 import { urqlClient } from '@/urql';
 import { TypedDocumentNode } from '@urql/core';
 import { AnyVariables, CombinedError } from '@urql/core';
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 import { RequestPolicy } from '@urql/vue';
 import useNotifyToast from './alert_toast';
-import { STORAGE_AUTH_KEY } from '@/conf';
+import { authLogout } from '@/auth';
+
 // Define clear interfaces for different types of responses
 interface OperationError {
   __typename: 'OperationError';
@@ -34,29 +35,31 @@ interface GraphQLErrorContext {
 }
 
 // Global Access
-const errors = ref<any[]>([]);
+const errors: Ref<any[]> = ref([]);
+
 export default function useApiUtil() {
   // Reactive error and message tracking with proper typing
-  const messages = ref<OperationSuccess[]>([]);
+  const messages: Ref<OperationSuccess[]> = ref([]);
   const { toastInfo, toastError, swalError } = useNotifyToast();
 
-  const addError = (err: any): void  => {
-    errors.value.unshift(err)
+  const addError = (err: any): void => {
+    errors.value.unshift(err);
   };
 
   const clearErrors = (): void => {
     errors.value = [];
-  }
+  };
 
   /**
    * Comprehensive error handler for GraphQL operations
    * @param error - The error object from GraphQL operation
    */
-  const gqlErrorHandler = (error: GraphQLErrorContext | CombinedError) => {
+  const gqlErrorHandler = (error: GraphQLErrorContext | CombinedError): void => {
     // Network errors
     if ('networkError' in error && error.networkError) {
-      errors.value.unshift(error.networkError.message);
-      toastError(error.networkError.message);
+      const errorMessage = error.networkError.message || 'Unknown network error';
+      errors.value.unshift(errorMessage);
+      toastError(errorMessage);
       swalError('Network Error: Please check your connection and try again.');
     }
 
@@ -65,12 +68,15 @@ export default function useApiUtil() {
       const uniqueErrors = new Set<string>();
       
       error.graphQLErrors.forEach(err => {
-        uniqueErrors.add(err.message);
-        if(err.message == "Only accessible to authenticated users"){
-          localStorage.removeItem(STORAGE_AUTH_KEY);
+        const message = err.message || 'Unknown GraphQL error';
+        uniqueErrors.add(message);
+        
+        if (message === "Only accessible to authenticated users") {
+          authLogout();
           setTimeout(() => location.reload(), 3000);
-          toastInfo("You are being redirected to re-login...")
+          toastInfo("You are being redirected to re-login...");
         }
+        
         // Optional: log extended error information
         if (err.extensions) {
           console.error('GraphQL Error Details:', err.extensions);
@@ -82,7 +88,6 @@ export default function useApiUtil() {
         toastError(errorMessage);
       });
     }
-    //
   };
 
   /**
@@ -118,11 +123,12 @@ export default function useApiUtil() {
       throw new Error(result.error);
     }
 
-    if (["MessagesType", "OperationSuccess"].includes(result?.__typename as string)) {
+    if (result?.__typename === 'OperationSuccess' || result?.__typename === 'MessagesType') {
       const successResult = result as OperationSuccess;
       messages.value.unshift(successResult);
       toastInfo(successResult.message);
     }
+    
     return payload;
   };
 
@@ -150,6 +156,7 @@ export default function useApiUtil() {
    * @param variables - Query variables
    * @param dataKey - Optional key to extract from response
    * @param requestPolicy - Caching policy
+   * @returns Promise with query result
    */
   async function withClientQuery<TData extends Record<string, any>, TVariables extends AnyVariables>(
     query: TypedDocumentNode<TData, TVariables>,
@@ -175,19 +182,26 @@ export default function useApiUtil() {
    * @param mutation - The GraphQL mutation document
    * @param variables - Mutation variables
    * @param dataKey - Optional key to extract from response
+   * @returns Promise with mutation result
    */
   async function withClientMutation<TData extends Record<string, any>, TVariables extends AnyVariables>(
     mutation: TypedDocumentNode<TData, TVariables>,
     variables: TVariables,
     dataKey?: keyof TData
-  ): Promise<TData[keyof TData] | undefined> {
+  ): Promise<any> {
     try {
       const result = await urqlClient
         .mutation(mutation, variables)
         .toPromise();
 
-      const data = GQLResponseInterceptor<TData>(result, dataKey);
-      return dataKey ? (data[dataKey] as TData[keyof TData]) : (data as unknown as TData[keyof TData]);
+      // Handle the case where dataKey is provided
+      if (dataKey) {
+        const data = GQLResponseInterceptor<TData>(result, dataKey);
+        return data[dataKey];
+      }
+      
+      // Return the full data object when no dataKey is provided
+      return GQLResponseInterceptor<TData>(result);
     } catch (error) {
       gqlErrorHandler(error as GraphQLErrorContext);
       throw error;

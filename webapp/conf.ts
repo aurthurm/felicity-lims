@@ -1,6 +1,6 @@
 // Authentication configuration
 export const STORAGE_AUTH_KEY = '__fel_lis__';
-export const ENCRYPT_AUTH_KEY = 'felicity';
+export const ENCRYPT_AUTH_KEY = import.meta.env.VITE_AUTH_ENCRYPT_KEY || 'felicity';
 
 // API endpoints
 export const REST_BASE_URL = import.meta.env.VITE_BASE_URL || '';

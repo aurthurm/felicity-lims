@@ -1,57 +1,57 @@
-import Swal from 'sweetalert2';
+import useNotifyToast from './alert_toast';
+import type { WorkSheetType } from '@/graphql/schema';
+import { UpdateWorkSheetDocument, ActionAssignWorsheetDocument } from '@/graphql/operations/worksheet.mutations';
+import useApiUtil from './api_util';
 
-import useApiUtil  from './api_util';
-import { ActionAssignWorsheetDocument, ActionAssignWorsheetMutation, ActionAssignWorsheetMutationVariables, UpdateWorkSheetDocument, UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables } from '@/graphql/operations/worksheet.mutations';
+export function useWorksheet() {
+  const { swalConfirm, toastSuccess, toastError } = useNotifyToast();
+  const { withClientMutation } = useApiUtil();
 
-export default function useWorkSheetComposable() {
-    const { withClientMutation } = useApiUtil();
+  const unAssignSamples = async (worksheet: WorkSheetType) => {
+    try {
+      const confirmed = await swalConfirm('Are you sure you want to unassign all samples from this worksheet?');
+      if (!confirmed.isConfirmed) return;
 
-    // unAssign Analyses
-    const unAssignSamples = async (uids: string[]) => {
-        try {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You want to Un-Assign these analyses',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Un-Assign now!',
-                cancelButtonText: 'No, cancel UnAssign!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    await withClientMutation<UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables>(UpdateWorkSheetDocument, uids, 'updateWorksheet').then(payload => {});
-                    Swal.fire('Its Happening!', 'Selected analyses have been UnAssigned.', 'success').then(_ => location.reload());
-                }
-            });
-        } catch (error) {}
-    };   
-    
-    // unAssign Analyses
-    const actionWorksheets = async (uids: string[], action: "approve" | "submit") => {
-        try {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: `You want to ${action} the worksheet${uids.length > 1 ? 's' : ''}`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: `Yes, ${action} now!`,
-                cancelButtonText: `No, cancel ${action}!`,
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    await withClientMutation<ActionAssignWorsheetMutation, ActionAssignWorsheetMutationVariables>(ActionAssignWorsheetDocument, {uids, action}, 'actionWorksheets')
-                    .then(payload => {
-                        // location.reload();
-                    });
-                }
-            });
-        } catch (error) {}
-    };
+      await withClientMutation(
+        UpdateWorkSheetDocument,
+        {
+          worksheetUid: worksheet.uid,
+          action: 'unassign',
+          samples: []
+        },
+        'updateWorksheet'
+      );
 
-    return {
-        unAssignSamples,
-        actionWorksheets
-    };
+      toastSuccess('Successfully unassigned samples from worksheet');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to unassign samples';
+      toastError(errorMessage);
+    }
+  };
+
+  const submitWorksheets = async (worksheets: WorkSheetType[]) => {
+    try {
+      const confirmed = await swalConfirm('Are you sure you want to submit these worksheets?');
+      if (!confirmed.isConfirmed) return;
+
+      await withClientMutation(
+        ActionAssignWorsheetDocument,
+        {
+          uids: worksheets.map(ws => ws.uid),
+          action: 'submit'
+        },
+        'actionWorksheets'
+      );
+
+      toastSuccess('Successfully submitted worksheets');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit worksheets';
+      toastError(errorMessage);
+    }
+  };
+
+  return {
+    unAssignSamples,
+    submitWorksheets,
+  };
 }
