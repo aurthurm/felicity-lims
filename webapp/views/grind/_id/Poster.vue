@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useApiUtil from '@/composables/api_util'
 import {  AddGrindErrandDocument, AddGrindErrandMutation, AddGrindErrandMutationVariables, EditGrindErrandDocument, EditGrindErrandMutation, EditGrindErrandMutationVariables } from '@/graphql/operations/grind.mutations'
-import { ErrandCategory, GrindErrandType} from '@/graphql/schema'
-import { GrindErrandType, GrindPosterType } from '@/types/gql'
+import { GrindErrandType, GrindPosterType  } from '@/types/gql'
+import { ErrandCategory } from '@/graphql/schema'
 import { formatDate, resetForm, stringToColor, getUserInitials } from '@/utils'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { PropType, reactive, ref } from 'vue'

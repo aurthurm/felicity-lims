@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useApiUtil from '@/composables/api_util'
 import { AddGrindPosterMutation, AddGrindPosterMutationVariables, AddGrindPosterDocument } from '@/graphql/operations/grind.mutations'
-import { GrindPosterType, PosterCategory } from '@/types/gql'
+import { PosterCategory } from '@/graphql/schema'
+import type { GrindPosterType } from '@/types/gql'
 import { resetForm } from '@/utils'
 import { defineAsyncComponent, PropType, reactive, ref, watch } from 'vue'
 const Poster = defineAsyncComponent(() => import("./Poster.vue"))

@@ -13,12 +13,6 @@ import { GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables, Ge
 import { AbxASTPanelType, AbxASTResultType, AbxGuidelineYearType, AbxOrganismResultType, AbxTestMethodType } from "@/types/gql";
 import { ApplyAbxAstPanelDocument, ApplyAbxAstPanelMutation, ApplyAbxAstPanelMutationVariables, UpdateAbxAstResultsDocument, UpdateAbxAstResultsMutation, UpdateAbxAstResultsMutationVariables } from "@/graphql/operations/microbiology.mutations";
 
-const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-)
-const fel-button = defineAsyncComponent(
-  () => import("@/components/ui/buttons/fel-button.vue")
-)
 
 const {
   sample,

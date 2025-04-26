@@ -1,0 +1,1 @@
+import{S as o,r as t,o as n,c,a as s,_}from"./index-54016222.js";const r={class:"min-h-screen bg-background"},a=o({__name:"Document",setup(i){return(m,u)=>{const e=t("router-view");return n(),c("div",r,[s(e)])}}});const l=_(a,[["__file","/Users/admin/Documents/Development/felicity/felicity-lims/webapp/views/document/_id/Document.vue"]]);export{l as default};
