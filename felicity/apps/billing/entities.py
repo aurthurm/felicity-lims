@@ -124,7 +124,7 @@ test_bill_item = Table(
 class TestBill(BaseEntity):
     __tablename__ = "test_bill"
 
-    bill_id = Column(String, nullable=False)
+    bill_id = Column(String, index=True, unique=True, nullable=False)
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
     patient = relationship("Patient", lazy="selectin")
     client_uid = Column(String, ForeignKey("client.uid"), nullable=True)

@@ -8,6 +8,7 @@ import {
     GetVoucherByUidDocument, GetVoucherByUidQueryVariables, GetVoucherByUidQuery,
     GetVoucherCodesDocument, GetVoucherCodesQueryVariables, GetVoucherCodesQuery,
     GetBillsForPatientDocument, GetBillsForPatientQueryVariables, GetBillsForPatientQuery,
+    GetBillsForClientDocument, GetBillsForClientQueryVariables, GetBillsForClientQuery,
     GetBillTransactionsDocument, GetBillTransactionsQueryVariables, GetBillTransactionsQuery,
 } from '@/graphql/operations/billing.queries'
 
@@ -359,7 +360,33 @@ export const useBillingStore = defineStore('billing', {
                 this.fetchingBills = false;
             }
         },
-        
+
+        async fetchBillsForClient(clientUid: string): Promise<void> {
+            if (!clientUid) {
+                console.error('Invalid client UID provided to fetchBillsForClient');
+                return;
+            }
+
+            try {
+                this.fetchingBills = true;
+                const result = await withClientQuery<GetBillsForClientQuery, GetBillsForClientQueryVariables>(
+                    GetBillsForClientDocument,
+                    { clientUid },
+                    'billsForClient'
+                );
+
+                if (result && Array.isArray(result)) {
+                    this.bills = result as unknown as TestBillType[];
+                } else {
+                    console.error('Invalid bills data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching bills for client:', error);
+            } finally {
+                this.fetchingBills = false;
+            }
+        },
+
         // Transactions
         async fetchBillTransactions(billUid: string): Promise<void> {
             if (!billUid) {

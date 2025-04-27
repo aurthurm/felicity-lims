@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.common.utils.serializer import marshaller
 import strawberry  # noqa
 
 from felicity.api.gql.client.types import ClientType, ClientContactType
@@ -121,6 +123,10 @@ class AnalysisRequestType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
+    
+    @strawberry.field
+    async def samples(self, info) -> List["SampleType"]:
+        return await SampleService().get_all(analysis_request_uid=self.uid)
 
     @strawberry.field
     async def client(self, info) -> ClientType | None:

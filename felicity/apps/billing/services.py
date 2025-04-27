@@ -116,7 +116,7 @@ class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
     ) -> "TestBill":
         data = self._import(obj_in)
         data["bill_id"] = (
-            await self.id_sequence_service.get_next_number(prefix="X", generic=True)
+            await self.id_sequence_service.get_next_number(prefix="RB", generic=True, commit=commit, session=session)
         )[1]
         return await super().create(data, related, commit=commit, session=session)
 
@@ -128,6 +128,8 @@ class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
         if all(t.processed for t in transactions) and bill.partial == False:
             await self.update(test_bill_uid, {"to_confirm": False})
 
+    async def get_for_client(self, client_uid: str) -> list[TestBill]:
+        return await self.get_all(client_uid=client_uid)
 
 class TestBillTransactionService(
     BaseService[

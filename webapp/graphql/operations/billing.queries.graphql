@@ -160,6 +160,30 @@ query getBillsForPatient($patientUid: String!) {
     } 
 }
 
+query getBillsForClient($clientUid: String!) {
+    billsForClient(clientUid: $clientUid) {
+        uid
+        billId
+        patientUid
+        clientUid
+        client {
+            name
+        }
+        isActive
+        toConfirm
+        partial
+        totalCharged
+        totalPaid
+        orders {
+            uid
+            requestId
+            clientRequestId
+        }
+        createdAt
+        updatedAt
+    }
+}
+
 query getBillTransactions($billUid: String!) {
     billTransactions(billUid: $billUid) {
         uid
@@ -179,3 +203,40 @@ query impressBillingReport($billUid: String!) {
     billInvoiceCreate(billUid: $billUid)
 }
 
+query getOrdersByBillUid($uid: String!) {
+    ordersByBillUid(uid: $uid) {
+        uid
+        clientRequestId
+        requestId
+        createdAt
+        patient {
+            uid
+            firstName
+            lastName
+            clientPatientId
+            gender
+            dateOfBirth
+            age
+            ageDobEstimated
+            consentSms
+        }
+        samples {
+            uid
+            sampleType {
+                name
+            }
+            sampleId
+            priority
+            status
+            analyses {
+                uid
+                name
+                sortKey
+            }
+            profiles {
+                uid
+                name
+            }
+        }
+    }
+}

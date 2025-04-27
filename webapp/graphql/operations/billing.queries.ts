@@ -128,6 +128,26 @@ export type GetBillsForPatientQuery = (
   )>> }
 );
 
+export type GetBillsForClientQueryVariables = Types.Exact<{
+  clientUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetBillsForClientQuery = (
+  { __typename?: 'Query' }
+  & { billsForClient?: Types.Maybe<Array<(
+    { __typename?: 'TestBillType' }
+    & Pick<Types.TestBillType, 'uid' | 'billId' | 'patientUid' | 'clientUid' | 'isActive' | 'toConfirm' | 'partial' | 'totalCharged' | 'totalPaid' | 'createdAt' | 'updatedAt'>
+    & { client: (
+      { __typename?: 'ClientType' }
+      & Pick<Types.ClientType, 'name'>
+    ), orders?: Types.Maybe<Array<(
+      { __typename?: 'AnalysisRequestType' }
+      & Pick<Types.AnalysisRequestType, 'uid' | 'requestId' | 'clientRequestId'>
+    )>> }
+  )>> }
+);
+
 export type GetBillTransactionsQueryVariables = Types.Exact<{
   billUid: Types.Scalars['String']['input'];
 }>;
@@ -149,6 +169,36 @@ export type ImpressBillingReportQueryVariables = Types.Exact<{
 export type ImpressBillingReportQuery = (
   { __typename?: 'Query' }
   & Pick<Types.Query, 'billInvoiceCreate'>
+);
+
+export type GetOrdersByBillUidQueryVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetOrdersByBillUidQuery = (
+  { __typename?: 'Query' }
+  & { ordersByBillUid?: Types.Maybe<(
+    { __typename?: 'AnalysisRequestType' }
+    & Pick<Types.AnalysisRequestType, 'uid' | 'clientRequestId' | 'requestId' | 'createdAt'>
+    & { patient: (
+      { __typename?: 'PatientType' }
+      & Pick<Types.PatientType, 'uid' | 'firstName' | 'lastName' | 'clientPatientId' | 'gender' | 'dateOfBirth' | 'age' | 'ageDobEstimated' | 'consentSms'>
+    ), samples: Array<(
+      { __typename?: 'SampleType' }
+      & Pick<Types.SampleType, 'uid' | 'sampleId' | 'priority' | 'status'>
+      & { sampleType?: Types.Maybe<(
+        { __typename?: 'SampleTypeTyp' }
+        & Pick<Types.SampleTypeTyp, 'name'>
+      )>, analyses?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisType' }
+        & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+      )>>, profiles: Array<(
+        { __typename?: 'ProfileType' }
+        & Pick<Types.ProfileType, 'uid' | 'name'>
+      )> }
+    )> }
+  )> }
 );
 
 
@@ -353,6 +403,35 @@ export const GetBillsForPatientDocument = gql`
 export function useGetBillsForPatientQuery(options: Omit<Urql.UseQueryArgs<never, GetBillsForPatientQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetBillsForPatientQuery>({ query: GetBillsForPatientDocument, ...options });
 };
+export const GetBillsForClientDocument = gql`
+    query getBillsForClient($clientUid: String!) {
+  billsForClient(clientUid: $clientUid) {
+    uid
+    billId
+    patientUid
+    clientUid
+    client {
+      name
+    }
+    isActive
+    toConfirm
+    partial
+    totalCharged
+    totalPaid
+    orders {
+      uid
+      requestId
+      clientRequestId
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useGetBillsForClientQuery(options: Omit<Urql.UseQueryArgs<never, GetBillsForClientQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetBillsForClientQuery>({ query: GetBillsForClientDocument, ...options });
+};
 export const GetBillTransactionsDocument = gql`
     query getBillTransactions($billUid: String!) {
   billTransactions(billUid: $billUid) {
@@ -381,4 +460,47 @@ export const ImpressBillingReportDocument = gql`
 
 export function useImpressBillingReportQuery(options: Omit<Urql.UseQueryArgs<never, ImpressBillingReportQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ImpressBillingReportQuery>({ query: ImpressBillingReportDocument, ...options });
+};
+export const GetOrdersByBillUidDocument = gql`
+    query getOrdersByBillUid($uid: String!) {
+  ordersByBillUid(uid: $uid) {
+    uid
+    clientRequestId
+    requestId
+    createdAt
+    patient {
+      uid
+      firstName
+      lastName
+      clientPatientId
+      gender
+      dateOfBirth
+      age
+      ageDobEstimated
+      consentSms
+    }
+    samples {
+      uid
+      sampleType {
+        name
+      }
+      sampleId
+      priority
+      status
+      analyses {
+        uid
+        name
+        sortKey
+      }
+      profiles {
+        uid
+        name
+      }
+    }
+  }
+}
+    `;
+
+export function useGetOrdersByBillUidQuery(options: Omit<Urql.UseQueryArgs<never, GetOrdersByBillUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetOrdersByBillUidQuery>({ query: GetOrdersByBillUidDocument, ...options });
 };

@@ -1012,6 +1012,13 @@ export type GetBillsForPatientQueryVariables = Exact<{
 
 export type GetBillsForPatientQuery = { __typename?: 'Query', billsForPatient?: Array<{ __typename?: 'TestBillType', uid: string, billId: string, patientUid: string, clientUid: string, isActive: boolean, toConfirm: boolean, partial: boolean, totalCharged: number, totalPaid: number, createdAt?: string | null, updatedAt?: string | null, client: { __typename?: 'ClientType', name: string }, orders?: Array<{ __typename?: 'AnalysisRequestType', uid: string, requestId: string, clientRequestId: string }> | null }> | null };
 
+export type GetBillsForClientQueryVariables = Exact<{
+  clientUid: Scalars['String']['input'];
+}>;
+
+
+export type GetBillsForClientQuery = { __typename?: 'Query', billsForClient?: Array<{ __typename?: 'TestBillType', uid: string, billId: string, patientUid: string, clientUid: string, isActive: boolean, toConfirm: boolean, partial: boolean, totalCharged: number, totalPaid: number, createdAt?: string | null, updatedAt?: string | null, client: { __typename?: 'ClientType', name: string }, orders?: Array<{ __typename?: 'AnalysisRequestType', uid: string, requestId: string, clientRequestId: string }> | null }> | null };
+
 export type GetBillTransactionsQueryVariables = Exact<{
   billUid: Scalars['String']['input'];
 }>;
@@ -1025,6 +1032,13 @@ export type ImpressBillingReportQueryVariables = Exact<{
 
 
 export type ImpressBillingReportQuery = { __typename?: 'Query', billInvoiceCreate?: never | null };
+
+export type GetOrdersByBillUidQueryVariables = Exact<{
+  uid: Scalars['String']['input'];
+}>;
+
+
+export type GetOrdersByBillUidQuery = { __typename?: 'Query', ordersByBillUid?: { __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, requestId: string, createdAt?: string | null, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, samples: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> } | null };
 
 export type AddClientMutationVariables = Exact<{
   payload: ClientInputType;

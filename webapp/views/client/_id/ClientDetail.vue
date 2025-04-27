@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, defineAsyncComponent } from "vue";
-import { useClientStore } from "@/stores/client";
+import { computed, defineAsyncComponent } from "vue";
+import { useRoute } from "vue-router"
 
 // Lazy load components
 const tabSamples = defineAsyncComponent(
@@ -12,39 +12,47 @@ const tabContacts = defineAsyncComponent(
 const tabLogs = defineAsyncComponent(
     () => import('@/components/audit/FelAuditLog.vue')
 )
+const tabBills = defineAsyncComponent(
+    () => import("./ClientBill.vue")
+)
 
-// Initialize store
-const clientStore = useClientStore();
-
-// Tab state
-const currentTab = ref("samples");
-const tabs = ["samples", "contacts", "logs"] as const;
-type TabType = typeof tabs[number];
+const route = useRoute()
 
 // Computed properties
-const currentTabComponent = computed(() => "tab-" + currentTab.value);
-const client = computed(() => clientStore.getClient);
+const clientUid = computed(() => route.query?.clientUid);
+
+// Tab state
+const tabs = [
+  {
+    id: "samples",
+    label: "Samples",
+    component: tabSamples,
+    props: { clientUid: clientUid.value }
+  },
+  {
+    id: "contacts",
+    label: "Contacts",
+    component: tabContacts,
+    props: { clientUid: clientUid.value }
+  },
+  {
+    id: "bills",
+    label: "Bills",
+    component: tabBills,
+    props: { clientUid: clientUid.value }
+  },
+  {
+    id: "logs",
+    label: "Logs",
+    component: tabLogs,
+    props: { targetType: "client", targetUid: clientUid.value }
+  }
+];
+
 </script>
 
 <template>
-  <section class="col-span-12">
-    <nav class="bg-background shadow-md mt-2">
-      <div class="-mb-px flex justify-start">
-        <a v-for="tab in tabs" :key="tab" :class="[
-          'tab no-underline px-4 py-1 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:bg-primary hover:text-muted-foreground',
-          { 'tab-active': currentTab === tab },
-        ]" @click="currentTab = tab">
-          {{ tab }}
-        </a>
-      </div>
-    </nav>
-
-    <div class="pt-4">
-      <tab-samples v-if="currentTab === 'samples'" />
-      <tab-contacts v-if="currentTab === 'contacts'" :clientUid="client?.uid" />
-      <tab-logs v-if="currentTab === 'logs'" targetType="client" :targetUid="client?.uid" />
-    </div>
-  </section>
+  <fel-tabs :tabs="tabs" initial-tab="samples" />
 </template>
 
 <style lang="postcss"></style>

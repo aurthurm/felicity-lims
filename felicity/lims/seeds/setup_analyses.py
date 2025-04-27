@@ -96,7 +96,7 @@ async def seed_id_sequence() -> None:
 
     sample_types = data.get("sample_types", [])
 
-    prefix_keys = ["WS", "P", "AR"]
+    prefix_keys = ["WS", "P", "AR", "X"]
 
     for _st in sample_types:
         st_abbr = _st.get("abbr")

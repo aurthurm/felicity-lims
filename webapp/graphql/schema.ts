@@ -1131,6 +1131,7 @@ export type AnalysisRequestType = {
   patient: PatientType;
   patientUid: Scalars['String']['output'];
   requestId: Scalars['String']['output'];
+  samples: Array<SampleType>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -5835,6 +5836,7 @@ export type Query = {
   noticesByCreator?: Maybe<Array<NoticeType>>;
   notificationByUid?: Maybe<NotificationType>;
   notificationFilter: Array<NotificationType>;
+  ordersByBillUid?: Maybe<AnalysisRequestType>;
   patientAll: PatientCursorPage;
   patientByPatientId?: Maybe<PatientType>;
   patientByUid?: Maybe<PatientType>;
@@ -6922,6 +6924,11 @@ export type QueryNotificationFilterArgs = {
   departmentUid?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
   userUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryOrdersByBillUidArgs = {
+  uid: Scalars['String']['input'];
 };
 
 
@@ -9349,6 +9356,7 @@ export type GraphCacheResolvers = {
     noticesByCreator?: GraphCacheResolver<WithTypename<Query>, QueryNoticesByCreatorArgs, Array<WithTypename<NoticeType> | string>>,
     notificationByUid?: GraphCacheResolver<WithTypename<Query>, QueryNotificationByUidArgs, WithTypename<NotificationType> | string>,
     notificationFilter?: GraphCacheResolver<WithTypename<Query>, QueryNotificationFilterArgs, Array<WithTypename<NotificationType> | string>>,
+    ordersByBillUid?: GraphCacheResolver<WithTypename<Query>, QueryOrdersByBillUidArgs, WithTypename<AnalysisRequestType> | string>,
     patientAll?: GraphCacheResolver<WithTypename<Query>, QueryPatientAllArgs, WithTypename<PatientCursorPage> | string>,
     patientByPatientId?: GraphCacheResolver<WithTypename<Query>, QueryPatientByPatientIdArgs, WithTypename<PatientType> | string>,
     patientByUid?: GraphCacheResolver<WithTypename<Query>, QueryPatientByUidArgs, WithTypename<PatientType> | string>,
@@ -10086,6 +10094,7 @@ export type GraphCacheResolvers = {
     patient?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<PatientType> | string>,
     patientUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     requestId?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
+    samples?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Array<WithTypename<SampleType> | string>>,
     uid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -13040,6 +13049,7 @@ export type GraphCacheUpdaters = {
     noticesByCreator?: GraphCacheUpdateResolver<{ noticesByCreator: Maybe<Array<WithTypename<NoticeType>>> }, QueryNoticesByCreatorArgs>,
     notificationByUid?: GraphCacheUpdateResolver<{ notificationByUid: Maybe<WithTypename<NotificationType>> }, QueryNotificationByUidArgs>,
     notificationFilter?: GraphCacheUpdateResolver<{ notificationFilter: Array<WithTypename<NotificationType>> }, QueryNotificationFilterArgs>,
+    ordersByBillUid?: GraphCacheUpdateResolver<{ ordersByBillUid: Maybe<WithTypename<AnalysisRequestType>> }, QueryOrdersByBillUidArgs>,
     patientAll?: GraphCacheUpdateResolver<{ patientAll: WithTypename<PatientCursorPage> }, QueryPatientAllArgs>,
     patientByPatientId?: GraphCacheUpdateResolver<{ patientByPatientId: Maybe<WithTypename<PatientType>> }, QueryPatientByPatientIdArgs>,
     patientByUid?: GraphCacheUpdateResolver<{ patientByUid: Maybe<WithTypename<PatientType>> }, QueryPatientByUidArgs>,
@@ -14058,6 +14068,7 @@ export type GraphCacheUpdaters = {
     patient?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     patientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     requestId?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    samples?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,

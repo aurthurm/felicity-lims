@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import modal from '@/components/ui/FelModal.vue';
 import { useRoute } from 'vue-router';
-import { ref, defineAsyncComponent, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { AddClientDocument, AddClientMutation, AddClientMutationVariables,
   EditClientDocument, EditClientMutation, EditClientMutationVariables } from '@/graphql/operations/clients.mutations';
 import { useLocationStore } from '@/stores/location';
@@ -80,7 +79,7 @@ function saveForm() {
 
 <template>
   <div>
-    <div class="grid grid-cols-12 gap-4 mt-2">
+    <div class="grid grid-cols-12 gap-4 mt-2 mb-4">
       <section class="col-span-12">
         <!-- Listing Item Card -->
         <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4">

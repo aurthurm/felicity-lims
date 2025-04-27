@@ -1131,6 +1131,7 @@ export type AnalysisRequestType = {
   patient: PatientType;
   patientUid: Scalars['String']['output'];
   requestId: Scalars['String']['output'];
+  samples: Array<SampleType>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -5835,6 +5836,7 @@ export type Query = {
   noticesByCreator?: Maybe<Array<NoticeType>>;
   notificationByUid?: Maybe<NotificationType>;
   notificationFilter: Array<NotificationType>;
+  ordersByBillUid?: Maybe<AnalysisRequestType>;
   patientAll: PatientCursorPage;
   patientByPatientId?: Maybe<PatientType>;
   patientByUid?: Maybe<PatientType>;
@@ -6922,6 +6924,11 @@ export type QueryNotificationFilterArgs = {
   departmentUid?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
   userUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryOrdersByBillUidArgs = {
+  uid: Scalars['String']['input'];
 };
 
 
