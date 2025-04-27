@@ -5,7 +5,7 @@ networks:
 services:
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.1.7
+    image: amusendame/felicity-static-nginx:0.1.8
     restart: unless-stopped
     ports:
       - "80:80"
@@ -24,7 +24,7 @@ services:
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.1.7
+    image: amusendame/felicity-lims:api-0.1.8
     restart: unless-stopped
     env_file:
       - .env
@@ -39,7 +39,7 @@ services:
       MINIO_ACCESS: felicity
       MINIO_SECRET: felicity
     ports:
-      - 8000:8000
+      - "http://127.0.0.1:8000:8000"
     networks:
       - felicitynet
     depends_on:
@@ -56,8 +56,8 @@ services:
     container_name: felicity-minio
     image: bitnami/minio:2025-debian-12
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - 'http://127.0.0.1:9000:9000'
+      - 'http://127.0.0.1:9001:9001'
     networks:
       - felicitynet
     volumes:
@@ -76,7 +76,7 @@ services:
     ulimits:
       memlock: -1
     ports:
-      - "6379:6379"
+      - "http://127.0.0.1:6379:6379"
     # For better performance, consider `host` mode instead `port` to avoid docker NAT.
     # `host` mode is NOT currently supported in Swarm Mode.
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
@@ -100,7 +100,7 @@ services:
     volumes:
       - ~/felicity_data/postgres:/var/lib/postgresql/data
     ports:
-      - 5434:5432
+      - "http://127.0.0.1:5434:5432"
     networks:
       - felicitynet
 
@@ -112,7 +112,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: felicity
       MONGO_INITDB_ROOT_PASSWORD: felicity
     ports:
-      - '27027:27017'
+      - 'http://127.0.0.1:27027:27017'
     networks:
       - felicitynet
 
@@ -121,7 +121,7 @@ services:
     image: dbgate/dbgate
     restart: always
     ports:
-      - 8051:3000
+      - "http://127.0.0.1:8051:3000"
     volumes:
       - ~/felicity_data/dbgate:/root/.dbgate
     environment:
@@ -149,4 +149,4 @@ services:
     environment:
       SYNCFUSION_LICENSE_KEY: ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU
     ports:
-      - "6002:80"
+      - "http://127.0.0.1:6002:80"
