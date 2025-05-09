@@ -65,7 +65,7 @@
     }
 
     /* --- Theme: Black and White --- */
-    .theme-black-and-white {
+    .black-and-white {
         --background: 0 0% 100%; /* white */
         --foreground: 0 0% 0%; /* black */
         --card: 0 0% 100%; /* white */
@@ -95,7 +95,7 @@
     }
 
     /* --- Theme: Sterile White --- */
-    .theme-sterile {
+    .sterile {
         --background: 0 0% 98%; /* off white */
         --foreground: 220 9% 25%; /* dark grayish blue */
         --card: 0 0% 98%;
@@ -125,7 +125,7 @@
     }
 
     /* --- Theme: Clinical Blue --- */
-    .theme-clinical-blue {
+    .clinical-blue {
         --background: 210 20% 98%; /* very light cool gray */
         --foreground: 220 15% 25%; /* dark slate blue */
         --card: 0 0% 100%; /* white */
@@ -155,7 +155,7 @@
     }
 
     /* --- Theme: Emergency Red --- */
-    .theme-emergency-red {
+    .emergency-red {
         --background: 0 50% 95%; /* very light red */
         --foreground: 0 50% 30%; /* dark desaturated red */
         --card: 0 50% 98%; /* extremely light red */
@@ -185,7 +185,7 @@
     }
 
     /* --- Theme: Sterile Green --- */
-    .theme-sterile-green {
+    .sterile-green {
         --background: 0 0% 100%; /* white */
         --foreground: 215 10% 20%; /* dark cool gray */
         --card: 0 0% 100%; /* white */
@@ -215,7 +215,7 @@
     }
 
     /* --- Theme: Warm Neutral --- */
-    .theme-warm-neutral {
+    .warm-neutral {
         --background: 40 30% 96%; /* very light beige */
         --foreground: 30 25% 20%; /* dark warm brown */
         --card: 0 0% 100%; /* white */
@@ -245,7 +245,7 @@
     }
 
     /* --- Theme: Cool Slate (Darker) --- */
-    .theme-cool-slate {
+    .cool-slate {
         --background: 220 15% 15%; /* very dark cool slate */
         --foreground: 210 15% 95%; /* very light gray */
         --card: 220 12% 20%; /* slightly lighter dark slate */
@@ -275,7 +275,7 @@
     }
 
     /* --- Theme: Corporate Navy --- */
-    .theme-corporate-navy {
+    .corporate-navy {
         --background: 0 0% 100%; /* white */
         --foreground: 220 30% 20%; /* very dark navy */
         --card: 0 0% 100%; /* white */

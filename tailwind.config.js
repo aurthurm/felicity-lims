@@ -12,19 +12,16 @@ module.exports = {
     important: false,
     // Optional: Change the separator character (default is ':')
     separator: ':',
-    // Safelist theme classes to ensure they are not purged by Tailwind
-    // Updated to match the actual theme names in your CSS
     safelist: [
         'dark', // Default dark theme
-        'theme-black-and-white',
-        'theme-sterile',
-        'theme-clinical-blue',
-        'theme-emergency-red',
-        'theme-sterile-green',
-        'theme-warm-neutral',
-        'theme-cool-slate',
-        'theme-corporate-navy',
-        // Add any other classes that might be dynamically added and need safelisting
+        'black-and-white',
+        'sterile',
+        'clinical-blue',
+        'emergency-red',
+        'sterile-green',
+        'warm-neutral',
+        'cool-slate',
+        'corporate-navy',
     ],
     plugins: [
         // Enable Tailwind Forms plugin with class strategy

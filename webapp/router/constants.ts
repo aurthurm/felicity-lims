@@ -21,4 +21,18 @@ const pages = {
     INSTALLATION: 'INSTALLATION',
 };
 
-export { pages };
+
+const themes = [
+    "light",
+    "dark",
+    "black-and-white",
+    "sterile",
+    "clinical-blue",
+    "emergency-red",
+    "sterile-green",
+    "warm-neutral",
+    "cool-slate",
+    "corporate-navy"
+]
+
+export { pages, themes };
