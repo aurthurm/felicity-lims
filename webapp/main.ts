@@ -24,6 +24,7 @@ import {
     faCodeBranch,
     faCog,
     faColumns,
+    faCompress,
     faCopy,
     faDatabase,
     faDeleteLeft,
@@ -32,6 +33,7 @@ import {
     faEllipsis,
     faEllipsisH,
     faExclamationCircle,
+    faExpand,
     faFile,
     faFileMedical,
     faFill,
@@ -93,7 +95,7 @@ const icons = [
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
     faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH, faTablets, faScaleBalanced, faLifeRing,
     faBacteria, faCircleDot, faPills, faExclamationCircle, faRobot, faProjectDiagram, faFile, faStar,
-    faColumns, faTrashAlt, faChevronUp, faSignOutAlt
+    faColumns, faTrashAlt, faChevronUp, faSignOutAlt, faExpand, faCompress
 ]
 library.add(...icons);
 

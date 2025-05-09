@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
-
-// Async components
+import { defineAsyncComponent, onMounted } from 'vue'
+import { useFullscreen } from '@vueuse/core'
 const HeaderMain = defineAsyncComponent(() => import('@/components/nav/NavigationMain.vue'))
 const FelNotification = defineAsyncComponent(() => import('@/components/notification/FelNotification.vue'))
+
+const { toggle } = useFullscreen()
+
+onMounted(() => toggle())
+
+// Async components
 </script>
 
 <template>

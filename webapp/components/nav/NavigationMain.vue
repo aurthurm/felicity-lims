@@ -6,10 +6,12 @@ import { useRouter } from "vue-router";
 import useApiUtil from "@/composables/api_util";
 import userPreferenceComposable from "@/composables/preferences";
 import * as guards from "@/guards";
+import { useFullscreen } from "@vueuse/core";
 
 // Lazily load components for better performance
 const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
-const Drawer = defineAsyncComponent(() => import("@/components/ui/FelDrawer.vue"));
+
+const { isFullscreen, toggle } = useFullscreen()
 
 // Router and navigation
 const router = useRouter();
@@ -295,7 +297,12 @@ onMounted(() => {
             </div>
         </div>
       </div>
-
+      <button
+      @click="toggle" 
+      class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md" 
+      :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'">
+        <font-awesome-icon :icon="isFullscreen ? 'compress' : 'expand'" />
+      </button>
     </div>
   </nav>
 
