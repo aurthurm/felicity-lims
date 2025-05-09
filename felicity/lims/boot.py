@@ -89,10 +89,6 @@ def register_rate_limit(app: FastAPI) -> None:
 
 
 def register_routes(app: FastAPI) -> None:
-    @app.get("/health")
-    async def get_health(request: Request) -> dict[str, bool]:
-        return {"up": True}
-
     app.include_router(api, prefix="/api/v1")
     setup_webapp(app, settings.SERVE_WEBAPP, schema)
 

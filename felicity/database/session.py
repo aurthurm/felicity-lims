@@ -34,3 +34,11 @@ async_session = async_sessionmaker(
     bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
 )
 AsyncSessionScoped = async_scoped_session(async_session, scopefunc=current_task)
+
+
+async def get_db():
+    async with AsyncSessionScoped() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
