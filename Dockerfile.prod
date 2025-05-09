@@ -10,7 +10,7 @@ ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN pnpm webapp:build:only && ls -la /app/dist || (echo "Build failed - dist directory not created" && exit 1)
 
 FROM python:3.12.3-slim-bookworm AS server-base
-RUN apt-get update && apt-get install -y git libpq-dev gcc python3-git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git libpq-dev gcc python3-git poppler-utils && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -s /bin/bash felicity
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY ./requirements.txt /tmp/requirements.txt

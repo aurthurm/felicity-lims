@@ -4,6 +4,8 @@ import sqlalchemy as sa
 import strawberry  # noqa
 from strawberry.permission import PermissionExtension
 
+from felicity.api.gql.analysis.types import AnalysisRequestType
+from felicity.apps.analysis.services.analysis import AnalysisRequestService
 from felicity.api.gql.billing import types
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import BytesScalar, PageInfo
@@ -89,6 +91,15 @@ class BillingQuery:
             permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
         )]
     )
+    async def orders_by_bill_uid(self, info, uid: str) -> list[AnalysisRequestType]:
+        bill = await TestBillService().get(uid=uid, is_active=True, related=["orders"])
+        return bill.orders
+
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
     async def bill_by_uid(self, info, uid: str) -> Optional[types.TestBillType]:
         return await TestBillService().get(uid=uid)
 
@@ -111,7 +122,8 @@ class BillingQuery:
     async def bills_for_client(
             self, info, client_uid: str
     ) -> Optional[list[types.TestBillType]]:
-        return await TestBillService().get_all(client_uid=client_uid)
+        bills = await TestBillService().get_all(client_uid=client_uid)
+        return sorted(bills, key=lambda b: b.uid, reverse=True)
 
     @strawberry.field(
         extensions=[PermissionExtension(

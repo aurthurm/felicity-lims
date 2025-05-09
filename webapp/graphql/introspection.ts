@@ -5918,6 +5918,24 @@ export default {
             "args": []
           },
           {
+            "name": "samples",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "SampleType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -33554,6 +33572,26 @@ export default {
                 "type": {
                   "kind": "SCALAR",
                   "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "ordersByBillUid",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AnalysisRequestType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
                 }
               }
             ]

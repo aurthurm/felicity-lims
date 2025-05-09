@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import {  computed, defineAsyncComponent, onMounted, reactive, ref } from "vue";
+import {  computed, onMounted, reactive, ref } from "vue";
 import type { PropType } from 'vue'
 import {
   AnalysisResultType,
   SampleType,
 } from "@/types/gql";
-import * as shield from "@/guards";
 import useApiUtil from '@/composables/api_util';
 import useAnalysisComposable from "@/composables/analysis";
 import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismResultAllDocument, GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AbxOrganismType, AbxOrganismResultType } from "@/types/gql";
 import { AbxOrganismCursorPage } from "@/graphql/schema";
 import { AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables, AddAbxOrganismResultDocument, DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables, DeleteAbxOrganismResultDocument, SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables, SaveAbxOrganismResultDocument } from "@/graphql/operations/microbiology.mutations";
-
-const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-)
-const fel-button = defineAsyncComponent(
-  () => import("@/components/ui/buttons/fel-button.vue")
-)
 
 const { withClientMutation, withClientQuery } = useApiUtil()
 const organismResults = ref<AbxOrganismResultType[]>([]);

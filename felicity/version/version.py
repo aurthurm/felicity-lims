@@ -6,7 +6,7 @@ import httpx
 from fastapi import APIRouter, HTTPException
 from packaging import version
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 _cache_duration = timedelta(hours=1)
 router = APIRouter()

@@ -1,0 +1,71 @@
+name: Build and Push Docker Images on Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Load environment variables
+      run: |
+        echo "Loading environment variables from .env"
+        set -a
+        source .env
+        set +a
+
+  build-and-push-images:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    strategy:
+      matrix:
+        target:
+          - { name: server-aio, image: amusendame/felicity-lims:aio }
+          - { name: server-api, image: amusendame/felicity-lims:api }
+          - { name: nginx-static, image: amusendame/felicity-static-nginx }
+          - { name: caddy-static, image: amusendame/felicity-static-caddy }
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Load environment variables
+      run: |
+        echo "Loading environment variables from .env"
+        set -a
+        source .env
+        set +a
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push ${{ matrix.target.name }}
+      run: |
+        docker build -f Dockerfile.prod --target ${{ matrix.target.name }} -t ${{ matrix.target.image }}-${{ github.event.release.tag_name }} .
+        docker push ${{ matrix.target.image }}-${{ github.event.release.tag_name }}
+
+    - name: Docker Scout Quickview
+      if: matrix.target.name == 'server-aio' # only once
+      run: |
+        docker scout quickview || echo "Scout quickview failed, continuing..."

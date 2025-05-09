@@ -8,7 +8,7 @@ interface WorksheetActions {
   submitWorksheets: (worksheets: WorkSheetType[]) => Promise<boolean>;
 }
 
-export function useWorksheet(): WorksheetActions {
+export default function useWorksheet(): WorksheetActions {
   const { swalConfirm, toastSuccess, toastError } = useNotifyToast();
   const { withClientMutation } = useApiUtil();
 

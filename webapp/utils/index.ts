@@ -15,3 +15,7 @@ export * from './object';
 
 // Form utilities
 export * from './form'; 
+
+// Other utilities
+export * from './other';
+

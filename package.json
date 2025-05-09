@@ -1,6 +1,6 @@
 {
   "name": "felicity-lims",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "webapp/main.ts",
   "license": "Public",
   "scripts": {
@@ -8,7 +8,7 @@
     "webapp:dev:watch": "concurrently \"pnpm run webapp:codegen\" \"pnpm run webapp:dev\"",
     "webapp:vf": "vite --force",
     "webapp:build:report": "npx vite-bundle-visualizer",
-    "webapp:build:only": "vite build",
+    "webapp:build:only": "NODE_OPTIONS='--max-old-space-size=4096' vite build",
     "webapp:prettier:check": "prettier --check \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",
     "webapp:prettier:format": "prettier --write \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",
     "webapp:lint": "eslint . --ext .js,.ts,.tsx,.vue",
@@ -25,7 +25,7 @@
     "server:format:imports": "bash ./felicity/scripts/format_imports.sh",
     "server:schema:export": "strawberry export-schema felicity.api.gql.schema:schema > ./felicity/api/gql/schema.graphql",
     "server:schema:export:tofront": "strawberry export-schema felicity.api.gql.schema:schema > ./webapp/graphql/schema.graphql",
-    "standalone:build": "rm -rf felicity/templates/static/* && vite build && cp -r dist/** felicity/templates/static",
+    "standalone:build": "rm -rf felicity/templates/static/* && NODE_OPTIONS='--max-old-space-size=4096' vite build && cp -r dist/** felicity/templates/static",
     "db:upgrade": "felicity-lims upgrade",
     "db:revision": "felicity-lims revision",
     "db:updates": "felicity-lims updates"
