@@ -3477,6 +3477,7 @@ export type Mutation = {
   createSampleType: SampleTypeResponse;
   createSampleTypeMapping: SampleTypeMappingResponse;
   createShipment: ShipmentsResponse;
+  createSmsTemplate: SmsTemplateResponse;
   createStockAdjustment: StockAdjustmentResponse;
   createStockCategory: StockCategoryResponse;
   createStockItem: StockItemResponse;
@@ -3517,6 +3518,7 @@ export type Mutation = {
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
   deleteReflexBrain: DeletedItem;
+  deleteSmsTemplate: OperationErrorDeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
   discardAbxAntibiotic: DeletedItem;
@@ -3632,6 +3634,7 @@ export type Mutation = {
   updateSampleType: SampleTypeResponse;
   updateSampleTypeMapping: SampleTypeMappingResponse;
   updateShipment: ShipmentResponse;
+  updateSmsTemplate: SmsTemplateResponse;
   updateStockCategory: StockCategoryResponse;
   updateStockItem: StockItemResponse;
   updateStockItemVariant: StockItemVariantResponse;
@@ -4139,6 +4142,11 @@ export type MutationCreateShipmentArgs = {
 };
 
 
+export type MutationCreateSmsTemplateArgs = {
+  payload: SmsTemplateInputType;
+};
+
+
 export type MutationCreateStockAdjustmentArgs = {
   payload: StockAdjustmentInputType;
 };
@@ -4345,6 +4353,11 @@ export type MutationDeleteNoticeArgs = {
 
 
 export type MutationDeleteReflexBrainArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteSmsTemplateArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -5022,6 +5035,12 @@ export type MutationUpdateShipmentArgs = {
 };
 
 
+export type MutationUpdateSmsTemplateArgs = {
+  payload: SmsTemplateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateStockCategoryArgs = {
   payload: StockCategoryInputType;
   uid: Scalars['String']['input'];
@@ -5225,6 +5244,8 @@ export type OperationError = {
   error: Scalars['String']['output'];
   suggestion?: Maybe<Scalars['String']['output']>;
 };
+
+export type OperationErrorDeletedItem = DeletedItem | OperationError;
 
 export type OperationSuccess = {
   __typename?: 'OperationSuccess';
@@ -5836,7 +5857,7 @@ export type Query = {
   noticesByCreator?: Maybe<Array<NoticeType>>;
   notificationByUid?: Maybe<NotificationType>;
   notificationFilter: Array<NotificationType>;
-  ordersByBillUid?: Maybe<AnalysisRequestType>;
+  ordersByBillUid: Array<AnalysisRequestType>;
   patientAll: PatientCursorPage;
   patientByPatientId?: Maybe<PatientType>;
   patientByUid?: Maybe<PatientType>;
@@ -5884,6 +5905,8 @@ export type Query = {
   shipmentById: ShipmentType;
   shipmentByStatus: Array<ShipmentType>;
   shipmentByUid: ShipmentType;
+  smsAll: SmsMessageCursorPage;
+  smsTemplatesByTarget: Array<SmsTemplateType>;
   stockAdjustmentAll: StockAdjustmentCursorPage;
   stockAdjustmentByUid?: Maybe<StockAdjustmentType>;
   stockCategoryAll: Array<StockCategoryType>;
@@ -7169,6 +7192,22 @@ export type QueryShipmentByUidArgs = {
 };
 
 
+export type QuerySmsAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  audience?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySmsTemplatesByTargetArgs = {
+  targetType: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+};
+
+
 export type QueryStockAdjustmentAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
@@ -8013,6 +8052,90 @@ export type ShippedSampleType = {
   shipment: ShipmentType;
   shipmentUid: Scalars['String']['output'];
 };
+
+export enum SmsAudience {
+  Client = 'CLIENT',
+  Patient = 'PATIENT'
+}
+
+export type SmsMessageCursorPage = {
+  __typename?: 'SmsMessageCursorPage';
+  edges?: Maybe<Array<SmsMessageEdge>>;
+  items?: Maybe<Array<SmsMessageType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type SmsMessageEdge = {
+  __typename?: 'SmsMessageEdge';
+  cursor: Scalars['String']['output'];
+  node: SmsMessageType;
+};
+
+export type SmsMessageType = {
+  __typename?: 'SmsMessageType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  recipient?: Maybe<Scalars['String']['output']>;
+  sentAt?: Maybe<Scalars['DateTime']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  targetType?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  templateUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type SmsTemplateInputType = {
+  audience?: SmsAudience;
+  description: Scalars['String']['input'];
+  isActive?: Scalars['Boolean']['input'];
+  /** Category name */
+  name: Scalars['String']['input'];
+  specificationTrigger?: SmsTrigger;
+  targetType: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+  template: Scalars['String']['input'];
+};
+
+/** Response for Sms Template operations */
+export type SmsTemplateResponse = OperationError | SmsTemplateType;
+
+export type SmsTemplateType = {
+  __typename?: 'SmsTemplateType';
+  audience?: Maybe<SmsAudience>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  specificationTrigger?: Maybe<SmsTrigger>;
+  targetType?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  template?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export enum SmsTrigger {
+  AboveNormal = 'ABOVE_NORMAL',
+  AboveWarning = 'ABOVE_WARNING',
+  AnyAbnormal = 'ANY_ABNORMAL',
+  AnyResult = 'ANY_RESULT',
+  AnyWarning = 'ANY_WARNING',
+  BelowNormal = 'BELOW_NORMAL',
+  BelowWarning = 'BELOW_WARNING',
+  Normal = 'NORMAL',
+  TextualNormal = 'TEXTUAL_NORMAL',
+  TextualWarning = 'TEXTUAL_WARNING'
+}
 
 export enum StampCategory {
   Project = 'PROJECT',
@@ -9107,6 +9230,10 @@ export type GraphCacheKeysConfig = {
   ShipmentListingType?: (data: WithTypename<ShipmentListingType>) => null | string,
   ShipmentType?: (data: WithTypename<ShipmentType>) => null | string,
   ShippedSampleType?: (data: WithTypename<ShippedSampleType>) => null | string,
+  SmsMessageCursorPage?: (data: WithTypename<SmsMessageCursorPage>) => null | string,
+  SmsMessageEdge?: (data: WithTypename<SmsMessageEdge>) => null | string,
+  SmsMessageType?: (data: WithTypename<SmsMessageType>) => null | string,
+  SmsTemplateType?: (data: WithTypename<SmsTemplateType>) => null | string,
   StockAdjustmentCursorPage?: (data: WithTypename<StockAdjustmentCursorPage>) => null | string,
   StockAdjustmentEdge?: (data: WithTypename<StockAdjustmentEdge>) => null | string,
   StockAdjustmentType?: (data: WithTypename<StockAdjustmentType>) => null | string,
@@ -9356,7 +9483,7 @@ export type GraphCacheResolvers = {
     noticesByCreator?: GraphCacheResolver<WithTypename<Query>, QueryNoticesByCreatorArgs, Array<WithTypename<NoticeType> | string>>,
     notificationByUid?: GraphCacheResolver<WithTypename<Query>, QueryNotificationByUidArgs, WithTypename<NotificationType> | string>,
     notificationFilter?: GraphCacheResolver<WithTypename<Query>, QueryNotificationFilterArgs, Array<WithTypename<NotificationType> | string>>,
-    ordersByBillUid?: GraphCacheResolver<WithTypename<Query>, QueryOrdersByBillUidArgs, WithTypename<AnalysisRequestType> | string>,
+    ordersByBillUid?: GraphCacheResolver<WithTypename<Query>, QueryOrdersByBillUidArgs, Array<WithTypename<AnalysisRequestType> | string>>,
     patientAll?: GraphCacheResolver<WithTypename<Query>, QueryPatientAllArgs, WithTypename<PatientCursorPage> | string>,
     patientByPatientId?: GraphCacheResolver<WithTypename<Query>, QueryPatientByPatientIdArgs, WithTypename<PatientType> | string>,
     patientByUid?: GraphCacheResolver<WithTypename<Query>, QueryPatientByUidArgs, WithTypename<PatientType> | string>,
@@ -9404,6 +9531,8 @@ export type GraphCacheResolvers = {
     shipmentById?: GraphCacheResolver<WithTypename<Query>, QueryShipmentByIdArgs, WithTypename<ShipmentType> | string>,
     shipmentByStatus?: GraphCacheResolver<WithTypename<Query>, QueryShipmentByStatusArgs, Array<WithTypename<ShipmentType> | string>>,
     shipmentByUid?: GraphCacheResolver<WithTypename<Query>, QueryShipmentByUidArgs, WithTypename<ShipmentType> | string>,
+    smsAll?: GraphCacheResolver<WithTypename<Query>, QuerySmsAllArgs, WithTypename<SmsMessageCursorPage> | string>,
+    smsTemplatesByTarget?: GraphCacheResolver<WithTypename<Query>, QuerySmsTemplatesByTargetArgs, Array<WithTypename<SmsTemplateType> | string>>,
     stockAdjustmentAll?: GraphCacheResolver<WithTypename<Query>, QueryStockAdjustmentAllArgs, WithTypename<StockAdjustmentCursorPage> | string>,
     stockAdjustmentByUid?: GraphCacheResolver<WithTypename<Query>, QueryStockAdjustmentByUidArgs, WithTypename<StockAdjustmentType> | string>,
     stockCategoryAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<StockCategoryType> | string>>,
@@ -12014,6 +12143,49 @@ export type GraphCacheResolvers = {
     shipment?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, WithTypename<ShipmentType> | string>,
     shipmentUid?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, Scalars['String'] | string>
   },
+  SmsMessageCursorPage?: {
+    edges?: GraphCacheResolver<WithTypename<SmsMessageCursorPage>, Record<string, never>, Array<WithTypename<SmsMessageEdge> | string>>,
+    items?: GraphCacheResolver<WithTypename<SmsMessageCursorPage>, Record<string, never>, Array<WithTypename<SmsMessageType> | string>>,
+    pageInfo?: GraphCacheResolver<WithTypename<SmsMessageCursorPage>, Record<string, never>, WithTypename<PageInfo> | string>,
+    totalCount?: GraphCacheResolver<WithTypename<SmsMessageCursorPage>, Record<string, never>, Scalars['Int'] | string>
+  },
+  SmsMessageEdge?: {
+    cursor?: GraphCacheResolver<WithTypename<SmsMessageEdge>, Record<string, never>, Scalars['String'] | string>,
+    node?: GraphCacheResolver<WithTypename<SmsMessageEdge>, Record<string, never>, WithTypename<SmsMessageType> | string>
+  },
+  SmsMessageType?: {
+    createdAt?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    message?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    recipient?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    sentAt?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['DateTime'] | string>,
+    status?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    targetType?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    targetUid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    templateUid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>
+  },
+  SmsTemplateType?: {
+    audience?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, SmsAudience | string>,
+    createdAt?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    isActive?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['Boolean'] | string>,
+    name?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    specificationTrigger?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, SmsTrigger | string>,
+    targetType?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    targetUid?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    template?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>
+  },
   StockAdjustmentCursorPage?: {
     edges?: GraphCacheResolver<WithTypename<StockAdjustmentCursorPage>, Record<string, never>, Array<WithTypename<StockAdjustmentEdge> | string>>,
     items?: GraphCacheResolver<WithTypename<StockAdjustmentCursorPage>, Record<string, never>, Array<WithTypename<StockAdjustmentType> | string>>,
@@ -12670,6 +12842,7 @@ export type GraphCacheOptimisticUpdaters = {
   createSampleType?: GraphCacheOptimisticMutationResolver<MutationCreateSampleTypeArgs, WithTypename<SampleTypeResponse>>,
   createSampleTypeMapping?: GraphCacheOptimisticMutationResolver<MutationCreateSampleTypeMappingArgs, WithTypename<SampleTypeMappingResponse>>,
   createShipment?: GraphCacheOptimisticMutationResolver<MutationCreateShipmentArgs, WithTypename<ShipmentsResponse>>,
+  createSmsTemplate?: GraphCacheOptimisticMutationResolver<MutationCreateSmsTemplateArgs, WithTypename<SmsTemplateResponse>>,
   createStockAdjustment?: GraphCacheOptimisticMutationResolver<MutationCreateStockAdjustmentArgs, WithTypename<StockAdjustmentResponse>>,
   createStockCategory?: GraphCacheOptimisticMutationResolver<MutationCreateStockCategoryArgs, WithTypename<StockCategoryResponse>>,
   createStockItem?: GraphCacheOptimisticMutationResolver<MutationCreateStockItemArgs, WithTypename<StockItemResponse>>,
@@ -12710,6 +12883,7 @@ export type GraphCacheOptimisticUpdaters = {
   deleteMessage?: GraphCacheOptimisticMutationResolver<MutationDeleteMessageArgs, WithTypename<DeleteResponse>>,
   deleteNotice?: GraphCacheOptimisticMutationResolver<MutationDeleteNoticeArgs, WithTypename<DeleteResponse>>,
   deleteReflexBrain?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexBrainArgs, WithTypename<DeletedItem>>,
+  deleteSmsTemplate?: GraphCacheOptimisticMutationResolver<MutationDeleteSmsTemplateArgs, WithTypename<OperationErrorDeletedItem>>,
   deleteStockOrder?: GraphCacheOptimisticMutationResolver<MutationDeleteStockOrderArgs, WithTypename<StockOrderResponse>>,
   deleteThread?: GraphCacheOptimisticMutationResolver<MutationDeleteThreadArgs, WithTypename<DeleteResponse>>,
   discardAbxAntibiotic?: GraphCacheOptimisticMutationResolver<MutationDiscardAbxAntibioticArgs, WithTypename<DeletedItem>>,
@@ -12825,6 +12999,7 @@ export type GraphCacheOptimisticUpdaters = {
   updateSampleType?: GraphCacheOptimisticMutationResolver<MutationUpdateSampleTypeArgs, WithTypename<SampleTypeResponse>>,
   updateSampleTypeMapping?: GraphCacheOptimisticMutationResolver<MutationUpdateSampleTypeMappingArgs, WithTypename<SampleTypeMappingResponse>>,
   updateShipment?: GraphCacheOptimisticMutationResolver<MutationUpdateShipmentArgs, WithTypename<ShipmentResponse>>,
+  updateSmsTemplate?: GraphCacheOptimisticMutationResolver<MutationUpdateSmsTemplateArgs, WithTypename<SmsTemplateResponse>>,
   updateStockCategory?: GraphCacheOptimisticMutationResolver<MutationUpdateStockCategoryArgs, WithTypename<StockCategoryResponse>>,
   updateStockItem?: GraphCacheOptimisticMutationResolver<MutationUpdateStockItemArgs, WithTypename<StockItemResponse>>,
   updateStockItemVariant?: GraphCacheOptimisticMutationResolver<MutationUpdateStockItemVariantArgs, WithTypename<StockItemVariantResponse>>,
@@ -13049,7 +13224,7 @@ export type GraphCacheUpdaters = {
     noticesByCreator?: GraphCacheUpdateResolver<{ noticesByCreator: Maybe<Array<WithTypename<NoticeType>>> }, QueryNoticesByCreatorArgs>,
     notificationByUid?: GraphCacheUpdateResolver<{ notificationByUid: Maybe<WithTypename<NotificationType>> }, QueryNotificationByUidArgs>,
     notificationFilter?: GraphCacheUpdateResolver<{ notificationFilter: Array<WithTypename<NotificationType>> }, QueryNotificationFilterArgs>,
-    ordersByBillUid?: GraphCacheUpdateResolver<{ ordersByBillUid: Maybe<WithTypename<AnalysisRequestType>> }, QueryOrdersByBillUidArgs>,
+    ordersByBillUid?: GraphCacheUpdateResolver<{ ordersByBillUid: Array<WithTypename<AnalysisRequestType>> }, QueryOrdersByBillUidArgs>,
     patientAll?: GraphCacheUpdateResolver<{ patientAll: WithTypename<PatientCursorPage> }, QueryPatientAllArgs>,
     patientByPatientId?: GraphCacheUpdateResolver<{ patientByPatientId: Maybe<WithTypename<PatientType>> }, QueryPatientByPatientIdArgs>,
     patientByUid?: GraphCacheUpdateResolver<{ patientByUid: Maybe<WithTypename<PatientType>> }, QueryPatientByUidArgs>,
@@ -13097,6 +13272,8 @@ export type GraphCacheUpdaters = {
     shipmentById?: GraphCacheUpdateResolver<{ shipmentById: WithTypename<ShipmentType> }, QueryShipmentByIdArgs>,
     shipmentByStatus?: GraphCacheUpdateResolver<{ shipmentByStatus: Array<WithTypename<ShipmentType>> }, QueryShipmentByStatusArgs>,
     shipmentByUid?: GraphCacheUpdateResolver<{ shipmentByUid: WithTypename<ShipmentType> }, QueryShipmentByUidArgs>,
+    smsAll?: GraphCacheUpdateResolver<{ smsAll: WithTypename<SmsMessageCursorPage> }, QuerySmsAllArgs>,
+    smsTemplatesByTarget?: GraphCacheUpdateResolver<{ smsTemplatesByTarget: Array<WithTypename<SmsTemplateType>> }, QuerySmsTemplatesByTargetArgs>,
     stockAdjustmentAll?: GraphCacheUpdateResolver<{ stockAdjustmentAll: WithTypename<StockAdjustmentCursorPage> }, QueryStockAdjustmentAllArgs>,
     stockAdjustmentByUid?: GraphCacheUpdateResolver<{ stockAdjustmentByUid: Maybe<WithTypename<StockAdjustmentType>> }, QueryStockAdjustmentByUidArgs>,
     stockCategoryAll?: GraphCacheUpdateResolver<{ stockCategoryAll: Array<WithTypename<StockCategoryType>> }, Record<string, never>>,
@@ -13239,6 +13416,7 @@ export type GraphCacheUpdaters = {
     createSampleType?: GraphCacheUpdateResolver<{ createSampleType: WithTypename<SampleTypeResponse> }, MutationCreateSampleTypeArgs>,
     createSampleTypeMapping?: GraphCacheUpdateResolver<{ createSampleTypeMapping: WithTypename<SampleTypeMappingResponse> }, MutationCreateSampleTypeMappingArgs>,
     createShipment?: GraphCacheUpdateResolver<{ createShipment: WithTypename<ShipmentsResponse> }, MutationCreateShipmentArgs>,
+    createSmsTemplate?: GraphCacheUpdateResolver<{ createSmsTemplate: WithTypename<SmsTemplateResponse> }, MutationCreateSmsTemplateArgs>,
     createStockAdjustment?: GraphCacheUpdateResolver<{ createStockAdjustment: WithTypename<StockAdjustmentResponse> }, MutationCreateStockAdjustmentArgs>,
     createStockCategory?: GraphCacheUpdateResolver<{ createStockCategory: WithTypename<StockCategoryResponse> }, MutationCreateStockCategoryArgs>,
     createStockItem?: GraphCacheUpdateResolver<{ createStockItem: WithTypename<StockItemResponse> }, MutationCreateStockItemArgs>,
@@ -13279,6 +13457,7 @@ export type GraphCacheUpdaters = {
     deleteMessage?: GraphCacheUpdateResolver<{ deleteMessage: WithTypename<DeleteResponse> }, MutationDeleteMessageArgs>,
     deleteNotice?: GraphCacheUpdateResolver<{ deleteNotice: WithTypename<DeleteResponse> }, MutationDeleteNoticeArgs>,
     deleteReflexBrain?: GraphCacheUpdateResolver<{ deleteReflexBrain: WithTypename<DeletedItem> }, MutationDeleteReflexBrainArgs>,
+    deleteSmsTemplate?: GraphCacheUpdateResolver<{ deleteSmsTemplate: WithTypename<OperationErrorDeletedItem> }, MutationDeleteSmsTemplateArgs>,
     deleteStockOrder?: GraphCacheUpdateResolver<{ deleteStockOrder: WithTypename<StockOrderResponse> }, MutationDeleteStockOrderArgs>,
     deleteThread?: GraphCacheUpdateResolver<{ deleteThread: WithTypename<DeleteResponse> }, MutationDeleteThreadArgs>,
     discardAbxAntibiotic?: GraphCacheUpdateResolver<{ discardAbxAntibiotic: WithTypename<DeletedItem> }, MutationDiscardAbxAntibioticArgs>,
@@ -13394,6 +13573,7 @@ export type GraphCacheUpdaters = {
     updateSampleType?: GraphCacheUpdateResolver<{ updateSampleType: WithTypename<SampleTypeResponse> }, MutationUpdateSampleTypeArgs>,
     updateSampleTypeMapping?: GraphCacheUpdateResolver<{ updateSampleTypeMapping: WithTypename<SampleTypeMappingResponse> }, MutationUpdateSampleTypeMappingArgs>,
     updateShipment?: GraphCacheUpdateResolver<{ updateShipment: WithTypename<ShipmentResponse> }, MutationUpdateShipmentArgs>,
+    updateSmsTemplate?: GraphCacheUpdateResolver<{ updateSmsTemplate: WithTypename<SmsTemplateResponse> }, MutationUpdateSmsTemplateArgs>,
     updateStockCategory?: GraphCacheUpdateResolver<{ updateStockCategory: WithTypename<StockCategoryResponse> }, MutationUpdateStockCategoryArgs>,
     updateStockItem?: GraphCacheUpdateResolver<{ updateStockItem: WithTypename<StockItemResponse> }, MutationUpdateStockItemArgs>,
     updateStockItemVariant?: GraphCacheUpdateResolver<{ updateStockItemVariant: WithTypename<StockItemVariantResponse> }, MutationUpdateStockItemVariantArgs>,
@@ -15987,6 +16167,49 @@ export type GraphCacheUpdaters = {
     sampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
     shipment?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
     shipmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>
+  },
+  SmsMessageCursorPage?: {
+    edges?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageCursorPage>>, Record<string, never>>,
+    items?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageCursorPage>>, Record<string, never>>,
+    pageInfo?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageCursorPage>>, Record<string, never>>,
+    totalCount?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageCursorPage>>, Record<string, never>>
+  },
+  SmsMessageEdge?: {
+    cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageEdge>>, Record<string, never>>,
+    node?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageEdge>>, Record<string, never>>
+  },
+  SmsMessageType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    message?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    recipient?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    sentAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    targetType?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    targetUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    templateUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>
+  },
+  SmsTemplateType?: {
+    audience?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    specificationTrigger?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    targetType?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    targetUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    template?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>
   },
   StockAdjustmentCursorPage?: {
     edges?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentCursorPage>>, Record<string, never>>,

@@ -1038,7 +1038,7 @@ export type GetOrdersByBillUidQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersByBillUidQuery = { __typename?: 'Query', ordersByBillUid?: { __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, requestId: string, createdAt?: string | null, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, samples: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> } | null };
+export type GetOrdersByBillUidQuery = { __typename?: 'Query', ordersByBillUid: Array<{ __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, requestId: string, createdAt?: string | null, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, samples: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> }> };
 
 export type AddClientMutationVariables = Exact<{
   payload: ClientInputType;
@@ -2700,6 +2700,36 @@ export type ManifestReportQueryVariables = Exact<{
 
 
 export type ManifestReportQuery = { __typename?: 'Query', manifestReportDownload?: never | null };
+
+export type AddSmsTemplateMutationVariables = Exact<{
+  payload: SmsTemplateInputType;
+}>;
+
+
+export type AddSmsTemplateMutation = { __typename?: 'Mutation', createSmsTemplate: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SmsTemplateType', uid: string, name?: string | null, description?: string | null, specificationTrigger?: SmsTrigger | null, audience?: SmsAudience | null, template?: string | null, createdAt?: string | null, updatedAt?: string | null, isActive: boolean } };
+
+export type EditSmsTemplateMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: SmsTemplateInputType;
+}>;
+
+
+export type EditSmsTemplateMutation = { __typename?: 'Mutation', updateSmsTemplate: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SmsTemplateType', uid: string, name?: string | null, description?: string | null, specificationTrigger?: SmsTrigger | null, audience?: SmsAudience | null, template?: string | null, createdAt?: string | null, updatedAt?: string | null, isActive: boolean } };
+
+export type DeleteSmsTemplateMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+}>;
+
+
+export type DeleteSmsTemplateMutation = { __typename?: 'Mutation', deleteSmsTemplate: { __typename: 'DeletedItem', uid: string } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type GetSmsTemplatesByTargetQueryVariables = Exact<{
+  targetType: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+}>;
+
+
+export type GetSmsTemplatesByTargetQuery = { __typename?: 'Query', smsTemplatesByTarget: Array<{ __typename?: 'SmsTemplateType', uid: string, name?: string | null, description?: string | null, specificationTrigger?: SmsTrigger | null, audience?: SmsAudience | null, template?: string | null, createdAt?: string | null, updatedAt?: string | null, isActive: boolean }> };
 
 export type AddStoreRoomMutationVariables = Exact<{
   payload: StoreRoomInputType;

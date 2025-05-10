@@ -138,3 +138,5 @@ from felicity.apps.user.entities import User  # noqa
 from felicity.apps.user.entities import UserPreference  # noqa
 from felicity.apps.worksheet.entities import WorkSheet  # noqa
 from felicity.apps.worksheet.entities import WorkSheetTemplate  # noqa
+from felicity.apps.commune.sms.entities import SmsTemplate # noqa
+from felicity.apps.commune.sms.entities import SmsMessage # noqa

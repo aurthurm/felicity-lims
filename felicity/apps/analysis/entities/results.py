@@ -88,7 +88,23 @@ class AnalysisResult(BaseEntity, BaseMPTT):
     @property
     def keyword(self) -> str:
         return self.analysis.keyword
+    
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+           "result": self.result, 
+           "date_collected": self.date_collected
+        }   
 
+        if self.analysis and hasattr(self.analysis, 'sms_metadata'):
+            try:
+                an_metadata = self.analysis.sms_metadata
+                if an_metadata:
+                    result.update(an_metadata)
+            except Exception:
+                pass
+                
+        return result
 
 class ResultMutation(BaseEntity):
     """Result Mutations tracker"""

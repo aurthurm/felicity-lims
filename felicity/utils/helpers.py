@@ -1,3 +1,4 @@
+import re
 from typing import Any, Union
 from urllib.parse import urlsplit
 
@@ -171,3 +172,15 @@ def base_host(request, is_admin=False, is_space=False, is_app=False):
 
 def user_ip(request):
     return str(request.META.get("REMOTE_ADDR"))
+
+
+def extract_template_variables(template_text: str) -> list[str]:
+    """
+    Extract variable names from template text.
+    Variables are enclosed in curly braces: {variable_name}
+    """
+    pattern = r"\{([a-zA-Z0-9_\.]+)\}"
+    matches = re.findall(pattern, template_text)
+    return matches
+
+

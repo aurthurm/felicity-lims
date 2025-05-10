@@ -91,6 +91,7 @@ from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.core.dtz import timenow_dt
+from felicity.core.events import post_event
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -527,6 +528,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         await self.streamer_service.stream(
             published, published_by, "published", "sample"
         )
+        # fire a published event
+        if not published.internal_use:
+            post_event('sample-published', uid=uid)
         return published
 
     async def print(self, uid: str, printed_by):

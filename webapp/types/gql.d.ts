@@ -3474,6 +3474,7 @@ export type Mutation = {
   createSampleType: SampleTypeResponse;
   createSampleTypeMapping: SampleTypeMappingResponse;
   createShipment: ShipmentsResponse;
+  createSmsTemplate: SmsTemplateResponse;
   createStockAdjustment: StockAdjustmentResponse;
   createStockCategory: StockCategoryResponse;
   createStockItem: StockItemResponse;
@@ -3514,6 +3515,7 @@ export type Mutation = {
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
   deleteReflexBrain: DeletedItem;
+  deleteSmsTemplate: OperationErrorDeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
   discardAbxAntibiotic: DeletedItem;
@@ -3629,6 +3631,7 @@ export type Mutation = {
   updateSampleType: SampleTypeResponse;
   updateSampleTypeMapping: SampleTypeMappingResponse;
   updateShipment: ShipmentResponse;
+  updateSmsTemplate: SmsTemplateResponse;
   updateStockCategory: StockCategoryResponse;
   updateStockItem: StockItemResponse;
   updateStockItemVariant: StockItemVariantResponse;
@@ -4136,6 +4139,11 @@ export type MutationCreateShipmentArgs = {
 };
 
 
+export type MutationCreateSmsTemplateArgs = {
+  payload: SmsTemplateInputType;
+};
+
+
 export type MutationCreateStockAdjustmentArgs = {
   payload: StockAdjustmentInputType;
 };
@@ -4342,6 +4350,11 @@ export type MutationDeleteNoticeArgs = {
 
 
 export type MutationDeleteReflexBrainArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteSmsTemplateArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -5019,6 +5032,12 @@ export type MutationUpdateShipmentArgs = {
 };
 
 
+export type MutationUpdateSmsTemplateArgs = {
+  payload: SmsTemplateInputType;
+  uid: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateStockCategoryArgs = {
   payload: StockCategoryInputType;
   uid: Scalars['String']['input'];
@@ -5222,6 +5241,8 @@ export type OperationError = {
   error: Scalars['String']['output'];
   suggestion?: Maybe<Scalars['String']['output']>;
 };
+
+export type OperationErrorDeletedItem = DeletedItem | OperationError;
 
 export type OperationSuccess = {
   __typename?: 'OperationSuccess';
@@ -5833,7 +5854,7 @@ export type Query = {
   noticesByCreator?: Maybe<Array<NoticeType>>;
   notificationByUid?: Maybe<NotificationType>;
   notificationFilter: Array<NotificationType>;
-  ordersByBillUid?: Maybe<AnalysisRequestType>;
+  ordersByBillUid: Array<AnalysisRequestType>;
   patientAll: PatientCursorPage;
   patientByPatientId?: Maybe<PatientType>;
   patientByUid?: Maybe<PatientType>;
@@ -5881,6 +5902,8 @@ export type Query = {
   shipmentById: ShipmentType;
   shipmentByStatus: Array<ShipmentType>;
   shipmentByUid: ShipmentType;
+  smsAll: SmsMessageCursorPage;
+  smsTemplatesByTarget: Array<SmsTemplateType>;
   stockAdjustmentAll: StockAdjustmentCursorPage;
   stockAdjustmentByUid?: Maybe<StockAdjustmentType>;
   stockCategoryAll: Array<StockCategoryType>;
@@ -7166,6 +7189,22 @@ export type QueryShipmentByUidArgs = {
 };
 
 
+export type QuerySmsAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  audience?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySmsTemplatesByTargetArgs = {
+  targetType: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+};
+
+
 export type QueryStockAdjustmentAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
@@ -8010,6 +8049,90 @@ export type ShippedSampleType = {
   shipment: ShipmentType;
   shipmentUid: Scalars['String']['output'];
 };
+
+export enum SmsAudience {
+  Client = 'CLIENT',
+  Patient = 'PATIENT'
+}
+
+export type SmsMessageCursorPage = {
+  __typename?: 'SmsMessageCursorPage';
+  edges?: Maybe<Array<SmsMessageEdge>>;
+  items?: Maybe<Array<SmsMessageType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type SmsMessageEdge = {
+  __typename?: 'SmsMessageEdge';
+  cursor: Scalars['String']['output'];
+  node: SmsMessageType;
+};
+
+export type SmsMessageType = {
+  __typename?: 'SmsMessageType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  recipient?: Maybe<Scalars['String']['output']>;
+  sentAt?: Maybe<Scalars['DateTime']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  targetType?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  templateUid?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type SmsTemplateInputType = {
+  audience?: SmsAudience;
+  description: Scalars['String']['input'];
+  isActive?: Scalars['Boolean']['input'];
+  /** Category name */
+  name: Scalars['String']['input'];
+  specificationTrigger?: SmsTrigger;
+  targetType: Scalars['String']['input'];
+  targetUid: Scalars['String']['input'];
+  template: Scalars['String']['input'];
+};
+
+/** Response for Sms Template operations */
+export type SmsTemplateResponse = OperationError | SmsTemplateType;
+
+export type SmsTemplateType = {
+  __typename?: 'SmsTemplateType';
+  audience?: Maybe<SmsAudience>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  specificationTrigger?: Maybe<SmsTrigger>;
+  targetType?: Maybe<Scalars['String']['output']>;
+  targetUid?: Maybe<Scalars['String']['output']>;
+  template?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export enum SmsTrigger {
+  AboveNormal = 'ABOVE_NORMAL',
+  AboveWarning = 'ABOVE_WARNING',
+  AnyAbnormal = 'ANY_ABNORMAL',
+  AnyResult = 'ANY_RESULT',
+  AnyWarning = 'ANY_WARNING',
+  BelowNormal = 'BELOW_NORMAL',
+  BelowWarning = 'BELOW_WARNING',
+  Normal = 'NORMAL',
+  TextualNormal = 'TEXTUAL_NORMAL',
+  TextualWarning = 'TEXTUAL_WARNING'
+}
 
 export enum StampCategory {
   Project = 'PROJECT',

@@ -47,7 +47,14 @@ class Client(BaseEntity):
         else:
             return ""
 
-
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+            "client_name": self.name, 
+            "client_id": self.code, 
+        }
+        return result
+    
 class ClientContact(AbstractBaseUser):
     __tablename__ = "client_contact"
 
@@ -71,3 +78,17 @@ class ClientContact(AbstractBaseUser):
     @property
     def user_type(self):
         return UserType.CLIENT_CONTACT
+
+    @property
+    def sms_metadata(self) -> dict:
+        result = {"contact_name": self.full_name}
+        
+        if self.client and hasattr(self.client, 'sms_metadata'):
+            try:
+                client_metadata = self.client.sms_metadata
+                if client_metadata:
+                    result.update(client_metadata)
+            except Exception:
+                pass
+                
+        return result

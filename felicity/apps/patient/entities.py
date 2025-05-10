@@ -25,6 +25,9 @@ class PatientIdentification(BaseEntity):
     )
     value = Column(String, index=True, nullable=False)
 
+    @property
+    def sms_metadata(self) -> dict:
+        return {self.identification.name: self.value}
 
 class Patient(BaseEntity):
     __tablename__ = "patient"
@@ -69,3 +72,20 @@ class Patient(BaseEntity):
             return f"{self.first_name} {self.middle_name} {self.last_name}"
         else:
             return f"{self.first_name} {self.last_name}"
+
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+            "patient_name": self.full_name,
+            "patient_id": self.patient_id, 
+            "gender": self.gender,
+            "client_patient_id": self.client_patient_id, 
+            "age": self.age,
+        }
+        
+        # Safely process identifications
+        if self.identifications:
+            for identification in self.identifications:
+                if hasattr(identification, 'sms_metadata') and identification.sms_metadata:
+                    result.update(identification.sms_metadata)
+        return result

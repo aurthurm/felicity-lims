@@ -158,6 +158,13 @@ class Settings(BaseSettings):
         "SYNCFUSION_LICENSE",
         "ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU"
     )
+    # SMS
+    SMS_API_URL: str | None = getenv_value("SMS_API_URL", None)
+    SMS_TOKEN: str | None = getenv_value("SMS_TOKEN", None)
+    SMS_USERNAME: str | None = getenv_value("SMS_USERNAME", None)
+    SMS_PASSWORD: str | None = getenv_value("SMS_PASSWORD", None)
+
+    #
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",

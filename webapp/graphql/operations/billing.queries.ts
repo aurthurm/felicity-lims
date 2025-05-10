@@ -178,7 +178,7 @@ export type GetOrdersByBillUidQueryVariables = Types.Exact<{
 
 export type GetOrdersByBillUidQuery = (
   { __typename?: 'Query' }
-  & { ordersByBillUid?: Types.Maybe<(
+  & { ordersByBillUid: Array<(
     { __typename?: 'AnalysisRequestType' }
     & Pick<Types.AnalysisRequestType, 'uid' | 'clientRequestId' | 'requestId' | 'createdAt'>
     & { patient: (

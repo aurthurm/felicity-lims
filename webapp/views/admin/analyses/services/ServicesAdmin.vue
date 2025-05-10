@@ -38,6 +38,9 @@ import { mutateForm, resetForm } from '@/utils';
   const Billing = defineAsyncComponent(
     () => import('../Billing.vue')
   )
+  const SmsTemplates = defineAsyncComponent(
+    () => import('./SmsTemplate.vue')
+  )
 
 
   const route = useRoute();
@@ -46,7 +49,7 @@ import { mutateForm, resetForm } from '@/utils';
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
   let currentTab = ref('general');
-  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'mappings', 'billing'];
+  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'mappings', 'billing', 'sms-templates'];
   
   let showModal = ref(false);
   let formTitle = ref('');
@@ -409,6 +412,9 @@ function saveMappingForm(): void {
         </div>
         <div v-else-if="currentTab == 'billing'">
           <Billing target="analysis" :targetUid="analysisService.uid" />
+        </div>
+        <div v-else-if="currentTab == 'sms-templates'">
+          <sms-templates targetType="analysis" :targetUid="analysisService.uid" />
         </div>
       </section>
 

@@ -32,7 +32,7 @@ const configs = ref([
     path: "/admin/worksheets-conf",
     icon: "grip-horizontal",
   },
-  {title: "Email, SMS", path: "/admin/publication-conf", icon: "copy"},
+  // {title: "Email, SMS", path: "/admin/publication-conf", icon: "copy"},
   {title: "Reflex Rules", path: "/admin/reflex-rule-conf", icon: "code-branch"},
   {title: "Load Setup Data", path: "/admin/setup-data-conf", icon: "database"},
   {title: "Inventory Mgt", path: "/admin/inventory-conf", icon: "database"},

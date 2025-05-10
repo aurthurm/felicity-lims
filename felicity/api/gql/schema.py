@@ -61,6 +61,9 @@ from felicity.api.gql.user.query import UserQuery
 from felicity.api.gql.worksheet import worksheet_types
 from felicity.api.gql.worksheet.mutations import WorkSheetMutations
 from felicity.api.gql.worksheet.query import WorkSheetQuery
+from felicity.api.gql.commune import commune_types
+from felicity.api.gql.commune.query import CommuneQuery
+from felicity.api.gql.commune.mutations import CommuneMutations
 
 types = (
         generic_types
@@ -85,6 +88,7 @@ types = (
         + microbiology_types
         + grind_types
         + document_types
+        + commune_types
 )
 
 
@@ -110,7 +114,8 @@ class Query(
     BillingQuery,
     MicrobiologyQuery,
     GrindQuery,
-    DocumentQuery
+    DocumentQuery,
+    CommuneQuery
 ):
     pass
 
@@ -133,7 +138,8 @@ class Mutation(
     BillingMutations,
     MicrobiologyMutations,
     GrindMutations,
-    DocumentMutations
+    DocumentMutations,
+    CommuneMutations
 ):
     pass
 

@@ -25,6 +25,14 @@ class Laboratory(BaseEntity):
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
 
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+           "lab_name": self.lab_name, 
+           "lab_email": self.email, 
+           "lab_phone": self.mobile_phone
+        }   
+        return result
 
 class LaboratorySetting(BaseEntity):
     __tablename__ = "laboratory_setting"

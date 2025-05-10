@@ -1,0 +1,13 @@
+query getSmsTemplatesByTarget($targetType: String!, $targetUid: String!){
+    smsTemplatesByTarget(targetType: $targetType, targetUid: $targetUid){
+        uid
+        name
+        description
+        specificationTrigger
+        audience
+        template
+        createdAt
+        updatedAt
+        isActive
+    }
+}

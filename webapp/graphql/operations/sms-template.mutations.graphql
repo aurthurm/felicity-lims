@@ -1,0 +1,60 @@
+mutation AddSmsTemplate($payload: SmsTemplateInputType!) {
+    createSmsTemplate(payload: $payload) {
+        ... on SmsTemplateType {
+            __typename
+            uid
+            name
+            description
+            specificationTrigger
+            audience
+            template
+            createdAt
+            updatedAt
+            isActive
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditSmsTemplate($uid: String!, $payload: SmsTemplateInputType!) {
+    updateSmsTemplate(uid: $uid, payload: $payload) {
+        ... on SmsTemplateType {
+            __typename
+            uid 
+            name
+            description
+            specificationTrigger
+            audience
+            template
+            createdAt
+            updatedAt
+            isActive
+        }
+
+        ... on OperationError {
+            __typename
+            error   
+            suggestion
+        }
+    }   
+}
+
+mutation DeleteSmsTemplate($uid: String!) {
+    deleteSmsTemplate(uid: $uid) {
+        ... on DeletedItem {
+            __typename
+            uid
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }   
+    }
+}

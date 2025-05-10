@@ -254,6 +254,20 @@ class Analysis(BaseEntity):
     hidden = Column(Boolean(), default=False)
     active = Column(Boolean(), default=False)
 
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+           "analysis_keyword": self.keyword, 
+           "analysis_name": self.name, 
+        }   
+
+        if self.unit and hasattr(self.unit, 'name'):
+            try:
+                result.update({"unit": self.unit.name })
+            except Exception:
+                pass
+                
+        return result
 
 class AnalysisCoding(BaseEntity):
     """AnalysisCoding"""
@@ -392,6 +406,10 @@ class AnalysisRequest(BaseEntity):
     client = relationship(
         ct_entities.Client, backref="analysis_requests", lazy="selectin"
     )
+    client_contact_uid = Column(String, ForeignKey("client_contact.uid"))
+    client_contact = relationship(
+        ct_entities.ClientContact, backref="analysis_requests", lazy="selectin"
+    )
     samples = relationship("Sample", back_populates="analysis_request", lazy="selectin")
     request_id = Column(String, index=True, unique=True, nullable=True)
     client_request_id = Column(String, unique=True, nullable=False)
@@ -399,6 +417,12 @@ class AnalysisRequest(BaseEntity):
     # Metadata snapshot
     metadata_snapshot = Column(JSONB, nullable=False)
 
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+           "request_id": self.request_id, 
+           "client_request_id": self.client_request_id, 
+        } 
 
 """
 Many to Many Link between Sample and Profile
@@ -519,3 +543,20 @@ class Sample(BaseEntity, BaseMPTT):
     storage_slot_index = Column(Integer, nullable=True)
     # Metadata snapshot
     metadata_snapshot = Column(JSONB, nullable=False)
+
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+           "sample_id": self.sample_id, 
+           "date_collected": self.date_collected
+        }   
+
+        if self.analysis_request and hasattr(self.analysis_request, 'sms_metadata'):
+            try:
+                ar_metadata = self.analysis_request.sms_metadata
+                if ar_metadata:
+                    result.update(ar_metadata)
+            except Exception:
+                pass
+                
+        return result
