@@ -114,6 +114,7 @@ class AnalysisRequestType:
     client_uid: str
     request_id: str
     client_request_id: str
+    client_contact_uid: str
     internal_use: bool
     metadata_snapshot: JSONScalar | None = None
     #

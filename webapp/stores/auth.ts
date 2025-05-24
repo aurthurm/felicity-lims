@@ -106,6 +106,7 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const startRefreshTokenTimer = () => {
+        
         if (!auth.value.token) return;
         
         try {
@@ -175,7 +176,7 @@ export const useAuthStore = defineStore('auth', () => {
             authValue?.user && authValue?.token) {
             try {
                 authToStorage(authValue as AuthenticatedData);
-                startRefreshTokenTimer();
+                // startRefreshTokenTimer();
             } catch (error) {
                 console.error('Failed to persist auth state:', error);
                 reset();
