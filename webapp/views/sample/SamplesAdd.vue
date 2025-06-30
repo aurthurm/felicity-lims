@@ -168,6 +168,56 @@ function removeSample(index: number): void {
     <h5 class="text-xl font-semibold text-foreground mb-4">Add Analysis Request</h5>
     <form action="post" class="p-6 bg-background rounded-lg shadow-sm space-y-6" @submit.prevent="submitARForm">
       <div class="space-y-4">
+        <!-- Client, Contact, and Priority - Same Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <label class="flex flex-col space-y-2">
+            <span class="text-sm font-medium text-foreground">Client</span>
+            <VueMultiselect 
+              class="w-full" 
+              placeholder="Select a Client" 
+              v-model="client" 
+              :options="clients" 
+              :searchable="true"
+              label="name" 
+              track-by="uid" 
+              @select="selectContact"
+            />
+          </label>
+
+          <label class="flex flex-col space-y-2">
+            <span class="text-sm font-medium text-foreground">Client Contact</span>
+            <select 
+              name="clientContacts" 
+              id="clientContacts" 
+              v-model="clientContactUid"
+              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              aria-label="Select client contact"
+            >
+              <option value=""></option>
+              <option v-for="contact in client?.contacts" :key="contact.uid" :value="contact.uid">
+                {{ contact.firstName }} {{ contact.lastName }}
+              </option>
+            </select>
+            <div class="text-sm text-destructive">{{ errors.clientContactUid }}</div>
+          </label>
+
+          <label class="flex flex-col space-y-2">
+            <span class="text-sm font-medium text-foreground">Priority</span>
+            <select 
+              name="priority" 
+              id="priority" 
+              v-model="priority"
+              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              aria-label="Select priority level"
+            >
+              <option value=0>Low</option>
+              <option value=1>Medium</option>
+              <option value=2>High</option>
+            </select>
+            <div class="text-sm text-destructive">{{ errors.priority }}</div>
+          </label>
+        </div>
+
         <label class="flex flex-col space-y-2">
           <span class="text-sm font-medium text-foreground">Client Request ID</span>
           <input 
@@ -187,138 +237,125 @@ function removeSample(index: number): void {
           />
           <div class="text-sm text-destructive">{{ errors.clinicalData }}</div>
         </label>
-
-        <label class="flex flex-col space-y-2">
-          <span class="text-sm font-medium text-foreground">Client</span>
-          <VueMultiselect 
-            class="w-full" 
-            placeholder="Select a Client" 
-            v-model="client" 
-            :options="clients" 
-            :searchable="true"
-            label="name" 
-            track-by="uid" 
-            @select="selectContact"
-          />
-        </label>
-
-        <label class="flex flex-col space-y-2">
-          <span class="text-sm font-medium text-foreground">Client Contacts</span>
-          <select 
-            name="clientContacts" 
-            id="clientContacts" 
-            v-model="clientContactUid"
-            class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label="Select client contact"
-          >
-            <option value=""></option>
-            <option v-for="contact in client?.contacts" :key="contact.uid" :value="contact.uid">
-              {{ contact.firstName }} {{ contact.lastName }}
-            </option>
-          </select>
-          <div class="text-sm text-destructive">{{ errors.clientContactUid }}</div>
-        </label>
-
-        <label class="flex flex-col space-y-2">
-          <span class="text-sm font-medium text-foreground">Priority</span>
-          <select 
-            name="priority" 
-            id="priority" 
-            v-model="priority"
-            class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label="Select priority level"
-          >
-            <option value=0>Low</option>
-            <option value=1>Medium</option>
-            <option value=2>High</option>
-          </select>
-          <div class="text-sm text-destructive">{{ errors.priority }}</div>
-        </label>
       </div>
 
       <section id="samples" class="space-y-4">
         <div class="flex justify-between items-center">
           <h5 class="text-lg font-semibold text-foreground">Samples</h5>
-          <span class="text-sm text-destructive">{{ errors.samples }}</span>
-          <button 
-            v-if="samples?.length !== 20" 
-            @click.prevent="addSample()"
-            class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
-          >
-            Add Sample
-          </button>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-destructive">{{ errors.samples }}</span>
+            <button 
+              v-if="samples?.length !== 20" 
+              @click.prevent="addSample()"
+              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              Add Sample
+            </button>
+          </div>
         </div>
 
-        <div v-for="(sample, index) in samples" :key="index" class="space-y-4 p-4 border border-border rounded-lg">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1 space-y-4">
-              <label class="flex flex-col space-y-2">
-                <span class="text-sm font-medium text-foreground">Sample Type</span>
-                <select 
-                  name="sampleTypes" 
-                  id="sampleTypes" 
-                  v-model="sample.sampleType" 
-                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  aria-label="Select sample type"
-                >
-                  <option value=""></option>
-                  <option v-for="sampleType in sampleTypes" :key="sampleType.uid" :value="sampleType.uid">
-                    {{ sampleType.name }}
-                  </option>
-                </select>
-              </label>
-
-              <label class="flex flex-col space-y-2">
-                <span class="text-sm font-medium text-foreground">Date Collected</span>
-                <VueDatePicker 
-                  class="w-full" 
-                  v-model="sample.dateCollected" 
-                  :max-date="maxDate" 
-                  time-picker-inline
-                />
-              </label>
-
-              <label class="flex flex-col space-y-2">
-                <span class="text-sm font-medium text-foreground">Analysis Profiles</span>
-                <select 
-                  name="analysisProfiles" 
-                  id="analysisProfiles" 
-                  v-model="sample.profiles" 
-                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  multiple
-                  aria-label="Select analysis profiles"
-                >
-                  <option value=""></option>
-                  <option v-for="profile in analysesProfiles" :key="profile.uid" :value="profile.uid">
-                    {{ profile.name }}
-                  </option>
-                </select>
-              </label>
-
-              <label class="flex flex-col space-y-2">
-                <span class="text-sm font-medium text-foreground">Analysis Services</span>
-                <select 
-                  name="analysesServices" 
-                  id="analysesServices" 
-                  v-model="sample.analyses" 
-                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  multiple
-                  aria-label="Select analysis services"
-                >
-                  <option value=""></option>
-                  <option v-for="service in analysesServices" :key="service.uid" :value="service.uid">
-                    {{ service.name }}
-                  </option>
-                </select>
-              </label>
-            </div>
+        <div v-for="(sample, index) in samples" :key="index" class="p-4 border border-border rounded-lg bg-background/50">
+          <!-- Sample Header -->
+          <div class="flex justify-between items-center mb-4">
+            <h6 class="text-md font-medium text-foreground">Sample {{ index + 1 }}</h6>
             <button 
               @click.prevent="removeSample(index)"
-              class="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive/50"
+              class="px-3 py-1 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive/50 text-sm"
             >
               Remove
             </button>
           </div>
+
+          <!-- Sample Content Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <!-- Row 1: Sample Type and Date -->
+            <label class="flex flex-col space-y-2">
+              <span class="text-sm font-medium text-foreground">Sample Type</span>
+              <select 
+                name="sampleTypes" 
+                id="sampleTypes" 
+                v-model="sample.sampleType" 
+                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                aria-label="Select sample type"
+              >
+                <option value=""></option>
+                <option v-for="sampleType in sampleTypes" :key="sampleType.uid" :value="sampleType.uid">
+                  {{ sampleType.name }}
+                </option>
+              </select>
+            </label>
+
+            <label class="flex flex-col space-y-2">
+              <span class="text-sm font-medium text-foreground">Date Collected</span>
+              <VueDatePicker 
+                class="w-full" 
+                v-model="sample.dateCollected" 
+                :max-date="maxDate" 
+                time-picker-inline
+              />
+            </label>
+
+            <!-- Spacer for grid alignment -->
+            <div class="hidden xl:block"></div>
+
+            <!-- Row 2: Analysis Profiles and Services -->
+            <label class="flex flex-col space-y-2 lg:col-span-1 xl:col-span-1">
+              <span class="text-sm font-medium text-foreground">Analysis Profiles</span>
+              <select 
+                name="analysisProfiles" 
+                id="analysisProfiles" 
+                v-model="sample.profiles" 
+                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[100px]"
+                multiple
+                aria-label="Select analysis profiles"
+              >
+                <option value=""></option>
+                <option v-for="profile in analysesProfiles" :key="profile.uid" :value="profile.uid">
+                  {{ profile.name }}
+                </option>
+              </select>
+              <small class="text-xs text-muted-foreground">Hold Ctrl/Cmd to select multiple</small>
+            </label>
+
+            <label class="flex flex-col space-y-2 lg:col-span-1 xl:col-span-1">
+              <span class="text-sm font-medium text-foreground">Analysis Services</span>
+              <select 
+                name="analysesServices" 
+                id="analysesServices" 
+                v-model="sample.analyses" 
+                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[100px]"
+                multiple
+                aria-label="Select analysis services"
+              >
+                <option value=""></option>
+                <option v-for="service in analysesServices" :key="service.uid" :value="service.uid">
+                  {{ service.name }}
+                </option>
+              </select>
+              <small class="text-xs text-muted-foreground">Hold Ctrl/Cmd to select multiple</small>
+            </label>
+
+            <!-- Selected Items Summary (optional) -->
+            <div class="flex flex-col space-y-2 xl:col-span-1">
+              <span class="text-sm font-medium text-foreground">Selection Summary</span>
+              <div class="p-3 bg-muted/50 rounded-md text-sm space-y-1">
+                <div class="text-xs text-muted-foreground">
+                  <strong>Profiles:</strong> {{ sample.profiles?.length || 0 }} selected
+                </div>
+                <div class="text-xs text-muted-foreground">
+                  <strong>Services:</strong> {{ sample.analyses?.length || 0 }} selected
+                </div>
+                <div v-if="sample.profiles?.length === 0 && sample.analyses?.length === 0" class="text-xs text-destructive">
+                  ⚠️ Select profiles or services
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state when no samples -->
+        <div v-if="!samples || samples.length === 0" class="text-center py-8 text-muted-foreground">
+          <p class="text-sm">No samples added yet. Click "Add Sample" to get started.</p>
         </div>
       </section>
 
@@ -328,7 +365,7 @@ function removeSample(index: number): void {
           type="submit"
           class="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
         >
-          Add Sample(s)
+          Save Sample(s)
         </button>
         <div v-else class="py-4 text-center">
           <fel-loader message="Adding Samples ..." />
