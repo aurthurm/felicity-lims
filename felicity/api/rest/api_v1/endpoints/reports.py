@@ -75,14 +75,14 @@ async def request_report_generation(
 @reports.delete("/{report_uid}")
 async def delete_report(
     report_uid: str,
-    report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    report_service: Annotated[ReportMetaService, Depends(ReportMetaService)],
     current_user: Annotated[User, Depends(get_current_user)],
 ):
-    report = await report_servie.get(uid=report_uid)
+    report = await report_service.get(uid=report_uid)
     delete_file(report.location)
     for analysis in report.analyses:
         report.analyses.remove(analysis)
     report.analyses = []
-    await report_servie.save(report)
-    await report_servie.delete(report.uid)
+    await report_service.save(report)
+    await report_service.delete(report.uid)
     return {"uid": report_uid, "message": "Deletion Success!!"}

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from felicity.core.dtz import timenow_dt
+from felicity.core.config import settings
 
 
 def delete_file(file_name: str) -> bool:
@@ -17,7 +18,7 @@ def resolve_media_dirs_for(target: str) -> str:
     """
     Creates directories if not exist
     """
-    str_path = "media/" + target + "/" + timenow_dt().strftime("%Y/%m/%d") + "/"
+    str_path = settings.MEDIA_DIR + "/" + target + "/" + timenow_dt().strftime("%Y/%m/%d") + "/"
     path = Path(str_path)
     if not path.is_dir():
         os.makedirs(str_path, exist_ok=True)
@@ -32,6 +33,6 @@ def create_dir(dir_name: str) -> None:
 
 
 def resolve_root_dirs() -> None:
-    _dirs = ["media"]
+    _dirs = [settings.MEDIA_DIR]
     for _dir in _dirs:
         create_dir(_dir)
