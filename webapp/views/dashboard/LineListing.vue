@@ -35,7 +35,10 @@ onMounted(async () => {
   });
 });
 
-const saveListingForm = () => generateReport({ ...state.listingForm });
+const saveListingForm = () => {
+  generateReport({ ...state.listingForm });
+  showForm.value = false;
+};
 
 const downloadReport = (report: any) => {
   const link = document.createElement("a");
@@ -134,14 +137,14 @@ const downloadReport = (report: any) => {
             </td>
             <td class="px-4 py-2 border-b border-foreground text-right space-x-2">
               <button
-                v-if="report.status === 'READY'"
+                v-if="report.status?.toLowerCase() === 'ready'"
                 class="px-3 py-1 border border-primary text-primary rounded-md hover:bg-primary hover:text-primary-foreground"
                 @click="downloadReport(report)"
               >
                 Download
               </button>
               <button
-                v-if="report.status === 'READY'"
+                v-if="report.status?.toLowerCase() === 'ready'"
                 class="px-3 py-1 border border-destructive text-destructive rounded-md hover:bg-destructive hover:text-destructive-foreground"
                 @click="deleteReport(report)"
               >

@@ -83,7 +83,8 @@ class EntityAnalyticsInit(Generic[ModelType]):
             inner join analysis an on an.uid = re.analysis_uid
             inner join sample_type st on st.uid = re.analysis_uid
             inner join patient pt on pt.uid = ar.patient_uid
-            left join instrument inst on inst.uid = re.instrument_uid
+            left join laboratory_instrument li on li.uid = re.laboratory_instrument_uid
+            inner join instrument inst on inst.uid = li.instrument_uid
             left join method mt on mt.uid = re.method_uid
             where
                 sa.{date_column} >= :sd and

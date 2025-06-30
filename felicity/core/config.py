@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     BASE_DIR: str = BASE_DIR
     SEEDS_DIR: str = os.path.abspath(os.path.join(BASE_DIR, "lims", "seeds", "data"))
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
+    MEDIA_DIR: str = os.path.join(BASE_DIR, "..", "media")
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
     # secrets.token_urlsafe(32)

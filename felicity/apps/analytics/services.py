@@ -19,4 +19,4 @@ class ReportMetaService(BaseService[ReportMeta, ReportMetaCreate, ReportMetaUpda
             report.location = location
             report.status = status
             report.temp = None
-            await super().update(report, marshaller(report))
+            await super().save(report)

@@ -13,6 +13,10 @@ STATIC_DIR = f"{settings.BASE_DIR}/templates/static/"
 
 def setup_webapp(app: FastAPI, serve_webapp: bool, schema: Schema) -> None:
     backends: str = "/backends" if serve_webapp else "/"
+    
+    app.mount(
+        "/media", StaticFiles(directory=settings.MEDIA_DIR), name="media"
+    )
 
     if serve_webapp:
         app.mount(

@@ -26,14 +26,14 @@ async def read_reports(
     Retrieve previously generated csv reports.
     """
     _r = await report_servie.all()
-    return list(map(lambda r: r.marshall_simple(), _r))
+    return list(map(lambda r: r.marshal_simple(), _r))
 
 
-@reports.post("")
+@reports.post("", response_model=an_schema.ReportMeta)
 async def request_report_generation(
     request_in: an_schema.ReportRequest,
-    report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
-    analysis_servie: Annotated[AnalysisService, Depends(AnalysisService)],
+    report_service: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    analysis_service: Annotated[AnalysisService, Depends(AnalysisService)],
     job_service: Annotated[JobService, Depends(JobService)],
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
@@ -43,7 +43,7 @@ async def request_report_generation(
     # logger.info(f"Report Gen request: {request_in.__dict__}")
     media_dir = resolve_media_dirs_for("reports")
     file_path = media_dir + uuid4().hex
-    analyses = await analysis_servie.get_all(uid__in=request_in.analyses_uids)
+    analyses = await analysis_service.get_all(uid__in=request_in.analyses_uids)
     report_in = an_schema.ReportMetaCreate(
         period_start=request_in.period_start.replace(tzinfo=None),
         period_end=request_in.period_end.replace(tzinfo=None),
@@ -54,9 +54,11 @@ async def request_report_generation(
         status=ReportState.PENDING,
         created_by_uid=current_user.uid,
         updated_by_uid=current_user.uid,
+        analyses=analyses if analyses else []
     )
-    report_in.analyses = analyses if analyses else []
-    report = await report_servie.create(report_in)
+    data = report_in.model_dump(exclude_unset=True)
+    data['analyses'] = analyses
+    report = await report_service.create(data, related=['analyses', 'created_by', 'updated_by'])
     # Add a job
     job_schema = job_schemas.JobCreate(
         action=JobAction.GENERATE_REPORT,
