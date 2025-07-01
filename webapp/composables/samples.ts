@@ -4,8 +4,8 @@ import useApiUtil  from './api_util';
 import useNotifyToast from './alert_toast';
 import { CancelSamplesDocument, CancelSamplesMutation, CancelSamplesMutationVariables, CloneSamplesDocument, CloneSamplesMutation, CloneSamplesMutationVariables, InvalidateSamplesDocument, InvalidateSamplesMutation, InvalidateSamplesMutationVariables, PrintSamplesDocument, PrintSamplesMutation, PrintSamplesMutationVariables, PublishSamplesDocument, PublishSamplesMutation, PublishSamplesMutationVariables, ReceiveSamplesDocument, ReceiveSamplesMutation, ReceiveSamplesMutationVariables, ReInstateSamplesDocument, ReInstateSamplesMutation, ReInstateSamplesMutationVariables, RejectSamplesDocument, RejectSamplesMutation, RejectSamplesMutationVariables, VerifySamplesDocument, VerifySamplesMutation, VerifySamplesMutationVariables } from '@/graphql/operations/analyses.mutations';
 import { RecoverSamplesDocument, RecoverSamplesMutation, RecoverSamplesMutationVariables, StoreSamplesDocument, StoreSamplesMutation, StoreSamplesMutationVariables } from '@/graphql/operations/storage.mutations';
-import { BarcodeSamplesDocument, BarcodeSamplesQuery, BarcodeSamplesQueryVariables, ImpressSampleReportDocument, ImpressSampleReportQuery, ImpressSampleReportQueryVariables, ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables } from '@/graphql/operations/analyses.queries';
-import { Maybe, SampleRejectInputType, SampleType, StoreSamplesInputType } from '@/types/gql';
+import { BarcodeSamplesDocument, BarcodeSamplesQuery, BarcodeSamplesQueryVariables, ImpressSampleReportDocument, ImpressSampleReportQuery, ImpressSampleReportQueryVariables, ImpressSampleReportsDocument, ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables } from '@/graphql/operations/analyses.queries';
+import { Maybe, SamplePublishInputType, SampleRejectInputType, SampleType, StoreSamplesInputType } from '@/types/gql';
 
 
 export default function useSampleComposable() {
@@ -22,7 +22,7 @@ export default function useSampleComposable() {
     const _updateSamples = async (samples: Array<SampleType>) => sampleStore.updateSamples(samples);
     const _addSampleClones = async (samples: Array<SampleType>) => sampleStore.addSampleClones(samples);
 
-    const _fetchAnalysesResultsFor = async (uid: number) => {
+    const _fetchAnalysesResultsFor = async (uid: string) => {
         if (!uid) return;
         sampleStore.fetchAnalysisResultsForSample(uid);
     };
@@ -168,7 +168,7 @@ export default function useSampleComposable() {
     };
 
     // PUBLISH_SAMPLES
-    const publishSamples = async (samples: Array<SampleType>): Promise<void> => {
+    const publishSamples = async (samples: Array<SamplePublishInputType>): Promise<void> => {
         try {
             const result = await swalConfirm(
                 'You want to publish samples',
@@ -193,6 +193,7 @@ export default function useSampleComposable() {
 
     // DOWNLOAD_IMPRESS by SAMPLES
     const downloadSamplesImpress = async (sampleIds: string[]): Promise<void> => {
+        console.log('Downloading Impress reports for samples:', sampleIds);
         try {
             const result = await swalConfirm(
                 'You want to download PDFs',
@@ -200,8 +201,9 @@ export default function useSampleComposable() {
             );
 
             if (result.isConfirmed) {
+                console.log('impressReportsDownload:', sampleIds);
                 const response = await withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(
-                    ImpressSampleReportDocument, 
+                    ImpressSampleReportsDocument, 
                     { sampleIds }, 
                     'impressReportsDownload'
                 );

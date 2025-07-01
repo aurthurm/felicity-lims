@@ -13,6 +13,7 @@ const DataTable = defineAsyncComponent(
 )
 
 import * as shield from "@/guards";
+import { ExtSampleType } from "@/types/ext";
 
 const sampleStore = useSampleStore();
 const analysisStore = useAnalysisStore();
@@ -37,7 +38,7 @@ const state = reactive({
 });
 
 // samples
-const samples = computed<SampleType[]>(() => sampleStore.getSamples);
+const samples = computed<ExtSampleType[]>(() => sampleStore.getSamples as ExtSampleType[]);
 const filterOptions = ref([
   { name: "All", value: "" },
   { name: "Expected", value: "expected" },
@@ -426,12 +427,12 @@ const sampleToolTip = (sample: SampleType) => {
 
 const allChecked = ref(false);
 function toggleCheckAll(opts: any): void {
-  samples.value?.forEach((sample: SampleType) => (sample.checked = opts.checked));
+  samples.value?.forEach((sample: ExtSampleType) => (sample.checked = opts.checked));
   allChecked.value = opts.checked;
   checkUserActionPermissios();
 }
 
-function toggleCheck(sample: SampleType): void {
+function toggleCheck(sample: ExtSampleType): void {
   const index = samples.value.findIndex((s) => s.uid === sample.uid);
   samples.value[index].checked = sample.checked;
   if (areAllChecked()) {
@@ -442,7 +443,7 @@ function toggleCheck(sample: SampleType): void {
   checkUserActionPermissios();
 }
 
-function unCheck(sample: SampleType): void {
+function unCheck(sample: ExtSampleType): void {
   const index = samples.value.findIndex((s) => s.uid === sample.uid);
   samples.value[index].checked = false;
   allChecked.value = false;
@@ -450,18 +451,18 @@ function unCheck(sample: SampleType): void {
 }
 
 async function unCheckAll() {
-  samples.value?.forEach((sample: SampleType) => (sample.checked = false));
+  samples.value?.forEach((sample: ExtSampleType) => (sample.checked = false));
   allChecked.value = false;
   checkUserActionPermissios();
 }
 
 function areAllChecked(): Boolean {
-  return samples.value?.every((sample: SampleType) => sample.checked === true);
+  return samples.value?.every((sample: ExtSampleType) => sample.checked === true);
 }
 
-function getSamplesChecked(): SampleType[] {
-  let box: SampleType[] = [];
-  samples.value?.forEach((sample: SampleType) => {
+function getSamplesChecked(): ExtSampleType[] {
+  let box: ExtSampleType[] = [];
+  samples.value?.forEach((sample: ExtSampleType) => {
     if (sample.checked) box.push(sample);
   });
   return box;
