@@ -44,7 +44,7 @@ function userGroupsName(user: UserType): string {
   return groups.join(", ");
 }
 
-function UserFormManager(create: boolean, obj: UserType = {} as UserType): void {
+function FormManager(create: boolean, obj: UserType = {} as UserType): void {
   formAction.value = create;
   showUserModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
@@ -91,7 +91,7 @@ const headers = [
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-semibold">Users</h1>
       <button
-        @click="showUserModal = true"
+        @click="FormManager(true)"
         class="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         aria-label="Add new user"
       >
@@ -141,7 +141,7 @@ const headers = [
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-right">
               <button
-                @click="editUser(user)"
+                @click="FormManager(false, user)"
                 class="text-primary hover:text-primary/80 focus:outline-none focus:underline"
                 aria-label="Edit user"
               >
@@ -310,4 +310,3 @@ const headers = [
     </template>
   </fel-modal>
 </template>
-@/graphql/operations/_mutations@/graphql/_mutations

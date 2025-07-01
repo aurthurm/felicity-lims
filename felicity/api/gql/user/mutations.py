@@ -129,7 +129,7 @@ class UserMutations:
             "updated_by_uid": felicity_user.uid,
         }
         user_in = user_schemas.UserCreate(**user_in)
-        user = await user_service.create(user_in=user_in)
+        user = await user_service.create(user_in=user_in,related=['groups'])
         if group_uid:
             group = await group_service.get(uid=group_uid)
             user.groups.append(group)
