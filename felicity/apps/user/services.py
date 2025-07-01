@@ -44,7 +44,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         data["hashed_password"] = hashed_password
         return await super().create(data, related=related)
 
-    async def update(self, user_uid: str, user_in: UserUpdate) -> User:
+    async def update(self, user_uid: str, user_in: UserUpdate, related=None) -> User:
         update_data = self._import(user_in)
 
         if "password" in update_data:
@@ -57,7 +57,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         if "user" in update_data:
             del update_data["user"]
 
-        return await super().update(user_uid, update_data)
+        return await super().update(user_uid, update_data, related)
 
     async def has_access(self, user: User, password: str):
         if user.is_blocked:

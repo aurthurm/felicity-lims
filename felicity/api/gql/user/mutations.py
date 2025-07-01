@@ -163,7 +163,7 @@ class UserMutations:
         group_service = GroupService()
         felicity_user = await auth_from_info(info)
 
-        user = await user_service.get(uid=user_uid)
+        user = await user_service.get(uid=user_uid, related=['groups'])
         if not user:
             return OperationError(error="Error, failed to fetch user for updating")
 
@@ -186,7 +186,7 @@ class UserMutations:
             assert password == passwordc
             user_in.password = password
 
-        user = await user_service.update(user.uid, user_in)
+        user = await user_service.update(user.uid, user_in, related=['groups'])
 
         # group management
         grp_ids = [grp.uid for grp in user.groups]
@@ -344,7 +344,7 @@ class UserMutations:
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")
 
-        group = await group_service.get(uid=group_uid)
+        group = await group_service.get(uid=group_uid, related=['permissions'])
         if not group:
             return OperationError(error=f"group with uid {group_uid} not found")
 
