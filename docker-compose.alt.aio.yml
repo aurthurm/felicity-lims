@@ -1,0 +1,234 @@
+# Alternative 2: All-In-One (AIO) Deployment (with Caddy/Nginx)
+# This configuration uses a single 'felicity-aio' container for both webapp and API.
+# It can be fronted by either Nginx or Caddy. All databases and supporting services are containerized.
+
+networks:
+  felicitynet:
+    driver: bridge # Defines a bridge network for inter-service communication
+
+# Named volumes for persistent data storage for all stateful Docker services.
+volumes:
+  dragonfly_data: # Volume for DragonflyDB data
+  dbgate_data:    # Volume for DbGate configuration and data
+  felicity_media: # Volume for application media files (e.g., uploads)
+  minio_data:     # Volume for MinIO object storage data
+  postgres_data:  # Volume for PostgreSQL database data
+  mongo_data:     # Volume for MongoDB database data
+  caddy_data:     # Volume for Caddy's managed data (certificates, etc.)
+  caddy_config:   # Volume for Caddy's configuration
+
+services:
+  # Option 1: Nginx as the primary reverse proxy
+  felicity-aio-nginx:
+    container_name: felicity-aio-nginx
+    image: nginx:1.25.3-alpine # Pinned image version
+    restart: unless-stopped
+    # Uncomment these ports if you want to use Nginx as the primary entry point
+    # and comment out Caddy's ports below to avoid conflicts.
+    ports:
+      - "80:80" # Expose Nginx on host port 80
+    environment:
+      PROXY_BACKEND: felicity-aio # Backend service name for AIO app
+      PROXY_PORT: 8000           # Port of the AIO app
+      SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
+    volumes:
+      - ./services/nginx/proxy/:/etc/nginx/templates/ # Mount Nginx config for AIO
+    depends_on:
+      - felicity-aio # Ensure AIO app is up before Nginx starts
+    networks:
+      - felicitynet
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
+
+  # Option 2: Caddy as the primary reverse proxy
+  felicity-aio-caddy:
+    container_name: felicity-aio-caddy
+    image: caddy:2.7.6-alpine # Pinned Caddy image version
+    restart: unless-stopped
+    # Uncomment these ports if you want to use Caddy as the primary entry point
+    # and comment out Nginx's ports above to avoid conflicts.
+    ports:
+      - "80:80" # Expose Caddy on host port 80 (HTTP)
+      - "443:443" # Expose Caddy on host port 443 (HTTPS)
+    volumes:
+      # Mount your Caddyfile for AIO services (ensure this path exists)
+      - ./services/caddy/aio/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # Caddy's managed data (certificates, etc.)
+      - caddy_config:/config # Caddy's configuration
+    environment:
+      PROXY_BACKEND: felicity-aio # Backend service name for AIO app
+      PROXY_PORT: 8000           # Port of the AIO app
+      SERVER_HOST: ${SERVER_HOST} # Hostname for Caddy (from .env)
+    depends_on:
+      - felicity-aio # Ensure AIO app is up before Caddy starts
+    networks:
+      - felicitynet
+    healthcheck: # Health check for Caddy
+      test: ["CMD", "curl", "-f", "http://localhost/health"] # Adjust if Caddy has a specific health endpoint
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  felicity-aio:
+    container_name: felicity-aio
+    image: amusendame/felicity-lims:aio-0.1.9 # Pinned image version
+    restart: unless-stopped
+    env_file:
+      - .env # Load environment variables from .env file
+    environment:
+      POSTGRES_SERVER: felicity-postgres
+      SERVE_WEBAPP: True # AIO serves the webapp
+      REDIS_SERVER: redis://felicity-dragonfly:6379
+      MONGODB_SERVER: felicity-mongo:27017
+      MONGODB_USER: felicity # Consider using ${MONGO_INITDB_ROOT_USERNAME} from .env
+      MONGODB_PASS: felicity # Consider using ${MONGO_INITDB_ROOT_PASSWORD} from .env
+      MINIO_SERVER: felicity-minio:9000
+      MINIO_ACCESS: felicity # Consider using ${MINIO_ROOT_USER} from .env
+      MINIO_SECRET: felicity # Consider using ${MINIO_ROOT_PASSWORD} from .env
+    ports:
+      - 8000:8000 # Expose AIO app on host port 8000 for direct access (or proxy only)
+    networks:
+      - felicitynet
+    depends_on:
+      felicity-postgres:
+        condition: service_healthy
+      felicity-dragonfly:
+        condition: service_healthy
+      felicity-minio:
+        condition: service_healthy
+      felicity-mongo:
+        condition: service_healthy
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
+
+  felicity-minio:
+    container_name: felicity-minio
+    image: bitnami/minio:2024.7.31 # Pinned image version
+    restart: unless-stopped
+    ports:
+      - '9000:9000' # Expose MinIO API on host port 9000
+      - '9001:9001' # Expose MinIO Console on host port 9001
+    networks:
+      - felicitynet
+    volumes:
+      - minio_data:/data # Persistent volume
+    environment:
+      MINIO_ROOT_USER: felicity # Consider using ${MINIO_ROOT_USER} from .env
+      MINIO_ROOT_PASSWORD: felicity # Consider using ${MINIO_ROOT_PASSWORD} from .env
+      MINIO_DEFAULT_BUCKET: felicity
+    command: minio server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  felicity-dragonfly:
+    container_name: felicity-dragonfly
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinned image version
+    restart: unless-stopped
+    environment:
+      - DFLY_proactor_threads=4
+      - DFLY_maxmemory=1G
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379" # Expose DragonflyDB on host port 6379
+    volumes:
+      - dragonfly_data:/data # Persistent volume
+    networks:
+      - felicitynet
+    healthcheck:
+      test: ["CMD-SHELL", "dragonfly-cmd ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  felicity-postgres:
+    container_name: felicity-postgres
+    image: postgres:12.18 # Pinned image version
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: felicity_lims
+      POSTGRES_USER: felicity # Consider using ${POSTGRES_USER} from .env
+      POSTGRES_PASSWORD: felicity # Consider using ${POSTGRES_PASSWORD} from .env
+      POSTGRES_HOST_AUTH_METHOD: trust # Acceptable for development
+    volumes:
+      - ./services/postgres/init/:/docker-entrypoint-initdb.d/ # Init scripts
+      - postgres_data:/var/lib/postgresql/data # Persistent volume
+    ports:
+      - 5434:5432 # Expose PostgreSQL on host port 5434
+    networks:
+      - felicitynet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U felicity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  felicity-mongo:
+    container_name: felicity-mongo
+    image: mongo:7.0.9 # Pinned image version
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: felicity # Consider using ${MONGO_INITDB_ROOT_USERNAME} from .env
+      MONGO_INITDB_ROOT_PASSWORD: felicity # Consider using ${MONGO_INITDB_ROOT_PASSWORD} from .env
+    volumes:
+      - mongo_data:/data/db # Persistent volume
+    ports:
+      - '27027:27017' # Expose MongoDB on host port 27027
+    networks:
+      - felicitynet
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  felicity-dbgate:
+    container_name: felicity-dbgate
+    image: dbgate/dbgate:1.50.0 # Pinned image version
+    restart: always
+    ports:
+      - 8051:3000 # Expose DbGate on host port 8051
+    volumes:
+      - dbgate_data:/root/.dbgate # Persistent volume
+    environment:
+      LOGIN: felicity # Consider using ${DBGATE_USER} from .env
+      PASSWORD: felicity # Consider using ${DBGATE_PASSWORD} from .env
+      CONNECTIONS: pg,mg
+      LABEL_pg: Felicity Postgres
+      SERVER_pg: felicity-postgres
+      USER_pg: felicity # Consider using ${POSTGRES_USER} from .env
+      PASSWORD_pg: felicity # Consider using ${POSTGRES_PASSWORD} from .env
+      DATABASE_pg: felicity_lims
+      PORT_pg: 5432
+      ENGINE_pg: postgres@dbgate-plugin-postgres
+      READONLY_pg: 1
+      LABEL_mg: Felicity Mongo
+      URL_mg: mongodb://felicity:felicity@felicity-mongo:27017/ # Consider using ${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD} from .env
+      DATABASE_mg: felicity
+      ENGINE_mg: mongo@dbgate-plugin-mongo
+      READONLY_mg: 1
+    networks:
+      - felicitynet
+    depends_on:
+      felicity-postgres:
+        condition: service_healthy
+      felicity-mongo:
+        condition: service_healthy
+
+  word-processor-server:
+    container_name: word-processor-server
+    image: syncfusion/word-processor-server:25.1.42 # Pinned image version
+    restart: unless-stopped
+    environment:
+      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} 
+    ports:
+      - "6002:80" # Expose Word Processor Server on host port 6002
+    networks:
+      - felicitynet

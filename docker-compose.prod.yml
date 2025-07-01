@@ -1,0 +1,210 @@
+# This Docker Compose file defines the services for the Felicity LIMS application.
+# All services, including PostgreSQL, MinIO, and MongoDB, are containerized
+# with persistent data volumes for production readiness.
+
+networks:
+  felicitynet:
+    driver: bridge # Defines a bridge network for inter-service communication
+
+# Named volumes for persistent data storage for all stateful Docker services.
+# These volumes are managed by Docker and are the recommended way to persist data.
+volumes:
+  dragonfly_data: # Volume for DragonflyDB data
+  dbgate_data:    # Volume for DbGate configuration and data
+  felicity_media: # Volume for application media files (e.g., uploads)
+  minio_data:     # Volume for MinIO object storage data
+  postgres_data:  # Volume for PostgreSQL database data
+  mongo_data:     # Volume for MongoDB database data
+
+services:
+  felicity-static-nginx:
+    container_name: felicity-static-nginx
+    image: amusendame/felicity-static-nginx:0.1.9 # Pinning image version for stability
+    restart: unless-stopped # Always restart unless explicitly stopped
+    ports:
+      - "80:80" # Expose Nginx on host port 80
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      PROXY_BACKEND: felicity-api # Backend service name for Nginx proxy
+      PROXY_PORT: 8000           # Port of the backend service
+      SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
+    depends_on:
+      - felicity-api # Ensure API is up before Nginx starts
+    networks:
+      - felicitynet # Connect to the custom network
+    logging:
+      options:
+        max-size: 10m # Limit log file size
+        max-file: 5   # Keep up to 5 log files
+
+  felicity-api:
+    container_name: felicity-api
+    image: amusendame/felicity-lims:api-0.1.9 # Pinning image version for stability
+    restart: unless-stopped
+    env_file:
+      - .env # Load environment variables from .env file
+    environment:
+      # Database and service connection details for containerized services.
+      # Services communicate using their service names within the Docker network.
+      POSTGRES_SERVER: felicity-postgres
+      SERVE_WEBAPP: False # Indicates the API will not serve the web app (Nginx does)
+      REDIS_SERVER: redis://felicity-dragonfly:6379
+      MONGODB_SERVER: felicity-mongo:27017
+      MONGODB_USER: ${MONGO_INITDB_ROOT_USERNAME} # Sourced from .env
+      MONGODB_PASS: ${MONGO_INITDB_ROOT_PASSWORD} # Sourced from .env
+      MINIO_SERVER: felicity-minio:9000
+      MINIO_ACCESS: ${MINIO_ROOT_USER} # Sourced from .env
+      MINIO_SECRET: ${MINIO_ROOT_PASSWORD} # Sourced from .env
+    ports:
+      - "127.0.0.1:9991:8000" # Expose API on localhost port 9991
+    networks:
+      - felicitynet
+    volumes:
+      - felicity_media:/app/felicity/media # Mount volume for media uploads
+    depends_on:
+      # Ensure all backend services are running before the API starts
+      - felicity-postgres
+      - felicity-dragonfly
+      - felicity-minio
+      - felicity-mongo
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
+
+  felicity-minio:
+    container_name: felicity-minio
+    image: bitnami/minio:2025-debian-12 # Pinning a specific, stable image version
+    restart: unless-stopped # Ensure MinIO restarts if it crashes
+    ports:
+      - '127.0.0.1:9992:9000' # Expose MinIO API on localhost port 9992
+      - '127.0.0.1:9993:9001' # Expose MinIO Console on localhost port 9993
+    networks:
+      - felicitynet
+    volumes:
+      - minio_data:/data # Persist MinIO data to a named volume
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      # MinIO root credentials. These should be defined in your .env file
+      # for production security. DO NOT hardcode them here.
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: minio server /data --console-address ":9001" # Start MinIO server with console
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      
+  felicity-dragonfly:
+    container_name: felicity-dragonfly
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinning image version
+    restart: unless-stopped
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      - DFLY_proactor_threads=4 # Configure DragonflyDB threads
+      - DFLY_maxmemory=1G      # Set max memory for DragonflyDB
+    ulimits:
+      memlock: -1 # Allow memory locking for performance
+    ports:
+      - "127.0.0.1:9994:6379" # Expose DragonflyDB on localhost port 9994
+    volumes:
+      - dragonfly_data:/data # Persist DragonflyDB data to a named volume
+    networks:
+      - felicitynet
+
+  felicity-postgres:
+    container_name: felicity-postgres
+    image: postgres:12.18 # Pinning a specific PostgreSQL 12 version for stability
+    restart: unless-stopped
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      # PostgreSQL database credentials. These should be defined in your .env file.
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # IMPORTANT: For production, 'md5' or 'scram-sha-256' is recommended for security.
+      POSTGRES_HOST_AUTH_METHOD: md5
+      shared_buffers: 256MB # Example PostgreSQL configuration
+      max_connections: 100  # Example PostgreSQL configuration
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data to a named volume
+    ports:
+      - "127.0.0.1:9995:5432" # Expose PostgreSQL on localhost port 9995 (internal 5432)
+    networks:
+      - felicitynet
+    healthcheck: # Health check to ensure PostgreSQL is ready
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  felicity-mongo:
+    container_name: felicity-mongo
+    image: mongo:7.0.9 # Pinning a specific MongoDB version for stability
+    restart: unless-stopped # Ensure MongoDB restarts if it crashes
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      # MongoDB root credentials. These should be defined in your .env file.
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db # IMPORTANT: Persist MongoDB data to a named volume
+    ports:
+      - '127.0.0.1:9996:27017' # Expose MongoDB on localhost port 9996 (internal 27017)
+    networks:
+      - felicitynet
+
+  felicity-dbgate:
+    container_name: felicity-dbgate
+    image: dbgate/dbgate:latest # Pinning image version
+    restart: always
+    ports:
+      - "127.0.0.1:9997:3000" # Expose DbGate on localhost port 9997
+    volumes:
+      - dbgate_data:/root/.dbgate # Persist DbGate configuration
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      # DbGate login credentials
+      LOGIN: ${DBGATE_USER} # Sourced from .env
+      PASSWORD: ${DBGATE_PASSWORD} # Sourced from .env
+      # Connection details for PostgreSQL (pg) and MongoDB (mg)
+      CONNECTIONS: pg,mg
+      LABEL_pg: Felicity Postgres
+      SERVER_pg: felicity-postgres # Connects to the containerized PostgreSQL service by name
+      USER_pg: ${POSTGRES_USER} # Sourced from .env
+      PASSWORD_pg: ${POSTGRES_PASSWORD} # Sourced from .env
+      DATABASE_pg: ${POSTGRES_DB} # Sourced from .env
+      PORT_pg: 5432 # Default PostgreSQL port
+      ENGINE_pg: postgres@dbgate-plugin-postgres
+      READONLY_pg: 1 # Set PostgreSQL connection as read-only in DbGate
+      LABEL_mg: Felicity Mongo
+      URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@felicity-mongo:27017/ # Connects to containerized Mongo service by name
+      DATABASE_mg: felicity
+      ENGINE_mg: mongo@dbgate-plugin-mongo
+      READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
+    networks:
+      - felicitynet
+    depends_on:
+      # Ensure databases are up before DbGate tries to connect
+      - felicity-postgres
+      - felicity-mongo
+
+  word-processor-server:
+    image: syncfusion/word-processor-server:latest # Pinning image version
+    restart: unless-stopped
+    env_file:
+      - .env # Load PostgreSQL credentials from .env file
+    environment:
+      # Syncfusion license key (should ideally be in .env for production)
+      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} # Sourced from .env
+    ports:
+      - "127.0.0.1:9998:80" # Expose Word Processor Server on localhost port 9998
+    networks:
+      - felicitynet # Connect to the custom network

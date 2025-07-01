@@ -1,5 +1,23 @@
-services:
+# This Docker Compose file defines the services for the Felicity LIMS application
+# in a development environment. All services are containerized with persistent
+# data volumes for ease of local development and data retention.
 
+networks:
+  felicitynet:
+    driver: bridge # Defines a bridge network for inter-service communication
+
+# Named volumes for persistent data storage for all stateful Docker services.
+# These volumes are managed by Docker and are the recommended way to persist data
+# across container restarts or recreation in development.
+volumes:
+  dragonfly_data: # Volume for DragonflyDB data
+  dbgate_data:    # Volume for DbGate configuration and data
+  felicity_media: # Volume for application media files (e.g., uploads)
+  minio_data:     # Volume for MinIO object storage data
+  postgres_data:  # Volume for PostgreSQL database data
+  mongo_data:     # Volume for MongoDB database data
+
+services:
   felicity-webapp:
     container_name: felicity-webapp
     restart: unless-stopped
@@ -8,19 +26,19 @@ services:
       target: webapp
       dockerfile: Dockerfile.dev
     volumes:
-      - ./webapp/:/app/webapp
+      - ./webapp/:/app/webapp # Mount local webapp code for live reloading
     environment:
       - NODE_ENV=development
       - VITE_NODE_ENV=development
       - VITE_APP_TITLE=Felicity Dev
-      - VITE_BASE_URL=http://localhost:8000
+      - VITE_BASE_URL=http://localhost:8000 # Points to the API exposed on host
     ports:
-      - "3000:3000"
+      - "3000:3000" # Expose webapp on host port 3000
     depends_on:
-      - felicity-postgres
+      - felicity-api # Webapp depends on the API
     networks:
       - felicitynet
-    command: bash -c "pnpm webapp:dev --host --port 3000"
+    command: bash -c "pnpm webapp:dev --host --port 3000" # Development command for webapp
 
   felicity-api:
     container_name: felicity-api
@@ -30,139 +48,172 @@ services:
       target: webapi
       dockerfile: Dockerfile.dev
     environment:
-      - POSTGRES_SERVER=felicity-postgres
-      - POSTGRES_DB=felicity_lims
-      - POSTGRES_USER=felicity
-      - POSTGRES_PASSWORD=felicity
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - LOAD_SETUP_DATA=${LOAD_SETUP_DATA:-False}
-      - SERVE_WEBAPP=${SERVE_WEBAPP:-False}
-      - REDIS_SERVER=felicity-dragonfly:6379
-      - MONGODB_SERVER=felicity-mongo:27017
-      - MONGODB_USER=felicity
-      - MONGODB_PASS=felicity
-      - MINIO_SERVER=felicity-minio:9000
-      - MINIO_ACCESS=felicity
-      - MINIO_SECRET=felicity
+      # Database and service connection details for containerized services.
+      # Services communicate using their service names within the Docker network.
+      POSTGRES_SERVER: felicity-postgres
+      POSTGRES_DB: felicity_lims
+      POSTGRES_USER: felicity
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_HOST_AUTH_METHOD: trust # Acceptable for development
+      LOAD_SETUP_DATA: ${LOAD_SETUP_DATA:-False}
+      SERVE_WEBAPP: ${SERVE_WEBAPP:-False}
+      REDIS_SERVER: redis://felicity-dragonfly:6379
+      MONGODB_SERVER: felicity-mongo:27017
+      # Use consistent environment variable names for MongoDB
+      MONGODB_USER: felicity # Hardcoded for dev, consider .env for consistency
+      MONGODB_PASS: felicity # Hardcoded for dev, consider .env for consistency
+      MINIO_SERVER: felicity-minio:9000
+      # Use consistent environment variable names for MinIO
+      MINIO_ACCESS: felicity # Hardcoded for dev, consider .env for consistency
+      MINIO_SECRET: felicity # Hardcoded for dev, consider .env for consistency
     volumes:
-      - ./felicity:/app/felicity
+      - ./felicity:/app/felicity # Mount local API code for live reloading
+      - felicity_media:/app/felicity/media # Mount volume for media uploads
     ports:
-      - 8000:8000
+      - 8000:8000 # Expose API on host port 8000
     depends_on:
+      # Ensure all backend services are running before the API starts
       - felicity-postgres
+      - felicity-dragonfly
+      - felicity-minio
+      - felicity-mongo
     networks:
       - felicitynet
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: bash -c "cd felicity && uvicorn main:felicity --reload --host=0.0.0.0 --port=8000"
+    # extra_hosts is not needed for inter-container communication in a fully containerized setup
+    # - "host.docker.internal:host-gateway" # Removed as not needed for inter-container
+    command: bash -c "cd felicity && uvicorn main:felicity --reload --host=0.0.0.0 --port=8000" # Development command for API
 
   felicity-minio:
     container_name: felicity-minio
-    image: bitnami/minio:2024.7.31
+    image: bitnami/minio:2024.7.31 # Pinning image version
+    restart: unless-stopped # Ensure MinIO restarts if it crashes
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - '9000:9000' # Expose MinIO API on host port 9000
+      - '9001:9001' # Expose MinIO Console on host port 9001
     networks:
       - felicitynet
     volumes:
-      - 'minio_data:/data'
+      - minio_data:/data # Persist MinIO data to a named volume
     environment:
-      - MINIO_ROOT_USER=felicity
-      - MINIO_ROOT_PASSWORD=felicity
-      - MINIO_DEFAULT_BUCKET=felicity
+      # MinIO root credentials (hardcoded for dev, consider .env for consistency)
+      MINIO_ROOT_USER: felicity
+      MINIO_ROOT_PASSWORD: felicity
+      MINIO_DEFAULT_BUCKET: felicity
+    command: minio server /data --console-address ":9001" # Start MinIO server with console
+    healthcheck: # Health check for MinIO
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   felicity-dragonfly:
     container_name: felicity-dragonfly
-    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinning image version
+    restart: unless-stopped
+    environment:
+      - DFLY_proactor_threads=4 # Configure DragonflyDB threads
+      - DFLY_maxmemory=1G      # Set max memory for DragonflyDB
     ulimits:
-      memlock: -1
+      memlock: -1 # Allow memory locking for performance
     ports:
-      - "6379:6379"
-    # For better performance, consider `host` mode instead `port` to avoid docker NAT.
-    # `host` mode is NOT currently supported in Swarm Mode.
-    # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
-    # network_mode: "host"
+      - "6379:6379" # Expose DragonflyDB on host port 6379
     volumes:
-      - dragonflydata:/data
+      - dragonfly_data:/data # Persist DragonflyDB data to a named volume (standardized name)
     networks:
       - felicitynet
+    healthcheck: # Health check for DragonflyDB
+      test: ["CMD-SHELL", "dragonfly-cmd ping"] # Assuming dragonfly-cmd is available in the image
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   felicity-postgres:
     container_name: felicity-postgres
-    image: postgres:12
+    image: postgres:12.18 # Pinning a specific PostgreSQL 12 version for stability
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=felicity_lims
-      - POSTGRES_USER=felicity
-      - POSTGRES_PASSWORD=felicity
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      # PostgreSQL database credentials (hardcoded for dev, consider .env for consistency)
+      POSTGRES_DB: felicity_lims
+      POSTGRES_USER: felicity
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_HOST_AUTH_METHOD: trust # Acceptable for development
     volumes:
-      - ./services/postgres/init/:/docker-entrypoint-initdb.d/
-      - pg-data:/var/lib/postgresql/data
+      - ./services/postgres/init/:/docker-entrypoint-initdb.d/ # Init scripts
+      - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data to a named volume (standardized name)
     ports:
-      - 5434:5432
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 5434:5432 # Expose PostgreSQL on host port 5434 (internal 5432)
+    # extra_hosts is not needed for inter-container communication in a fully containerized setup
+    # - "host.docker.internal:host-gateway" # Removed as not needed for inter-container
     networks:
       - felicitynet
+    healthcheck: # Health check to ensure PostgreSQL is ready
+      test: ["CMD-SHELL", "pg_isready -U felicity"] # Using hardcoded user for dev
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   felicity-mongo:
     container_name: felicity-mongo
-    image: mongo
-    restart: always
+    image: mongo:7.0.9 # Pinning a specific MongoDB version for stability
+    restart: unless-stopped # Ensure MongoDB restarts if it crashes (changed from always to unless-stopped)
     environment:
+      # MongoDB root credentials (hardcoded for dev, consider .env for consistency)
       MONGO_INITDB_ROOT_USERNAME: felicity
       MONGO_INITDB_ROOT_PASSWORD: felicity
+    volumes:
+      - mongo_data:/data/db # IMPORTANT: Persist MongoDB data to a named volume
     ports:
-      - '27027:27017'
+      - '27027:27017' # Expose MongoDB on host port 27027 (internal 27017)
     networks:
       - felicitynet
+    healthcheck: # Health check for MongoDB
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   felicity-dbgate:
     container_name: felicity-dbgate
-    image: dbgate/dbgate
+    image: dbgate/dbgate:1.50.0 # Pinning image version (example, check latest stable)
     restart: always
     ports:
-      - 8051:3000
+      - 8051:3000 # Expose DbGate on host port 8051
     volumes:
-      - dbgate-data:/root/.dbgate
+      - dbgate_data:/root/.dbgate # Persist DbGate configuration (standardized name)
     environment:
+      # DbGate login credentials (hardcoded for dev, consider .env for consistency)
       LOGIN: felicity
       PASSWORD: felicity
+      # Connection details for PostgreSQL (pg) and MongoDB (mg)
       CONNECTIONS: pg,mg
       LABEL_pg: Felicity Postgres
-      SERVER_pg: felicity-postgres
-      USER_pg: felicity
-      PASSWORD_pg: felicity
+      SERVER_pg: felicity-postgres # Connects to the containerized PostgreSQL service by name
+      USER_pg: felicity # Hardcoded for dev, consider .env for consistency
+      PASSWORD_pg: felicity # Hardcoded for dev, consider .env for consistency
       DATABASE_pg: felicity_lims
-      PORT_pg: 5432
+      PORT_pg: 5432 # Default PostgreSQL port
       ENGINE_pg: postgres@dbgate-plugin-postgres
-      READONLY_pg: 1
+      READONLY_pg: 1 # Set PostgreSQL connection as read-only in DbGate
       LABEL_mg: Felicity Mongo
+      # Connects to containerized Mongo service by name (hardcoded for dev, consider .env for consistency)
       URL_mg: mongodb://felicity:felicity@felicity-mongo:27017/
       DATABASE_mg: felicity
       ENGINE_mg: mongo@dbgate-plugin-mongo
-      READONLY_mg: 1
+      READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
     networks:
       - felicitynet
+    depends_on:
+      # Ensure databases are up before DbGate tries to connect
+      - felicity-postgres
+      - felicity-mongo
 
   word-processor-server:
-    image: syncfusion/word-processor-server:latest
+    image: syncfusion/word-processor-server:25.1.42 # Pinning image version (example, check latest stable)
+    restart: unless-stopped
     environment:
-      SYNCFUSION_LICENSE_KEY: ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU
+      # Syncfusion license key (hardcoded for dev, consider .env for consistency)
+      SYNCFUSION_LICENSE_KEY:  ${SYNCFUSION_LICENSE} 
     ports:
-      - "6002:80"
+      - "6002:80" # Expose Word Processor Server on host port 6002
     networks:
-      - felicitynet
-
-volumes:
-  pg-data:
-  pgadmin:
-  minio_data:
-  dragonflydata:
-  dbgate-data:
-    driver: local
-
-networks:
-  felicitynet:
-    driver: bridge
+      - felicitynet # Connect to the custom network

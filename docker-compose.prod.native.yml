@@ -1,0 +1,136 @@
+# docker-compose.yml
+# This Docker Compose file defines the services for the Felicity LIMS application.
+# PostgreSQL, MinIO, and MongoDB are assumed to be installed natively on the host
+# or accessible via the host's network.
+
+networks:
+  felicitynet:
+    driver: bridge # Defines a bridge network for inter-service communication
+
+# Global deploy configuration for resource limits (applies to services unless overridden)
+deploy:
+  resources:
+    limits:
+      cpus: '2' # Limit CPU usage to 2 cores
+      memory: 4G  # Limit memory usage to 4 Gigabytes
+
+# Named volumes for persistent data storage for services still running in Docker.
+volumes:
+  dragonfly_data: # Volume for DragonflyDB data
+  dbgate_data:    # Volume for DbGate configuration and data
+  felicity_media: # Volume for application media files (e.g., uploads)
+
+services:
+  felicity-static-nginx:
+    container_name: felicity-static-nginx
+    image: amusendame/felicity-static-nginx:0.1.9 # Pinning image version for stability
+    restart: unless-stopped # Always restart unless explicitly stopped
+    ports:
+      - "80:80" # Expose Nginx on host port 80
+    environment:
+      PROXY_BACKEND: felicity-api # Backend service name for Nginx proxy
+      PROXY_PORT: 8000           # Port of the backend service
+      SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
+    depends_on:
+      - felicity-api # Ensure API is up before Nginx starts
+    networks:
+      - felicitynet # Connect to the custom network
+    logging:
+      options:
+        max-size: 10m # Limit log file size
+        max-file: 5   # Keep up to 5 log files
+
+  felicity-api:
+    container_name: felicity-api
+    image: amusendame/felicity-lims:api-0.1.9 # Pinning image version for stability
+    restart: unless-stopped
+    env_file:
+      - .env # Load environment variables from .env file
+    environment:
+      # Database and service connection details for native installations.
+      # 'host.docker.internal' resolves to the host machine's IP address within Docker Desktop.
+      # For Linux, you might need to replace 'host.docker.internal' with your host's actual IP address
+      # on the Docker bridge network (e.g., 172.17.0.1) or configure a custom network.
+      POSTGRES_SERVER: host.docker.internal
+      SERVE_WEBAPP: False # Indicates the API will not serve the web app (Nginx does)
+      REDIS_SERVER: redis://felicity-dragonfly:6379 # Dragonfly (Redis) is still containerized
+      # MongoDB server address and using standard environment variables for credentials
+      MONGODB_SERVER: host.docker.internal:27017
+      MONGODB_USER: ${MONGO_INITDB_ROOT_USERNAME} # Sourced from .env
+      MONGODB_PASS: ${MONGO_INITDB_ROOT_PASSWORD} # Sourced from .env
+      # MinIO server address and using standard environment variables for credentials
+      MINIO_SERVER: host.docker.internal:9000
+      MINIO_ACCESS: ${MINIO_ROOT_USER} # Sourced from .env
+      MINIO_SECRET: ${MINIO_ROOT_PASSWORD} # Sourced from .env
+    ports:
+      - "127.0.0.1:9991:8000" # Expose API on localhost port 9991
+    networks:
+      - felicitynet
+    volumes:
+      - felicity_media:/app/felicity/media # Mount volume for media uploads
+    depends_on:
+      # Only depend on Dragonfly as other databases are native
+      - felicity-dragonfly
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
+
+  felicity-dragonfly:
+    container_name: felicity-dragonfly
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinning image version
+    restart: unless-stopped
+    environment:
+      - DFLY_proactor_threads=4 # Configure DragonflyDB threads
+      - DFLY_maxmemory=1G      # Set max memory for DragonflyDB
+    ulimits:
+      memlock: -1 # Allow memory locking for performance
+    ports:
+      - "127.0.0.1:9992:6379" # Expose DragonflyDB on localhost port 9992
+    volumes:
+      - dragonfly_data:/data # Persist DragonflyDB data to a named volume
+    networks:
+      - felicitynet
+
+  felicity-dbgate:
+    container_name: felicity-dbgate
+    image: dbgate/dbgate:latest # Pinning image version
+    restart: always
+    ports:
+      - "127.0.0.1:9993:3000" # Expose DbGate on localhost port 9993
+    volumes:
+      - dbgate_data:/root/.dbgate # Persist DbGate configuration
+    environment:
+      # DbGate login credentials
+      LOGIN: ${DBGATE_USER} # Sourced from .env
+      PASSWORD: ${DBGATE_PASSWORD} # Sourced from .env
+      # Connection details for PostgreSQL (pg) and MongoDB (mg)
+      CONNECTIONS: pg,mg
+      LABEL_pg: Felicity Postgres
+      # Connects to the native PostgreSQL installation on the host
+      SERVER_pg: host.docker.internal
+      USER_pg: ${POSTGRES_USER} # Sourced from .env
+      PASSWORD_pg: ${POSTGRES_PASSWORD} # Sourced from .env
+      DATABASE_pg: ${POSTGRES_DB} # Sourced from .env
+      PORT_pg: 5432 # Default PostgreSQL port
+      ENGINE_pg: postgres@dbgate-plugin-postgres
+      READONLY_pg: 1 # Set PostgreSQL connection as read-only in DbGate
+      LABEL_mg: Felicity Mongo
+      # Connects to the native MongoDB installation on the host, using env vars for credentials
+      URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@host.docker.internal:27017/
+      DATABASE_mg: felicity
+      ENGINE_mg: mongo@dbgate-plugin-mongo
+      READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
+    networks:
+      - felicitynet
+
+  word-processor-server:
+    image: syncfusion/word-processor-server:latest # Pinning image version
+    restart: unless-stopped
+    environment:
+      # Syncfusion license key (should ideally be in .env for production)
+      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} # Sourced from .env
+    ports:
+      - "127.0.0.1:9994:80" # Expose Word Processor Server on localhost port 9994
+    networks:
+      - felicitynet # Connect to the custom network
