@@ -13,6 +13,8 @@ from felicity.apps.notification.services import (
     ActivityStreamService,
     NotificationService,
 )
+from felicity.utils.dirs import get_download_path, get_full_path_from_relative
+from felicity.apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -59,10 +61,12 @@ async def generate_report(job_uid: str) -> bool:
             report.created_by,
         )
         return False
+    
+    logger.info(f"Saving report to {file_name}")
+    file_name_with_path = get_full_path_from_relative(file_name)
+    df.to_csv(file_name_with_path, index=False)
 
-    df.to_csv(file_name, index=False)
-
-    file_path = Path(file_name)
+    file_path = Path(file_name_with_path)
     if not file_path.is_file():
         await job_service.change_status(job.uid, new_status=JobState.FAILED)
         await report_meta_service.set_final(
@@ -83,7 +87,13 @@ async def generate_report(job_uid: str) -> bool:
         report.created_by,
     )
     await activity_stream_service.stream(
-        report, report.created_by, "generated", "report"
+        {
+            **marshaller(report),
+            "location": get_download_path(file_name),
+        },
+        report.created_by,
+        "generated",
+        "report"
     )
     return True
 

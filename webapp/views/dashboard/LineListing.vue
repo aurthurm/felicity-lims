@@ -126,9 +126,9 @@ const downloadReport = (report: any) => {
             <td class="px-4 py-2 border-b border-foreground">
               <span
                 :class="{
-                  'bg-success/10 text-success': report?.status === 'READY',
-                  'bg-warning/10 text-warning': report?.status === 'PROCESSING',
-                  'bg-destructive/10 text-destructive': report?.status === 'FAILED',
+                  'bg-success/10 text-success': report?.status?.toLocaleLowerCase() === 'ready',
+                  'bg-warning/10 text-warning': report?.status?.toLocaleLowerCase() === 'processing',
+                  'bg-destructive/10 text-destructive': report?.status?.toLocaleLowerCase() === 'failed',
                 }"
                 class="px-2 py-1 rounded-full text-sm"
               >
@@ -144,7 +144,7 @@ const downloadReport = (report: any) => {
                 Download
               </button>
               <button
-                v-if="report.status?.toLowerCase() === 'ready'"
+                v-if="['ready', 'failed', 'pending'].includes(report.status?.toLowerCase() ?? '')"
                 class="px-3 py-1 border border-destructive text-destructive rounded-md hover:bg-destructive hover:text-destructive-foreground"
                 @click="deleteReport(report)"
               >

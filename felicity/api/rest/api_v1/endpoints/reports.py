@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated, Any
 from uuid import uuid4
 
@@ -12,10 +13,13 @@ from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.user.schemas import User
-from felicity.utils.dirs import delete_file, resolve_media_dirs_for
+from felicity.utils.dirs import delete_file, get_download_path, get_full_path_from_relative, resolve_media_dirs_for
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 reports = APIRouter(tags=["reports"], prefix="/reports")
-
 
 @reports.get("")
 async def read_reports(
@@ -23,10 +27,20 @@ async def read_reports(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
-    Retrieve previously generated csv reports.
+    Retrieve previously generated csv reports with download links.
     """
     _r = await report_servie.all()
-    return list(map(lambda r: r.marshal_simple(), _r))
+    
+    def marshal_with_location(r):
+        report_dict = r.marshal_simple()
+        location = getattr(r, "location", None)
+        if location:
+            report_dict["location"] = get_download_path(location)
+        else:
+            report_dict["location"] = None
+        return report_dict
+
+    return list(map(marshal_with_location, _r))
 
 
 @reports.post("", response_model=an_schema.ReportMeta)
@@ -41,8 +55,10 @@ async def request_report_generation(
     Generate Reports.
     """
     # logger.info(f"Report Gen request: {request_in.__dict__}")
-    media_dir = resolve_media_dirs_for("reports")
-    file_path = media_dir + uuid4().hex
+    _, relative_path = resolve_media_dirs_for("reports")
+    file_path = relative_path + uuid4().hex
+    print(f"Media dir {relative_path}")
+    print(f"File path {file_path}")
     analyses = await analysis_service.get_all(uid__in=request_in.analyses_uids)
     report_in = an_schema.ReportMetaCreate(
         period_start=request_in.period_start.replace(tzinfo=None),
@@ -79,10 +95,18 @@ async def delete_report(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     report = await report_service.get(uid=report_uid)
-    delete_file(report.location)
+
+    _file_path = get_full_path_from_relative(report.location) if report.location else None
+    try:
+        delete_file(_file_path)
+        message = f"File {report.location} deleted successfully."
+    except Exception as e:
+        message = f"Error deleting File {report.location}. Report record deleted successfully."
+        logger.error(f"Error deleting file {report.location}: {e}")
+
     for analysis in report.analyses:
         report.analyses.remove(analysis)
     report.analyses = []
     await report_service.save(report)
     await report_service.delete(report.uid)
-    return {"uid": report_uid, "message": "Deletion Success!!"}
+    return {"uid": report_uid, "message": message}

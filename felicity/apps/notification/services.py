@@ -73,7 +73,7 @@ class ActivityStreamService(
             actor_uid=actor.uid,
             verb=verb,
             action_object_type=object_type,
-            action_object_uid=obj.uid,
+            action_object_uid=obj.get("uid") if isinstance(obj, dict) else obj.uid,
             target_uid=None,
         )
         stream = await self.create(s_in)
