@@ -7,13 +7,6 @@ networks:
   felicitynet:
     driver: bridge # Defines a bridge network for inter-service communication
 
-# Global deploy configuration for resource limits (applies to services unless overridden)
-deploy:
-  resources:
-    limits:
-      cpus: '2' # Limit CPU usage to 2 cores
-      memory: 4G  # Limit memory usage to 4 Gigabytes
-
 # Named volumes for persistent data storage for services still running in Docker.
 volumes:
   dragonfly_data: # Volume for DragonflyDB data
@@ -64,8 +57,6 @@ services:
       MINIO_SECRET: ${MINIO_ROOT_PASSWORD} # Sourced from .env
     ports:
       - "127.0.0.1:9991:8000" # Expose API on localhost port 9991
-    networks:
-      - felicitynet
     volumes:
       - felicity_media:/app/felicity/media # Mount volume for media uploads
     depends_on:
@@ -75,6 +66,10 @@ services:
       options:
         max-size: 10m
         max-file: 5
+    networks:
+      - felicitynet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   felicity-dragonfly:
     container_name: felicity-dragonfly
@@ -123,6 +118,8 @@ services:
       READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
     networks:
       - felicitynet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   word-processor-server:
     image: syncfusion/word-processor-server:latest # Pinning image version

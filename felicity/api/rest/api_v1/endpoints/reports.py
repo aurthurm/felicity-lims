@@ -9,6 +9,7 @@ from felicity.apps.analysis.services.analysis import AnalysisService
 from felicity.apps.analytics import schemas as an_schema
 from felicity.apps.analytics.enum import ReportState
 from felicity.apps.analytics.services import ReportMetaService
+from felicity.apps.analytics.entities import analysis_reports
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
@@ -104,9 +105,10 @@ async def delete_report(
         message = f"Error deleting File {report.location}. Report record deleted successfully."
         logger.error(f"Error deleting file {report.location}: {e}")
 
-    for analysis in report.analyses:
-        report.analyses.remove(analysis)
-    report.analyses = []
-    await report_service.save(report)
+    # TODO: use a single sessibon transaction to delete from the 2 tables
+    await report_service.repository.table_delete(
+        analysis_reports, 
+        report_uid=report.uid
+    )
     await report_service.delete(report.uid)
     return {"uid": report_uid, "message": message}
