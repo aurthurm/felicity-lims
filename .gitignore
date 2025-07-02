@@ -15,8 +15,8 @@ dragonflydata
 dbgate-data
 
 # General
-media/reports/
-media/errand/
+media/
+felicity/media/
 deploy/tracing/signoz
 
 # Python
