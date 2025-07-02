@@ -10,7 +10,26 @@ upstream api {
 server {
     listen 80;
 
-    # Serve static files from the /app directory
+    # Handle media requests
+    location /media/ {
+        proxy_pass http://api/media/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    # GraphQL and API proxying
+    location ~ ^/(api|felicity-gql)(/|$) {
+        proxy_pass http://api;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        # WebSocket support for GraphQL
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+    }
+
+    # Serve static files for the frontend SPA
     location / {
         root        /app;
         index       index.html;
@@ -18,19 +37,8 @@ server {
         include     /etc/nginx/mime.types;
     }
 
-    location ~ ^/(api|felicity-gql)(/|$) {
-        proxy_pass http://api;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-
-         # Enable WebSocket support for /felicity-gql
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-    }
-
-    error_page   500 502 503 504  /50x.html;
+    error_page 500 502 503 504 /50x.html;
     location = /50x.html {
-        root   /usr/share/nginx/html;
+        root /usr/share/nginx/html;
     }
 }

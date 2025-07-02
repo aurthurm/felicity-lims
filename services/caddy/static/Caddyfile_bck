@@ -15,10 +15,6 @@
 		reverse_proxy {$PROXY_BACKEND}:{$PROXY_PORT}
 	}
 
-	handle /media/* {
-		reverse_proxy {$PROXY_BACKEND}:{$PROXY_PORT}
-	}
-
 	handle {
 		root * /app
 		try_files {path} /index.html
