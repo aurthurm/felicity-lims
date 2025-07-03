@@ -45,7 +45,7 @@ services:
       # For Linux, you might need to replace 'host.docker.internal' with your host's actual IP address
       # on the Docker bridge network (e.g., 172.17.0.1) or configure a custom network.
       POSTGRES_SERVER: host.docker.internal
-      SERVE_WEBAPP: False # Indicates the API will not serve the web app (Nginx does)
+      SERVE_WEBAPP: 0 # Indicates the API will not serve the web app (Nginx does)
       REDIS_SERVER: redis://felicity-dragonfly:6379 # Dragonfly (Redis) is still containerized
       # MongoDB server address and using standard environment variables for credentials
       MONGODB_SERVER: host.docker.internal:27017

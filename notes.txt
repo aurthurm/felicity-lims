@@ -38,3 +38,22 @@ docker run --rm amusendame/felicity-lims:api-0.1.9 ls -ltr /ap
 
 // inspect layers for size
 docker history amusendame/felicity-lims:aio-0.1.9
+
+
+
+// swarm -- not working yet
+docker swarm init 
+docker stack deploy -c docker-compose.prod.native.yml -c docker-compose.swarm.yml felicity
+
+docker stack ls
+docker service ls
+docker service logs felicity_felicity-api
+docker service logs felicity_felicity-api --tail 50
+
+docker stack rm felicity
+
+docker volume ls | grep felicity
+docker volume rm <volume_name>
+
+docker network ls | grep felicity
+docker network rm <network_name>

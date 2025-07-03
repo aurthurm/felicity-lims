@@ -1,0 +1,46 @@
+version: "3.13"
+
+networks:
+  felicitynet:
+    driver: overlay
+    attachable: true
+
+
+services:
+  felicity-static-nginx:
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - felicitynet
+
+  felicity-api:
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    ports: [] # Remove ports because Swarm manages published ports differently
+    networks:
+      - felicitynet
+
+  felicity-dragonfly:
+    deploy:
+      replicas: 1
+    ports: [] 
+    networks:
+      - felicitynet
+
+  felicity-dbgate:
+    deploy:
+      replicas: 1
+    ports: [] 
+    networks:
+      - felicitynet
+
+  word-processor-server:
+    deploy:
+      replicas: 1
+    ports: [] 
+    networks:
+      - felicitynet
