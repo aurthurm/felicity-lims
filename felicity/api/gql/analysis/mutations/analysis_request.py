@@ -37,7 +37,7 @@ from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
 from felicity.apps.guard import FAction, FObject
-from felicity.apps.impress.sample.utils import impress_samples
+from felicity.apps.impress.sample.tasks import impress_results
 from felicity.apps.iol.redis import task_guard
 from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
@@ -534,40 +534,40 @@ async def publish_samples(
 
     data = [{"uid": s.uid, "action": s.action} for s in samples]  # noqa
 
+    job_schema = job_schemas.JobCreate(
+        action=JobAction.IMPRESS_REPORT,
+        category=JobCategory.IMPRESS,
+        priority=JobPriority.NORMAL,
+        job_id="0",
+        status=JobState.PENDING,
+        creator_uid=felicity_user.uid,
+        data=data,
+    )
+
+    job = await JobService().create(job_schema)
     if settings.ENABLE_BACKGROUND_PROCESSING:
-        impressed = await impress_samples(data, felicity_user)
+        impressed = await impress_results(job.uid)
         return SampleListingType(samples=impressed, message="Samples have been impressed")
-    else:
-        job_schema = job_schemas.JobCreate(
-            action=JobAction.IMPRESS_REPORT,
-            category=JobCategory.IMPRESS,
-            priority=JobPriority.NORMAL,
-            job_id="0",
-            status=JobState.PENDING,
-            creator_uid=felicity_user.uid,
-            data=data,
-        )
 
-        await JobService().create(job_schema)
-        if final_publish:
-            for sample in final_publish:
-                await task_guard.process(
-                    uid=sample.uid, object_type=TrackableObject.SAMPLE
-                )
+    if final_publish:
+        for sample in final_publish:
+            await task_guard.process(
+                uid=sample.uid, object_type=TrackableObject.SAMPLE
+            )
 
-        # TODO: clean up below - probably no longer necessary - needs checking
-        # !important for frontend
-        # unfreeze frontend and return sample to original state since it is a non final publish
-        if not_final:
-            ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
-            for sample in ns_samples:
-                await ActivityStreamService().stream(
-                    sample, felicity_user, sample.status, "sample"
-                )
+    # TODO: clean up below - probably no longer necessary - needs checking
+    # !important for frontend
+    # unfreeze frontend and return sample to original state since it is a non final publish
+    if not_final:
+        ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
+        for sample in ns_samples:
+            await ActivityStreamService().stream(
+                sample, felicity_user, sample.status, "sample"
+            )
 
-        return OperationSuccess(
-            message="Your results are being published in the background."
-        )
+    return OperationSuccess(
+        message="Your results are being published in the background."
+    )
 
 
 @strawberry.mutation(
