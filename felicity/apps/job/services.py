@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.job.entities import Job
 from felicity.apps.job.enum import JobPriority, JobState
@@ -12,6 +14,19 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
     def __init__(self):
         self.repository: JobRepository = JobRepository()
         super().__init__(self.repository)
+
+    async def create(self, c: JobCreate | dict, related: list[str] | None = None, commit: bool = True,
+                     session: AsyncSession | None = None):
+
+        # By default, auto delay by a minute to execute any job
+        # labs which don't need background processing can execute jobs instantly without waiting
+        next_try = timenow_dt() + timedelta(minutes=1)
+        if isinstance(c, dict):
+            c["next_try"] = next_try
+        else:
+            c.next_try = next_try
+
+        return super().create(c, related, commit, session)
 
     async def backoff(self, uid: str, minutes: int = 5, max_retries: int = 5):
         job = await self.get(uid=uid)
@@ -31,7 +46,8 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
                 JobState.FINISHED,
                 JobState.FAILED,
                 JobState.RUNNING,
-            ]
+            ],
+            "next_try__gt": timenow_dt()
         }
         sort_attrs = [
             "-priority",

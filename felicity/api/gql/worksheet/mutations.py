@@ -26,7 +26,9 @@ from felicity.apps.worksheet import schemas
 from felicity.apps.worksheet.entities import worksheet_template_qc_level
 from felicity.apps.worksheet.enum import WorkSheetState
 from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
+from felicity.apps.worksheet.tasks import populate_worksheet_plate_manually, populate_worksheet_plate
 from felicity.apps.worksheet.workflow import WorkSheetWorkFlow
+from felicity.core.config import settings
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -275,10 +277,14 @@ class WorkSheetMutations:
         for ws in worksheets:
             j_schemas.append(job_schema.model_copy(update={"job_id": ws.uid}))
 
-        await JobService().bulk_create(j_schemas)
+        jobs = await JobService().bulk_create(j_schemas)
+
+        if not settings.ENABLE_BACKGROUND_PROCESSING:
+            for job in jobs:
+                await populate_worksheet_plate(job.uid)
 
         # to get lazy loads working otherwise return WorksheetListingType(worksheets)
-        to_send = [WorkSheetService().get(uid=ws.uid) for ws in worksheets]
+        to_send = [(await WorkSheetService().get(uid=ws.uid)) for ws in worksheets]
 
         return WorksheetListingType(worksheets=to_send)
 
@@ -411,8 +417,10 @@ class WorkSheetMutations:
             job_id=ws.uid,
             status=JobState.PENDING,
         )
-        await JobService().create(job_schema)
-        # await tasks.populate_worksheet_plate(job.uid)
+        job = await JobService().create(job_schema)
+        if not settings.ENABLE_BACKGROUND_PROCESSING:
+            await populate_worksheet_plate(job.uid)
+            ws = await WorkSheetService().get(uid=ws.uid)
 
         return WorkSheetType(**ws.marshal_simple())
 
@@ -440,11 +448,6 @@ class WorkSheetMutations:
         if not ws:
             return OperationError(error=f"WorkSheet {uid} does not exist")
 
-        # incoming = {}
-        # ws_schema = schemas.WorkSheetUpdate(**incoming)
-        # ws = await ws.update(ws_schema)
-
-        # Add a job
         job_schema = job_schemas.JobCreate(
             action=JobAction.WORKSHEET_MANUAL_ASSIGN,
             category=JobCategory.WORKSHEET,
@@ -454,7 +457,11 @@ class WorkSheetMutations:
             status=JobState.PENDING,
             data={"qc_template_uid": qc_template_uid, "analyses_uids": analyses_uids},
         )
-        await JobService().create(job_schema)
+        job = await JobService().create(job_schema)
+
+        if not settings.ENABLE_BACKGROUND_PROCESSING:
+            await populate_worksheet_plate_manually(job.uid)
+            ws = await WorkSheetService().get(uid=ws.uid)
 
         return WorkSheetType(**ws.marshal_simple())
 

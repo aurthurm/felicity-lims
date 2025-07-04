@@ -8,9 +8,10 @@ from felicity.api.gql.analysis.permissions import CanVerifyAnalysisResult
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
-from felicity.api.gql.types import OperationError, OperationSuccess
+from felicity.api.gql.types import OperationError
 from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.analysis.tasks import verify_results, submit_results
 from felicity.apps.analysis.utils import retest_from_result_uids
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from felicity.apps.guard import FAction, FObject
@@ -20,6 +21,7 @@ from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
+from felicity.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -39,6 +41,13 @@ class ResultListingType:
     results: List[r_types.AnalysisResultType]
 
 
+@strawberry.type
+class ResultOperationType:
+    is_background: bool
+    results: List[r_types.AnalysisResultType] | None = None
+    message: str | None = None
+
+
 AnalysisResultResponse = strawberry.union(
     "AnalysisResultResponse",
     (ResultListingType, OperationError),  # noqa
@@ -47,7 +56,7 @@ AnalysisResultResponse = strawberry.union(
 
 AnalysisResultOperationResponse = strawberry.union(
     "AnalysisResultSubmitResponse",
-    (OperationSuccess, OperationError),  # noqa
+    (ResultOperationType, OperationError),  # noqa
     description="Union of possible outcomes when submitting/verifying results",
 )
 
@@ -70,11 +79,7 @@ async def submit_analysis_results(
 
     an_results = [result.__dict__ for result in analysis_results]
 
-    # if not settings.ENABLE_BACKGROUND_PROCESSING:
-    #     returns = await results_submitter(an_results, felicity_user)
-    #     return
-    # else:
-    # submit an results as jobs
+    # submit analysis results as jobs
     job_schema = job_schemas.JobCreate(  # noqa
         action=JobAction.RESULT_SUBMIT,
         category=JobCategory.RESULT,
@@ -85,7 +90,14 @@ async def submit_analysis_results(
         data=an_results,
     )
 
-    await JobService().create(job_schema)
+    job = await JobService().create(job_schema)
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        returns = await submit_results(job.uid)
+        return ResultOperationType(
+            results=returns,
+            is_background=settings.ENABLE_BACKGROUND_PROCESSING
+        )
+
     for _ar in an_results:
         await task_guard.process(
             uid=_ar["uid"], object_type=TrackableObject.RESULT
@@ -100,8 +112,9 @@ async def submit_analysis_results(
             uid=source_object_uid, object_type=TrackableObject.SAMPLE
         )
 
-    return OperationSuccess(
-        message="Your results are being submitted in the background."
+    return ResultOperationType(
+        message="Your results are being submitted in the background.",
+        is_background=settings.ENABLE_BACKGROUND_PROCESSING
     )
 
 
@@ -123,8 +136,15 @@ async def verify_analysis_results(
         creator_uid=felicity_user.uid,
         data=analyses,
     )
+    job = await JobService().create(job_schema)
 
-    await JobService().create(job_schema)
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        returns = await verify_results(job.uid)
+        return ResultOperationType(
+            results=returns,
+            is_background=settings.ENABLE_BACKGROUND_PROCESSING
+        )
+
     for uid in analyses:
         await task_guard.process(uid=uid, object_type=TrackableObject.RESULT)
 
@@ -138,8 +158,9 @@ async def verify_analysis_results(
             uid=source_object_uid, object_type=TrackableObject.SAMPLE
         )
 
-    return OperationSuccess(
-        message="Your results are being verified in the background."
+    return ResultOperationType(
+        message="Your results are being verified in the background.",
+        is_background=settings.ENABLE_BACKGROUND_PROCESSING
     )
 
 
