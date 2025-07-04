@@ -64,12 +64,13 @@ async def get_last_verificator(result_uid: str) -> User | None:
     ar_service = AnalysisResultService()
     user_service = UserService()
 
-    data = await ar_service.repository.table_query(
-        table=result_verification, result_uid=result_uid
+    verifier_uids = await ar_service.repository.table_query(
+        table=result_verification, result_uid=result_uid, columns=['user_uid']
     )
-    if not data:
+    if not verifier_uids:
         return None
-    return await user_service.get(uid=data[-1])
+    _user_uid = verifier_uids[0] if len(verifier_uids) == 1 else verifier_uids[-1]
+    return await user_service.get(uid=_user_uid)
 
 
 async def sample_search(

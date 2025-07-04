@@ -52,7 +52,7 @@ class CanVerifyAnalysisResult(BasePermission):
         if not user:
             return False
 
-        if not user.is_active or not has_perm(user.uid, FAction.APPROVE, FObject.RESULT):
+        if not user.is_active or not (await has_perm(user.uid, FAction.APPROVE, FObject.RESULT)):
             return False
 
         try:

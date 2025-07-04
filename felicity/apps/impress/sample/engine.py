@@ -8,6 +8,8 @@ from barcode import Code128
 from barcode.writer import ImageWriter
 from fpdf import FPDF
 
+from felicity.apps.analysis.enum import ResultState
+from felicity.apps.impress.sample.helpers import get_report_user
 from felicity.core.config import get_settings
 from felicity.core.dtz import timenow_str, format_datetime
 from felicity.utils.helpers import get_from_nested, strtobool
@@ -148,9 +150,9 @@ class FelicityImpress:
         # Customer Column
         patient = get_from_nested(sample, "analysis_request.patient")
         full_name = (
-            get_from_nested(patient, "first_name")
-            + " "
-            + get_from_nested(patient, "last_name")
+                get_from_nested(patient, "first_name")
+                + " "
+                + get_from_nested(patient, "last_name")
         )
         self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(20, 42)
@@ -312,7 +314,9 @@ class FelicityImpress:
         analyses_results = get_from_nested(sample, "analysis_results")
         analyses_results = list(
             filter(
-                lambda r: strtobool(get_from_nested(r, "reportable")), analyses_results
+                lambda r: strtobool(get_from_nested(r, "reportable")) and \
+                          get_from_nested(r, "status") in [ResultState.RESULTED, ResultState.APPROVED],
+                analyses_results
             )
         )
 
@@ -346,7 +350,7 @@ class FelicityImpress:
                 border=0,
             )
             self.pdf.set_xy(150, y_pos)
-            self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="xx - xx", border=0)
+            self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="", border=0)  # ref range
             # ---
             y_pos += 4
             inst_meth = f"{get_from_nested(result, 'laboratory_instrument.lab_name')} | {get_from_nested(result, 'method.name')}"
@@ -361,8 +365,43 @@ class FelicityImpress:
                 y_pos = self.margin_top
 
         # End of report
+        y_pos += 5
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, y_pos, 180.0, y_pos)
+
+        # -- Signature Section
+        # -- --Reviewed by:
+        self.pdf.set_font("helvetica", "B", 8)
+        self.pdf.set_xy(20, y_pos)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Reviewed By:", border=0)
+        self.pdf.set_font("helvetica", "I", 8)
+        self.pdf.set_xy(40, y_pos)
+        _user = await get_report_user(sample, "submitted_by", analyses_results)
+        self.pdf.cell(
+            ln=0, h=5.5,
+            align="L",
+            w=10.0,
+            text=_user,
+            border=0
+        )
+
+        # -- -- Approved by:
+        self.pdf.set_font("helvetica", "B", 8)
+        self.pdf.set_xy(90, y_pos)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Approved By:", border=0)
+        self.pdf.set_font("helvetica", "I", 8)
+        self.pdf.set_xy(110, y_pos)
+        _user = await get_report_user(sample, "verified_by", analyses_results)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            text=_user,
+            border=0
+        )
+
+        # -- -- end of report marker
         self.pdf.set_font("helvetica", "I", 8)
         self.pdf.set_xy(170, y_pos)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="* End of Report", border=0)

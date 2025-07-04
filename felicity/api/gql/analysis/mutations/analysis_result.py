@@ -70,6 +70,10 @@ async def submit_analysis_results(
 
     an_results = [result.__dict__ for result in analysis_results]
 
+    # if not settings.ENABLE_BACKGROUND_PROCESSING:
+    #     returns = await results_submitter(an_results, felicity_user)
+    #     return
+    # else:
     # submit an results as jobs
     job_schema = job_schemas.JobCreate(  # noqa
         action=JobAction.RESULT_SUBMIT,

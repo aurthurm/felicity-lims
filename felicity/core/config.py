@@ -125,6 +125,7 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
+    ENABLE_BACKGROUND_PROCESSING: bool = getenv_boolean("ENABLE_BACKGROUND_PROCESSING", False)
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", None)  # xxx:4317
     SENTRY_DSN: str | None = getenv_value("SENTRY_DSN", None)
     RUN_OPEN_TRACING: bool = bool(OTLP_SPAN_EXPORT_URL)
