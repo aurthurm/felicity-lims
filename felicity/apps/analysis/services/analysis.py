@@ -23,7 +23,7 @@ from felicity.apps.analysis.entities.analysis import (
     ResultOption,
     Sample,
     SampleType,
-    SampleTypeCoding, sample_profile, sample_analysis,
+    SampleTypeCoding, sample_profile, sample_analysis, ClinicalData, ClinicalDataCoding,
 )
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.analysis import (
@@ -44,7 +44,7 @@ from felicity.apps.analysis.repository.analysis import (
     ResultOptionRepository,
     SampleRepository,
     SampleTypeCodingRepository,
-    SampleTypeRepository,
+    SampleTypeRepository, ClinicalDataRepository, ClinicalDataCodingRepository,
 )
 from felicity.apps.analysis.schemas import (
     AnalysisCategoryCreate,
@@ -82,7 +82,7 @@ from felicity.apps.analysis.schemas import (
     SampleTypeCodingUpdate,
     SampleTypeCreate,
     SampleTypeUpdate,
-    SampleUpdate,
+    SampleUpdate, ClinicalDataCreate, ClinicalDataUpdate, ClinicalDataCodingCreate, ClinicalDataCodingUpdate,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.client.services import ClientService, ClientContactService
@@ -262,7 +262,22 @@ class AnalysisRequestService(
                     metadata[_field]["province"] = client.province.snapshot() if client.province else None
                     metadata[_field]["district"] = client.district.snapshot() if client.district else None
                     metadata[_field]["contacts"] = [cc.snapshot() for cc in contacts]
+                # TODO: also handle snapshot of _field == "clinical_data" 
         return await self.update(ar.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})
+
+
+class ClinicalDataService(
+    BaseService[ClinicalData, ClinicalDataCreate, ClinicalDataUpdate]
+):
+    def __init__(self):
+        super().__init__(ClinicalDataRepository())
+
+
+class ClinicalDataCodingService(
+    BaseService[ClinicalDataCoding, ClinicalDataCodingCreate, ClinicalDataCodingUpdate]
+):
+    def __init__(self):
+        super().__init__(ClinicalDataCodingRepository())
 
 
 class RejectionReasonService(

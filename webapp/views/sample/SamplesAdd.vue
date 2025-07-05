@@ -1,25 +1,29 @@
 <script setup lang="ts">
 import VueMultiselect from "vue-multiselect";
-import { ref, reactive, computed, defineAsyncComponent } from "vue";
-import { useRouter } from "vue-router";
-import { usePatientStore } from "@/stores/patient";
-import { useSampleStore } from "@/stores/sample";
-import { useAnalysisStore } from "@/stores/analysis";
-import { useClientStore } from "@/stores/client";
+import {computed, reactive, ref} from "vue";
+import {useRouter} from "vue-router";
+import {usePatientStore} from "@/stores/patient";
+import {useSampleStore} from "@/stores/sample";
+import {useAnalysisStore} from "@/stores/analysis";
+import {useClientStore} from "@/stores/client";
 import {
-  ProfileType,
+  AnalysisRequestInputType,
   AnalysisRequestType,
   AnalysisType,
+  ClientType,
   SampleType,
-  SampleTypetyp,
+  SampleTypeTyp,
 } from "@/types/gql";
-import { AddAnalysisRequestDocument, AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables } from "@/graphql/operations/analyses.mutations";
-import { useField, useForm } from "vee-validate";
-import { object, string, array, number } from "yup";
-import { ClientType } from "@/types/gql";
+import {
+  AddAnalysisRequestDocument,
+  AddAnalysisRequestMutation,
+  AddAnalysisRequestMutationVariables
+} from "@/graphql/operations/analyses.mutations";
+import {useField, useForm} from "vee-validate";
+import {array, number, object, string} from "yup";
 import useNotifyToast from "@/composables/alert_toast";
 import useApiUtil from "@/composables/api_util";
-import { formatDate } from "@/utils";
+import {formatDate} from "@/utils";
 
 const sampleStore = useSampleStore();
 const patientStore = usePatientStore();
@@ -27,8 +31,8 @@ const analysisStore = useAnalysisStore();
 const clientStore = useClientStore();
 const router = useRouter();
 
-const { withClientMutation } = useApiUtil();
-const { swalError } = useNotifyToast();
+const {withClientMutation} = useApiUtil();
+const {swalError} = useNotifyToast();
 
 // Patient
 let patient = computed(() => patientStore.getPatient);
@@ -90,21 +94,33 @@ const arSchema = object({
   priority: number(),
 });
 
-const { handleSubmit, errors } = useForm({
+// Create default sample
+function createDefaultSample(): PartialSample {
+  return {
+    sampleType: {} as SampleTypeTyp,
+    dateCollected: undefined,
+    profiles: [],
+    analyses: [],
+  };
+}
+
+const {handleSubmit, errors} = useForm({
   validationSchema: arSchema,
   initialValues: {
     priority: 0,
     client: patient?.value?.client,
-    samples: [],
+    samples: [createDefaultSample()], // Initialize with one default sample
   } as any,
 });
 
-const { value: clientRequestId } = useField("clientRequestId");
-const { value: clinicalData } = useField<string>("clinicalData");
-const { value: client } = useField<ClientType>("client");
-const { value: clientContactUid } = useField("clientContactUid");
-const { value: priority } = useField("priority");
-const { value: samples } = useField<SampleType[]>("samples");
+const {value: clientRequestId} = useField("clientRequestId");
+const {value: clinicalData} = useField<string>("clinicalData");
+const {value: client} = useField<ClientType>("client");
+const {value: clientContactUid} = useField("clientContactUid");
+const {value: priority} = useField("priority");
+
+type PartialSample = Pick<SampleType, "sampleType" | "dateCollected" | "profiles" | "analyses">;
+const {value: samples} = useField<PartialSample[]>("samples");
 
 const submitARForm = handleSubmit((values) => {
   arSaving.value = true;
@@ -137,30 +153,31 @@ function addAnalysesRequest(request: AnalysisRequestType): void {
         dateCollected: formatDate(s.dateCollected, "YYYY-MM-DD HH:mm"),
       };
     }),
-  };
-  withClientMutation<AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables>(AddAnalysisRequestDocument, { payload }, "createAnalysisRequest")
-    .then((result) => {
-      sampleStore.addAnalysisRequest(result);
-      router.push({ name: "patient-detail", params: { patientUid: patient.value?.uid } });
-    })
-    .finally(() => {
-      arSaving.value = false;
-    });
+  } as unknown as AnalysisRequestInputType;
+  withClientMutation<AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables>(AddAnalysisRequestDocument, {payload}, "createAnalysisRequest")
+      .then((result) => {
+        sampleStore.addAnalysisRequest(result);
+        router.push({name: "patient-detail", params: {patientUid: patient.value?.uid}});
+      })
+      .finally(() => {
+        arSaving.value = false;
+      });
 }
 
 function addSample(): void {
-  const sample = {
-    sampleType: {} as SampleTypetyp,
-    dateCollected: "",
-    profiles: [] as ProfileType[],
-    analyses: [] as AnalysisType[],
-  } as SampleType;
+  const sample: PartialSample = createDefaultSample();
   samples.value.push(sample);
 }
 
 function removeSample(index: number): void {
-  samples.value.splice(index, 1);
+  // Prevent removing if only one sample remains
+  if (samples.value.length > 1) {
+    samples.value.splice(index, 1);
+  }
 }
+
+// Computed property to check if remove button should be disabled
+const canRemoveSample = computed(() => samples.value.length > 1);
 </script>
 
 <template>
@@ -172,26 +189,26 @@ function removeSample(index: number): void {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <label class="flex flex-col space-y-2">
             <span class="text-sm font-medium text-foreground">Client</span>
-            <VueMultiselect 
-              class="w-full" 
-              placeholder="Select a Client" 
-              v-model="client" 
-              :options="clients" 
-              :searchable="true"
-              label="name" 
-              track-by="uid" 
-              @select="selectContact"
+            <VueMultiselect
+                class="w-full"
+                placeholder="Select a Client"
+                v-model="client"
+                :options="clients"
+                :searchable="true"
+                label="name"
+                track-by="uid"
+                @select="selectContact"
             />
           </label>
 
           <label class="flex flex-col space-y-2">
             <span class="text-sm font-medium text-foreground">Client Contact</span>
-            <select 
-              name="clientContacts" 
-              id="clientContacts" 
-              v-model="clientContactUid"
-              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-              aria-label="Select client contact"
+            <select
+                name="clientContacts"
+                id="clientContacts"
+                v-model="clientContactUid"
+                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                aria-label="Select client contact"
             >
               <option value=""></option>
               <option v-for="contact in client?.contacts" :key="contact.uid" :value="contact.uid">
@@ -203,12 +220,12 @@ function removeSample(index: number): void {
 
           <label class="flex flex-col space-y-2">
             <span class="text-sm font-medium text-foreground">Priority</span>
-            <select 
-              name="priority" 
-              id="priority" 
-              v-model="priority"
-              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-              aria-label="Select priority level"
+            <select
+                name="priority"
+                id="priority"
+                v-model="priority"
+                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                aria-label="Select priority level"
             >
               <option value=0>Low</option>
               <option value=1>Medium</option>
@@ -220,20 +237,20 @@ function removeSample(index: number): void {
 
         <label class="flex flex-col space-y-2">
           <span class="text-sm font-medium text-foreground">Client Request ID</span>
-          <input 
-            class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50" 
-            v-model="clientRequestId" 
-            placeholder="CRID ..." 
+          <input
+              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              v-model="clientRequestId"
+              placeholder="CRID ..."
           />
           <div class="text-sm text-destructive">{{ errors.clientRequestId }}</div>
         </label>
 
         <label class="flex flex-col space-y-2">
           <span class="text-sm font-medium text-foreground">Clinical Data</span>
-          <textarea 
-            class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50" 
-            v-model="clinicalData" 
-            placeholder="Clinical Data ..." 
+          <textarea
+              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              v-model="clinicalData"
+              placeholder="Clinical Data ..."
           />
           <div class="text-sm text-destructive">{{ errors.clinicalData }}</div>
         </label>
@@ -244,131 +261,185 @@ function removeSample(index: number): void {
           <h5 class="text-lg font-semibold text-foreground">Samples</h5>
           <div class="flex items-center gap-4">
             <span class="text-sm text-destructive">{{ errors.samples }}</span>
-            <button 
-              v-if="samples?.length !== 20" 
-              @click.prevent="addSample()"
-              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            <button
+                v-if="samples?.length !== 20"
+                @click.prevent="addSample()"
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               Add Sample
             </button>
           </div>
         </div>
 
-        <div v-for="(sample, index) in samples" :key="index" class="p-4 border border-border rounded-lg bg-background/50">
-          <!-- Sample Header -->
-          <div class="flex justify-between items-center mb-4">
-            <h6 class="text-md font-medium text-foreground">Sample {{ index + 1 }}</h6>
-            <button 
-              @click.prevent="removeSample(index)"
-              class="px-3 py-1 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive/50 text-sm"
-            >
-              Remove
-            </button>
+        <div class="relative border border-border rounded-lg bg-background/50 overflow-hidden">
+          <!-- Fixed field labels column -->
+          <div class="absolute left-0 top-0 bottom-0 w-48 bg-muted/30 border-r border-border z-10">
+            <table class="w-full h-full">
+              <thead>
+              <tr class="border-b border-border bg-muted/30">
+                <th class="p-4 text-left text-sm font-medium text-foreground h-16">
+                  Field
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="border-b border-border h-20 min-h-20 max-h-20">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Sample Type
+                </td>
+              </tr>
+              <tr class="border-b border-border h-20 min-h-20 max-h-20">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Date Collected
+                </td>
+              </tr>
+              <tr class="border-b border-border h-20 min-h-20 max-h-20">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Analysis Profiles
+                </td>
+              </tr>
+              <tr class="border-b border-border h-20 min-h-20 max-h-20">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Analysis Services
+                </td>
+              </tr>
+              <tr class="h-24">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Selection Summary
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
 
-          <!-- Sample Content Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            <!-- Row 1: Sample Type and Date -->
-            <label class="flex flex-col space-y-2">
-              <span class="text-sm font-medium text-foreground">Sample Type</span>
-              <select 
-                name="sampleTypes" 
-                id="sampleTypes" 
-                v-model="sample.sampleType" 
-                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                aria-label="Select sample type"
-              >
-                <option value=""></option>
-                <option v-for="sampleType in sampleTypes" :key="sampleType.uid" :value="sampleType.uid">
-                  {{ sampleType.name }}
-                </option>
-              </select>
-            </label>
+          <!-- Scrollable samples content -->
+          <div class="overflow-x-auto pl-48">
+            <table class="w-80 min-w-80">
+              <thead>
+              <tr class="border-b border-border bg-muted/30">
+                <th v-for="(sample, index) in samples" :key="index"
+                    class="p-4 text-center text-sm font-medium text-foreground w-80 min-w-80 relative h-16 border-r">
+                  <div class="flex items-center justify-between">
+                    <span>Sample {{ index + 1 }}</span>
+                    <button
+                        @click.prevent="removeSample(index)"
+                        :disabled="!canRemoveSample"
+                        :class="[
+                          'px-2 py-1 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 text-xs ml-2',
+                          canRemoveSample
+                            ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:ring-destructive/50'
+                            : 'bg-muted text-muted-foreground cursor-not-allowed'
+                        ]"
+                        :title="canRemoveSample ? 'Remove sample' : 'At least one sample is required'"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <!-- Sample Type Row -->
+              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+                  <VueMultiselect
+                      class="w-full"
+                      placeholder="Select sample type"
+                      v-model="sample.sampleType"
+                      :options="sampleTypes"
+                      :searchable="true"
+                      label="name"
+                      track-by="uid"
+                      :appendToBody="true"
+                      :openDirection="'top'"
+                  />
+                </td>
+              </tr>
 
-            <label class="flex flex-col space-y-2">
-              <span class="text-sm font-medium text-foreground">Date Collected</span>
-              <VueDatePicker 
-                class="w-full" 
-                v-model="sample.dateCollected" 
-                :max-date="maxDate" 
-                time-picker-inline
-              />
-            </label>
+              <!-- Date Collected Row -->
+              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+                  <VueDatePicker
+                      class="w-full"
+                      v-model="sample.dateCollected"
+                      :max-date="maxDate"
+                      time-picker-inline
+                      :teleport="true"
+                  />
+                </td>
+              </tr>
 
-            <!-- Spacer for grid alignment -->
-            <div class="hidden xl:block"></div>
+              <!-- Analysis Profiles Row -->
+              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+                  <VueMultiselect
+                      class="w-full whitespace-nowrap"
+                      placeholder="Select analysis profiles"
+                      v-model="sample.profiles"
+                      :options="analysesProfiles"
+                      :searchable="true"
+                      :multiple="true"
+                      label="name"
+                      track-by="uid"
+                      :appendToBody="true"
+                      :openDirection="'top'"
+                  />
+                </td>
+              </tr>
 
-            <!-- Row 2: Analysis Profiles and Services -->
-            <label class="flex flex-col space-y-2 lg:col-span-1 xl:col-span-1">
-              <span class="text-sm font-medium text-foreground">Analysis Profiles</span>
-              <select 
-                name="analysisProfiles" 
-                id="analysisProfiles" 
-                v-model="sample.profiles" 
-                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[100px]"
-                multiple
-                aria-label="Select analysis profiles"
-              >
-                <option value=""></option>
-                <option v-for="profile in analysesProfiles" :key="profile.uid" :value="profile.uid">
-                  {{ profile.name }}
-                </option>
-              </select>
-              <small class="text-xs text-muted-foreground">Hold Ctrl/Cmd to select multiple</small>
-            </label>
+              <!-- Analysis Services Row -->
+              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+                  <VueMultiselect
+                      class="w-full whitespace-nowrap"
+                      placeholder="Select analysis services"
+                      v-model="sample.analyses"
+                      :options="analysesServices"
+                      :searchable="true"
+                      :multiple="true"
+                      label="name"
+                      track-by="uid"
+                      :appendToBody="true"
+                      :openDirection="'top'"
+                  />
+                </td>
+              </tr>
 
-            <label class="flex flex-col space-y-2 lg:col-span-1 xl:col-span-1">
-              <span class="text-sm font-medium text-foreground">Analysis Services</span>
-              <select 
-                name="analysesServices" 
-                id="analysesServices" 
-                v-model="sample.analyses" 
-                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[100px]"
-                multiple
-                aria-label="Select analysis services"
-              >
-                <option value=""></option>
-                <option v-for="service in analysesServices" :key="service.uid" :value="service.uid">
-                  {{ service.name }}
-                </option>
-              </select>
-              <small class="text-xs text-muted-foreground">Hold Ctrl/Cmd to select multiple</small>
-            </label>
-
-            <!-- Selected Items Summary (optional) -->
-            <div class="flex flex-col space-y-2 xl:col-span-1">
-              <span class="text-sm font-medium text-foreground">Selection Summary</span>
-              <div class="p-3 bg-muted/50 rounded-md text-sm space-y-1">
-                <div class="text-xs text-muted-foreground">
-                  <strong>Profiles:</strong> {{ sample.profiles?.length || 0 }} selected
-                </div>
-                <div class="text-xs text-muted-foreground">
-                  <strong>Services:</strong> {{ sample.analyses?.length || 0 }} selected
-                </div>
-                <div v-if="sample.profiles?.length === 0 && sample.analyses?.length === 0" class="text-xs text-destructive">
-                  ⚠️ Select profiles or services
-                </div>
-              </div>
-            </div>
+              <!-- Selection Summary Row -->
+              <tr class="hover:bg-muted/20 h-24">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+                  <div class="p-3 bg-muted/50 rounded-md text-sm space-y-1">
+                    <div v-if="sample.profiles?.length === 0 && sample.analyses?.length === 0"
+                         class="text-xs text-destructive whitespace-nowrap">
+                      ⚠️ Select profiles or services
+                    </div>
+                    <div v-else>
+                      <div class="text-xs text-muted-foreground">
+                        <strong>Profiles:</strong> {{ sample.profiles?.length || 0 }} selected
+                      </div>
+                      <div class="text-xs text-muted-foreground">
+                        <strong>Services:</strong> {{ sample.analyses?.length || 0 }} selected
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-
-        <!-- Empty state when no samples -->
-        <div v-if="!samples || samples.length === 0" class="text-center py-8 text-muted-foreground">
-          <p class="text-sm">No samples added yet. Click "Add Sample" to get started.</p>
         </div>
       </section>
 
       <div class="flex justify-end pt-4">
-        <button 
-          v-if="!arSaving" 
-          type="submit"
-          class="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+        <button
+            v-if="!arSaving"
+            type="submit"
+            class="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
         >
           Save Sample(s)
         </button>
         <div v-else class="py-4 text-center">
-          <fel-loader message="Adding Samples ..." />
+          <fel-loader message="Adding Samples ..."/>
         </div>
       </div>
     </form>

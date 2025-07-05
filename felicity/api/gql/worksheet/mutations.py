@@ -283,9 +283,7 @@ class WorkSheetMutations:
             for job in jobs:
                 await populate_worksheet_plate(job.uid)
 
-        # to get lazy loads working otherwise return WorksheetListingType(worksheets)
-        to_send = [(await WorkSheetService().get(uid=ws.uid)) for ws in worksheets]
-
+        to_send = await WorkSheetService().get_by_uids([ws.uid for ws in worksheets])
         return WorksheetListingType(worksheets=to_send)
 
     @strawberry.mutation(

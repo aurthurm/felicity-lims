@@ -104,7 +104,7 @@ class SampleListingType:
 
 SampleActionResponse = strawberry.union(
     "SampleActionResponse",
-    (SampleListingType, OperationError),  # noqa
+    (SampleListingType, OperationSuccess, OperationError),  # noqa
     description="Union of possible outcomes when actioning samples",
 )
 
@@ -545,8 +545,9 @@ async def publish_samples(
     )
 
     job = await JobService().create(job_schema)
-    if settings.ENABLE_BACKGROUND_PROCESSING:
-        impressed = await impress_results(job.uid)
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        await impress_results(job.uid)
+        impressed = await SampleService().get_by_uids([s.uid for s in samples])
         return SampleListingType(samples=impressed, message="Samples have been impressed")
 
     if final_publish:

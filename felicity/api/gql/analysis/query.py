@@ -29,8 +29,7 @@ from felicity.apps.analysis.services.analysis import (
     ResultOptionService,
     SampleService,
     SampleTypeCodingService,
-    SampleTypeService,
-)
+    SampleTypeService, )
 from felicity.apps.analysis.services.quality_control import (
     QCLevelService,
     QCSetService,
@@ -628,7 +627,7 @@ class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def result_options_by_analysis_uid(
             self, info, uid: str
-    ) -> a_types.ResultOptionType:
+    ) -> list[a_types.ResultOptionType]:
         return await ResultOptionService().get_all(analysis_uid__exact=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])

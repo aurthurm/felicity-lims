@@ -1118,8 +1118,11 @@ export type AnalysisRequestResponse = AnalysisRequestWithSamples | OperationErro
 export type AnalysisRequestType = {
   __typename?: 'AnalysisRequestType';
   client?: Maybe<ClientType>;
+  clientContact?: Maybe<ClientContactType>;
+  clientContactUid?: Maybe<Scalars['String']['output']>;
   clientRequestId: Scalars['String']['output'];
   clientUid: Scalars['String']['output'];
+  clinicalData?: Maybe<Array<ClinicalDataType>>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
@@ -1138,8 +1141,11 @@ export type AnalysisRequestType = {
 export type AnalysisRequestWithSamples = {
   __typename?: 'AnalysisRequestWithSamples';
   client?: Maybe<ClientType>;
+  clientContact?: Maybe<ClientContactType>;
+  clientContactUid?: Maybe<Scalars['String']['output']>;
   clientRequestId: Scalars['String']['output'];
   clientUid: Scalars['String']['output'];
+  clinicalData?: Maybe<Array<ClinicalDataType>>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
@@ -1173,7 +1179,7 @@ export type AnalysisResultEdge = {
 export type AnalysisResultResponse = OperationError | ResultListingType;
 
 /** Union of possible outcomes when submitting/verifying results */
-export type AnalysisResultSubmitResponse = OperationError | OperationSuccess;
+export type AnalysisResultSubmitResponse = OperationError | ResultOperationType;
 
 export type AnalysisResultType = {
   __typename?: 'AnalysisResultType';
@@ -1312,6 +1318,7 @@ export type AnalysisType = {
   methods?: Maybe<Array<MethodType>>;
   name: Scalars['String']['output'];
   precision?: Maybe<Scalars['Int']['output']>;
+  profiles?: Maybe<Array<ProfileType>>;
   requiredVerifications?: Maybe<Scalars['Int']['output']>;
   resultOptions?: Maybe<Array<ResultOptionType>>;
   resultType?: Maybe<Scalars['String']['output']>;
@@ -1561,6 +1568,43 @@ export type ClientType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ClinicalDataCodingType = {
+  __typename?: 'ClinicalDataCodingType';
+  clinicalDataUid?: Maybe<Scalars['String']['output']>;
+  code?: Maybe<Scalars['String']['output']>;
+  codingStandardUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ClinicalDataType = {
+  __typename?: 'ClinicalDataType';
+  analysisRequestUid?: Maybe<Scalars['String']['output']>;
+  breastFeeding?: Maybe<Scalars['Boolean']['output']>;
+  clinicalIndication?: Maybe<Scalars['String']['output']>;
+  codings?: Maybe<Array<ClinicalDataCodingType>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  otherContext?: Maybe<Scalars['JSONScalar']['output']>;
+  pregnancyStatus?: Maybe<Scalars['Boolean']['output']>;
+  symptoms?: Maybe<Array<Scalars['String']['output']>>;
+  symptomsRaw?: Maybe<Scalars['String']['output']>;
+  treatmentNotes?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  vitals?: Maybe<Scalars['JSONScalar']['output']>;
 };
 
 export type CodingStandardInputType = {
@@ -3523,7 +3567,7 @@ export type Mutation = {
   issueStockOrder: StockOrderResponse;
   manageAnalyses: ResultedSampleActionResponse;
   printSamples: SampleActionResponse;
-  publishSamples: SuccessErrorResponse;
+  publishSamples: SampleActionResponse;
   reInstateAnalysisResults: AnalysisResultResponse;
   reInstateSamples: ResultedSampleActionResponse;
   receiveSamples: ResultedSampleActionResponse;
@@ -5884,7 +5928,7 @@ export type Query = {
   rejectionReasonByUid: RejectionReasonType;
   rejectionReasonsAll: Array<RejectionReasonType>;
   resultMutationByResultUid?: Maybe<ResultMutationType>;
-  resultOptionsByAnalysisUid: ResultOptionType;
+  resultOptionsByAnalysisUid: Array<ResultOptionType>;
   sampleAll: SampleCursorPage;
   sampleByParentId: Array<SampleType>;
   sampleByUid: SampleType;
@@ -7714,6 +7758,13 @@ export type ResultMutationType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type ResultOperationType = {
+  __typename?: 'ResultOperationType';
+  isBackground: Scalars['Boolean']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  results?: Maybe<Array<AnalysisResultType>>;
+};
+
 export type ResultOptionInputType = {
   analysisUid: Scalars['String']['input'];
   optionKey: Scalars['Int']['input'];
@@ -7747,7 +7798,7 @@ export type ResultedSampleListingType = {
 };
 
 /** Union of possible outcomes when actioning samples */
-export type SampleActionResponse = OperationError | SampleListingType;
+export type SampleActionResponse = OperationError | OperationSuccess | SampleListingType;
 
 export type SampleCursorPage = {
   __typename?: 'SampleCursorPage';
@@ -7765,6 +7816,7 @@ export type SampleEdge = {
 
 export type SampleListingType = {
   __typename?: 'SampleListingType';
+  message?: Maybe<Scalars['String']['output']>;
   samples: Array<SampleType>;
 };
 

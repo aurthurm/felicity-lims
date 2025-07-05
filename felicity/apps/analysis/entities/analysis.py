@@ -8,9 +8,9 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Table,
+    Table, Text, UniqueConstraint,
 )
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity, BaseMPTT
@@ -257,17 +257,18 @@ class Analysis(BaseEntity):
     @property
     def sms_metadata(self) -> dict:
         result = {
-           "analysis_keyword": self.keyword, 
-           "analysis_name": self.name, 
-        }   
+            "analysis_keyword": self.keyword,
+            "analysis_name": self.name,
+        }
 
         if self.unit and hasattr(self.unit, 'name'):
             try:
-                result.update({"unit": self.unit.name })
+                result.update({"unit": self.unit.name})
             except Exception:
                 pass
-                
+
         return result
+
 
 class AnalysisCoding(BaseEntity):
     """AnalysisCoding"""
@@ -417,12 +418,63 @@ class AnalysisRequest(BaseEntity):
     # Metadata snapshot
     metadata_snapshot = Column(JSONB, nullable=False)
 
+    clinical_data = relationship(
+        "ClinicalData",
+        uselist=False,  # ensure one-to-one
+        back_populates="analysis_request",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+
     @property
     def sms_metadata(self) -> dict:
         result = {
-           "request_id": self.request_id, 
-           "client_request_id": self.client_request_id, 
-        } 
+            "request_id": self.request_id,
+            "client_request_id": self.client_request_id,
+        }
+
+
+class ClinicalData(BaseEntity):
+    __tablename__ = "clinical_data"
+
+    analysis_request_uid = Column(String, ForeignKey("analysis_request.uid"), nullable=False, unique=True)
+    analysis_request = relationship("AnalysisRequest", back_populates="clinical_data", lazy="selectin")
+    symptoms = Column(ARRAY(String), nullable=True)  # e,g Fever, Cough
+    symptoms_raw = Column(Text, nullable=True)
+    clinical_indication = Column(Text, nullable=True)  # reason for the lab test
+    pregnancy_status = Column(Boolean, nullable=True)
+    breast_feeding = Column(Boolean, nullable=True)
+    vitals = Column(JSONB, nullable=True)  # e.g., {"bp": "120/80", "temp": 37.2}
+    treatment_notes = Column(Text, nullable=True)
+    other_context = Column(JSONB, nullable=True)  # for any extra structured fields
+    codings = relationship(
+        "ClinicalDataCoding",
+        back_populates="clinical_data",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+
+
+class ClinicalDataCoding(BaseEntity):
+    __tablename__ = "clinical_data_coding"
+    __table_args__ = (  # prevent multiple codes from the same coding standard
+        UniqueConstraint("clinical_data_uid", "coding_standard_uid"),
+    )
+
+    clinical_data_uid = Column(
+        String, ForeignKey("clinical_data.uid"), nullable=False
+    )
+    clinical_data = relationship("ClinicalData", back_populates="codings", lazy="selectin")
+
+    coding_standard_uid = Column(
+        String, ForeignKey("coding_standard.uid"), nullable=False
+    )
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+
+    code = Column(String, nullable=False)  # e.g. "A09"
+    name = Column(String, nullable=True)  # Optional: "Infectious gastroenteritis"
+    description = Column(Text, nullable=True)
+
 
 """
 Many to Many Link between Sample and Profile
@@ -547,9 +599,9 @@ class Sample(BaseEntity, BaseMPTT):
     @property
     def sms_metadata(self) -> dict:
         result = {
-           "sample_id": self.sample_id, 
-           "date_collected": self.date_collected
-        }   
+            "sample_id": self.sample_id,
+            "date_collected": self.date_collected
+        }
 
         if self.analysis_request and hasattr(self.analysis_request, 'sms_metadata'):
             try:
@@ -558,5 +610,5 @@ class Sample(BaseEntity, BaseMPTT):
                     result.update(ar_metadata)
             except Exception:
                 pass
-                
+
         return result

@@ -1121,8 +1121,11 @@ export type AnalysisRequestResponse = AnalysisRequestWithSamples | OperationErro
 export type AnalysisRequestType = {
   __typename?: 'AnalysisRequestType';
   client?: Maybe<ClientType>;
+  clientContact?: Maybe<ClientContactType>;
+  clientContactUid?: Maybe<Scalars['String']['output']>;
   clientRequestId: Scalars['String']['output'];
   clientUid: Scalars['String']['output'];
+  clinicalData?: Maybe<Array<ClinicalDataType>>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
@@ -1141,8 +1144,11 @@ export type AnalysisRequestType = {
 export type AnalysisRequestWithSamples = {
   __typename?: 'AnalysisRequestWithSamples';
   client?: Maybe<ClientType>;
+  clientContact?: Maybe<ClientContactType>;
+  clientContactUid?: Maybe<Scalars['String']['output']>;
   clientRequestId: Scalars['String']['output'];
   clientUid: Scalars['String']['output'];
+  clinicalData?: Maybe<Array<ClinicalDataType>>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
@@ -1176,7 +1182,7 @@ export type AnalysisResultEdge = {
 export type AnalysisResultResponse = OperationError | ResultListingType;
 
 /** Union of possible outcomes when submitting/verifying results */
-export type AnalysisResultSubmitResponse = OperationError | OperationSuccess;
+export type AnalysisResultSubmitResponse = OperationError | ResultOperationType;
 
 export type AnalysisResultType = {
   __typename?: 'AnalysisResultType';
@@ -1315,6 +1321,7 @@ export type AnalysisType = {
   methods?: Maybe<Array<MethodType>>;
   name: Scalars['String']['output'];
   precision?: Maybe<Scalars['Int']['output']>;
+  profiles?: Maybe<Array<ProfileType>>;
   requiredVerifications?: Maybe<Scalars['Int']['output']>;
   resultOptions?: Maybe<Array<ResultOptionType>>;
   resultType?: Maybe<Scalars['String']['output']>;
@@ -1564,6 +1571,43 @@ export type ClientType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ClinicalDataCodingType = {
+  __typename?: 'ClinicalDataCodingType';
+  clinicalDataUid?: Maybe<Scalars['String']['output']>;
+  code?: Maybe<Scalars['String']['output']>;
+  codingStandardUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ClinicalDataType = {
+  __typename?: 'ClinicalDataType';
+  analysisRequestUid?: Maybe<Scalars['String']['output']>;
+  breastFeeding?: Maybe<Scalars['Boolean']['output']>;
+  clinicalIndication?: Maybe<Scalars['String']['output']>;
+  codings?: Maybe<Array<ClinicalDataCodingType>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  otherContext?: Maybe<Scalars['JSONScalar']['output']>;
+  pregnancyStatus?: Maybe<Scalars['Boolean']['output']>;
+  symptoms?: Maybe<Array<Scalars['String']['output']>>;
+  symptomsRaw?: Maybe<Scalars['String']['output']>;
+  treatmentNotes?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  vitals?: Maybe<Scalars['JSONScalar']['output']>;
 };
 
 export type CodingStandardInputType = {
@@ -3526,7 +3570,7 @@ export type Mutation = {
   issueStockOrder: StockOrderResponse;
   manageAnalyses: ResultedSampleActionResponse;
   printSamples: SampleActionResponse;
-  publishSamples: SuccessErrorResponse;
+  publishSamples: SampleActionResponse;
   reInstateAnalysisResults: AnalysisResultResponse;
   reInstateSamples: ResultedSampleActionResponse;
   receiveSamples: ResultedSampleActionResponse;
@@ -5887,7 +5931,7 @@ export type Query = {
   rejectionReasonByUid: RejectionReasonType;
   rejectionReasonsAll: Array<RejectionReasonType>;
   resultMutationByResultUid?: Maybe<ResultMutationType>;
-  resultOptionsByAnalysisUid: ResultOptionType;
+  resultOptionsByAnalysisUid: Array<ResultOptionType>;
   sampleAll: SampleCursorPage;
   sampleByParentId: Array<SampleType>;
   sampleByUid: SampleType;
@@ -7717,6 +7761,13 @@ export type ResultMutationType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type ResultOperationType = {
+  __typename?: 'ResultOperationType';
+  isBackground: Scalars['Boolean']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  results?: Maybe<Array<AnalysisResultType>>;
+};
+
 export type ResultOptionInputType = {
   analysisUid: Scalars['String']['input'];
   optionKey: Scalars['Int']['input'];
@@ -7750,7 +7801,7 @@ export type ResultedSampleListingType = {
 };
 
 /** Union of possible outcomes when actioning samples */
-export type SampleActionResponse = OperationError | SampleListingType;
+export type SampleActionResponse = OperationError | OperationSuccess | SampleListingType;
 
 export type SampleCursorPage = {
   __typename?: 'SampleCursorPage';
@@ -7768,6 +7819,7 @@ export type SampleEdge = {
 
 export type SampleListingType = {
   __typename?: 'SampleListingType';
+  message?: Maybe<Scalars['String']['output']>;
   samples: Array<SampleType>;
 };
 
@@ -9073,6 +9125,8 @@ export type GraphCacheKeysConfig = {
   ClientCursorPage?: (data: WithTypename<ClientCursorPage>) => null | string,
   ClientEdge?: (data: WithTypename<ClientEdge>) => null | string,
   ClientType?: (data: WithTypename<ClientType>) => null | string,
+  ClinicalDataCodingType?: (data: WithTypename<ClinicalDataCodingType>) => null | string,
+  ClinicalDataType?: (data: WithTypename<ClinicalDataType>) => null | string,
   CodingStandardType?: (data: WithTypename<CodingStandardType>) => null | string,
   CountryType?: (data: WithTypename<CountryType>) => null | string,
   CreateQCSetData?: (data: WithTypename<CreateQcSetData>) => null | string,
@@ -9216,6 +9270,7 @@ export type GraphCacheKeysConfig = {
   ReportMetaType?: (data: WithTypename<ReportMetaType>) => null | string,
   ResultListingType?: (data: WithTypename<ResultListingType>) => null | string,
   ResultMutationType?: (data: WithTypename<ResultMutationType>) => null | string,
+  ResultOperationType?: (data: WithTypename<ResultOperationType>) => null | string,
   ResultOptionType?: (data: WithTypename<ResultOptionType>) => null | string,
   ResultedSampleListingType?: (data: WithTypename<ResultedSampleListingType>) => null | string,
   SampleCursorPage?: (data: WithTypename<SampleCursorPage>) => null | string,
@@ -9513,7 +9568,7 @@ export type GraphCacheResolvers = {
     rejectionReasonByUid?: GraphCacheResolver<WithTypename<Query>, QueryRejectionReasonByUidArgs, WithTypename<RejectionReasonType> | string>,
     rejectionReasonsAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<RejectionReasonType> | string>>,
     resultMutationByResultUid?: GraphCacheResolver<WithTypename<Query>, QueryResultMutationByResultUidArgs, WithTypename<ResultMutationType> | string>,
-    resultOptionsByAnalysisUid?: GraphCacheResolver<WithTypename<Query>, QueryResultOptionsByAnalysisUidArgs, WithTypename<ResultOptionType> | string>,
+    resultOptionsByAnalysisUid?: GraphCacheResolver<WithTypename<Query>, QueryResultOptionsByAnalysisUidArgs, Array<WithTypename<ResultOptionType> | string>>,
     sampleAll?: GraphCacheResolver<WithTypename<Query>, QuerySampleAllArgs, WithTypename<SampleCursorPage> | string>,
     sampleByParentId?: GraphCacheResolver<WithTypename<Query>, QuerySampleByParentIdArgs, Array<WithTypename<SampleType> | string>>,
     sampleByUid?: GraphCacheResolver<WithTypename<Query>, QuerySampleByUidArgs, WithTypename<SampleType> | string>,
@@ -10213,8 +10268,11 @@ export type GraphCacheResolvers = {
   },
   AnalysisRequestType?: {
     client?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<ClientType> | string>,
+    clientContact?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<ClientContactType> | string>,
+    clientContactUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     clientRequestId?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     clientUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
+    clinicalData?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Array<WithTypename<ClinicalDataType> | string>>,
     createdAt?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
@@ -10231,8 +10289,11 @@ export type GraphCacheResolvers = {
   },
   AnalysisRequestWithSamples?: {
     client?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<ClientType> | string>,
+    clientContact?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<ClientContactType> | string>,
+    clientContactUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     clientRequestId?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     clientUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
+    clinicalData?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Array<WithTypename<ClinicalDataType> | string>>,
     createdAt?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
@@ -10358,6 +10419,7 @@ export type GraphCacheResolvers = {
     methods?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Array<WithTypename<MethodType> | string>>,
     name?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['String'] | string>,
     precision?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['Int'] | string>,
+    profiles?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Array<WithTypename<ProfileType> | string>>,
     requiredVerifications?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['Int'] | string>,
     resultOptions?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Array<WithTypename<ResultOptionType> | string>>,
     resultType?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['String'] | string>,
@@ -10519,6 +10581,39 @@ export type GraphCacheResolvers = {
     updatedAt?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>
+  },
+  ClinicalDataCodingType?: {
+    clinicalDataUid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    code?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    codingStandardUid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>
+  },
+  ClinicalDataType?: {
+    analysisRequestUid?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    breastFeeding?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['Boolean'] | string>,
+    clinicalIndication?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    codings?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Array<WithTypename<ClinicalDataCodingType> | string>>,
+    createdAt?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    otherContext?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['JSONScalar'] | string>,
+    pregnancyStatus?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['Boolean'] | string>,
+    symptoms?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Array<Scalars['String'] | string>>,
+    symptomsRaw?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    treatmentNotes?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    vitals?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['JSONScalar'] | string>
   },
   CodingStandardType?: {
     createdAt?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
@@ -11904,6 +11999,11 @@ export type GraphCacheResolvers = {
     updatedBy?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>
   },
+  ResultOperationType?: {
+    isBackground?: GraphCacheResolver<WithTypename<ResultOperationType>, Record<string, never>, Scalars['Boolean'] | string>,
+    message?: GraphCacheResolver<WithTypename<ResultOperationType>, Record<string, never>, Scalars['String'] | string>,
+    results?: GraphCacheResolver<WithTypename<ResultOperationType>, Record<string, never>, Array<WithTypename<AnalysisResultType> | string>>
+  },
   ResultOptionType?: {
     analysisUid?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['String'] | string>,
     createdAt?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['String'] | string>,
@@ -11931,6 +12031,7 @@ export type GraphCacheResolvers = {
     node?: GraphCacheResolver<WithTypename<SampleEdge>, Record<string, never>, WithTypename<SamplesWithResults> | string>
   },
   SampleListingType?: {
+    message?: GraphCacheResolver<WithTypename<SampleListingType>, Record<string, never>, Scalars['String'] | string>,
     samples?: GraphCacheResolver<WithTypename<SampleListingType>, Record<string, never>, Array<WithTypename<SampleType> | string>>
   },
   SampleType?: {
@@ -12891,7 +12992,7 @@ export type GraphCacheOptimisticUpdaters = {
   issueStockOrder?: GraphCacheOptimisticMutationResolver<MutationIssueStockOrderArgs, WithTypename<StockOrderResponse>>,
   manageAnalyses?: GraphCacheOptimisticMutationResolver<MutationManageAnalysesArgs, WithTypename<ResultedSampleActionResponse>>,
   printSamples?: GraphCacheOptimisticMutationResolver<MutationPrintSamplesArgs, WithTypename<SampleActionResponse>>,
-  publishSamples?: GraphCacheOptimisticMutationResolver<MutationPublishSamplesArgs, WithTypename<SuccessErrorResponse>>,
+  publishSamples?: GraphCacheOptimisticMutationResolver<MutationPublishSamplesArgs, WithTypename<SampleActionResponse>>,
   reInstateAnalysisResults?: GraphCacheOptimisticMutationResolver<MutationReInstateAnalysisResultsArgs, WithTypename<AnalysisResultResponse>>,
   reInstateSamples?: GraphCacheOptimisticMutationResolver<MutationReInstateSamplesArgs, WithTypename<ResultedSampleActionResponse>>,
   receiveSamples?: GraphCacheOptimisticMutationResolver<MutationReceiveSamplesArgs, WithTypename<ResultedSampleActionResponse>>,
@@ -13254,7 +13355,7 @@ export type GraphCacheUpdaters = {
     rejectionReasonByUid?: GraphCacheUpdateResolver<{ rejectionReasonByUid: WithTypename<RejectionReasonType> }, QueryRejectionReasonByUidArgs>,
     rejectionReasonsAll?: GraphCacheUpdateResolver<{ rejectionReasonsAll: Array<WithTypename<RejectionReasonType>> }, Record<string, never>>,
     resultMutationByResultUid?: GraphCacheUpdateResolver<{ resultMutationByResultUid: Maybe<WithTypename<ResultMutationType>> }, QueryResultMutationByResultUidArgs>,
-    resultOptionsByAnalysisUid?: GraphCacheUpdateResolver<{ resultOptionsByAnalysisUid: WithTypename<ResultOptionType> }, QueryResultOptionsByAnalysisUidArgs>,
+    resultOptionsByAnalysisUid?: GraphCacheUpdateResolver<{ resultOptionsByAnalysisUid: Array<WithTypename<ResultOptionType>> }, QueryResultOptionsByAnalysisUidArgs>,
     sampleAll?: GraphCacheUpdateResolver<{ sampleAll: WithTypename<SampleCursorPage> }, QuerySampleAllArgs>,
     sampleByParentId?: GraphCacheUpdateResolver<{ sampleByParentId: Array<WithTypename<SampleType>> }, QuerySampleByParentIdArgs>,
     sampleByUid?: GraphCacheUpdateResolver<{ sampleByUid: WithTypename<SampleType> }, QuerySampleByUidArgs>,
@@ -13465,7 +13566,7 @@ export type GraphCacheUpdaters = {
     issueStockOrder?: GraphCacheUpdateResolver<{ issueStockOrder: WithTypename<StockOrderResponse> }, MutationIssueStockOrderArgs>,
     manageAnalyses?: GraphCacheUpdateResolver<{ manageAnalyses: WithTypename<ResultedSampleActionResponse> }, MutationManageAnalysesArgs>,
     printSamples?: GraphCacheUpdateResolver<{ printSamples: WithTypename<SampleActionResponse> }, MutationPrintSamplesArgs>,
-    publishSamples?: GraphCacheUpdateResolver<{ publishSamples: WithTypename<SuccessErrorResponse> }, MutationPublishSamplesArgs>,
+    publishSamples?: GraphCacheUpdateResolver<{ publishSamples: WithTypename<SampleActionResponse> }, MutationPublishSamplesArgs>,
     reInstateAnalysisResults?: GraphCacheUpdateResolver<{ reInstateAnalysisResults: WithTypename<AnalysisResultResponse> }, MutationReInstateAnalysisResultsArgs>,
     reInstateSamples?: GraphCacheUpdateResolver<{ reInstateSamples: WithTypename<ResultedSampleActionResponse> }, MutationReInstateSamplesArgs>,
     receiveSamples?: GraphCacheUpdateResolver<{ receiveSamples: WithTypename<ResultedSampleActionResponse> }, MutationReceiveSamplesArgs>,
@@ -14238,8 +14339,11 @@ export type GraphCacheUpdaters = {
   },
   AnalysisRequestType?: {
     client?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    clientContact?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    clientContactUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     clientRequestId?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     clientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    clinicalData?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
@@ -14256,8 +14360,11 @@ export type GraphCacheUpdaters = {
   },
   AnalysisRequestWithSamples?: {
     client?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    clientContact?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    clientContactUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     clientRequestId?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     clientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    clinicalData?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
@@ -14383,6 +14490,7 @@ export type GraphCacheUpdaters = {
     methods?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     precision?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
+    profiles?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     requiredVerifications?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     resultOptions?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     resultType?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
@@ -14544,6 +14652,39 @@ export type GraphCacheUpdaters = {
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>
+  },
+  ClinicalDataCodingType?: {
+    clinicalDataUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    code?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    codingStandardUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>
+  },
+  ClinicalDataType?: {
+    analysisRequestUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    breastFeeding?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    clinicalIndication?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    codings?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    otherContext?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    pregnancyStatus?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    symptoms?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    symptomsRaw?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    treatmentNotes?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    vitals?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>
   },
   CodingStandardType?: {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
@@ -15929,6 +16070,11 @@ export type GraphCacheUpdaters = {
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>
   },
+  ResultOperationType?: {
+    isBackground?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOperationType>>, Record<string, never>>,
+    message?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOperationType>>, Record<string, never>>,
+    results?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOperationType>>, Record<string, never>>
+  },
   ResultOptionType?: {
     analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
@@ -15956,6 +16102,7 @@ export type GraphCacheUpdaters = {
     node?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleEdge>>, Record<string, never>>
   },
   SampleListingType?: {
+    message?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleListingType>>, Record<string, never>>,
     samples?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleListingType>>, Record<string, never>>
   },
   SampleType?: {

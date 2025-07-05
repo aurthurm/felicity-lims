@@ -157,7 +157,7 @@ async def update_analysis(
             )
         analysis = await AnalysisService().get(uid=analysis.uid)
 
-    profiles = ProfileService().get_all(analyses___uid=analysis.uid)
+    profiles = await ProfileService().get_all(analyses___uid=analysis.uid)
 
     return a_types.AnalysisWithProfiles(
         **{**analysis.marshal_simple(), "profiles": profiles}

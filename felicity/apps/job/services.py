@@ -26,7 +26,7 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
         else:
             c.next_try = next_try
 
-        return super().create(c, related, commit, session)
+        return await super().create(c, related, commit, session)
 
     async def backoff(self, uid: str, minutes: int = 5, max_retries: int = 5):
         job = await self.get(uid=uid)

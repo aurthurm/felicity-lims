@@ -109,7 +109,7 @@ class AnalysisResultType:
         ]
 
         # Add defaults
-        _lab_instruments = MethodService().get_all(name__in=["Manual", "Automated"])
+        _lab_instruments = await MethodService().get_all(name__in=["Manual", "Automated"])
         return analysis
 
 

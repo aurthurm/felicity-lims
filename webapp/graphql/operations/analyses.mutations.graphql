@@ -205,9 +205,15 @@ mutation ReceiveSamples($samples: [String!]!) {
 
 mutation PublishSamples($samples: [SamplePublishInputType!]!) {
     publishSamples(samples: $samples) {
-        ... on OperationSuccess {
+        ... on SampleListingType {
             __typename
             message
+            samples {
+               uid
+               status
+               publishedByUid
+               datePublished
+            }
         }
 
         ... on OperationError {
@@ -962,8 +968,20 @@ mutation AddAnalysisRequest($payload: AnalysisRequestInputType!) {
 
 mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: String!) {
     submitAnalysisResults(analysisResults: $analysisResults, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid) {
-        ... on OperationSuccess {
+        ... on ResultOperationType {
             message
+            isBackground
+            results {
+                uid
+                status
+                analysisUid
+                laboratoryInstrumentUid
+                methodUid
+                result
+                analystUid
+                submittedByUid
+                dateSubmitted
+            }
         }
 
         ... on OperationError {
@@ -1010,8 +1028,22 @@ mutation ReInstateAnalysisResults($analyses: [String!]!) {
 
 mutation VerifyAnalysisResults($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: String!) {
     verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid) {
-        ... on OperationSuccess {
+        ... on ResultOperationType {
             message
+            isBackground
+            results {
+                uid
+                status
+                analysisUid
+                laboratoryInstrumentUid
+                methodUid
+                result
+                analystUid
+                submittedByUid
+                dateSubmitted
+                verifiedBy { uid }
+                dateVerified
+            }
         }
 
         ... on OperationError {

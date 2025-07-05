@@ -1,17 +1,69 @@
-import { toRefs, computed, reactive } from 'vue';
-import { useSampleStore } from '@/stores/sample';
-import useApiUtil  from './api_util';
+import {computed, reactive, toRefs} from 'vue';
+import {useSampleStore} from '@/stores/sample';
+import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
-import { CancelSamplesDocument, CancelSamplesMutation, CancelSamplesMutationVariables, CloneSamplesDocument, CloneSamplesMutation, CloneSamplesMutationVariables, InvalidateSamplesDocument, InvalidateSamplesMutation, InvalidateSamplesMutationVariables, PrintSamplesDocument, PrintSamplesMutation, PrintSamplesMutationVariables, PublishSamplesDocument, PublishSamplesMutation, PublishSamplesMutationVariables, ReceiveSamplesDocument, ReceiveSamplesMutation, ReceiveSamplesMutationVariables, ReInstateSamplesDocument, ReInstateSamplesMutation, ReInstateSamplesMutationVariables, RejectSamplesDocument, RejectSamplesMutation, RejectSamplesMutationVariables, VerifySamplesDocument, VerifySamplesMutation, VerifySamplesMutationVariables } from '@/graphql/operations/analyses.mutations';
-import { RecoverSamplesDocument, RecoverSamplesMutation, RecoverSamplesMutationVariables, StoreSamplesDocument, StoreSamplesMutation, StoreSamplesMutationVariables } from '@/graphql/operations/storage.mutations';
-import { BarcodeSamplesDocument, BarcodeSamplesQuery, BarcodeSamplesQueryVariables, ImpressSampleReportDocument, ImpressSampleReportQuery, ImpressSampleReportQueryVariables, ImpressSampleReportsDocument, ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables } from '@/graphql/operations/analyses.queries';
-import { Maybe, SamplePublishInputType, SampleRejectInputType, SampleType, StoreSamplesInputType } from '@/types/gql';
+import {
+    CancelSamplesDocument,
+    CancelSamplesMutation,
+    CancelSamplesMutationVariables,
+    CloneSamplesDocument,
+    CloneSamplesMutation,
+    CloneSamplesMutationVariables,
+    InvalidateSamplesDocument,
+    InvalidateSamplesMutation,
+    InvalidateSamplesMutationVariables,
+    PrintSamplesDocument,
+    PrintSamplesMutation,
+    PrintSamplesMutationVariables,
+    PublishSamplesDocument,
+    PublishSamplesMutation,
+    PublishSamplesMutationVariables,
+    ReceiveSamplesDocument,
+    ReceiveSamplesMutation,
+    ReceiveSamplesMutationVariables,
+    ReInstateSamplesDocument,
+    ReInstateSamplesMutation,
+    ReInstateSamplesMutationVariables,
+    RejectSamplesDocument,
+    RejectSamplesMutation,
+    RejectSamplesMutationVariables,
+    VerifySamplesDocument,
+    VerifySamplesMutation,
+    VerifySamplesMutationVariables
+} from '@/graphql/operations/analyses.mutations';
+import {
+    RecoverSamplesDocument,
+    RecoverSamplesMutation,
+    RecoverSamplesMutationVariables,
+    StoreSamplesDocument,
+    StoreSamplesMutation,
+    StoreSamplesMutationVariables
+} from '@/graphql/operations/storage.mutations';
+import {
+    BarcodeSamplesDocument,
+    BarcodeSamplesQuery,
+    BarcodeSamplesQueryVariables,
+    ImpressSampleReportDocument,
+    ImpressSampleReportQuery,
+    ImpressSampleReportQueryVariables,
+    ImpressSampleReportsDocument,
+    ImpressSampleReportsQuery,
+    ImpressSampleReportsQueryVariables
+} from '@/graphql/operations/analyses.queries';
+import {
+    Maybe,
+    SampleListingType,
+    SamplePublishInputType,
+    SampleRejectInputType,
+    SampleType,
+    StoreSamplesInputType
+} from '@/types/gql';
 
 
 export default function useSampleComposable() {
     const sampleStore = useSampleStore();
-    const { withClientMutation, withClientQuery } = useApiUtil();
-    const { toastSuccess, toastError, toastInfo, swalConfirm } = useNotifyToast();
+    const {withClientMutation, withClientQuery} = useApiUtil();
+    const {toastSuccess, toastError, toastInfo, swalConfirm} = useNotifyToast();
 
     const state = reactive({
         samples: computed(() => sampleStore.getSamples),
@@ -37,8 +89,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<CancelSamplesMutation, CancelSamplesMutationVariables>(
-                    CancelSamplesDocument, 
-                    { samples: uids }, 
+                    CancelSamplesDocument,
+                    {samples: uids},
                     'cancelSamples'
                 );
 
@@ -66,8 +118,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(
-                    CloneSamplesDocument, 
-                    { samples: uids }, 
+                    CloneSamplesDocument,
+                    {samples: uids},
                     'cloneSamples'
                 );
 
@@ -91,8 +143,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReInstateSamplesMutation, ReInstateSamplesMutationVariables>(
-                    ReInstateSamplesDocument, 
-                    { samples: uids }, 
+                    ReInstateSamplesDocument,
+                    {samples: uids},
                     'reInstateSamples'
                 );
 
@@ -120,8 +172,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReceiveSamplesMutation, ReceiveSamplesMutationVariables>(
-                    ReceiveSamplesDocument, 
-                    { samples: uids }, 
+                    ReceiveSamplesDocument,
+                    {samples: uids},
                     'receiveSamples'
                 );
 
@@ -149,8 +201,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<RecoverSamplesMutation, RecoverSamplesMutationVariables>(
-                    RecoverSamplesDocument, 
-                    { sampleUids }, 
+                    RecoverSamplesDocument,
+                    {sampleUids},
                     'recoverSamples'
                 );
 
@@ -176,11 +228,15 @@ export default function useSampleComposable() {
             );
 
             if (result.isConfirmed) {
-                const response = await withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(
-                    PublishSamplesDocument, 
-                    { samples }, 
+                const response: SampleListingType = await withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(
+                    PublishSamplesDocument,
+                    {samples},
                     'publishSamples'
                 );
+
+                if (response?.samples?.length > 0) {
+                    sampleStore.updateSamples(response.samples ?? []);
+                }
 
                 if (response?.message) {
                     toastSuccess(response.message);
@@ -203,8 +259,8 @@ export default function useSampleComposable() {
             if (result.isConfirmed) {
                 console.log('impressReportsDownload:', sampleIds);
                 const response = await withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(
-                    ImpressSampleReportsDocument, 
-                    { sampleIds }, 
+                    ImpressSampleReportsDocument,
+                    {sampleIds},
                     'impressReportsDownload'
                 );
 
@@ -231,8 +287,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables>(
-                    ImpressSampleReportDocument, 
-                    { impressUid }, 
+                    ImpressSampleReportDocument,
+                    {impressUid},
                     'impressReportDownload'
                 );
 
@@ -252,8 +308,8 @@ export default function useSampleComposable() {
     const barcodeSamples = async (sampleUids: string[]): Promise<"Query" | Maybe<never[]> | undefined> => {
         try {
             const response = await withClientQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables>(
-                BarcodeSamplesDocument, 
-                { sampleUids }, 
+                BarcodeSamplesDocument,
+                {sampleUids},
                 'barcodeSamples'
             );
             return response || [];
@@ -273,8 +329,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<PrintSamplesMutation, PrintSamplesMutationVariables>(
-                    PrintSamplesDocument, 
-                    { samples: uids }, 
+                    PrintSamplesDocument,
+                    {samples: uids},
                     'printSamples'
                 );
 
@@ -297,8 +353,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<VerifySamplesMutation, VerifySamplesMutationVariables>(
-                    VerifySamplesDocument, 
-                    { samples: uids }, 
+                    VerifySamplesDocument,
+                    {samples: uids},
                     'verifySamples'
                 );
 
@@ -326,8 +382,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<RejectSamplesMutation, RejectSamplesMutationVariables>(
-                    RejectSamplesDocument, 
-                    { samples }, 
+                    RejectSamplesDocument,
+                    {samples},
                     'rejectSamples'
                 );
 
@@ -350,8 +406,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<InvalidateSamplesMutation, InvalidateSamplesMutationVariables>(
-                    InvalidateSamplesDocument, 
-                    { samples: uids }, 
+                    InvalidateSamplesDocument,
+                    {samples: uids},
                     'invalidateSamples'
                 );
 
@@ -382,8 +438,8 @@ export default function useSampleComposable() {
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<StoreSamplesMutation, StoreSamplesMutationVariables>(
-                    StoreSamplesDocument, 
-                    { payload: params }, 
+                    StoreSamplesDocument,
+                    {payload: params},
                     'storeSamples'
                 );
 

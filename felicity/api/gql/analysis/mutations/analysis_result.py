@@ -92,7 +92,8 @@ async def submit_analysis_results(
 
     job = await JobService().create(job_schema)
     if not settings.ENABLE_BACKGROUND_PROCESSING:
-        returns = await submit_results(job.uid)
+        await submit_results(job.uid)
+        returns = await AnalysisResultService().get_by_uids([r.uid for r in analysis_results])
         return ResultOperationType(
             results=returns,
             is_background=settings.ENABLE_BACKGROUND_PROCESSING
@@ -139,7 +140,8 @@ async def verify_analysis_results(
     job = await JobService().create(job_schema)
 
     if not settings.ENABLE_BACKGROUND_PROCESSING:
-        returns = await verify_results(job.uid)
+        await verify_results(job.uid)
+        returns = await AnalysisResultService().get_by_uids(analyses)
         return ResultOperationType(
             results=returns,
             is_background=settings.ENABLE_BACKGROUND_PROCESSING

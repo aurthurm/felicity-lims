@@ -907,14 +907,14 @@ export type ResultOptionsByAnalysisUidQueryVariables = Types.Exact<{
 
 export type ResultOptionsByAnalysisUidQuery = (
   { __typename?: 'Query' }
-  & { resultOptionsByAnalysisUid: (
+  & { resultOptionsByAnalysisUid: Array<(
     { __typename?: 'ResultOptionType' }
     & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value' | 'analysisUid'>
     & { sampleTypes?: Types.Maybe<Array<(
       { __typename?: 'SampleTypeTyp' }
       & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
     )>> }
-  ) }
+  )> }
 );
 
 export type GetAllRejectionReasonsQueryVariables = Types.Exact<{ [key: string]: never; }>;

@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { defineAsyncComponent, onMounted } from 'vue'
-import { useFullscreen } from '@vueuse/core'
+import {defineAsyncComponent} from 'vue'
+import {useFullscreen} from '@vueuse/core'
+
 const HeaderMain = defineAsyncComponent(() => import('@/components/nav/NavigationMain.vue'))
 const FelNotification = defineAsyncComponent(() => import('@/components/notification/FelNotification.vue'))
 
-const { toggle } = useFullscreen()
+const {toggle} = useFullscreen()
 
-onMounted(() => toggle())
+// onMounted(() => toggle())
 
 // Async components
 </script>
 
 <template>
   <div class="font-roboto antialiased min-h-screen flex flex-col">
-    <header-main />
+    <header-main/>
     <main class="px-8 pt-4 flex-1">
-      <slot />
+      <slot/>
     </main>
   </div>
-  <fel-notification />
+  <fel-notification/>
 </template>
 

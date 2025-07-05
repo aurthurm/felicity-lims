@@ -19,7 +19,7 @@ from felicity.apps.analysis.entities.analysis import (
     ResultOption,
     Sample,
     SampleType,
-    SampleTypeCoding,
+    SampleTypeCoding, ClinicalData, ClinicalDataCoding,
 )
 
 
@@ -103,6 +103,16 @@ class AnalysisRequestRepository(BaseRepository[AnalysisRequest]):
         super().__init__(AnalysisRequest)
 
 
+class ClinicalDataRepository(BaseRepository[ClinicalData]):
+    def __init__(self) -> None:
+        super().__init__(ClinicalData)
+
+
+class ClinicalDataCodingRepository(BaseRepository[ClinicalDataCoding]):
+    def __init__(self) -> None:
+        super().__init__(ClinicalDataCoding)
+
+
 class RejectionReasonRepository(BaseRepository[RejectionReason]):
     def __init__(self) -> None:
         super().__init__(RejectionReason)
@@ -113,10 +123,10 @@ class SampleRepository(BaseRepository[Sample]):
         super().__init__(Sample)
 
     async def search(
-        self,
-        status: str | None = None,
-        text: str | None = None,
-        client_uid: str | None = None,
+            self,
+            status: str | None = None,
+            text: str | None = None,
+            client_uid: str | None = None,
     ) -> list[Sample]:
         """No pagination"""
         filters = []

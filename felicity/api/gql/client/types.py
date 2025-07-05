@@ -36,8 +36,8 @@ class ClientType:
     updated_at: str | None = None
 
     @strawberry.field
-    def contacts(self) -> List[ClientContactType] | None:
-        return ClientContactService().get_all(client_uid=self.uid)
+    async def contacts(self) -> List[ClientContactType] | None:
+        return await ClientContactService().get_all(client_uid=self.uid)
 
 
 @strawberry.type

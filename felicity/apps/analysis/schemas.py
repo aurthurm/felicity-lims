@@ -676,6 +676,89 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 
 
 #
+# ClinicalData Schemas
+#
+
+# Shared properties
+class ClinicalDataBase(BaseAuditModel):
+    analysis_request_uid: str | None = None
+    symptoms: list[str] | None
+    symptoms_raw: str | None
+    clinical_indication: str | None
+    pregnancy_status: bool | None = False
+    breast_feeding: bool | None = False
+    vitals: dict | None
+    treatment_notes: str | None
+    other_context: dict | None
+    codings: list["ClinicalDataCoding"] | None
+
+
+class ClinicalDataBaseInDB(ClinicalDataBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Properties to receive via API on creation
+class ClinicalDataCreate(ClinicalDataBase):
+    pass
+
+
+# Properties to receive via API on update
+class ClinicalDataUpdate(ClinicalDataBase):
+    pass
+
+
+# Properties to return via API
+class ClinicalData(ClinicalDataBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class ClinicalDataInDB(ClinicalDataBaseInDB):
+    pass
+
+
+#
+# ClinicalDataCoding Schemas
+#
+
+# Shared properties
+class ClinicalDataCodingBase(BaseAuditModel):
+    clinical_data_uid: str | None
+    coding_standard_uid: str | None
+    code: str | None
+    name: str | None
+    description: str | None
+
+
+class ClinicalDataCodingBaseInDB(ClinicalDataCodingBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Properties to receive via API on creation
+class ClinicalDataCodingCreate(ClinicalDataCodingBase):
+    pass
+
+
+# Properties to receive via API on update
+class ClinicalDataCodingUpdate(ClinicalDataCodingBase):
+    pass
+
+
+# Properties to return via API
+class ClinicalDataCoding(ClinicalDataCodingBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class ClinicalDataCodingInDB(ClinicalDataCodingBaseInDB):
+    pass
+
+
+#
 # Sample Schemas
 #
 

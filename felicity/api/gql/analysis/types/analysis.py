@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps.analysis.services.analysis import SampleService
-from felicity.apps.common.utils.serializer import marshaller
 import strawberry  # noqa
 
 from felicity.api.gql.client.types import ClientType, ClientContactType
@@ -13,6 +11,7 @@ from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.storage.types import StorageContainerType
 from felicity.api.gql.types.generic import PageInfo, JSONScalar, StrawberryMapper
 from felicity.api.gql.user.types import UserType
+from felicity.apps.analysis.services.analysis import SampleService
 
 
 @strawberry.type
@@ -107,6 +106,45 @@ class RejectionReasonType:
 
 
 @strawberry.type
+class ClinicalDataCodingType:
+    uid: str
+    clinical_data_uid: str | None
+    coding_standard_uid: str | None
+    code: str | None
+    name: str | None
+    description: str | None
+    #
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+
+
+@strawberry.type
+class ClinicalDataType:
+    uid: str
+    analysis_request_uid: str | None = None
+    symptoms: list[str] | None
+    symptoms_raw: str | None
+    clinical_indication: str | None
+    pregnancy_status: bool | None = False
+    breast_feeding: bool | None = False
+    vitals: JSONScalar | None
+    treatment_notes: str | None
+    other_context: JSONScalar | None
+    codings: list[ClinicalDataCodingType] | None
+    #
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+
+
+@strawberry.type
 class AnalysisRequestType:
     uid: str
     patient_uid: str
@@ -116,6 +154,7 @@ class AnalysisRequestType:
     client_request_id: str
     client_contact_uid: str | None = None
     client_contact: ClientContactType | None = None
+    clinical_data: list[ClinicalDataType] | None
     internal_use: bool
     metadata_snapshot: JSONScalar | None = None
     #
@@ -125,7 +164,7 @@ class AnalysisRequestType:
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
     updated_at: str | None = None
-    
+
     @strawberry.field
     async def samples(self, info) -> List["SampleType"]:
         return await SampleService().get_all(analysis_request_uid=self.uid)
@@ -194,7 +233,6 @@ class AnalysisType:
     category_uid: str | None = None
     category: Optional[AnalysisCategoryType] = None
     interims: Optional[List["AnalysisInterimType"]] = None
-    sample_types: Optional[List[SampleTypeTyp]] = None
     correction_factors: Optional[List["AnalysisCorrectionFactorType"]] = None
     specifications: Optional[List["AnalysisSpecificationType"]] = None
     detection_limits: Optional[List["AnalysisDetectionLimitType"]] = None
@@ -202,6 +240,7 @@ class AnalysisType:
     result_options: Optional[List[ResultOptionType]] = None
     instruments: Optional[List[InstrumentType]] = None
     methods: Optional[List[MethodType]] = None
+    profiles: Optional[List["ProfileType"]] = None
     result_type: str | None = None
     tat_length_minutes: int | None = None
     sort_key: int | None = None

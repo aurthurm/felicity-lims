@@ -291,7 +291,7 @@ export type CloneSamplesMutationVariables = Exact<{
 }>;
 
 
-export type CloneSamplesMutation = { __typename?: 'Mutation', cloneSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, parentId?: string | null, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> } };
+export type CloneSamplesMutation = { __typename?: 'Mutation', cloneSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess' } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, parentId?: string | null, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> } };
 
 export type CancelSamplesMutationVariables = Exact<{
   samples: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -312,35 +312,35 @@ export type PublishSamplesMutationVariables = Exact<{
 }>;
 
 
-export type PublishSamplesMutation = { __typename?: 'Mutation', publishSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'OperationSuccess', message: string } };
+export type PublishSamplesMutation = { __typename?: 'Mutation', publishSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess' } | { __typename: 'SampleListingType', message?: string | null, samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null, publishedByUid?: string | null, datePublished?: never | null }> } };
 
 export type PrintSamplesMutationVariables = Exact<{
   samples: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type PrintSamplesMutation = { __typename?: 'Mutation', printSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null }> } };
+export type PrintSamplesMutation = { __typename?: 'Mutation', printSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess' } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null }> } };
 
 export type InvalidateSamplesMutationVariables = Exact<{
   samples: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type InvalidateSamplesMutation = { __typename?: 'Mutation', invalidateSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null }> } };
+export type InvalidateSamplesMutation = { __typename?: 'Mutation', invalidateSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess' } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null }> } };
 
 export type VerifySamplesMutationVariables = Exact<{
   samples: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type VerifySamplesMutation = { __typename?: 'Mutation', verifySamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null }> } };
+export type VerifySamplesMutation = { __typename?: 'Mutation', verifySamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess' } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null }> } };
 
 export type RejectSamplesMutationVariables = Exact<{
   samples: Array<SampleRejectInputType> | SampleRejectInputType;
 }>;
 
 
-export type RejectSamplesMutation = { __typename?: 'Mutation', rejectSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null, rejectionReasons?: Array<{ __typename?: 'RejectionReasonType', uid: string, reason: string }> | null }> } };
+export type RejectSamplesMutation = { __typename?: 'Mutation', rejectSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess' } | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null, rejectionReasons?: Array<{ __typename?: 'RejectionReasonType', uid: string, reason: string }> | null }> } };
 
 export type AddResultOptionMutationVariables = Exact<{
   payload: ResultOptionInputType;
@@ -552,7 +552,7 @@ export type SubmitAnalysisResultsMutationVariables = Exact<{
 }>;
 
 
-export type SubmitAnalysisResultsMutation = { __typename?: 'Mutation', submitAnalysisResults: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess', message: string } };
+export type SubmitAnalysisResultsMutation = { __typename?: 'Mutation', submitAnalysisResults: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'ResultOperationType', message?: string | null, isBackground: boolean, results?: Array<{ __typename?: 'AnalysisResultType', uid: string, status?: string | null, analysisUid?: string | null, laboratoryInstrumentUid?: string | null, methodUid?: string | null, result?: string | null, analystUid?: string | null, submittedByUid?: string | null, dateSubmitted?: never | null }> | null } };
 
 export type CancelAnalysisResultsMutationVariables = Exact<{
   analyses: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -575,7 +575,7 @@ export type VerifyAnalysisResultsMutationVariables = Exact<{
 }>;
 
 
-export type VerifyAnalysisResultsMutation = { __typename?: 'Mutation', verifyAnalysisResults: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OperationSuccess', message: string } };
+export type VerifyAnalysisResultsMutation = { __typename?: 'Mutation', verifyAnalysisResults: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'ResultOperationType', message?: string | null, isBackground: boolean, results?: Array<{ __typename?: 'AnalysisResultType', uid: string, status?: string | null, analysisUid?: string | null, laboratoryInstrumentUid?: string | null, methodUid?: string | null, result?: string | null, analystUid?: string | null, submittedByUid?: string | null, dateSubmitted?: never | null, dateVerified?: never | null, verifiedBy?: Array<{ __typename?: 'UserType', uid: string }> | null }> | null } };
 
 export type RetractAnalysisResultsMutationVariables = Exact<{
   analyses: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -839,7 +839,7 @@ export type ResultOptionsByAnalysisUidQueryVariables = Exact<{
 }>;
 
 
-export type ResultOptionsByAnalysisUidQuery = { __typename?: 'Query', resultOptionsByAnalysisUid: { __typename?: 'ResultOptionType', uid: string, optionKey: number, value: string, analysisUid: string, sampleTypes?: Array<{ __typename?: 'SampleTypeTyp', uid: string, name: string }> | null } };
+export type ResultOptionsByAnalysisUidQuery = { __typename?: 'Query', resultOptionsByAnalysisUid: Array<{ __typename?: 'ResultOptionType', uid: string, optionKey: number, value: string, analysisUid: string, sampleTypes?: Array<{ __typename?: 'SampleTypeTyp', uid: string, name: string }> | null }> };
 
 export type GetAllRejectionReasonsQueryVariables = Exact<{ [key: string]: never; }>;
 

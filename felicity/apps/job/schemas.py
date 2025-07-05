@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict
 
 from .enum import JobCategory, JobPriority, JobState
+from ...core.dtz import timenow_dt
 
 
 #
@@ -17,6 +19,7 @@ class JobBase(BaseModel):
     status: str | None = JobState.PENDING
     reason: str | None = None
     creator_uid: str | None = None
+    next_try: datetime = timenow_dt() + timedelta(minutes=1)
 
 
 class Job(JobBase):

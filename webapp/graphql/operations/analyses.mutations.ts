@@ -139,7 +139,7 @@ export type CloneSamplesMutation = (
   & { cloneSamples: (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
-  ) | (
+  ) | { __typename?: 'OperationSuccess' } | (
     { __typename: 'SampleListingType' }
     & { samples: Array<(
       { __typename?: 'SampleType' }
@@ -206,9 +206,13 @@ export type PublishSamplesMutation = (
   & { publishSamples: (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
-  ) | (
-    { __typename: 'OperationSuccess' }
-    & Pick<Types.OperationSuccess, 'message'>
+  ) | { __typename?: 'OperationSuccess' } | (
+    { __typename: 'SampleListingType' }
+    & Pick<Types.SampleListingType, 'message'>
+    & { samples: Array<(
+      { __typename?: 'SampleType' }
+      & Pick<Types.SampleType, 'uid' | 'status' | 'publishedByUid' | 'datePublished'>
+    )> }
   ) }
 );
 
@@ -222,7 +226,7 @@ export type PrintSamplesMutation = (
   & { printSamples: (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
-  ) | (
+  ) | { __typename?: 'OperationSuccess' } | (
     { __typename: 'SampleListingType' }
     & { samples: Array<(
       { __typename?: 'SampleType' }
@@ -241,7 +245,7 @@ export type InvalidateSamplesMutation = (
   & { invalidateSamples: (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
-  ) | (
+  ) | { __typename?: 'OperationSuccess' } | (
     { __typename: 'SampleListingType' }
     & { samples: Array<(
       { __typename?: 'SampleType' }
@@ -260,7 +264,7 @@ export type VerifySamplesMutation = (
   & { verifySamples: (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
-  ) | (
+  ) | { __typename?: 'OperationSuccess' } | (
     { __typename: 'SampleListingType' }
     & { samples: Array<(
       { __typename?: 'SampleType' }
@@ -279,7 +283,7 @@ export type RejectSamplesMutation = (
   & { rejectSamples: (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
-  ) | (
+  ) | { __typename?: 'OperationSuccess' } | (
     { __typename: 'SampleListingType' }
     & { samples: Array<(
       { __typename?: 'SampleType' }
@@ -869,8 +873,12 @@ export type SubmitAnalysisResultsMutation = (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) | (
-    { __typename?: 'OperationSuccess' }
-    & Pick<Types.OperationSuccess, 'message'>
+    { __typename?: 'ResultOperationType' }
+    & Pick<Types.ResultOperationType, 'message' | 'isBackground'>
+    & { results?: Types.Maybe<Array<(
+      { __typename?: 'AnalysisResultType' }
+      & Pick<Types.AnalysisResultType, 'uid' | 'status' | 'analysisUid' | 'laboratoryInstrumentUid' | 'methodUid' | 'result' | 'analystUid' | 'submittedByUid' | 'dateSubmitted'>
+    )>> }
   ) }
 );
 
@@ -925,8 +933,16 @@ export type VerifyAnalysisResultsMutation = (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) | (
-    { __typename?: 'OperationSuccess' }
-    & Pick<Types.OperationSuccess, 'message'>
+    { __typename?: 'ResultOperationType' }
+    & Pick<Types.ResultOperationType, 'message' | 'isBackground'>
+    & { results?: Types.Maybe<Array<(
+      { __typename?: 'AnalysisResultType' }
+      & Pick<Types.AnalysisResultType, 'uid' | 'status' | 'analysisUid' | 'laboratoryInstrumentUid' | 'methodUid' | 'result' | 'analystUid' | 'submittedByUid' | 'dateSubmitted' | 'dateVerified'>
+      & { verifiedBy?: Types.Maybe<Array<(
+        { __typename?: 'UserType' }
+        & Pick<Types.UserType, 'uid'>
+      )>> }
+    )>> }
   ) }
 );
 
@@ -1440,9 +1456,15 @@ export function useReceiveSamplesMutation() {
 export const PublishSamplesDocument = gql`
     mutation PublishSamples($samples: [SamplePublishInputType!]!) {
   publishSamples(samples: $samples) {
-    ... on OperationSuccess {
+    ... on SampleListingType {
       __typename
       message
+      samples {
+        uid
+        status
+        publishedByUid
+        datePublished
+      }
     }
     ... on OperationError {
       __typename
@@ -2330,8 +2352,20 @@ export const SubmitAnalysisResultsDocument = gql`
     sourceObject: $sourceObject
     sourceObjectUid: $sourceObjectUid
   ) {
-    ... on OperationSuccess {
+    ... on ResultOperationType {
       message
+      isBackground
+      results {
+        uid
+        status
+        analysisUid
+        laboratoryInstrumentUid
+        methodUid
+        result
+        analystUid
+        submittedByUid
+        dateSubmitted
+      }
     }
     ... on OperationError {
       __typename
@@ -2394,8 +2428,24 @@ export const VerifyAnalysisResultsDocument = gql`
     sourceObject: $sourceObject
     sourceObjectUid: $sourceObjectUid
   ) {
-    ... on OperationSuccess {
+    ... on ResultOperationType {
       message
+      isBackground
+      results {
+        uid
+        status
+        analysisUid
+        laboratoryInstrumentUid
+        methodUid
+        result
+        analystUid
+        submittedByUid
+        dateSubmitted
+        verifiedBy {
+          uid
+        }
+        dateVerified
+      }
     }
     ... on OperationError {
       __typename

@@ -1,34 +1,53 @@
-import { ExtAnalysisResultType } from '@/types/result';
-import { useSampleStore } from '@/stores/sample';
-import { useWorksheetStore } from '@/stores/worksheet';
+import {ExtAnalysisResultType} from '@/types/result';
+import {useSampleStore} from '@/stores/sample';
+import {useWorksheetStore} from '@/stores/worksheet';
 
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
-import { CancelAnalysisResultsDocument, CancelAnalysisResultsMutation, CancelAnalysisResultsMutationVariables, ReInstateAnalysisResultsDocument, ReInstateAnalysisResultsMutation, ReInstateAnalysisResultsMutationVariables, RetestAnalysisResultsDocument, RetestAnalysisResultsMutation, RetestAnalysisResultsMutationVariables, RetractAnalysisResultsDocument, RetractAnalysisResultsMutation, RetractAnalysisResultsMutationVariables, SubmitAnalysisResultsDocument, SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables, VerifyAnalysisResultsDocument, VerifyAnalysisResultsMutation, VerifyAnalysisResultsMutationVariables } from '@/graphql/operations/analyses.mutations';
-import { ArResultInputType } from '@/types/gql';
+import {
+    CancelAnalysisResultsDocument,
+    CancelAnalysisResultsMutation,
+    CancelAnalysisResultsMutationVariables,
+    ReInstateAnalysisResultsDocument,
+    ReInstateAnalysisResultsMutation,
+    ReInstateAnalysisResultsMutationVariables,
+    RetestAnalysisResultsDocument,
+    RetestAnalysisResultsMutation,
+    RetestAnalysisResultsMutationVariables,
+    RetractAnalysisResultsDocument,
+    RetractAnalysisResultsMutation,
+    RetractAnalysisResultsMutationVariables,
+    SubmitAnalysisResultsDocument,
+    SubmitAnalysisResultsMutation,
+    SubmitAnalysisResultsMutationVariables,
+    VerifyAnalysisResultsDocument,
+    VerifyAnalysisResultsMutation,
+    VerifyAnalysisResultsMutationVariables
+} from '@/graphql/operations/analyses.mutations';
+import {ArResultInputType, ResultOperationType} from '@/types/gql';
 
 
 export default function useAnalysisComposable() {
     const sampleStore = useSampleStore();
     const worksheetStore = useWorksheetStore();
-    const { withClientMutation } = useApiUtil();
-    const { toastSuccess, toastError, swalConfirm } = useNotifyToast();
+    const {withClientMutation} = useApiUtil();
+    const {toastSuccess, toastError, swalConfirm} = useNotifyToast();
 
-    // Cancell Analyses
+    // Cancel Analyses
     const cancelResults = async (uids: string[]) => {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to cancel ${uids.length} analyte${uids.length > 1 ? 's' : ''}?`,
                 'Cancel Analysis'
             );
-            
+
             if (result.isConfirmed) {
                 const response = await withClientMutation<CancelAnalysisResultsMutation, CancelAnalysisResultsMutationVariables>(
-                    CancelAnalysisResultsDocument, 
-                    { analyses: uids }, 
+                    CancelAnalysisResultsDocument,
+                    {analyses: uids},
                     'cancelAnalysisResults'
                 );
-                
+
                 if (response?.results) {
                     sampleStore.updateAnalysesResultsStatus(response.results);
                     worksheetStore.updateWorksheetResultsStatus(response.results);
@@ -47,14 +66,14 @@ export default function useAnalysisComposable() {
                 `Are you sure you want to reinstate ${uids.length} analyte${uids.length > 1 ? 's' : ''}?`,
                 'Reinstate Analysis'
             );
-            
+
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReInstateAnalysisResultsMutation, ReInstateAnalysisResultsMutationVariables>(
-                    ReInstateAnalysisResultsDocument, 
-                    { analyses: uids }, 
+                    ReInstateAnalysisResultsDocument,
+                    {analyses: uids},
                     'reInstateAnalysisResults'
                 );
-                
+
                 if (response?.results) {
                     sampleStore.updateAnalysesResultsStatus(response.results);
                     worksheetStore.updateWorksheetResultsStatus(response.results);
@@ -82,29 +101,41 @@ export default function useAnalysisComposable() {
             if (!confirmResult.isConfirmed) return;
 
             result.result = result.editResult;
-            
+
             const analysisResult: ArResultInputType = {
                 uid: result.uid || '',
                 result: result.result || '',
                 laboratoryInstrumentUid: result.laboratoryInstrumentUid || '',
                 methodUid: result.methodUid || ''
             };
-            
-            const response = await withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
-                SubmitAnalysisResultsDocument, 
-                { 
+
+            const response: ResultOperationType = await withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
+                SubmitAnalysisResultsDocument,
+                {
                     analysisResults: [analysisResult],
                     sourceObject: 'sample',
                     sourceObjectUid: result.sampleUid || ''
-                }, 
+                },
                 'submitAnalysisResults'
             );
+
+            // results submitting is in the background
+            if (response?.isBackground) {
+                sampleStore.backgroundProcessing([{uid: result.uid, result: result.result}], "", 'submitting');
+                worksheetStore.backgroundProcessing([{
+                    uid: result.uid,
+                    result: result.result
+                }], undefined, 'submitting');
+            } else {
+                // results submission was instant and has finished
+                sampleStore.updateAnalysesResults(response.results ?? []);
+                worksheetStore.updateAnalysesResults(response.results ?? []);
+            }
             
             if (response?.message) {
                 toastSuccess(response.message);
-                sampleStore.backgroundProcessing([{ uid: result.uid, result: result.result }], undefined, 'submitting');
-                worksheetStore.backgroundProcessing([{ uid: result.uid, result: result.result }], undefined, 'submitting');
             }
+
         } catch (error) {
             toastError(`Failed to submit result: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
@@ -117,22 +148,33 @@ export default function useAnalysisComposable() {
                 `Are you sure you want to submit ${results.length} result${results.length > 1 ? 's' : ''}?`,
                 'Submit Results'
             );
-            
+
             if (result.isConfirmed) {
-                const response = await withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
+                const response: ResultOperationType = await withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
                     SubmitAnalysisResultsDocument,
-                    { analysisResults: results, sourceObject, sourceObjectUid },
+                    {analysisResults: results, sourceObject, sourceObjectUid},
                     'submitAnalysisResults'
                 );
-                
-                if (response?.message) {
-                    toastSuccess(response.message);
-                    sampleStore.backgroundProcessing(results, sourceObject === 'sample' ? sourceObjectUid : undefined, 'submitting');
+
+                // results submitting is in the background
+                if (response?.isBackground) {
+                    sampleStore.backgroundProcessing(results, sourceObject === 'sample' ? sourceObjectUid : "", 'submitting');
                     worksheetStore.backgroundProcessing(
                         results,
                         sourceObject === 'worksheet' ? sourceObjectUid : undefined,
                         'submitting'
                     );
+                } else {
+                    // results submission was instant and has finished
+                    if (sourceObject == 'sample') {
+                        sampleStore.updateAnalysesResults(response.results ?? []);
+                    }
+                    if (sourceObject == 'worksheet') {
+                        worksheetStore.updateAnalysesResults(response.results ?? []);
+                    }
+                }
+                if (response?.message) {
+                    toastSuccess(response.message);
                 }
             }
         } catch (error) {
@@ -147,19 +189,29 @@ export default function useAnalysisComposable() {
                 `Are you sure you want to approve ${uids.length} result${uids.length > 1 ? 's' : ''}?`,
                 'Approve Results'
             );
-            
+
             if (result.isConfirmed) {
-                const response = await withClientMutation<VerifyAnalysisResultsMutation, VerifyAnalysisResultsMutationVariables>(
+                const response: ResultOperationType = await withClientMutation<VerifyAnalysisResultsMutation, VerifyAnalysisResultsMutationVariables>(
                     VerifyAnalysisResultsDocument,
-                    { analyses: uids, sourceObject, sourceObjectUid },
+                    {analyses: uids, sourceObject, sourceObjectUid},
                     'verifyAnalysisResults'
                 );
-                
+
+                if (response?.isBackground) {
+                    const data = uids.map(item => ({uid: item}));
+                    sampleStore.backgroundProcessing(data, sourceObject === 'sample' ? sourceObjectUid : "", 'approving');
+                    worksheetStore.backgroundProcessing(data, sourceObject === 'worksheet' ? sourceObjectUid : undefined, 'approving');
+                } else {
+                    if (sourceObject == 'sample') {
+                        sampleStore.updateAnalysesResults(response.results ?? []);
+                    }
+                    if (sourceObject == 'worksheet') {
+                        worksheetStore.updateAnalysesResults(response.results ?? []);
+                    }
+                }
+
                 if (response?.message) {
                     toastSuccess(response.message);
-                    const data = uids.map(item => ({ uid: item }));
-                    sampleStore.backgroundProcessing(data, sourceObject === 'sample' ? sourceObjectUid : undefined, 'approving');
-                    worksheetStore.backgroundProcessing(data, sourceObject === 'worksheet' ? sourceObjectUid : undefined, 'approving');
                 }
             }
         } catch (error) {
@@ -174,14 +226,14 @@ export default function useAnalysisComposable() {
                 `Are you sure you want to retract ${uids.length} result${uids.length > 1 ? 's' : ''}?`,
                 'Retract Results'
             );
-            
+
             if (result.isConfirmed) {
                 const response = await withClientMutation<RetractAnalysisResultsMutation, RetractAnalysisResultsMutationVariables>(
-                    RetractAnalysisResultsDocument, 
-                    { analyses: uids }, 
+                    RetractAnalysisResultsDocument,
+                    {analyses: uids},
                     'retractAnalysisResults'
                 );
-                
+
                 if (response?.results) {
                     sampleStore.updateAnalysesResults(response.results);
                     worksheetStore.updateWorksheetResultsStatus(response.results);
@@ -200,14 +252,14 @@ export default function useAnalysisComposable() {
                 `Are you sure you want to retest ${uids.length} analyte${uids.length > 1 ? 's' : ''}?`,
                 'Retest Analysis'
             );
-            
+
             if (result.isConfirmed) {
                 const response = await withClientMutation<RetestAnalysisResultsMutation, RetestAnalysisResultsMutationVariables>(
-                    RetestAnalysisResultsDocument, 
-                    { analyses: uids }, 
+                    RetestAnalysisResultsDocument,
+                    {analyses: uids},
                     'retestAnalysisResults'
                 );
-                
+
                 if (response?.results) {
                     sampleStore.updateAnalysesResults(response.results);
                     toastSuccess(`Successfully initiated retest for ${uids.length} analyte${uids.length > 1 ? 's' : ''}`);
