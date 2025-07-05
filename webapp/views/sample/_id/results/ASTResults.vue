@@ -10,8 +10,9 @@ import useAnalysisComposable from "@/composables/analysis";
 
 import * as shield from "@/guards";
 import { GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables, GetAbxOrganismResultAllDocument, GetAbxAstPanelFilterDocument, GetAbxAstPanelFilterQuery, GetAbxAstPanelFilterQueryVariables, GetAbxAstResultAllDocument, GetAbxAstResultAllQuery, GetAbxAstResultAllQueryVariables, GetAbxGuidelineYearAllDocument, GetAbxGuidelineYearAllQuery, GetAbxGuidelineYearAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
-import { AbxASTPanelType, AbxASTResultType, AbxGuidelineYearType, AbxOrganismResultType, AbxTestMethodType } from "@/types/gql";
+import { AbxAstPanelType, AbxAstResultType, AbxGuidelineYearType, AbxOrganismResultType, AbxTestMethodType } from "@/types/gql";
 import { ApplyAbxAstPanelDocument, ApplyAbxAstPanelMutation, ApplyAbxAstPanelMutationVariables, UpdateAbxAstResultsDocument, UpdateAbxAstResultsMutation, UpdateAbxAstResultsMutationVariables } from "@/graphql/operations/microbiology.mutations";
+import { NotificationObjectType } from "@/graphql/schema";
 
 
 const {
@@ -32,7 +33,7 @@ const sampleStore = useSampleStore();
 
 const { withClientMutation, withClientQuery } = useApiUtil()
 const organismResult = computed(() => organismAnalysisResults[0]);
-const astResults = ref<AbxASTResultType[]>([]);
+const astResults = ref<AbxAstResultType[]>([]);
 const pickedOrganisms = ref<AbxOrganismResultType[]>([]);
 const guidelines = ref<AbxGuidelineYearType[]>([]);
 const testMethods = ref<AbxTestMethodType[]>([]);
@@ -68,7 +69,7 @@ onMounted(() => {
 const showModal = ref<boolean>(false);
 const loadingPanels = ref(false);
 const searchPanelText = ref<string>('');
-const panels = ref<AbxASTPanelType[]>([]);
+const panels = ref<AbxAstPanelType[]>([]);
 const choiceOrganism = ref<AbxOrganismResultType>();
 
 function fetchAstResultAll() {
@@ -76,7 +77,7 @@ function fetchAstResultAll() {
     GetAbxAstResultAllDocument, { sampleUid: sample.uid! }, "abxAstResultAll"
   ).then((result) => {
     if (result) {
-      astResults.value = (result as unknown || []) as AbxASTResultType[];
+      astResults.value = (result as unknown || []) as AbxAstResultType[];
     }
   }).finally(() => processASTResults())
 }
@@ -100,7 +101,7 @@ function searchPanels() {
     "abxAstPanelFilter"
   ).then((result) => {
     if (result) {
-      panels.value = (result as unknown || []) as AbxASTPanelType[];
+      panels.value = (result as unknown || []) as AbxAstPanelType[];
     }
   }).finally(() => {
     loadingPanels.value = false;
@@ -172,12 +173,12 @@ function processASTResults() {
           uid: ast.uid,
           analResultUid: ast.analysisResultUid,
           status: ast.analysisResult?.status!,
-          astMethodUid: ast.astMethodUid,
-          guidelineYearUid: ast.guidelineYearUid,
-          breakpointUid: ast.breakpointUid,
-          astValue: ast.astValue,
-          result: ast.analysisResult?.result,
-          reportable: ast.analysisResult?.reportable,
+          astMethodUid: ast.astMethodUid ?? "",
+          guidelineYearUid: ast.guidelineYearUid ?? "",
+          breakpointUid: ast.breakpointUid ?? "",
+          astValue: ast.astValue ?? "",
+          result: ast.analysisResult?.result ?? "",
+          reportable: ast.analysisResult?.reportable ?? false,
           dirty: false // mark as clean initially
         };
       }
@@ -265,12 +266,12 @@ function submitAntibiotics(organismUid: string) {
   const results = getSubmittable(organismUid) as ASTData[];
   const _prepared = results.map(r => ({
     uid: r.analResultUid,
-    result: r.result,
-    reportable: r.reportable,
+    result: r.result ?? "",
+    reportable: r.reportable ?? false,
     methodUid: "felicity_ast", 
     laboratoryInstrumentUid: "felicity_ast" 
   }))
-  submitter_(_prepared, "sample", sample?.uid!).then(() => {
+  submitter_(_prepared, NotificationObjectType.Sample, sample?.uid!).then(() => {
       sampleStore.fetchAnalysisResultsForSample(sample.uid)
       fetchAstResultAll()
   });
@@ -362,7 +363,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                   >
                     <select 
                       v-model="organismResults[pickedOrg.uid][antibiotic].guidelineYearUid"
-                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'guidelineYearUid', $event.target.value)"
+                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'guidelineYearUid', ($event.target as HTMLInputElement).value)"
                       class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
                     >
@@ -380,7 +381,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                   >
                     <select 
                       v-model="organismResults[pickedOrg.uid][antibiotic].astMethodUid"
-                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astMethodUid', $event.target.value)"
+                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astMethodUid', ($event.target as HTMLInputElement).value)"
                       class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
                     >
@@ -399,7 +400,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                     <input 
                       type="number"
                       v-model="organismResults[pickedOrg.uid][antibiotic].astValue"
-                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astValue', $event.target.value)"
+                      @change="handleCellEdit(pickedOrg.uid, antibiotic, 'astValue', ($event.target as HTMLInputElement).value)"
                       class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       step="0.1"
                       :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
@@ -417,7 +418,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                     <div class="flex items-center space-x-2">
                       <select 
                         v-model="organismResults[pickedOrg.uid][antibiotic].result"
-                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'result', $event.target.value)"
+                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'result', ($event.target as HTMLInputElement).value)"
                         class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         :class="{
                           'text-success': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
@@ -452,7 +453,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                       <input 
                         type="checkbox"
                         v-model="organismResults[pickedOrg.uid][antibiotic].reportable"
-                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', $event.target.checked)"
+                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', ($event.target as HTMLInputElement).checked)"
                         class="rounded border-input text-primary focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
                         :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
                       />

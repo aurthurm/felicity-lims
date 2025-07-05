@@ -7,14 +7,15 @@ from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics import EntityAnalyticsInit
 from felicity.apps.analytics.enum import ReportState
 from felicity.apps.analytics.services import ReportMetaService
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import (
     ActivityStreamService,
     NotificationService,
 )
 from felicity.utils.dirs import get_download_path, get_full_path_from_relative
-from felicity.apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -61,7 +62,7 @@ async def generate_report(job_uid: str) -> bool:
             report.created_by,
         )
         return False
-    
+
     logger.info(f"Saving report to {file_name}")
     file_name_with_path = get_full_path_from_relative(file_name)
     df.to_csv(file_name_with_path, index=False)
@@ -93,10 +94,9 @@ async def generate_report(job_uid: str) -> bool:
         },
         report.created_by,
         "generated",
-        "report"
+        NotificationObject.REPORT
     )
     return True
-
 
 # # Convert DataFrame to a buffer (StringIO)
 # buffer = StringIO()

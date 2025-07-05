@@ -19,7 +19,7 @@ volumes:
 services:
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.1.9 # Pinning image version for stability
+    image: amusendame/felicity-static-nginx:0.2.0 # Pinning image version for stability
     restart: unless-stopped # Always restart unless explicitly stopped
     ports:
       - "80:80" # Expose Nginx on host port 80
@@ -40,7 +40,7 @@ services:
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.1.9 # Pinning image version for stability
+    image: amusendame/felicity-lims:api-0.2.0 # Pinning image version for stability
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file
@@ -93,11 +93,11 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: minio server /data --console-address ":9001" # Start MinIO server with console
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 30s
       timeout: 20s
       retries: 3
-      
+
   felicity-dragonfly:
     container_name: felicity-dragonfly
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinning image version
@@ -138,7 +138,7 @@ services:
     networks:
       - felicitynet
     healthcheck: # Health check to ensure PostgreSQL is ready
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5

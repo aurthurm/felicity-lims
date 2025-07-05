@@ -129,7 +129,7 @@ class UserMutations:
             "updated_by_uid": felicity_user.uid,
         }
         user_in = user_schemas.UserCreate(**user_in)
-        user = await user_service.create(user_in=user_in,related=['groups'])
+        user = await user_service.create(user_in=user_in, related=['groups'])
         if group_uid:
             group = await group_service.get(uid=group_uid)
             user.groups.append(group)
@@ -152,10 +152,12 @@ class UserMutations:
             user_uid: str,
             first_name: str | None,
             last_name: str | None,
+            user_name: str | None,
             mobile_phone: str | None,
             email: str | None,
             group_uid: str | None,
             is_active: bool | None,
+            is_blocked: bool | None,
             password: str | None = None,
             passwordc: str | None = None,
     ) -> UserResponse:
@@ -172,12 +174,16 @@ class UserMutations:
             setattr(user, "first_name", first_name)
         if last_name and "last_name" in user_data:
             setattr(user, "last_name", last_name)
+        if user_name and "user_name" in user_data:
+            setattr(user, "user_name", user_name)
         if email and "email" in user_data:
             setattr(user, "email", email)
         if mobile_phone and "mobile_phone" in user_data:
             setattr(user, "mobile_phone", mobile_phone)
-        if is_active and "is_active" in user_data:
+        if "is_active" in user_data:
             setattr(user, "is_active", is_active)
+        if "is_blocked" in user_data:
+            setattr(user, "is_blocked", is_blocked)
 
         user_in = user_schemas.UserUpdate(**user.to_dict())
         user_in.updated_by_uid = felicity_user.uid

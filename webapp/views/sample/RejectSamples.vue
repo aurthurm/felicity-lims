@@ -3,8 +3,7 @@ import { computed, onMounted, reactive } from "vue";
 import { ProfileType, AnalysisType } from "@/types/gql";
 import useSampleComposable from "@/composables/samples";
 import { useAnalysisStore } from "@/stores/analysis";
-import { useRoute, useRouter } from "vue-router";
-const route = useRoute();
+import { useRouter } from "vue-router";
 const router = useRouter();
 
 const analysisStore = useAnalysisStore();

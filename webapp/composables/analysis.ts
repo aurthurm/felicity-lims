@@ -25,7 +25,7 @@ import {
     VerifyAnalysisResultsMutationVariables
 } from '@/graphql/operations/analyses.mutations';
 import {ArResultInputType, ResultOperationType} from '@/types/gql';
-
+import { NotificationObjectType } from '@/graphql/schema';
 
 export default function useAnalysisComposable() {
     const sampleStore = useSampleStore();
@@ -142,7 +142,7 @@ export default function useAnalysisComposable() {
     };
 
     // Submit Multiple Analyses
-    const submitResults = async (results: Array<ArResultInputType>, sourceObject: string, sourceObjectUid: string) => {
+    const submitResults = async (results: Array<ArResultInputType>, sourceObject: NotificationObjectType, sourceObjectUid: string) => {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to submit ${results.length} result${results.length > 1 ? 's' : ''}?`,
@@ -158,18 +158,18 @@ export default function useAnalysisComposable() {
 
                 // results submitting is in the background
                 if (response?.isBackground) {
-                    sampleStore.backgroundProcessing(results, sourceObject === 'sample' ? sourceObjectUid : "", 'submitting');
+                    sampleStore.backgroundProcessing(results, sourceObject === NotificationObjectType.Sample ? sourceObjectUid : "", 'submitting');
                     worksheetStore.backgroundProcessing(
                         results,
-                        sourceObject === 'worksheet' ? sourceObjectUid : undefined,
+                        sourceObject === NotificationObjectType.Worksheet ? sourceObjectUid : undefined,
                         'submitting'
                     );
                 } else {
                     // results submission was instant and has finished
-                    if (sourceObject == 'sample') {
+                    if (sourceObject == NotificationObjectType.Sample) {
                         sampleStore.updateAnalysesResults(response.results ?? []);
                     }
-                    if (sourceObject == 'worksheet') {
+                    if (sourceObject == NotificationObjectType.Worksheet) {
                         worksheetStore.updateAnalysesResults(response.results ?? []);
                     }
                 }

@@ -17,6 +17,7 @@ from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
 from felicity.apps.multiplex.microbiology.services import AbxOrganismResultService, AbxASTResultService
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.user.entities import User, logger
 from felicity.core.dtz import timenow_dt
@@ -115,7 +116,7 @@ class AnalysisResultService(
         analysis_result.laboratory_instrument_uid = laboratory_instrument_uid
         analysis_result.date_submitted = timenow_dt()
         final = await super().save(analysis_result, related=["analysis"])
-        await self.streamer_service.stream(final, submitter, "submitted", "result")
+        await self.streamer_service.stream(final, submitter, "submitted", NotificationObject.ANALYSIS_RESULT)
         return final
 
     async def verify(self, uid: str, verifier) -> AnalysisResult:
@@ -125,7 +126,7 @@ class AnalysisResultService(
         analysis_result.date_verified = timenow_dt()
         final = await super().save(analysis_result, related=["analysis"])
         await self._verify(uid, verifier_uid=verifier.uid)
-        await self.streamer_service.stream(final, verifier, "approved", "result")
+        await self.streamer_service.stream(final, verifier, "approved", NotificationObject.ANALYSIS_RESULT)
         return final
 
     async def _verify(self, uid: str, verifier_uid) -> None:
@@ -140,7 +141,7 @@ class AnalysisResultService(
         analysis_result.date_verified = timenow_dt()
         analysis_result.updated_by_uid = retracted_by.uid  # noqa
         final = await super().save(analysis_result)
-        await self.streamer_service.stream(final, retracted_by, "retracted", "result")
+        await self.streamer_service.stream(final, retracted_by, "retracted", NotificationObject.ANALYSIS_RESULT)
         await self._verify(uid, verifier_uid=retracted_by.uid)
         return final
 
@@ -151,7 +152,7 @@ class AnalysisResultService(
         analysis_result.date_cancelled = timenow_dt()
         analysis_result.updated_by_uid = cancelled_by.uid  # noqa
         final = await super().save(analysis_result)
-        await self.streamer_service.stream(final, cancelled_by, "cancelled", "result")
+        await self.streamer_service.stream(final, cancelled_by, "cancelled", NotificationObject.ANALYSIS_RESULT)
         return final
 
     async def re_instate(self, uid: str, re_instated_by) -> AnalysisResult:
@@ -162,7 +163,7 @@ class AnalysisResultService(
         analysis_result.updated_by_uid = re_instated_by.uid  # noqa
         final = await super().save(analysis_result)
         await self.streamer_service.stream(
-            final, re_instated_by, "reinstated", "result"
+            final, re_instated_by, "reinstated", NotificationObject.ANALYSIS_RESULT
         )
         return final
 

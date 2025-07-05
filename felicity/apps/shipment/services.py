@@ -1,5 +1,6 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.idsequencer.service import IdSequenceService
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.shipment.entities import ReferralLaboratory, Shipment, ShippedSample
 from felicity.apps.shipment.enum import ShipmentState
@@ -63,7 +64,7 @@ class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
                 uid, {"state": ShipmentState.READY, "updated_by_uid": finaliser.uid}
             )
             await self.activity_service.stream(
-                shipment, finaliser, "finalised", "shipment"
+                shipment, finaliser, "finalised", NotificationObject.SHIPMENT
             )
         return shipment
 
@@ -75,12 +76,12 @@ class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
                 uid, {"state": ShipmentState.READY, "dispatched_by_uid": dispatcher.uid}
             )
             await self.activity_service.stream(
-                shipment, dispatcher, "dispatched", "shipment"
+                shipment, dispatcher, "dispatched", NotificationObject.SHIPMENT
             )
         return shipment
 
     async def create(
-        self, obj_in: dict | ShipmentCreate, related: list[str] | None = None
+            self, obj_in: dict | ShipmentCreate, related: list[str] | None = None
     ) -> Shipment:
         data = self._import(obj_in)
         data["shipment_id"] = (await self.id_sequence_service.get_next_number("SHIP"))[

@@ -1,17 +1,36 @@
-from enum import StrEnum, auto
+import enum
+
+import strawberry
 
 
-class NotificationObject(StrEnum):
+class NotificationObject(enum.StrEnum):
     """Action Object"""
+    SAMPLE = "sample"
+    ANALYSIS_RESULT = "result"
+    WORKSHEET = "worksheet"
+    REPORT = "report"
+    SHIPMENT = "shipment"
 
-    SAMPLE = auto()
-    ANALYSIS_RESULT = auto()
-    WORKSHEET = auto()
-    REPORT = auto()
+
+@strawberry.enum
+class NotificationObjectType(enum.Enum):
+    SAMPLE = "sample"
+    ANALYSIS_RESULT = "result"
+    WORKSHEET = "worksheet"
+    REPORT = "report"
+    SHIPMENT = "shipment"
 
 
-class NotificationChannel(StrEnum):
-    ACTIVITIES = auto()
-    NOTIFICATIONS = auto()
-    PROCESSING = auto()
-    JOBS = auto()
+class NotificationChannel(enum.StrEnum):
+    ACTIVITIES = "activities"
+    NOTIFICATIONS = "notifications"
+    PROCESSING = "processing"
+    JOBS = "jobs"
+
+
+@strawberry.enum
+class NotificationChannelType(enum.Enum):
+    ACTIVITIES = "activities"
+    NOTIFICATIONS = "notifications"
+    PROCESSING = "processing"
+    JOBS = "jobs"

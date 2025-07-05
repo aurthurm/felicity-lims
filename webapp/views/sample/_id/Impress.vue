@@ -20,11 +20,11 @@ const selectedMeta = ref<any>({});
 const loadMeta = () => {
   loadingMeta.value = true;
   withClientQuery<ImpressSamplesMetaQuery, ImpressSamplesMetaQueryVariables>(ImpressSamplesMetaDocument,
-    { uids: [route?.params?.sampleUid] },
+    { uids: [route?.params?.sampleUid as string] },
     "impressReportsMeta"
   )
     .then((resp) => {
-      impressMeta.value = resp;
+      impressMeta.value = resp as any[];
     })
     .finally(() => {
       loadingMeta.value = false;

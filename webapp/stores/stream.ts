@@ -6,6 +6,7 @@ import { useSampleStore } from './sample';
 import useAnalyticsComposable from '@/composables/analytics';
 import { GetSystemActivityDocument, GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables } from '@/graphql/operations/stream.subscriptions';
 import { ActivityStreamType, WorkSheetType, SampleType } from '@/types/gql';
+import { NotificationObjectType } from '@/graphql/schema';
 
 
 type StreamStateType = {
@@ -34,16 +35,16 @@ export const useStreamStore = defineStore('stream', {
 
             try {
                 switch (payload.actionObjectType) {
-                    case 'SampleType':
+                    case NotificationObjectType.Sample:
                         sampleStore.updateSampleStatus(payload.actionObject as SampleType);
                         break;
-                    case 'WorkSheetType':
+                    case NotificationObjectType.Worksheet:
                         wsStore.updateWorksheetStatus(payload.actionObject as WorkSheetType);
                         break;
-                    case 'ReportMetaType':
+                    case NotificationObjectType.Report:
                         updateReport(payload.actionObject as any); // ReportMetaType
                         break;
-                    case 'AnalysisResultType':
+                    case NotificationObjectType.AnalysisResult:
                         sampleStore.updateAnalysesResultsStatus([payload.actionObject]);
                         wsStore.updateWorksheetResultsStatus([payload.actionObject]);
                         break;

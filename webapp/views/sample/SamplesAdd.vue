@@ -10,7 +10,9 @@ import {
   AnalysisRequestInputType,
   AnalysisRequestType,
   AnalysisType,
+  ClientContactType,
   ClientType,
+  ClinicalDataType,
   SampleType,
   SampleTypeTyp,
 } from "@/types/gql";
@@ -20,10 +22,11 @@ import {
   AddAnalysisRequestMutationVariables
 } from "@/graphql/operations/analyses.mutations";
 import {useField, useForm} from "vee-validate";
-import {array, number, object, string} from "yup";
+import {array, boolean, number, object, string} from "yup";
 import useNotifyToast from "@/composables/alert_toast";
 import useApiUtil from "@/composables/api_util";
 import {formatDate} from "@/utils";
+import dayjs from "dayjs";
 
 const sampleStore = useSampleStore();
 const patientStore = usePatientStore();
@@ -33,6 +36,9 @@ const router = useRouter();
 
 const {withClientMutation} = useApiUtil();
 const {swalError} = useNotifyToast();
+
+// Clinical Data Section State
+const clinicalDataExpanded = ref(false);
 
 // Patient
 let patient = computed(() => patientStore.getPatient);
@@ -51,6 +57,7 @@ const clients = computed(() => clientStore.getClients);
 const selectedClient = ref<ClientType | null>(null);
 const selectContact = (client: ClientType) => {
   selectedClient.value = client;
+  clientContact.value = null;
 };
 
 // Sample Types
@@ -83,24 +90,57 @@ const analysesProfiles = computed(() => analysisStore.getAnalysesProfiles);
 
 // Analysis Request Form
 const arSaving = ref(false);
-const maxDate = new Date();
+const maxDate = dayjs().endOf('day').toDate();
 
 const arSchema = object({
   clientRequestId: string().required("Client Request ID is Required"),
-  clinicalData: string().nullable(),
+  clinicalData: object({
+    clinicalIndication: string().nullable(),
+    symptoms: array().of(string()),
+    symptomsRaw: string().nullable(),
+    treatmentNotes: string().nullable(),
+    pregnancyStatus: boolean().nullable(),
+    breastFeeding: boolean().nullable(),
+    vitals: object().nullable(),
+    otherContext: object().nullable(),
+  }).nullable(),
   client: object().required("Client is Required"),
-  clientContactUid: number().required("Client Contact is Required"),
+  clientContact: object().nullable().required("Client Contact is Required"),
   samples: array().required().min(1, "Add at least 1 sample"),
   priority: number(),
 });
 
 // Create default sample
-function createDefaultSample(): PartialSample {
+function createDefaultSample(overrides): PartialSample {
   return {
     sampleType: {} as SampleTypeTyp,
-    dateCollected: undefined,
+    dateCollected: dayjs(new Date()),
+    dateReceived: dayjs(new Date()),
     profiles: [],
     analyses: [],
+    ...overrides
+  };
+}
+
+// Create default clinical data
+function createDefaultClinicalData() {
+  return {
+    clinicalIndication: "",
+    symptoms: [],
+    symptomsRaw: "",
+    treatmentNotes: "",
+    pregnancyStatus: null,
+    breastFeeding: null,
+    vitals: {
+      // temperature: "",
+      // bloodPressure: "",
+      // heartRate: "",
+      // respiratoryRate: "",
+      // oxygenSaturation: "",
+      // weight: "",
+      // height: "",
+    },
+    otherContext: {},
   };
 }
 
@@ -109,29 +149,53 @@ const {handleSubmit, errors} = useForm({
   initialValues: {
     priority: 0,
     client: patient?.value?.client,
-    samples: [createDefaultSample()], // Initialize with one default sample
+    samples: [createDefaultSample({})],
+    clinicalData: createDefaultClinicalData(),
   } as any,
 });
 
+// Set selectedClient when patient's client is loaded
+if (patient?.value?.client) {
+  selectedClient.value = patient.value.client;
+}
+
 const {value: clientRequestId} = useField("clientRequestId");
-const {value: clinicalData} = useField<string>("clinicalData");
+const {value: clinicalData} = useField<ClinicalDataType>("clinicalData");
 const {value: client} = useField<ClientType>("client");
-const {value: clientContactUid} = useField("clientContactUid");
+const {value: clientContact} = useField<ClientContactType | null>("clientContact");
 const {value: priority} = useField("priority");
 
-type PartialSample = Pick<SampleType, "sampleType" | "dateCollected" | "profiles" | "analyses">;
+type PartialSample = Pick<SampleType, "sampleType" | "profiles" | "analyses"> & {
+  dateCollected?: Date | string | { toDate?: () => Date };
+  dateReceived?: Date | string | { toDate?: () => Date };
+};
 const {value: samples} = useField<PartialSample[]>("samples");
+
+// Symptoms management
+const newSymptom = ref("");
+const addSymptom = () => {
+  if (newSymptom.value.trim() && !clinicalData.value?.symptoms?.includes(newSymptom.value.trim())) {
+    clinicalData.value?.symptoms?.push(newSymptom.value.trim());
+    newSymptom.value = "";
+  }
+};
+
+const removeSymptom = (index: number) => {
+  clinicalData.value?.symptoms?.splice(index, 1);
+};
 
 const submitARForm = handleSubmit((values) => {
   arSaving.value = true;
-
+  console.log("values", values);
   for (let sample of values.samples || []) {
-    if (typeof sample?.sampleType !== "string") {
+    if ([null, undefined, ""].includes(sample?.sampleType)) {
       swalError("Samples must have sample types");
+      arSaving.value = false;
       return;
     }
     if (sample?.analyses?.length <= 0 && sample?.profiles?.length <= 0) {
       swalError("Samples must have either profiles/analyses or both");
+      arSaving.value = false;
       return;
     }
   }
@@ -146,14 +210,19 @@ function addAnalysesRequest(request: AnalysisRequestType): void {
     clientRequestId: request.clientRequestId,
     clinicalData: request.clinicalData,
     clientUid: client?.value?.uid,
-    clientContactUid: request.clientContactUid,
+    clientContactUid: clientContact?.value?.uid,
     samples: request.samples?.map((s: SampleType) => {
       return {
         ...s,
+        profiles: s.profiles?.map(p => p.uid),
+        analyses: s.analyses?.map(a => a.uid),
+        sampleType: s.sampleType?.uid,
         dateCollected: formatDate(s.dateCollected, "YYYY-MM-DD HH:mm"),
+        dateReceived: formatDate(s.dateReceived, "YYYY-MM-DD HH:mm"),
       };
     }),
   } as unknown as AnalysisRequestInputType;
+  console.log(payload);
   withClientMutation<AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables>(AddAnalysisRequestDocument, {payload}, "createAnalysisRequest")
       .then((result) => {
         sampleStore.addAnalysisRequest(result);
@@ -165,7 +234,7 @@ function addAnalysesRequest(request: AnalysisRequestType): void {
 }
 
 function addSample(): void {
-  const sample: PartialSample = createDefaultSample();
+  const sample: PartialSample = createDefaultSample({});
   samples.value.push(sample);
 }
 
@@ -178,6 +247,11 @@ function removeSample(index: number): void {
 
 // Computed property to check if remove button should be disabled
 const canRemoveSample = computed(() => samples.value.length > 1);
+
+// multiselect custom labels
+const contactLabel = (contact: ClientContactType) => {
+  return `${contact.firstName} ${contact.lastName}`;
+}
 </script>
 
 <template>
@@ -187,7 +261,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
       <div class="space-y-4">
         <!-- Client, Contact, and Priority - Same Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <label class="flex flex-col space-y-2">
+          <label class="flex items-center gap-x-4">
             <span class="text-sm font-medium text-foreground">Client</span>
             <VueMultiselect
                 class="w-full"
@@ -198,27 +272,27 @@ const canRemoveSample = computed(() => samples.value.length > 1);
                 label="name"
                 track-by="uid"
                 @select="selectContact"
+                :option-height="60"
+                :close-on-select="true"
             />
           </label>
 
-          <label class="flex flex-col space-y-2">
-            <span class="text-sm font-medium text-foreground">Client Contact</span>
-            <select
-                name="clientContacts"
-                id="clientContacts"
-                v-model="clientContactUid"
-                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                aria-label="Select client contact"
-            >
-              <option value=""></option>
-              <option v-for="contact in client?.contacts" :key="contact.uid" :value="contact.uid">
-                {{ contact.firstName }} {{ contact.lastName }}
-              </option>
-            </select>
-            <div class="text-sm text-destructive">{{ errors.clientContactUid }}</div>
+          <label class="flex items-center gap-x-4">
+            <span class="text-sm font-medium text-foreground whitespace-nowrap">Client Contact</span>
+            <VueMultiselect
+                class="w-full"
+                placeholder="Select a Client Contact"
+                v-model="clientContact"
+                :options="selectedClient?.contacts ?? []"
+                :custom-label="contactLabel"
+                track-by="uid"
+                :close-on-select="true"
+                :searchable="true"
+            />
+            <div class="text-sm text-destructive">{{ errors.clientContact }}</div>
           </label>
 
-          <label class="flex flex-col space-y-2">
+          <label class="flex items-center gap-x-4">
             <span class="text-sm font-medium text-foreground">Priority</span>
             <select
                 name="priority"
@@ -235,8 +309,8 @@ const canRemoveSample = computed(() => samples.value.length > 1);
           </label>
         </div>
 
-        <label class="flex flex-col space-y-2">
-          <span class="text-sm font-medium text-foreground">Client Request ID</span>
+        <label class="flex items-center gap-x-4">
+          <span class="text-sm font-medium text-foreground whitespace-nowrap">Client Request ID</span>
           <input
               class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
               v-model="clientRequestId"
@@ -245,15 +319,177 @@ const canRemoveSample = computed(() => samples.value.length > 1);
           <div class="text-sm text-destructive">{{ errors.clientRequestId }}</div>
         </label>
 
-        <label class="flex flex-col space-y-2">
-          <span class="text-sm font-medium text-foreground">Clinical Data</span>
-          <textarea
-              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-              v-model="clinicalData"
-              placeholder="Clinical Data ..."
-          />
-          <div class="text-sm text-destructive">{{ errors.clinicalData }}</div>
-        </label>
+        <!-- Clinical Data Section - Collapsible -->
+        <div class="border border-border rounded-lg bg-background/50">
+          <button
+              type="button"
+              @click="clinicalDataExpanded = !clinicalDataExpanded"
+              class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-muted/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-lg"
+          >
+            <span class="text-sm font-medium text-foreground whitespace-nowrap">Clinical Data (click to expand)</span>
+            <svg
+                class="w-5 h-5 transition-transform duration-200"
+                :class="{ 'rotate-180': clinicalDataExpanded }"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <div v-if="clinicalDataExpanded" class="px-4 py-4 space-y-4 border-t border-border">
+            <!-- Clinical Indication -->
+            <label class="flex items-center gap-x-4">
+              <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Clinical Indication</span>
+              <input
+                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  v-model="clinicalData.clinicalIndication"
+                  placeholder="Enter clinical indication..."
+              />
+            </label>
+
+            <!-- Symptoms -->
+            <div class="flex flex-wrap mt-2">
+              <span class="text-sm font-medium text-foreground w-40">Symptoms</span>
+              <div class="flex gap-2">
+                <input
+                    class="flex-1 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    v-model="newSymptom"
+                    placeholder="Add symptom..."
+                    @keydown.enter.prevent.stop="addSymptom"
+                />
+                <button
+                    type="button"
+                    @click="addSymptom"
+                    class="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  Add
+                </button>
+              </div>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <span
+                    v-for="(symptom, index) in clinicalData.symptoms"
+                    :key="index"
+                    class="inline-flex items-center gap-1 px-2 py-1 bg-muted text-muted-foreground rounded-md text-sm"
+                >
+                  {{ symptom }}
+                  <button
+                      type="button"
+                      @click="removeSymptom(index)"
+                      class="text-destructive hover:text-destructive/80 ml-1"
+                  >
+                    ×
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            <!-- Raw Symptoms -->
+            <!--            <label class="flex items-center gap-x-4">-->
+            <!--              <span class="text-sm font-medium text-foreground whitespace-nowrap">Raw Symptoms (Other)</span>-->
+            <!--              <textarea-->
+            <!--                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"-->
+            <!--                  v-model="clinicalData.symptomsRaw"-->
+            <!--                  placeholder="Enter raw symptoms description..."-->
+            <!--                  rows="3"-->
+            <!--              />-->
+            <!--            </label>-->
+
+            <!-- Treatment Notes -->
+            <label class="flex items-center gap-x-4">
+              <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Treatment Notes</span>
+              <textarea
+                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  v-model="clinicalData.treatmentNotes"
+                  placeholder="Enter treatment notes..."
+                  rows="2"
+              />
+            </label>
+
+            <!-- Patient Status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label class="flex items-center gap-x-4">
+                <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Pregnancy Status</span>
+                <select
+                    v-model="clinicalData.pregnancyStatus"
+                    class="w-full ml-4 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option :value="null">Not specified</option>
+                  <option :value="true">Pregnant</option>
+                  <option :value="false">Not pregnant</option>
+                </select>
+              </label>
+
+              <label class="flex items-center gap-x-4">
+                <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Breastfeeding Status</span>
+                <select
+                    v-model="clinicalData.breastFeeding"
+                    class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option :value="null">Not specified</option>
+                  <option :value="true">Breastfeeding</option>
+                  <option :value="false">Not breastfeeding</option>
+                </select>
+              </label>
+            </div>
+
+            <!-- Vitals -->
+            <!-- <div class="space-y-2">
+              <span class="text-sm font-medium text-foreground whitespace-nowrap">Vital Signs</span>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <label class="flex flex-col space-y-1">
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">Temperature (°C)</span>
+                  <input
+                      class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      v-model="clinicalData.vitals?.temperature!"
+                      placeholder="36.5"
+                  />
+                </label>
+                <label class="flex flex-col space-y-1">
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">Blood Pressure (mmHg)</span>
+                  <input
+                      class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      v-model="clinicalData.vitals?.bloodPressure!"
+                      placeholder="120/80"
+                  />
+                </label>
+                <label class="flex flex-col space-y-1">
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">Heart Rate (bpm)</span>
+                  <input
+                      class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      v-model="clinicalData.vitals?.heartRate!"
+                      placeholder="72"
+                  />
+                </label>
+                <label class="flex flex-col space-y-1">
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">Respiratory Rate (breaths/min)</span>
+                  <input
+                      class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      v-model="clinicalData.vitals?.respiratoryRate!"
+                      placeholder="16"
+                  />
+                </label>
+                <label class="flex flex-col space-y-1">
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">Oxygen Saturation (%)</span>
+                  <input
+                      class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      v-model="clinicalData.vitals?.oxygenSaturation!"
+                      placeholder="98"
+                  />
+                </label>
+                <label class="flex flex-col space-y-1">
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">Weight (kg)</span>
+                  <input
+                      class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      v-model="clinicalData.vitals?.weight!"
+                      placeholder="70"
+                  />
+                </label>
+              </div>
+            </div> -->
+          </div>
+        </div>
       </div>
 
       <section id="samples" class="space-y-4">
@@ -262,6 +498,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
           <div class="flex items-center gap-4">
             <span class="text-sm text-destructive">{{ errors.samples }}</span>
             <button
+                type="button"
                 v-if="samples?.length !== 20"
                 @click.prevent="addSample()"
                 class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -271,7 +508,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
           </div>
         </div>
 
-        <div class="relative border border-border rounded-lg bg-background/50 overflow-hidden">
+        <div class="relative border border-border rounded-lg bg-background/50 overflow-visible">
           <!-- Fixed field labels column -->
           <div class="absolute left-0 top-0 bottom-0 w-48 bg-muted/30 border-r border-border z-10">
             <table class="w-full h-full">
@@ -295,6 +532,11 @@ const canRemoveSample = computed(() => samples.value.length > 1);
               </tr>
               <tr class="border-b border-border h-20 min-h-20 max-h-20">
                 <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Date Received
+                </td>
+              </tr>
+              <tr class="border-b border-border h-20 min-h-20 max-h-20">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Analysis Profiles
                 </td>
               </tr>
@@ -313,7 +555,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
           </div>
 
           <!-- Scrollable samples content -->
-          <div class="overflow-x-auto pl-48">
+          <div class="overflow-x-auto overflow-y-visible pl-48">
             <table class="w-80 min-w-80">
               <thead>
               <tr class="border-b border-border bg-muted/30">
@@ -322,6 +564,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
                   <div class="flex items-center justify-between">
                     <span>Sample {{ index + 1 }}</span>
                     <button
+                        type="button"
                         @click.prevent="removeSample(index)"
                         :disabled="!canRemoveSample"
                         :class="[
@@ -350,8 +593,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
                       :searchable="true"
                       label="name"
                       track-by="uid"
-                      :appendToBody="true"
-                      :openDirection="'top'"
+                      :openDirection="'below'"
                   />
                 </td>
               </tr>
@@ -369,11 +611,25 @@ const canRemoveSample = computed(() => samples.value.length > 1);
                 </td>
               </tr>
 
+              <!-- Date Received Row -->
+              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+                  <VueDatePicker
+                      class="w-full"
+                      v-model="sample.dateReceived"
+                      :min-date="sample.dateCollected && typeof sample.dateCollected === 'object' && !(sample.dateCollected instanceof Date) && typeof sample.dateCollected.toDate === 'function' ? sample.dateCollected.toDate() : sample.dateCollected || null"
+                      :max-date="maxDate"
+                      time-picker-inline
+                      :teleport="true"
+                  />
+                </td>
+              </tr>
+
               <!-- Analysis Profiles Row -->
               <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
                 <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueMultiselect
-                      class="w-full whitespace-nowrap"
+                      class="w-full whitespace-nowrap z-10"
                       placeholder="Select analysis profiles"
                       v-model="sample.profiles"
                       :options="analysesProfiles"
@@ -381,8 +637,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
                       :multiple="true"
                       label="name"
                       track-by="uid"
-                      :appendToBody="true"
-                      :openDirection="'top'"
+                      :openDirection="'below'"
                   />
                 </td>
               </tr>
@@ -399,8 +654,7 @@ const canRemoveSample = computed(() => samples.value.length > 1);
                       :multiple="true"
                       label="name"
                       track-by="uid"
-                      :appendToBody="true"
-                      :openDirection="'top'"
+                      :openDirection="'below'"
                   />
                 </td>
               </tr>

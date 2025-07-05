@@ -200,7 +200,7 @@ const submitVoucherCodeForm = () => {
   withClientMutation<ApplyBillVoucherMutation, ApplyBillVoucherMutationVariables>(ApplyBillVoucherDocument, {payload: {
     voucherCode: voucherCodeForm.value?.code,
     testBillUid: testBill.value?.uid,
-    customerUid: props.patientUid
+    customerUid: props.patientUid!  
   }}, "applyVoucher"
   ).then((_) => (processing.value = false));
 }
@@ -323,7 +323,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
           </div>
           <div class="bg-background rounded-lg shadow-sm p-6">
             <DataTable 
-              :columns="tableColumns" 
+              :columns="tableColumns as any" 
               :data="transactions" 
               :toggleColumns="false" 
               :loading="fetchingTransactions"

@@ -22,14 +22,14 @@ const organismResults = computed(() => analysisResults?.value?.filter(r => r.ana
 const astResults = computed(() => analysisResults?.value?.filter(r => r.analysis?.name === "Antibiotic"));
 
 onMounted(() => {
-  sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid)
+  sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid as string)
 });
 
 watch(
   () => route.params.sampleUid,
   (sampleUid, prev) => {
     sampleStore.resetSample();
-    sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid);
+    sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid as string);
   }
 );
 </script>

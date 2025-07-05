@@ -43,7 +43,7 @@ const applyTemplate = async () => {
     }).then((result) => {
       if (result.isConfirmed) {
         withClientMutation<EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables>(EditSampleApplyTemplateDocument,
-          { uid: route.params.sampleUid, analysisTemplateUid: templateUid.value },
+          { uid: route.params.sampleUid as string, analysisTemplateUid: templateUid.value as string },
           "samplesApplyTemplate"
         ).then((result) => changeTab("analysis-results"));
       }
@@ -99,7 +99,7 @@ const applyChanges = async () => {
     }).then((result) => {
       if (result.isConfirmed) {
         withClientMutation<SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables>(SampleManageAnalysisDocument,
-          { sampleUid: route.params.sampleUid, payload: { cancel, add} },
+          { sampleUid: route.params.sampleUid as string, payload: { cancel, add} },
           "manageAnalyses"
         ).then((result) => changeTab("analysis-results"));
       }

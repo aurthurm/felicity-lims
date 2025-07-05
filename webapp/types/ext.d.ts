@@ -1,4 +1,4 @@
-import { NoticeType, SampleType, StockOrderProductType } from "./gql";
+import { AnalysisResultType, NoticeType, SampleType, StockOrderProductType } from "./gql";
 
 
 export type ExtNoticeType = NoticeType & {
@@ -15,5 +15,3 @@ export type ExtStockOrderProductType = StockOrderProductType & {
 export type ExtSampleType = SampleType & {
     checked: boolean;
 }
-
-

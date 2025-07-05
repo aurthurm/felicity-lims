@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, PropType } from 'vue';
 import useTreeStateComposable from "@/composables/tree-state";
-import type { TreeDataType } from "@/types/storage";
+import type { TreeNodeType } from "@/types/storage";
 
 const props = defineProps({
   tree: {
-    type: Object as PropType<TreeDataType>,
+    type: Object as PropType<TreeNodeType>,
     required: true
   }
 });
@@ -18,13 +18,13 @@ const isSelected = computed(() => {
   if (!props.tree) return false;
 
   switch (props.tree.tag) {
-    case tags.storeRoom:
+    case tags.STORE_ROOM:
       return activePath.value.room === props.tree.uid;
-    case tags.storageLocation:
+    case tags.STORAGE_LOCATION:
       return activePath.value.location === props.tree.uid;
-    case tags.storageSection:
+    case tags.STORAGE_SECTION:
       return activePath.value.section === props.tree.uid;
-    case tags.storageContainer:
+    case tags.STORAGE_CONTAINER:
       return activePath.value.container === props.tree.uid;
     default:
       return false;
@@ -54,9 +54,9 @@ const isSelected = computed(() => {
       :class="[
         'pl-4 mt-1 border-l-2',
         {
-          'border-l-warning/30': tree.tag === tags.storeRoom,
-          'border-l-primary/30': tree.tag === tags.storageLocation,
-          'border-l-success/30': tree.tag === tags.storageSection,
+          'border-l-warning/30': tree.tag === tags.STORE_ROOM,
+          'border-l-primary/30': tree.tag === tags.STORAGE_LOCATION,
+          'border-l-success/30': tree.tag === tags.STORAGE_SECTION,
         },
       ]"
     >

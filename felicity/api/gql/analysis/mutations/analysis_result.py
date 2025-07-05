@@ -20,6 +20,7 @@ from felicity.apps.iol.redis.enum import TrackableObject
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.core.config import settings
 
@@ -190,7 +191,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
         # monkeypatch -> notify of sample state
         sample = await SampleService().get(uid=a_result.sample_uid)
         await ActivityStreamService().stream(
-            sample, felicity_user, sample.status, "sample"
+            sample, felicity_user, sample.status, NotificationObject.SAMPLE
         )
 
         # if in worksheet then keep add retest to ws
@@ -226,7 +227,7 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     for result in originals:
         sample = await SampleService().get(uid=result.sample_uid)
         await ActivityStreamService().stream(
-            sample, felicity_user, sample.status, "sample"
+            sample, felicity_user, sample.status, NotificationObject.SAMPLE
         )
     _all = [
         (await AnalysisResultService().get(related=["sample"], uid=res.uid))

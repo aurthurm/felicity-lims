@@ -7,6 +7,7 @@ import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";
 import { storgeSlotMapper } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { ExtStorageContainerType } from "@/types/storage";
 const TreeItem = defineAsyncComponent(
   () => import("@/components/storage/FelTreeItem.vue")
 )
@@ -50,7 +51,7 @@ watch(
   },
   { deep: true }
 );
-const storageContainer = computed(() => storageSrore.getStorageContainer);
+const storageContainer = computed<ExtStorageContainerType>(() => storageSrore.getStorageContainer as ExtStorageContainerType);
 const emptySlots = computed(() => {
   const sc = storageSrore.getStorageContainer;
   return (sc?.slots ?? 0) - (sc?.storedCount ?? 0);
@@ -132,7 +133,7 @@ const submitForm = handleSubmit(async (values) => {
       
       <div class="col-span-7 space-y-6">
         <div class="bg-background rounded-lg shadow-sm p-6">
-          <div v-if="activeTree.tag === tags.storageContainer">
+          <div v-if="activeTree.tag === tags.STORAGE_CONTAINER">
             <div class="grid grid-cols-2 gap-6">
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
@@ -167,7 +168,7 @@ const submitForm = handleSubmit(async (values) => {
 
         <div class="flex justify-end">
           <button 
-            v-if="activeTree.tag === tags.storageContainer"
+            v-if="activeTree.tag === tags.STORAGE_CONTAINER"
             @click="prepareSlots()"
             class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
@@ -216,7 +217,7 @@ const submitForm = handleSubmit(async (values) => {
 
           <div class="flex justify-end pt-4">
             <button 
-              v-if="activeTree.tag === tags.storageContainer && samples?.length > 0" 
+              v-if="activeTree.tag === tags.STORAGE_CONTAINER && samples?.length > 0" 
               type="submit"
               class="px-6 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive/50"
             >

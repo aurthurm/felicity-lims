@@ -9,7 +9,7 @@ from felicity.apps.notification.entities import (
     ActivityStream,
     Notification,
 )
-from felicity.apps.notification.enum import NotificationChannel
+from felicity.apps.notification.enum import NotificationChannel, NotificationObject
 from felicity.apps.notification.repository import (
     ActivityFeedRepository,
     ActivityStreamRepository,
@@ -38,13 +38,13 @@ class ActivityFeedService(
         return await super().save(activity_feed)
 
     async def remove_subscriber(
-        self, activity_feed: ActivityFeed, user: User
+            self, activity_feed: ActivityFeed, user: User
     ) -> ActivityFeed:
         activity_feed.subscribers.remove(user)
         return await super().save(activity_feed)
 
     async def add_subscriber(
-        self, activity_feed: ActivityFeed, user: User
+            self, activity_feed: ActivityFeed, user: User
     ) -> ActivityFeed:
         if user not in activity_feed.viewers:
             activity_feed.subscribers.append(user)
@@ -59,12 +59,12 @@ class ActivityStreamService(
         super().__init__(ActivityStreamRepository())
 
     async def stream(
-        self,
-        obj: Any,
-        actor: User,
-        verb: str,
-        object_type: str,
-        feeds: List[ActivityFeed] | None = None,
+            self,
+            obj: Any,
+            actor: User,
+            verb: str,
+            object_type: NotificationObject,
+            feeds: List[ActivityFeed] | None = None,
     ):
         if feeds is None:
             feeds = []
@@ -86,13 +86,13 @@ class ActivityStreamService(
         return await super().save(activity_stream)
 
     async def remove_feed(
-        self, activity_stream: ActivityStream, feed: ActivityFeed
+            self, activity_stream: ActivityStream, feed: ActivityFeed
     ) -> ActivityStream:
         activity_stream.feeds.remove(feed)
         return await super().save(activity_stream)
 
     async def add_feed(
-        self, activity_stream: ActivityStream, feed: ActivityFeed
+            self, activity_stream: ActivityStream, feed: ActivityFeed
     ) -> ActivityStream:
         if feed not in activity_stream.feeds:
             activity_stream.feeds.append(feed)
@@ -104,13 +104,13 @@ class ActivityStreamService(
         return await super().save(activity_stream)
 
     async def remove_viewer(
-        self, activity_stream: ActivityStream, viewer: User
+            self, activity_stream: ActivityStream, viewer: User
     ) -> ActivityStream:
         activity_stream.viewers.remove(viewer)
         return await super().save(activity_stream)
 
     async def add_viewer(
-        self, activity_stream: ActivityStream, viewer: User
+            self, activity_stream: ActivityStream, viewer: User
     ) -> ActivityStream:
         if viewer not in activity_stream.viewers:
             activity_stream.viewers.append(viewer)
@@ -122,7 +122,7 @@ class ActivityStreamService(
 
     @classmethod
     async def for_viewer(
-        self, activity_stream: ActivityStream, viewer: User, seen=False
+            self, activity_stream: ActivityStream, viewer: User, seen=False
     ) -> Optional[List[ActivityStream]]:
         """Streams for user: seen or unseen"""
 
@@ -149,10 +149,10 @@ class NotificationService(
         )
 
     async def filter(
-        self,
-        group_uid: str | None,
-        department_uid: str | None,
-        user_uid: str | None,
+            self,
+            group_uid: str | None,
+            department_uid: str | None,
+            user_uid: str | None,
     ) -> List[Notification]:
         filters = {}
 
@@ -172,7 +172,7 @@ class NotificationService(
         return await super().save(notification)
 
     async def remove_viewer(
-        self, notification: Notification, user: User
+            self, notification: Notification, user: User
     ) -> Notification:
         notification.viewers.remove(user)
         return await super().save(notification)
@@ -188,13 +188,13 @@ class NotificationService(
         return await super().save(notification)
 
     async def remove_department(
-        self, notification: Notification, department: Department
+            self, notification: Notification, department: Department
     ) -> Notification:
         notification.departments.remove(department)
         return await super().save(notification)
 
     async def add_department(
-        self, notification: Notification, department: Department
+            self, notification: Notification, department: Department
     ) -> Notification:
         if department not in notification.departments:
             notification.departments.append(department)
@@ -206,7 +206,7 @@ class NotificationService(
         return await super().save(notification)
 
     async def remove_group(
-        self, notification: Notification, group: Group
+            self, notification: Notification, group: Group
     ) -> Notification:
         notification.groups.remove(group)
         return await super().save(notification)
@@ -222,7 +222,7 @@ class NotificationService(
         return await super().save(notification)
 
     async def remove_users(
-        self, notification: Notification, user: User
+            self, notification: Notification, user: User
     ) -> Notification:
         notification.users.remove(user)
         return await super().save(notification)

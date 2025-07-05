@@ -28,7 +28,7 @@ const state = reactive({
 });
 
 const { sample, fetchingSample, repeatSample } = storeToRefs(sampleStore);
-sampleStore.fetchSampleByUid(route.params.sampleUid);
+sampleStore.fetchSampleByUid(route.params.sampleUid as string);
 
 watch(
   () => sample?.value?.status,
@@ -38,7 +38,7 @@ watch(
       sampleStore.resetRepeatSample();
       return;
     } else {
-      sampleStore.fetchRepeatSampleByParentId(route.params.sampleUid);
+      sampleStore.fetchRepeatSampleByParentId(route.params.sampleUid as string);
     }
   }
 );
@@ -46,7 +46,7 @@ watch(
 watch(
   () => route.params.sampleUid,
   (sampleUid, prev) => {
-    sampleStore.fetchSampleByUid(+sampleUid);
+    sampleStore.fetchSampleByUid(sampleUid as string);
   }
 );
 
@@ -124,7 +124,7 @@ const publishSample = async () => {
       : publishText.value.startsWith("Re")
         ? "re-publish"
         : "publish";
-    publishSamples([{ uid: sample?.value?.uid, action }]);
+    publishSamples([{ uid: sample?.value?.uid!, action }]);
   };
 
 const invalidateSample = async () =>
@@ -217,7 +217,7 @@ const goToStorage = async (sample?: SampleType) => {
                 </router-link>
               </span>
             </div>
-            <span class="text-muted-foreground">{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
+            <span class="text-muted-foreground">{{ profileAnalysesText(sample?.profiles, sample?.analyses ?? []) }}</span>
             <div class="relative">
               <div 
                 @click="state.dropdownOpen = !state.dropdownOpen"

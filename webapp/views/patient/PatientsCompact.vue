@@ -190,7 +190,7 @@ onMounted(() => {
                 <div class="flex justify-between items-center">
                   <span class="font-semibold text-foreground">{{ getPatientFullName(patient) }}</span>
                   <span class="text-sm text-muted-foreground">
-                    {{ patient.age }} yrs, {{ getGender(patient.gender) }}
+                    {{ patient.age }} yrs, {{ getGender(+(patient.gender ?? 0)) }}
                   </span>
                 </div>
                 

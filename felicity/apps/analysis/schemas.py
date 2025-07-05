@@ -690,7 +690,6 @@ class ClinicalDataBase(BaseAuditModel):
     vitals: dict | None
     treatment_notes: str | None
     other_context: dict | None
-    codings: list["ClinicalDataCoding"] | None
 
 
 class ClinicalDataBaseInDB(ClinicalDataBase):

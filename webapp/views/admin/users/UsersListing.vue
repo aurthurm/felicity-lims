@@ -1,91 +1,3 @@
-<script setup lang="ts">
-import { ref, computed, reactive, defineAsyncComponent, onMounted } from "vue";
-import {
-    AddUserDocument, AddUserMutation, AddUserMutationVariables,
-    EditUserDocument, EditUserMutation, EditUserMutationVariables
-} from "@/graphql/operations/_mutations";
-import { UserType } from "@/types/gql";
-import { useUserStore } from "@/stores/user";
-import useApiUtil  from "@/composables/api_util";
-
-type UserAuthForm = UserType & {
-  groupUid: string;
-}
-
-const userStore = useUserStore();
-onMounted(() => {
-  userStore.fetchUsers({});
-  userStore.fetchGroupsAndPermissions();
-})
-
-let users = computed<UserType[]>(() => userStore.getUsers);
-const groups = computed(() => userStore.getGroups);
-let showUserModal = ref<boolean>(false);
-let formTitle = ref<string>("");
-let form = reactive({}) as UserAuthForm;
-const formAction = ref<boolean>(true);
-
-const { withClientMutation } = useApiUtil();
-function addUser(): void {
-  withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, form, "createUser").then((result) =>
-    userStore.addUser(result)
-  );
-}
-
-function editUser(): void {
-    withClientMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument, form, "updateUser").then((result) =>
-    userStore.updateUser(result)
-  );
-}
-
-function userGroupsName(user: UserType): string {
-  let groups: string[] = [];
-  user?.groups?.forEach((g) => groups.push(g?.name!));
-  return groups.join(", ");
-}
-
-function FormManager(create: boolean, obj: UserType = {} as UserType): void {
-  formAction.value = create;
-  showUserModal.value = true;
-  formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
-  if (create) {
-    let user = new Object() as UserType;
-    user.firstName = undefined;
-    user.lastName = undefined;
-    user.email = undefined;
-    user.isActive = true;
-    user.groupUid = undefined;
-    user.userName = undefined;
-    user.isBlocked = false;
-    Object.assign(form, { ...user });
-  } else {
-    obj.userUid = obj?.uid;
-    obj.groupUid = obj?.groups![0]?.uid;
-    Object.assign(form, { ...obj });
-  }
-}
-
-function saveUserForm(): void {
-  if (formAction.value) {
-    addUser();
-  } else {
-    editUser();
-  }
-  showUserModal.value = false;
-}
-
-const headers = [
-  "First Name",
-  "Last Name",
-  "Email",
-  "Active",
-  "Group",
-  "Username",
-  "Blocked",
-  "Actions"
-];
-</script>
-
 <template>
   <div class="space-y-6">
     <div class="flex justify-between items-center">
@@ -154,103 +66,112 @@ const headers = [
     </div>
   </div>
 
-  <fel-modal v-if="showUserModal" @close="showUserModal = false" :title="form.uid ? 'Edit User' : 'Add User'">
+  <fel-modal v-if="showUserModal" @close="showUserModal = false" :title="form.userUid ? 'Edit User' : 'Add User'">
     <template v-slot:body>
       <form @submit.prevent="saveUserForm()" class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
+          <!-- OPTION 1: Enhanced visibility with explicit colors -->
           <div class="space-y-2">
-            <label for="firstName" class="block text-sm font-medium text-foreground">
+            <label for="firstName" class="block text-sm font-medium text-gray-700">
               First Name
             </label>
             <input
               id="firstName"
               v-model="form.firstName"
               type="text"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter first name"
             />
           </div>
 
           <div class="space-y-2">
-            <label for="lastName" class="block text-sm font-medium text-foreground">
+            <label for="lastName" class="block text-sm font-medium text-gray-700">
               Last Name
             </label>
             <input
               id="lastName"
               v-model="form.lastName"
               type="text"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter last name"
             />
           </div>
 
           <div class="space-y-2">
-            <label for="email" class="block text-sm font-medium text-foreground">
+            <label for="email" class="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
               id="email"
               v-model="form.email"
               type="email"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter email address"
             />
           </div>
 
           <div class="space-y-2">
-            <label for="userName" class="block text-sm font-medium text-foreground">
+            <label for="userName" class="block text-sm font-medium text-gray-700">
               Username
             </label>
-            <input
+            <!-- <input
               id="userName"
               v-model="form.userName"
               type="text"
-              :disabled="form.uid != undefined"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-muted disabled:cursor-not-allowed"
+              :disabled="form.userUid != ''"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400 disabled:bg-gray-100 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500"
+              placeholder="Enter username"
+            /> -->
+            <FelProtectedInput
+              id="userName"
+              v-model="form.userName"
+              type="text"
+              :required-clicks="5"
               placeholder="Enter username"
             />
           </div>
 
           <div class="space-y-2">
-            <label for="password" class="block text-sm font-medium text-foreground">
+            <label for="password" class="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
               id="password"
               v-model="form.password"
               type="password"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter password"
             />
           </div>
 
           <div class="space-y-2">
-            <label for="passwordc" class="block text-sm font-medium text-foreground">
+            <label for="passwordc" class="block text-sm font-medium text-gray-700">
               Confirm Password
             </label>
             <input
               id="passwordc"
               v-model="form.passwordc"
               type="password"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Confirm password"
             />
           </div>
 
           <div class="col-span-2 space-y-2">
-            <label for="groupUid" class="block text-sm font-medium text-foreground">
+            <label for="groupUid" class="block text-sm font-medium text-gray-700">
               Group
             </label>
             <select
               id="groupUid"
               v-model="form.groupUid"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
             >
-              <option value="">Select a group</option>
+              <option value="" class="text-gray-400">Select a group</option>
               <option
                 v-for="group in groups"
                 :key="group.uid"
                 :value="group.uid"
+                class="text-gray-900"
               >
                 {{ group?.name }}
               </option>
@@ -259,18 +180,18 @@ const headers = [
 
           <div class="flex items-center space-x-4">
             <label class="flex items-center space-x-2">
-              <span class="text-sm font-medium text-foreground">Blocked</span>
+              <span class="text-sm font-medium text-gray-700">Blocked</span>
               <button
                 type="button"
                 role="switch"
                 :aria-checked="form.isBlocked"
                 @click="form.isBlocked = !form.isBlocked"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                :class="[form.isBlocked ? 'bg-destructive' : 'bg-success']"
+                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+                :class="[form.isBlocked ? 'bg-red-500' : 'bg-green-500']"
               >
                 <span
                   aria-hidden="true"
-                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
                   :class="[form.isBlocked ? 'translate-x-5' : 'translate-x-0']"
                 />
               </button>
@@ -279,18 +200,18 @@ const headers = [
 
           <div class="flex items-center space-x-4">
             <label class="flex items-center space-x-2">
-              <span class="text-sm font-medium text-foreground">Active</span>
+              <span class="text-sm font-medium text-gray-700">Active</span>
               <button
                 type="button"
                 role="switch"
                 :aria-checked="form.isActive"
                 @click="form.isActive = !form.isActive"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                :class="[form.isActive ? 'bg-success' : 'bg-destructive']"
+                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+                :class="[form.isActive ? 'bg-green-500' : 'bg-red-500']"
               >
                 <span
                   aria-hidden="true"
-                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
                   :class="[form.isActive ? 'translate-x-5' : 'translate-x-0']"
                 />
               </button>
@@ -301,12 +222,147 @@ const headers = [
         <div class="flex justify-end pt-6">
           <button
             type="submit"
-            class="inline-flex justify-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
           >
-            {{ form.uid ? 'Update' : 'Create' }} User
+            {{ form.userUid ? 'Update' : 'Create' }} User
           </button>
         </div>
       </form>
     </template>
   </fel-modal>
 </template>
+
+<script setup lang="ts">
+import { ref, computed, reactive, defineAsyncComponent, onMounted } from "vue";
+import {
+    AddUserDocument, AddUserMutation, AddUserMutationVariables,
+    EditUserDocument, EditUserMutation, EditUserMutationVariables
+} from "@/graphql/operations/_mutations";
+import { UserType } from "@/types/gql";
+import { useUserStore } from "@/stores/user";
+import useApiUtil  from "@/composables/api_util";
+import FelProtectedInput from "@/components/ui/form/FelProtectedInput.vue";
+
+const userStore = useUserStore();
+onMounted(() => {
+  userStore.fetchUsers({});
+  userStore.fetchGroupsAndPermissions();
+})
+
+let users = computed<UserType[]>(() => userStore.getUsers);
+const groups = computed(() => userStore.getGroups);
+let showUserModal = ref<boolean>(false);
+let formTitle = ref<string>("");
+let form = reactive({ 
+  userUid: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  groupUid: "",
+  userName: "",
+  password: "",
+  passwordc: "",
+  isActive: true,
+  isBlocked: false,
+});
+
+const formAction = ref<boolean>(true);
+
+const { withClientMutation } = useApiUtil();
+function addUser(): void {
+  withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, form, "createUser").then((result) =>
+    userStore.addUser(result)
+  );
+}
+
+function editUser(): void {
+    withClientMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument, form, "updateUser").then((result) =>
+    userStore.updateUser(result)
+  );
+}
+
+function userGroupsName(user: UserType): string {
+  let groups: string[] = [];
+  user?.groups?.forEach((g) => groups.push(g?.name!));
+  return groups.join(", ");
+}
+
+function FormManager(create: boolean, obj: UserType = {} as UserType): void {
+  formAction.value = create;
+  showUserModal.value = true;
+  formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
+  if (create) {
+    let user = new Object() as UserType;
+    user.firstName = "";
+    user.lastName = "";
+    user.email = "";
+    user.isActive = true;
+    user.userName = "";
+    user.isBlocked = false;
+    Object.assign(form, { ...user, groupUid: "", userUid: "" });
+  } else {
+    form.userUid = obj?.uid || "";
+    form.groupUid = obj?.groups && obj.groups[0] ? obj.groups[0].uid : "";
+    form.isActive = obj.isActive ?? true;
+    form.isBlocked = obj.isBlocked ?? false;
+    form.userName = obj.userName ?? "";
+    Object.assign(form, { ...obj });
+  }
+}
+
+function saveUserForm(): void {
+  if (formAction.value) {
+    addUser();
+  } else {
+    editUser();
+  }
+  showUserModal.value = false;
+}
+
+const headers = [
+  "First Name",
+  "Last Name",
+  "Email",
+  "Active",
+  "Group",
+  "Username",
+  "Blocked",
+  "Actions"
+];
+</script>
+
+<style scoped>
+/* Alternative: CSS custom properties approach for better field visibility */
+.form-field-enhanced {
+  @apply mt-1 block w-full rounded-md px-3 py-2 text-sm transition-all duration-200;
+  border: 2px solid theme('colors.gray.300');
+  background-color: theme('colors.white');
+  color: theme('colors.gray.900');
+}
+
+.form-field-enhanced::placeholder {
+  color: theme('colors.gray.400');
+}
+
+.form-field-enhanced:hover {
+  border-color: theme('colors.gray.400');
+}
+
+.form-field-enhanced:focus {
+  outline: none;
+  border-color: theme('colors.blue.500');
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-field-enhanced:disabled {
+  background-color: theme('colors.gray.100');
+  border-color: theme('colors.gray.200');
+  cursor: not-allowed;
+  color: theme('colors.gray.500');
+}
+
+/* Enhanced switch styling */
+.switch-enhanced {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+</style>

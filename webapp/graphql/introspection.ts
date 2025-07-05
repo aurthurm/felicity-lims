@@ -25118,6 +25118,13 @@ export default {
                 }
               },
               {
+                "name": "isBlocked",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
                 "name": "lastName",
                 "type": {
                   "kind": "SCALAR",
@@ -25140,6 +25147,13 @@ export default {
               },
               {
                 "name": "passwordc",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "userName",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Any"

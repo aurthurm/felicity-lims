@@ -1,10 +1,11 @@
 import asyncio
 import logging
 from datetime import timedelta
-from typing import List
+from typing import List, Optional
 
 import strawberry  # noqa
 from strawberry.permission import PermissionExtension
+from strawberry.scalars import JSON
 
 from felicity.api.gql.analysis.permissions import CanVerifySample
 from felicity.api.gql.analysis.types import analysis as a_types
@@ -13,8 +14,7 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import (
     OperationError,
-    OperationSuccess,
-)
+    OperationSuccess, )
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.entities.analysis import (
     sample_analysis,
@@ -22,6 +22,7 @@ from felicity.apps.analysis.entities.analysis import (
     sample_rejection_reason,
 )
 from felicity.apps.analysis.enum import ResultState, SamplePriority, SampleState
+from felicity.apps.analysis.schemas import ClinicalDataCreate
 from felicity.apps.analysis.services.analysis import (
     AnalysisRequestService,
     AnalysisService,
@@ -29,7 +30,7 @@ from felicity.apps.analysis.services.analysis import (
     ProfileService,
     RejectionReasonService,
     SampleService,
-    SampleTypeService,
+    SampleTypeService, ClinicalDataService,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
@@ -45,6 +46,7 @@ from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.multiplex.microbiology.schemas import AbxOrganismResultCreate
 from felicity.apps.multiplex.microbiology.services import AbxOrganismResultService
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
@@ -62,6 +64,7 @@ class ARSampleInputType:
     profiles: List[str]
     analyses: List[str]
     date_collected: str
+    date_received: str
 
 
 @strawberry.input
@@ -110,11 +113,23 @@ SampleActionResponse = strawberry.union(
 
 
 @strawberry.input
+class ClinicalDataInputType:
+    symptoms: Optional[List[str]] = None
+    symptoms_raw: Optional[str] = ""
+    clinical_indication: Optional[str] = ""
+    pregnancy_status: Optional[bool] = False
+    breast_feeding: Optional[bool] = False
+    vitals: Optional[JSON] = None
+    treatment_notes: Optional[str] = ""
+    other_context: Optional[JSON] = None
+
+
+@strawberry.input
 class AnalysisRequestInputType:
     patient_uid: str
     client_uid: str
     client_contact_uid: str
-    clinicalData: str | None = ""
+    clinical_data: ClinicalDataInputType | None = None
     samples: List[ARSampleInputType] = None
     client_request_id: str | None = None
     internal_use: bool | None = False
@@ -171,6 +186,35 @@ async def create_analysis_request(
 
         obj_in = schemas.AnalysisRequestCreate(**incoming)
         analysis_request = await AnalysisRequestService().create(obj_in, session=transaction_session)
+
+        # save clinical data only if there's at least one value
+        if payload.clinical_data:
+            clinical_data = payload.clinical_data
+            # Check if there's at least one non-empty value
+            has_data = any([
+                clinical_data.symptoms,
+                clinical_data.symptoms_raw,
+                clinical_data.clinical_indication,
+                clinical_data.pregnancy_status,
+                clinical_data.breast_feeding,
+                clinical_data.vitals,
+                clinical_data.treatment_notes,
+                clinical_data.other_context
+            ])
+
+            if has_data:
+                c_data_in = ClinicalDataCreate(
+                    analysis_request_uid=analysis_request.uid,
+                    symptoms=clinical_data.symptoms,
+                    symptoms_raw=clinical_data.symptoms_raw,
+                    clinical_indication=clinical_data.clinical_indication,
+                    pregnancy_status=clinical_data.pregnancy_status,
+                    breast_feeding=clinical_data.breast_feeding,
+                    vitals=clinical_data.vitals,
+                    treatment_notes=clinical_data.treatment_notes,
+                    other_context=clinical_data.other_context
+                )
+                await ClinicalDataService().create(c_data_in, session=transaction_session)
 
         # 1. create samples
         logger.info(
@@ -563,7 +607,7 @@ async def publish_samples(
         ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
         for sample in ns_samples:
             await ActivityStreamService().stream(
-                sample, felicity_user, sample.status, "sample"
+                sample, felicity_user, sample.status, NotificationObject.SAMPLE
             )
 
     return OperationSuccess(

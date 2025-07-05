@@ -158,10 +158,12 @@ mutation EditUser(
     $userUid: String!
     $firstName: String!
     $lastName: String
+    $userName: String
     $email: String
     $groupUid: String
     $mobilePhone: String
     $isActive: Boolean
+    $isBlocked: Boolean
     $password: String, 
     $passwordc: String
 ) {
@@ -169,10 +171,12 @@ mutation EditUser(
         userUid: $userUid
         firstName: $firstName
         lastName: $lastName
+        userName: $userName
         email: $email
         groupUid: $groupUid
         mobilePhone: $mobilePhone
         isActive: $isActive
+        isBlocked: $isBlocked
         password: $password, passwordc: $passwordc
     ) {
         ... on UserType {

@@ -16,6 +16,8 @@ export type Scalars = {
   BytesScalar: { input: never; output: never; }
   /** Date with time (isoformat) */
   DateTime: { input: never; output: never; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: { input: never; output: never; }
   /** json field */
   JSONScalar: { input: never; output: never; }
   Upload: { input: never; output: never; }
@@ -32,6 +34,7 @@ export type ArResultInputType = {
 export type ArSampleInputType = {
   analyses: Array<Scalars['String']['input']>;
   dateCollected: Scalars['String']['input'];
+  dateReceived: Scalars['String']['input'];
   profiles: Array<Scalars['String']['input']>;
   sampleType: Scalars['String']['input'];
 };
@@ -866,7 +869,7 @@ export type ActivityProcessType = {
 export type ActivityStreamType = {
   __typename?: 'ActivityStreamType';
   actionObject: WorkSheetTypeSampleTypeAnalysisResultTypeReportMetaTypeUnknownObjectType;
-  actionObjectType?: Maybe<Scalars['String']['output']>;
+  actionObjectType?: Maybe<NotificationObjectType>;
   actionObjectUid?: Maybe<Scalars['String']['output']>;
   actor: UserType;
   actorUid?: Maybe<Scalars['String']['output']>;
@@ -1108,7 +1111,7 @@ export type AnalysisRequestInputType = {
   clientContactUid: Scalars['String']['input'];
   clientRequestId?: InputMaybe<Scalars['String']['input']>;
   clientUid: Scalars['String']['input'];
-  clinicalData?: InputMaybe<Scalars['String']['input']>;
+  clinicalData?: InputMaybe<ClinicalDataInputType>;
   internalUse?: InputMaybe<Scalars['Boolean']['input']>;
   patientUid: Scalars['String']['input'];
   priority?: Scalars['Int']['input'];
@@ -1587,6 +1590,17 @@ export type ClinicalDataCodingType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ClinicalDataInputType = {
+  breastFeeding?: InputMaybe<Scalars['Boolean']['input']>;
+  clinicalIndication?: InputMaybe<Scalars['String']['input']>;
+  otherContext?: InputMaybe<Scalars['JSON']['input']>;
+  pregnancyStatus?: InputMaybe<Scalars['Boolean']['input']>;
+  symptoms?: InputMaybe<Array<Scalars['String']['input']>>;
+  symptomsRaw?: InputMaybe<Scalars['String']['input']>;
+  treatmentNotes?: InputMaybe<Scalars['String']['input']>;
+  vitals?: InputMaybe<Scalars['JSON']['input']>;
 };
 
 export type ClinicalDataType = {
@@ -5156,10 +5170,12 @@ export type MutationUpdateUserArgs = {
   firstName?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
   isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  isBlocked?: InputMaybe<Scalars['Boolean']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   mobilePhone?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   passwordc?: InputMaybe<Scalars['String']['input']>;
+  userName?: InputMaybe<Scalars['String']['input']>;
   userUid: Scalars['String']['input'];
 };
 
@@ -5269,6 +5285,14 @@ export type NoticeType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
   viewers?: Maybe<Array<UserType>>;
 };
+
+export enum NotificationObjectType {
+  AnalysisResult = 'ANALYSIS_RESULT',
+  Report = 'REPORT',
+  Sample = 'SAMPLE',
+  Shipment = 'SHIPMENT',
+  Worksheet = 'WORKSHEET'
+}
 
 export type NotificationType = {
   __typename?: 'NotificationType';

@@ -7,10 +7,17 @@ import {
 } from "@/types/gql";
 import useApiUtil from '@/composables/api_util';
 import useAnalysisComposable from "@/composables/analysis";
-import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismResultAllDocument, GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables } from "@/graphql/operations/microbiology.queries";
+import { 
+  GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, 
+  GetAbxOrganismResultAllDocument, GetAbxOrganismResultAllQuery, GetAbxOrganismResultAllQueryVariables 
+} from "@/graphql/operations/microbiology.queries";
 import { AbxOrganismType, AbxOrganismResultType } from "@/types/gql";
-import { AbxOrganismCursorPage } from "@/graphql/schema";
-import { AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables, AddAbxOrganismResultDocument, DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables, DeleteAbxOrganismResultDocument, SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables, SaveAbxOrganismResultDocument } from "@/graphql/operations/microbiology.mutations";
+import { AbxOrganismCursorPage, NotificationObjectType } from "@/graphql/schema";
+import { 
+  AddAbxOrganismResultMutation, AddAbxOrganismResultMutationVariables, AddAbxOrganismResultDocument, 
+  DeleteAbxOrganismResultMutation, DeleteAbxOrganismResultMutationVariables, DeleteAbxOrganismResultDocument, 
+  SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables, SaveAbxOrganismResultDocument 
+} from "@/graphql/operations/microbiology.mutations";
 
 const { withClientMutation, withClientQuery } = useApiUtil()
 const organismResults = ref<AbxOrganismResultType[]>([]);
@@ -62,7 +69,7 @@ function saveOrgResult(orgResult: AbxOrganismResultType) {
   addingOrganism.value = true;
   withClientMutation<SaveAbxOrganismResultMutation, SaveAbxOrganismResultMutationVariables>(
       SaveAbxOrganismResultDocument, 
-      { uid: orgResult.uid!, organismUid: orgResult.organism.uid }, 
+      { uid: orgResult.uid!, organismUid: orgResult.organism?.uid ?? "" }, 
       "saveAbxOrganismResult"
     ).then((result) => {
       if (result) {
@@ -155,15 +162,15 @@ const submitResults = () =>
   submitter_([
   { 
     uid: analysisResult.value.uid, 
-    result: analysisResult.value.result,
+    result: analysisResult.value.result ?? "",
     methodUid: "felicity_ast", 
     laboratoryInstrumentUid: "felicity_ast" 
   }
-  ], "sample", sample?.uid!)
+  ], NotificationObjectType.Sample, sample?.uid!)
     .then(() => {});
 
 const approveResults = () =>
-  approver_([analysisResult.value.uid!], "sample", sample?.uid!)
+  approver_([analysisResult.value.uid!], NotificationObjectType.Sample, sample?.uid!)
     .then(() => {});
 </script>
 

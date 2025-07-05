@@ -8,6 +8,7 @@ from felicity.apps.impress.sample.schemas import ReportImpressCreate
 from felicity.apps.impress.services import ReportImpressService
 from felicity.apps.iol.minio.client import MinioClient
 from felicity.apps.iol.minio.enum import MinioBucket
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.setup.caches import get_laboratory
 from felicity.core.config import settings
@@ -109,7 +110,7 @@ async def impress_samples(sample_meta: list[dict], user):
             logger.info(f"sample {sample.sample_id} has been impressed.")
             to_return.append(sample)
 
-            await ActivityStreamService().stream(sample, user, "published", "sample")
+            await ActivityStreamService().stream(sample, user, "published", NotificationObject.SAMPLE)
         else:
             logger.info(
                 f"sample {sample.sample_id} could not be impressed - status: {sample.status}"

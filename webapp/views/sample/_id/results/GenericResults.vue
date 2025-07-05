@@ -5,13 +5,15 @@ import { useSampleStore } from "@/stores/sample";
 import useAnalysisComposable from "@/composables/analysis";
 import {
   ProfileType,
-  AnalysisResultType,
   AnalysisType,
   SampleType,
+  ArResultInputType,
 } from "@/types/gql";
 import { isNullOrWs, parseDate } from "@/utils";
 
 import * as shield from "@/guards";
+import { NotificationObjectType } from "@/graphql/schema";
+import { ExtAnalysisResultType } from "@/types/result";
 
 const AnalysisSneak = defineAsyncComponent(
   () => import("@/components/analysis/AnalysisSneak.vue")
@@ -26,7 +28,7 @@ const {
   fetchingResults,
 } = defineProps({
   sample: Object as PropType<SampleType>,
-  analysisResults: Object as PropType<AnalysisResultType[]>,
+  analysisResults: Object as PropType<ExtAnalysisResultType[]>,
   fetchingResults: Boolean,
 });
 
@@ -43,17 +45,17 @@ const state = reactive({
 });
 
 function getResultsChecked(): any {
-  let results: AnalysisResultType[] = [];
+  let results: ExtAnalysisResultType[] = [];
   analysisResults?.forEach((result) => {
     if (result.checked) results.push(result);
   });
   return results;
 }
 
-function prepareResults(): AnalysisResultType[] {
+function prepareResults(): ArResultInputType[] {
   let results = getResultsChecked();
   let ready: any[] = [];
-  results?.forEach((result: AnalysisResultType) =>
+  results?.forEach((result: ExtAnalysisResultType) =>
     ready.push({ uid: result.uid, result: result.result, methodUid: result.methodUid, laboratoryInstrumentUid: result.laboratoryInstrumentUid })
   );
   return ready;
@@ -62,12 +64,12 @@ function prepareResults(): AnalysisResultType[] {
 function getResultsUids(): string[] {
   const results = getResultsChecked();
   let ready: string[] = [];
-  results?.forEach((result: AnalysisResultType) => ready.push(result.uid!));
+  results?.forEach((result: ExtAnalysisResultType) => ready.push(result.uid!));
   return ready;
 }
 
 // Analysis CheckMark Management
-function checkCheck(result: AnalysisResultType): void {
+function checkCheck(result: ExtAnalysisResultType): void {
   if (areAllChecked()) {
     state.allChecked = true;
   } else {
@@ -76,14 +78,14 @@ function checkCheck(result: AnalysisResultType): void {
   resetAnalysesPermissions();
 }
 
-function check(result: AnalysisResultType): void {
+function check(result: ExtAnalysisResultType): void {
   if(isDisabledRowCheckBox(result)) return;
   // if(!result.editable) return;
   result.checked = true;
   resetAnalysesPermissions();
 }
 
-function unCheck(result: AnalysisResultType): void {
+function unCheck(result: ExtAnalysisResultType): void {
   result.checked = false;
   resetAnalysesPermissions();
 }
@@ -101,7 +103,7 @@ async function unCheckAll() {
 }
 
 function areAllChecked(): Boolean {
-  return analysisResults?.every((item: AnalysisResultType) => item.checked === true) || false;
+  return analysisResults?.every((item: ExtAnalysisResultType) => item.checked === true) || false;
 }
 
 function isDisabledRowCheckBox(result: any): boolean {
@@ -123,7 +125,7 @@ function editResult(result: any): void {
   result.editable = true;
 }
 
-function isEditable(result: AnalysisResultType): Boolean {
+function isEditable(result: ExtAnalysisResultType): Boolean {
   if (!["received", "paired"].includes(sample?.status ?? "")) {
     return false;
   }
@@ -167,26 +169,26 @@ function resetAnalysesPermissions(): void {
   if (checked.length === 0) return;
 
   // can reinstate
-  if (checked.every((result: AnalysisResultType) => result.status === "cancelled")) {
+  if (checked.every((result: ExtAnalysisResultType) => result.status === "cancelled")) {
     state.can_reinstate = true;
   }
 
   // can cancel
-  if (checked.every((result: AnalysisResultType) => result.status === "pending")) {
+  if (checked.every((result: ExtAnalysisResultType) => result.status === "pending")) {
     state.can_cancel = true;
   }
 
   // can submit
   if (
     checked.every(
-      (result: AnalysisResultType) => ["pending"].includes(result.status ?? "") && !isNullOrWs(result.result)
+      (result: ExtAnalysisResultType) => ["pending"].includes(result.status ?? "") && !isNullOrWs(result.result)
     )
   ) {
     state.can_submit = true;
   }
 
   // can verify/retract/retest
-  if (checked.every((result: AnalysisResultType) => result.status === "resulted")) {
+  if (checked.every((result: ExtAnalysisResultType) => result.status === "resulted")) {
     state.can_retract = true;
     state.can_approve = true;
     state.can_retest = true;
@@ -197,7 +199,7 @@ function resetAnalysesPermissions(): void {
 const _updateSample = async () => {
   const sample = computed(() => sampleStore.getSample);
   if (sample.value) {
-    sampleStore.fetchSampleStatus(sample?.uid);
+    sampleStore.fetchSampleStatus(sample.value.uid!);
   }
 };
 
@@ -213,8 +215,8 @@ const profileAnalysesText = (
 
 // viewAnalysisInfo
 const viewInfo = ref(false)
-const viewResultInfo = ref<AnalysisResultType | undefined>(undefined)
-const viewAnalysisInfo = (result: AnalysisResultType,) => {
+const viewResultInfo = ref<ExtAnalysisResultType | undefined>(undefined)
+const viewAnalysisInfo = (result: ExtAnalysisResultType,) => {
   viewInfo.value = true
   viewResultInfo.value = result;
 }
@@ -230,7 +232,7 @@ let {
 } = useAnalysisComposable();
 
 const submitResults = () =>
-  submitter_(prepareResults(), "sample", sample?.uid!)
+  submitter_(prepareResults(), NotificationObjectType.Sample, sample?.uid!)
     .then(() => _updateSample())
     .finally(() => unCheckAll());
 
@@ -389,7 +391,7 @@ const retestResults = () =>
               </td>
               <td class="px-4 py-3 border-b border-border">
                 <div class="text-sm text-foreground space-x-1">
-                  <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName">
+                  <span v-for="reviewer in result.verifiedBy" :key="reviewer.uid">
                     {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                   </span>
                 </div>

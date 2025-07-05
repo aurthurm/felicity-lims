@@ -3,9 +3,7 @@ import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
-import { useLocationStore } from "@/stores/location";
 import { PatientType } from "@/types/gql";
-import * as shield from "@/guards";
 
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")

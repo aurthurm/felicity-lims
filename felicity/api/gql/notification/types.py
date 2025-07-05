@@ -12,6 +12,7 @@ from felicity.api.gql.worksheet.types import WorkSheetType
 from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analytics.services import ReportMetaService
+from felicity.apps.notification.enum import NotificationObjectType, NotificationObject
 from felicity.apps.user.services import UserService
 from felicity.apps.worksheet.services import WorkSheetService
 
@@ -41,7 +42,7 @@ class ActivityStreamType:
     feeds: Optional[list[ActivityFeedType]] = None
     actor_uid: str | None = None
     verb: str | None = None
-    action_object_type: str | None = None
+    action_object_type: NotificationObjectType | None = None
     action_object_uid: str | None = None
     target_uid: str | None = None
     target: str | None = None
@@ -63,7 +64,7 @@ class ActivityStreamType:
     ) -> Union[
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:
-        if self.action_object_type == "sample":
+        if self.action_object_type == NotificationObject.SAMPLE:
             sample = await SampleService().get(uid=self.action_object_uid)
             return StrawberryMapper[SampleType]().map(
                 **sample.marshal_simple(
@@ -72,11 +73,11 @@ class ActivityStreamType:
                 parent=None,
             )
 
-        if self.action_object_type == "worksheet":
+        if self.action_object_type == NotificationObject.WORKSHEET:
             ws = await WorkSheetService().get(uid=self.action_object_uid)
             return WorkSheetType(**ws.marshal_simple())
 
-        if self.action_object_type == "result":
+        if self.action_object_type == NotificationObject.ANALYSIS_RESULT:
             result = await AnalysisResultService().get(
                 related=["sample"], uid=self.action_object_uid
             )
@@ -95,7 +96,7 @@ class ActivityStreamType:
                 parent=None,
             )
 
-        if self.action_object_type == "report":
+        if self.action_object_type == NotificationObject.REPORT:
             report = await ReportMetaService().get(uid=self.action_object_uid)
             return ReportMetaType(**report.marshal_simple(exclude=[]))
 

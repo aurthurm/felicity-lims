@@ -53,10 +53,12 @@ export type EditUserMutationVariables = Exact<{
   userUid: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
+  userName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
   mobilePhone?: InputMaybe<Scalars['String']['input']>;
   isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  isBlocked?: InputMaybe<Scalars['Boolean']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   passwordc?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -2867,7 +2869,7 @@ export type GetStoreRoomsTreeQuery = { __typename?: 'Query', storeRoomAll: Array
 export type GetSystemActivitySubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSystemActivitySubscription = { __typename?: 'Subscription', latestActivity: { __typename?: 'ActivityStreamType', uid: string, actorUid?: string | null, actionObjectUid?: string | null, actionObjectType?: string | null, targetUid?: string | null, verb?: string | null, actor: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null }, actionObject: { __typename: 'AnalysisResultType', uid: string, sampleUid: string, result?: string | null, status?: string | null } | { __typename: 'ReportMetaType', uid: string, status?: string | null, location?: string | null } | { __typename: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', patientUid: string } | null } | { __typename: 'UnknownObjectType' } | { __typename: 'WorkSheetType', uid: string, worksheetId: string, state?: string | null } } };
+export type GetSystemActivitySubscription = { __typename?: 'Subscription', latestActivity: { __typename?: 'ActivityStreamType', uid: string, actorUid?: string | null, actionObjectUid?: string | null, actionObjectType?: NotificationObjectType | null, targetUid?: string | null, verb?: string | null, actor: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null }, actionObject: { __typename: 'AnalysisResultType', uid: string, sampleUid: string, result?: string | null, status?: string | null } | { __typename: 'ReportMetaType', uid: string, status?: string | null, location?: string | null } | { __typename: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', patientUid: string } | null } | { __typename: 'UnknownObjectType' } | { __typename: 'WorkSheetType', uid: string, worksheetId: string, state?: string | null } } };
 
 export type AddWorkSheetTemplateMutationVariables = Exact<{
   payload: WorksheetTemplateInputType;

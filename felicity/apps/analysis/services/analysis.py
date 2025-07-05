@@ -89,6 +89,7 @@ from felicity.apps.client.services import ClientService, ClientContactService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.core.dtz import timenow_dt
 from felicity.core.events import post_event
@@ -262,7 +263,7 @@ class AnalysisRequestService(
                     metadata[_field]["province"] = client.province.snapshot() if client.province else None
                     metadata[_field]["district"] = client.district.snapshot() if client.district else None
                     metadata[_field]["contacts"] = [cc.snapshot() for cc in contacts]
-                # TODO: also handle snapshot of _field == "clinical_data" 
+                # TODO: also handle snapshot of _field == "clinical_data"
         return await self.update(ar.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})
 
 
@@ -402,7 +403,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
         saved_sample = await super().save(sample)
         await self.streamer_service.stream(
-            saved_sample, received_by, "received", "sample"
+            saved_sample, received_by, "received", NotificationObject.SAMPLE
         )
         return saved_sample
 
@@ -426,7 +427,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             )
 
         # Log the cancellation action
-        await self.streamer_service.stream(sample, cancelled_by, "cancelled", "sample")
+        await self.streamer_service.stream(sample, cancelled_by, "cancelled", NotificationObject.SAMPLE)
 
         return sample
 
@@ -452,7 +453,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
         # Log the re-instatement action
         await self.streamer_service.stream(
-            sample, re_instated_by, "reinstated", "sample"
+            sample, re_instated_by, "reinstated", NotificationObject.SAMPLE
         )
 
         return sample
@@ -470,7 +471,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         saved = await super().save(sample)
 
         # Log the submission action
-        await self.streamer_service.stream(saved, submitted_by, "submitted", "sample")
+        await self.streamer_service.stream(saved, submitted_by, "submitted", NotificationObject.SAMPLE)
 
         return saved
 
@@ -527,7 +528,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             saved = await super().save(sample)
 
             # Log the verification action
-            await self.streamer_service.stream(saved, verified_by, "approved", "sample")
+            await self.streamer_service.stream(saved, verified_by, "approved", NotificationObject.SAMPLE)
 
             return True, saved
 
@@ -541,7 +542,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.updated_by_uid = published_by.uid  # noqa
         published = await super().save(sample)
         await self.streamer_service.stream(
-            published, published_by, "published", "sample"
+            published, published_by, "published", NotificationObject.SAMPLE
         )
         # fire a published event
         if not published.internal_use:
@@ -555,7 +556,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.date_printed = timenow_dt()
         sample.updated_by_uid = printed_by.uid  # noqa
         printed = await super().save(sample)
-        await self.streamer_service.stream(printed, printed_by, "printed", "sample")
+        await self.streamer_service.stream(printed, printed_by, "printed", NotificationObject.SAMPLE)
         return printed
 
     async def invalidate(self, uid: str, invalidated_by, commit: bool = True, session: AsyncSession | None = None) -> \
@@ -566,7 +567,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.invalidated_by_uid = invalidated_by.uid
         invalidated = await super().save(sample, commit=commit, session=session)
         await self.streamer_service.stream(
-            invalidated, invalidated_by, "invalidated", "sample"
+            invalidated, invalidated_by, "invalidated", NotificationObject.SAMPLE
         )
         return copy, invalidated
 
@@ -576,7 +577,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.received_by_uid = rejected_by.uid
         sample.updated_by_uid = rejected_by.uid  # noqa
         rejected = await super().save(sample)
-        await self.streamer_service.stream(rejected, rejected_by, "rejected", "sample")
+        await self.streamer_service.stream(rejected, rejected_by, "rejected", NotificationObject.SAMPLE)
         return rejected
 
     async def store(self, uid: str, stored_by):
@@ -585,7 +586,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.stored_by = stored_by.uid
         sample.updated_by_uid = stored_by.uid  # noqa
         stored = await super().save(sample)
-        await self.streamer_service.stream(stored, stored_by, "stored", "sample")
+        await self.streamer_service.stream(stored, stored_by, "stored", NotificationObject.SAMPLE)
         return stored
 
     async def recover(self, uid: str):

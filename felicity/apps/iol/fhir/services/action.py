@@ -3,6 +3,7 @@ from felicity.apps.iol.fhir.services.read import FhirReadService
 from felicity.apps.iol.relay import post_data
 from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
+from felicity.apps.notification.enum import NotificationObject
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
@@ -92,7 +93,7 @@ class IOLService:
                 shipment.uid, **shipment.marshal_simple()
             )
             await self.activity_stream_service.stream(
-                saved, user, "dispatched", "shipment"
+                saved, user, "dispatched", NotificationObject.SHIPMENT
             )
             return saved
         return shipment

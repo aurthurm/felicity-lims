@@ -158,10 +158,12 @@ export type EditUserMutationVariables = Types.Exact<{
   userUid: Types.Scalars['String']['input'];
   firstName: Types.Scalars['String']['input'];
   lastName?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  userName?: Types.InputMaybe<Types.Scalars['String']['input']>;
   email?: Types.InputMaybe<Types.Scalars['String']['input']>;
   groupUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
   mobilePhone?: Types.InputMaybe<Types.Scalars['String']['input']>;
   isActive?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+  isBlocked?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
   password?: Types.InputMaybe<Types.Scalars['String']['input']>;
   passwordc?: Types.InputMaybe<Types.Scalars['String']['input']>;
 }>;
@@ -517,15 +519,17 @@ export function useAddUserMutation() {
   return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
 };
 export const EditUserDocument = gql`
-    mutation EditUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean, $password: String, $passwordc: String) {
+    mutation EditUser($userUid: String!, $firstName: String!, $lastName: String, $userName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean, $isBlocked: Boolean, $password: String, $passwordc: String) {
   updateUser(
     userUid: $userUid
     firstName: $firstName
     lastName: $lastName
+    userName: $userName
     email: $email
     groupUid: $groupUid
     mobilePhone: $mobilePhone
     isActive: $isActive
+    isBlocked: $isBlocked
     password: $password
     passwordc: $passwordc
   ) {
