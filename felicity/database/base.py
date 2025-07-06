@@ -9,6 +9,8 @@ from felicity.apps.analysis.entities.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCoding  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisInterim  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisRequest  # noqa
+from felicity.apps.analysis.entities.analysis import ClinicalData  # noqa
+from felicity.apps.analysis.entities.analysis import ClinicalDataCoding  # noqa
 from felicity.apps.analysis.entities.analysis import CodingStandard  # noqa
 from felicity.apps.analysis.entities.analysis import Profile  # noqa
 from felicity.apps.analysis.entities.analysis import ProfileCoding  # noqa
@@ -36,6 +38,8 @@ from felicity.apps.billing.entities import VoucherCode  # noqa
 from felicity.apps.billing.entities import VoucherCustomer  # noqa
 from felicity.apps.client.entities import Client  # noqa
 from felicity.apps.client.entities import ClientContact  # noqa
+from felicity.apps.commune.sms.entities import SmsMessage  # noqa
+from felicity.apps.commune.sms.entities import SmsTemplate  # noqa
 from felicity.apps.document.entities import Document  # noqa
 from felicity.apps.document.entities import DocumentAudit  # noqa
 from felicity.apps.document.entities import DocumentCategory  # noqa
@@ -109,6 +113,10 @@ from felicity.apps.notification.entities import ActivityStream  # noqa
 from felicity.apps.notification.entities import Notification  # noqa
 from felicity.apps.patient.entities import Identification  # noqa
 from felicity.apps.patient.entities import Patient  # noqa
+from felicity.apps.patient.entities import PatientIdentification  # noqa
+from felicity.apps.patient.search_indices import DateSearchIndex  # noqa
+from felicity.apps.patient.search_indices import PatientSearchIndex  # noqa
+from felicity.apps.patient.search_indices import PhoneSearchIndex  # noqa
 from felicity.apps.reflex.entities import ReflexAction  # noqa
 from felicity.apps.reflex.entities import ReflexBrain  # noqa
 from felicity.apps.reflex.entities import ReflexBrainAction  # noqa
@@ -138,5 +146,3 @@ from felicity.apps.user.entities import User  # noqa
 from felicity.apps.user.entities import UserPreference  # noqa
 from felicity.apps.worksheet.entities import WorkSheet  # noqa
 from felicity.apps.worksheet.entities import WorkSheetTemplate  # noqa
-from felicity.apps.commune.sms.entities import SmsTemplate # noqa
-from felicity.apps.commune.sms.entities import SmsMessage # noqa
