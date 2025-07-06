@@ -19,6 +19,7 @@ from felicity.apps.analysis.enum import ResultType
 from felicity.apps.client import entities as ct_entities
 from felicity.apps.patient import entities as pt_entities
 from felicity.apps.user.entities import User
+from felicity.utils.hipaa_fields import EncryptedPHI
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -439,14 +440,15 @@ class ClinicalData(BaseEntity):
 
     analysis_request_uid = Column(String, ForeignKey("analysis_request.uid"), nullable=False, unique=True)
     analysis_request = relationship("AnalysisRequest", back_populates="clinical_data", lazy="selectin")
-    symptoms = Column(ARRAY(String), nullable=True)  # e,g Fever, Cough
-    symptoms_raw = Column(Text, nullable=True)
-    clinical_indication = Column(Text, nullable=True)  # reason for the lab test
-    pregnancy_status = Column(Boolean, nullable=True)
-    breast_feeding = Column(Boolean, nullable=True)
-    vitals = Column(JSONB, nullable=True)  # e.g., {"bp": "120/80", "temp": 37.2}
-    treatment_notes = Column(Text, nullable=True)
-    other_context = Column(JSONB, nullable=True)  # for any extra structured fields
+    symptoms = Column(ARRAY(String), nullable=True)  # e,g Fever, Cough - keep unencrypted for analytics
+    # HIPAA: Encrypt detailed clinical information that could identify patients
+    symptoms_raw = Column(EncryptedPHI(2000), nullable=True)
+    clinical_indication = Column(EncryptedPHI(2000), nullable=True)  # reason for the lab test
+    pregnancy_status = Column(Boolean, nullable=True)  # Boolean is not identifiable
+    breast_feeding = Column(Boolean, nullable=True)   # Boolean is not identifiable
+    vitals = Column(EncryptedPHI(1000), nullable=True)  # e.g., {"bp": "120/80", "temp": 37.2}
+    treatment_notes = Column(EncryptedPHI(2000), nullable=True)
+    other_context = Column(EncryptedPHI(2000), nullable=True)  # for any extra structured fields
     codings = relationship(
         "ClinicalDataCoding",
         back_populates="clinical_data",

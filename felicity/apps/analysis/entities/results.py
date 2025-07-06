@@ -14,6 +14,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity, BaseMPTT
+from felicity.utils.hipaa_fields import EncryptedPHI
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,7 +48,8 @@ class AnalysisResult(BaseEntity, BaseMPTT):
     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
     method = relationship("Method", lazy="selectin")
-    result = Column(Text, nullable=True)
+    # HIPAA: Encrypt test results as they constitute Protected Health Information (PHI)
+    result = Column(EncryptedPHI(1000), nullable=True)
     analyst_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")
     submitted_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
@@ -112,7 +114,8 @@ class ResultMutation(BaseEntity):
     __tablename__ = "result_mutation"
 
     result_uid = Column(String, ForeignKey("analysis_result.uid"), nullable=False)
-    before = Column(String, nullable=False)
-    after = Column(String, nullable=False)
-    mutation = Column(String, nullable=False)
+    # HIPAA: Encrypt mutation tracking data as it contains PHI history
+    before = Column(EncryptedPHI(1000), nullable=False)
+    after = Column(EncryptedPHI(1000), nullable=False)
+    mutation = Column(String, nullable=False)  # Keep mutation type unencrypted for audit
     date = Column(DateTime, nullable=True)

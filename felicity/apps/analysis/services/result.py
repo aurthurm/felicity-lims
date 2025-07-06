@@ -1,5 +1,6 @@
 import logging
-from typing import Annotated
+from typing import Annotated, List, Optional
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.results import (
@@ -48,6 +49,58 @@ class AnalysisResultService(
         if verifiers:
             return verifiers[-1]
         return None
+    
+    async def hipaa_compliant_search_by_result(
+        self,
+        result_value: str,
+        analysis_uid: Optional[str] = None,
+        sample_uid: Optional[str] = None,
+        session: Optional[AsyncSession] = None
+    ) -> List[AnalysisResult]:
+        """
+        HIPAA-compliant search for analysis results by encrypted result values.
+        
+        Args:
+            result_value: Result value to search for
+            analysis_uid: Optional analysis UID to filter by
+            sample_uid: Optional sample UID to filter by
+            session: Optional database session
+            
+        Returns:
+            List of matching analysis results
+        """
+        return await self.repository.search_by_encrypted_result(
+            result_value=result_value,
+            analysis_uid=analysis_uid,
+            sample_uid=sample_uid,
+            session=session
+        )
+    
+    async def find_by_exact_result_value(
+        self,
+        result_value: str,
+        analysis_uid: Optional[str] = None,
+        sample_uid: Optional[str] = None,
+        session: Optional[AsyncSession] = None
+    ) -> Optional[AnalysisResult]:
+        """
+        Find analysis result by exact match on encrypted result value.
+        
+        Args:
+            result_value: Exact result value to match
+            analysis_uid: Optional analysis UID to filter by
+            sample_uid: Optional sample UID to filter by
+            session: Optional database session
+            
+        Returns:
+            Matching analysis result or None
+        """
+        return await self.repository.find_by_exact_encrypted_result(
+            result_value=result_value,
+            analysis_uid=analysis_uid,
+            sample_uid=sample_uid,
+            session=session
+        )
 
     async def retest_result(
             self, uid: str, retested_by, next_action="verify"

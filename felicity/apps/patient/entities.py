@@ -1,9 +1,10 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, relationship
 
 from felicity.apps.abstract import BaseEntity
 from felicity.apps.client.entities import Client
+from felicity.utils.hipaa_fields import EncryptedPII
 
 
 class Identification(BaseEntity):
@@ -23,11 +24,13 @@ class PatientIdentification(BaseEntity):
     patient: Mapped["Patient"] = relationship(
         "Patient", back_populates="identifications", lazy="selectin"
     )
-    value = Column(String, index=True, nullable=False)
+    # HIPAA: Encrypt identification values (SSN, ID numbers, etc.)
+    value = Column(EncryptedPII(500), index=False, nullable=False)
 
     @property
     def sms_metadata(self) -> dict:
         return {self.identification.name: self.value}
+
 
 class Patient(BaseEntity):
     __tablename__ = "patient"
@@ -37,19 +40,20 @@ class Patient(BaseEntity):
     patient_id = Column(String, index=True, unique=True, nullable=True)
     client_uid = Column(String, ForeignKey("client.uid"), nullable=True)
     client = relationship(Client, backref="patients", lazy="selectin")
-    # Details
-    first_name = Column(String, nullable=False)
-    middle_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=False)
-    gender = Column(String, nullable=False)
+    # Details - HIPAA: Encrypt personally identifiable information
+    first_name = Column(EncryptedPII(500), nullable=False)
+    middle_name = Column(EncryptedPII(500), nullable=True)
+    last_name = Column(EncryptedPII(500), nullable=False)
+    gender = Column(String, nullable=False)  # Keep unencrypted for analytics
     age = Column(Integer, nullable=True)
-    date_of_birth = Column(DateTime, nullable=True)
+    # HIPAA: Encrypt date of birth as it's PII that can identify individuals
+    date_of_birth = Column(EncryptedPII(500), nullable=True)
     age_dob_estimated = Column(Boolean(), default=False)
-    # Contact
-    phone_mobile = Column(String, nullable=True)
-    phone_home = Column(String, nullable=True)
+    # Contact - HIPAA: Encrypt contact information
+    phone_mobile = Column(EncryptedPII(500), nullable=True)
+    phone_home = Column(EncryptedPII(500), nullable=True)
     consent_sms = Column(Boolean(), default=False)
-    email = Column(String, nullable=True)
+    email = Column(EncryptedPII(500), nullable=True)
     identifications: Mapped[list["PatientIdentification"]] = relationship(
         PatientIdentification, back_populates="patient", lazy="selectin"
     )
@@ -77,12 +81,12 @@ class Patient(BaseEntity):
     def sms_metadata(self) -> dict:
         result = {
             "patient_name": self.full_name,
-            "patient_id": self.patient_id, 
+            "patient_id": self.patient_id,
             "gender": self.gender,
-            "client_patient_id": self.client_patient_id, 
+            "client_patient_id": self.client_patient_id,
             "age": self.age,
         }
-        
+
         # Safely process identifications
         if self.identifications:
             for identification in self.identifications:
