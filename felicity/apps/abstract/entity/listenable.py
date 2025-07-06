@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Tuple
 
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import class_mapper
@@ -52,12 +52,12 @@ class EventListenable:
     @staticmethod
     def handle_update(mapper: Any, connection: Any, target: "EventListenable") -> None:
         logger.debug(f'Handling update for {getattr(target, "__class__").__name__}')
-        target.put_out(
-            "after-update", getattr(target, "__tablename__"), target.get_changes(target)
-        )
+        has_changes, metadata = target.get_changes(target)
+        if has_changes:
+            target.put_out("after-update", getattr(target, "__tablename__"), metadata)
 
     @staticmethod
-    def get_changes(target: "EventListenable") -> Dict[str, Any]:
+    def get_changes(target: "EventListenable") -> Tuple[bool, Dict[str, Any]]:
         logger.info(f'Getting changes for {getattr(target, "__class__").__name__}')
         state_before: Dict[str, Any] = {}
         state_after: Dict[str, Any] = {}
@@ -93,9 +93,9 @@ class EventListenable:
 
         if len(state_after) == 1 and "updated_at" in state_after:
             logger.info("Only updated_at changed, returning empty dict")
-            return {}
+            return False, {}
 
-        return {
+        return True, {
             "uid": getattr(target, "uid"),
             "state_before": state_before,
             "state_after": state_after,

@@ -1,6 +1,8 @@
+from contextlib import asynccontextmanager
 from typing import Generic, TypeVar
 
 from pydantic import BaseModel
+from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.entity import BaseEntity
@@ -29,6 +31,19 @@ class BaseService(Generic[E, C, U]):
             repository: A callable that returns a BaseRepository instance
         """
         self.repository: BaseRepository = repository
+
+    @asynccontextmanager
+    async def transaction(self):
+        """
+        Context manager for transaction support.
+
+        Usage:
+            async with service.transaction() as session:
+                # Perform operations with session
+                # Commits automatically if no exception occurs
+        """
+        async with self.repository.transaction() as session:
+            yield session
 
     async def paging_filter(
             self,
@@ -73,6 +88,9 @@ class BaseService(Generic[E, C, U]):
         """
         Retrieve all entities.
 
+        Args:
+            session: Optional session to use for transaction support
+
         Returns:
             List of all entities
         """
@@ -83,10 +101,12 @@ class BaseService(Generic[E, C, U]):
         Get a single entity based on given criteria.
 
         Args:
+            related: List of related fields to load
+            session: Optional session to use for transaction support
             **kwargs: Criteria for fetching the entity
 
         Returns:
-            A single entity
+            A single entity or None if not found
         """
         return await self.repository.get(related=related, session=session, **kwargs)
 
@@ -96,6 +116,7 @@ class BaseService(Generic[E, C, U]):
 
         Args:
             uids: List of entity UIDs
+            session: Optional session to use for transaction support
 
         Returns:
             List of entities matching the given UIDs
@@ -108,8 +129,9 @@ class BaseService(Generic[E, C, U]):
         Get all entities matching the given criteria.
 
         Args:
-            related: Related model to lazy load
-            sort_attrs: columns to sort by
+            related: List of related fields to load
+            sort_attrs: List of columns to sort by
+            session: Optional session to use for transaction support
             **kwargs: Criteria for fetching entities
 
         Returns:
@@ -125,6 +147,8 @@ class BaseService(Generic[E, C, U]):
         Args:
             c: Create model or dictionary with entity data
             related: List of related entity names to fetch after creation
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
 
         Returns:
             Newly created entity (with related entities if specified)
@@ -145,6 +169,8 @@ class BaseService(Generic[E, C, U]):
         Args:
             bulk: List of create models or dictionaries with entity data
             related: List of related entity names to fetch after creation
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
 
         Returns:
             List of newly created entities (with related entities if specified)
@@ -154,6 +180,113 @@ class BaseService(Generic[E, C, U]):
         if not related:
             return created
         return [(await self.get(related=related, uid=x.uid, session=session)) for x in created]
+
+    async def save(self, entity: E, related: list[str] | None = None, commit: bool = True,
+                   session: AsyncSession | None = None) -> E:
+        """
+        Save an entity (create if not exists, update if exists).
+
+        Args:
+            entity: Entity to save
+            related: List of related entity names to fetch after saving
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
+
+        Returns:
+            Saved entity (with related entities if specified)
+        """
+        saved = await self.repository.save(m=entity, commit=commit, session=session)
+        if not related:
+            return saved
+        return await self.get(related=related, uid=saved.uid, session=session)
+
+    async def save_all(self, entities: list[E], commit: bool = True, session: AsyncSession | None = None) -> list[E]:
+        """
+        Save multiple entities to the database.
+
+        Args:
+            entities: List of entities to save
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
+
+        Returns:
+            List of saved entities
+        """
+        return await self.repository.save_all(entities, commit=commit, session=session)
+
+    async def save_transaction(self, session: AsyncSession | None = None) -> None:
+        """
+        Save the current transaction.
+
+        Args:
+            session: Optional session to use for transaction support
+        """
+        return await self.repository.save_transaction(session)
+
+    async def all_by_page(self, page: int = 1, limit: int = 20, **kwargs) -> dict:
+        """
+        Get a paginated list of entities.
+
+        Args:
+            page: Page number (default: 1)
+            limit: Number of items per page (default: 20)
+            **kwargs: Additional filter conditions
+
+        Returns:
+            Dictionary containing paginated results
+        """
+        return await self.repository.all_by_page(page=page, limit=limit, **kwargs)
+
+    async def full_text_search(self, search_string: str, field: str) -> list[E]:
+        """
+        Perform full-text search on entities.
+
+        Args:
+            search_string: The search string to match
+            field: The field to search in
+
+        Returns:
+            List of entities matching the search criteria
+        """
+        return await self.repository.full_text_search(search_string, field)
+
+    async def count_where(self, filters: dict) -> int:
+        """
+        Count entities matching the given filters.
+
+        Args:
+            filters: Dictionary of filter conditions
+
+        Returns:
+            Number of matching entities
+        """
+        return await self.repository.count_where(filters)
+
+    async def filter(
+            self,
+            filters: dict | list[dict],
+            sort_attrs: list[str] | None = None,
+            limit: int | None = None,
+            either: bool = False,
+    ) -> list[E]:
+        """
+        Filter entities based on given conditions.
+
+        Args:
+            filters: Dictionary or list of dictionaries containing filter conditions
+            sort_attrs: List of attributes to sort by
+            limit: Maximum number of entities to return
+            either: Whether to use logical OR for multiple filters
+
+        Returns:
+            List of filtered entities
+        """
+        return await self.repository.filter(
+            filters=filters,
+            sort_attrs=sort_attrs,
+            limit=limit,
+            either=either
+        )
 
     async def update(
             self, uid: str, update: U | dict, related: list[str] | None = None, commit: bool = True,
@@ -166,6 +299,8 @@ class BaseService(Generic[E, C, U]):
             uid: Unique identifier of the entity to update
             update: Update model or dictionary with updated entity data
             related: List of related entity names to fetch after update
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
 
         Returns:
             Updated entity (with related entities if specified)
@@ -177,22 +312,24 @@ class BaseService(Generic[E, C, U]):
             return updated
         return await self.get(related=related, uid=updated.uid, session=session)
 
-    async def save(self, entity: E, related: list[str] | None = None, commit: bool = True,
-                   session: AsyncSession | None = None) -> E:
+    async def bulk_update_where(self, update_data: list[dict], filters: dict, commit=True,
+                                session: AsyncSession | None = None):
         """
-        Save an entity (create if not exists, update if exists).
+        Update multiple entities that match the given filters.
 
         Args:
-            entity: Entity to save
-            related: List of related entity names to fetch after saving
+            update_data: List of dictionaries containing update values
+            filters: Dictionary of filter conditions
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
 
         Returns:
-            Saved entity (with related entities if specified)
+            Number of rows updated
+
+        Raises:
+            ValueError: If update_data or filters are not provided
         """
-        saved = await self.repository.save(m=entity, commit=commit, session=session)
-        if not related:
-            return saved
-        return await self.get(related=related, uid=saved.uid, session=session)
+        return await self.repository.bulk_update_where(update_data, filters, commit, session)
 
     async def bulk_update_with_mappings(self, mappings: list[dict], commit: bool = True,
                                         session: AsyncSession | None = None) -> None:
@@ -200,7 +337,9 @@ class BaseService(Generic[E, C, U]):
         Perform bulk updates using a list of mappings.
 
         Args:
-            mappings: List of dictionaries containing update information
+            mappings: List of dictionaries containing update information with primary keys
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
 
         Returns:
             None
@@ -213,6 +352,8 @@ class BaseService(Generic[E, C, U]):
 
         Args:
             uid: Unique identifier of the entity to delete
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
 
         Returns:
             None
@@ -221,15 +362,69 @@ class BaseService(Generic[E, C, U]):
 
     async def delete_where(self, commit: bool = True, session: AsyncSession | None = None, **kwargs) -> None:
         """
-        Delete an entity by its unique identifier.
+        Delete entities that match the given filter conditions.
 
         Args:
-            uid: Unique identifier of the entity to delete
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
+            **kwargs: Filter conditions to match entities for deletion
 
         Returns:
             None
         """
         return await self.repository.delete_where(commit=commit, session=session, **kwargs)
+
+    async def table_query(
+            self, table: Table, columns: list[str] | None = None,
+            session: AsyncSession | None = None, **kwargs
+    ):
+        """
+        Query a specific table with optional column selection and filters.
+
+        Args:
+            table: The SQLAlchemy table to query
+            columns: List of column names to select (optional)
+            session: Optional session to use for transaction support
+            **kwargs: Additional filter conditions
+
+        Returns:
+            The query results
+
+        Raises:
+            ValueError: If table or filters are not provided
+        """
+        return await self.repository.table_query(table, columns, session, **kwargs)
+
+    async def table_insert(self, table: Table, mappings: list[dict], commit=True,
+                           session: AsyncSession | None = None) -> None:
+        """
+        Insert multiple rows into a specified table.
+
+        Args:
+            table: The SQLAlchemy table model
+            mappings: List of dictionaries containing the data to insert
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
+
+        Returns:
+            None
+        """
+        return await self.repository.table_insert(table, mappings, commit, session)
+
+    async def table_delete(self, table, commit=True, session: AsyncSession | None = None, **kwargs):
+        """
+        Delete rows from a specified table based on the given filters.
+
+        Args:
+            table: The SQLAlchemy table to delete from
+            commit: Whether to commit the transaction
+            session: Optional session to use for transaction support
+            **kwargs: Additional filter conditions
+
+        Returns:
+            None
+        """
+        return await self.repository.table_delete(table, commit, session, **kwargs)
 
     @classmethod
     def _import(cls, schema_in: C | U | dict) -> dict:

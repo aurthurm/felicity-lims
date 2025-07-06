@@ -95,23 +95,24 @@ class PatientQuery:
         )]
     )
     async def patient_search(self, info, query_string: str) -> List[PatientType]:
-        filters = [
+        filters = {}
+        _or_ = dict()
+        arg_list = [
             "first_name__ilike",
-            "middle_name__ilike",
             "last_name__ilike",
-            "patient_id__ilike",
+            "middle_name__ilike",
             "client_patient_id__ilike",
+            "patient_id__ilike",
+            "client___name__ilike",
+            "patient_id__ilike",
+            "email__ilike",
             "phone_mobile__ilike",
             "phone_home__ilike",
         ]
-        combined = set()
-        for _filter in filters:
-            arg = dict()
-            arg[_filter] = f"%{query_string}%"
-            query = await PatientService().get_all(**arg)
-            for item in query:
-                combined.add(item)
-        return list(combined)
+        for _arg in arg_list:
+            _or_[_arg] = f"%{query_string}%"
+
+        return await PatientService().get_all(filters={sa.or_: _or_})
 
     @strawberry.field(
         extensions=[PermissionExtension(

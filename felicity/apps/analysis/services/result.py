@@ -194,23 +194,92 @@ class AnalysisResultService(
 
     async def snapshot(self, analyses_results: list[AnalysisResult]) -> None:
         from felicity.apps.analysis.services.analysis import AnalysisService
-        #
+
+        if not analyses_results:
+            return None
+
         analysis_relations = [
             "unit", "instruments", "methods",
             "interims", "correction_factors", "specifications",
             "detection_limits", "uncertainties", "result_options",
             "category", "department"
         ]
-        for result in analyses_results:
-            analysis = await AnalysisService().get(related=analysis_relations, uid=result.analysis_uid)
-            metadata = {"analysis": analysis.snapshot()}
-            if result.method_uid:
-                metadata["method"] = (await MethodService().get(uid=result.method_uid)).snapshot()
-            if result.laboratory_instrument_uid:
-                metadata["laboratory_instrument"] = (await LaboratoryInstrumentService().get(
-                    uid=result.laboratory_instrument_uid
-                )).snapshot()
 
+        # Extract all unique UIDs for bulk loading
+        analysis_uids = [result.analysis_uid for result in analyses_results]
+        method_uids = [result.method_uid for result in analyses_results if result.method_uid]
+        lab_instrument_uids = [result.laboratory_instrument_uid for result in analyses_results if
+                               result.laboratory_instrument_uid]
+        result_uids = [result.uid for result in analyses_results]
+
+        # Bulk load all related data
+        analyses = await AnalysisService().get_all(uid__in=analysis_uids, related=analysis_relations)
+        methods = await MethodService().get_all(uid__in=method_uids) if method_uids else []
+        lab_instruments = await LaboratoryInstrumentService().get_all(
+            uid__in=lab_instrument_uids) if lab_instrument_uids else []
+
+        # Create lookup dictionaries for O(1) access
+        analyses_map = {analysis.uid: analysis for analysis in analyses}
+        methods_map = {method.uid: method for method in methods}
+        lab_instruments_map = {instrument.uid: instrument for instrument in lab_instruments}
+
+        # Bulk load AMR/AST related data
+        ast_organism_results = await AbxOrganismResultService().get_all(
+            analysis_result_uid__in=result_uids,
+            related=["organism"]
+        )
+        ast_antibiotic_results = await AbxASTResultService().get_all(
+            analysis_result_uid__in=result_uids,
+            related=["antibiotic", "guideline_year", "breakpoint", "ast_method"]
+        )
+
+        # Group AMR/AST results by analysis_result_uid
+        organism_results_map = {}
+        for org_result in ast_organism_results:
+            if org_result.analysis_result_uid not in organism_results_map:
+                organism_results_map[org_result.analysis_result_uid] = []
+            organism_results_map[org_result.analysis_result_uid].append(org_result)
+
+        antibiotic_results_map = {ast_result.analysis_result_uid: ast_result for ast_result in ast_antibiotic_results}
+
+        # Collect all instrument UIDs for laboratory instruments bulk loading
+        all_instrument_uids = set()
+        for analysis in analyses:
+            if hasattr(analysis, 'instruments') and analysis.instruments:
+                for instrument in analysis.instruments:
+                    all_instrument_uids.add(instrument.uid)
+
+        # Bulk load laboratory instruments for all instruments
+        all_lab_instruments = await LaboratoryInstrumentService().get_all(
+            instrument_uid__in=list(all_instrument_uids)
+        ) if all_instrument_uids else []
+
+        # Group laboratory instruments by instrument_uid
+        lab_instruments_by_instrument = {}
+        for lab_inst in all_lab_instruments:
+            if lab_inst.instrument_uid not in lab_instruments_by_instrument:
+                lab_instruments_by_instrument[lab_inst.instrument_uid] = []
+            lab_instruments_by_instrument[lab_inst.instrument_uid].append(lab_inst)
+
+        # Process each result with pre-loaded data
+        updates = []
+        for result in analyses_results:
+            analysis = analyses_map.get(result.analysis_uid)
+            if not analysis:
+                logger.warning(f"Analysis {result.analysis_uid} not found for result {result.uid}")
+                continue
+
+            metadata = {"analysis": analysis.snapshot()}
+
+            # Add method metadata using pre-loaded data
+            if result.method_uid and result.method_uid in methods_map:
+                metadata["method"] = methods_map[result.method_uid].snapshot()
+
+            # Add laboratory instrument metadata using pre-loaded data
+            if result.laboratory_instrument_uid and result.laboratory_instrument_uid in lab_instruments_map:
+                metadata["laboratory_instrument"] = lab_instruments_map[result.laboratory_instrument_uid].snapshot()
+
+            # Process analysis relations with pre-loaded data
             for _field in analysis_relations:
                 try:
                     thing = getattr(analysis, _field)
@@ -218,28 +287,25 @@ class AnalysisResultService(
                         metadata[_field] = [item.snapshot() for item in thing]
                         if _field == "instruments":
                             for k, v in enumerate(metadata[_field]):
-                                lab_insts = await LaboratoryInstrumentService().get_all(instrument_uid=v.get("uid"))
-                                metadata[_field][k]["laboratory_instruments"] = [li.snapshot() for li in lab_insts]
+                                instrument_uid = v.get("uid")
+                                if instrument_uid in lab_instruments_by_instrument:
+                                    metadata[_field][k]["laboratory_instruments"] = [
+                                        li.snapshot() for li in lab_instruments_by_instrument[instrument_uid]
+                                    ]
                     else:
                         metadata[_field] = thing.snapshot() if thing else None
                 except Exception as e:
                     logger.error(f"Failed to snapshot field {_field}: {e}")
 
-            # AMR - AST snapshots
+            # AMR - AST snapshots using pre-loaded data
             if analysis.keyword == "felicity_ast_abx_organism":
-                _orgs = await AbxOrganismResultService().get_all(
-                    analysis_result_uid=result.uid,
-                    related=["organism"]
-                )
+                _orgs = organism_results_map.get(result.uid, [])
                 metadata["organisms"] = [{
                     **org.snapshot(), "organism": org.organism.snapshot() if org.organism else None
                 } for org in _orgs]
 
             if analysis.keyword == "felicity_ast_abx_antibiotic":
-                ast_result = await AbxASTResultService().get(
-                    analysis_result_uid=result.uid,
-                    related=["antibiotic", "guideline_year", "breakpoint", "ast_method"]
-                )
+                ast_result = antibiotic_results_map.get(result.uid)
                 metadata["ast_result"] = None
                 if ast_result:
                     metadata["ast_result"] = {
@@ -250,7 +316,16 @@ class AnalysisResultService(
                         "ast_method": ast_result.ast_method.snapshot() if ast_result.ast_method else None,
                     }
 
-            await self.update(result.uid, {"metadata_snapshot": marshaller(metadata, depth=4)})
+            # Prepare bulk update data
+            updates.append({
+                "uid": result.uid,
+                "metadata_snapshot": marshaller(metadata, depth=4)
+            })
+
+        # Bulk update all results
+        if updates:
+            await self.bulk_update_with_mappings(updates)
+
         return None
 
 
