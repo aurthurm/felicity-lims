@@ -30,7 +30,7 @@ target_metadata = BaseEntity.metadata
 
 
 def run_migrations_offline():
-    """Run migrations in 'offline' mode.
+    """Run hippaa in 'offline' mode.
 
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
@@ -69,7 +69,7 @@ def do_run_migrations(connection):
 
 
 async def run_migrations_online():
-    """Run migrations in 'online' mode.
+    """Run hippaa in 'online' mode.
 
     In this scenario we need to create an Engine
     and associate a connection with the context.

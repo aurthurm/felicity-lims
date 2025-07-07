@@ -54,7 +54,7 @@ class HIPAAEncryption:
     Uses AES-256 encryption through the Fernet symmetric encryption implementation
     which provides authenticated encryption with associated data (AEAD).
     """
-    
+
     def __init__(self, password: Optional[str] = None):
         """
         Initialize the encryption utility.
@@ -65,7 +65,7 @@ class HIPAAEncryption:
                      generate a new key.
         """
         self._fernet = self._initialize_fernet(password)
-    
+
     def _initialize_fernet(self, password: Optional[str] = None) -> Fernet:
         """
         Initialize the Fernet encryption instance.
@@ -88,15 +88,16 @@ class HIPAAEncryption:
             key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
         else:
             # Use environment variable or derive from settings
-            key = os.environ.get('HIPAA_ENCRYPTION_KEY')
-            if not key:
+            env_key = settings.HIPAA_ENCRYPTION_KEY
+            if not env_key:
                 # Use existing settings-based key derivation for consistency
                 key = derive_key(settings.SECRET_KEY)
             else:
-                key = key.encode()
+                # Environment key is already base64url-encoded, use as bytes
+                key = env_key.encode('utf-8')
         
         return Fernet(key)
-    
+
     def encrypt_pii(self, data: Union[str, bytes, None]) -> Optional[str]:
         """
         Encrypt personally identifiable information for HIPAA compliance.
@@ -109,17 +110,17 @@ class HIPAAEncryption:
         """
         if data is None:
             return None
-        
+
         try:
             if isinstance(data, str):
                 data = data.encode('utf-8')
-            
+
             encrypted_data = self._fernet.encrypt(data)
             return base64.urlsafe_b64encode(encrypted_data).decode('utf-8')
         except Exception as e:
             log_exception(e)
             return None
-    
+
     def decrypt_pii(self, encrypted_data: Optional[str]) -> Optional[str]:
         """
         Decrypt HIPAA-protected personally identifiable information.
@@ -132,7 +133,7 @@ class HIPAAEncryption:
         """
         if encrypted_data is None:
             return None
-        
+
         try:
             encrypted_bytes = base64.urlsafe_b64decode(encrypted_data.encode('utf-8'))
             decrypted_data = self._fernet.decrypt(encrypted_bytes)
@@ -140,7 +141,7 @@ class HIPAAEncryption:
         except Exception as e:
             log_exception(e)
             return None
-    
+
     def encrypt_phi(self, data: Union[str, bytes, None]) -> Optional[str]:
         """
         Encrypt protected health information for HIPAA compliance.
@@ -152,7 +153,7 @@ class HIPAAEncryption:
             Base64-encoded encrypted data as string, or None if input is None
         """
         return self.encrypt_pii(data)  # Same encryption method for both PII and PHI
-    
+
     def decrypt_phi(self, encrypted_data: Optional[str]) -> Optional[str]:
         """
         Decrypt HIPAA-protected health information.

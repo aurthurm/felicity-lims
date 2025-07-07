@@ -1,4 +1,5 @@
 import os
+import secrets
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -24,9 +25,8 @@ class Settings(BaseSettings):
     MEDIA_DIR: str = os.path.join(BASE_DIR, MEDIA_FOLDER)
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
-    # secrets.token_urlsafe(32)
-    SECRET_KEY: str = "Eoy7XAjJWnr6PcgFi0FK37XbjXEfx2PdFV8GFbucReDbWiew8T79ob3ZIF3bgYi62THktkoTNdC1SrFyd_k4xQ"
-    REFRESH_SECRET_KEY: str = "KKj6HeSWwizXDnzc1SS_e-PYn3EwA4XuotoOD3J0mvmu1PLdVzbDkAeThJDTQsgYHVgYwbV5PnSbo_ZJZHEMEg"
+    SECRET_KEY: str = getenv_value("SECRET_KEY", secrets.token_urlsafe(32))
+    REFRESH_SECRET_KEY: str = getenv_value("REFRESH_SECRET_KEY", secrets.token_urlsafe(32))
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 4 * 1  # 4 hours
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 12 * 1  # 1/2 day / 12 hours
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "Felicity LIMS")
@@ -157,15 +157,16 @@ class Settings(BaseSettings):
     ]
     # Document Editor
     DEFAULT_DOCUMENT_EDITOR: str = 'umo'  # "umo", "syncfusion"
-    SYNCFUSION_LICENSE: str = getenv_value(
-        "SYNCFUSION_LICENSE",
-        "ORg4AjUWIQA/Gnt2XVhhQlJHfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTH5Qdk1iXHtadHFXRmdU"
-    )
+    SYNCFUSION_LICENSE: str = getenv_value("SYNCFUSION_LICENSE", "")
     # SMS
     SMS_API_URL: str | None = getenv_value("SMS_API_URL", None)
     SMS_TOKEN: str | None = getenv_value("SMS_TOKEN", None)
     SMS_USERNAME: str | None = getenv_value("SMS_USERNAME", None)
     SMS_PASSWORD: str | None = getenv_value("SMS_PASSWORD", None)
+
+    # HIPAA Compliance
+    HIPAA_ENCRYPTION_KEY: str | None = getenv_value("HIPAA_ENCRYPTION_KEY", None)
+    SEARCH_ENCRYPTION_KEY: str | None = getenv_value("SEARCH_ENCRYPTION_KEY", None)
 
     #
     model_config = SettingsConfigDict(

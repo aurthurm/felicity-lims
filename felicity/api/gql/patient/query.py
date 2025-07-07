@@ -1,6 +1,5 @@
 from typing import List, Optional
 
-import sqlalchemy as sa
 import strawberry  # noqa
 from strawberry.permission import PermissionExtension
 
@@ -14,7 +13,6 @@ from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import PageInfo
 from felicity.apps.guard import FAction, FObject
 from felicity.apps.patient.services import IdentificationService, PatientService
-from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type
@@ -33,42 +31,35 @@ class PatientQuery:
             text: str | None = None,
             sort_by: list[str] | None = None,
     ) -> PatientCursorPage:
-        filters = {}
-
-        _or_ = dict()
-        if has_value_or_is_truthy(text):
-            arg_list = [
-                "first_name__ilike",
-                "last_name__ilike",
-                "middle_name__ilike",
-                "client_patient_id__ilike",
-                "patient_id__ilike",
-                "client___name__ilike",
-                "patient_id__ilike",
-                "email__ilike",
-                "phone_mobile__ilike",
-                "phone_home__ilike",
-            ]
-            for _arg in arg_list:
-                _or_[_arg] = f"%{text}%"
-
-            filters = {sa.or_: _or_}
-
+        # Use PatientService.paging_filter with HIPAA-compliant search
         page = await PatientService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
-            filters=filters,
+            filters={},
             sort_by=sort_by,
+            text=text  # Pass text as kwarg for HIPAA search
         )
-
-        total_count: int = page.total_count
-        edges: List[PatientEdge[PatientType]] = page.edges
-        items: List[PatientType] = page.items
-        page_info: PageInfo = page.page_info
-
+        
+        # Convert PageCursor to PatientCursorPage
+        edges = []
+        if page.edges:
+            for edge in page.edges:
+                edges.append(PatientEdge(cursor=edge.cursor, node=edge.node))
+        
+        # Convert PageInfo from database to GraphQL PageInfo
+        page_info = PageInfo(
+            start_cursor=page.page_info.start_cursor,
+            end_cursor=page.page_info.end_cursor,
+            has_next_page=page.page_info.has_next_page,
+            has_previous_page=page.page_info.has_previous_page,
+        )
+        
         return PatientCursorPage(
-            total_count=total_count, edges=edges, items=items, page_info=page_info
+            total_count=page.total_count,
+            edges=edges,
+            items=page.items,
+            page_info=page_info
         )
 
     @strawberry.field(
@@ -95,24 +86,15 @@ class PatientQuery:
         )]
     )
     async def patient_search(self, info, query_string: str) -> List[PatientType]:
-        filters = {}
-        _or_ = dict()
-        arg_list = [
-            "first_name__ilike",
-            "last_name__ilike",
-            "middle_name__ilike",
-            "client_patient_id__ilike",
-            "patient_id__ilike",
-            "client___name__ilike",
-            "patient_id__ilike",
-            "email__ilike",
-            "phone_mobile__ilike",
-            "phone_home__ilike",
-        ]
-        for _arg in arg_list:
-            _or_[_arg] = f"%{query_string}%"
-
-        return await PatientService().get_all(filters={sa.or_: _or_})
+        return await PatientService().high_performance_search(
+            first_name=query_string,
+            last_name=query_string,
+            email=query_string,
+            phone_mobile=query_string,
+            patient_id=query_string,
+            client_patient_id=query_string,
+            fuzzy_match=True
+        )
 
     @strawberry.field(
         extensions=[PermissionExtension(

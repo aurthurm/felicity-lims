@@ -1,8 +1,11 @@
 from typing import List, Optional
+import base64
+import json
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.service import BaseService
+from felicity.database.paging import PageCursor, PageInfo, EdgeNode
 from felicity.apps.client.services import ClientService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
@@ -254,6 +257,145 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 seen_uids.add(patient.uid)
 
         return unique_results
+
+    def _encode_cursor(self, uid: str, position: int) -> str:
+        """Encode cursor with patient UID and position."""
+        cursor_data = {"uid": uid, "position": position}
+        return base64.b64encode(json.dumps(cursor_data).encode()).decode()
+    
+    def _decode_cursor(self, cursor: str) -> dict:
+        """Decode cursor to get patient UID and position."""
+        try:
+            cursor_data = json.loads(base64.b64decode(cursor.encode()).decode())
+            return cursor_data
+        except (ValueError, TypeError, json.JSONDecodeError):
+            return {"uid": None, "position": 0}
+
+    async def paging_filter(
+            self,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            filters: list[dict] | dict | None = None,
+            sort_by: list[str] | None = None,
+            **kwargs,
+    ) -> PageCursor:
+        """
+        HIPAA-compliant paginated filtering of patients.
+        
+        Overrides BaseService.paging_filter to use high-performance search
+        when text search is detected in filters.
+        
+        Args:
+            page_size: Number of items per page
+            after_cursor: Cursor for fetching next page
+            before_cursor: Cursor for fetching previous page
+            filters: Filtering criteria
+            sort_by: Sorting criteria
+            **kwargs: Additional arguments including 'text' for search
+
+        Returns:
+            PageCursor with paginated results
+        """
+        # Check if this is a text search request
+        search_text = kwargs.get('text')
+        if search_text:
+            # Use HIPAA-compliant search for text queries
+            search_results = await self.high_performance_search(
+                first_name=search_text,
+                last_name=search_text,
+                email=search_text,
+                phone_mobile=search_text,
+                patient_id=search_text,
+                client_patient_id=search_text,
+                fuzzy_match=True
+            )
+            
+            # Apply sorting
+            if sort_by:
+                for sort_field in reversed(sort_by):
+                    reverse = sort_field.startswith('-')
+                    field_name = sort_field.lstrip('-')
+                    if hasattr(Patient, field_name):
+                        search_results.sort(key=lambda x: getattr(x, field_name, ''), reverse=reverse)
+            else:
+                # Default sort by patient_id
+                search_results.sort(key=lambda x: x.patient_id or '')
+            
+            total_count = len(search_results)
+            
+            # Apply cursor-based pagination
+            paginated_results, start_idx, end_idx = self._apply_cursor_pagination(
+                search_results, page_size, after_cursor, before_cursor
+            )
+            
+            # Create edges with proper cursors
+            edges = []
+            for i, patient in enumerate(paginated_results):
+                cursor = self._encode_cursor(patient.uid, start_idx + i)
+                edges.append(EdgeNode(cursor=cursor, node=patient))
+            
+            # Create page info
+            page_info = PageInfo(
+                start_cursor=edges[0].cursor if edges else None,
+                end_cursor=edges[-1].cursor if edges else None,
+                has_next_page=end_idx < total_count,
+                has_previous_page=start_idx > 0,
+            )
+            
+            return PageCursor(
+                total_count=total_count,
+                edges=edges,
+                items=paginated_results,
+                page_info=page_info
+            )
+        else:
+            # For non-text queries, use the standard repository pagination
+            return await super().paging_filter(
+                page_size=page_size,
+                after_cursor=after_cursor,
+                before_cursor=before_cursor,
+                filters=filters,
+                sort_by=sort_by,
+                **kwargs
+            )
+
+    def _apply_cursor_pagination(self, results: List[Patient], page_size: int | None, 
+                                after_cursor: str | None, before_cursor: str | None) -> tuple:
+        """Apply cursor-based pagination to search results."""
+        if not results:
+            return [], 0, 0
+        
+        # Find start position based on cursors
+        start_idx = 0
+        if after_cursor:
+            cursor_data = self._decode_cursor(after_cursor)
+            cursor_uid = cursor_data.get("uid")
+            if cursor_uid:
+                # Find position of the cursor UID in results
+                for i, patient in enumerate(results):
+                    if patient.uid == cursor_uid:
+                        start_idx = i + 1  # Start after the cursor
+                        break
+        
+        if before_cursor:
+            cursor_data = self._decode_cursor(before_cursor)
+            cursor_uid = cursor_data.get("uid")
+            if cursor_uid:
+                # Find position of the cursor UID in results
+                for i, patient in enumerate(results):
+                    if patient.uid == cursor_uid:
+                        results = results[:i]  # Take items before cursor
+                        break
+        
+        # Apply page size limit
+        end_idx = len(results)
+        if page_size:
+            end_idx = min(start_idx + page_size, len(results))
+        
+        paginated_results = results[start_idx:end_idx]
+        
+        return paginated_results, start_idx, end_idx
 
     async def create(
             self, obj_in: dict | PatientCreate, related: list[str] | None = None,

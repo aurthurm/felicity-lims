@@ -3,7 +3,7 @@
 # Let the DB start
 python backend_pre_start.py
 
-# Run migrations
+# Run hippaa
 alembic upgrade head
 
 # Create initial data in DB
