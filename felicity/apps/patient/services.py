@@ -1,11 +1,10 @@
-from typing import List, Optional
 import base64
 import json
+from typing import List, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.service import BaseService
-from felicity.database.paging import PageCursor, PageInfo, EdgeNode
 from felicity.apps.client.services import ClientService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
@@ -27,6 +26,7 @@ from felicity.apps.patient.schemas import (
     PatientIdentificationUpdate,
     PatientUpdate,
 )
+from felicity.database.paging import PageCursor, PageInfo, EdgeNode
 
 
 class IdentificationService(
@@ -262,7 +262,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         """Encode cursor with patient UID and position."""
         cursor_data = {"uid": uid, "position": position}
         return base64.b64encode(json.dumps(cursor_data).encode()).decode()
-    
+
     def _decode_cursor(self, cursor: str) -> dict:
         """Decode cursor to get patient UID and position."""
         try:
@@ -299,7 +299,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         """
         # Check if this is a text search request
         search_text = kwargs.get('text')
-        if search_text:
+        if search_text and search_text.strip():
             # Use HIPAA-compliant search for text queries
             search_results = await self.high_performance_search(
                 first_name=search_text,
@@ -310,7 +310,8 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 client_patient_id=search_text,
                 fuzzy_match=True
             )
-            
+            print(f"search results from hps: {search_results}")
+
             # Apply sorting
             if sort_by:
                 for sort_field in reversed(sort_by):
@@ -321,20 +322,20 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             else:
                 # Default sort by patient_id
                 search_results.sort(key=lambda x: x.patient_id or '')
-            
+
             total_count = len(search_results)
-            
+
             # Apply cursor-based pagination
             paginated_results, start_idx, end_idx = self._apply_cursor_pagination(
                 search_results, page_size, after_cursor, before_cursor
             )
-            
+
             # Create edges with proper cursors
             edges = []
             for i, patient in enumerate(paginated_results):
                 cursor = self._encode_cursor(patient.uid, start_idx + i)
                 edges.append(EdgeNode(cursor=cursor, node=patient))
-            
+
             # Create page info
             page_info = PageInfo(
                 start_cursor=edges[0].cursor if edges else None,
@@ -342,7 +343,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 has_next_page=end_idx < total_count,
                 has_previous_page=start_idx > 0,
             )
-            
+
             return PageCursor(
                 total_count=total_count,
                 edges=edges,
@@ -360,12 +361,12 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 **kwargs
             )
 
-    def _apply_cursor_pagination(self, results: List[Patient], page_size: int | None, 
-                                after_cursor: str | None, before_cursor: str | None) -> tuple:
+    def _apply_cursor_pagination(self, results: List[Patient], page_size: int | None,
+                                 after_cursor: str | None, before_cursor: str | None) -> tuple:
         """Apply cursor-based pagination to search results."""
         if not results:
             return [], 0, 0
-        
+
         # Find start position based on cursors
         start_idx = 0
         if after_cursor:
@@ -377,7 +378,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                     if patient.uid == cursor_uid:
                         start_idx = i + 1  # Start after the cursor
                         break
-        
+
         if before_cursor:
             cursor_data = self._decode_cursor(before_cursor)
             cursor_uid = cursor_data.get("uid")
@@ -387,14 +388,14 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                     if patient.uid == cursor_uid:
                         results = results[:i]  # Take items before cursor
                         break
-        
+
         # Apply page size limit
         end_idx = len(results)
         if page_size:
             end_idx = min(start_idx + page_size, len(results))
-        
+
         paginated_results = results[start_idx:end_idx]
-        
+
         return paginated_results, start_idx, end_idx
 
     async def create(

@@ -32,6 +32,7 @@ class PatientQuery:
             sort_by: list[str] | None = None,
     ) -> PatientCursorPage:
         # Use PatientService.paging_filter with HIPAA-compliant search
+
         page = await PatientService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
@@ -40,13 +41,13 @@ class PatientQuery:
             sort_by=sort_by,
             text=text  # Pass text as kwarg for HIPAA search
         )
-        
+
         # Convert PageCursor to PatientCursorPage
         edges = []
         if page.edges:
             for edge in page.edges:
                 edges.append(PatientEdge(cursor=edge.cursor, node=edge.node))
-        
+
         # Convert PageInfo from database to GraphQL PageInfo
         page_info = PageInfo(
             start_cursor=page.page_info.start_cursor,
@@ -54,7 +55,7 @@ class PatientQuery:
             has_next_page=page.page_info.has_next_page,
             has_previous_page=page.page_info.has_previous_page,
         )
-        
+
         return PatientCursorPage(
             total_count=page.total_count,
             edges=edges,

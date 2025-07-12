@@ -1,6 +1,5 @@
-import hashlib
 from typing import List, Optional
-from sqlalchemy import select, or_, and_
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.repository import BaseRepository
@@ -9,21 +8,21 @@ from felicity.apps.patient.entities import (
     Patient,
     PatientIdentification,
 )
-from felicity.utils.encryption import encrypt_pii, decrypt_pii
+from felicity.utils.encryption import encrypt_pii
 
 
 class PatientRepository(BaseRepository[Patient]):
     def __init__(self) -> None:
         super().__init__(Patient)
-    
+
     async def search_by_encrypted_fields(
-        self, 
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        email: Optional[str] = None,
-        phone_mobile: Optional[str] = None,
-        date_of_birth: Optional[str] = None,
-        session: Optional[AsyncSession] = None
+            self,
+            first_name: Optional[str] = None,
+            last_name: Optional[str] = None,
+            email: Optional[str] = None,
+            phone_mobile: Optional[str] = None,
+            date_of_birth: Optional[str] = None,
+            session: Optional[AsyncSession] = None
     ) -> List[Patient]:
         """
         HIPAA-compliant search for patients using encrypted fields.
@@ -46,27 +45,27 @@ class PatientRepository(BaseRepository[Patient]):
         """
         # Get all active patients (or implement pagination for large datasets)
         all_patients = await self.get_all(active=True, session=session)
-        
+
         matching_patients = []
-        
+
         for patient in all_patients:
             match = True
-            
+
             # Check first name match
             if first_name and patient.first_name:
                 if first_name.lower() not in patient.first_name.lower():
                     match = False
-            
+
             # Check last name match
             if last_name and patient.last_name:
                 if last_name.lower() not in patient.last_name.lower():
                     match = False
-            
+
             # Check email match
             if email and patient.email:
                 if email.lower() not in patient.email.lower():
                     match = False
-            
+
             # Check phone match
             if phone_mobile and patient.phone_mobile:
                 # Remove formatting for phone comparison
@@ -74,24 +73,26 @@ class PatientRepository(BaseRepository[Patient]):
                 patient_phone = ''.join(filter(str.isdigit, patient.phone_mobile))
                 if search_phone not in patient_phone:
                     match = False
-            
+
             # Check date of birth match
             if date_of_birth and patient.date_of_birth:
                 # Convert datetime to string for comparison if needed
-                patient_dob_str = patient.date_of_birth.strftime('%Y-%m-%d') if hasattr(patient.date_of_birth, 'strftime') else str(patient.date_of_birth)
+                patient_dob_str = patient.date_of_birth.strftime('%Y-%m-%d') if hasattr(patient.date_of_birth,
+                                                                                        'strftime') else str(
+                    patient.date_of_birth)
                 if date_of_birth not in patient_dob_str:
                     match = False
-            
+
             if match:
                 matching_patients.append(patient)
-        
+
         return matching_patients
-    
+
     async def find_by_exact_encrypted_field(
-        self,
-        field_name: str,
-        value: str,
-        session: Optional[AsyncSession] = None
+            self,
+            field_name: str,
+            value: str,
+            session: Optional[AsyncSession] = None
     ) -> Optional[Patient]:
         """
         Find a patient by exact match on encrypted field.
@@ -108,20 +109,20 @@ class PatientRepository(BaseRepository[Patient]):
         encrypted_value = encrypt_pii(value)
         if not encrypted_value:
             return None
-        
+
         # Search using the encrypted value
         filter_kwargs = {field_name: encrypted_value}
         return await self.get(session=session, **filter_kwargs)
-    
+
     async def search_by_encrypted_indices(
-        self,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        email: Optional[str] = None,
-        phone_mobile: Optional[str] = None,
-        date_of_birth: Optional[str] = None,
-        fuzzy_match: bool = False,
-        session: Optional[AsyncSession] = None
+            self,
+            first_name: Optional[str] = None,
+            last_name: Optional[str] = None,
+            email: Optional[str] = None,
+            phone_mobile: Optional[str] = None,
+            date_of_birth: Optional[str] = None,
+            fuzzy_match: bool = False,
+            session: Optional[AsyncSession] = None
     ) -> List[Patient]:
         """
         High-performance HIPAA-compliant search using searchable encryption indices.
@@ -149,9 +150,9 @@ class PatientRepository(BaseRepository[Patient]):
         try:
             # Import here to avoid circular imports
             from felicity.apps.patient.search_service import SearchableEncryptionService
-            
+
             search_service = SearchableEncryptionService()
-            
+
             # Get patient UIDs using searchable indices
             matching_uids = await search_service.search_by_indices(
                 first_name=first_name,
@@ -162,13 +163,13 @@ class PatientRepository(BaseRepository[Patient]):
                 fuzzy_match=fuzzy_match,
                 session=session
             )
-            
+
             if not matching_uids:
                 return []
-            
+
             # Retrieve patients by UIDs (much more efficient than loading all)
             return await self.get_by_uids(list(matching_uids), session=session)
-        
+
         except Exception as e:
             # Fallback to memory-based search if indices are not available
             return await self.search_by_encrypted_fields(
@@ -179,11 +180,11 @@ class PatientRepository(BaseRepository[Patient]):
                 date_of_birth=date_of_birth,
                 session=session
             )
-    
+
     async def create_search_indices(
-        self, 
-        patient: Patient, 
-        session: Optional[AsyncSession] = None
+            self,
+            patient: Patient,
+            session: Optional[AsyncSession] = None
     ) -> None:
         """
         Create searchable encryption indices for a patient.
@@ -197,18 +198,18 @@ class PatientRepository(BaseRepository[Patient]):
         """
         try:
             from felicity.apps.patient.search_service import SearchableEncryptionService
-            
+
             search_service = SearchableEncryptionService()
             await search_service.create_patient_indices(patient, session)
         except Exception as e:
             # Log but don't fail the main operation
             from felicity.utils.exception_logger import log_exception
             log_exception(e)
-    
+
     async def update_search_indices(
-        self, 
-        patient: Patient, 
-        session: Optional[AsyncSession] = None
+            self,
+            patient: Patient,
+            session: Optional[AsyncSession] = None
     ) -> None:
         """
         Update searchable encryption indices for a patient.
@@ -219,17 +220,17 @@ class PatientRepository(BaseRepository[Patient]):
         """
         try:
             from felicity.apps.patient.search_service import SearchableEncryptionService
-            
+
             search_service = SearchableEncryptionService()
             await search_service.update_patient_indices(patient, session)
         except Exception as e:
             from felicity.utils.exception_logger import log_exception
             log_exception(e)
-    
+
     async def delete_search_indices(
-        self, 
-        patient_uid: str, 
-        session: Optional[AsyncSession] = None
+            self,
+            patient_uid: str,
+            session: Optional[AsyncSession] = None
     ) -> None:
         """
         Delete searchable encryption indices for a patient.
@@ -240,7 +241,7 @@ class PatientRepository(BaseRepository[Patient]):
         """
         try:
             from felicity.apps.patient.search_service import SearchableEncryptionService
-            
+
             search_service = SearchableEncryptionService()
             await search_service.delete_patient_indices(patient_uid, session)
         except Exception as e:
@@ -256,12 +257,12 @@ class IdentificationRepository(BaseRepository[Identification]):
 class PatientIdentificationRepository(BaseRepository[PatientIdentification]):
     def __init__(self) -> None:
         super().__init__(PatientIdentification)
-    
+
     async def find_by_encrypted_value(
-        self,
-        value: str,
-        identification_uid: Optional[str] = None,
-        session: Optional[AsyncSession] = None
+            self,
+            value: str,
+            identification_uid: Optional[str] = None,
+            session: Optional[AsyncSession] = None
     ) -> Optional[PatientIdentification]:
         """
         Find patient identification by encrypted value.
@@ -278,10 +279,10 @@ class PatientIdentificationRepository(BaseRepository[PatientIdentification]):
         encrypted_value = encrypt_pii(value)
         if not encrypted_value:
             return None
-        
+
         # Build search criteria
         filter_kwargs = {"value": encrypted_value}
         if identification_uid:
             filter_kwargs["identification_uid"] = identification_uid
-        
+
         return await self.get(session=session, **filter_kwargs)

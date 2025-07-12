@@ -338,10 +338,7 @@ class SearchableEncryptionService:
                             field_uids.update(idx.patient_uid for idx in phonetic_matches)
 
                     # Intersect or union results
-                    if not matching_uids:
-                        matching_uids = field_uids
-                    else:
-                        matching_uids &= field_uids  # Intersection for AND logic
+                    matching_uids.update(field_uids)
 
             # Search phone numbers
             if phone:
@@ -357,10 +354,7 @@ class SearchableEncryptionService:
                         phone_uids.update(idx.patient_uid for idx in phone_matches)
 
                 if phone_uids:
-                    if not matching_uids:
-                        matching_uids = phone_uids
-                    else:
-                        matching_uids &= phone_uids
+                    matching_uids.update(phone_uids)
 
             # Search dates
             if date_of_birth:
@@ -379,10 +373,7 @@ class SearchableEncryptionService:
                         date_uids.update(idx.patient_uid for idx in date_matches)
 
                     if date_uids:
-                        if not matching_uids:
-                            matching_uids = date_uids
-                        else:
-                            matching_uids &= date_uids
+                        matching_uids.update(date_uids)
 
                 except ValueError:
                     # Invalid date format, skip date search
