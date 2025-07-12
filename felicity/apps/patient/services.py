@@ -194,8 +194,9 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             patient_id: Optional[str] = None,
             client_patient_id: Optional[str] = None,
             fuzzy_match: bool = False,
-            session: Optional[AsyncSession] = None
-    ) -> List[Patient]:
+            session: Optional[AsyncSession] = None,
+            return_uids: bool = False
+    ) -> List[Patient | str]:
         """
         High-performance HIPAA-compliant search using searchable encryption indices.
         
@@ -232,7 +233,8 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 phone_mobile=phone_mobile,
                 date_of_birth=date_of_birth,
                 fuzzy_match=fuzzy_match,
-                session=session
+                session=session,
+                return_uids=return_uids
             )
             all_results.extend(encrypted_results)
 
@@ -240,21 +242,24 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         if patient_id:
             result = await self.get(patient_id=patient_id, session=session)
             if result:
-                all_results.append(result)
+                all_results.append(result.uid if return_uids else result)
 
         if client_patient_id:
             result = await self.get(client_patient_id=client_patient_id, session=session)
             if result:
-                all_results.append(result)
+                all_results.append(result.uid if return_uids else result)
 
         # Deduplicate results
         unique_results = []
         seen_uids = set()
 
-        for patient in all_results:
-            if patient.uid not in seen_uids:
-                unique_results.append(patient)
-                seen_uids.add(patient.uid)
+        if return_uids:
+            unique_results = set(all_results)
+        else:
+            for patient in all_results:
+                if patient.uid not in seen_uids:
+                    unique_results.append(patient)
+                    seen_uids.add(patient.uid)
 
         return unique_results
 

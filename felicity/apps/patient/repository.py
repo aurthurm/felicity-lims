@@ -122,8 +122,9 @@ class PatientRepository(BaseRepository[Patient]):
             phone_mobile: Optional[str] = None,
             date_of_birth: Optional[str] = None,
             fuzzy_match: bool = False,
-            session: Optional[AsyncSession] = None
-    ) -> List[Patient]:
+            session: Optional[AsyncSession] = None,
+            return_uids=False
+    ) -> List[Patient | str]:
         """
         High-performance HIPAA-compliant search using searchable encryption indices.
         
@@ -168,6 +169,7 @@ class PatientRepository(BaseRepository[Patient]):
                 return []
 
             # Retrieve patients by UIDs (much more efficient than loading all)
+            if return_uids: return list(matching_uids)
             return await self.get_by_uids(list(matching_uids), session=session)
 
         except Exception as e:

@@ -398,8 +398,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample = await self.get(uid=uid)
         sample.status = SampleState.RECEIVED
         sample.received_by_uid = received_by.uid
-        sample.date_received = timenow_dt()
         sample.updated_by_uid = received_by.uid
+        if not sample.date_received:
+            sample.date_received = timenow_dt()
 
         saved_sample = await super().save(sample)
         await self.streamer_service.stream(

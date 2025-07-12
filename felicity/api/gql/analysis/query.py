@@ -41,6 +41,7 @@ from felicity.apps.analysis.services.result import (
 )
 from felicity.apps.analysis.utils import sample_search, get_qc_sample_type
 from felicity.apps.guard import FAction, FObject
+from felicity.apps.patient.services import PatientService
 from felicity.database.session import async_session
 from felicity.utils import has_value_or_is_truthy
 
@@ -88,15 +89,17 @@ class AnalysisQuery:
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
-            arg_list = [
-                "sample_id__ilike",
-                "analysis_request___patient___first_name__ilike",
-                "analysis_request___patient___last_name__ilike",
-                "analysis_request___patient___client_patient_id__ilike",
-                "analysis_request___client_request_id__ilike",
-            ]
-            for _arg in arg_list:
-                _or_text_[_arg] = f"%{text}%"
+            patient_uids = await PatientService().high_performance_search(
+                first_name=text,
+                last_name=text,
+                patient_id=text,
+                client_patient_id=text,
+                fuzzy_match=True,
+                return_uids=True
+            )
+
+            _or_text_["sample_id__ilike"] = f"%{text}%"
+            _or_text_['analysis_request___patient___uid__in'] = patient_uids
 
             text_filters = {sa.or_: _or_text_}
             filters.append(text_filters)

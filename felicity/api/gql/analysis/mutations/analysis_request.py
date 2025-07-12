@@ -235,6 +235,7 @@ async def create_analysis_request(
                 "updated_by_uid": felicity_user.uid,
                 "analysis_request_uid": analysis_request.uid,
                 "date_collected": s.date_collected,
+                "date_received": s.date_received,
                 "sample_type_uid": _st_uid,
                 "sample_id": None,
                 "priority": payload.priority,
