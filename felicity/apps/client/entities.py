@@ -3,13 +3,13 @@ from uuid import uuid4
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.setup.entities import District, Province
 from felicity.apps.user.abstract import AbstractBaseUser
 from felicity.apps.user.enum import UserType
 
 
-class Client(BaseEntity):
+class Client(LabScopedEntity):
     """Client/Facility"""
 
     __tablename__ = "client"
@@ -69,7 +69,10 @@ class ClientContact(AbstractBaseUser):
         ),
         lazy="selectin",
     )
-    # to be deleted later
+    # overrides to allow easy seeding
+    email = Column(
+        String, unique=True, index=True, nullable=False, default=uuid4().hex
+    )
     user_name = Column(
         String, unique=True, index=True, nullable=False, default=uuid4().hex
     )

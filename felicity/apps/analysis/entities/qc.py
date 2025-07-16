@@ -4,7 +4,7 @@ from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Tab
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.setup.entities.setup import Department
 
@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class QCSet(BaseEntity):
+class QCSet(LabScopedEntity):
     """A Set/Group of QC Samples that are run together.
     - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
     """
@@ -30,13 +30,14 @@ Many to Many Link between QCReference and  Analysis
 """
 qc_reference_analysis = Table(
     "qc_reference_analysis",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("qc_reference_uid", ForeignKey("qc_reference.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
 
 
-class QCReference(BaseEntity):
+class QCReference(LabScopedEntity):
     """QC Sample Reference Material    :: Not Implemented Yet
     - can have multi analytes/Profile
     - states: Active (in-use - there must be only 1 active per analysis)
@@ -74,7 +75,7 @@ class QCReference(BaseEntity):
     metadata_snapshot = Column(JSONB, nullable=False)
 
 
-class QCLevel(BaseEntity):
+class QCLevel(LabScopedEntity):
     """Sample Level /category
     - None - normal sample
     - Negative Control
@@ -104,7 +105,8 @@ Many to Many Link between QCTemplate and Department
 """
 qc_template_department = Table(
     "qc_template_department",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
     Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
@@ -114,13 +116,14 @@ Many to Many Link between QCTemplate and  QCLevel
 """
 qc_template_qc_level = Table(
     "qc_template_qc_level",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
     Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
 
 
-class QCTemplate(BaseEntity):
+class QCTemplate(LabScopedEntity):
     """QC Level Grouping e.g:
     Roche Viral Load CQ:
         - Neg Control

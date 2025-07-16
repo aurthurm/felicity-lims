@@ -2,10 +2,10 @@ from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Integer, String
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 
-class IdSequence(BaseEntity):
+class IdSequence(LabScopedEntity):
     __tablename__ = "id_sequence"
 
     prefix = Column(String, nullable=False, unique=True)

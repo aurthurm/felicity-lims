@@ -13,7 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity, BaseMPTT
+from felicity.apps.abstract import LabScopedEntity, BaseMPTT
 from felicity.utils.hipaa_fields import EncryptedPHI
 
 logging.basicConfig(level=logging.INFO)
@@ -24,13 +24,14 @@ logger = logging.getLogger(__name__)
 """
 result_verification = Table(
     "result_verification",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("result_uid", ForeignKey("analysis_result.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
-class AnalysisResult(BaseEntity, BaseMPTT):
+class AnalysisResult(LabScopedEntity, BaseMPTT):
     """Test/Analysis Result
     Number of analysis results per sample will be directly proportional to
     the number of linked sample_analyses at minimum :)
@@ -108,7 +109,7 @@ class AnalysisResult(BaseEntity, BaseMPTT):
                 
         return result
 
-class ResultMutation(BaseEntity):
+class ResultMutation(LabScopedEntity):
     """Result Mutations tracker"""
 
     __tablename__ = "result_mutation"

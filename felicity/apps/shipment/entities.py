@@ -12,14 +12,14 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.abstract.entity import LabScopedEntity
 from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class ReferralLaboratory(BaseEntity):
+class ReferralLaboratory(LabScopedEntity):
     __tablename__ = "referral_laboratory"
 
     name = Column(String, nullable=True)
@@ -31,7 +31,7 @@ class ReferralLaboratory(BaseEntity):
     is_referral = Column(Boolean(), default=False)
 
 
-class Shipment(BaseEntity):
+class Shipment(LabScopedEntity):
     __tablename__ = "shipment"
 
     shipment_id = Column(String, index=True, unique=True, nullable=False)
@@ -69,7 +69,7 @@ class Shipment(BaseEntity):
     pdf_content = Column(LargeBinary, nullable=True)
 
 
-class ShippedSample(BaseEntity):
+class ShippedSample(LabScopedEntity):
     """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
     """

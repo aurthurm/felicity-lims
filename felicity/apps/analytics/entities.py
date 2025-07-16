@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.analytics.enum import ReportState
 
 """
@@ -9,13 +9,14 @@ Many to Many Link between ReportMeta and Analysis
 """
 analysis_reports = Table(
     "analysis_reports",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("report_uid", ForeignKey("report_meta.uid"), primary_key=True),
 )
 
 
-class ReportMeta(BaseEntity):
+class ReportMeta(LabScopedEntity):
     """Generated Reports Metadata"""
 
     __tablename__ = "report_meta"

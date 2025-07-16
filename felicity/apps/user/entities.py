@@ -3,7 +3,7 @@ import logging
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import Mapped, relationship
 
-from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.abstract.entity import LabScopedEntity
 from .abstract import AbstractBaseUser
 
 logging.basicConfig(level=logging.INFO)
@@ -16,7 +16,8 @@ Many to Many Link between Group and User
 """
 user_groups = Table(
     "user_groups",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -26,7 +27,8 @@ Many to Many Link between Group and Permission
 """
 permission_groups = Table(
     "permission_groups",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("permission_uid", ForeignKey("permission.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -50,7 +52,7 @@ class User(AbstractBaseUser):
     )
 
 
-class Permission(BaseEntity):
+class Permission(LabScopedEntity):
     __tablename__ = "permission"
 
     action = Column(String, nullable=False)  # e.g create, modify
@@ -58,7 +60,7 @@ class Permission(BaseEntity):
     active = Column(Boolean(), default=True)
 
 
-class Group(BaseEntity):
+class Group(LabScopedEntity):
     __tablename__ = "group"
 
     name = Column(String, unique=True, index=True, nullable=False)
@@ -77,17 +79,21 @@ class Group(BaseEntity):
 
 department_preference = Table(
     "department_preference",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
     Column("preference_uid", ForeignKey("user_preference.uid"), primary_key=True),
 )
 
 
-class UserPreference(BaseEntity):
+class UserPreference(LabScopedEntity):
     """Preferences for System Personalisation"""
 
     __tablename__ = "user_preference"
 
+    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
+    organization = relationship("Organization", foreign_keys=[organization_uid], lazy="selectin")
+    
     user_uid = Column(String, ForeignKey("user.uid", ondelete="CASCADE"), unique=True)
     user: Mapped["User"] = relationship(
         "User",

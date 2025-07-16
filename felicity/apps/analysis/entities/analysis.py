@@ -13,7 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity, BaseMPTT
+from felicity.apps.abstract import LabScopedEntity, BaseMPTT
 from felicity.apps.analysis.entities.qc import QCLevel, QCSet
 from felicity.apps.analysis.enum import ResultType
 from felicity.apps.client import entities as ct_entities
@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class CodingStandard(BaseEntity):
+class CodingStandard(LabScopedEntity):
     """conding standars e.g LOINC"""
 
     __tablename__ = "coding_standard"
@@ -34,7 +34,7 @@ class CodingStandard(BaseEntity):
     description = Column(String, nullable=False)
 
 
-class SampleType(BaseEntity):
+class SampleType(LabScopedEntity):
     """SampleType"""
 
     __tablename__ = "sample_type"
@@ -46,7 +46,7 @@ class SampleType(BaseEntity):
     abbr = Column(String, nullable=False)
 
 
-class SampleTypeCoding(BaseEntity):
+class SampleTypeCoding(LabScopedEntity):
     """SampleTypeCoding"""
 
     __tablename__ = "sampe_type_coding"
@@ -67,7 +67,8 @@ class SampleTypeCoding(BaseEntity):
 """
 profile_sample_type = Table(
     "profile_sample_type",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -77,7 +78,8 @@ Many to Many Link between Analysis and SampleType
 """
 analysis_sample_type = Table(
     "analysis_sample_type",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -89,13 +91,14 @@ analysis_sample_type = Table(
 """
 analysis_profile = Table(
     "analysis_profile",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
 
 
-class AnalysisCategory(BaseEntity):
+class AnalysisCategory(LabScopedEntity):
     """Categorise Analysis"""
 
     __tablename__ = "analysis_category"
@@ -107,7 +110,7 @@ class AnalysisCategory(BaseEntity):
     active = Column(Boolean(), default=False)
 
 
-class Profile(BaseEntity):
+class Profile(LabScopedEntity):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
     __tablename__ = "profile"
@@ -130,7 +133,7 @@ class Profile(BaseEntity):
     department = relationship("Department", lazy="selectin")
 
 
-class ProfileCoding(BaseEntity):
+class ProfileCoding(LabScopedEntity):
     """ProfileCoding"""
 
     __tablename__ = "profile_coding"
@@ -151,7 +154,8 @@ class ProfileCoding(BaseEntity):
 """
 analysis_analysis_template = Table(
     "analysis_analysis_template",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column(
         "analysis_template_uid", ForeignKey("analysis_template.uid"), primary_key=True
@@ -159,7 +163,7 @@ analysis_analysis_template = Table(
 )
 
 
-class AnalysisTemplate(BaseEntity):
+class AnalysisTemplate(LabScopedEntity):
     """Template for adding Analysis extras"""
 
     __tablename__ = "analysis_template"
@@ -180,7 +184,8 @@ class AnalysisTemplate(BaseEntity):
 """
 analysis_method = Table(
     "analysis_method",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
 )
@@ -190,13 +195,14 @@ analysis_method = Table(
 """
 analysis_instrument = Table(
     "analysis_instrument",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
-class Analysis(BaseEntity):
+class Analysis(LabScopedEntity):
     """Analysis Test/Service"""
 
     __tablename__ = "analysis"
@@ -271,7 +277,7 @@ class Analysis(BaseEntity):
         return result
 
 
-class AnalysisCoding(BaseEntity):
+class AnalysisCoding(LabScopedEntity):
     """AnalysisCoding"""
 
     __tablename__ = "analysis_coding"
@@ -287,7 +293,7 @@ class AnalysisCoding(BaseEntity):
     code = Column(String, nullable=False)
 
 
-class AnalysisInterim(BaseEntity):
+class AnalysisInterim(LabScopedEntity):
     """Analysis Interim Result Field"""
 
     __tablename__ = "analysis_interim"
@@ -299,7 +305,7 @@ class AnalysisInterim(BaseEntity):
     instrument = relationship("Instrument")
 
 
-class AnalysisCorrectionFactor(BaseEntity):
+class AnalysisCorrectionFactor(LabScopedEntity):
     """Analysis Correction Factor"""
 
     __tablename__ = "analysis_correction_factor"
@@ -310,7 +316,7 @@ class AnalysisCorrectionFactor(BaseEntity):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisDetectionLimit(BaseEntity):
+class AnalysisDetectionLimit(LabScopedEntity):
     """Analysis Detection Limit"""
 
     __tablename__ = "analysis_detection_limit"
@@ -322,7 +328,7 @@ class AnalysisDetectionLimit(BaseEntity):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisUncertainty(BaseEntity):
+class AnalysisUncertainty(LabScopedEntity):
     """Analysis Measurement Uncertainty
     If value is within the range min.max then result becomes a range (result +/- value)
     """
@@ -337,7 +343,7 @@ class AnalysisUncertainty(BaseEntity):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisSpecification(BaseEntity):
+class AnalysisSpecification(LabScopedEntity):
     """Analysis Specification Ranges"""
 
     __tablename__ = "analysis_specification"
@@ -376,13 +382,14 @@ class AnalysisSpecification(BaseEntity):
 """
 result_option_sample_type = Table(
     "result_option_sample_type",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("result_option_uid", ForeignKey("result_options.uid"), primary_key=True),
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
 )
 
 
-class ResultOption(BaseEntity):
+class ResultOption(LabScopedEntity):
     """Result Choices"""
 
     __tablename__ = "result_options"
@@ -395,7 +402,7 @@ class ResultOption(BaseEntity):
     )
 
 
-class AnalysisRequest(BaseEntity):
+class AnalysisRequest(LabScopedEntity):
     """AnalysisRequest a.k.a Laboratory Request"""
 
     __tablename__ = "analysis_request"
@@ -435,7 +442,7 @@ class AnalysisRequest(BaseEntity):
         }
 
 
-class ClinicalData(BaseEntity):
+class ClinicalData(LabScopedEntity):
     __tablename__ = "clinical_data"
 
     analysis_request_uid = Column(String, ForeignKey("analysis_request.uid"), nullable=False, unique=True)
@@ -457,7 +464,7 @@ class ClinicalData(BaseEntity):
     )
 
 
-class ClinicalDataCoding(BaseEntity):
+class ClinicalDataCoding(LabScopedEntity):
     __tablename__ = "clinical_data_coding"
     __table_args__ = (  # prevent multiple codes from the same coding standard
         UniqueConstraint("clinical_data_uid", "coding_standard_uid"),
@@ -483,7 +490,8 @@ Many to Many Link between Sample and Profile
 """
 sample_profile = Table(
     "sample_profile",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -493,7 +501,8 @@ Many to Many Link between Sample and Analysis
 """
 sample_analysis = Table(
     "sample_analysis",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -503,7 +512,8 @@ Many to Many Link between Sample and Rejection Reason
 """
 sample_rejection_reason = Table(
     "sample_rejection_reason",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column(
         "rejection_reason_uid", ForeignKey("rejection_reason.uid"), primary_key=True
@@ -511,7 +521,7 @@ sample_rejection_reason = Table(
 )
 
 
-class RejectionReason(BaseEntity):
+class RejectionReason(LabScopedEntity):
     """Rejection Reason"""
 
     __tablename__ = "rejection_reason"
@@ -519,7 +529,7 @@ class RejectionReason(BaseEntity):
     reason = Column(String, nullable=False)
 
 
-class Sample(BaseEntity, BaseMPTT):
+class Sample(LabScopedEntity, BaseMPTT):
     """Sample"""
 
     __tablename__ = "sample"

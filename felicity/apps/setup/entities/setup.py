@@ -1,13 +1,33 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import BaseEntity, LabScopedEntity
 from felicity.apps.user.entities import User
 
 
-class Laboratory(BaseEntity):
+class Organization(BaseEntity):
+    """Organization entity - single organization per installation"""
+    __tablename__ = "organization"
+
+    name = Column(String, nullable=False, unique=True)
+    code = Column(String, nullable=True, unique=True)
+    country = Column(String, nullable=True)
+    timezone = Column(String, nullable=True, default="UTC")
+    email = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    is_active = Column(Boolean, default=True)
+    metadata = Column(JSON, nullable=True)  # custom settings, logo, etc.
+
+
+class Laboratory(LabScopedEntity):
     __tablename__ = "laboratory"
 
+    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
+    organization = relationship(
+        Organization, foreign_keys=[organization_uid], backref="laboratories", lazy="selectin"
+    )
+    
     setup_name = Column(
         String, default="felicity", nullable=False
     )  # Do not change this value ever
@@ -34,7 +54,7 @@ class Laboratory(BaseEntity):
         }   
         return result
 
-class LaboratorySetting(BaseEntity):
+class LaboratorySetting(LabScopedEntity):
     __tablename__ = "laboratory_setting"
 
     laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
@@ -59,7 +79,7 @@ class LaboratorySetting(BaseEntity):
     payment_terms_days = Column(Integer, nullable=True, default=0)
 
 
-class Supplier(BaseEntity):
+class Supplier(LabScopedEntity):
     """Supplier"""
 
     __tablename__ = "supplier"
@@ -68,7 +88,7 @@ class Supplier(BaseEntity):
     description = Column(String, nullable=True)
 
 
-class Manufacturer(BaseEntity):
+class Manufacturer(LabScopedEntity):
     """Manufacturer"""
 
     __tablename__ = "manufacturer"
@@ -77,7 +97,7 @@ class Manufacturer(BaseEntity):
     description = Column(String, nullable=True)
 
 
-class Department(BaseEntity):
+class Department(LabScopedEntity):
     """Departrments/Sections"""
 
     __tablename__ = "department"
@@ -87,7 +107,7 @@ class Department(BaseEntity):
     code = Column(String, nullable=True)
 
 
-class Unit(BaseEntity):
+class Unit(LabScopedEntity):
     """Unit for analyte measurement"""
 
     __tablename__ = "unit"

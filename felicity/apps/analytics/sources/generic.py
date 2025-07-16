@@ -7,13 +7,13 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.abstract.entity import LabScopedEntity
 from felicity.database.session import async_session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-ModelType = TypeVar("ModelType", bound=BaseEntity)
+ModelType = TypeVar("ModelType", bound=LabScopedEntity)
 
 
 class EntityAnalyticsInit(Generic[ModelType]):

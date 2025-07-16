@@ -1,10 +1,10 @@
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 
-class StockItem(BaseEntity):
+class StockItem(LabScopedEntity):
     """StockItem Standardization"""
 
     __tablename__ = "stock_item"
@@ -19,7 +19,7 @@ class StockItem(BaseEntity):
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockItemVariant(BaseEntity):
+class StockItemVariant(LabScopedEntity):
     """StockItem Variant as the StockProduct"""
 
     __tablename__ = "stock_item_variant"
@@ -32,7 +32,7 @@ class StockItemVariant(BaseEntity):
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockCategory(BaseEntity):
+class StockCategory(LabScopedEntity):
     """StockCategory
     Consumable, Reagents, Durables
     """
@@ -43,7 +43,7 @@ class StockCategory(BaseEntity):
     description = Column(String, nullable=False)
 
 
-class Hazard(BaseEntity):
+class Hazard(LabScopedEntity):
     """Hazard"""
 
     __tablename__ = "hazard"
@@ -52,7 +52,7 @@ class Hazard(BaseEntity):
     description = Column(String, nullable=False)
 
 
-class StockUnit(BaseEntity):
+class StockUnit(LabScopedEntity):
     __tablename__ = "stock_unit"
 
     name = Column(String, nullable=False)
@@ -60,7 +60,7 @@ class StockUnit(BaseEntity):
     synonyms = Column(String, nullable=True)
 
 
-class StockLot(BaseEntity):
+class StockLot(LabScopedEntity):
     __tablename__ = "stock_lot"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
@@ -70,7 +70,7 @@ class StockLot(BaseEntity):
     remarks = Column(String, nullable=True)
 
 
-class StockProductInventory(BaseEntity):
+class StockProductInventory(LabScopedEntity):
     __tablename__ = "stock_product_inventory"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
@@ -81,7 +81,7 @@ class StockProductInventory(BaseEntity):
     remarks = Column(String, nullable=True)
 
 
-class StockOrder(BaseEntity):
+class StockOrder(LabScopedEntity):
     __tablename__ = "stock_order"
 
     order_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
@@ -97,7 +97,7 @@ class StockOrder(BaseEntity):
     )
 
 
-class StockOrderProduct(BaseEntity):
+class StockOrderProduct(LabScopedEntity):
     __tablename__ = "stock_order_product"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
@@ -110,7 +110,7 @@ class StockOrderProduct(BaseEntity):
     remarks = Column(String, nullable=True)
 
 
-class StockReceipt(BaseEntity):
+class StockReceipt(LabScopedEntity):
     __tablename__ = "stock_receipt"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=False)
@@ -139,7 +139,7 @@ class StockReceipt(BaseEntity):
     expiry_date = Column(DateTime, nullable=False)
 
 
-class StockAdjustment(BaseEntity):
+class StockAdjustment(LabScopedEntity):
     __tablename__ = "stock_adjustment"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)

@@ -1,20 +1,21 @@
 from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 """
  Many to Many Link between Users and ActivityFeed
 """
 activity_feed_subscription = Table(
     "activity_feed_subscription",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("activity_feed_uid", ForeignKey("activity_feed.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
-class ActivityFeed(BaseEntity):
+class ActivityFeed(LabScopedEntity):
     """ActivityFeed"""
 
     __tablename__ = "activity_feed"
@@ -30,7 +31,8 @@ class ActivityFeed(BaseEntity):
 """
 activity_stream_feed = Table(
     "activity_stream_feed",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("activity_feed_uid", ForeignKey("activity_feed.uid"), primary_key=True),
     Column("stream_uid", ForeignKey("activity_stream.uid"), primary_key=True),
 )
@@ -40,13 +42,14 @@ activity_stream_feed = Table(
 """
 activity_stream_view = Table(
     "activity_stream_view",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("activity_stream_uid", ForeignKey("activity_stream.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
-class ActivityStream(BaseEntity):
+class ActivityStream(LabScopedEntity):
     """ActivityStream
     Actor. The object that performed the activity.
     Verb. The verb phrase that identifies the action of the activity.
@@ -77,7 +80,8 @@ class ActivityStream(BaseEntity):
 """
 user_notification = Table(
     "user_notification",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -87,7 +91,8 @@ user_notification = Table(
 """
 notification_view = Table(
     "notification_view",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -97,7 +102,8 @@ notification_view = Table(
 """
 group_notification = Table(
     "group_notification",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -107,13 +113,14 @@ group_notification = Table(
 """
 department_notification = Table(
     "department_notification",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
 )
 
 
-class Notification(BaseEntity):
+class Notification(LabScopedEntity):
     """Notification
     Custom messages about system status. These are more like activity streams only that they are very specific
     messages to notify users about something important

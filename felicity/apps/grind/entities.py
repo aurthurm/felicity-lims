@@ -3,20 +3,21 @@ from __future__ import annotations
 from sqlalchemy import Column, String, ForeignKey, Table, DateTime, Boolean, Enum, Integer
 from sqlalchemy.orm import relationship, backref
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.grind.enum import MediaTarget, LabelCategory, ErrandCategory, PosterCategory, OccurrenceTarget, \
     StampCategory
 
 # Association table for many-to-many relationship between Scheme and User (members)
 grind_scheme_member = Table(
     'grind_scheme_member',
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column('grind_scheme_uid', String, ForeignKey('grind_scheme.uid')),
     Column('user_uid', String, ForeignKey('user.uid'))
 )
 
 
-class GrindScheme(BaseEntity):
+class GrindScheme(LabScopedEntity):
     __tablename__ = 'grind_scheme'
 
     title = Column(String, nullable=False)
@@ -36,7 +37,7 @@ class GrindScheme(BaseEntity):
     end_date = Column(DateTime, nullable=True)
 
 
-class GrindBoard(BaseEntity):
+class GrindBoard(LabScopedEntity):
     __tablename__ = 'grind_board'
 
     title = Column(String, nullable=False)
@@ -50,7 +51,8 @@ class GrindBoard(BaseEntity):
 # Association table for many-to-many relationship between Poster and User (members)
 grind_poster_member = Table(
     'grind_poster_member',
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column('grind_poster_uid', String, ForeignKey('grind_poster.uid')),
     Column('user_uid', String, ForeignKey('user.uid'))
 )
@@ -58,13 +60,14 @@ grind_poster_member = Table(
 # Association table for many-to-many relationship between Poster and Stamp
 grind_poster_stamp = Table(
     'grind_poster_stamp',
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column('grind_poster_uid', String, ForeignKey('grind_poster.uid')),
     Column('grind_stamp_uid', String, ForeignKey('grind_stamp.uid'))
 )
 
 
-class GrindPoster(BaseEntity):
+class GrindPoster(LabScopedEntity):
     __tablename__ = 'grind_poster'
 
     category = Column(Enum(PosterCategory), nullable=True)
@@ -94,7 +97,8 @@ class GrindPoster(BaseEntity):
 # Association table for many-to-many relationship between Errand and User (members)
 grind_errand_member = Table(
     'grind_errand_member',
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column('grind_errand_uid', String, ForeignKey('grind_errand.uid')),
     Column('grind_user_uid', String, ForeignKey('user.uid'))
 )
@@ -102,13 +106,14 @@ grind_errand_member = Table(
 # Association table for many-to-many relationship between Errand and Stamp
 grind_errand_stamp = Table(
     'grind_errand_stamp',
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column('grind_errand_uid', String, ForeignKey('grind_errand.uid')),
     Column('grind_stamp_uid', String, ForeignKey('grind_stamp.uid'))
 )
 
 
-class GrindErrand(BaseEntity):
+class GrindErrand(LabScopedEntity):
     __tablename__ = 'grind_errand'
 
     category = Column(Enum(ErrandCategory), nullable=True)
@@ -145,7 +150,7 @@ class GrindErrand(BaseEntity):
     progress = Column(Integer, nullable=True)
 
 
-class GrindErrandDiscussion(BaseEntity):
+class GrindErrandDiscussion(LabScopedEntity):
     __tablename__ = 'grind_errand_discussion'
 
     comment = Column(String)
@@ -157,14 +162,14 @@ class GrindErrandDiscussion(BaseEntity):
                           backref=backref("subdiscussions", lazy='select'))
 
 
-class GrindLabel(BaseEntity):
+class GrindLabel(LabScopedEntity):
     __tablename__ = 'grind_label'
 
     title = Column(String, nullable=False)
     category = Column(Enum(LabelCategory), nullable=True)
 
 
-class GrindMedia(BaseEntity):
+class GrindMedia(LabScopedEntity):
     __tablename__ = 'grind_media'
 
     target = Column(Enum(MediaTarget), nullable=True)
@@ -179,7 +184,7 @@ class GrindMedia(BaseEntity):
     description = Column(String, nullable=True)
 
 
-class GrindMilestone(BaseEntity):
+class GrindMilestone(LabScopedEntity):
     __tablename__ = 'grind_milestone'
 
     # Foreign key relationship to Errand
@@ -195,7 +200,7 @@ class GrindMilestone(BaseEntity):
     assignee = relationship("User", foreign_keys=[assignee_uid], lazy='selectin')
 
 
-class GrindOccurrence(BaseEntity):
+class GrindOccurrence(LabScopedEntity):
     __tablename__ = 'grind_occurrence'
 
     target = Column(Enum(OccurrenceTarget), nullable=True)
@@ -208,7 +213,7 @@ class GrindOccurrence(BaseEntity):
     description = Column(String, nullable=True)
 
 
-class GrindStamp(BaseEntity):
+class GrindStamp(LabScopedEntity):
     __tablename__ = 'grind_stamp'
 
     title = Column(String, nullable=False)

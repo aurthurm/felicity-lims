@@ -2,18 +2,18 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.client.entities import Client
 from felicity.utils.hipaa_fields import EncryptedPII
 
 
-class Identification(BaseEntity):
+class Identification(LabScopedEntity):
     __tablename__ = "identification"
 
     name = Column(String, index=True, unique=True, nullable=True)
 
 
-class PatientIdentification(BaseEntity):
+class PatientIdentification(LabScopedEntity):
     __tablename__ = "patient_identification"
 
     identification_uid = Column(String, ForeignKey("identification.uid"), nullable=True)
@@ -32,7 +32,7 @@ class PatientIdentification(BaseEntity):
         return {self.identification.name: self.value}
 
 
-class Patient(BaseEntity):
+class Patient(LabScopedEntity):
     __tablename__ = "patient"
 
     # Identification

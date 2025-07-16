@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.user.entities import User
 from felicity.core.dtz import timenow_dt
 
@@ -10,13 +10,14 @@ from felicity.core.dtz import timenow_dt
 """
 method_instrument = Table(
     "method_instrument",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
     Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
-class Method(BaseEntity):
+class Method(LabScopedEntity):
     """Method
     analytical method
     """
@@ -34,7 +35,7 @@ class Method(BaseEntity):
     )
 
 
-class InstrumentType(BaseEntity):
+class InstrumentType(LabScopedEntity):
     """Instrument Type"""
 
     __tablename__ = "instrument_type"
@@ -43,7 +44,7 @@ class InstrumentType(BaseEntity):
     description = Column(String, nullable=False)
 
 
-class Instrument(BaseEntity):
+class Instrument(LabScopedEntity):
     """Instrument/Analyser"""
 
     __tablename__ = "instrument"
@@ -66,7 +67,7 @@ class Instrument(BaseEntity):
     )
 
 
-class LaboratoryInstrument(BaseEntity):
+class LaboratoryInstrument(LabScopedEntity):
     """Laboratory Instrument"""
 
     __tablename__ = "laboratory_instrument"
@@ -79,7 +80,7 @@ class LaboratoryInstrument(BaseEntity):
     date_decommissioned = Column(DateTime, nullable=True)
 
 
-class InstrumentCalibration(BaseEntity):
+class InstrumentCalibration(LabScopedEntity):
     """Laboratory Instrument Calibration Task
     -   ensures the measurement accuracy of an instrument meets a known standard
     -   Is it still accurate?
@@ -104,7 +105,7 @@ class InstrumentCalibration(BaseEntity):
     remarks = Column(String, nullable=True)
 
 
-class CalibrationCertificate(BaseEntity):
+class CalibrationCertificate(LabScopedEntity):
     """Instrument Calibration Certificate"""
 
     __tablename__ = "calibration_certificate"
@@ -129,7 +130,7 @@ class CalibrationCertificate(BaseEntity):
         return timenow_dt() < self.valid_to_date
 
 
-# class MethodValidation(BaseEntity):
+# class MethodValidation(LabScopedEntity):
 #     """Method Validation Test
 #     -   Establishing and confirming the analytical performance characteristics of a method
 #     -   Is it producing the right results?
@@ -150,7 +151,7 @@ class CalibrationCertificate(BaseEntity):
 #     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
 
 
-# class MethodVerification(BaseEntity):
+# class MethodVerification(LabScopedEntity):
 #     """Method Verification Test
 #     -   Assess the suitability of a method under actual conditions of use
 #     -   Is it working correctly
@@ -162,7 +163,7 @@ class CalibrationCertificate(BaseEntity):
 #     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
 
 
-class InstrumentCompetence(BaseEntity):
+class InstrumentCompetence(LabScopedEntity):
     __tablename__ = "instrument_competence"
 
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
@@ -182,7 +183,7 @@ class InstrumentCompetence(BaseEntity):
         return timenow_dt() < self.expiry_date
 
 
-# class MeasurementUncertainty(BaseEntity):
+# class MeasurementUncertainty(LabScopedEntity):
 #     __tablename__ = "measurement_uncertainty"
 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8199534/

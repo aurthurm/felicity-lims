@@ -1,14 +1,15 @@
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 """
  Many to Many Link between Users and Notices
 """
 notice_view: Table = Table(
     "notice_view",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -18,7 +19,8 @@ notice_view: Table = Table(
 """
 group_notice: Table = Table(
     "group_notice",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -28,13 +30,14 @@ group_notice: Table = Table(
 """
 department_notice: Table = Table(
     "department_notice",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
 )
 
 
-class Notice(BaseEntity):
+class Notice(LabScopedEntity):
     """Notice"""
 
     __tablename__ = "notice"

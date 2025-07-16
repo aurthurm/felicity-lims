@@ -4,7 +4,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, T
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.analysis.entities import analysis as analysis_entities
 from felicity.apps.analysis.entities import qc as qc_entities
 from felicity.apps.instrument.entities import Instrument
@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class WSBase(BaseEntity):
+class WSBase(LabScopedEntity):
     __abstract__ = True
     worksheet_type = Column(String)
     reserved = Column(JSONB)
@@ -30,7 +30,8 @@ Many to Many Link between WorkSheetTemplate and QCLevel
 """
 worksheet_template_qc_level = Table(
     "worksheet_template_qc_level",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("ws_template_uid", ForeignKey("worksheet_template.uid"), primary_key=True),
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
 )

@@ -1,18 +1,18 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey, Table, Text, Enum, Integer
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.abstract.entity import LabScopedEntity
 from felicity.apps.document.enum import DocumentState
 from felicity.core.config import settings
 
 
-class DocumentCategory(BaseEntity):
+class DocumentCategory(LabScopedEntity):
     __tablename__ = 'document_category'
 
     name = Column(String)
 
 
-class DocumentTag(BaseEntity):
+class DocumentTag(LabScopedEntity):
     __tablename__ = 'document_tag'
 
     name = Column(String)
@@ -20,35 +20,39 @@ class DocumentTag(BaseEntity):
 
 document_tagged = Table(
     "document_tagged",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("document_tag_uid", ForeignKey('document_tag.uid'), primary_key=True),
 )
 
 document_author = Table(
     "document_author",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("user_uid", ForeignKey('user.uid'), primary_key=True),
 )
 
 document_reader = Table(
     "document_reader",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("user_uid", ForeignKey('user.uid'), primary_key=True),
 )
 
 document_relation = Table(
     "document_relation",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("source_document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("target_document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("relation_type", String)  # "references", "supersedes", "complements", etc.
 )
 
 
-class Document(BaseEntity):
+class Document(LabScopedEntity):
     __tablename__ = 'document'
 
     name = Column(String)
@@ -101,7 +105,7 @@ class Document(BaseEntity):
         return sorted(self.statuses, key=lambda v: v.date, reverse=True)[0].status
 
 
-class DocumentStatus(BaseEntity):
+class DocumentStatus(LabScopedEntity):
     __tablename__ = 'document_status'
 
     document_uid = Column(String, ForeignKey('document.uid'))
@@ -112,7 +116,7 @@ class DocumentStatus(BaseEntity):
     user = relationship("User", foreign_keys=[user_uid])
 
 
-class DocumentFolder(BaseEntity):
+class DocumentFolder(LabScopedEntity):
     __tablename__ = 'document_folder'
 
     name = Column(String)
@@ -122,7 +126,7 @@ class DocumentFolder(BaseEntity):
     documents = relationship("Document", back_populates="folder")
 
 
-class DocumentVersion(BaseEntity):
+class DocumentVersion(LabScopedEntity):
     __tablename__ = 'document_version'
 
     document_uid = Column(String, ForeignKey('document.uid'))
@@ -134,7 +138,7 @@ class DocumentVersion(BaseEntity):
     thumbnail = Column(Text, nullable=True)
 
 
-class DocumentReviewCycle(BaseEntity):
+class DocumentReviewCycle(LabScopedEntity):
     __tablename__ = 'document_review_cycle'
 
     document_uid = Column(String, ForeignKey('document.uid'))
@@ -146,7 +150,7 @@ class DocumentReviewCycle(BaseEntity):
     status = Column(String)  # "in_progress", "completed", "cancelled"
 
 
-class DocumentReviewStep(BaseEntity):
+class DocumentReviewStep(LabScopedEntity):
     __tablename__ = 'document_review_step'
 
     review_cycle_uid = Column(String, ForeignKey('document_review_cycle.uid'))
@@ -159,7 +163,7 @@ class DocumentReviewStep(BaseEntity):
     action_date = Column(DateTime, nullable=True)
 
 
-class DocumentTemplate(BaseEntity):
+class DocumentTemplate(LabScopedEntity):
     __tablename__ = 'document_template'
 
     name = Column(String)
@@ -169,7 +173,7 @@ class DocumentTemplate(BaseEntity):
     category = relationship(DocumentCategory)
 
 
-class DocumentSubscription(BaseEntity):
+class DocumentSubscription(LabScopedEntity):
     __tablename__ = 'document_subscription'
 
     document_uid = Column(String, ForeignKey('document.uid'))
@@ -179,7 +183,7 @@ class DocumentSubscription(BaseEntity):
     subscription_type = Column(String)  # "all_changes", "status_changes", "review_requests"
 
 
-class DocumentAudit(BaseEntity):
+class DocumentAudit(LabScopedEntity):
     __tablename__ = 'document_audit'
 
     document_uid = Column(String, ForeignKey('document.uid'))

@@ -1,10 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, Boolean
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 
-class ReflexRule(BaseEntity):
+class ReflexRule(LabScopedEntity):
     __tablename__ = "reflex_rule"
 
     name = Column(String, index=True, unique=True, nullable=False)
@@ -16,7 +16,7 @@ class ReflexRule(BaseEntity):
     )
 
 
-class ReflexBrainAddition(BaseEntity):
+class ReflexBrainAddition(LabScopedEntity):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for additions
     """
@@ -31,7 +31,7 @@ class ReflexBrainAddition(BaseEntity):
     count = Column(Integer, default=1)
 
 
-class ReflexBrainFinal(BaseEntity):
+class ReflexBrainFinal(LabScopedEntity):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for finalize where necessary
     """
@@ -46,7 +46,7 @@ class ReflexBrainFinal(BaseEntity):
     value = Column(String)
 
 
-class ReflexBrainConditionCriteria(BaseEntity):
+class ReflexBrainConditionCriteria(LabScopedEntity):
     """Many to Many Link between ReflexCondition and Analysis
     with extra data for criteria/decision-making
     operators: =, !=, >, >=, <, <=
@@ -64,7 +64,7 @@ class ReflexBrainConditionCriteria(BaseEntity):
     priority = Column(Integer, default=0)
 
 
-class ReflexBrain(BaseEntity):
+class ReflexBrain(LabScopedEntity):
     __tablename__ = "reflex_brain"
 
     reflex_action_uid = Column(
@@ -83,7 +83,7 @@ class ReflexBrain(BaseEntity):
     priority = Column(Integer, default=0)
 
 
-class ReflexBrainCondition(BaseEntity):
+class ReflexBrainCondition(LabScopedEntity):
     """OR Logic"""
 
     __tablename__ = "reflex_brain_condition"
@@ -98,7 +98,7 @@ class ReflexBrainCondition(BaseEntity):
     priority = Column(Integer, default=0)
 
 
-class ReflexBrainAction(BaseEntity):
+class ReflexBrainAction(LabScopedEntity):
     __tablename__ = "reflex_brain_action"
 
     reflex_brain_uid = Column(
@@ -119,13 +119,14 @@ Many to Many Link between ReflexBrain and Analysis
 """
 reflex_action_analysis = Table(
     "reflex_action_analysis",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("reflex_action_uid", ForeignKey("reflex_action.uid"), primary_key=True),
 )
 
 
-class ReflexAction(BaseEntity):
+class ReflexAction(LabScopedEntity):
     __tablename__ = "reflex_action"
 
     level = Column(Integer, nullable=False, default=1)

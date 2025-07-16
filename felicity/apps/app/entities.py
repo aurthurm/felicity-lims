@@ -1,12 +1,12 @@
 from sqlalchemy import Column, Integer, String, Text, Float
 from sqlalchemy.ext.declarative import declarative_base
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 Base = declarative_base()
 
 
-class APPActivityLog(BaseEntity):
+class APPActivityLog(LabScopedEntity):
     """Model for logging APP activity"""
     __tablename__ = 'app_activity_logs'
     __repr_fields__ = ('token_identifier',)

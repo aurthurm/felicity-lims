@@ -8,11 +8,11 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam, delete
 
-from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.abstract.entity import LabScopedEntity
 from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session
 
-M = TypeVar("M", bound=BaseEntity)
+M = TypeVar("M", bound=LabScopedEntity)
 
 
 def apply_nested_loader_options(stmt, model, path):

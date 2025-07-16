@@ -1,10 +1,10 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 
 
-class StoreRoom(BaseEntity):
+class StoreRoom(LabScopedEntity):
     """Store Room"""
 
     __tablename__ = "store_room"
@@ -13,7 +13,7 @@ class StoreRoom(BaseEntity):
     description = Column(String, nullable=False)
 
 
-class StorageLocation(BaseEntity):
+class StorageLocation(LabScopedEntity):
     """Storage Location
     e.g: Fridge, CupBoard, Floor, Box, etc
     """
@@ -26,7 +26,7 @@ class StorageLocation(BaseEntity):
     store_room = relationship(StoreRoom, backref="storage_locations", lazy="selectin")
 
 
-class StorageSection(BaseEntity):
+class StorageSection(LabScopedEntity):
     """Storage Location Section/Compartment
     e.g: Shelve, Tray, Rack, etc
     """
@@ -43,7 +43,7 @@ class StorageSection(BaseEntity):
     )
 
 
-class StorageContainer(BaseEntity):
+class StorageContainer(LabScopedEntity):
     """Storage Carrier
     e.g: Sample K-Lite, etc
     """

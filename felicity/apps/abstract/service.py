@@ -5,10 +5,10 @@ from pydantic import BaseModel
 from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.abstract.entity import LabScopedEntity
 from felicity.apps.abstract.repository import BaseRepository
 
-E = TypeVar("E", bound=BaseEntity)
+E = TypeVar("E", bound=LabScopedEntity)
 C = TypeVar("C", bound=BaseModel)
 U = TypeVar("U", bound=BaseModel)
 

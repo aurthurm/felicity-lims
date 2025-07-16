@@ -12,12 +12,12 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity
+from felicity.apps.abstract import LabScopedEntity
 from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
 from felicity.core.dtz import timenow_dt
 
 
-class AnalysisPrice(BaseEntity):
+class AnalysisPrice(LabScopedEntity):
     __tablename__ = "analysis_price"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
@@ -26,7 +26,7 @@ class AnalysisPrice(BaseEntity):
     amount = Column(Float, nullable=False)
 
 
-class ProfilePrice(BaseEntity):
+class ProfilePrice(LabScopedEntity):
     __tablename__ = "profile_price"
 
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
@@ -35,7 +35,7 @@ class ProfilePrice(BaseEntity):
     amount = Column(Float, nullable=False)
 
 
-class AnalysisDiscount(BaseEntity):
+class AnalysisDiscount(LabScopedEntity):
     __tablename__ = "analysis_discount"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
@@ -52,7 +52,7 @@ class AnalysisDiscount(BaseEntity):
     is_active = Column(Boolean, nullable=False)
 
 
-class ProfileDiscount(BaseEntity):
+class ProfileDiscount(LabScopedEntity):
     __tablename__ = "profile_discount"
 
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=False)
@@ -69,7 +69,7 @@ class ProfileDiscount(BaseEntity):
     is_active = Column(Boolean, nullable=False)
 
 
-class Voucher(BaseEntity):
+class Voucher(LabScopedEntity):
     __tablename__ = "voucher"
 
     name = Column(String, nullable=False, unique=True)
@@ -86,7 +86,7 @@ class Voucher(BaseEntity):
     once_per_order = Column(Boolean, nullable=False)
 
 
-class VoucherCode(BaseEntity):
+class VoucherCode(LabScopedEntity):
     __tablename__ = "voucher_code"
 
     code = Column(String(20), nullable=False, unique=True)
@@ -99,7 +99,7 @@ class VoucherCode(BaseEntity):
     is_active = Column(Boolean, nullable=False)
 
 
-class VoucherCustomer(BaseEntity):
+class VoucherCustomer(LabScopedEntity):
     __tablename__ = "voucher_customer"
 
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
@@ -113,7 +113,8 @@ class VoucherCustomer(BaseEntity):
 """
 test_bill_item = Table(
     "test_bill_item",
-    BaseEntity.metadata,
+    LabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("test_bill_uid", ForeignKey("test_bill.uid"), primary_key=True),
     Column(
         "analysis_request_uid", ForeignKey("analysis_request.uid"), primary_key=True
@@ -121,7 +122,7 @@ test_bill_item = Table(
 )
 
 
-class TestBill(BaseEntity):
+class TestBill(LabScopedEntity):
     __tablename__ = "test_bill"
 
     bill_id = Column(String, index=True, unique=True, nullable=False)
@@ -142,7 +143,7 @@ class TestBill(BaseEntity):
     )
 
 
-class TestBillTransaction(BaseEntity):
+class TestBillTransaction(LabScopedEntity):
     __tablename__ = "test_bill_transaction"
 
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
@@ -157,7 +158,7 @@ class TestBillTransaction(BaseEntity):
     action_message = Column(String, nullable=True)
 
 
-class TestBillInvoice(BaseEntity):
+class TestBillInvoice(LabScopedEntity):
     __tablename__ = "test_bill_invoice"
 
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
