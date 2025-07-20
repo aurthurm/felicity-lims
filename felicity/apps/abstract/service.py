@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from typing import Generic, TypeVar
 
@@ -7,6 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.entity import LabScopedEntity
 from felicity.apps.abstract.repository import BaseRepository
+from felicity.core.tenant_context import get_tenant_context
+
+logger = logging.getLogger(__name__)
 
 E = TypeVar("E", bound=LabScopedEntity)
 C = TypeVar("C", bound=BaseModel)
@@ -154,6 +158,20 @@ class BaseService(Generic[E, C, U]):
             Newly created entity (with related entities if specified)
         """
         data = self._import(c)
+
+        # Log creation with audit context
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Creating {self.repository.model.__name__}",
+                extra={
+                    "audit_action": f"CREATE_{self.repository.model.__name__.upper()}",
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                    "request_id": context.request_id,
+                }
+            )
+
         created = await self.repository.create(commit=commit, session=session, **data)
         if not related:
             return created
@@ -175,6 +193,19 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of newly created entities (with related entities if specified)
         """
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Bulk creating {len(bulk)} {self.repository.model.__name__} entities",
+                extra={
+                    "audit_action": f"BULK_CREATE_{self.repository.model.__name__.upper()}",
+                    "count": len(bulk),
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                    "request_id": context.request_id,
+                }
+            )
+
         created = await self.repository.bulk_create(bulk=[self._import(b) for b in bulk], commit=commit,
                                                     session=session)
         if not related:
@@ -195,6 +226,19 @@ class BaseService(Generic[E, C, U]):
         Returns:
             Saved entity (with related entities if specified)
         """
+
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Saving {self.repository.model.__name__} {entity.uid}",
+                extra={
+                    "audit_action": f"SAVE_{self.repository.model.__name__.upper()}",
+                    "entity_uid": entity.uid,
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                }
+            )
+
         saved = await self.repository.save(m=entity, commit=commit, session=session)
         if not related:
             return saved
@@ -212,6 +256,17 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of saved entities
         """
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Saving {len(entities)} {self.repository.model.__name__} entities",
+                extra={
+                    "audit_action": f"SAVE_ALL_{self.repository.model.__name__.upper()}",
+                    "count": len(entities),
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                }
+            )
         return await self.repository.save_all(entities, commit=commit, session=session)
 
     async def save_transaction(self, session: AsyncSession | None = None) -> None:
@@ -307,6 +362,20 @@ class BaseService(Generic[E, C, U]):
         """
         if "uid" in update:
             del update["uid"]
+
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Updating {self.repository.model.__name__} {uid}",
+                extra={
+                    "audit_action": f"UPDATE_{self.repository.model.__name__.upper()}",
+                    "entity_uid": uid,
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                    "request_id": context.request_id,
+                }
+            )
+
         updated = await self.repository.update(uid=uid, commit=commit, session=session, **self._import(update))
         if not related:
             return updated
@@ -329,6 +398,17 @@ class BaseService(Generic[E, C, U]):
         Raises:
             ValueError: If update_data or filters are not provided
         """
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Bulk updating {self.repository.model.__name__} entities",
+                extra={
+                    "audit_action": f"BULK_UPDATE_{self.repository.model.__name__.upper()}",
+                    "filters": str(filters),
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                }
+            )
         return await self.repository.bulk_update_where(update_data, filters, commit, session)
 
     async def bulk_update_with_mappings(self, mappings: list[dict], commit: bool = True,
@@ -344,6 +424,17 @@ class BaseService(Generic[E, C, U]):
         Returns:
             None
         """
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Bulk updating {len(mappings)} {self.repository.model.__name__} entities with mappings",
+                extra={
+                    "audit_action": f"BULK_UPDATE_MAPPINGS_{self.repository.model.__name__.upper()}",
+                    "count": len(mappings),
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                }
+            )
         return await self.repository.bulk_update_with_mappings(mappings, commit=commit, session=session)
 
     async def delete(self, uid: str, commit: bool = True, session: AsyncSession | None = None) -> None:
@@ -358,6 +449,18 @@ class BaseService(Generic[E, C, U]):
         Returns:
             None
         """
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Deleting {self.repository.model.__name__} {uid}",
+                extra={
+                    "audit_action": f"DELETE_{self.repository.model.__name__.upper()}",
+                    "entity_uid": uid,
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                    "request_id": context.request_id,
+                }
+            )
         return await self.repository.delete(uid=uid, commit=commit, session=session)
 
     async def delete_where(self, commit: bool = True, session: AsyncSession | None = None, **kwargs) -> None:
@@ -372,6 +475,18 @@ class BaseService(Generic[E, C, U]):
         Returns:
             None
         """
+        context = get_tenant_context()
+        if context:
+            logger.info(
+                f"Deleting {self.repository.model.__name__} entities where {kwargs}",
+                extra={
+                    "audit_action": f"DELETE_WHERE_{self.repository.model.__name__.upper()}",
+                    "filters": str(kwargs),
+                    "user_uid": context.user_uid,
+                    "laboratory_uid": context.laboratory_uid,
+                }
+            )
+
         return await self.repository.delete_where(commit=commit, session=session, **kwargs)
 
     async def table_query(

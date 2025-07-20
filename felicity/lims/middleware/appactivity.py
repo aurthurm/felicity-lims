@@ -9,6 +9,7 @@ from starlette.types import ASGIApp
 
 from felicity.apps.app.schemas import APPActivityLogCreate
 from felicity.apps.app.services import APPActivityLogService
+from felicity.core.tenant_context import get_tenant_context
 
 
 class APIActivityLogMiddleware(BaseHTTPMiddleware):
@@ -27,6 +28,9 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         # Store request start time
         start_time = time.time()
+
+        # Get tenant context (set by TenantContextMiddleware)
+        tenant_context = get_tenant_context()
 
         # Get the Bearer token from Authorization header
         auth_header = request.headers.get(self.auth_header, "")
@@ -147,7 +151,14 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                         "operationType": self._detect_operation_type(graphql_operation.get("query", "")),
                         "operationName": operation_name,
                         "query": "[REDACTED FOR SECURITY]",
-                        "variables": safe_variables
+                        "variables": safe_variables,
+                        # 🆕 TENANT CONTEXT
+                        "tenantContext": {
+                            "user_uid": tenant_context.user_uid if tenant_context else None,
+                            "laboratory_uid": tenant_context.laboratory_uid if tenant_context else None,
+                            "organization_uid": tenant_context.organization_uid if tenant_context else None,
+                            "request_id": tenant_context.request_id if tenant_context else None,
+                        }
                     }, indent=2)
                 else:
                     # Format the GraphQL operation in a more readable way for non-auth requests
@@ -155,7 +166,14 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                         "operationType": self._detect_operation_type(graphql_operation.get("query", "")),
                         "operationName": operation_name,
                         "query": graphql_operation.get("query", ""),
-                        "variables": variables
+                        "variables": variables,
+                        # 🆕 TENANT CONTEXT
+                        "tenantContext": {
+                            "user_uid": tenant_context.user_uid if tenant_context else None,
+                            "laboratory_uid": tenant_context.laboratory_uid if tenant_context else None,
+                            "organization_uid": tenant_context.organization_uid if tenant_context else None,
+                            "request_id": tenant_context.request_id if tenant_context else None,
+                        }
                     }, indent=2)
 
             # Process response body to redact sensitive information
@@ -187,6 +205,10 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
             # Create a more detailed path for GraphQL operations
             log_path = str(request.url.path)
 
+            # 🆕 ENHANCED PATH WITH TENANT INFO
+            if tenant_context and tenant_context.laboratory_uid:
+                log_path = f"[LAB:{tenant_context.laboratory_uid}] {log_path}"
+
             if is_graphql and graphql_operation:
                 operation_name = graphql_operation.get("operationName", "")
                 if operation_name:
@@ -205,11 +227,24 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                 response_code=int(response.status_code) if response and response.status_code else 0,
                 ip_address=request.client.host if request.client else None,
                 user_agent=request.headers.get("user-agent"),
-                duration=duration
+                duration=duration,
+                user_uid=tenant_context.user_uid if tenant_context else None,
+                laboratory_uid=tenant_context.laboratory_uid if tenant_context else None,
+                organization_uid=tenant_context.organization_uid if tenant_context else None,
+                request_id=tenant_context.request_id if tenant_context else None,
             )
             # Add try/except specifically around the service call
             try:
                 await APPActivityLogService().create(ac_in)
+
+                # Additional tenant-aware logging
+                if tenant_context:
+                    print(f"📊 Activity Log - User: {tenant_context.user_uid}, "
+                          f"Lab: {tenant_context.laboratory_uid}, "
+                          f"Path: {log_path}, "
+                          f"Status: {response.status_code}, "
+                          f"Duration: {duration:.3f}s")
+
             except Exception as e:
                 print(f"Error creating log entry: {e}")
         except Exception as e:

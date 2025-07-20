@@ -13,7 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity, BaseMPTT
+from felicity.apps.abstract import LabScopedEntity, BaseMPTT, BaseEntity
 from felicity.apps.analysis.entities.qc import QCLevel, QCSet
 from felicity.apps.analysis.enum import ResultType
 from felicity.apps.client import entities as ct_entities
@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class CodingStandard(LabScopedEntity):
+class CodingStandard(BaseEntity):
     """conding standars e.g LOINC"""
 
     __tablename__ = "coding_standard"
@@ -34,7 +34,7 @@ class CodingStandard(LabScopedEntity):
     description = Column(String, nullable=False)
 
 
-class SampleType(LabScopedEntity):
+class SampleType(BaseEntity):
     """SampleType"""
 
     __tablename__ = "sample_type"
@@ -46,7 +46,7 @@ class SampleType(LabScopedEntity):
     abbr = Column(String, nullable=False)
 
 
-class SampleTypeCoding(LabScopedEntity):
+class SampleTypeCoding(BaseEntity):
     """SampleTypeCoding"""
 
     __tablename__ = "sampe_type_coding"
@@ -67,7 +67,7 @@ class SampleTypeCoding(LabScopedEntity):
 """
 profile_sample_type = Table(
     "profile_sample_type",
-    LabScopedEntity.metadata,
+    BaseEntity.metadata,
     Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
@@ -78,8 +78,7 @@ Many to Many Link between Analysis and SampleType
 """
 analysis_sample_type = Table(
     "analysis_sample_type",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -98,7 +97,7 @@ analysis_profile = Table(
 )
 
 
-class AnalysisCategory(LabScopedEntity):
+class AnalysisCategory(BaseEntity):
     """Categorise Analysis"""
 
     __tablename__ = "analysis_category"
@@ -184,8 +183,7 @@ class AnalysisTemplate(LabScopedEntity):
 """
 analysis_method = Table(
     "analysis_method",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
 )
@@ -195,14 +193,13 @@ analysis_method = Table(
 """
 analysis_instrument = Table(
     "analysis_instrument",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
-class Analysis(LabScopedEntity):
+class Analysis(BaseEntity):
     """Analysis Test/Service"""
 
     __tablename__ = "analysis"
@@ -277,7 +274,7 @@ class Analysis(LabScopedEntity):
         return result
 
 
-class AnalysisCoding(LabScopedEntity):
+class AnalysisCoding(BaseEntity):
     """AnalysisCoding"""
 
     __tablename__ = "analysis_coding"
@@ -293,7 +290,7 @@ class AnalysisCoding(LabScopedEntity):
     code = Column(String, nullable=False)
 
 
-class AnalysisInterim(LabScopedEntity):
+class AnalysisInterim(BaseEntity):
     """Analysis Interim Result Field"""
 
     __tablename__ = "analysis_interim"
@@ -305,7 +302,7 @@ class AnalysisInterim(LabScopedEntity):
     instrument = relationship("Instrument")
 
 
-class AnalysisCorrectionFactor(LabScopedEntity):
+class AnalysisCorrectionFactor(BaseEntity):
     """Analysis Correction Factor"""
 
     __tablename__ = "analysis_correction_factor"
@@ -316,7 +313,7 @@ class AnalysisCorrectionFactor(LabScopedEntity):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisDetectionLimit(LabScopedEntity):
+class AnalysisDetectionLimit(BaseEntity):
     """Analysis Detection Limit"""
 
     __tablename__ = "analysis_detection_limit"
@@ -343,7 +340,7 @@ class AnalysisUncertainty(LabScopedEntity):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisSpecification(LabScopedEntity):
+class AnalysisSpecification(BaseEntity):
     """Analysis Specification Ranges"""
 
     __tablename__ = "analysis_specification"
@@ -389,7 +386,7 @@ result_option_sample_type = Table(
 )
 
 
-class ResultOption(LabScopedEntity):
+class ResultOption(BaseEntity):
     """Result Choices"""
 
     __tablename__ = "result_options"
@@ -452,7 +449,7 @@ class ClinicalData(LabScopedEntity):
     symptoms_raw = Column(EncryptedPHI(2000), nullable=True)
     clinical_indication = Column(EncryptedPHI(2000), nullable=True)  # reason for the lab test
     pregnancy_status = Column(Boolean, nullable=True)  # Boolean is not identifiable
-    breast_feeding = Column(Boolean, nullable=True)   # Boolean is not identifiable
+    breast_feeding = Column(Boolean, nullable=True)  # Boolean is not identifiable
     vitals = Column(EncryptedPHI(1000), nullable=True)  # e.g., {"bp": "120/80", "temp": 37.2}
     treatment_notes = Column(EncryptedPHI(2000), nullable=True)
     other_context = Column(EncryptedPHI(2000), nullable=True)  # for any extra structured fields
@@ -521,7 +518,7 @@ sample_rejection_reason = Table(
 )
 
 
-class RejectionReason(LabScopedEntity):
+class RejectionReason(BaseEntity):
     """Rejection Reason"""
 
     __tablename__ = "rejection_reason"

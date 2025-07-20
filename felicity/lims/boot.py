@@ -20,6 +20,7 @@ from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_P
 
 from felicity.api.deps import get_gql_context
 from felicity.api.gql.schema import schema
+from felicity.lims.middleware import TenantContextMiddleware
 from felicity.api.rest.api_v1 import api
 from felicity.apps.common.channel import broadcast
 from felicity.apps.events import observe_events
@@ -64,6 +65,8 @@ def register_middlewares(app: FastAPI) -> None:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    # Add tenant context middleware - should be early in the chain
+    app.add_middleware(TenantContextMiddleware)  # noqa
     app.add_middleware(APIActivityLogMiddleware)  # noqa
     if redis_client and settings.RATE_LIMIT:
         print(f"Connected to Redis at {settings.REDIS_SERVER}")

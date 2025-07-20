@@ -22,3 +22,17 @@ class LabScopedEntity(BaseEntity):
     @declared_attr
     def laboratory(self):
         return relationship("Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin")
+
+
+class MaybeLabScopedEntity(BaseEntity):
+    """Base entity for models that may be scoped to a specific laboratory (optional)
+    If no laboratory_uid then its global"""
+    __abstract__ = True
+
+    @declared_attr
+    def laboratory_uid(self):
+        return Column(String, ForeignKey("laboratory.uid"), nullable=True, index=True)
+
+    @declared_attr
+    def laboratory(self):
+        return relationship("Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin")

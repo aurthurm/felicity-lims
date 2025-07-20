@@ -5,6 +5,7 @@ from .setup import (
     LaboratorySetting,
     Manufacturer,
     Organization,
+    OrganizationSetting,
     Supplier,
     Unit,
 )
@@ -18,6 +19,7 @@ __all__ = [
     "LaboratorySetting",
     "Manufacturer",
     "Organization",
+    "OrganizationSetting",
     "Supplier",
     "Unit",
 ]

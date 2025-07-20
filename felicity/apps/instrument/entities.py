@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 from felicity.apps.user.entities import User
 from felicity.core.dtz import timenow_dt
 
@@ -10,14 +10,13 @@ from felicity.core.dtz import timenow_dt
 """
 method_instrument = Table(
     "method_instrument",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
     Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
-class Method(LabScopedEntity):
+class Method(BaseEntity):
     """Method
     analytical method
     """
@@ -35,7 +34,7 @@ class Method(LabScopedEntity):
     )
 
 
-class InstrumentType(LabScopedEntity):
+class InstrumentType(BaseEntity):
     """Instrument Type"""
 
     __tablename__ = "instrument_type"
@@ -44,7 +43,7 @@ class InstrumentType(LabScopedEntity):
     description = Column(String, nullable=False)
 
 
-class Instrument(LabScopedEntity):
+class Instrument(BaseEntity):
     """Instrument/Analyser"""
 
     __tablename__ = "instrument"
@@ -181,7 +180,6 @@ class InstrumentCompetence(LabScopedEntity):
     @property
     async def is_valid(self):
         return timenow_dt() < self.expiry_date
-
 
 # class MeasurementUncertainty(LabScopedEntity):
 #     __tablename__ = "measurement_uncertainty"

@@ -1,10 +1,10 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String, Integer, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import BaseEntity, LabScopedEntity
 
 
-class AbxGuideline(LabScopedEntity):
+class AbxGuideline(BaseEntity):
     __tablename__ = "abx_guideline"
     __repr_attrs__ = ['name']
 
@@ -14,7 +14,7 @@ class AbxGuideline(LabScopedEntity):
     antibiotics = relationship("AbxAntibiotic", secondary="abx_antibiotic_guideline", back_populates="guidelines")
 
 
-class AbxAntibioticGuideline(LabScopedEntity):
+class AbxAntibioticGuideline(BaseEntity):
     """
     Many to Many Link between Sample and Rejection Reason
     """
@@ -24,7 +24,7 @@ class AbxAntibioticGuideline(LabScopedEntity):
     guideline_uid = Column(String, ForeignKey("abx_guideline.uid"), nullable=False)
 
 
-class AbxAntibiotic(LabScopedEntity):
+class AbxAntibiotic(BaseEntity):
     __tablename__ = "abx_antibiotic"
     __repr_attrs__ = ['name']
 
@@ -68,21 +68,20 @@ class AbxAntibiotic(LabScopedEntity):
 # Association table for laboratory and antibiotics
 laboratory_antibiotics = Table(
     'abx_laboratory_antibiotic',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('laboratory_uid', String, ForeignKey('laboratory.uid'), primary_key=True),
     Column('antibiotic_uid', String, ForeignKey('abx_antibiotic.uid'), primary_key=True)
 )
 
 
-class AbxKingdom(LabScopedEntity):
+class AbxKingdom(BaseEntity):
     __tablename__ = 'abx_kingdom'
     __repr_attrs__ = ['name']
 
     name = Column(String(100), nullable=False, unique=True)
 
 
-class AbxPhylum(LabScopedEntity):
+class AbxPhylum(BaseEntity):
     __tablename__ = 'abx_phylum'
     __repr_attrs__ = ['name']
 
@@ -91,7 +90,7 @@ class AbxPhylum(LabScopedEntity):
     kingdom = relationship('AbxKingdom', backref='abx_phyla', lazy="selectin")
 
 
-class AbxClass(LabScopedEntity):
+class AbxClass(BaseEntity):
     __tablename__ = 'abx_class'
     __repr_attrs__ = ['name']
 
@@ -100,7 +99,7 @@ class AbxClass(LabScopedEntity):
     phylum = relationship('AbxPhylum', backref='classes', lazy="selectin")
 
 
-class AbxOrder(LabScopedEntity):
+class AbxOrder(BaseEntity):
     __tablename__ = 'abx_order'
     __repr_attrs__ = ['name']
 
@@ -109,7 +108,7 @@ class AbxOrder(LabScopedEntity):
     class_ = relationship('AbxClass', backref='orders', lazy="selectin")
 
 
-class AbxFamily(LabScopedEntity):
+class AbxFamily(BaseEntity):
     __tablename__ = 'abx_family'
     __repr_attrs__ = ['name']
 
@@ -118,7 +117,7 @@ class AbxFamily(LabScopedEntity):
     order = relationship('AbxOrder', backref='families', lazy="selectin")
 
 
-class AbxGenus(LabScopedEntity):
+class AbxGenus(BaseEntity):
     __tablename__ = 'abx_genus'
     __repr_attrs__ = ['name']
 
@@ -127,7 +126,7 @@ class AbxGenus(LabScopedEntity):
     family = relationship('AbxFamily', backref='genera', lazy="selectin")
 
 
-class AbxOrganism(LabScopedEntity):
+class AbxOrganism(BaseEntity):
     __tablename__ = 'abx_organism'
     __repr_attrs__ = ['name']
 
@@ -169,7 +168,7 @@ class AbxOrganism(LabScopedEntity):
     comments = Column(String(500), nullable=True)
 
 
-class AbxOrganismSerotype(LabScopedEntity):
+class AbxOrganismSerotype(BaseEntity):
     __tablename__ = 'abx_organism_serotypes'
 
     organism_uid = Column(String, ForeignKey('abx_organism.uid'), nullable=False)
@@ -184,7 +183,7 @@ class AbxOrganismSerotype(LabScopedEntity):
     fate = Column(String(50), nullable=True)
 
 
-class AbxTestMethod(LabScopedEntity):
+class AbxTestMethod(BaseEntity):
     __tablename__ = "abx_test_method"
     __repr_attrs__ = ['name']
 
@@ -192,7 +191,7 @@ class AbxTestMethod(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class AbxBreakpointType(LabScopedEntity):
+class AbxBreakpointType(BaseEntity):
     __tablename__ = "abx_breakpoint_type"
     __repr_attrs__ = ['name']
 
@@ -200,7 +199,7 @@ class AbxBreakpointType(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class AbxHost(LabScopedEntity):
+class AbxHost(BaseEntity):
     __tablename__ = "abx_host"
     __repr_attrs__ = ['name']
 
@@ -208,7 +207,7 @@ class AbxHost(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class AbxSiteOfInfection(LabScopedEntity):
+class AbxSiteOfInfection(BaseEntity):
     __tablename__ = "abx_infection_site"
     __repr_attrs__ = ['name']
 
@@ -216,7 +215,7 @@ class AbxSiteOfInfection(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class AbxGuidelineYear(LabScopedEntity):
+class AbxGuidelineYear(BaseEntity):
     __tablename__ = "abx_guideline_year"
     __repr_attrs__ = ['code']
 
@@ -227,7 +226,7 @@ class AbxGuidelineYear(LabScopedEntity):
     breakpoints = relationship("AbxBreakpoint", back_populates="guideline_year", lazy="selectin")
 
 
-class AbxBreakpoint(LabScopedEntity):
+class AbxBreakpoint(BaseEntity):
     __tablename__ = 'abx_breakpoint'
 
     # Using a composite primary key of relevant fields
@@ -260,7 +259,7 @@ class AbxBreakpoint(LabScopedEntity):
     ecv_ecoff_tentative = Column(String(20))
 
 
-class AbxExpResPhenotype(LabScopedEntity):
+class AbxExpResPhenotype(BaseEntity):
     """Expected Resistance Phenotype"""
     __tablename__ = 'abx_expected_res_phenotype'
 
@@ -283,7 +282,7 @@ class AbxExpResPhenotype(LabScopedEntity):
     comments = Column(String(500), nullable=True)
 
 
-class AbxExpertInterpretationRule(LabScopedEntity):
+class AbxExpertInterpretationRule(BaseEntity):
     __tablename__ = 'abx_expert_interpret_rule'
 
     rule_code = Column(String(50))
@@ -297,7 +296,7 @@ class AbxExpertInterpretationRule(LabScopedEntity):
     antibiotic_exceptions = Column(String)
 
 
-class AbxMedium(LabScopedEntity):
+class AbxMedium(BaseEntity):
     __tablename__ = "abx_medium"
     __repr_attrs__ = ['name']
 
@@ -305,7 +304,7 @@ class AbxMedium(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class AbxQCRange(LabScopedEntity):
+class AbxQCRange(BaseEntity):
     __tablename__ = 'abx_qc_ranges'
 
     guideline_uid = Column(String, ForeignKey("abx_guideline.uid"))

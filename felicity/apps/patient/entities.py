@@ -2,12 +2,12 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 from felicity.apps.client.entities import Client
 from felicity.utils.hipaa_fields import EncryptedPII
 
 
-class Identification(LabScopedEntity):
+class Identification(BaseEntity):
     __tablename__ = "identification"
 
     name = Column(String, index=True, unique=True, nullable=True)

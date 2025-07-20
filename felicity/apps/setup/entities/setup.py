@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity, LabScopedEntity
@@ -9,34 +9,14 @@ class Organization(BaseEntity):
     """Organization entity - single organization per installation"""
     __tablename__ = "organization"
 
-    name = Column(String, nullable=False, unique=True)
-    code = Column(String, nullable=True, unique=True)
-    country = Column(String, nullable=True)
-    timezone = Column(String, nullable=True, default="UTC")
-    email = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
-    address = Column(String, nullable=True)
-    is_active = Column(Boolean, default=True)
-    metadata = Column(JSON, nullable=True)  # custom settings, logo, etc.
-
-
-class Laboratory(LabScopedEntity):
-    __tablename__ = "laboratory"
-
-    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
-    organization = relationship(
-        Organization, foreign_keys=[organization_uid], backref="laboratories", lazy="selectin"
-    )
-    
     setup_name = Column(
         String, default="felicity", nullable=False
-    )  # Do not change this value ever
-    lab_name = Column(String, nullable=False)
+    )
+    name = Column(String, nullable=False, unique=True)
+    code = Column(String, nullable=True, unique=True)
+    timezone = Column(String, nullable=True, default="UTC")
     tag_line = Column(String, nullable=True)
-    code = Column(String, nullable=True)
-    lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], lazy="selectin")
-    email = Column(String, nullable=True)  # Main Email Adress
+    email = Column(String, nullable=True)
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
     business_phone = Column(String, nullable=True)
@@ -44,42 +24,90 @@ class Laboratory(LabScopedEntity):
     banking = Column(String, nullable=True)
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
+    country_uid = Column(String, ForeignKey("country.uid"))
+    country = relationship("Country", backref="organisations", lazy="selectin")
+    province_uid = Column(String, ForeignKey("province.uid"))
+    province = relationship("Province", backref="organisations", lazy="selectin")
+    district_uid = Column(String, ForeignKey("district.uid"))
+    district = relationship("District", backref="organisations", lazy="selectin")
 
-    @property
-    def sms_metadata(self) -> dict:
-        result = {
-           "lab_name": self.lab_name, 
-           "lab_email": self.email, 
-           "lab_phone": self.mobile_phone
-        }   
-        return result
 
-class LaboratorySetting(LabScopedEntity):
-    __tablename__ = "laboratory_setting"
+class OrganizationSetting(BaseEntity):
+    __tablename__ = "organization_setting"
 
-    laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
-    laboratory = relationship(
-        Laboratory, foreign_keys=[laboratory_uid], backref="settings", lazy="selectin"
+    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
+    organization = relationship(
+        Organization, foreign_keys=[organization_uid], backref="laboratories", lazy="selectin"
     )
-    allow_self_verification = Column(Boolean(), nullable=False)
-    allow_patient_registration = Column(Boolean(), nullable=True)
-    allow_sample_registration = Column(Boolean(), nullable=True)
-    allow_worksheet_creation = Column(Boolean(), nullable=True)
-    default_route = Column(String, nullable=True)
     password_lifetime = Column(Integer, nullable=True)
     inactivity_log_out = Column(Integer, nullable=True)
-    default_theme = Column(String, nullable=True)
-    auto_receive_samples = Column(Boolean(), nullable=True)
-    sticker_copies = Column(Integer, nullable=True)
-    default_tat_minutes = Column(Integer, nullable=True, default=1440)
-    #
     allow_billing = Column(Boolean(), nullable=True, default=False)
     allow_auto_billing = Column(Boolean(), nullable=True, default=True)
     currency = Column(String, nullable=True, default="USD")
     payment_terms_days = Column(Integer, nullable=True, default=0)
 
 
-class Supplier(LabScopedEntity):
+class Laboratory(BaseEntity):
+    __tablename__ = "laboratory"
+
+    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
+    organization = relationship(
+        Organization, foreign_keys=[organization_uid], backref="laboratories", lazy="selectin"
+    )
+    # Allow specific lab to override organisation details and be unique if necessary
+    name = Column(String, nullable=False)
+    tag_line = Column(String, nullable=True)
+    code = Column(String, nullable=True)
+    lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], lazy="selectin")
+    email = Column(String, nullable=True)
+    email_cc = Column(String, nullable=True)
+    mobile_phone = Column(String, nullable=True)
+    business_phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    banking = Column(String, nullable=True)
+    logo = Column(String, nullable=True)
+    quality_statement = Column(String, nullable=True)
+    country_uid = Column(String, ForeignKey("country.uid"))
+    country = relationship("Country", backref="organisations", lazy="selectin")
+    province_uid = Column(String, ForeignKey("province.uid"))
+    province = relationship("Province", backref="organisations", lazy="selectin")
+    district_uid = Column(String, ForeignKey("district.uid"))
+    district = relationship("District", backref="organisations", lazy="selectin")
+
+    @property
+    def sms_metadata(self) -> dict:
+        result = {
+            "lab_name": self.lab_name,
+            "lab_email": self.email,
+            "lab_phone": self.mobile_phone
+        }
+        return result
+
+
+class LaboratorySetting(LabScopedEntity):
+    __tablename__ = "laboratory_setting"
+
+    allow_self_verification = Column(Boolean(), nullable=False)
+    allow_patient_registration = Column(Boolean(), nullable=True)
+    allow_sample_registration = Column(Boolean(), nullable=True)
+    allow_worksheet_creation = Column(Boolean(), nullable=True)
+    default_route = Column(String, nullable=True)
+    default_theme = Column(String, nullable=True)
+    auto_receive_samples = Column(Boolean(), nullable=True)
+    sticker_copies = Column(Integer, nullable=True)
+    default_tat_minutes = Column(Integer, nullable=True, default=1440)
+
+    # organisation settings overrides
+    password_lifetime = Column(Integer, nullable=True)
+    inactivity_log_out = Column(Integer, nullable=True)
+    allow_billing = Column(Boolean(), nullable=True, default=False)
+    allow_auto_billing = Column(Boolean(), nullable=True, default=True)
+    currency = Column(String, nullable=True, default="USD")
+    payment_terms_days = Column(Integer, nullable=True, default=0)
+
+
+class Supplier(BaseEntity):
     """Supplier"""
 
     __tablename__ = "supplier"
@@ -88,7 +116,7 @@ class Supplier(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class Manufacturer(LabScopedEntity):
+class Manufacturer(BaseEntity):
     """Manufacturer"""
 
     __tablename__ = "manufacturer"
@@ -97,7 +125,7 @@ class Manufacturer(LabScopedEntity):
     description = Column(String, nullable=True)
 
 
-class Department(LabScopedEntity):
+class Department(BaseEntity):
     """Departrments/Sections"""
 
     __tablename__ = "department"
@@ -107,7 +135,7 @@ class Department(LabScopedEntity):
     code = Column(String, nullable=True)
 
 
-class Unit(LabScopedEntity):
+class Unit(BaseEntity):
     """Unit for analyte measurement"""
 
     __tablename__ = "unit"

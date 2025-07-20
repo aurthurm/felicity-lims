@@ -1,10 +1,10 @@
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 
 
-class StockItem(LabScopedEntity):
+class StockItem(BaseEntity):
     """StockItem Standardization"""
 
     __tablename__ = "stock_item"
@@ -19,7 +19,7 @@ class StockItem(LabScopedEntity):
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockItemVariant(LabScopedEntity):
+class StockItemVariant(BaseEntity):
     """StockItem Variant as the StockProduct"""
 
     __tablename__ = "stock_item_variant"
@@ -32,7 +32,7 @@ class StockItemVariant(LabScopedEntity):
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockCategory(LabScopedEntity):
+class StockCategory(BaseEntity):
     """StockCategory
     Consumable, Reagents, Durables
     """
@@ -43,7 +43,7 @@ class StockCategory(LabScopedEntity):
     description = Column(String, nullable=False)
 
 
-class Hazard(LabScopedEntity):
+class Hazard(BaseEntity):
     """Hazard"""
 
     __tablename__ = "hazard"
@@ -52,7 +52,7 @@ class Hazard(LabScopedEntity):
     description = Column(String, nullable=False)
 
 
-class StockUnit(LabScopedEntity):
+class StockUnit(BaseEntity):
     __tablename__ = "stock_unit"
 
     name = Column(String, nullable=False)
@@ -60,7 +60,7 @@ class StockUnit(LabScopedEntity):
     synonyms = Column(String, nullable=True)
 
 
-class StockLot(LabScopedEntity):
+class StockLot(BaseEntity):
     __tablename__ = "stock_lot"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)

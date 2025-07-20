@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from typing import Any, Generic, List, TypeVar, Optional
 
@@ -8,9 +9,15 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam, delete
 
-from felicity.apps.abstract.entity import LabScopedEntity
+from felicity.apps.abstract.entity import LabScopedEntity, MaybeLabScopedEntity
+from felicity.core.tenant_context import (
+    get_current_lab_uid,
+    get_current_user_uid
+)
 from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session
+
+logger = logging.getLogger(__name__)
 
 M = TypeVar("M", bound=LabScopedEntity)
 
@@ -63,6 +70,49 @@ class BaseRepository(Generic[M]):
         :param model: The model class to use for this repository.
         """
         self.model = model
+        self.is_lab_scoped = issubclass(model, LabScopedEntity) or issubclass(model, MaybeLabScopedEntity)
+
+    def _apply_lab_filter(self, stmt, lab_uid: str = None):
+        """Apply laboratory filter to query if model is lab-scoped"""
+        if not self.is_lab_scoped:
+            return stmt
+
+        # Use provided lab_uid or get from context
+        if lab_uid is None:
+            lab_uid = get_current_lab_uid()
+
+        if lab_uid:
+            stmt = stmt.where(self.model.laboratory_uid == lab_uid)
+        else:
+            # If no lab context, log warning and return empty result
+            logger.warning(f"No lab context for {self.model.__name__} query")
+            stmt = stmt.where(self.model.laboratory_uid.is_(None))  # Will return no results
+
+        return stmt
+
+    def _inject_tenant_context(self, data: dict, include_audit=True) -> dict:
+        """Inject tenant context into model data"""
+        if not self.is_lab_scoped:
+            return data
+
+        # Auto-inject laboratory_uid if not provided
+        if "laboratory_uid" not in data:
+            lab_uid = get_current_lab_uid()
+            if lab_uid:
+                data["laboratory_uid"] = lab_uid
+            else:
+                raise ValueError(f"Laboratory context required to create {self.model.__name__}")
+
+        if include_audit:
+            # Auto-inject user context for audit fields if available
+            user_uid = get_current_user_uid()
+            if user_uid:
+                if "created_by_uid" not in data:
+                    data["created_by_uid"] = user_uid
+                if "updated_by_uid" not in data:
+                    data["updated_by_uid"] = user_uid
+
+        return data
 
     @asynccontextmanager
     async def transaction(self):
@@ -151,6 +201,10 @@ class BaseRepository(Generic[M]):
         """
         if not kwargs:
             raise ValueError("No data provided to create a new model")
+
+        # Auto-inject tenant context
+        kwargs = self._inject_tenant_context(kwargs)
+
         filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled, commit=commit, session=session)
 
@@ -167,6 +221,8 @@ class BaseRepository(Generic[M]):
 
         to_save = []
         for data in bulk:
+            # Auto-inject tenant context for each item
+            data = self._inject_tenant_context(data)
             fill = self.model.fill(self.model(), **data)
             to_save.append(fill)
         return await self.save_all(to_save, commit=commit, session=session)
@@ -183,7 +239,11 @@ class BaseRepository(Generic[M]):
         if not uid or not kwargs:
             raise ValueError("Both uid and data are required to update model")
 
+        # Get with automatic lab filtering
         item = await self.get(uid=uid)
+        if not item:
+            raise ValueError(f"{self.model.__name__} with uid {uid} not found or not accessible")
+
         filled = self.model.fill(item, **kwargs)
         return await self.save(filled, commit=commit, session=session)
 
@@ -204,8 +264,9 @@ class BaseRepository(Generic[M]):
                 "Both update_data and filters are required to update model"
             )
 
-        query = self.model.smart_query(query=update(self.model), filters=filters)
-        stmt = query.values(update_data).execution_options(synchronize_session="fetch")
+        stmt = self.model.smart_query(query=update(self.model), filters=filters)
+        stmt = self._apply_lab_filter(stmt)
+        stmt = stmt.values(update_data).execution_options(synchronize_session="fetch")
 
         if session:
             # Use provided session (part of an existing transaction)
@@ -264,6 +325,9 @@ class BaseRepository(Generic[M]):
         :param mappings: A list of dictionaries containing the data to insert.
         """
         stmt = table.insert()
+        if hasattr(table.c, 'laboratory_uid'):
+            mappings = list(map(lambda m: self._inject_tenant_context(m, include_audit=False), mappings))
+
         if session:
             # Use provided session (part of an existing transaction)
             await session.execute(stmt, mappings)
@@ -298,6 +362,12 @@ class BaseRepository(Generic[M]):
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
 
+        # Apply lab filtering if table has laboratory_uid column
+        if hasattr(table.c, 'laboratory_uid'):
+            lab_uid = get_current_lab_uid()
+            if lab_uid:
+                stmt = stmt.where(table.c.laboratory_uid == lab_uid)
+
         if session:
             # Use provided session (part of an existing transaction)
             results = await session.execute(stmt)
@@ -321,6 +391,12 @@ class BaseRepository(Generic[M]):
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
 
+        # Apply lab filtering if table has laboratory_uid column
+        if hasattr(table.c, 'laboratory_uid'):
+            lab_uid = get_current_lab_uid()
+            if lab_uid:
+                stmt = stmt.where(table.c.laboratory_uid == lab_uid)
+
         if session:
             # Use provided session (part of an existing transaction)
             await session.execute(stmt)
@@ -343,7 +419,9 @@ class BaseRepository(Generic[M]):
         """
         if not kwargs:
             raise ValueError("No arguments provided to get model")
+
         stmt = self.model.where(**kwargs)
+        stmt = self._apply_lab_filter(stmt)
 
         if related:
             for key in related:
@@ -373,6 +451,8 @@ class BaseRepository(Generic[M]):
 
         # smart query
         stmt = self.model.smart_query(kwargs, sort_attrs)
+        stmt = self._apply_lab_filter(stmt)
+
         if related:
             for key in related:
                 stmt = apply_nested_loader_options(stmt, self.model, key)
@@ -393,6 +473,7 @@ class BaseRepository(Generic[M]):
         :return: A list of all model instances.
         """
         stmt = select(self.model)
+        stmt = self._apply_lab_filter(stmt)
 
         if session:
             # Use provided session (part of an existing transaction)
@@ -416,6 +497,8 @@ class BaseRepository(Generic[M]):
         start = (page - 1) * limit
 
         stmt = self.model.where(**kwargs).limit(limit).offset(start)
+        stmt = self._apply_lab_filter(stmt)
+
         async with self.async_session() as session:
             results = await session.execute(stmt)
             return results.scalars().all()
@@ -431,6 +514,7 @@ class BaseRepository(Generic[M]):
         if not uids:
             raise ValueError("No uids provided to get by uids")
         stmt = select(self.model).where(self.model.uid.in_(uids))  # type: ignore
+        stmt = self._apply_lab_filter(stmt)
 
         if session:
             results = await session.execute(stmt.order_by(self.model.uid))
@@ -452,6 +536,8 @@ class BaseRepository(Generic[M]):
                 search_string, postgresql_regconfig="english"
             )
         )
+        stmt = self._apply_lab_filter(stmt)
+
         async with self.async_session() as session:
             results = await session.execute(stmt)
         search = results.scalars().all()
@@ -466,16 +552,21 @@ class BaseRepository(Generic[M]):
         """
         if not uid:
             raise ValueError("No uid provided to delete")
-        obj = await self.get(uid=uid, session=session)
+        # First verify entity exists and is accessible
+        entity = await self.get(uid=uid, session=session)
+        if not entity:
+            raise ValueError(f"{self.model.__name__} with uid {uid} not found or not accessible")
+
+        stmt = delete(self.model).where(self.model.uid == uid)
+        stmt = self._apply_lab_filter(stmt)
 
         if session:
-            # Use provided session (part of an existing transaction)
-            await session.delete(obj)
+            await session.execute(stmt)
             if commit:
                 await session.flush()
         else:
             async with self.async_session() as session:
-                await session.delete(obj)
+                await session.execute(stmt)
                 await session.flush()
                 await self._commit_or_fail(session)
 
@@ -488,19 +579,25 @@ class BaseRepository(Generic[M]):
         if not kwargs:
             raise ValueError("No filter criteria provided to delete")
 
-        objs = await self.get_all(session=session, **kwargs)
+        stmt = delete(self.model)
+
+        # Apply filters
+        for key, value in kwargs.items():
+            if hasattr(self.model, key):
+                stmt = stmt.where(getattr(self.model, key) == value)
+
+        # Apply lab filtering
+        stmt = self._apply_lab_filter(stmt)
 
         if session:
-            # Use provided session (part of an existing transaction)
-            for obj in objs:
-                await session.delete(obj)
+            await session.execute(stmt)
             if commit:
                 await session.flush()
-        async with self.async_session() as session:
-            for obj in objs:
-                await session.delete(obj)
-            await session.flush()
-            await self._commit_or_fail(session)
+        else:
+            async with self.async_session() as session:
+                await session.execute(stmt)
+                await session.flush()
+                await self._commit_or_fail(session)
 
     async def count_where(self, filters: dict) -> int:
         """
@@ -510,7 +607,10 @@ class BaseRepository(Generic[M]):
         :return: The number of matching model instances.
         """
         filter_stmt = self.model.smart_query(filters=filters)
+        # Apply lab filtering
+        filter_stmt = self._apply_lab_filter(filter_stmt)
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
+
         async with self.async_session() as session:
             res = await session.execute(count_stmt)
         return res.scalars().one()
@@ -561,6 +661,10 @@ class BaseRepository(Generic[M]):
         stmt = self.model.smart_query(filters, sort_attrs)
         if limit:
             stmt = stmt.limit(limit)
+
+        # Apply lab filtering
+        stmt = self._apply_lab_filter(stmt)
+
         async with self.async_session() as session:
             results = await session.execute(stmt.distinct())
             found = results.scalars().all()
@@ -617,6 +721,9 @@ class BaseRepository(Generic[M]):
 
         if page_size:
             stmt = stmt.limit(page_size)
+        
+        # Apply lab filtering
+        stmt = self._apply_lab_filter(stmt)
 
         async with self.async_session() as session:
             res = await session.execute(stmt)  # .distinct()

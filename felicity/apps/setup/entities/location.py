@@ -1,11 +1,12 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import BaseEntity
 
 
-class LocationBase(LabScopedEntity):
+class LocationBase(BaseEntity):
     __abstract__ = True
+    
     code = Column(String, index=True, unique=True, nullable=True)
     name = Column(String)
     email = Column(String, nullable=True)
@@ -29,9 +30,5 @@ class Province(LocationBase):
     country = relationship("Country", backref="provinces", lazy="selectin")
 
 
-class Country(LabScopedEntity):
+class Country(LocationBase):
     __tablename__ = "country"
-
-    name = Column(String, default="Zimbabwe")
-    code = Column(String, index=True, unique=True, nullable=True)
-    active = Column(Boolean(), default=False)

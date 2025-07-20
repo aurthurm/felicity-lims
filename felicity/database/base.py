@@ -131,6 +131,8 @@ from felicity.apps.setup.entities import District  # noqa
 from felicity.apps.setup.entities import Laboratory  # noqa
 from felicity.apps.setup.entities import LaboratorySetting  # noqa
 from felicity.apps.setup.entities import Manufacturer  # noqa
+from felicity.apps.setup.entities import Organization  # noqa
+from felicity.apps.setup.entities import OrganizationSetting  # noqa
 from felicity.apps.setup.entities import Province  # noqa
 from felicity.apps.setup.entities import Supplier  # noqa
 from felicity.apps.setup.entities import Unit  # noqa

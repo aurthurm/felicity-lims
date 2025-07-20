@@ -5,8 +5,10 @@ from felicity.apps.common.schemas import BaseAuditModel
 
 class APPActivityLogBase(BaseAuditModel):
     token_identifier: str
+    user_uid: str
 
     # Request Info
+    request_id: str | None
     path: str
     method: str
     query_params: str
@@ -22,6 +24,10 @@ class APPActivityLogBase(BaseAuditModel):
     user_agent: str
     # length
     duration: float
+
+    # Multitenancy
+    laboratory_uid: str | None
+    organization_uid: str | None
 
 
 class APPActivityLogBaseInDB(APPActivityLogBase):

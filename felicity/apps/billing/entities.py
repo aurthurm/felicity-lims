@@ -12,12 +12,12 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, MaybeLabScopedEntity
 from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
 from felicity.core.dtz import timenow_dt
 
 
-class AnalysisPrice(LabScopedEntity):
+class AnalysisPrice(MaybeLabScopedEntity):
     __tablename__ = "analysis_price"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
@@ -35,7 +35,7 @@ class ProfilePrice(LabScopedEntity):
     amount = Column(Float, nullable=False)
 
 
-class AnalysisDiscount(LabScopedEntity):
+class AnalysisDiscount(MaybeLabScopedEntity):
     __tablename__ = "analysis_discount"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
@@ -69,7 +69,7 @@ class ProfileDiscount(LabScopedEntity):
     is_active = Column(Boolean, nullable=False)
 
 
-class Voucher(LabScopedEntity):
+class Voucher(MaybeLabScopedEntity):
     __tablename__ = "voucher"
 
     name = Column(String, nullable=False, unique=True)
@@ -86,7 +86,7 @@ class Voucher(LabScopedEntity):
     once_per_order = Column(Boolean, nullable=False)
 
 
-class VoucherCode(LabScopedEntity):
+class VoucherCode(MaybeLabScopedEntity):
     __tablename__ = "voucher_code"
 
     code = Column(String(20), nullable=False, unique=True)
