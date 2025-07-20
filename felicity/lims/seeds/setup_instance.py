@@ -10,10 +10,11 @@ from felicity.apps.setup.services import (
     DistrictService,
     LaboratoryService,
     LaboratorySettingService,
-    ProvinceService,
+    ProvinceService, OrganizationService, OrganizationSettingService,
 )
 from felicity.core.config import get_settings
 from .data import get_seeds
+from ...apps.setup.entities import Organization
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
@@ -118,24 +119,76 @@ async def seed_clients() -> None:
                 pass
 
 
+async def seed_organisation(name: str | None = None) -> Organization | None:
+    logger.info("Setting up the organisation .....")
+    organization_service = OrganizationService()
+    organization_setting_service = OrganizationSettingService()
+
+    data = get_seeds("organization")
+    if not data:
+        logger.error("Failed to load organisation seed data")
+        return None
+
+    if not name:
+        name = data.get("name", "Felicity Labs")
+
+    setup_name = data.get("name", "felicity")
+    organisation = await organization_service.get_by_setup_name(setup_name)
+    if not organisation:
+        lab_in = schemas.OrganizationCreate(
+            setup_name=setup_name,
+            name=name,
+            email=None,
+            email_cc=None,
+            mobile_phone=None,
+            business_phone=None,
+        )
+        organisation = await organization_service.create(lab_in)
+
+    # Add Settings Page
+    org_settings = await organization_setting_service.get(organisation_uid=organisation.uid)
+    if not org_settings:
+        setting_in = schemas.OrganizationSettingCreate(
+            organisation_uid=organisation.uid,
+            password_lifetime=90,
+            inactivity_log_out=30,
+            allow_billing=False,
+            allow_auto_billing=True,
+            currency="USD",
+            payment_terms_days=30,
+        )
+        await organization_setting_service.create(setting_in)
+
+    return organisation
+
+
 async def seed_laboratory(name: str) -> None:
     logger.info("Setting up the laboratory .....")
+
+    organization_service = OrganizationService()
     laboratory_service = LaboratoryService()
     laboratory_setting_service = LaboratorySettingService()
     department_service = DepartmentService()
 
-    data = get_seeds("laboratory")
+    data = get_seeds("organization")
     if not data:
-        logger.error("Failed to load person seed data")
+        logger.error("Failed to load organisation seed data")
         return
 
+    setup_name = data.get("name", "felicity")
+    organisation = await organization_service.get_by_setup_name(setup_name)
+    if not organisation:
+        organisation = await seed_organisation()
+
+    lab_data = data.get("laboratory")
     if not name:
-        name = data.get("laboratory_name", "Felicity Labs")
-    laboratory = await laboratory_service.get_by_setup_name("felicity")
-    if not laboratory:
+        name = lab_data.get("name", "My First Laboratory")
+
+    laboratories = await laboratory_service.get_all(organisation_uid=organisation.uid)
+    if organisation and not laboratories:
         lab_in = schemas.LaboratoryCreate(
-            setup_name=data.get("setup_name", "felicity"),
-            lab_name=name,
+            organisation_uid=organisation.uid,
+            name=name,
             email=None,
             email_cc=None,
             mobile_phone=None,
@@ -143,31 +196,31 @@ async def seed_laboratory(name: str) -> None:
         )
         laboratory = await laboratory_service.create(lab_in)
 
-    departments = data.get("departments", [])
-    if departments:
-        for _dept in departments:
-            department = await department_service.get(name=_dept)
-            if not department:
-                d_in = schemas.DepartmentCreate(name=_dept, description=_dept)
-                await department_service.create(d_in)
+        departments = lab_data.get("departments", [])
+        if departments:
+            for _dept in departments:
+                department = await department_service.get(name=_dept)
+                if not department:
+                    d_in = schemas.DepartmentCreate(name=_dept, description=_dept)
+                    await department_service.create(d_in)
 
-    # Add Settings Page
-    lab_settings = await laboratory_setting_service.get(laboratory_uid=laboratory.uid)
-    if not lab_settings:
-        setting_in = schemas.LaboratorySettingCreate(
-            laboratory_uid=laboratory.uid,
-            allow_self_verification=False,
-            allow_patient_registration=True,
-            allow_sample_registration=True,
-            allow_worksheet_creation=True,
-            default_route="DASHBOARD",
-            password_lifetime=90,
-            inactivity_log_out=30,
-            default_theme="LIGHT",
-            auto_receive_samples=True,
-            sticker_copies=2,
-            allow_billing=False,
-            allow_auto_billing=True,
-            currency="USD",
-        )
-        await laboratory_setting_service.create(setting_in)
+        # Add Settings Page
+        lab_settings = await laboratory_setting_service.get(laboratory_uid=laboratory.uid)
+        if not lab_settings:
+            setting_in = schemas.LaboratorySettingCreate(
+                laboratory_uid=laboratory.uid,
+                allow_self_verification=False,
+                allow_patient_registration=True,
+                allow_sample_registration=True,
+                allow_worksheet_creation=True,
+                default_route="DASHBOARD",
+                password_lifetime=90,
+                inactivity_log_out=30,
+                default_theme="LIGHT",
+                auto_receive_samples=True,
+                sticker_copies=2,
+                allow_billing=False,
+                allow_auto_billing=True,
+                currency="USD",
+            )
+            await laboratory_setting_service.create(setting_in)
