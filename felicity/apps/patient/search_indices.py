@@ -9,10 +9,10 @@ Uses cryptographic hash-based indices for performance optimization.
 from sqlalchemy import Column, String, Index, ForeignKey
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import BaseEntity
 
 
-class PatientSearchIndex(LabScopedEntity):
+class PatientSearchIndex(BaseEntity):
     """
     Searchable encryption index for patient data.
     
@@ -53,7 +53,7 @@ class PatientSearchIndex(LabScopedEntity):
     )
 
 
-class PhoneSearchIndex(LabScopedEntity):
+class PhoneSearchIndex(BaseEntity):
     """
     Specialized search index for phone numbers with normalization.
     
@@ -87,7 +87,7 @@ class PhoneSearchIndex(LabScopedEntity):
     )
 
 
-class DateSearchIndex(LabScopedEntity):
+class DateSearchIndex(BaseEntity):
     """
     Search index for date fields with range query support.
     

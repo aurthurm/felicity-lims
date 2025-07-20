@@ -17,6 +17,8 @@ class FGroup(StrEnum):  # (KEYWORD, NAME)
 
 
 class FObject(StrEnum):
+    ORGANISATION = "ORGANISATION"
+    LABORATORY = "LABORATORY"
     ANALYTICS = "ANALYTICS"
     CLIENT = "CLIENT"
     PATIENT = "PATIENT"

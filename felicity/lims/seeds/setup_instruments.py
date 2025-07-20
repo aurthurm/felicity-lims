@@ -44,8 +44,18 @@ async def seed_instrument_categories() -> None:
     for _inst in data.get("instruments", []):
         if not (await instrument_service.get(name=_inst)):
             inst_in = schemas.InstrumentCreate(name=_inst, description="", keyword="")
-            instrument = await instrument_service.create(inst_in)
+            await instrument_service.create(inst_in)
 
+
+async def seed_lab_instrument() -> None:
+    logger.info("Setting up instrument categories .....")
+    instrument_service = InstrumentService()
+    laboratory_instrument_service = LaboratoryInstrumentService()
+
+    data = get_seeds("instrument")
+    for _inst in data.get("instruments", []):
+        instrument = await instrument_service.get(name=_inst)
+        if instrument:
             if _inst == "Manual":
                 if not (await laboratory_instrument_service.get(lab_name=_inst)):
                     lab_inst_in = schemas.LaboratoryInstrumentCreate(

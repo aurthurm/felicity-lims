@@ -19,6 +19,8 @@ BILLING: UPDATE, READ
 
 DEFAULT_PERMISSION_MAPPINGS = {
     FAction.CREATE: {
+        FObject.ORGANISATION: [FGroup.ADMINISTRATOR],
+        FObject.LABORATORY: [FGroup.ADMINISTRATOR],
         FObject.CLIENT: [FGroup.ADMINISTRATOR],
         FObject.PATIENT: [FGroup.LAB_HAND],
         FObject.SAMPLE: [FGroup.LAB_HAND],
@@ -152,6 +154,8 @@ DEFAULT_PERMISSION_MAPPINGS = {
         ],
     },
     FAction.UPDATE: {
+        FObject.ORGANISATION: [FGroup.ADMINISTRATOR],
+        FObject.LABORATORY: [FGroup.ADMINISTRATOR],
         FObject.CLIENT: [FGroup.ADMINISTRATOR],
         FObject.PATIENT: [FGroup.LAB_HAND],
         FObject.SAMPLE: [FGroup.LAB_HAND],

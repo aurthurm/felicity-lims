@@ -1,1 +1,0 @@
-import{aq as n,ar as s}from"./index-93739211.js";import{i as b}from"./isArray-513c67aa.js";function p(o,i,g){var e=-1,r=o.length;i<0&&(i=-i>r?0:r+i),g=g>r?r:g,g<0&&(g+=r),r=i>g?0:g-i>>>0,i>>>=0;for(var f=Array(r);++e<r;)f[e]=o[e+i];return f}var c="[object String]";function t(o){return typeof o=="string"||!b(o)&&n(o)&&s(o)==c}export{p as b,t as i};

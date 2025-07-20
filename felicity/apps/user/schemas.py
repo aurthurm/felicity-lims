@@ -88,6 +88,7 @@ class GroupInDB(GroupInDBBase):
 #  User Preferences
 #
 class UserPreferenceBase(BaseAuditModel):
+    laboratory_uid: str | None = None
     user_uid: str
     expanded_menu: bool | None = False
     theme: str | None = "light"

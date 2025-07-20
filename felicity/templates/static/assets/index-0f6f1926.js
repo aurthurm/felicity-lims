@@ -1,1 +1,0 @@
-import{e as s}from"./index-93739211.js";const e=(t,r=!0)=>{const a=s(t);return a.isValid()?r?a.format("D MMMM YYYY, h:mm:ss a"):a.format("D MMMM YYYY"):t??"---"},M=(t,r)=>{const a=s(t);return a.isValid()?a.format(r):t??"---"},f=(t,r)=>Math.floor(Math.abs(t-r)/(1e3*60*60*24));export{M as f,e as p,f as s};

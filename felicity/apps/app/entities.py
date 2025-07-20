@@ -12,7 +12,7 @@ class APPActivityLog(BaseEntity):
     __repr_fields__ = ('token_identifier',)
 
     token_identifier = Column(String(255), nullable=False)
-    user_uid = Column(String(39), nullable=True),
+    user_uid = Column(String(39), nullable=True)
     # Request Info
     request_id = Column(String(39), nullable=True)
     path = Column(String(255), nullable=False)

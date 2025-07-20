@@ -1,17 +1,20 @@
 {
   "setup_name": "felicity",
-  "laboratory_name": "Felicity Labs",
-  "departments": [
-    "Microbiology",
-    "Bacteriology",
-    "Parasitology",
-    "Chemistry",
-    "Serology",
-    "Haematology",
-    "Blood Bank",
-    "Histology",
-    "Immunology",
-    "Virology",
-    "Cytology"
-  ]
+  "name": "Felicity Labs",
+  "laboratory": {
+    "name": "My First Laboratory",
+    "departments": [
+      "Microbiology",
+      "Bacteriology",
+      "Parasitology",
+      "Chemistry",
+      "Serology",
+      "Haematology",
+      "Blood Bank",
+      "Histology",
+      "Immunology",
+      "Virology",
+      "Cytology"
+    ]
+  }
 }

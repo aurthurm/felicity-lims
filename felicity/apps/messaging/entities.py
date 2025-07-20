@@ -67,7 +67,7 @@ class Message(LabScopedEntity, BaseMPTT):
 
     __tablename__ = "message"
 
-    thread_uid = Column(String, ForeignKey("message_thread.uid"), nullable=True),
+    thread_uid = Column(String, ForeignKey("message_thread.uid"), nullable=True)
     thread = relationship("MessageThread", back_populates="messages", lazy="selectin")
     body = Column(String, nullable=False)
     viewers = relationship("User", secondary=message_view, lazy="selectin")

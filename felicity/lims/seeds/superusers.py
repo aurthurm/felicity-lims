@@ -33,6 +33,7 @@ async def seed_daemon_user() -> None:
         system_daemon = await user_service.create(user_in=su_in, related=["groups"])
 
     admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
+
     if admin_group.uid not in [g.uid for g in system_daemon.groups]:
         system_daemon.groups.append(admin_group)
         await user_service.save(system_daemon)
@@ -68,7 +69,6 @@ async def seed_super_user() -> None:
         super_user = await user_service.create(user_in=su_in, related=["groups"])
 
     admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
-
     if admin_group and admin_group.uid not in [g.uid for g in super_user.groups]:
         super_user.groups.append(admin_group)
         await user_service.save(super_user)

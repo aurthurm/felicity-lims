@@ -14,7 +14,7 @@ from felicity.apps.setup.services import (
 )
 from felicity.core.config import get_settings
 from .data import get_seeds
-from ...apps.setup.entities import Organization
+from ...apps.setup.entities import Organization, Laboratory
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
@@ -146,10 +146,10 @@ async def seed_organisation(name: str | None = None) -> Organization | None:
         organisation = await organization_service.create(lab_in)
 
     # Add Settings Page
-    org_settings = await organization_setting_service.get(organisation_uid=organisation.uid)
+    org_settings = await organization_setting_service.get(organization_uid=organisation.uid)
     if not org_settings:
         setting_in = schemas.OrganizationSettingCreate(
-            organisation_uid=organisation.uid,
+            organization_uid=organisation.uid,
             password_lifetime=90,
             inactivity_log_out=30,
             allow_billing=False,
@@ -162,7 +162,7 @@ async def seed_organisation(name: str | None = None) -> Organization | None:
     return organisation
 
 
-async def seed_laboratory(name: str) -> None:
+async def seed_laboratory(name: str) -> Laboratory | None:
     logger.info("Setting up the laboratory .....")
 
     organization_service = OrganizationService()
@@ -173,7 +173,7 @@ async def seed_laboratory(name: str) -> None:
     data = get_seeds("organization")
     if not data:
         logger.error("Failed to load organisation seed data")
-        return
+        return None
 
     setup_name = data.get("name", "felicity")
     organisation = await organization_service.get_by_setup_name(setup_name)
@@ -184,10 +184,10 @@ async def seed_laboratory(name: str) -> None:
     if not name:
         name = lab_data.get("name", "My First Laboratory")
 
-    laboratories = await laboratory_service.get_all(organisation_uid=organisation.uid)
+    laboratories = await laboratory_service.get_all(organization_uid=organisation.uid)
     if organisation and not laboratories:
         lab_in = schemas.LaboratoryCreate(
-            organisation_uid=organisation.uid,
+            organization_uid=organisation.uid,
             name=name,
             email=None,
             email_cc=None,

@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 
-from felicity.apps.abstract.entity import LabScopedEntity
+from felicity.apps.abstract.entity import BaseEntity
 
 
-class AuditLog(LabScopedEntity):
+class AuditLog(BaseEntity):
     """Model an audit log of user actions"""
 
     __tablename__ = "audit_log"

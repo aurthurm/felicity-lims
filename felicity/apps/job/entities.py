@@ -1,11 +1,11 @@
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.core.dtz import timenow_dt
 
 
-class Job(LabScopedEntity):
+class Job(BaseEntity):
     __tablename__ = "job"
 
     action = Column(String)

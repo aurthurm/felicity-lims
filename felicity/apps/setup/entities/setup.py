@@ -25,11 +25,13 @@ class Organization(BaseEntity):
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
     country_uid = Column(String, ForeignKey("country.uid"))
-    country = relationship("Country", backref="organisations", lazy="selectin")
+    country = relationship("Country", lazy="selectin")
     province_uid = Column(String, ForeignKey("province.uid"))
-    province = relationship("Province", backref="organisations", lazy="selectin")
+    province = relationship("Province", lazy="selectin")
     district_uid = Column(String, ForeignKey("district.uid"))
-    district = relationship("District", backref="organisations", lazy="selectin")
+    district = relationship("District", lazy="selectin")
+    settings = relationship("OrganizationSetting", back_populates="organization", lazy="selectin")
+    laboratories = relationship("Laboratory", back_populates="organization", lazy="selectin")
 
 
 class OrganizationSetting(BaseEntity):
@@ -37,7 +39,7 @@ class OrganizationSetting(BaseEntity):
 
     organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
     organization = relationship(
-        Organization, foreign_keys=[organization_uid], backref="laboratories", lazy="selectin"
+        Organization, back_populates="settings", lazy="selectin"
     )
     password_lifetime = Column(Integer, nullable=True)
     inactivity_log_out = Column(Integer, nullable=True)
@@ -52,7 +54,7 @@ class Laboratory(BaseEntity):
 
     organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
     organization = relationship(
-        Organization, foreign_keys=[organization_uid], backref="laboratories", lazy="selectin"
+        Organization, back_populates="laboratories", lazy="selectin"
     )
     # Allow specific lab to override organisation details and be unique if necessary
     name = Column(String, nullable=False)
@@ -69,11 +71,11 @@ class Laboratory(BaseEntity):
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
     country_uid = Column(String, ForeignKey("country.uid"))
-    country = relationship("Country", backref="organisations", lazy="selectin")
+    country = relationship("Country", lazy="selectin")
     province_uid = Column(String, ForeignKey("province.uid"))
-    province = relationship("Province", backref="organisations", lazy="selectin")
+    province = relationship("Province", lazy="selectin")
     district_uid = Column(String, ForeignKey("district.uid"))
-    district = relationship("District", backref="organisations", lazy="selectin")
+    district = relationship("District", lazy="selectin")
 
     @property
     def sms_metadata(self) -> dict:

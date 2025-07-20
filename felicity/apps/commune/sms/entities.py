@@ -1,11 +1,11 @@
 from sqlalchemy import DateTime, Enum, Column, ForeignKey, String, Text, Boolean
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.commune.sms.enum import SmsAudience, SmsTrigger
 
 
-class SmsTemplate(LabScopedEntity):
+class SmsTemplate(BaseEntity):
     """SmsTemplate"""
 
     __tablename__ = "sms_template"
@@ -26,7 +26,7 @@ class SmsTemplate(LabScopedEntity):
     is_active = Column(Boolean, default=True)
 
 
-class SmsMessage(LabScopedEntity):
+class SmsMessage(BaseEntity):
     __tablename__ = "sms_message"
     
     template_uid = Column(String, ForeignKey("sms_template.uid"), nullable=True)

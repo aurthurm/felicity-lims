@@ -1,1 +1,0 @@
-import{_ as o,r as t,o as r,c,a as s}from"./index-93739211.js";const n={},a={class:""};function i(l,_){const e=t("router-view");return r(),c("div",a,[s(e)])}const u=o(n,[["render",i],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/qcontrol/QualityControls.vue"]]);export{u as default};

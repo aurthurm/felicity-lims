@@ -70,7 +70,9 @@ class BaseRepository(Generic[M]):
         :param model: The model class to use for this repository.
         """
         self.model = model
-        self.is_lab_scoped = issubclass(model, LabScopedEntity) or issubclass(model, MaybeLabScopedEntity)
+        self.is_lab_scoped = issubclass(model, LabScopedEntity)
+        if issubclass(model, MaybeLabScopedEntity):
+            self.is_lab_scoped = False
 
     def _apply_lab_filter(self, stmt, lab_uid: str = None):
         """Apply laboratory filter to query if model is lab-scoped"""
@@ -81,7 +83,8 @@ class BaseRepository(Generic[M]):
         if lab_uid is None:
             lab_uid = get_current_lab_uid()
 
-        if lab_uid:
+        if lab_uid is not None:
+            logger.warning(f"Lab context for {self.model.__name__} query lab_uid ={lab_uid}")
             stmt = stmt.where(self.model.laboratory_uid == lab_uid)
         else:
             # If no lab context, log warning and return empty result
@@ -721,7 +724,7 @@ class BaseRepository(Generic[M]):
 
         if page_size:
             stmt = stmt.limit(page_size)
-        
+
         # Apply lab filtering
         stmt = self._apply_lab_filter(stmt)
 

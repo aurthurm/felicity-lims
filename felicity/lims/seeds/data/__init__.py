@@ -12,7 +12,7 @@ def load_seed_files() -> dict:
     for _f in [
         "analyses",
         "clients",
-        "laboratory",
+        "organization",
         "country",
         "inventory",
         "instrument",

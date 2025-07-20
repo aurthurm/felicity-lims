@@ -1,8 +1,104 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict
 
 from felicity.apps.common.schemas import BaseAuditModel
+
+
+#
+#  Organization
+#
+
+# Shared properties
+
+
+class OrganizationBase(BaseModel):
+    setup_name: str = "felicity"
+    name: str | None = None
+    code: str | None = None
+    timezone: str | None = None
+    tag_line: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    address: str | None = None
+    banking: str | None = None
+    logo: str | None = None
+    quality_statement: str | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
+
+
+# Properties to receive via API on creation
+class OrganizationCreate(OrganizationBase):
+    pass
+
+
+# Properties to receive via API on update
+class OrganizationUpdate(OrganizationBase):
+    pass
+
+
+class OrganizationInDBBase(OrganizationBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class Organization(OrganizationInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class OrganizationInDB(OrganizationInDBBase):
+    pass
+
+
+#
+#  OrganizationSetting
+#
+
+# Shared properties
+
+
+class OrganizationSettingBase(BaseModel):
+    organization_uid: str
+    password_lifetime: int | None = None
+    inactivity_log_out: int | None = None
+    allow_billing: bool | None = False
+    allow_auto_billing: bool | None = False
+    currency: str | None = None
+    payment_terms_days: int | None = 30
+
+
+# Properties to receive via API on creation
+class OrganizationSettingCreate(OrganizationSettingBase):
+    pass
+
+
+# Properties to receive via API on update
+class OrganizationSettingUpdate(OrganizationSettingBase):
+    pass
+
+
+class OrganizationSettingInDBBase(OrganizationSettingBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class OrganizationSetting(OrganizationSettingInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class OrganizationSettingInDB(OrganizationSettingInDBBase):
+    pass
+
 
 #
 #  Laboratory
@@ -12,17 +108,22 @@ from felicity.apps.common.schemas import BaseAuditModel
 
 
 class LaboratoryBase(BaseModel):
-    setup_name: str = "felicity"
-    lab_name: str | None = None
+    organization_uid: str
+    name: str
     tag_line: str | None = None
-    email: Optional[EmailStr] = None
+    code: str | None = None
+    lab_manager_uid: str | None = None
+    email: str | None = None
     email_cc: str | None = None
     mobile_phone: str | None = None
     business_phone: str | None = None
-    lab_manager_uid: str | None = None
-    address: str | None = ""
-    banking: str | None = ""
-    quality_statement: str | None = ""
+    address: str | None = None
+    banking: str | None = None
+    logo: str | None = None
+    quality_statement: str | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
 
 
 # Properties to receive via API on creation
@@ -59,15 +160,16 @@ class LaboratorySettingBase(BaseAuditModel):
     allow_sample_registration: bool | None = True
     allow_worksheet_creation: bool | None = True
     default_route: str | None = None
-    password_lifetime: int | None = None
-    inactivity_log_out: int | None = None
     default_theme: str | None = None
     auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
+
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
     currency: str | None = "USD"
     payment_terms_days: int = 0
+    password_lifetime: int | None = None
+    inactivity_log_out: int | None = None
 
 
 class LaboratorySettingCreate(LaboratorySettingBase):

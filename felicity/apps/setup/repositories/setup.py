@@ -1,6 +1,8 @@
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.setup.entities import (
     Department,
+    Organization,
+    OrganizationSetting,
     Laboratory,
     LaboratorySetting,
     Manufacturer,
@@ -12,6 +14,16 @@ from felicity.apps.setup.entities import (
 class DepartmentRepository(BaseRepository[Department]):
     def __init__(self) -> None:
         super().__init__(Department)
+
+
+class OrganizationRepository(BaseRepository[Organization]):
+    def __init__(self) -> None:
+        super().__init__(Organization)
+
+
+class OrganizationSettingRepository(BaseRepository[OrganizationSetting]):
+    def __init__(self) -> None:
+        super().__init__(OrganizationSetting)
 
 
 class LaboratoryRepository(BaseRepository[Laboratory]):
