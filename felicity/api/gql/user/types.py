@@ -68,14 +68,6 @@ class UserType:
 
 
 @strawberry.type
-class AuthenticatedData:
-    user: UserType
-    token: str
-    refresh: str
-    token_type: str
-
-
-@strawberry.type
 class UpdatedGroupPerms:
     group: GroupType
     permission: PermissionType

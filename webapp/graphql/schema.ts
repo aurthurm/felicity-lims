@@ -1433,6 +1433,8 @@ export type AuditLogType = {
 
 export type AuthenticatedData = {
   __typename?: 'AuthenticatedData';
+  activeLaboratory?: Maybe<LaboratoryType>;
+  laboratories?: Maybe<Array<LaboratoryType>>;
   refresh: Scalars['String']['output'];
   token: Scalars['String']['output'];
   tokenType: Scalars['String']['output'];
@@ -3292,11 +3294,10 @@ export type LaboratoryType = {
   emailCc?: Maybe<Scalars['String']['output']>;
   labManager?: Maybe<UserType>;
   labManagerUid?: Maybe<Scalars['String']['output']>;
-  labName: Scalars['String']['output'];
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
   qualityStatement?: Maybe<Scalars['String']['output']>;
-  setupName: Scalars['String']['output'];
   tagLine?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -10527,6 +10528,8 @@ export type GraphCacheResolvers = {
     userUid?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['String'] | string>
   },
   AuthenticatedData?: {
+    activeLaboratory?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratories?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, Array<WithTypename<LaboratoryType> | string>>,
     refresh?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, Scalars['String'] | string>,
     token?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, Scalars['String'] | string>,
     tokenType?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, Scalars['String'] | string>,
@@ -11462,11 +11465,10 @@ export type GraphCacheResolvers = {
     emailCc?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     labManager?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<UserType> | string>,
     labManagerUid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
-    labName?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     logo?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     mobilePhone?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
+    name?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     qualityStatement?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
-    setupName?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     tagLine?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
@@ -14598,6 +14600,8 @@ export type GraphCacheUpdaters = {
     userUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>
   },
   AuthenticatedData?: {
+    activeLaboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
+    laboratories?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
     refresh?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
     token?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
     tokenType?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
@@ -15533,11 +15537,10 @@ export type GraphCacheUpdaters = {
     emailCc?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     labManager?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     labManagerUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
-    labName?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     logo?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     mobilePhone?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     qualityStatement?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
-    setupName?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     tagLine?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,

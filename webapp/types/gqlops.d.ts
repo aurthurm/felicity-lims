@@ -4,7 +4,7 @@ export type AuthenticateUserMutationVariables = Exact<{
 }>;
 
 
-export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, refresh: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, refresh: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null }, laboratories?: Array<{ __typename?: 'LaboratoryType', uid: string, name: string }> | null, activeLaboratory?: { __typename?: 'LaboratoryType', uid: string, name: string } | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type RequestPassResetMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -110,7 +110,7 @@ export type EditLaboratoryMutationVariables = Exact<{
 }>;
 
 
-export type EditLaboratoryMutation = { __typename?: 'Mutation', updateLaboratory: { __typename?: 'LaboratoryType', uid: string, setupName: string, labName: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+export type EditLaboratoryMutation = { __typename?: 'Mutation', updateLaboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type EditLaboratorySettingMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -125,7 +125,7 @@ export type GetLaboratoryQueryVariables = Exact<{
 }>;
 
 
-export type GetLaboratoryQuery = { __typename?: 'Query', laboratory: { __typename?: 'LaboratoryType', uid: string, setupName: string, labName: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } };
+export type GetLaboratoryQuery = { __typename?: 'Query', laboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } };
 
 export type GetLaboratorySettingQueryVariables = Exact<{
   setupName?: Scalars['String']['input'];

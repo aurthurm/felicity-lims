@@ -44,7 +44,7 @@ async def instance_lookup(
     organisation = await org_service.get_by_setup_name("felicity")
     laboratories = []
     if organisation:
-        laboratories = await lab_service.get_all(organisation_uid=organisation.uid)
+        laboratories = await lab_service.get_all(organization_uid=organisation.uid)
     return {
         "laboratories": [
             (
@@ -78,7 +78,7 @@ async def register_instance(
     organisation = await org_service.get_by_setup_name("felicity")
     laboratories = []
     if organisation:
-        laboratories = await lab_service.get_all(organisation_uid=organisation.uid)
+        laboratories = await lab_service.get_all(organization_uid=organisation.uid)
     return {
         "laboratories": [
             (

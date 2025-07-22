@@ -32,7 +32,13 @@ export type AuthenticateUserMutation = (
           & Pick<Types.DepartmentType, 'uid' | 'name'>
         )>> }
       )> }
-    ) }
+    ), laboratories?: Types.Maybe<Array<(
+      { __typename?: 'LaboratoryType' }
+      & Pick<Types.LaboratoryType, 'uid' | 'name'>
+    )>>, activeLaboratory?: Types.Maybe<(
+      { __typename?: 'LaboratoryType' }
+      & Pick<Types.LaboratoryType, 'uid' | 'name'>
+    )> }
   ) | (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
@@ -299,7 +305,7 @@ export type EditLaboratoryMutation = (
   { __typename?: 'Mutation' }
   & { updateLaboratory: (
     { __typename?: 'LaboratoryType' }
-    & Pick<Types.LaboratoryType, 'uid' | 'setupName' | 'labName' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
+    & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
   ) | (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
@@ -356,6 +362,14 @@ export const AuthenticateUserDocument = gql`
             name
           }
         }
+      }
+      laboratories {
+        uid
+        name
+      }
+      activeLaboratory {
+        uid
+        name
       }
     }
     ... on OperationError {
@@ -700,8 +714,7 @@ export const EditLaboratoryDocument = gql`
   updateLaboratory(uid: $uid, payload: $payload) {
     ... on LaboratoryType {
       uid
-      setupName
-      labName
+      name
       tagLine
       labManagerUid
       email

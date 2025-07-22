@@ -9,8 +9,7 @@ from felicity.api.gql.user.types import UserType
 @strawberry.type
 class LaboratoryType:
     uid: str
-    setup_name: str
-    lab_name: str
+    name: str
     tag_line: str | None = None
     lab_manager_uid: str | None = None
     lab_manager: Optional["UserType"] = None

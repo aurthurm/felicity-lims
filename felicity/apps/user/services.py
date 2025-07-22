@@ -136,6 +136,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         user_groups_uid = await self.repository.table_query(user_groups, ["group_uid"], user_uid=user_uid)
         return await GroupService().get_by_uids(user_groups_uid) if user_groups_uid else []
 
+    async def set_active_laboratory(self, user_uid: str, laboratory_uid: str) -> None:
+        await super().update(user_uid, {'active_laboratory_uid': laboratory_uid})
+
 
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
     def __init__(self):

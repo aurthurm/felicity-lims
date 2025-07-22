@@ -10,6 +10,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # TODO: Refactor User to LaboratoryContact, UserAuth to ContactAuth
+"""
+Many to Many Link between Laboratory and User
+"""
+laboratory_user = Table(
+    "laboratory_user",
+    MaybeLabScopedEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), nullable=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between Group and User
@@ -50,6 +59,9 @@ class User(AbstractBaseUser):
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
+
+    active_laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
+    active_laboratory = relationship("Laboratory", foreign_keys=[active_laboratory_uid])
 
 
 class Permission(BaseEntity):

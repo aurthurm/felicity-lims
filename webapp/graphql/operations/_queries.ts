@@ -12,7 +12,7 @@ export type GetLaboratoryQuery = (
   { __typename?: 'Query' }
   & { laboratory: (
     { __typename?: 'LaboratoryType' }
-    & Pick<Types.LaboratoryType, 'uid' | 'setupName' | 'labName' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
+    & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
   ) }
 );
 
@@ -108,8 +108,7 @@ export const GetLaboratoryDocument = gql`
     query getLaboratory($setupName: String! = "felicity") {
   laboratory(setupName: $setupName) {
     uid
-    setupName
-    labName
+    name
     tagLine
     labManagerUid
     email

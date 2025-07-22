@@ -8038,6 +8038,30 @@ export default {
         "name": "AuthenticatedData",
         "fields": [
           {
+            "name": "activeLaboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratories",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "LaboratoryType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
             "name": "refresh",
             "type": {
               "kind": "NON_NULL",
@@ -16804,17 +16828,6 @@ export default {
             "args": []
           },
           {
-            "name": "labName",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
             "name": "logo",
             "type": {
               "kind": "SCALAR",
@@ -16831,21 +16844,21 @@ export default {
             "args": []
           },
           {
-            "name": "qualityStatement",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "setupName",
+            "name": "name",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "qualityStatement",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },

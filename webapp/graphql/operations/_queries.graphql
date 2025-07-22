@@ -1,8 +1,7 @@
 query getLaboratory($setupName: String! = "felicity") {
     laboratory(setupName: $setupName) {
         uid
-        setupName
-        labName
+        name
         tagLine
         labManagerUid
         email

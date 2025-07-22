@@ -9,17 +9,20 @@ const router = useRouter();
 const loading = ref(false);
 
 const installSchema = object({
-  name: string().required("Laboratory Name is Required"),
+  organisation_name: string().required("Organisation Name is Required"),
+  laboratory_name: string().required("Laboratory Name is Required"),
 });
 
 const { handleSubmit, errors } = useForm({
   validationSchema: installSchema,
   initialValues: {
-    name: "Felicity Labs",
+    organisation_name: "Felicity Diagnostics",
+    laboratory_name: "My First Laboratory",
   },
 });
 
-const { value: name } = useField("name");
+const { value: organisation_name } = useField("organisation_name");
+const { value: laboratory_name } = useField("laboratory_name");
 
 const initInstall = handleSubmit((values) => {
   loading.value = true;
@@ -62,15 +65,27 @@ const initInstall = handleSubmit((values) => {
 
       <form class="mt-6 space-y-4" @submit.prevent="initInstall">
         <div class="space-y-2">
+          <label class="block text-sm font-medium text-foreground">Organisation Name</label>
+          <input
+            type="text"
+            class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            v-model="organisation_name"
+            :disabled="loading"
+            placeholder="Enter organisation name"
+          />
+          <div v-if="errors.organisation_name" class="text-sm text-destructive">{{ errors.organisation_name }}</div>
+        </div>
+
+        <div class="space-y-2">
           <label class="block text-sm font-medium text-foreground">Laboratory Name</label>
           <input
             type="text"
             class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-            v-model="name"
+            v-model="laboratory_name"
             :disabled="loading"
             placeholder="Enter laboratory name"
           />
-          <div v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</div>
+          <div v-if="errors.laboratory_name" class="text-sm text-destructive">{{ errors.laboratory_name }}</div>
         </div>
 
         <div class="pt-4">

@@ -5,15 +5,18 @@ import strawberry  # noqa
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import MessageResponse, MessagesType, OperationError
 from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import (
-    AuthenticatedData,
     GroupType,
     UpdatedGroupPerms,
     UserType,
 )
+from felicity.apps.guard import FGroup
+from felicity.apps.setup.services import LaboratoryService
 from felicity.apps.user import schemas as user_schemas
+from felicity.apps.user.entities import laboratory_user
 from felicity.apps.user.services import (
     GroupService,
     PermissionService,
@@ -38,6 +41,17 @@ UserResponse = strawberry.union(
     (UserType, OperationError),
     description="",  # noqa
 )
+
+
+@strawberry.type
+class AuthenticatedData:
+    user: "UserType"
+    token: str
+    refresh: str
+    token_type: str
+    laboratories: list[LaboratoryType] | None = None
+    active_laboratory: LaboratoryType | None = None
+
 
 AuthenticatedDataResponse = strawberry.union(
     "AuthenticatedDataResponse",
@@ -215,14 +229,46 @@ class UserMutations:
         user = await user_service.get_by_username(username=username)
         if not user:
             return OperationError(error="Incorrect username")
+
+        if user.user_name == settings.SYSTEM_DAEMON_USERNAME:
+            return OperationError(error="System daemon cannot access system UI")
+
         has_access = await user_service.has_access(user, password)
         if not has_access:
             return OperationError(error="Failed to log you in")
 
+        user_groups = [g.name.upper() for g in await user_service.get_user_groups(user.uid)]
+        is_global_user = (
+                user.user_name == settings.FIRST_SUPERUSER_USERNAME or
+                user.is_superuser or
+                FGroup.ADMINISTRATOR in user_groups
+        )
+        if is_global_user:
+            laboratories = await LaboratoryService().all()
+        else:
+            lab_uids = await UserService().table_query(
+                table=laboratory_user,
+                columns=["laboratory_uid"],
+                user_uid=user.uid
+            )
+            laboratories = await LaboratoryService().get_by_uids(lab_uids or [])
+
+        active_laboratory = await LaboratoryService().get(
+            user.active_laboratory_uid
+        ) if user.active_laboratory_uid else None
+
+        # auto switch context is only a single lab exists for user
+        if laboratories and len(laboratories) == 1 and not active_laboratory:
+            active_laboratory = laboratories[0]
+            await user_service.set_active_laboratory(user.uid, active_laboratory.uid)
+
         access_token = security.create_access_token(user.uid)
         refresh_token = security.create_refresh_token(user.uid)
         return StrawberryMapper[AuthenticatedData]().map(
-            token=access_token, refresh=refresh_token, token_type="bearer", user=user
+            token=access_token, refresh=refresh_token,
+            token_type="bearer", user=user,
+            laboratories=laboratories,
+            active_laboratory=active_laboratory
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

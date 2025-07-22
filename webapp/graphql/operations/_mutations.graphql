@@ -30,6 +30,14 @@ mutation AuthenticateUser($username: String!, $password: String!) {
                     }
                 }
             }
+            laboratories {
+                uid
+                name
+            }
+            activeLaboratory {
+                uid
+                name
+            }
         }
         ... on OperationError {
             __typename
@@ -316,8 +324,7 @@ mutation EditLaboratory($uid: String!, $payload: LaboratoryInputType!) {
     updateLaboratory(uid: $uid, payload: $payload) {
         ... on LaboratoryType {
             uid
-            setupName
-            labName
+            name
             tagLine
             labManagerUid
             email

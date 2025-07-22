@@ -5,7 +5,7 @@ from felicity.apps.common.schemas import BaseAuditModel
 
 class APPActivityLogBase(BaseAuditModel):
     token_identifier: str
-    user_uid: str
+    user_uid: str | None
 
     # Request Info
     request_id: str | None

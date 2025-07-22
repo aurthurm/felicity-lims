@@ -132,7 +132,7 @@ async def seed_organisation(name: str | None = None) -> Organization | None:
     if not name:
         name = data.get("name", "Felicity Labs")
 
-    setup_name = data.get("name", "felicity")
+    setup_name = data.get("setup_name", "felicity")
     organisation = await organization_service.get_by_setup_name(setup_name)
     if not organisation:
         lab_in = schemas.OrganizationCreate(
@@ -175,7 +175,7 @@ async def seed_laboratory(name: str) -> Laboratory | None:
         logger.error("Failed to load organisation seed data")
         return None
 
-    setup_name = data.get("name", "felicity")
+    setup_name = data.get("setup_name", "felicity")
     organisation = await organization_service.get_by_setup_name(setup_name)
     if not organisation:
         organisation = await seed_organisation()

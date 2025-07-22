@@ -1430,6 +1430,8 @@ export type AuditLogType = {
 
 export type AuthenticatedData = {
   __typename?: 'AuthenticatedData';
+  activeLaboratory?: Maybe<LaboratoryType>;
+  laboratories?: Maybe<Array<LaboratoryType>>;
   refresh: Scalars['String']['output'];
   token: Scalars['String']['output'];
   tokenType: Scalars['String']['output'];
@@ -3289,11 +3291,10 @@ export type LaboratoryType = {
   emailCc?: Maybe<Scalars['String']['output']>;
   labManager?: Maybe<UserType>;
   labManagerUid?: Maybe<Scalars['String']['output']>;
-  labName: Scalars['String']['output'];
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
   qualityStatement?: Maybe<Scalars['String']['output']>;
-  setupName: Scalars['String']['output'];
   tagLine?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
