@@ -366,7 +366,7 @@ class BaseRepository(Generic[M]):
             stmt = stmt.where(table.c[k] == v)
 
         # Apply lab filtering if table has laboratory_uid column
-        if hasattr(table.c, 'laboratory_uid'):
+        if not 'laboratory_uid' in kwargs and hasattr(table.c, 'laboratory_uid'):
             lab_uid = get_current_lab_uid()
             if lab_uid:
                 stmt = stmt.where(table.c.laboratory_uid == lab_uid)

@@ -254,7 +254,7 @@ class UserMutations:
             laboratories = await LaboratoryService().get_by_uids(lab_uids or [])
 
         active_laboratory = await LaboratoryService().get(
-            user.active_laboratory_uid
+            uid=user.active_laboratory_uid
         ) if user.active_laboratory_uid else None
 
         # auto switch context is only a single lab exists for user

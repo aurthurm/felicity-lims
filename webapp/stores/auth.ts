@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
-import { AuthenticatedData, UserType } from '@/types/gql';
+import { AuthenticatedData, LaboratoryType, UserType } from '@/types/gql';
 import { STORAGE_AUTH_KEY } from '@/conf';
 import {
     AuthenticateUserDocument, AuthenticateUserMutation, AuthenticateUserMutationVariables,
@@ -28,7 +28,9 @@ interface IAuth {
     resetData: {
         canReset: boolean;
         username?: string;
-    }
+    };
+    activeLaboratory?: LaboratoryType,
+    laboratories?: LaboratoryType[]
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -45,7 +47,9 @@ export const useAuthStore = defineStore('auth', () => {
         resetData: {
             canReset: false,
             username: '',
-        }
+        },
+        activeLaboratory: undefined,
+        laboratories: undefined
     };
 
     const auth = ref({ ...initialState });

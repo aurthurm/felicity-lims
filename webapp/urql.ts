@@ -9,7 +9,7 @@ import {
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { pipe, tap } from 'wonka';
 
-import { getAuthData, authLogout } from '@/auth';
+import { getAuthData, authLogout, generateRequestId } from '@/auth';
 import { GQL_BASE_URL, WS_BASE_URL } from '@/conf';
 import useNotifyToast from '@/composables/alert_toast';
 
@@ -22,9 +22,11 @@ const subscriptionClient = new SubscriptionClient(WS_BASE_URL, {
         const authData = getAuthData();
         return {
             headers: {
+                'X-Request-ID': generateRequestId(),
+                ...(authData?.activeLaboratory && {
+                    'X-Laboratory-ID': authData?.activeLaboratory?.uid,
+                }),
                 ...(authData?.token && {
-                    'x-felicity-user-id': 'felicity-user-x',
-                    'x-felicity-role': 'felicity-role-x',
                     Authorization: `Bearer ${authData?.token}`,
                 }),
             },
@@ -84,8 +86,12 @@ export const urqlClient = createClient({
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+                'X-Request-ID': generateRequestId(),
                 ...(authData?.token && {
                     Authorization: `Bearer ${authData?.token}`,
+                }),
+                ...(authData?.activeLaboratory && {
+                    'X-Laboratory-ID': authData?.activeLaboratory?.uid,
                 }),
             },
         };

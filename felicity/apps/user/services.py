@@ -21,6 +21,7 @@ from felicity.apps.user.schemas import (
     UserPreferenceUpdate,
     UserUpdate,
 )
+from felicity.core.config import settings
 from felicity.core.security import get_password_hash, password_check, verify_password
 
 
@@ -122,12 +123,36 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         await super().update(user_uid, user_in)
 
     async def get_user_permissions(self, user_uid: str) -> list[Permission]:
-        user_groups_uid = await self.repository.table_query(user_groups, ["group_uid"], user_uid=user_uid)
+        user = await self.get(uid=user_uid)
+        is_global = user.user_name in [
+            settings.SYSTEM_DAEMON_USERNAME, settings.FIRST_SUPERUSER_USERNAME
+        ]
+        if is_global:
+            user_groups_uid = await self.repository.table_query(
+                user_groups, ["group_uid"],
+                user_uid=user_uid,
+                laboratory_uid=None
+            )
+        else:
+            user_groups_uid = await self.repository.table_query(
+                user_groups, ["group_uid"],
+                user_uid=user_uid,
+                laboratory_uid=user.active_laboratory_uid
+            )
         permissions_uid = set()
         for user_group_uid in user_groups_uid:
-            groups_permissions = await self.repository.table_query(
-                permission_groups, ["permission_uid"], group_uid=user_group_uid
-            )
+            if is_global:
+                groups_permissions = await self.repository.table_query(
+                    permission_groups, ["permission_uid"],
+                    group_uid=user_group_uid,
+                    laboratory_uid=None
+                )
+            else:
+                groups_permissions = await self.repository.table_query(
+                    permission_groups, ["permission_uid"],
+                    group_uid=user_group_uid,
+                    laboratory_uid=user.active_laboratory_uid
+                )
             for permission_uid in groups_permissions:
                 permissions_uid.add(permission_uid)
         return await PermissionService().get_by_uids(list(permissions_uid))

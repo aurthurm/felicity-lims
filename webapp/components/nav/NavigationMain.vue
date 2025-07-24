@@ -6,7 +6,8 @@ import {useRouter} from "vue-router";
 import useApiUtil from "@/composables/api_util";
 import userPreferenceComposable from "@/composables/preferences";
 import * as guards from "@/guards";
-import {useFullscreen} from "@vueuse/core";
+import { useFullscreen } from "@vueuse/core";
+import { LaboratoryType } from "@/types/gql";
 
 // Lazily load components for better performance
 const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
@@ -28,6 +29,9 @@ watch(() => router.currentRoute.value, (current, previous) => {
 
 // Auth and user information
 const authStore = useAuthStore();
+const activeLaboratory = computed<LaboratoryType | undefined>(
+  () => authStore.auth?.activeLaboratory
+);
 const userFullName = computed(() => {
   const firstName = authStore.auth?.user?.firstName || '';
   const lastName = authStore.auth?.user?.lastName || '';
@@ -171,7 +175,9 @@ onMounted(() => {
             aria-label="Felicity LIMS Home"
         >
           <Logo/>
-          <h1 class="text-left text-2xl font-medium mx-2">Felicity LIMS</h1>
+          <h1 class="text-left text-2xl font-medium mx-2">
+            {{ activeLaboratory?.name ?? "Felicity LIMS" }}
+          </h1>
         </router-link>
 
         <span class="mx-8 border-l border-border my-2" aria-hidden="true"></span>

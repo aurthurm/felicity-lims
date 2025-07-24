@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { REST_BASE_URL, GQL_BASE_URL } from '@/conf';
 import useNotifyToast from './alert_toast';
-import { authToStorage, getAuthData } from '@/auth';
+import { authToStorage, getAuthData, generateRequestId } from '@/auth';
 import { AuthenticatedData } from '@/types/gql';
 
 // Define TypeScript interfaces for better type safety
@@ -64,9 +64,16 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const auth = getAuthData();
-    if (auth?.token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${auth.token}`;
+    if(config.headers) {
+      config.headers["X-Request-ID"] = generateRequestId()
+      if (auth?.token) {
+        config.headers['Authorization'] = `Bearer ${auth.token}`;
+      }
+      if (auth?.activeLaboratory) {
+        config.headers['X-Laboratory-ID'] = auth?.activeLaboratory?.uid;
+      }
     }
+    
     return config;
   },
   (error) => {
