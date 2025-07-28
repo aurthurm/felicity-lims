@@ -8,25 +8,30 @@
 
 ## **Overview**
 
-**Felicity LIMS** is an open-source Laboratory Information Management System designed to streamline laboratory workflows
-in clinical and medical environments. It empowers laboratories to accurately manage sample lifecycles, metadata, and
-experimental data while ensuring compliance and efficiency.
+**Felicity LIMS** is a next-generation open-source Laboratory Information Management System designed for modern clinical and medical laboratory environments. Built with enterprise-grade architecture, it provides comprehensive sample lifecycle management, multi-tenant data isolation, and HIPAA-compliant security features.
 
-Felicity strives to promote an accurate flow of sample and associated experimental data to and through a laboratory to
-produce information that is used to make conclusions and critical decisions.
+This sophisticated LIMS platform empowers laboratories to accurately manage sample lifecycles, metadata, and experimental data while ensuring regulatory compliance and operational efficiency. The system implements a robust multi-tenant architecture that allows multiple laboratories to operate securely within a single deployment, each with complete data isolation and customized workflows.
 
-Felicity LIMS will ensure that sufficient metadata is captured and clinical laboratory personnel can track the lifecycle
-of a bio-specimen in the laboratory from receipt to dispatch.
+Felicity strives to promote an accurate flow of sample and associated experimental data to and through a laboratory to produce information that is used to make conclusions and critical decisions. The platform ensures comprehensive audit trails, field-level encryption for sensitive data, and enterprise-grade security measures suitable for healthcare environments.
 
-Felicity is the quality of being good, pleasant, or desirable.
+With its modular, domain-driven architecture and modern technology stack, Felicity LIMS scales from small specialty labs to large hospital networks while maintaining performance and data integrity.
+
+*Felicity is the quality of being good, pleasant, or desirable.*
 
 ### **Key Features**
 
-- **Comprehensive Workflow Management**: Track samples from receipt to dispatch.
-- **Real-Time Analytics**: Interactive dashboards for actionable insights.
-- **Data Integrity**: Metadata tracking to ensure reliability in decision-making.
-- **User Management**: Role-based access control (RBAC) and user profiles.
-- **Scalability**: Modular architecture supporting integration with emerging technologies.
+- **Multi-Tenant Architecture**: Laboratory-level data isolation with tenant context management ensuring secure multi-lab operations
+- **Comprehensive Workflow Management**: Track samples from receipt to dispatch with full lifecycle management
+- **Real-Time Analytics**: Interactive dashboards for actionable insights and performance monitoring
+- **HIPAA Compliance**: Field-level encryption for sensitive patient data with comprehensive audit trails
+- **Advanced Sample Management**: Complete sample lifecycle tracking, worksheets, quality control, and analysis results
+- **Enterprise Security**: JWT-based authentication, role-based access control (RBAC), and laboratory-scoped permissions
+- **Document Management**: QMS document management with versioning and collaborative editing
+- **Microbiology Module**: Specialized workflows with antibiotic susceptibility testing, organism management, and breakpoint analysis
+- **Inventory Management**: Comprehensive stock management with transactions, adjustments, orders, and requests
+- **Billing & Analytics**: Automated billing for testing services with detailed financial reporting
+- **Data Integrity**: Metadata tracking and audit logging to ensure reliability in decision-making
+- **Scalability**: Domain-driven modular architecture with repository-service pattern supporting integration with emerging technologies
 
 ---
 
@@ -40,10 +45,11 @@ Felicity is the quality of being good, pleasant, or desirable.
 
 ### **Backend**
 
-- **Framework**: FastAPI, Strawberry GraphQL, SQLAlchemy
-- **Database**: PostgreSQL (main DB), MongoDB (audit logs, etc)
-- **S3 Storage**: MinIO (object storage for reports, etc)
-- **Caching**: Dragonfly Redis (locks, WebSocket subscriptions)
+- **Framework**: FastAPI, Strawberry GraphQL, SQLAlchemy with async support
+- **Architecture**: Repository-Service pattern with domain-driven design
+- **Database**: PostgreSQL (primary), MongoDB (audit logs), MinIO (object storage), DragonflyDB/Redis (caching)
+- **Multi-tenancy**: Laboratory-level data isolation with automated tenant context management
+- **Security**: JWT authentication, HIPAA-compliant field encryption, comprehensive audit logging
 
 ---
 

@@ -81,8 +81,8 @@ UnitResponse = strawberry.union(
 
 @strawberry.input
 class LaboratoryInputType:
-    lab_name: str
-    setup_name: str = "felicity"
+    name: str
+    organization_uid: str | None = None
     tag_line: str | None = ""
     email: str | None = None
     email_cc: str | None = None
@@ -93,6 +93,30 @@ class LaboratoryInputType:
     banking: str | None = None
     logo: str | None = None
     quality_statement: str | None = None
+    code: str | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
+
+
+@strawberry.input
+class LaboratoryCreateInputType:
+    name: str
+    organization_uid: str
+    tag_line: str | None = ""
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    lab_manager_uid: str | None = None
+    address: str | None = None
+    banking: str | None = None
+    logo: str | None = None
+    quality_statement: str | None = None
+    code: str | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
 
 
 @strawberry.input
@@ -174,6 +198,30 @@ class UnitInputType:
 @strawberry.type
 class SetupMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_laboratory(
+        self, info, payload: LaboratoryCreateInputType
+    ) -> LaboratoryResponse:  # noqa
+        if not payload.name:
+            return OperationError(error="Laboratory name is required")
+
+        if not payload.organization_uid:
+            return OperationError(error="Organization UID is required")
+
+        try:
+            incoming: dict = dict()
+            for k, v in payload.__dict__.items():
+                incoming[k] = v
+
+            obj_in = schemas.LaboratoryCreate(**incoming)
+            laboratory = await LaboratoryService().create_laboratory(obj_in)
+            return LaboratoryType(**laboratory.marshal_simple())
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error creating laboratory: {e}")
+            return OperationError(error="Failed to create laboratory")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory(
         self, info, uid: str, payload: LaboratoryInputType
     ) -> LaboratoryResponse:  # noqa
@@ -197,6 +245,27 @@ class SetupMutations:
         obj_in = schemas.LaboratoryUpdate(**laboratory.to_dict())
         laboratory = await LaboratoryService().update(laboratory.uid, obj_in)
         return LaboratoryType(**laboratory.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_laboratory_manager(
+        self, info, laboratory_uid: str, manager_uid: str
+    ) -> LaboratoryResponse:  # noqa
+        if not laboratory_uid:
+            return OperationError(error="Laboratory UID is required")
+
+        if not manager_uid:
+            return OperationError(error="Manager UID is required")
+
+        try:
+            laboratory = await LaboratoryService().update_laboratory_manager(
+                laboratory_uid, manager_uid
+            )
+            return LaboratoryType(**laboratory.marshal_simple())
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error updating laboratory manager: {e}")
+            return OperationError(error="Failed to update laboratory manager")
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_setting(

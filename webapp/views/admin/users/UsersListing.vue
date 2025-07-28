@@ -178,6 +178,49 @@
             </select>
           </div>
 
+          <!-- Laboratory Assignment Section -->
+          <div class="col-span-2 space-y-4 border-t border-gray-200 pt-6">
+            <h4 class="text-md font-medium text-gray-700">Laboratory Access (Optional)</h4>
+            
+            <!-- Laboratory Multi-Select -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Assigned Laboratories</label>
+              <div class="border-2 border-gray-300 rounded-md p-3 space-y-2 max-h-32 overflow-y-auto">
+                <div v-for="lab in mockLaboratories" :key="lab.uid" class="flex items-center space-x-3">
+                  <input
+                    :id="`lab-${lab.uid}`"
+                    v-model="form.laboratoryUids"
+                    :value="lab.uid"
+                    type="checkbox"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label :for="`lab-${lab.uid}`" class="flex-1 cursor-pointer text-sm">
+                    {{ lab.name }} ({{ lab.code }})
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Laboratory Selection -->
+            <div v-if="form.laboratoryUids && form.laboratoryUids.length > 0" class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Default Active Laboratory</label>
+              <select
+                v-model="form.activeLaboratoryUid"
+                class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
+              >
+                <option value="">Select default laboratory...</option>
+                <option
+                  v-for="labUid in form.laboratoryUids"
+                  :key="labUid"
+                  :value="labUid"
+                  class="text-gray-900"
+                >
+                  {{ getLaboratoryName(labUid) }}
+                </option>
+              </select>
+            </div>
+          </div>
+
           <div class="flex items-center space-x-4">
             <label class="flex items-center space-x-2">
               <span class="text-sm font-medium text-gray-700">Blocked</span>
@@ -264,9 +307,17 @@ let form = reactive({
   passwordc: "",
   isActive: true,
   isBlocked: false,
+  laboratoryUids: [] as string[],
+  activeLaboratoryUid: "",
 });
 
 const formAction = ref<boolean>(true);
+
+// Mock laboratories data - in real implementation, these would come from GraphQL queries
+const mockLaboratories = ref([
+  { uid: "lab1", name: "Central Laboratory", code: "CENTRAL" },
+  { uid: "lab2", name: "Branch Laboratory", code: "BRANCH" },
+]);
 
 const { withClientMutation } = useApiUtil();
 function addUser(): void {
@@ -287,6 +338,11 @@ function userGroupsName(user: UserType): string {
   return groups.join(", ");
 }
 
+const getLaboratoryName = (labUid: string) => {
+  const lab = mockLaboratories.value.find(l => l.uid === labUid);
+  return lab?.name || "Unknown Laboratory";
+};
+
 function FormManager(create: boolean, obj: UserType = {} as UserType): void {
   formAction.value = create;
   showUserModal.value = true;
@@ -299,13 +355,21 @@ function FormManager(create: boolean, obj: UserType = {} as UserType): void {
     user.isActive = true;
     user.userName = "";
     user.isBlocked = false;
-    Object.assign(form, { ...user, groupUid: "", userUid: "" });
+    Object.assign(form, { 
+      ...user, 
+      groupUid: "", 
+      userUid: "",
+      laboratoryUids: [],
+      activeLaboratoryUid: ""
+    });
   } else {
     form.userUid = obj?.uid || "";
     form.groupUid = obj?.groups && obj.groups[0] ? obj.groups[0].uid : "";
     form.isActive = obj.isActive ?? true;
     form.isBlocked = obj.isBlocked ?? false;
     form.userName = obj.userName ?? "";
+    form.laboratoryUids = obj.laboratories?.map(lab => lab.uid) || [];
+    form.activeLaboratoryUid = obj.activeLaboratoryUid || "";
     Object.assign(form, { ...obj });
   }
 }

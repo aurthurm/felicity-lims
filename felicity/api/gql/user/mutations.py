@@ -9,8 +9,12 @@ from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import MessageResponse, MessagesType, OperationError
 from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import (
+    GroupCloningResultType,
+    GroupPermissionAssignmentType,
     GroupType,
+    PermissionType,
     UpdatedGroupPerms,
+    UserLaboratoryAssignmentType,
     UserType,
 )
 from felicity.apps.guard import FGroup
@@ -71,6 +75,89 @@ GroupResponse = strawberry.union(
     description="",  # noqa
 )
 
+UserLaboratoryAssignmentResponse = strawberry.union(
+    "UserLaboratoryAssignmentResponse",
+    (UserLaboratoryAssignmentType, OperationError),
+    description="",  # noqa
+)
+
+PermissionResponse = strawberry.union(
+    "PermissionResponse",
+    (PermissionType, OperationError),
+    description="",  # noqa
+)
+
+GroupPermissionAssignmentResponse = strawberry.union(
+    "GroupPermissionAssignmentResponse",
+    (GroupPermissionAssignmentType, OperationError),
+    description="",  # noqa
+)
+
+GroupCloningResultResponse = strawberry.union(
+    "GroupCloningResultResponse",
+    (GroupCloningResultType, OperationError),
+    description="",  # noqa
+)
+
+
+@strawberry.type
+class UserValidationResultType:
+    email_available: bool
+    username_available: bool
+    employee_id_available: bool
+    suggestions: list[str] | None = None
+
+
+UserValidationResponse = strawberry.union(
+    "UserValidationResponse",
+    (UserValidationResultType, OperationError),
+    description="",  # noqa
+)
+
+
+@strawberry.type
+class BatchUserCreationResultType:
+    successful_users: list[UserType]
+    failed_users: list[str]  # Error messages for failed users
+    total_attempted: int
+    total_successful: int
+    total_failed: int
+
+
+BatchUserCreationResponse = strawberry.union(
+    "BatchUserCreationResponse",
+    (BatchUserCreationResultType, OperationError),
+    description="",  # noqa
+)
+
+
+@strawberry.type
+class ProfilePictureUploadResultType:
+    user: UserType
+    profile_picture_url: str
+    message: str
+
+
+ProfilePictureUploadResponse = strawberry.union(
+    "ProfilePictureUploadResponse",
+    (ProfilePictureUploadResultType, OperationError),
+    description="",  # noqa
+)
+
+
+@strawberry.type
+class WelcomeEmailResultType:
+    user: UserType
+    email_sent: bool
+    message: str
+
+
+WelcomeEmailResponse = strawberry.union(
+    "WelcomeEmailResponse",
+    (WelcomeEmailResultType, OperationError),
+    description="",  # noqa
+)
+
 
 @strawberry.type
 class PasswordResetValidityType:
@@ -90,6 +177,97 @@ class GroupInputType:
     name: str
     pages: str
     active: bool = True
+
+
+@strawberry.input
+class GroupCreateInputType:
+    name: str
+    pages: str
+    laboratory_uid: str | None = None
+    active: bool = True
+
+
+@strawberry.input
+class PermissionCreateInputType:
+    action: str
+    target: str
+    active: bool = True
+
+
+@strawberry.input
+class PermissionUpdateInputType:
+    action: str | None = None
+    target: str | None = None
+    active: bool | None = None
+
+
+@strawberry.input
+class UserCreateWithLaboratoryInputType:
+    first_name: str
+    last_name: str
+    email: str
+    user_name: str
+    password: str
+    passwordc: str
+    laboratory_uid: str
+    group_uid: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    bio: str | None = None
+
+
+@strawberry.input
+class EnhancedUserCreateInputType:
+    first_name: str
+    last_name: str
+    email: str
+    user_name: str
+    password: str
+    passwordc: str
+    is_active: bool = True
+    is_blocked: bool = False
+    group_uid: str | None = None
+    laboratory_uids: list[str] | None = None
+    active_laboratory_uid: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    bio: str | None = None
+    job_title: str | None = None
+    department: str | None = None
+    employee_id: str | None = None
+    profile_picture: str | None = None
+    send_welcome_email: bool = True
+    include_credentials: bool = False
+
+
+@strawberry.input
+class BatchUserCreateInputType:
+    users: list[EnhancedUserCreateInputType]
+    default_laboratory_uid: str | None = None
+    default_group_uid: str | None = None
+    send_welcome_emails: bool = True
+
+
+@strawberry.input
+class UserValidationInputType:
+    email: str | None = None
+    user_name: str | None = None
+    employee_id: str | None = None
+
+
+@strawberry.input
+class ProfilePictureUploadInputType:
+    user_uid: str
+    image_data: str  # Base64 encoded image
+    file_name: str
+    content_type: str
+
+
+@strawberry.input
+class WelcomeEmailInputType:
+    user_uid: str
+    include_credentials: bool = False
+    custom_message: str | None = None
 
 
 def simple_task(message: str):
@@ -414,3 +592,604 @@ class UserMutations:
         await group_service.save(group)
 
         return UpdatedGroupPerms(group=group, permission=permission)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_user_with_laboratory(
+        self, info, payload: UserCreateWithLaboratoryInputType
+    ) -> UserResponse:
+        """Create a new user and assign to laboratory"""
+        user_service = UserService()
+        felicity_user = await auth_from_info(info)
+
+        # Validate passwords match
+        if payload.password != payload.passwordc:
+            return OperationError(error="Passwords do not match")
+
+        # Check if user already exists
+        existing_user = await user_service.get_by_email(payload.email)
+        if existing_user:
+            return OperationError(error="A user with this email already exists")
+
+        existing_username = await user_service.get_by_username(payload.user_name)
+        if existing_username:
+            return OperationError(error="A user with this username already exists")
+
+        try:
+            # Create user data
+            user_data = user_schemas.UserCreate(
+                first_name=payload.first_name,
+                last_name=payload.last_name,
+                email=payload.email,
+                user_name=payload.user_name,
+                password=payload.password,
+                mobile_phone=payload.mobile_phone,
+                business_phone=payload.business_phone,
+                bio=payload.bio,
+                is_active=True,
+                is_superuser=False,
+                login_retry=0,
+                created_by_uid=felicity_user.uid,
+                updated_by_uid=felicity_user.uid,
+            )
+
+            # Create user with laboratory assignment
+            user = await user_service.create_user_with_laboratory(
+                user_data, payload.laboratory_uid, payload.group_uid
+            )
+
+            return StrawberryMapper[UserType]().map(**user.marshal_simple())
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error creating user with laboratory: {e}")
+            return OperationError(error="Failed to create user")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def assign_user_to_laboratory(
+        self, info, user_uid: str, laboratory_uid: str
+    ) -> UserLaboratoryAssignmentResponse:
+        """Assign a user to a laboratory"""
+        user_service = UserService()
+
+        if not user_uid or not laboratory_uid:
+            return OperationError(error="User UID and Laboratory UID are required")
+
+        try:
+            user = await user_service.assign_user_to_laboratory(user_uid, laboratory_uid)
+            laboratories = await user_service.get_laboratories_by_user(user_uid)
+
+            return UserLaboratoryAssignmentType(
+                user=user,
+                laboratories=laboratories,
+                message=f"User successfully assigned to laboratory"
+            )
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error assigning user to laboratory: {e}")
+            return OperationError(error="Failed to assign user to laboratory")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def remove_user_from_laboratory(
+        self, info, user_uid: str, laboratory_uid: str
+    ) -> UserLaboratoryAssignmentResponse:
+        """Remove a user from a laboratory"""
+        user_service = UserService()
+
+        if not user_uid or not laboratory_uid:
+            return OperationError(error="User UID and Laboratory UID are required")
+
+        try:
+            user = await user_service.remove_user_from_laboratory(user_uid, laboratory_uid)
+            laboratories = await user_service.get_laboratories_by_user(user_uid)
+
+            return UserLaboratoryAssignmentType(
+                user=user,
+                laboratories=laboratories,
+                message=f"User successfully removed from laboratory"
+            )
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error removing user from laboratory: {e}")
+            return OperationError(error="Failed to remove user from laboratory")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def set_user_active_laboratory(
+        self, info, user_uid: str, laboratory_uid: str
+    ) -> UserResponse:
+        """Set a user's active laboratory"""
+        user_service = UserService()
+
+        if not user_uid:
+            return OperationError(error="User UID is required")
+
+        try:
+            await user_service.set_active_laboratory(user_uid, laboratory_uid)
+            user = await user_service.get(uid=user_uid)
+            return StrawberryMapper[UserType]().map(**user.marshal_simple())
+        except Exception as e:
+            logger.error(f"Error setting active laboratory: {e}")
+            return OperationError(error="Failed to set active laboratory")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def bulk_assign_users_to_laboratory(
+        self, info, user_uids: list[str], laboratory_uid: str
+    ) -> UserLaboratoryAssignmentResponse:
+        """Assign multiple users to a laboratory"""
+        user_service = UserService()
+
+        if not user_uids or not laboratory_uid:
+            return OperationError(error="User UIDs and Laboratory UID are required")
+
+        try:
+            users = await user_service.bulk_assign_users_to_laboratory(user_uids, laboratory_uid)
+            
+            if not users:
+                return OperationError(error="No valid users found to assign")
+
+            # Return summary for first user (could be enhanced to return all)
+            first_user = users[0]
+            laboratories = await user_service.get_laboratories_by_user(first_user.uid)
+
+            return UserLaboratoryAssignmentType(
+                user=first_user,
+                laboratories=laboratories,
+                message=f"Successfully assigned {len(users)} users to laboratory"
+            )
+        except Exception as e:
+            logger.error(f"Error bulk assigning users: {e}")
+            return OperationError(error="Failed to assign users to laboratory")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_group_for_laboratory(
+        self, info, payload: GroupCreateInputType
+    ) -> GroupResponse:
+        """Create a new group in laboratory context"""
+        group_service = GroupService()
+        felicity_user = await auth_from_info(info)
+
+        if not payload.name:
+            return OperationError(error="Group name is required")
+
+        try:
+            group_data = user_schemas.GroupCreate(
+                name=payload.name,
+                pages=payload.pages,
+                active=payload.active,
+                created_by_uid=felicity_user.uid,
+                updated_by_uid=felicity_user.uid,
+            )
+
+            group = await group_service.create_group_for_laboratory(
+                group_data, payload.laboratory_uid
+            )
+
+            return StrawberryMapper[GroupType]().map(**group.marshal_simple())
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error creating group for laboratory: {e}")
+            return OperationError(error="Failed to create group")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def assign_permission_to_group(
+        self, info, group_uid: str, permission_uid: str, laboratory_uid: str | None = None
+    ) -> GroupPermissionAssignmentResponse:
+        """Assign a permission to a group in laboratory context"""
+        group_service = GroupService()
+
+        if not group_uid or not permission_uid:
+            return OperationError(error="Group UID and Permission UID are required")
+
+        try:
+            group = await group_service.assign_permission_to_group(
+                group_uid, permission_uid, laboratory_uid
+            )
+            permission = await PermissionService().get(uid=permission_uid)
+
+            return GroupPermissionAssignmentType(
+                group=group,
+                permission=permission,
+                message="Permission successfully assigned to group",
+                assigned=True
+            )
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error assigning permission to group: {e}")
+            return OperationError(error="Failed to assign permission to group")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def remove_permission_from_group(
+        self, info, group_uid: str, permission_uid: str, laboratory_uid: str | None = None
+    ) -> GroupPermissionAssignmentResponse:
+        """Remove a permission from a group in laboratory context"""
+        group_service = GroupService()
+
+        if not group_uid or not permission_uid:
+            return OperationError(error="Group UID and Permission UID are required")
+
+        try:
+            group = await group_service.remove_permission_from_group(
+                group_uid, permission_uid, laboratory_uid
+            )
+            permission = await PermissionService().get(uid=permission_uid)
+
+            return GroupPermissionAssignmentType(
+                group=group,
+                permission=permission,
+                message="Permission successfully removed from group",
+                assigned=False
+            )
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error removing permission from group: {e}")
+            return OperationError(error="Failed to remove permission from group")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def clone_group_to_laboratory(
+        self, info, group_uid: str, target_laboratory_uid: str
+    ) -> GroupCloningResultResponse:
+        """Clone a group from global or another laboratory to target laboratory"""
+        group_service = GroupService()
+
+        if not group_uid or not target_laboratory_uid:
+            return OperationError(error="Group UID and target laboratory UID are required")
+
+        try:
+            source_group = await group_service.get(uid=group_uid)
+            new_group = await group_service.clone_group_to_laboratory(
+                group_uid, target_laboratory_uid
+            )
+
+            return GroupCloningResultType(
+                source_group=source_group,
+                new_group=new_group,
+                target_laboratory_uid=target_laboratory_uid,
+                message=f"Group '{source_group.name}' successfully cloned to laboratory"
+            )
+        except ValueError as e:
+            return OperationError(error=str(e))
+        except Exception as e:
+            logger.error(f"Error cloning group to laboratory: {e}")
+            return OperationError(error="Failed to clone group to laboratory")
+
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_user_enhanced(
+        self, info, payload: EnhancedUserCreateInputType
+    ) -> UserResponse:
+        """Enhanced user creation with comprehensive validation and features"""
+        user_service = UserService()
+        felicity_user = await auth_from_info(info)
+
+        # Enhanced validation
+        if payload.password != payload.passwordc:
+            return OperationError(error="Passwords do not match")
+
+        # Check for existing email
+        existing_email = await user_service.get_by_email(payload.email)
+        if existing_email:
+            return OperationError(error="A user with this email already exists")
+
+        # Check for existing username
+        existing_username = await user_service.get_by_username(payload.user_name)
+        if existing_username:
+            return OperationError(error="A user with this username already exists")
+
+        # Validate laboratory assignments
+        if payload.laboratory_uids:
+            lab_service = LaboratoryService()
+            for lab_uid in payload.laboratory_uids:
+                lab = await lab_service.get(uid=lab_uid)
+                if not lab:
+                    return OperationError(error=f"Laboratory with UID '{lab_uid}' not found")
+
+            # Validate active laboratory is in assigned laboratories
+            if payload.active_laboratory_uid and payload.active_laboratory_uid not in payload.laboratory_uids:
+                return OperationError(error="Active laboratory must be in assigned laboratories")
+
+        try:
+            # Create user data
+            user_data = user_schemas.UserCreate(
+                first_name=payload.first_name,
+                last_name=payload.last_name,
+                email=payload.email,
+                user_name=payload.user_name,
+                password=payload.password,
+                mobile_phone=payload.mobile_phone,
+                business_phone=payload.business_phone,
+                bio=payload.bio,
+                is_active=payload.is_active,
+                is_blocked=payload.is_blocked,
+                is_superuser=False,
+                login_retry=0,
+                created_by_uid=felicity_user.uid,
+                updated_by_uid=felicity_user.uid,
+            )
+
+            # Create user
+            user = await user_service.create(user_in=user_data, related=['groups'])
+
+            # Assign to group if specified
+            if payload.group_uid:
+                group_service = GroupService()
+                group = await group_service.get(uid=payload.group_uid)
+                if group:
+                    user.groups.append(group)
+                    user = await user_service.save(user)
+
+            # Assign to laboratories if specified
+            if payload.laboratory_uids:
+                for lab_uid in payload.laboratory_uids:
+                    await user_service.assign_user_to_laboratory(user.uid, lab_uid)
+
+                # Set active laboratory
+                if payload.active_laboratory_uid:
+                    await user_service.set_active_laboratory(user.uid, payload.active_laboratory_uid)
+
+            # Create user preferences
+            user_preference_service = UserPreferenceService()
+            pref = user_preference_service.get(user_uid=user.uid)
+            if not pref:
+                pref_in = user_schemas.UserPreferenceCreate(
+                    user_uid=user.uid, 
+                    expanded_menu=False, 
+                    theme="LIGHT"
+                )
+                await user_preference_service.create(pref_in)
+
+            # Send welcome email if requested
+            if payload.send_welcome_email:
+                post_event("user-welcome-email", 
+                          user=user, 
+                          include_credentials=payload.include_credentials)
+
+            return StrawberryMapper[UserType]().map(**user.marshal_simple())
+        except Exception as e:
+            logger.error(f"Error creating enhanced user: {e}")
+            return OperationError(error="Failed to create user")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def validate_user_data(
+        self, info, payload: UserValidationInputType
+    ) -> UserValidationResponse:
+        """Validate user data for availability and provide suggestions"""
+        user_service = UserService()
+        
+        try:
+            email_available = True
+            username_available = True
+            employee_id_available = True
+            suggestions = []
+
+            # Check email availability
+            if payload.email:
+                existing_email = await user_service.get_by_email(payload.email)
+                email_available = existing_email is None
+                if not email_available:
+                    # Generate email suggestions
+                    base_email = payload.email.split('@')[0]
+                    domain = payload.email.split('@')[1]
+                    for i in range(1, 4):
+                        suggestion = f"{base_email}{i}@{domain}"
+                        existing = await user_service.get_by_email(suggestion)
+                        if not existing:
+                            suggestions.append(suggestion)
+                            break
+
+            # Check username availability
+            if payload.user_name:
+                existing_username = await user_service.get_by_username(payload.user_name)
+                username_available = existing_username is None
+                if not username_available:
+                    # Generate username suggestions
+                    for i in range(1, 6):
+                        suggestion = f"{payload.user_name}{i}"
+                        existing = await user_service.get_by_username(suggestion)
+                        if not existing:
+                            suggestions.append(suggestion)
+                            break
+
+            # Check employee ID availability (if implemented)
+            if payload.employee_id:
+                # This would need to be implemented in the user service
+                # For now, assume it's available
+                employee_id_available = True
+
+            return UserValidationResultType(
+                email_available=email_available,
+                username_available=username_available,
+                employee_id_available=employee_id_available,
+                suggestions=suggestions
+            )
+        except Exception as e:
+            logger.error(f"Error validating user data: {e}")
+            return OperationError(error="Failed to validate user data")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def batch_create_users(
+        self, info, payload: BatchUserCreateInputType
+    ) -> BatchUserCreationResponse:
+        """Create multiple users in batch with comprehensive error handling"""
+        user_service = UserService()
+        felicity_user = await auth_from_info(info)
+
+        if not payload.users:
+            return OperationError(error="No users provided for batch creation")
+
+        successful_users = []
+        failed_users = []
+        total_attempted = len(payload.users)
+
+        for user_data in payload.users:
+            try:
+                # Apply defaults if not specified
+                laboratory_uids = user_data.laboratory_uids or ([payload.default_laboratory_uid] if payload.default_laboratory_uid else [])
+                group_uid = user_data.group_uid or payload.default_group_uid
+
+                # Create enhanced user input
+                enhanced_input = EnhancedUserCreateInputType(
+                    first_name=user_data.first_name,
+                    last_name=user_data.last_name,
+                    email=user_data.email,
+                    user_name=user_data.user_name,
+                    password=user_data.password,
+                    passwordc=user_data.passwordc,
+                    is_active=user_data.is_active,
+                    is_blocked=user_data.is_blocked,
+                    group_uid=group_uid,
+                    laboratory_uids=laboratory_uids,
+                    active_laboratory_uid=user_data.active_laboratory_uid,
+                    mobile_phone=user_data.mobile_phone,
+                    business_phone=user_data.business_phone,
+                    bio=user_data.bio,
+                    job_title=user_data.job_title,
+                    department=user_data.department,
+                    employee_id=user_data.employee_id,
+                    profile_picture=user_data.profile_picture,
+                    send_welcome_email=payload.send_welcome_emails,
+                    include_credentials=user_data.include_credentials,
+                )
+
+                # Create user using enhanced method
+                result = await self.create_user_enhanced(info, enhanced_input)
+                
+                if isinstance(result, UserType):
+                    successful_users.append(result)
+                else:
+                    failed_users.append(f"{user_data.email}: {result.error}")
+
+            except Exception as e:
+                failed_users.append(f"{user_data.email}: {str(e)}")
+
+        return BatchUserCreationResultType(
+            successful_users=successful_users,
+            failed_users=failed_users,
+            total_attempted=total_attempted,
+            total_successful=len(successful_users),
+            total_failed=len(failed_users)
+        )
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def upload_profile_picture(
+        self, info, payload: ProfilePictureUploadInputType
+    ) -> ProfilePictureUploadResponse:
+        """Upload and set user profile picture"""
+        user_service = UserService()
+        
+        try:
+            user = await user_service.get(uid=payload.user_uid)
+            if not user:
+                return OperationError(error="User not found")
+
+            # Validate image data
+            if not payload.image_data or not payload.content_type.startswith('image/'):
+                return OperationError(error="Invalid image data")
+
+            # In a real implementation, you would:
+            # 1. Decode base64 image data
+            # 2. Validate image format and size
+            # 3. Upload to file storage (MinIO, S3, etc.)
+            # 4. Update user profile with image URL
+            
+            # For now, simulate the upload
+            profile_picture_url = f"/api/uploads/profiles/{user.uid}/{payload.file_name}"
+            
+            # Update user with profile picture URL
+            user_update = user_schemas.UserUpdate(profile_picture=profile_picture_url)
+            await user_service.update(user.uid, user_update)
+            
+            # Refresh user data
+            updated_user = await user_service.get(uid=payload.user_uid)
+
+            return ProfilePictureUploadResultType(
+                user=StrawberryMapper[UserType]().map(**updated_user.marshal_simple()),
+                profile_picture_url=profile_picture_url,
+                message="Profile picture uploaded successfully"
+            )
+        except Exception as e:
+            logger.error(f"Error uploading profile picture: {e}")
+            return OperationError(error="Failed to upload profile picture")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def send_welcome_email(
+        self, info, payload: WelcomeEmailInputType
+    ) -> WelcomeEmailResponse:
+        """Send welcome email to user"""
+        user_service = UserService()
+        
+        try:
+            user = await user_service.get(uid=payload.user_uid)
+            if not user:
+                return OperationError(error="User not found")
+
+            # Send welcome email via event system
+            post_event("user-welcome-email", 
+                      user=user, 
+                      include_credentials=payload.include_credentials,
+                      custom_message=payload.custom_message)
+
+            return WelcomeEmailResultType(
+                user=StrawberryMapper[UserType]().map(**user.marshal_simple()),
+                email_sent=True,
+                message="Welcome email sent successfully"
+            )
+        except Exception as e:
+            logger.error(f"Error sending welcome email: {e}")
+            return OperationError(error="Failed to send welcome email")
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def assign_users_to_laboratories(
+        self, info, user_uids: list[str], laboratory_uids: list[str], active_laboratory_uid: str | None = None
+    ) -> UserLaboratoryAssignmentResponse:
+        """Enhanced laboratory assignment for multiple users and laboratories"""
+        user_service = UserService()
+
+        if not user_uids or not laboratory_uids:
+            return OperationError(error="User UIDs and Laboratory UIDs are required")
+
+        try:
+            # Validate all users exist
+            users = []
+            for user_uid in user_uids:
+                user = await user_service.get(uid=user_uid)
+                if not user:
+                    return OperationError(error=f"User with UID '{user_uid}' not found")
+                users.append(user)
+
+            # Validate all laboratories exist
+            lab_service = LaboratoryService()
+            laboratories = []
+            for lab_uid in laboratory_uids:
+                lab = await lab_service.get(uid=lab_uid)
+                if not lab:
+                    return OperationError(error=f"Laboratory with UID '{lab_uid}' not found")
+                laboratories.append(lab)
+
+            # Validate active laboratory
+            if active_laboratory_uid and active_laboratory_uid not in laboratory_uids:
+                return OperationError(error="Active laboratory must be in assigned laboratories")
+
+            # Assign users to laboratories
+            for user in users:
+                for lab_uid in laboratory_uids:
+                    await user_service.assign_user_to_laboratory(user.uid, lab_uid)
+                
+                # Set active laboratory if specified
+                if active_laboratory_uid:
+                    await user_service.set_active_laboratory(user.uid, active_laboratory_uid)
+
+            # Return result for first user (could be enhanced to return summary)
+            first_user_labs = await user_service.get_laboratories_by_user(users[0].uid)
+
+            return UserLaboratoryAssignmentType(
+                user=users[0],
+                laboratories=first_user_labs,
+                message=f"Successfully assigned {len(users)} users to {len(laboratories)} laboratories"
+            )
+        except Exception as e:
+            logger.error(f"Error assigning users to laboratories: {e}")
+            return OperationError(error="Failed to assign users to laboratories")

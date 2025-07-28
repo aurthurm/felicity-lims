@@ -135,6 +135,14 @@ class UserBase(BaseAuditModel):
     is_blocked: bool | None = False
     is_active: bool | None = True
     is_superuser: bool = False
+    # Enhanced fields for 3.2
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    job_title: str | None = None
+    department: str | None = None
+    employee_id: str | None = None
+    profile_picture: str | None = None
+    active_laboratory_uid: str | None = None
 
 
 # Properties to receive via API on creation

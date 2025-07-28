@@ -9,6 +9,8 @@ from felicity.api.gql.setup.types import (
     DistrictCursorPage,
     DistrictEdge,
     DistrictType,
+    LaboratoryCursorPage,
+    LaboratoryEdge,
     LaboratorySettingType,
     LaboratoryType,
     ManufacturerType,
@@ -41,6 +43,64 @@ async def get_laboratory(setup_name: str) -> LaboratoryType:
 async def get_laboratory_setting(setup_name: str) -> LaboratorySettingType:
     laboratory = await LaboratoryService().get(setup_name=setup_name)
     return await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
+
+
+async def get_all_laboratories(
+    self,
+    info,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    organization_uid: str | None = None,
+    sort_by: list[str] | None = None,
+) -> LaboratoryCursorPage:
+    filters = {}
+
+    if organization_uid:
+        filters["organization_uid__exact"] = organization_uid
+
+    _or_ = dict()
+    if has_value_or_is_truthy(text):
+        arg_list = [
+            "name__ilike",
+            "email__ilike",
+            "address__ilike",
+            "mobile_phone__ilike",
+            "business_phone__ilike",
+        ]
+        for _arg in arg_list:
+            _or_[_arg] = f"%{text}%"
+
+        if filters:
+            filters = {sa.and_: [filters, {sa.or_: _or_}]}
+        else:
+            filters = {sa.or_: _or_}
+
+    page = await LaboratoryService().paging_filter(
+        page_size=page_size,
+        after_cursor=after_cursor,
+        before_cursor=before_cursor,
+        filters=filters,
+        sort_by=sort_by,
+    )
+
+    total_count: int = page.total_count
+    edges: List[LaboratoryEdge[LaboratoryType]] = page.edges
+    items: List[LaboratoryType] = page.items
+    page_info: PageInfo = page.page_info
+
+    return LaboratoryCursorPage(
+        total_count=total_count, edges=edges, items=items, page_info=page_info
+    )
+
+
+async def get_laboratories_by_organization(organization_uid: str) -> List[LaboratoryType]:
+    return await LaboratoryService().get_laboratories_by_organization(organization_uid)
+
+
+async def search_laboratories(text: str, limit: int = 10) -> List[LaboratoryType]:
+    return await LaboratoryService().search_laboratories(text, limit=limit)
 
 
 async def get_all_suppliers() -> List[SupplierType]:
@@ -160,6 +220,23 @@ class SetupQuery:
     laboratory_setting: LaboratorySettingType = strawberry.field(
         resolver=get_laboratory_setting, permission_classes=[IsAuthenticated]
     )
+
+    laboratory_all: LaboratoryCursorPage = strawberry.field(
+        resolver=get_all_laboratories, permission_classes=[IsAuthenticated]
+    )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def laboratory_by_uid(self, info, uid: str) -> LaboratoryType:
+        laboratory = await LaboratoryService().get(uid=uid)
+        return laboratory
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def laboratories_by_organization(self, info, organization_uid: str) -> List[LaboratoryType]:
+        return await get_laboratories_by_organization(organization_uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def laboratory_search(self, info, text: str, limit: int = 10) -> List[LaboratoryType]:
+        return await search_laboratories(text, limit)
 
     manufacturer_all: List[ManufacturerType] = strawberry.field(
         resolver=get_all_manufacturers, permission_classes=[IsAuthenticated]

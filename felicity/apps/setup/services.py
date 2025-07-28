@@ -62,6 +62,41 @@ class LaboratoryService(BaseService[Laboratory, LaboratoryCreate, LaboratoryUpda
     def __init__(self):
         super().__init__(LaboratoryRepository())
 
+    async def create_laboratory(self, laboratory_data: LaboratoryCreate) -> Laboratory:
+        """Create a new laboratory with validation"""
+        existing = await self.repository.get_laboratory_by_name(
+            laboratory_data.name, laboratory_data.organization_uid
+        )
+        if existing:
+            raise ValueError(f"Laboratory with name '{laboratory_data.name}' already exists in this organization")
+        
+        return await self.create(laboratory_data)
+
+    async def get_laboratories_by_organization(self, organization_uid: str) -> list[Laboratory]:
+        """Get all laboratories for an organization"""
+        return await self.repository.get_laboratories_by_organization(organization_uid)
+
+    async def search_laboratories(
+        self, text: str, organization_uid: str = None, limit: int = 10
+    ) -> list[Laboratory]:
+        """Search laboratories by text"""
+        return await self.repository.search_laboratories(text, organization_uid, limit)
+
+    async def get_laboratory_by_name(self, name: str, organization_uid: str = None) -> Laboratory | None:
+        """Get laboratory by name"""
+        return await self.repository.get_laboratory_by_name(name, organization_uid)
+
+    async def update_laboratory_manager(self, laboratory_uid: str, manager_uid: str) -> Laboratory:
+        """Update laboratory manager"""
+        laboratory = await self.get(uid=laboratory_uid)
+        if not laboratory:
+            raise ValueError(f"Laboratory with uid '{laboratory_uid}' not found")
+        
+        update_data = LaboratoryUpdate(**laboratory.to_dict())
+        update_data.lab_manager_uid = manager_uid
+        
+        return await self.update(laboratory_uid, update_data)
+
 
 class LaboratorySettingService(
     BaseService[LaboratorySetting, LaboratorySettingCreate, LaboratorySettingUpdate]

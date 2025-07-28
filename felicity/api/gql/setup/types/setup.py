@@ -10,6 +10,7 @@ from felicity.api.gql.user.types import UserType
 class LaboratoryType:
     uid: str
     name: str
+    organization_uid: str | None = None
     tag_line: str | None = None
     lab_manager_uid: str | None = None
     lab_manager: Optional["UserType"] = None
@@ -22,6 +23,9 @@ class LaboratoryType:
     banking: str | None = None
     logo: str | None = None
     quality_statement: str | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -31,6 +35,20 @@ class LaboratoryType:
     updated_at: str | None = None
 
 
+@strawberry.type
+class LaboratoryEdge:
+    cursor: str
+    node: LaboratoryType
+
+
+@strawberry.type
+class LaboratoryCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[LaboratoryEdge]] = None
+    items: Optional[List[LaboratoryType]] = None
+    total_count: int
+    
+    
 @strawberry.type
 class LaboratorySettingType:
     created_by_uid: str | None = None
@@ -186,4 +204,19 @@ class DistrictCursorPage:
     page_info: PageInfo
     edges: Optional[List[DistrictEdge]] = None
     items: Optional[List[DistrictType]] = None
+    total_count: int
+
+
+#  Laboratory pagination
+@strawberry.type
+class LaboratoryEdge:
+    cursor: str
+    node: LaboratoryType
+
+
+@strawberry.type
+class LaboratoryCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[LaboratoryEdge]] = None
+    items: Optional[List[LaboratoryType]] = None
     total_count: int

@@ -30,6 +30,7 @@ class GroupType:
     permissions: Optional[List[PermissionType]] = None
     active: bool | None = None
     pages: str | None = None
+    laboratory_uid: str | None = None
     #
     created_by_uid: str | None = None
     created_by: Self | None = None
@@ -54,10 +55,10 @@ class UserType:
     bio: str | None = None
     avatar: str | None = None
     default_route: str | None = None
-    uid: str
     user_name: str
     login_retry: int
     is_blocked: bool
+    active_laboratory_uid: str | None = None
     #
     created_by_uid: str | None = None
     created_by: Self | None = None
@@ -65,6 +66,48 @@ class UserType:
     updated_by_uid: str | None = None
     updated_by: Self | None = None
     updated_at: str | None = None
+
+
+@strawberry.type 
+class UserAccessSummaryType:
+    user: UserType
+    laboratories: list[str]
+    active_laboratory: str | None = None
+    groups: list[GroupType]
+    permissions: list[PermissionType]
+    is_active: bool
+    is_blocked: bool
+    is_superuser: bool
+
+
+@strawberry.type
+class UserLaboratoryAssignmentType:
+    user: UserType
+    laboratories: list[str]
+    message: str
+
+
+@strawberry.type
+class PermissionUsageSummaryType:
+    permission: PermissionType
+    global_groups: list[GroupType]
+    total_groups: int
+
+
+@strawberry.type
+class GroupPermissionAssignmentType:
+    group: GroupType
+    permission: PermissionType
+    message: str
+    assigned: bool
+
+
+@strawberry.type
+class GroupCloningResultType:
+    source_group: GroupType
+    new_group: GroupType
+    target_laboratory_uid: str
+    message: str
 
 
 @strawberry.type

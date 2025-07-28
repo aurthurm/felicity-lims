@@ -11,6 +11,11 @@
       component: defineAsyncComponent(() => import("./Laboratory.vue")),
     },
     {
+      id: "laboratory-management",
+      label: "laboratory management", 
+      component: defineAsyncComponent(() => import("./LaboratoryListing.vue")),
+    },
+    {
       id: "departments",
       label: "departments",
       component: defineAsyncComponent(() => import("./Departments.vue")),

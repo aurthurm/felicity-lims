@@ -6,6 +6,8 @@ from .setup import (
     DistrictType,
     LaboratorySettingType,
     LaboratoryType,
+    LaboratoryCursorPage,
+    LaboratoryEdge,
     ManufacturerType,
     ProvinceCursorPage,
     ProvinceEdge,
@@ -16,6 +18,7 @@ from .setup import (
 
 setup_types = [
     LaboratoryType,
+    LaboratoryEdge,
     LaboratorySettingType,
     SupplierType,
     ManufacturerType,

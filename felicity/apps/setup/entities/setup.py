@@ -80,7 +80,7 @@ class Laboratory(BaseEntity):
     @property
     def sms_metadata(self) -> dict:
         result = {
-            "lab_name": self.lab_name,
+            "lab_name": self.name,
             "lab_email": self.email,
             "lab_phone": self.mobile_phone
         }
