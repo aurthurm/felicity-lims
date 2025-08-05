@@ -11,14 +11,13 @@ from felicity.api.gql.setup.types import (
     DistrictType,
     LaboratoryCursorPage,
     LaboratoryEdge,
-    LaboratorySettingType,
     LaboratoryType,
     ManufacturerType,
     ProvinceCursorPage,
     ProvinceEdge,
     ProvinceType,
     SupplierType,
-    UnitType,
+    UnitType, LaboratorySettingType,
 )
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
@@ -27,33 +26,23 @@ from felicity.apps.setup.services import (
     DepartmentService,
     DistrictService,
     LaboratoryService,
-    LaboratorySettingService,
     ManufacturerService,
     ProvinceService,
     SupplierService,
-    UnitService,
+    UnitService, LaboratorySettingService,
 )
 from felicity.utils import has_value_or_is_truthy
 
 
-async def get_laboratory(setup_name: str) -> LaboratoryType:
-    return await LaboratoryService().get(setup_name=setup_name)
-
-
-async def get_laboratory_setting(setup_name: str) -> LaboratorySettingType:
-    laboratory = await LaboratoryService().get(setup_name=setup_name)
-    return await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
-
-
 async def get_all_laboratories(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    organization_uid: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        organization_uid: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> LaboratoryCursorPage:
     filters = {}
 
@@ -120,13 +109,13 @@ async def get_all_units() -> List[UnitType]:
 
 
 async def get_all_districts(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> DistrictCursorPage:
     filters = {}
 
@@ -166,13 +155,13 @@ async def get_all_districts(
 
 
 async def get_all_provinces(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> ProvinceCursorPage:
     filters = {}
 
@@ -215,12 +204,6 @@ async def get_all_countries() -> List[CountryType]:
 
 @strawberry.type
 class SetupQuery:
-    laboratory: LaboratoryType = strawberry.field(resolver=get_laboratory)
-
-    laboratory_setting: LaboratorySettingType = strawberry.field(
-        resolver=get_laboratory_setting, permission_classes=[IsAuthenticated]
-    )
-
     laboratory_all: LaboratoryCursorPage = strawberry.field(
         resolver=get_all_laboratories, permission_classes=[IsAuthenticated]
     )
@@ -229,6 +212,10 @@ class SetupQuery:
     async def laboratory_by_uid(self, info, uid: str) -> LaboratoryType:
         laboratory = await LaboratoryService().get(uid=uid)
         return laboratory
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def laboratory_setting_by_laboratory_uid(self, info, uid: str) -> LaboratorySettingType:
+        return await LaboratorySettingService().get(laboratory_uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def laboratories_by_organization(self, info, organization_uid: str) -> List[LaboratoryType]:

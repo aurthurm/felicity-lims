@@ -7,6 +7,60 @@ from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
+class OrganizationType:
+    uid: str
+    name: str
+    setup_name: str
+    tag_line: str | None = None
+    code: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    address: str | None = None
+    banking: str | None = None
+    logo: str | None = None
+    quality_statement: str | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
+
+
+@strawberry.type
+class OrganizationSettingType:
+    uid: str
+    allow_self_verification: bool | None = False
+    allow_patient_registration: bool | None = True
+    allow_sample_registration: bool | None = True
+    allow_worksheet_creation: bool | None = True
+    default_route: str | None = None
+    password_lifetime: int | None = None
+    default_tat_minutes: int | None = None
+    inactivity_log_out: int | None = None
+    default_theme: str | None = None
+    auto_receive_samples: bool | None = True
+    sticker_copies: int | None = 2
+    allow_auto_billing: bool | None = True
+    allow_billing: bool | None = False
+    currency: str | None = "USD"
+    payment_terms_days: int | None = 0
+    #
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
+
+
+@strawberry.type
 class LaboratoryType:
     uid: str
     name: str
@@ -47,8 +101,8 @@ class LaboratoryCursorPage:
     edges: Optional[List[LaboratoryEdge]] = None
     items: Optional[List[LaboratoryType]] = None
     total_count: int
-    
-    
+
+
 @strawberry.type
 class LaboratorySettingType:
     created_by_uid: str | None = None

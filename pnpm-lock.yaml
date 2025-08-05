@@ -1,21 +1,21 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@antv/g2': ^4.2.10
-  '@antv/g2plot': ^2.4.31
+  '@antv/g2': ^4.2.11
+  '@antv/g2plot': ^2.4.32
   '@ckeditor/ckeditor5-build-decoupled-document': ^35.4.0
-  '@ckeditor/ckeditor5-vue': ^7.2.0
-  '@editorjs/editorjs': ^2.28.2
-  '@fortawesome/fontawesome-svg-core': ^6.5.1
-  '@fortawesome/free-brands-svg-icons': ^6.5.1
-  '@fortawesome/free-regular-svg-icons': ^6.5.1
-  '@fortawesome/free-solid-svg-icons': ^6.5.1
-  '@fortawesome/vue-fontawesome': ^3.0.5
-  '@graphql-codegen/cli': ^5.0.0
-  '@graphql-codegen/client-preset': ^4.1.0
+  '@ckeditor/ckeditor5-vue': ^7.3.0
+  '@editorjs/editorjs': ^2.30.8
+  '@fortawesome/fontawesome-svg-core': ^6.7.2
+  '@fortawesome/free-brands-svg-icons': ^6.7.2
+  '@fortawesome/free-regular-svg-icons': ^6.7.2
+  '@fortawesome/free-solid-svg-icons': ^6.7.2
+  '@fortawesome/vue-fontawesome': ^3.0.8
+  '@graphql-codegen/cli': ^5.0.5
+  '@graphql-codegen/client-preset': ^4.7.0
   '@graphql-codegen/near-operation-file-preset': ^3.0.0
-  '@graphql-codegen/typescript': ^4.0.1
-  '@graphql-codegen/typescript-operations': ^4.0.1
+  '@graphql-codegen/typescript': ^4.1.5
+  '@graphql-codegen/typescript-operations': ^4.5.1
   '@graphql-codegen/typescript-urql': ^3.7.3
   '@graphql-codegen/typescript-urql-graphcache': ^3.1.0
   '@graphql-codegen/typescript-vue-urql': ^2.3.6
@@ -23,52 +23,52 @@ specifiers:
   '@graphql-typed-document-node/core': ^3.2.0
   '@heroicons/vue': ^2.2.0
   '@kyvg/vue3-notification': ^3.4.1
-  '@magidoc/cli': ^4.1.2
-  '@parcel/watcher': ^2.5.0
+  '@magidoc/cli': ^4.2.1
+  '@parcel/watcher': ^2.5.1
   '@syncfusion/ej2-base': ^28.2.9
   '@syncfusion/ej2-buttons': ^28.2.7
-  '@syncfusion/ej2-dropdowns': ^28.2.9
-  '@syncfusion/ej2-inputs': ^28.2.9
+  '@syncfusion/ej2-dropdowns': ^28.2.11
+  '@syncfusion/ej2-inputs': ^28.2.11
   '@syncfusion/ej2-lists': ^28.2.3
-  '@syncfusion/ej2-navigations': ^28.2.6
+  '@syncfusion/ej2-navigations': ^28.2.11
   '@syncfusion/ej2-popups': ^28.2.9
   '@syncfusion/ej2-splitbuttons': ^28.2.3
   '@syncfusion/ej2-vue-buttons': ^28.2.7
-  '@syncfusion/ej2-vue-documenteditor': ^28.2.9
+  '@syncfusion/ej2-vue-documenteditor': ^28.2.11
   '@syncfusion/ej2-vue-splitbuttons': ^28.2.3
-  '@tailwindcss/forms': ^0.5.7
-  '@tailwindcss/typography': ^0.5.15
+  '@tailwindcss/forms': ^0.5.10
+  '@tailwindcss/typography': ^0.5.16
   '@types/lodash-es': ^4.17.12
-  '@types/node': ^18.19.8
+  '@types/node': ^18.19.80
   '@umoteam/editor': ^5.0.0
   '@urql/core': ^5.1.1
   '@urql/devtools': ^2.0.3
   '@urql/exchange-auth': ^1.0.0
   '@urql/exchange-graphcache': 6.0.0
-  '@urql/vue': ^1.1.2
+  '@urql/vue': ^1.4.3
   '@vitejs/plugin-vue': ^4.6.2
   '@vitejs/plugin-vue-jsx': ^3.1.0
-  '@vue/compiler-sfc': ^3.4.15
-  '@vueform/multiselect': ^2.6.6
+  '@vue/compiler-sfc': ^3.5.13
+  '@vueform/multiselect': ^2.6.11
   '@vuepic/vue-datepicker': ^10.0.0
   '@vueuse/core': ^9.13.0
   '@vueuse/motion': 2.0.0-beta.12
-  autoprefixer: ^10.4.17
-  axios: ^1.6.5
+  autoprefixer: ^10.4.21
+  axios: ^1.8.3
   ckeditor5: ^43.3.1
-  concurrently: ^9.1.0
+  concurrently: ^9.1.2
   crypto-js: ^4.2.0
   date-fns: ^4.1.0
-  dayjs: ^1.11.10
+  dayjs: ^1.11.13
   editor: link:@types/@umoteam/editor
-  eslint: ^8.56.0
+  eslint: ^8.57.1
   eslint-config-prettier: ^8.10.0
   eslint-plugin-prettier: ^4.2.1
-  eslint-plugin-vue: ^9.20.1
+  eslint-plugin-vue: ^9.33.0
   floating-vue: 2.0.0-beta.20
-  graphql: ^16.8.1
+  graphql: ^16.10.0
   graphql-tag: ^2.12.6
-  graphql-ws: ^5.14.3
+  graphql-ws: ^5.16.2
   js-confetti: ^0.11.0
   jshint: ^2.13.6
   jstat: ^1.9.6
@@ -81,29 +81,29 @@ specifiers:
   notyf: ^3.10.0
   pdf-lib: ^1.17.1
   pdfjs-dist: ^4.10.38
-  pinia: ^2.1.7
-  postcss: ^8.4.33
+  pinia: ^2.3.1
+  postcss: ^8.5.3
   prettier: ^2.8.8
   process: ^0.11.10
-  react: ^18.2.0
-  socket.io: ^4.7.4
-  socket.io-client: ^4.7.4
+  react: ^18.3.1
+  socket.io: ^4.8.1
+  socket.io-client: ^4.8.1
   split.js: ^1.6.5
   subscriptions-transport-ws: ^0.11.0
-  sweetalert2: ^11.10.3
-  tailwindcss: ^3.4.1
-  typescript: ^5.3.3
+  sweetalert2: ^11.17.2
+  tailwindcss: ^3.4.17
+  typescript: ^5.8.2
   urql: ^3.0.4
-  vee-validate: ^4.12.4
-  vite: ^4.5.2
-  vite-tsconfig-paths: ^4.3.1
-  vue: ^3.4.15
+  vee-validate: ^4.15.0
+  vite: ^4.5.9
+  vite-tsconfig-paths: ^4.3.2
+  vue: ^3.5.13
   vue-draggable-plus: ^0.6.0
   vue-multiselect: 3.0.0-alpha.2
-  vue-router: ^4.2.5
-  vue-sweetalert2: ^5.0.5
+  vue-router: ^4.5.0
+  vue-sweetalert2: ^5.0.11
   vuedraggable: ^4.1.0
-  wonka: ^6.3.4
+  wonka: ^6.3.5
   yup: ^0.32.11
 
 dependencies:
@@ -3427,8 +3427,8 @@ packages:
     resolution: {integrity: sha512-Y28PR25bHXUg88kCV7nivXrP2Nj2RueZ3/l/jdx6J9f8J4nsEGcgX0Qe6lt7Pa+J79+kPiJU3LguR6O/6zrLOw==}
     dev: false
 
-  /@napi-rs/canvas-android-arm64/0.1.68:
-    resolution: {integrity: sha512-h1KcSR4LKLfRfzeBH65xMxbWOGa1OtMFQbCMVlxPCkN1Zr+2gK+70pXO5ktojIYcUrP6KDcOwoc8clho5ccM/w==}
+  /@napi-rs/canvas-android-arm64/0.1.76:
+    resolution: {integrity: sha512-7EAfkLBQo2QoEzpHdInFbfEUYTXsiO2hvtFo1D9zfTzcQM8n5piZdOpJ3EIkmpe8yLoSV8HLyUQtq4bv11x6Tg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
@@ -3436,8 +3436,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-darwin-arm64/0.1.68:
-    resolution: {integrity: sha512-/VURlrAD4gDoxW1GT/b0nP3fRz/fhxmHI/xznTq2FTwkQLPOlLkDLCvTmQ7v6LtGKdc2Ed6rvYpRan+JXThInQ==}
+  /@napi-rs/canvas-darwin-arm64/0.1.76:
+    resolution: {integrity: sha512-Cs8WRMzaWSJWeWY8tvnCe+TuduHUbB0xFhZ0FmOrNy2prPxT4A6aU3FQu8hR9XJw8kKZ7v902wzaDmy9SdhG8A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -3445,8 +3445,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-darwin-x64/0.1.68:
-    resolution: {integrity: sha512-tEpvGR6vCLTo1Tx9wmDnoOKROpw57wiCWwCpDOuVlj/7rqEJOUYr9ixW4aRJgmeGBrZHgevI0EURys2ER6whmg==}
+  /@napi-rs/canvas-darwin-x64/0.1.76:
+    resolution: {integrity: sha512-ya+T6gV9XAq7YAnMa2fKhWXAuRR5cpRny2IoHacoMxgtOARnUkJO/k3hIb52FtMoq7UxLi5+IFGVHU6ZiMu4Ag==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -3454,8 +3454,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-linux-arm-gnueabihf/0.1.68:
-    resolution: {integrity: sha512-U9xbJsumPOiAYeAFZMlHf62b9dGs2HJ6Q5xt7xTB0uEyPeurwhgYBWGgabdsEidyj38YuzI/c3LGBbSQB3vagw==}
+  /@napi-rs/canvas-linux-arm-gnueabihf/0.1.76:
+    resolution: {integrity: sha512-fgnPb+FKVuixACvkHGldJqYXExORBwvqGgL0K80uE6SGH2t0UKD2auHw2CtBy14DUzfg82PkupO2ix2w7kB+Xw==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
@@ -3463,8 +3463,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-linux-arm64-gnu/0.1.68:
-    resolution: {integrity: sha512-KFkn8wEm3mPnWD4l8+OUUkxylSJuN5q9PnJRZJgv15RtCA1bgxIwTkBhI/+xuyVMcHqON9sXq7cDkEJtHm35dg==}
+  /@napi-rs/canvas-linux-arm64-gnu/0.1.76:
+    resolution: {integrity: sha512-r8OxIenvBPOa4I014k1ZWTCz2dB0ZTsxMP7+ovMOKO7jkl1Z+YZo2OTAqxArpMhN0wdEeI3Lw9zUcn2HgwEgDA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -3472,8 +3472,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-linux-arm64-musl/0.1.68:
-    resolution: {integrity: sha512-IQzts91rCdOALXBWQxLZRCEDrfFTGDtNRJMNu+2SKZ1uT8cmPQkPwVk5rycvFpvgAcmiFiOSCp1aRrlfU8KPpQ==}
+  /@napi-rs/canvas-linux-arm64-musl/0.1.76:
+    resolution: {integrity: sha512-smxwzKfHYaOYG7QXUuDPrFEC7WqjL3Lx4AM6mk8/FxDAS+8o0eoZJwSu+zXsaBLimEQUozEYgEGtJ2JJ0RdL4A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -3481,8 +3481,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-linux-riscv64-gnu/0.1.68:
-    resolution: {integrity: sha512-e9AS5UttoIKqXSmBzKZdd3NErSVyOEYzJfNOCGtafGk1//gibTwQXGlSXmAKuErqMp09pyk9aqQRSYzm1AQfBw==}
+  /@napi-rs/canvas-linux-riscv64-gnu/0.1.76:
+    resolution: {integrity: sha512-G2PsFwsP+r4syEoNLStV3n1wtNAClwf8s/qB57bexG08R4f4WaiBd+x+d4iYS0Y5o90YIEm8/ewZn4bLIa0wNQ==}
     engines: {node: '>= 10'}
     cpu: [riscv64]
     os: [linux]
@@ -3490,8 +3490,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-linux-x64-gnu/0.1.68:
-    resolution: {integrity: sha512-Pa/I36VE3j57I3Obhrr+J48KGFfkZk2cJN/2NmW/vCgmoF7kCP6aTVq5n+cGdGWLd/cN9CJ9JvNwEoMRDghu0g==}
+  /@napi-rs/canvas-linux-x64-gnu/0.1.76:
+    resolution: {integrity: sha512-SNK+vgge4DnuONYdYE3Y09LivGgUiUPQDU+PdGNZJIzIi0hRDLcA59eag8LGeQfPmJW84c1aZD04voihybKFog==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -3499,8 +3499,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-linux-x64-musl/0.1.68:
-    resolution: {integrity: sha512-9c6rkc5195wNxuUHJdf4/mmnq433OQey9TNvQ9LspJazvHbfSkTij8wtKjASVQsJyPDva4fkWOeV/OQ7cLw0GQ==}
+  /@napi-rs/canvas-linux-x64-musl/0.1.76:
+    resolution: {integrity: sha512-tWHLBI9iVoR1NsfpHz1MGERTkqcca8akbH/CzX6JQUNC+lJOeYYXeRuK8hKqMIg1LI+4QOMAtHNVeZu8NvjEug==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -3508,8 +3508,8 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas-win32-x64-msvc/0.1.68:
-    resolution: {integrity: sha512-Fc5Dez23u0FoSATurT6/w1oMytiRnKWEinHivdMvXpge6nG4YvhrASrtqMk8dGJMVQpHr8QJYF45rOrx2YU2Aw==}
+  /@napi-rs/canvas-win32-x64-msvc/0.1.76:
+    resolution: {integrity: sha512-ifM5HOGw2hP5QLQzCB41Riw3Pq5yKAAjZpn+lJC0sYBmyS2s/Kq6KpTOKxf0CuptkI1wMcRcYQfhLRdeWiYvIg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -3517,21 +3517,21 @@ packages:
     dev: false
     optional: true
 
-  /@napi-rs/canvas/0.1.68:
-    resolution: {integrity: sha512-LQESrePLEBLvhuFkXx9jjBXRC2ClYsO5mqQ1m/puth5z9SOuM3N/B3vDuqnC3RJFktDktyK9khGvo7dTkqO9uQ==}
+  /@napi-rs/canvas/0.1.76:
+    resolution: {integrity: sha512-YIk5okeNN53GzjvWmAyCQFE9xrLeQXzYpudX4TiLvqaz9SqXgIgxIuKPe4DKyB5nccsQMIev7JGKTzZaN5rFdw==}
     engines: {node: '>= 10'}
     requiresBuild: true
     optionalDependencies:
-      '@napi-rs/canvas-android-arm64': 0.1.68
-      '@napi-rs/canvas-darwin-arm64': 0.1.68
-      '@napi-rs/canvas-darwin-x64': 0.1.68
-      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.68
-      '@napi-rs/canvas-linux-arm64-gnu': 0.1.68
-      '@napi-rs/canvas-linux-arm64-musl': 0.1.68
-      '@napi-rs/canvas-linux-riscv64-gnu': 0.1.68
-      '@napi-rs/canvas-linux-x64-gnu': 0.1.68
-      '@napi-rs/canvas-linux-x64-musl': 0.1.68
-      '@napi-rs/canvas-win32-x64-msvc': 0.1.68
+      '@napi-rs/canvas-android-arm64': 0.1.76
+      '@napi-rs/canvas-darwin-arm64': 0.1.76
+      '@napi-rs/canvas-darwin-x64': 0.1.76
+      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.76
+      '@napi-rs/canvas-linux-arm64-gnu': 0.1.76
+      '@napi-rs/canvas-linux-arm64-musl': 0.1.76
+      '@napi-rs/canvas-linux-riscv64-gnu': 0.1.76
+      '@napi-rs/canvas-linux-x64-gnu': 0.1.76
+      '@napi-rs/canvas-linux-x64-musl': 0.1.76
+      '@napi-rs/canvas-win32-x64-msvc': 0.1.76
     dev: false
     optional: true
 
@@ -5356,7 +5356,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.24.4
-      caniuse-lite: 1.0.30001705
+      caniuse-lite: 1.0.30001731
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
@@ -5491,7 +5491,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001705
+      caniuse-lite: 1.0.30001731
       electron-to-chromium: 1.5.119
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3_browserslist@4.24.4
@@ -5578,8 +5578,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /caniuse-lite/1.0.30001705:
-    resolution: {integrity: sha512-S0uyMMiYvA7CxNgomYBwwwPUnWzFD83f3B1ce5jHUfHTH//QL6hHsreI8RVC5606R4ssqravelYO5TU6t8sEyg==}
+  /caniuse-lite/1.0.30001731:
+    resolution: {integrity: sha512-lDdp2/wrOmTRWuoB5DpfNkC0rJDU8DqRa6nYL6HK6sytw70QMopt/NIc/9SM7ylItlBWfACXk0tEn37UWM/+mg==}
 
   /capital-case/1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -9081,7 +9081,7 @@ packages:
     resolution: {integrity: sha512-/Y3fcFrXEAsMjJXeL9J8+ZG9U01LbuWaYypvDW2ycW1jL269L3js3DVBjDJ0Up9Np1uqDXsDrRihHANhZOlwdQ==}
     engines: {node: '>=20'}
     optionalDependencies:
-      '@napi-rs/canvas': 0.1.68
+      '@napi-rs/canvas': 0.1.76
     dev: false
 
   /pend/1.2.0:
