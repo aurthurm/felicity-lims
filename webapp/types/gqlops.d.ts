@@ -120,19 +120,25 @@ export type EditLaboratorySettingMutationVariables = Exact<{
 
 export type EditLaboratorySettingMutation = { __typename?: 'Mutation', updateLaboratorySetting: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
-export type GetLaboratoryQueryVariables = Exact<{
-  setupName?: Scalars['String']['input'];
+export type GetOrganizationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOrganizationQuery = { __typename?: 'Query', organization: { __typename?: 'OrganizationType', uid: string, name: string, tagLine?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'OrganizationSettingType', uid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } } };
+
+export type GetLaboratoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLaboratoryQuery = { __typename?: 'Query', laboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } } | { __typename?: 'OperationError', error: string, suggestion?: string | null } };
+
+export type GetAllLaboratoriesQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
-export type GetLaboratoryQuery = { __typename?: 'Query', laboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } };
-
-export type GetLaboratorySettingQueryVariables = Exact<{
-  setupName?: Scalars['String']['input'];
-}>;
-
-
-export type GetLaboratorySettingQuery = { __typename?: 'Query', laboratorySetting: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } };
+export type GetAllLaboratoriesQuery = { __typename?: 'Query', laboratoryAll: { __typename?: 'LaboratoryCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } }> | null } };
 
 export type UserAllQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;

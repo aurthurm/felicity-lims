@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { reactive, ref, defineAsyncComponent, computed, watch } from "vue";
-import { LaboratoryType, LaboratorySettingType } from "@/types/gql";
+import { OrganizationType, OrganizationSettingType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import { useSetupStore } from "@/stores/setup";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
-import { EditLaboratoryMutation, EditLaboratoryMutationVariables, EditLaboratoryDocument, EditLaboratorySettingDocument, EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables } from "@/graphql/operations/_mutations";
+import { EditOrganizationMutation, EditOrganizationMutationVariables, EditOrganizationDocument, EditOrganizationSettingDocument, EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables } from "@/graphql/operations/_mutations";
 
 const FelAsideTabs = defineAsyncComponent(
     () => import("@/components/ui/tabs/FelTabsAside.vue")
@@ -15,33 +15,33 @@ const { toastSuccess } = useNotifyToast();
 const userStore = useUserStore();
 const setupStore = useSetupStore();
 
-setupStore.fetchLaboratory();
-const laboratory = computed(() => setupStore.getLaboratory);
-const formLaboratory = reactive({ ...laboratory.value }) as LaboratoryType;
+setupStore.fetchOrganization();
+const laboratory = computed(() => setupStore.getOrganization);
+const formOrganization = reactive({ ...laboratory.value }) as OrganizationType;
 
 watch(
   () => laboratory.value?.uid,
-  (anal, prev) => Object.assign(formLaboratory, laboratory.value)
+  (anal, prev) => Object.assign(formOrganization, laboratory.value)
 );
 
 const { withClientMutation } = useApiUtil();
 let processing = ref(false);
-const saveLaboratoryForm = () => {
+const saveOrganizationForm = () => {
   processing.value = true;
-  const payload = { ...formLaboratory };
+  const payload = { ...formOrganization };
   delete payload["uid"];
   delete payload["__typename"];
   payload["labManagerUid"] = payload["labManagerUid"]!;
-  withClientMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument, { uid: formLaboratory.uid, payload }, "updateLaboratory").then((result) => {
-    setupStore.updateLaboratory(result);
+  withClientMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument, { uid: formOrganization.uid, payload }, "updateOrganization").then((result) => {
+    setupStore.updateOrganization(result);
     processing.value = false;
-    toastSuccess("Laboratory information updated");
+    toastSuccess("Organization information updated");
   });
 };
 
-setupStore.fetchLaboratorySetting();
-const laboratorySetting = computed(() => setupStore.getLaboratorySetting);
-const formSettings = reactive({ ...laboratorySetting.value }) as LaboratorySettingType;
+setupStore.fetchOrganizationSetting();
+const laboratorySetting = computed(() => setupStore.getOrganizationSetting);
+const formSettings = reactive({ ...laboratorySetting.value }) as OrganizationSettingType;
 
 watch(
   () => laboratorySetting.value?.uid,
@@ -53,10 +53,10 @@ const saveSettingForm = () => {
   const payload = { ...formSettings };
   delete payload["uid"];
   delete payload["__typename"];
-  withClientMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument, { uid: formSettings.uid, payload }, "updateLaboratorySetting").then((result) => {
-    setupStore.updateLaboratorySetting(result);
+  withClientMutation<EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables>(EditOrganizationSettingDocument, { uid: formSettings.uid, payload }, "updateOrganizationSetting").then((result) => {
+    setupStore.updateOrganizationSetting(result);
     processing.value = false;
-    toastSuccess("Laboratory settings updated");
+    toastSuccess("Organization settings updated");
   });
 };
 
@@ -85,24 +85,24 @@ const items = [
     v-model="currentTab"
   >
     <section v-if="currentTab === 'general-info'" class="space-y-6">
-      <h2 class="text-2xl font-semibold text-foreground">Laboratory Information</h2>
+      <h2 class="text-2xl font-semibold text-foreground">Organization Information</h2>
       <hr class="border-border">
       <form class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Laboratory Name</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.labName" placeholder="Name ..."
+            <span class="text-sm font-medium text-foreground">Organization Name</span>
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.labName" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Tag Line</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.tagLine" placeholder="Tag Line ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.tagLine" placeholder="Tag Line ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Lab Manager</span>
             <div class="w-full">
-              <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.labManagerUid" :disabled="processing">
+              <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.labManagerUid" :disabled="processing">
                 <option></option>
                 <option v-for="user in users" :key="user?.uid" :value="user.uid">
                   {{ user?.firstName }} {{ user?.lastName }}
@@ -111,43 +111,43 @@ const items = [
             </div>
           </label>
           <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Laboratory Email</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.email" placeholder="Name ..."
+            <span class="text-sm font-medium text-foreground">Organization Email</span>
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.email" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">CC Emails</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.emailCc" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.emailCc" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Lab Mobile Phone</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.mobilePhone" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.mobilePhone" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Lab Business Phone</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.businessPhone" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.businessPhone" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Address</span>
-            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.address"
+            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.address"
               placeholder="Address ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Banking Details</span>
-            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.banking"
+            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.banking"
               placeholder="Banking ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Quality Statement</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.qualityStatement" placeholder="Quality Statement ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.qualityStatement" placeholder="Quality Statement ..."
               :disabled="processing" />
           </label>
         </div>
         <hr class="border-border" />
-        <button v-show="!processing" type="button" @click.prevent="saveLaboratoryForm()"
+        <button v-show="!processing" type="button" @click.prevent="saveOrganizationForm()"
           class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           Update
         </button>

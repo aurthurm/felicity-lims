@@ -4,6 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
+from felicity.apps.setup.services import LaboratorySettingService, OrganizationSettingService
 
 
 @strawberry.type
@@ -31,6 +32,10 @@ class OrganizationType:
     updated_by_uid: str | None = None
     updated_by: Optional["UserType"] = None
     updated_at: str | None = None
+
+    @strawberry.field
+    async def settings(self, info) -> "OrganizationSettingType":
+        return await OrganizationSettingService().get(organisation_uid=self.uid)
 
 
 @strawberry.type
@@ -87,6 +92,10 @@ class LaboratoryType:
     updated_by_uid: str | None = None
     updated_by: Optional["UserType"] = None
     updated_at: str | None = None
+
+    @strawberry.field
+    async def settings(self, info) -> "LaboratorySettingType":
+        return await LaboratorySettingService().get(laboratory_uid=self.uid)
 
 
 @strawberry.type

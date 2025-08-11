@@ -101,6 +101,23 @@ export const useSetupStore = defineStore('setup', {
         },
 
         // LABORATORY
+        async fetchLaboratories(): Promise<void> {
+            try {
+                const result = await withClientQuery<GetAllLaboratories, GetLaboratoryQueryVariables>(
+                    GetLaboratoryDocument, 
+                    {}, 
+                    'laboratory'
+                );
+                
+                if (result && typeof result === 'object') {
+                    this.laboratory = result as LaboratoryType;
+                } else {
+                    console.error('Invalid laboratory data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching laboratory:', error);
+            }
+        },
         async fetchLaboratory(): Promise<void> {
             try {
                 const result = await withClientQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>(

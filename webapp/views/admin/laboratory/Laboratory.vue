@@ -39,8 +39,7 @@ const saveLaboratoryForm = () => {
   });
 };
 
-setupStore.fetchLaboratorySetting();
-const laboratorySetting = computed(() => setupStore.getLaboratorySetting);
+const laboratorySetting = computed(() => setupStore.getLaboratory?.settings);
 const formSettings = reactive({ ...laboratorySetting.value }) as LaboratorySettingType;
 
 watch(

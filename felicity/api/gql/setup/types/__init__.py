@@ -4,6 +4,8 @@ from .setup import (
     DistrictCursorPage,
     DistrictEdge,
     DistrictType,
+    OrganizationSettingType,
+    OrganizationType,
     LaboratorySettingType,
     LaboratoryType,
     LaboratoryCursorPage,
@@ -17,6 +19,8 @@ from .setup import (
 )
 
 setup_types = [
+    OrganizationSettingType,
+    OrganizationType,
     LaboratoryType,
     LaboratoryEdge,
     LaboratorySettingType,

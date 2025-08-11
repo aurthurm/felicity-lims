@@ -3,6 +3,7 @@ from typing import List
 import sqlalchemy as sa
 import strawberry  # noqa
 
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.setup.types import (
     CountryType,
@@ -17,10 +18,10 @@ from felicity.api.gql.setup.types import (
     ProvinceEdge,
     ProvinceType,
     SupplierType,
-    UnitType, LaboratorySettingType,
+    UnitType, LaboratorySettingType, OrganizationType,
 )
 from felicity.api.gql.setup.types.department import DepartmentType
-from felicity.api.gql.types import PageInfo
+from felicity.api.gql.types import PageInfo, OperationError
 from felicity.apps.setup.services import (
     CountryService,
     DepartmentService,
@@ -29,8 +30,9 @@ from felicity.apps.setup.services import (
     ManufacturerService,
     ProvinceService,
     SupplierService,
-    UnitService, LaboratorySettingService,
+    UnitService, LaboratorySettingService, OrganizationService,
 )
+from felicity.apps.user.entities import User
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -204,9 +206,20 @@ async def get_all_countries() -> List[CountryType]:
 
 @strawberry.type
 class SetupQuery:
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def organization(self, info) -> OrganizationType:
+        return await OrganizationService().get_by_setup_name()
+
     laboratory_all: LaboratoryCursorPage = strawberry.field(
         resolver=get_all_laboratories, permission_classes=[IsAuthenticated]
     )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def laboratory(self, info) -> LaboratoryType | OperationError:
+        current_user: User = await auth_from_info(info)
+        if not current_user.active_laboratory_uid:
+            return OperationError(error="You have not active laboratory set")
+        return await LaboratoryService().get(uid=current_user.active_laboratory_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def laboratory_by_uid(self, info, uid: str) -> LaboratoryType:

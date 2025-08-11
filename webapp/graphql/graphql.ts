@@ -2968,6 +2968,7 @@ export type GroupType = {
   createdBy?: Maybe<GroupType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   members?: Maybe<Array<UserType>>;
   name?: Maybe<Scalars['String']['output']>;
   pages?: Maybe<Scalars['String']['output']>;
@@ -3176,18 +3177,54 @@ export enum LabelCategory {
   Ticket = 'TICKET'
 }
 
+export type LaboratoryCreateInputType = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  banking?: InputMaybe<Scalars['String']['input']>;
+  businessPhone?: InputMaybe<Scalars['String']['input']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  countryUid?: InputMaybe<Scalars['String']['input']>;
+  districtUid?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  emailCc?: InputMaybe<Scalars['String']['input']>;
+  labManagerUid?: InputMaybe<Scalars['String']['input']>;
+  logo?: InputMaybe<Scalars['String']['input']>;
+  mobilePhone?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  organizationUid: Scalars['String']['input'];
+  provinceUid?: InputMaybe<Scalars['String']['input']>;
+  qualityStatement?: InputMaybe<Scalars['String']['input']>;
+  tagLine?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type LaboratoryCursorPage = {
+  __typename?: 'LaboratoryCursorPage';
+  edges?: Maybe<Array<LaboratoryEdge>>;
+  items?: Maybe<Array<LaboratoryType>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type LaboratoryEdge = {
+  __typename?: 'LaboratoryEdge';
+  cursor: Scalars['String']['output'];
+  node: LaboratoryType;
+};
+
 export type LaboratoryInputType = {
   address?: InputMaybe<Scalars['String']['input']>;
   banking?: InputMaybe<Scalars['String']['input']>;
   businessPhone?: InputMaybe<Scalars['String']['input']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  countryUid?: InputMaybe<Scalars['String']['input']>;
+  districtUid?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   emailCc?: InputMaybe<Scalars['String']['input']>;
   labManagerUid?: InputMaybe<Scalars['String']['input']>;
-  labName: Scalars['String']['input'];
   logo?: InputMaybe<Scalars['String']['input']>;
   mobilePhone?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  provinceUid?: InputMaybe<Scalars['String']['input']>;
   qualityStatement?: InputMaybe<Scalars['String']['input']>;
-  setupName?: Scalars['String']['input'];
   tagLine?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -3288,9 +3325,11 @@ export type LaboratoryType = {
   banking?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;
   code?: Maybe<Scalars['String']['output']>;
+  countryUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  districtUid?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
   labManager?: Maybe<UserType>;
@@ -3298,13 +3337,18 @@ export type LaboratoryType = {
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  organizationUid?: Maybe<Scalars['String']['output']>;
+  provinceUid?: Maybe<Scalars['String']['output']>;
   qualityStatement?: Maybe<Scalars['String']['output']>;
+  settings: LaboratorySettingType;
   tagLine?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
+
+export type LaboratoryTypeOperationError = LaboratoryType | OperationError;
 
 export type LaggardCounts = {
   __typename?: 'LaggardCounts';
@@ -3446,6 +3490,7 @@ export type Mutation = {
   applyAbxAstPanel: AbxAstResultResponse;
   applyVoucher: TestBillTransactionResponse;
   approveStockOrder: StockOrderResponse;
+  assignUserToLaboratory: UserLaboratoryAssignmentResponse;
   authenticateUser: AuthenticatedDataResponse;
   cancelAnalysisResults: AnalysisResultResponse;
   cancelSamples: ResultedSampleActionResponse;
@@ -3516,6 +3561,7 @@ export type Mutation = {
   createInstrumentCaliberation: InstrumentCalibrationResponse;
   createInstrumentCompetence: InstrumentCompetenceResponse;
   createInstrumentType: InstrumentTypeResponse;
+  createLaboratory: LaboratoryResponse;
   createLaboratoryInstrument: LaboratoryInstrumentResponse;
   createManufacturer: ManufacturerResponse;
   createMethod: MethodResponse;
@@ -3593,6 +3639,7 @@ export type Mutation = {
   refresh: AuthenticatedDataResponse;
   rejectSamples: SampleActionResponse;
   removeAbxOrganismResult: DeleteResponse;
+  removeUserFromLaboratory: UserLaboratoryAssignmentResponse;
   replyMessage: MessageResponse;
   requestPasswordReset: MessageResponse;
   resetPassword: MessageResponse;
@@ -3601,6 +3648,7 @@ export type Mutation = {
   samplesApplyTemplate: ResultedSampleActionResponse;
   saveAbxOrganismResult: AbxOrganismResultType;
   sendMessage: MessageResponse;
+  setUserActiveLaboratory: UserResponse;
   shipmentManageSamples: ShipmentResponse;
   storeSamples: StoreSampleResponse;
   submitAnalysisResults: AnalysisResultSubmitResponse;
@@ -3672,10 +3720,13 @@ export type Mutation = {
   updateInstrumentType: InstrumentTypeResponse;
   updateLaboratory: LaboratoryResponse;
   updateLaboratoryInstrument: LaboratoryInstrumentResponse;
+  updateLaboratoryManager: LaboratoryResponse;
   updateLaboratorySetting: LaboratorySettingResponse;
   updateManufacturer: ManufacturerResponse;
   updateMethod: MethodResponse;
   updateNotice: NoticeResponse;
+  updateOrganisation: OrganizationResponse;
+  updateOrganisationSetting: OrganizationSettingResponse;
   updatePatient: PatientResponse;
   updateProfile: AnalysisProfileResponse;
   updateProfileDiscount: ProfileDiscountResponse;
@@ -3712,6 +3763,7 @@ export type Mutation = {
   updateWorksheetApplyTemplate: WorkSheetResponse;
   updateWorksheetManualAssign: WorkSheetResponse;
   updateWorksheetTemplate: WorkSheetTemplateResponse;
+  uploadProfilePicture: ProfilePictureUploadResponse;
   useAbxAntibiotic: AbxAntibioticResponse;
   validatePasswordResetToken: PasswordResetValidityResponse;
   verifyAnalysisResults: AnalysisResultSubmitResponse;
@@ -3746,6 +3798,12 @@ export type MutationApplyVoucherArgs = {
 export type MutationApproveStockOrderArgs = {
   payload: StockOrderApprovalInputType;
   uid: Scalars['String']['input'];
+};
+
+
+export type MutationAssignUserToLaboratoryArgs = {
+  laboratoryUid: Scalars['String']['input'];
+  userUid: Scalars['String']['input'];
 };
 
 
@@ -4098,6 +4156,11 @@ export type MutationCreateInstrumentCompetenceArgs = {
 
 export type MutationCreateInstrumentTypeArgs = {
   payload: InstrumentTypeInputType;
+};
+
+
+export type MutationCreateLaboratoryArgs = {
+  payload: LaboratoryCreateInputType;
 };
 
 
@@ -4498,6 +4561,12 @@ export type MutationRemoveAbxOrganismResultArgs = {
 };
 
 
+export type MutationRemoveUserFromLaboratoryArgs = {
+  laboratoryUid: Scalars['String']['input'];
+  userUid: Scalars['String']['input'];
+};
+
+
 export type MutationReplyMessageArgs = {
   body: Scalars['String']['input'];
   threadUid: Scalars['String']['input'];
@@ -4541,6 +4610,12 @@ export type MutationSaveAbxOrganismResultArgs = {
 export type MutationSendMessageArgs = {
   body: Scalars['String']['input'];
   recipients: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationSetUserActiveLaboratoryArgs = {
+  laboratoryUid: Scalars['String']['input'];
+  userUid: Scalars['String']['input'];
 };
 
 
@@ -4968,6 +5043,12 @@ export type MutationUpdateLaboratoryInstrumentArgs = {
 };
 
 
+export type MutationUpdateLaboratoryManagerArgs = {
+  laboratoryUid: Scalars['String']['input'];
+  managerUid: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateLaboratorySettingArgs = {
   payload: LaboratorySettingInputType;
   uid: Scalars['String']['input'];
@@ -4988,6 +5069,17 @@ export type MutationUpdateMethodArgs = {
 
 export type MutationUpdateNoticeArgs = {
   payload: NoticeInputType;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateOrganisationArgs = {
+  payload: OrganisationInputType;
+};
+
+
+export type MutationUpdateOrganisationSettingArgs = {
+  payload: OrganisationSettingInputType;
   uid: Scalars['String']['input'];
 };
 
@@ -5222,6 +5314,11 @@ export type MutationUpdateWorksheetTemplateArgs = {
 };
 
 
+export type MutationUploadProfilePictureArgs = {
+  payload: ProfilePictureUploadInputType;
+};
+
+
 export type MutationUseAbxAntibioticArgs = {
   uid: Scalars['String']['input'];
 };
@@ -5319,6 +5416,100 @@ export type OperationErrorDeletedItem = DeletedItem | OperationError;
 export type OperationSuccess = {
   __typename?: 'OperationSuccess';
   message: Scalars['String']['output'];
+};
+
+export type OrganisationInputType = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  banking?: InputMaybe<Scalars['String']['input']>;
+  businessPhone?: InputMaybe<Scalars['String']['input']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  countryUid?: InputMaybe<Scalars['String']['input']>;
+  districtUid?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  emailCc?: InputMaybe<Scalars['String']['input']>;
+  labManagerUid?: InputMaybe<Scalars['String']['input']>;
+  logo?: InputMaybe<Scalars['String']['input']>;
+  mobilePhone?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  provinceUid?: InputMaybe<Scalars['String']['input']>;
+  qualityStatement?: InputMaybe<Scalars['String']['input']>;
+  tagLine?: InputMaybe<Scalars['String']['input']>;
+  uid: Scalars['String']['input'];
+};
+
+export type OrganisationSettingInputType = {
+  allowAutoBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  allowPatientRegistration?: InputMaybe<Scalars['Boolean']['input']>;
+  allowSampleRegistration?: InputMaybe<Scalars['Boolean']['input']>;
+  allowSelfVerification?: InputMaybe<Scalars['Boolean']['input']>;
+  allowWorksheetCreation?: InputMaybe<Scalars['Boolean']['input']>;
+  autoReceiveSamples?: InputMaybe<Scalars['Boolean']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  defaultRoute?: InputMaybe<Scalars['String']['input']>;
+  defaultTheme?: InputMaybe<Scalars['String']['input']>;
+  inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
+  laboratoryUid: Scalars['String']['input'];
+  passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
+  paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+  stickerCopies?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type OrganizationResponse = OperationError | OrganizationType;
+
+export type OrganizationSettingResponse = OperationError | OrganizationSettingType;
+
+export type OrganizationSettingType = {
+  __typename?: 'OrganizationSettingType';
+  allowAutoBilling?: Maybe<Scalars['Boolean']['output']>;
+  allowBilling?: Maybe<Scalars['Boolean']['output']>;
+  allowPatientRegistration?: Maybe<Scalars['Boolean']['output']>;
+  allowSampleRegistration?: Maybe<Scalars['Boolean']['output']>;
+  allowSelfVerification?: Maybe<Scalars['Boolean']['output']>;
+  allowWorksheetCreation?: Maybe<Scalars['Boolean']['output']>;
+  autoReceiveSamples?: Maybe<Scalars['Boolean']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  currency?: Maybe<Scalars['String']['output']>;
+  defaultRoute?: Maybe<Scalars['String']['output']>;
+  defaultTatMinutes?: Maybe<Scalars['Int']['output']>;
+  defaultTheme?: Maybe<Scalars['String']['output']>;
+  inactivityLogOut?: Maybe<Scalars['Int']['output']>;
+  passwordLifetime?: Maybe<Scalars['Int']['output']>;
+  paymentTermsDays?: Maybe<Scalars['Int']['output']>;
+  stickerCopies?: Maybe<Scalars['Int']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type OrganizationType = {
+  __typename?: 'OrganizationType';
+  address?: Maybe<Scalars['String']['output']>;
+  banking?: Maybe<Scalars['String']['output']>;
+  businessPhone?: Maybe<Scalars['String']['output']>;
+  code?: Maybe<Scalars['String']['output']>;
+  countryUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  districtUid?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  emailCc?: Maybe<Scalars['String']['output']>;
+  logo?: Maybe<Scalars['String']['output']>;
+  mobilePhone?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  provinceUid?: Maybe<Scalars['String']['output']>;
+  qualityStatement?: Maybe<Scalars['String']['output']>;
+  settings: OrganizationSettingType;
+  setupName: Scalars['String']['output'];
+  tagLine?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type PageInfo = {
@@ -5443,6 +5634,13 @@ export type PermissionType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type PermissionUsageSummaryType = {
+  __typename?: 'PermissionUsageSummaryType';
+  globalGroups: Array<GroupType>;
+  permission: PermissionType;
+  totalGroups: Scalars['Int']['output'];
+};
+
 export enum PosterCategory {
   Engagement = 'ENGAGEMENT',
   Listing = 'LISTING',
@@ -5550,6 +5748,22 @@ export type ProfileMappingType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ProfilePictureUploadInputType = {
+  contentType: Scalars['String']['input'];
+  fileName: Scalars['String']['input'];
+  imageData: Scalars['String']['input'];
+  userUid: Scalars['String']['input'];
+};
+
+export type ProfilePictureUploadResponse = OperationError | ProfilePictureUploadResultType;
+
+export type ProfilePictureUploadResultType = {
+  __typename?: 'ProfilePictureUploadResultType';
+  message: Scalars['String']['output'];
+  profilePictureUrl: Scalars['String']['output'];
+  user: UserType;
 };
 
 export type ProfilePriceResponse = OperationError | ProfilePriceType;
@@ -5900,7 +6114,11 @@ export type Query = {
   grindStampByCategory: Array<GrindStampType>;
   grindStampByUid?: Maybe<GrindStampType>;
   groupAll: Array<GroupType>;
+  groupByName?: Maybe<GroupType>;
   groupByUid?: Maybe<GroupType>;
+  groupSearch: Array<GroupType>;
+  groupsByLaboratory: Array<GroupType>;
+  groupsWithPermission: Array<GroupType>;
   hazardAll: Array<HazardType>;
   hazardByUid?: Maybe<HazardType>;
   identificationAll: Array<IdentificationType>;
@@ -5912,10 +6130,14 @@ export type Query = {
   instrumentByUid: InstrumentType;
   instrumentTypeAll: InstrumentTypeCursorPage;
   instrumentTypeByUid: InstrumentTypeType;
-  laboratory: LaboratoryType;
+  laboratoriesByOrganization: Array<LaboratoryType>;
+  laboratory: LaboratoryTypeOperationError;
+  laboratoryAll: LaboratoryCursorPage;
+  laboratoryByUid: LaboratoryType;
   laboratoryInstrumentAll: LaboratoryInstrumentCursorPage;
   laboratoryInstrumentByUid: LaboratoryInstrumentType;
-  laboratorySetting: LaboratorySettingType;
+  laboratorySearch: Array<LaboratoryType>;
+  laboratorySettingByLaboratoryUid: LaboratorySettingType;
   manifestReportDownload?: Maybe<Scalars['BytesScalar']['output']>;
   manufacturerAll: Array<ManufacturerType>;
   manufacturerByUid: ManufacturerType;
@@ -5927,12 +6149,18 @@ export type Query = {
   notificationByUid?: Maybe<NotificationType>;
   notificationFilter: Array<NotificationType>;
   ordersByBillUid: Array<AnalysisRequestType>;
+  organization: OrganizationType;
   patientAll: PatientCursorPage;
   patientByPatientId?: Maybe<PatientType>;
   patientByUid?: Maybe<PatientType>;
   patientSearch: Array<PatientType>;
   permissionAll: Array<PermissionType>;
   permissionByUid?: Maybe<PermissionType>;
+  permissionSearch: Array<PermissionType>;
+  permissionUsageSummary: PermissionUsageSummaryType;
+  permissionsByAction: Array<PermissionType>;
+  permissionsByActionTarget: Array<PermissionType>;
+  permissionsByTarget: Array<PermissionType>;
   priceForAnalysis?: Maybe<AnalysisPriceType>;
   priceForProfile?: Maybe<ProfilePriceType>;
   profileAll: Array<ProfileType>;
@@ -6008,9 +6236,15 @@ export type Query = {
   threadsForUser?: Maybe<Array<MessageThreadType>>;
   unitAll: Array<UnitType>;
   unitByUid: UnitType;
+  userAccessSummary: UserAccessSummaryType;
   userAll: UserCursorPage;
   userByEmail?: Maybe<UserType>;
+  userByEmailOrUsername?: Maybe<UserType>;
+  userByUid?: Maybe<UserType>;
+  userLaboratories: Array<Scalars['String']['output']>;
   userMe?: Maybe<UserType>;
+  userSearch: Array<UserType>;
+  usersByLaboratory: Array<UserType>;
   voucherAll?: Maybe<Array<VoucherType>>;
   voucherByUid?: Maybe<VoucherType>;
   voucherCodes?: Maybe<Array<VoucherCodeType>>;
@@ -6885,8 +7119,37 @@ export type QueryGrindStampByUidArgs = {
 };
 
 
+export type QueryGroupAllArgs = {
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGroupByNameArgs = {
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+
 export type QueryGroupByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryGroupSearchArgs = {
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
+  limit?: Scalars['Int']['input'];
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryGroupsByLaboratoryArgs = {
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGroupsWithPermissionArgs = {
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
+  permissionUid: Scalars['String']['input'];
 };
 
 
@@ -6943,8 +7206,23 @@ export type QueryInstrumentTypeByUidArgs = {
 };
 
 
-export type QueryLaboratoryArgs = {
-  setupName: Scalars['String']['input'];
+export type QueryLaboratoriesByOrganizationArgs = {
+  organizationUid: Scalars['String']['input'];
+};
+
+
+export type QueryLaboratoryAllArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  organizationUid?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryLaboratoryByUidArgs = {
+  uid: Scalars['String']['input'];
 };
 
 
@@ -6962,8 +7240,14 @@ export type QueryLaboratoryInstrumentByUidArgs = {
 };
 
 
-export type QueryLaboratorySettingArgs = {
-  setupName: Scalars['String']['input'];
+export type QueryLaboratorySearchArgs = {
+  limit?: Scalars['Int']['input'];
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryLaboratorySettingByLaboratoryUidArgs = {
+  uid: Scalars['String']['input'];
 };
 
 
@@ -7050,6 +7334,33 @@ export type QueryPatientSearchArgs = {
 
 export type QueryPermissionByUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryPermissionSearchArgs = {
+  limit?: Scalars['Int']['input'];
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryPermissionUsageSummaryArgs = {
+  permissionUid: Scalars['String']['input'];
+};
+
+
+export type QueryPermissionsByActionArgs = {
+  action: Scalars['String']['input'];
+};
+
+
+export type QueryPermissionsByActionTargetArgs = {
+  action: Scalars['String']['input'];
+  target: Scalars['String']['input'];
+};
+
+
+export type QueryPermissionsByTargetArgs = {
+  target: Scalars['String']['input'];
 };
 
 
@@ -7432,9 +7743,15 @@ export type QueryUnitByUidArgs = {
 };
 
 
+export type QueryUserAccessSummaryArgs = {
+  userUid: Scalars['String']['input'];
+};
+
+
 export type QueryUserAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
   text?: InputMaybe<Scalars['String']['input']>;
@@ -7446,8 +7763,35 @@ export type QueryUserByEmailArgs = {
 };
 
 
+export type QueryUserByEmailOrUsernameArgs = {
+  identifier: Scalars['String']['input'];
+};
+
+
+export type QueryUserByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryUserLaboratoriesArgs = {
+  userUid: Scalars['String']['input'];
+};
+
+
 export type QueryUserMeArgs = {
   token: Scalars['String']['input'];
+};
+
+
+export type QueryUserSearchArgs = {
+  laboratoryUid?: InputMaybe<Scalars['String']['input']>;
+  limit?: Scalars['Int']['input'];
+  text: Scalars['String']['input'];
+};
+
+
+export type QueryUsersByLaboratoryArgs = {
+  laboratoryUid: Scalars['String']['input'];
 };
 
 
@@ -8839,6 +9183,18 @@ export type UpdatedGroupPerms = {
 
 export type UpdatedGroupPermsResponse = OperationError | UpdatedGroupPerms;
 
+export type UserAccessSummaryType = {
+  __typename?: 'UserAccessSummaryType';
+  activeLaboratory?: Maybe<Scalars['String']['output']>;
+  groups: Array<GroupType>;
+  isActive: Scalars['Boolean']['output'];
+  isBlocked: Scalars['Boolean']['output'];
+  isSuperuser: Scalars['Boolean']['output'];
+  laboratories: Array<Scalars['String']['output']>;
+  permissions: Array<PermissionType>;
+  user: UserType;
+};
+
 export type UserCursorPage = {
   __typename?: 'UserCursorPage';
   edges?: Maybe<Array<UserEdge>>;
@@ -8851,6 +9207,15 @@ export type UserEdge = {
   __typename?: 'UserEdge';
   cursor: Scalars['String']['output'];
   node: UserType;
+};
+
+export type UserLaboratoryAssignmentResponse = OperationError | UserLaboratoryAssignmentType;
+
+export type UserLaboratoryAssignmentType = {
+  __typename?: 'UserLaboratoryAssignmentType';
+  laboratories: Array<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
+  user: UserType;
 };
 
 export type UserPreferenceType = {
@@ -8871,6 +9236,7 @@ export type UserResponse = OperationError | UserType;
 
 export type UserType = {
   __typename?: 'UserType';
+  activeLaboratoryUid?: Maybe<Scalars['String']['output']>;
   avatar?: Maybe<Scalars['String']['output']>;
   bio?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;

@@ -3,9 +3,22 @@ import type * as Types from '../schema';
 import gql from 'graphql-tag';
 import * as Urql from '@urql/vue';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type GetLaboratoryQueryVariables = Types.Exact<{
-  setupName?: Types.Scalars['String']['input'];
-}>;
+export type GetOrganizationQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetOrganizationQuery = (
+  { __typename?: 'Query' }
+  & { organization: (
+    { __typename?: 'OrganizationType' }
+    & Pick<Types.OrganizationType, 'uid' | 'name' | 'tagLine' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
+    & { settings: (
+      { __typename?: 'OrganizationSettingType' }
+      & Pick<Types.OrganizationSettingType, 'uid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+    ) }
+  ) }
+);
+
+export type GetLaboratoryQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
 export type GetLaboratoryQuery = (
@@ -13,19 +26,40 @@ export type GetLaboratoryQuery = (
   & { laboratory: (
     { __typename?: 'LaboratoryType' }
     & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
+    & { settings: (
+      { __typename?: 'LaboratorySettingType' }
+      & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+    ) }
+  ) | (
+    { __typename?: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) }
 );
 
-export type GetLaboratorySettingQueryVariables = Types.Exact<{
-  setupName?: Types.Scalars['String']['input'];
+export type GetAllLaboratoriesQueryVariables = Types.Exact<{
+  first?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  text?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
 
-export type GetLaboratorySettingQuery = (
+export type GetAllLaboratoriesQuery = (
   { __typename?: 'Query' }
-  & { laboratorySetting: (
-    { __typename?: 'LaboratorySettingType' }
-    & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+  & { laboratoryAll: (
+    { __typename?: 'LaboratoryCursorPage' }
+    & Pick<Types.LaboratoryCursorPage, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
+    ), items?: Types.Maybe<Array<(
+      { __typename?: 'LaboratoryType' }
+      & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
+      & { settings: (
+        { __typename?: 'LaboratorySettingType' }
+        & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+      ) }
+    )>> }
   ) }
 );
 
@@ -104,13 +138,12 @@ export type GetAllDepartmentsQuery = (
 );
 
 
-export const GetLaboratoryDocument = gql`
-    query getLaboratory($setupName: String! = "felicity") {
-  laboratory(setupName: $setupName) {
+export const GetOrganizationDocument = gql`
+    query getOrganization {
+  organization {
     uid
     name
     tagLine
-    labManagerUid
     email
     emailCc
     mobilePhone
@@ -119,6 +152,69 @@ export const GetLaboratoryDocument = gql`
     banking
     logo
     qualityStatement
+    settings {
+      uid
+      allowSelfVerification
+      allowPatientRegistration
+      allowSampleRegistration
+      allowWorksheetCreation
+      defaultRoute
+      passwordLifetime
+      inactivityLogOut
+      defaultTheme
+      autoReceiveSamples
+      stickerCopies
+      allowBilling
+      allowAutoBilling
+      currency
+      paymentTermsDays
+    }
+  }
+}
+    `;
+
+export function useGetOrganizationQuery(options: Omit<Urql.UseQueryArgs<never, GetOrganizationQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetOrganizationQuery>({ query: GetOrganizationDocument, ...options });
+};
+export const GetLaboratoryDocument = gql`
+    query getLaboratory {
+  laboratory {
+    ... on LaboratoryType {
+      uid
+      name
+      tagLine
+      labManagerUid
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      banking
+      logo
+      qualityStatement
+      settings {
+        uid
+        laboratoryUid
+        allowSelfVerification
+        allowPatientRegistration
+        allowSampleRegistration
+        allowWorksheetCreation
+        defaultRoute
+        passwordLifetime
+        inactivityLogOut
+        defaultTheme
+        autoReceiveSamples
+        stickerCopies
+        allowBilling
+        allowAutoBilling
+        currency
+        paymentTermsDays
+      }
+    }
+    ... on OperationError {
+      error
+      suggestion
+    }
   }
 }
     `;
@@ -126,31 +222,59 @@ export const GetLaboratoryDocument = gql`
 export function useGetLaboratoryQuery(options: Omit<Urql.UseQueryArgs<never, GetLaboratoryQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetLaboratoryQuery>({ query: GetLaboratoryDocument, ...options });
 };
-export const GetLaboratorySettingDocument = gql`
-    query getLaboratorySetting($setupName: String! = "felicity") {
-  laboratorySetting(setupName: $setupName) {
-    uid
-    laboratoryUid
-    allowSelfVerification
-    allowPatientRegistration
-    allowSampleRegistration
-    allowWorksheetCreation
-    defaultRoute
-    passwordLifetime
-    inactivityLogOut
-    defaultTheme
-    autoReceiveSamples
-    stickerCopies
-    allowBilling
-    allowAutoBilling
-    currency
-    paymentTermsDays
+export const GetAllLaboratoriesDocument = gql`
+    query getAllLaboratories($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
+  laboratoryAll(
+    pageSize: $first
+    afterCursor: $after
+    text: $text
+    sortBy: $sortBy
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    items {
+      uid
+      name
+      tagLine
+      labManagerUid
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      banking
+      logo
+      qualityStatement
+      settings {
+        uid
+        laboratoryUid
+        allowSelfVerification
+        allowPatientRegistration
+        allowSampleRegistration
+        allowWorksheetCreation
+        defaultRoute
+        passwordLifetime
+        inactivityLogOut
+        defaultTheme
+        autoReceiveSamples
+        stickerCopies
+        allowBilling
+        allowAutoBilling
+        currency
+        paymentTermsDays
+      }
+    }
   }
 }
     `;
 
-export function useGetLaboratorySettingQuery(options: Omit<Urql.UseQueryArgs<never, GetLaboratorySettingQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetLaboratorySettingQuery>({ query: GetLaboratorySettingDocument, ...options });
+export function useGetAllLaboratoriesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllLaboratoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllLaboratoriesQuery>({ query: GetAllLaboratoriesDocument, ...options });
 };
 export const UserAllDocument = gql`
     query userAll($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {

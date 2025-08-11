@@ -7,13 +7,18 @@
   const tabs = [
     {
       id: "laboratory",
-      label: "laboratory",
+      label: "current laboratory",
       component: defineAsyncComponent(() => import("./Laboratory.vue")),
     },
     {
       id: "laboratory-management",
       label: "laboratory management", 
       component: defineAsyncComponent(() => import("./LaboratoryListing.vue")),
+    },
+    {
+      id: "organisation-management",
+      label: "organisation", 
+      component: defineAsyncComponent(() => import("./Organisation.vue")),
     },
     {
       id: "departments",
