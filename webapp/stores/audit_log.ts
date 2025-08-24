@@ -51,6 +51,14 @@ export const useAuditLogStore = defineStore('auditlog', {
                             }
                         }
                         
+                        if (typeof processedLog.extras === 'string') {
+                            try {
+                                processedLog.extras = JSON.parse(processedLog.extras);
+                            } catch (e) {
+                                console.error('Failed to parse extras JSON:', e);
+                            }
+                        }
+                        
                         return processedLog;
                     });
                 } else {

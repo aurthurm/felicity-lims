@@ -12,8 +12,9 @@ interface Props {
 
 interface ChangeTrail {
   key: string;
-  old: string;
-  new: string;
+  old?: string;
+  new?: string;
+  raw?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -60,6 +61,7 @@ function translateAction(action: number): string {
 function changes(log: any): ChangeTrail[] {
   const trails = new Set<ChangeTrail>();
   
+  // state changes
   Object.entries(log?.stateBefore || {}).forEach(([keyB, valueB]) => {
     Object.entries(log?.stateAfter || {}).forEach(([keyA, valueA]) => {
       if (keyB === keyA && valueB !== valueA) {
@@ -106,6 +108,17 @@ function changes(log: any): ChangeTrail[] {
       }
     });
   });
+
+  // extra context
+  Object.entries(log?.extras || {}).forEach(([key, value]) => {
+    if (value != null && value !== "") {
+      trails.add({
+        key: key,
+        raw: typeof value === "object" ? JSON.stringify(value) : String(value),
+      });
+    }
+  });
+
   return Array.from(trails);
 }
 </script>
@@ -162,7 +175,11 @@ function changes(log: any): ChangeTrail[] {
             <span class="col-span-1">
               <span class="text-sm text-muted-foreground">{{ trail?.key }}</span>
             </span>
-            <span class="col-span-3 flex items-center gap-2">
+            <span v-if="trail?.raw" class="col-span-3">
+              <span class="text-xs text-muted-secondary">{{ trail?.raw }}</span>
+            </span>
+            <span v-else
+            class="col-span-3 flex items-center gap-2">
               <span class="text-xs text-destructive line-through">{{ trail?.old }}</span>
               <span class="text-xs text-muted-foreground" aria-hidden="true">→</span>
               <span class="text-xs text-primary">{{ trail?.new }}</span>

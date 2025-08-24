@@ -99,6 +99,7 @@ class EventListenable:
         extras = {}
         tenant_context = get_tenant_context()
         if tenant_context is not None:
+            extras["user_uid"] = tenant_context.user_uid
             extras["laboratory_uid"] = tenant_context.laboratory_uid
             extras["ip_address"] = tenant_context.ip_address
             extras["user_agent"] = tenant_context.user_agent
