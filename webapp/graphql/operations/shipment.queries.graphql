@@ -50,9 +50,9 @@ query getShipmentByUid($shipmentUid: String!) {
         jsonContent
         laboratory { 
             name
-            url
-            username
-            password
+            #url
+            #username
+            #password
         }
         shippedSamples {
             resultNotified

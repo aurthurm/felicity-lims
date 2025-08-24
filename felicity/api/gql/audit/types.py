@@ -16,6 +16,7 @@ class AuditLogType:
     action: int | None = None
     state_before: Optional[JSONScalar] = None
     state_after: Optional[JSONScalar] = None
+    extras: Optional[JSONScalar] = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
     #

@@ -37,8 +37,8 @@ export type GetAllShipmentsQuery = (
       { __typename?: 'ShipmentType' }
       & Pick<Types.ShipmentType, 'uid' | 'shipmentId' | 'assignedCount' | 'incoming' | 'state' | 'laboratoryUid' | 'courier' | 'createdAt'>
       & { laboratory?: Types.Maybe<(
-        { __typename?: 'ReferralLaboratoryType' }
-        & Pick<Types.ReferralLaboratoryType, 'name'>
+        { __typename?: 'LaboratoryType' }
+        & Pick<Types.LaboratoryType, 'name'>
       )> }
     )>> }
   ) }
@@ -55,8 +55,8 @@ export type GetShipmentByUidQuery = (
     { __typename?: 'ShipmentType' }
     & Pick<Types.ShipmentType, 'uid' | 'shipmentId' | 'assignedCount' | 'state' | 'incoming' | 'comment' | 'createdAt' | 'courier' | 'jsonContent'>
     & { laboratory?: Types.Maybe<(
-      { __typename?: 'ReferralLaboratoryType' }
-      & Pick<Types.ReferralLaboratoryType, 'name' | 'url' | 'username' | 'password'>
+      { __typename?: 'LaboratoryType' }
+      & Pick<Types.LaboratoryType, 'name'>
     )>, shippedSamples?: Types.Maybe<Array<(
       { __typename?: 'ShippedSampleType' }
       & Pick<Types.ShippedSampleType, 'resultNotified' | 'extSampleId'>
@@ -160,9 +160,6 @@ export const GetShipmentByUidDocument = gql`
     jsonContent
     laboratory {
       name
-      url
-      username
-      password
     }
     shippedSamples {
       resultNotified

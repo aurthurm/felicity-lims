@@ -52,8 +52,8 @@ export type AddShipmentMutation = (
       { __typename?: 'ShipmentType' }
       & Pick<Types.ShipmentType, 'uid' | 'shipmentId' | 'assignedCount' | 'state' | 'laboratoryUid' | 'createdAt'>
       & { laboratory?: Types.Maybe<(
-        { __typename?: 'ReferralLaboratoryType' }
-        & Pick<Types.ReferralLaboratoryType, 'name'>
+        { __typename?: 'LaboratoryType' }
+        & Pick<Types.LaboratoryType, 'name'>
       )> }
     )>> }
   ) }
@@ -74,8 +74,8 @@ export type UpdateShipmentMutation = (
     { __typename: 'ShipmentType' }
     & Pick<Types.ShipmentType, 'uid' | 'shipmentId' | 'assignedCount' | 'state' | 'incoming' | 'comment' | 'createdAt' | 'courier'>
     & { laboratory?: Types.Maybe<(
-      { __typename?: 'ReferralLaboratoryType' }
-      & Pick<Types.ReferralLaboratoryType, 'uid' | 'name'>
+      { __typename?: 'LaboratoryType' }
+      & Pick<Types.LaboratoryType, 'uid' | 'name'>
     )> }
   ) }
 );
@@ -95,8 +95,8 @@ export type ShipmentManageSamplesMutation = (
     { __typename: 'ShipmentType' }
     & Pick<Types.ShipmentType, 'uid' | 'shipmentId' | 'assignedCount' | 'state' | 'incoming' | 'comment' | 'createdAt' | 'courier'>
     & { laboratory?: Types.Maybe<(
-      { __typename?: 'ReferralLaboratoryType' }
-      & Pick<Types.ReferralLaboratoryType, 'uid' | 'name'>
+      { __typename?: 'LaboratoryType' }
+      & Pick<Types.LaboratoryType, 'uid' | 'name'>
     )>, samples?: Types.Maybe<Array<(
       { __typename?: 'SampleType' }
       & Pick<Types.SampleType, 'uid' | 'sampleId' | 'status'>

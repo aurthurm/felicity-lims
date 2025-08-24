@@ -119,7 +119,7 @@ export type GetAuditLogsQuery = (
   { __typename?: 'Query' }
   & { auditLogsFilter?: Types.Maybe<Array<(
     { __typename?: 'AuditLogType' }
-    & Pick<Types.AuditLogType, 'uid' | 'userUid' | 'targetType' | 'targetUid' | 'action' | 'stateBefore' | 'stateAfter'>
+    & Pick<Types.AuditLogType, 'uid' | 'userUid' | 'targetType' | 'targetUid' | 'action' | 'stateBefore' | 'stateAfter' | 'extras'>
   )>> }
 );
 
@@ -335,6 +335,7 @@ export const GetAuditLogsDocument = gql`
     action
     stateBefore
     stateAfter
+    extras
   }
 }
     `;

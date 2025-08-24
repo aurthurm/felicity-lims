@@ -169,6 +169,7 @@ query getAuditLogs($targetType: String!, $targetUid: String!) {
         action
         stateBefore
         stateAfter
+        extras
     }
 }
 

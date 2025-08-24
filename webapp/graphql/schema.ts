@@ -70,6 +70,8 @@ export type AbxAstPanelType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   organisms?: Maybe<Array<AbxOrganismType>>;
   uid: Scalars['String']['output'];
@@ -96,6 +98,8 @@ export type AbxAstResultType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   guidelineYear?: Maybe<AbxGuidelineYearType>;
   guidelineYearUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismResultUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -144,6 +148,8 @@ export type AbxAntibioticGuidelineType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   guideline?: Maybe<AbxGuidelineType>;
   guidelineUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -203,6 +209,8 @@ export type AbxAntibioticType = {
   guidelines?: Maybe<Array<AbxGuidelineType>>;
   human?: Maybe<Scalars['Boolean']['output']>;
   jacCode?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   loincafb?: Maybe<Scalars['String']['output']>;
   loinccomp?: Maybe<Scalars['String']['output']>;
   loincdisk?: Maybe<Scalars['String']['output']>;
@@ -271,6 +279,8 @@ export type AbxBreakpointTyp = {
   host?: Maybe<AbxHostType>;
   hostUid?: Maybe<Scalars['String']['output']>;
   i?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismCode: Scalars['String']['output'];
   organismCodeType: Scalars['String']['output'];
   potency?: Maybe<Scalars['String']['output']>;
@@ -317,6 +327,7 @@ export type AbxBreakpointTypeTyp = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -336,6 +347,8 @@ export type AbxClassType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   phylum?: Maybe<AbxPhylumType>;
   phylumUid?: Maybe<Scalars['String']['output']>;
@@ -387,6 +400,8 @@ export type AbxExpResPhenotypeType = {
   exceptionOrganismCodeType: Scalars['String']['output'];
   guideline?: Maybe<AbxGuidelineType>;
   guidelineUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismCode: Scalars['String']['output'];
   organismCodeType: Scalars['String']['output'];
   referenceTable?: Maybe<Scalars['String']['output']>;
@@ -430,6 +445,8 @@ export type AbxExpertInterpretationRuleType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismCode: Scalars['String']['output'];
   organismCodeType: Scalars['String']['output'];
   ruleCode: Scalars['String']['output'];
@@ -452,6 +469,8 @@ export type AbxFamilyType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   order?: Maybe<AbxOrderType>;
   orderUid?: Maybe<Scalars['String']['output']>;
@@ -475,6 +494,8 @@ export type AbxGenusType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   family?: Maybe<AbxFamilyType>;
   familyUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -497,6 +518,8 @@ export type AbxGuidelineType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -526,6 +549,8 @@ export type AbxHostType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -544,6 +569,8 @@ export type AbxKingdomType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -564,6 +591,8 @@ export type AbxMediumType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -585,6 +614,8 @@ export type AbxOrderType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -633,6 +664,8 @@ export type AbxOrganismResultType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isolateNumber?: Maybe<Scalars['Int']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organism?: Maybe<AbxOrganismType>;
   organismUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -677,6 +710,8 @@ export type AbxOrganismSerotypeType = {
   fate?: Maybe<Scalars['String']['output']>;
   hPhase1?: Maybe<Scalars['String']['output']>;
   hPhase2?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   oAntigens?: Maybe<Scalars['String']['output']>;
   organism?: Maybe<AbxOrganismType>;
   organismUid: Scalars['String']['output'];
@@ -712,6 +747,8 @@ export type AbxOrganismType = {
   genusUid?: Maybe<Scalars['String']['output']>;
   kingdom?: Maybe<AbxKingdomType>;
   kingdomUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   morphology?: Maybe<Scalars['String']['output']>;
   msfGrpClin?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
@@ -748,6 +785,8 @@ export type AbxPhylumType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   kingdom?: Maybe<AbxKingdomType>;
   kingdomUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -795,6 +834,8 @@ export type AbxQcRangeType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   guideline?: Maybe<AbxGuidelineType>;
   guidelineUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   maximum?: Maybe<Scalars['String']['output']>;
   medium?: Maybe<AbxMediumType>;
   mediumUid?: Maybe<Scalars['String']['output']>;
@@ -824,6 +865,8 @@ export type AbxSiteOfInfectionType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -844,6 +887,8 @@ export type AbxTestMethodType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -853,6 +898,8 @@ export type AbxTestMethodType = {
 
 export type ActivityFeedType = {
   __typename?: 'ActivityFeedType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   subscribers?: Maybe<Array<UserType>>;
   uid: Scalars['String']['output'];
@@ -860,6 +907,8 @@ export type ActivityFeedType = {
 
 export type ActivityProcessType = {
   __typename?: 'ActivityProcessType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   objectType: Scalars['String']['output'];
   status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -876,6 +925,8 @@ export type ActivityStreamType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   feeds?: Maybe<Array<ActivityFeedType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   target?: Maybe<Scalars['String']['output']>;
   targetUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -905,6 +956,8 @@ export type AnalysisCategoryType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -929,6 +982,8 @@ export type AnalysisCorrectionFactorType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   factor: Scalars['Float']['output'];
   instrumentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   methodUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -961,6 +1016,8 @@ export type AnalysisDetectionLimitType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   instrumentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lowerLimit: Scalars['Float']['output'];
   methodUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -982,6 +1039,8 @@ export type AnalysisDiscountType = {
   discountType: Scalars['String']['output'];
   endDate: Scalars['DateTime']['output'];
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   startDate: Scalars['DateTime']['output'];
   uid: Scalars['String']['output'];
@@ -1036,6 +1095,8 @@ export type AnalysisInterimType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   instrumentUid: Scalars['String']['output'];
   key: Scalars['Int']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -1065,6 +1126,8 @@ export type AnalysisMappingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1083,6 +1146,8 @@ export type AnalysisPriceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -1132,6 +1197,8 @@ export type AnalysisRequestType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   patient: PatientType;
   patientUid: Scalars['String']['output'];
@@ -1155,6 +1222,8 @@ export type AnalysisRequestWithSamples = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   patient: PatientType;
   patientUid: Scalars['String']['output'];
@@ -1207,6 +1276,7 @@ export type AnalysisResultType = {
   invalidatedByUid?: Maybe<Scalars['String']['output']>;
   laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
   laboratoryInstrumentUid?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   method?: Maybe<MethodType>;
   methodUid?: Maybe<Scalars['String']['output']>;
@@ -1259,6 +1329,8 @@ export type AnalysisSpecificationType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   gender?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   max?: Maybe<Scalars['Float']['output']>;
   maxReport?: Maybe<Scalars['String']['output']>;
   maxWarn?: Maybe<Scalars['Float']['output']>;
@@ -1295,6 +1367,8 @@ export type AnalysisTemplateType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1320,6 +1394,8 @@ export type AnalysisType = {
   interims?: Maybe<Array<AnalysisInterimType>>;
   internalUse?: Maybe<Scalars['Boolean']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   methods?: Maybe<Array<MethodType>>;
   name: Scalars['String']['output'];
   precision?: Maybe<Scalars['Int']['output']>;
@@ -1359,6 +1435,8 @@ export type AnalysisUncertaintyType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   instrumentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   max: Scalars['Float']['output'];
   methodUid: Scalars['String']['output'];
   min: Scalars['Float']['output'];
@@ -1387,6 +1465,8 @@ export type AnalysisWithProfiles = {
   interims?: Maybe<Array<AnalysisInterimType>>;
   internalUse?: Maybe<Scalars['Boolean']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   methods?: Maybe<Array<MethodType>>;
   name: Scalars['String']['output'];
   precision?: Maybe<Scalars['Int']['output']>;
@@ -1420,6 +1500,9 @@ export type AuditLogType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  extras?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   stateAfter?: Maybe<Scalars['JSONScalar']['output']>;
   stateBefore?: Maybe<Scalars['JSONScalar']['output']>;
   targetType?: Maybe<Scalars['String']['output']>;
@@ -1475,8 +1558,10 @@ export type CalibrationCertificateType = {
   dateIssued: Scalars['DateTime']['output'];
   internal: Scalars['Boolean']['output'];
   issuer: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
   laboratoryInstrumentUid: Scalars['String']['output'];
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   performedBy: Scalars['String']['output'];
   remarks: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -1513,6 +1598,8 @@ export type ClientContactType = {
   emailCc?: Maybe<Scalars['String']['output']>;
   firstName?: Maybe<Scalars['String']['output']>;
   isActive?: Maybe<Scalars['Boolean']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -1566,6 +1653,8 @@ export type ClientType = {
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   phoneBusiness?: Maybe<Scalars['String']['output']>;
   phoneMobile?: Maybe<Scalars['String']['output']>;
@@ -1586,6 +1675,8 @@ export type ClinicalDataCodingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1613,6 +1704,8 @@ export type ClinicalDataType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   otherContext?: Maybe<Scalars['JSONScalar']['output']>;
   pregnancyStatus?: Maybe<Scalars['Boolean']['output']>;
   symptoms?: Maybe<Array<Scalars['String']['output']>>;
@@ -1638,6 +1731,8 @@ export type CodingStandardType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1696,6 +1791,7 @@ export type DepartmentType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1787,6 +1883,8 @@ export type DocumentAuditType = {
   document: DocumentType;
   documentUid: Scalars['String']['output'];
   ipAddress?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -1808,6 +1906,8 @@ export type DocumentCategoryType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1868,6 +1968,8 @@ export type DocumentFolderType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   documents: Array<DocumentType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   parent?: Maybe<DocumentFolderType>;
   parentUid?: Maybe<Scalars['String']['output']>;
@@ -1968,6 +2070,8 @@ export type DocumentReviewCycleType = {
   endDate?: Maybe<Scalars['String']['output']>;
   initiatedBy: UserType;
   initiatedByUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   startDate: Scalars['String']['output'];
   status: Scalars['String']['output'];
   steps: Array<DocumentReviewStepType>;
@@ -2015,6 +2119,8 @@ export type DocumentReviewStepType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reviewCycle: DocumentReviewCycleType;
   reviewCycleUid: Scalars['String']['output'];
   reviewer: UserType;
@@ -2077,6 +2183,8 @@ export type DocumentStatusType = {
   date: Scalars['String']['output'];
   document?: Maybe<DocumentType>;
   documentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2129,6 +2237,8 @@ export type DocumentSubscriptionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   document: DocumentType;
   documentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   subscriptionType: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2176,6 +2286,8 @@ export type DocumentTagType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   documents: Array<DocumentType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2227,6 +2339,8 @@ export type DocumentTemplateType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   documents: Array<DocumentType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2262,6 +2376,8 @@ export type DocumentType = {
   editor?: Maybe<Scalars['String']['output']>;
   folder?: Maybe<DocumentFolderType>;
   folderUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lastAccessed?: Maybe<Scalars['String']['output']>;
   lastAccessedBy?: Maybe<UserType>;
   lastAccessedByUid?: Maybe<Scalars['String']['output']>;
@@ -2345,6 +2461,8 @@ export type DocumentVersionType = {
   document?: Maybe<DocumentType>;
   documentUid: Scalars['String']['output'];
   editor: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   thumbnail?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2405,6 +2523,8 @@ export type GrindBoardType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   posters: Array<GrindPosterType>;
   scheme?: Maybe<GrindSchemeType>;
   schemeUid?: Maybe<Scalars['String']['output']>;
@@ -2550,6 +2670,8 @@ export type GrindErrandDiscussionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   errand?: Maybe<GrindErrandType>;
   errandUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   parent?: Maybe<GrindErrandDiscussionType>;
   parentUid?: Maybe<Scalars['String']['output']>;
   subdiscussions: Array<GrindErrandDiscussionType>;
@@ -2579,6 +2701,8 @@ export type GrindErrandType = {
   endDate?: Maybe<Scalars['String']['output']>;
   label?: Maybe<GrindLabelType>;
   labelUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   media: Array<GrindMediaType>;
   members: Array<UserType>;
   milestones: Array<GrindMilestoneType>;
@@ -2621,6 +2745,8 @@ export type GrindLabelType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2653,6 +2779,8 @@ export type GrindMediaType = {
   destination?: Maybe<Scalars['String']['output']>;
   encoding?: Maybe<Scalars['String']['output']>;
   filename?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   mimetype?: Maybe<Scalars['String']['output']>;
   originalName?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
@@ -2692,6 +2820,8 @@ export type GrindMilestoneType = {
   description?: Maybe<Scalars['String']['output']>;
   errand?: Maybe<GrindErrandType>;
   errandUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   occurrences: Array<GrindOccurrenceType>;
   title?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -2722,6 +2852,8 @@ export type GrindOccurrenceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   target?: Maybe<Scalars['String']['output']>;
   targetUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -2758,6 +2890,8 @@ export type GrindPosterType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   errands: Array<GrindErrandType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   members: Array<UserType>;
   stamps: Array<GrindStampType>;
   status?: Maybe<Scalars['String']['output']>;
@@ -2794,6 +2928,8 @@ export type GrindSchemeType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   endDate?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   members: Array<UserType>;
   startDate?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
@@ -2825,6 +2961,8 @@ export type GrindStampType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3001,6 +3139,8 @@ export type HazardType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3045,8 +3185,10 @@ export type InstrumentCalibrationType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   dateReported: Scalars['DateTime']['output'];
   endDate: Scalars['DateTime']['output'];
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
   laboratoryInstrumentUid: Scalars['String']['output'];
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   notesBefore: Scalars['String']['output'];
   performedBy: Scalars['String']['output'];
   remarks: Scalars['String']['output'];
@@ -3083,6 +3225,8 @@ export type InstrumentCompetenceType = {
   instrumentUid: Scalars['String']['output'];
   internal: Scalars['Boolean']['output'];
   issueDate: Scalars['DateTime']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -3125,7 +3269,9 @@ export type InstrumentType = {
   instrumentType?: Maybe<InstrumentTypeType>;
   instrumentTypeUid?: Maybe<Scalars['String']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryInstruments?: Maybe<Array<LaboratoryInstrumentType>>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   manufacturer?: Maybe<ManufacturerType>;
   manufacturerUid?: Maybe<Scalars['String']['output']>;
   methods?: Maybe<Array<MethodType>>;
@@ -3165,6 +3311,8 @@ export type InstrumentTypeType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3261,6 +3409,8 @@ export type LaboratoryInstrumentType = {
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
   labName?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   serialNumber?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3412,6 +3562,8 @@ export type MessageThreadType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   deletedBy?: Maybe<Array<UserType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   messages?: Maybe<Array<MessageType>>;
   recipients: Array<UserType>;
   uid: Scalars['String']['output'];
@@ -3427,6 +3579,8 @@ export type MessageType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   deletedBy?: Maybe<Array<UserType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   left: Scalars['Int']['output'];
   parent?: Maybe<MessageType>;
   parentId: Scalars['String']['output'];
@@ -3477,6 +3631,8 @@ export type MethodType = {
   description?: Maybe<Scalars['String']['output']>;
   instruments?: Maybe<Array<InstrumentType>>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5382,6 +5538,8 @@ export type NoticeType = {
   departments?: Maybe<Array<DepartmentType>>;
   expiry: Scalars['String']['output'];
   groups?: Maybe<Array<GroupType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5405,6 +5563,8 @@ export type NotificationType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   departments?: Maybe<DepartmentType>;
   groups?: Maybe<GroupType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   users?: Maybe<UserType>;
@@ -5542,6 +5702,8 @@ export type PatientIdentificationType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   identification?: Maybe<IdentificationType>;
   identificationUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   patientUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5594,6 +5756,8 @@ export type PatientType = {
   gender?: Maybe<Scalars['String']['output']>;
   identifications?: Maybe<Array<PatientIdentificationType>>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   middleName?: Maybe<Scalars['String']['output']>;
@@ -5689,6 +5853,8 @@ export type ProfileDiscountType = {
   discountType: Scalars['String']['output'];
   endDate: Scalars['DateTime']['output'];
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   profile: ProfileType;
   profileUid: Scalars['String']['output'];
@@ -5734,6 +5900,8 @@ export type ProfileMappingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   profile?: Maybe<ProfileType>;
   profileUid: Scalars['String']['output'];
@@ -5768,6 +5936,8 @@ export type ProfilePriceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   profile: ProfileType;
   profileUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -5787,6 +5957,8 @@ export type ProfileType = {
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   sampleTypes?: Maybe<Array<SampleTypeTyp>>;
   tatLengthMinutes?: Maybe<Scalars['Int']['output']>;
@@ -5852,6 +6024,8 @@ export type QcLevelType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   level: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5887,6 +6061,8 @@ export type QcSetType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
   status: Scalars['String']['output'];
@@ -5901,6 +6077,8 @@ export type QcSetWithSamples = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
   samples?: Maybe<Array<SamplesWithResults>>;
@@ -5927,6 +6105,8 @@ export type QcTemplateType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   departments: Array<DepartmentType>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   qcLevels: Array<QcLevelType>;
   uid: Scalars['String']['output'];
@@ -7858,6 +8038,8 @@ export type ReferralLaboratoryType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   isReference?: Maybe<Scalars['Boolean']['output']>;
   isReferral?: Maybe<Scalars['Boolean']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   password?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -7886,6 +8068,8 @@ export type ReflexActionType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   level: Scalars['Int']['output'];
   reflexRule?: Maybe<ReflexRuleType>;
   reflexRuleUid: Scalars['String']['output'];
@@ -7915,6 +8099,8 @@ export type ReflexBrainActionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   finalise?: Maybe<Array<ReflexBrainFinalType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   priority: Scalars['Int']['output'];
   reflexBrain?: Maybe<ReflexBrainType>;
   reflexBrainUid: Scalars['String']['output'];
@@ -7929,6 +8115,8 @@ export type ReflexBrainAdditionType = {
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
   count: Scalars['Int']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reflexBrainAction?: Maybe<ReflexBrainActionType>;
   reflexBrainActionUid: Scalars['String']['output'];
 };
@@ -7937,6 +8125,8 @@ export type ReflexBrainConditionCriteriaType = {
   __typename?: 'ReflexBrainConditionCriteriaType';
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   operator: Scalars['String']['output'];
   reflexBrainCondition?: Maybe<ReflexBrainConditionType>;
   reflexBrainConditionUid: Scalars['String']['output'];
@@ -7953,6 +8143,8 @@ export type ReflexBrainConditionType = {
   __typename?: 'ReflexBrainConditionType';
   criteria?: Maybe<Array<ReflexBrainConditionCriteriaType>>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   priority: Scalars['Int']['output'];
   reflexBrain: ReflexBrainType;
   reflexBrainUid: Scalars['String']['output'];
@@ -7969,6 +8161,8 @@ export type ReflexBrainFinalType = {
   __typename?: 'ReflexBrainFinalType';
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reflexBrainAction?: Maybe<ReflexBrainActionType>;
   reflexBrainActionUid: Scalars['String']['output'];
   value: Scalars['String']['output'];
@@ -7992,6 +8186,8 @@ export type ReflexBrainType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   priority: Scalars['Int']['output'];
   reflexAction?: Maybe<ReflexBrainType>;
   reflexActionUid: Scalars['String']['output'];
@@ -8034,6 +8230,8 @@ export type ReflexRuleType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   priority: Scalars['Int']['output'];
   reflexActions?: Maybe<Array<ReflexActionType>>;
@@ -8050,6 +8248,8 @@ export type RejectionReasonType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reason: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8067,6 +8267,8 @@ export type ReportImpressType = {
   generatedBy?: Maybe<UserType>;
   generatedByUid?: Maybe<Scalars['String']['output']>;
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   sample?: Maybe<SampleType>;
   sampleUid?: Maybe<Scalars['String']['output']>;
   smsRequired?: Maybe<Scalars['Boolean']['output']>;
@@ -8084,6 +8286,8 @@ export type ReportMetaType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   dateColumn: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Scalars['String']['output']>;
   periodEnd: Scalars['DateTime']['output'];
   periodStart: Scalars['DateTime']['output'];
@@ -8115,6 +8319,7 @@ export type ResultMutationType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   date?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   mutation: Scalars['String']['output'];
   resultUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -8145,6 +8350,8 @@ export type ResultOptionType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   optionKey: Scalars['Int']['output'];
   sampleTypes?: Maybe<Array<SampleTypeTyp>>;
   uid: Scalars['String']['output'];
@@ -8221,6 +8428,8 @@ export type SampleType = {
   internalUse: Scalars['Boolean']['output'];
   invalidatedBy?: Maybe<UserType>;
   invalidatedByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   parent?: Maybe<SampleType>;
   parentId?: Maybe<Scalars['String']['output']>;
@@ -8286,6 +8495,8 @@ export type SampleTypeMappingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   sampleType?: Maybe<SampleTypeTyp>;
   sampleTypeUid: Scalars['String']['output'];
@@ -8306,6 +8517,8 @@ export type SampleTypeTyp = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8339,6 +8552,8 @@ export type SamplesWithResults = {
   internalUse: Scalars['Boolean']['output'];
   invalidatedBy?: Maybe<UserType>;
   invalidatedByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   parent?: Maybe<SampleType>;
   parentId?: Maybe<Scalars['String']['output']>;
@@ -8429,7 +8644,7 @@ export type ShipmentType = {
   finalisedByUid?: Maybe<Scalars['String']['output']>;
   incoming: Scalars['Boolean']['output'];
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
-  laboratory?: Maybe<ReferralLaboratoryType>;
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   pdfContent?: Maybe<Scalars['BytesScalar']['output']>;
   recalledBy?: Maybe<UserType>;
@@ -8460,6 +8675,8 @@ export type ShippedSampleType = {
   __typename?: 'ShippedSampleType';
   extSampleId?: Maybe<Scalars['String']['output']>;
   extSampleUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   resultNotified?: Maybe<Scalars['Boolean']['output']>;
   sample: SampleType;
   sampleUid: Scalars['String']['output'];
@@ -8491,6 +8708,8 @@ export type SmsMessageType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   message?: Maybe<Scalars['String']['output']>;
   recipient?: Maybe<Scalars['String']['output']>;
   sentAt?: Maybe<Scalars['DateTime']['output']>;
@@ -8527,6 +8746,8 @@ export type SmsTemplateType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   specificationTrigger?: Maybe<SmsTrigger>;
   targetType?: Maybe<Scalars['String']['output']>;
@@ -8592,6 +8813,8 @@ export type StockAdjustmentType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
   productUid?: Maybe<Scalars['String']['output']>;
   remarks?: Maybe<Scalars['String']['output']>;
@@ -8616,6 +8839,8 @@ export type StockCategoryType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8658,6 +8883,8 @@ export type StockItemType = {
   description?: Maybe<Scalars['String']['output']>;
   hazard?: Maybe<HazardType>;
   hazardUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   maximumLevel?: Maybe<Scalars['Int']['output']>;
   minimumLevel?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
@@ -8697,6 +8924,8 @@ export type StockItemVariantType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   maximumLevel?: Maybe<Scalars['Int']['output']>;
   minimumLevel?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
@@ -8712,6 +8941,8 @@ export type StockItemVariantType = {
 export type StockLotType = {
   __typename?: 'StockLotType';
   expiryDate: Scalars['DateTime']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lotNumber: Scalars['String']['output'];
   product?: Maybe<StockItemVariantType>;
   productUid: Scalars['String']['output'];
@@ -8763,6 +8994,8 @@ export type StockOrderProductType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   order?: Maybe<StockOrderType>;
   orderUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
@@ -8787,6 +9020,8 @@ export type StockOrderType = {
   departmentUid?: Maybe<Scalars['String']['output']>;
   fulfilledBy?: Maybe<UserType>;
   fulfilledByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   orderBy?: Maybe<UserType>;
   orderByUid?: Maybe<Scalars['String']['output']>;
   orderNumber?: Maybe<Scalars['String']['output']>;
@@ -8803,6 +9038,8 @@ export type StockPackagingType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8812,6 +9049,8 @@ export type StockPackagingType = {
 
 export type StockProductInventoryType = {
   __typename?: 'StockProductInventoryType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
   productUid: Scalars['String']['output'];
   quantity: Scalars['Int']['output'];
@@ -8840,6 +9079,8 @@ export type StockReceiptInputType = {
 
 export type StockReceiptType = {
   __typename?: 'StockReceiptType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   packageFactor?: Maybe<Scalars['Int']['output']>;
   packagesReceived?: Maybe<Scalars['Int']['output']>;
   product?: Maybe<StockItemVariantType>;
@@ -8886,6 +9127,8 @@ export type StockTransactionType = {
   issued?: Maybe<Scalars['Int']['output']>;
   issuedTo?: Maybe<UserType>;
   issuedToUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
   productUid?: Maybe<Scalars['String']['output']>;
   transactionBy?: Maybe<UserType>;
@@ -8908,6 +9151,8 @@ export type StockUnitType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   synonyms: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -8937,6 +9182,8 @@ export type StorageContainerType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   grid?: Maybe<Scalars['Boolean']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   rowWise?: Maybe<Scalars['Boolean']['output']>;
   rows?: Maybe<Scalars['Int']['output']>;
@@ -8966,6 +9213,8 @@ export type StorageLocationType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   storeRoom?: Maybe<StoreRoomType>;
   storeRoomUid: Scalars['String']['output'];
@@ -8991,6 +9240,8 @@ export type StorageSectionType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   storageLocation?: Maybe<StorageLocationType>;
   storageLocationUid: Scalars['String']['output'];
@@ -9015,6 +9266,8 @@ export type StoreRoomType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   tag: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -9088,6 +9341,8 @@ export type TestBillInvoiceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   pdfContent?: Maybe<Scalars['BytesScalar']['output']>;
   testBill: TestBillType;
   testBillUid: Scalars['String']['output'];
@@ -9109,6 +9364,8 @@ export type TestBillTransactionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   isSuccess: Scalars['Boolean']['output'];
   kind: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   notes: Scalars['String']['output'];
   processed: Scalars['Boolean']['output'];
@@ -9130,6 +9387,8 @@ export type TestBillType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   orders?: Maybe<Array<AnalysisRequestType>>;
   partial: Scalars['Boolean']['output'];
   patient: PatientType;
@@ -9271,6 +9530,8 @@ export type VoucherCodeType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
   updatedBy?: Maybe<UserType>;
@@ -9286,6 +9547,8 @@ export type VoucherCustomerType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   patient: PatientType;
   patientUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -9314,6 +9577,8 @@ export type VoucherType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   endDate: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   oncePerCustomer: Scalars['Boolean']['output'];
   oncePerOrder: Scalars['Boolean']['output'];
@@ -9355,6 +9620,8 @@ export type WorkSheetTemplateType = {
   description?: Maybe<Scalars['String']['output']>;
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   numberOfSamples?: Maybe<Scalars['Int']['output']>;
   qcLevels?: Maybe<Array<QcLevelType>>;
@@ -9389,6 +9656,8 @@ export type WorkSheetType = {
   dateVerified?: Maybe<Scalars['DateTime']['output']>;
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   numberOfSamples?: Maybe<Scalars['Int']['output']>;
   reserved?: Maybe<Scalars['JSONScalar']['output']>;
   rowWise: Scalars['Boolean']['output'];
@@ -10064,6 +10333,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
     organisms?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Array<WithTypename<AbxOrganismType> | string>>,
     uid?: GraphCacheResolver<WithTypename<AbxAstPanelType>, Record<string, never>, Scalars['String'] | string>,
@@ -10086,6 +10357,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     guidelineYear?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, WithTypename<AbxGuidelineYearType> | string>,
     guidelineYearUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     organismResultUid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxAstResultType>, Record<string, never>, Scalars['String'] | string>,
@@ -10113,6 +10386,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     guideline?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
     guidelineUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<AbxAntibioticGuidelineType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -10135,6 +10410,8 @@ export type GraphCacheResolvers = {
     guidelines?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Array<WithTypename<AbxGuidelineType> | string>>,
     human?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['Boolean'] | string>,
     jacCode?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
     loincafb?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
     loinccomp?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
     loincdisk?: GraphCacheResolver<WithTypename<AbxAntibioticType>, Record<string, never>, Scalars['String'] | string>,
@@ -10171,6 +10448,8 @@ export type GraphCacheResolvers = {
     host?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<AbxHostType> | string>,
     hostUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     i?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     organismCode?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     organismCodeType?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
     potency?: GraphCacheResolver<WithTypename<AbxBreakpointTyp>, Record<string, never>, Scalars['String'] | string>,
@@ -10204,6 +10483,7 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxBreakpointTypeTyp>, Record<string, never>, Scalars['String'] | string>,
@@ -10214,6 +10494,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
     phylum?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, WithTypename<AbxPhylumType> | string>,
     phylumUid?: GraphCacheResolver<WithTypename<AbxClassType>, Record<string, never>, Scalars['String'] | string>,
@@ -10244,6 +10526,8 @@ export type GraphCacheResolvers = {
     exceptionOrganismCodeType?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
     guideline?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
     guidelineUid?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
     organismCode?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
     organismCodeType?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
     referenceTable?: GraphCacheResolver<WithTypename<AbxExpResPhenotypeType>, Record<string, never>, Scalars['String'] | string>,
@@ -10269,6 +10553,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
     organismCode?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
     organismCodeType?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
     ruleCode?: GraphCacheResolver<WithTypename<AbxExpertInterpretationRuleType>, Record<string, never>, Scalars['String'] | string>,
@@ -10282,6 +10568,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
     order?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, WithTypename<AbxOrderType> | string>,
     orderUid?: GraphCacheResolver<WithTypename<AbxFamilyType>, Record<string, never>, Scalars['String'] | string>,
@@ -10296,6 +10584,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
     family?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, WithTypename<AbxFamilyType> | string>,
     familyUid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxGenusType>, Record<string, never>, Scalars['String'] | string>,
@@ -10308,6 +10598,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxGuidelineType>, Record<string, never>, Scalars['String'] | string>,
@@ -10326,6 +10618,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxHostType>, Record<string, never>, Scalars['String'] | string>,
@@ -10336,6 +10630,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxKingdomType>, Record<string, never>, Scalars['String'] | string>,
@@ -10347,6 +10643,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxMediumType>, Record<string, never>, Scalars['String'] | string>,
@@ -10359,6 +10657,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxOrderType>, Record<string, never>, Scalars['String'] | string>,
@@ -10381,6 +10681,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, Scalars['String'] | string>,
     isolateNumber?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, Scalars['Int'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, Scalars['String'] | string>,
     organism?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, WithTypename<AbxOrganismType> | string>,
     organismUid?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxOrganismResultType>, Record<string, never>, Scalars['String'] | string>,
@@ -10405,6 +10707,8 @@ export type GraphCacheResolvers = {
     fate?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
     hPhase1?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
     hPhase2?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
     oAntigens?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
     organism?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, WithTypename<AbxOrganismType> | string>,
     organismUid?: GraphCacheResolver<WithTypename<AbxOrganismSerotypeType>, Record<string, never>, Scalars['String'] | string>,
@@ -10438,6 +10742,8 @@ export type GraphCacheResolvers = {
     genusUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     kingdom?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<AbxKingdomType> | string>,
     kingdomUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     morphology?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     msfGrpClin?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxOrganismType>, Record<string, never>, Scalars['String'] | string>,
@@ -10465,6 +10771,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
     kingdom?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, WithTypename<AbxKingdomType> | string>,
     kingdomUid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxPhylumType>, Record<string, never>, Scalars['String'] | string>,
@@ -10489,6 +10797,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
     guideline?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<AbxGuidelineType> | string>,
     guidelineUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
     maximum?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
     medium?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, WithTypename<AbxMediumType> | string>,
     mediumUid?: GraphCacheResolver<WithTypename<AbxQcRangeType>, Record<string, never>, Scalars['String'] | string>,
@@ -10509,6 +10819,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxSiteOfInfectionType>, Record<string, never>, Scalars['String'] | string>,
@@ -10520,6 +10832,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>,
@@ -10527,11 +10841,15 @@ export type GraphCacheResolvers = {
     updatedByUid?: GraphCacheResolver<WithTypename<AbxTestMethodType>, Record<string, never>, Scalars['String'] | string>
   },
   ActivityFeedType?: {
+    laboratory?: GraphCacheResolver<WithTypename<ActivityFeedType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ActivityFeedType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ActivityFeedType>, Record<string, never>, Scalars['String'] | string>,
     subscribers?: GraphCacheResolver<WithTypename<ActivityFeedType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
     uid?: GraphCacheResolver<WithTypename<ActivityFeedType>, Record<string, never>, Scalars['String'] | string>
   },
   ActivityProcessType?: {
+    laboratory?: GraphCacheResolver<WithTypename<ActivityProcessType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ActivityProcessType>, Record<string, never>, Scalars['String'] | string>,
     objectType?: GraphCacheResolver<WithTypename<ActivityProcessType>, Record<string, never>, Scalars['String'] | string>,
     status?: GraphCacheResolver<WithTypename<ActivityProcessType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ActivityProcessType>, Record<string, never>, Scalars['String'] | string>
@@ -10546,6 +10864,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, Scalars['String'] | string>,
     feeds?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, Array<WithTypename<ActivityFeedType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, Scalars['String'] | string>,
     target?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, Scalars['String'] | string>,
     targetUid?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ActivityStreamType>, Record<string, never>, Scalars['String'] | string>,
@@ -10563,6 +10883,8 @@ export type GraphCacheResolvers = {
     department?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, WithTypename<DepartmentType> | string>,
     departmentUid?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisCategoryType>, Record<string, never>, Scalars['String'] | string>,
@@ -10576,6 +10898,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['String'] | string>,
     factor?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['Float'] | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['String'] | string>,
     methodUid?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisCorrectionFactorType>, Record<string, never>, Scalars['String'] | string>,
@@ -10594,6 +10918,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, Scalars['String'] | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, Scalars['String'] | string>,
     lowerLimit?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, Scalars['Float'] | string>,
     methodUid?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisDetectionLimitType>, Record<string, never>, Scalars['String'] | string>,
@@ -10611,6 +10937,8 @@ export type GraphCacheResolvers = {
     discountType?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['String'] | string>,
     endDate?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['DateTime'] | string>,
     isActive?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['String'] | string>,
     startDate?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['DateTime'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisDiscountType>, Record<string, never>, Scalars['String'] | string>,
@@ -10634,6 +10962,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, Scalars['String'] | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, Scalars['String'] | string>,
     key?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, Scalars['Int'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<AnalysisInterimType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -10650,6 +10980,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisMappingType>, Record<string, never>, Scalars['String'] | string>,
@@ -10664,6 +10996,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<AnalysisPriceType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -10690,6 +11024,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     internalUse?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     patient?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<PatientType> | string>,
     patientUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
@@ -10711,6 +11047,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     internalUse?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['JSONScalar'] | string>,
     patient?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<PatientType> | string>,
     patientUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
@@ -10751,6 +11089,7 @@ export type GraphCacheResolvers = {
     invalidatedByUid?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, Scalars['String'] | string>,
     laboratoryInstrument?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, WithTypename<LaboratoryInstrumentType> | string>,
     laboratoryInstrumentUid?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, Scalars['String'] | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     method?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, WithTypename<MethodType> | string>,
     methodUid?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, Scalars['String'] | string>,
@@ -10782,6 +11121,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, Scalars['String'] | string>,
     gender?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, Scalars['String'] | string>,
     max?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, Scalars['Float'] | string>,
     maxReport?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, Scalars['String'] | string>,
     maxWarn?: GraphCacheResolver<WithTypename<AnalysisSpecificationType>, Record<string, never>, Scalars['Float'] | string>,
@@ -10806,6 +11147,8 @@ export type GraphCacheResolvers = {
     department?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, WithTypename<DepartmentType> | string>,
     departmentUid?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<AnalysisTemplateType>, Record<string, never>, Scalars['String'] | string>,
@@ -10829,6 +11172,8 @@ export type GraphCacheResolvers = {
     interims?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Array<WithTypename<AnalysisInterimType> | string>>,
     internalUse?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['Boolean'] | string>,
     keyword?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['String'] | string>,
     methods?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Array<WithTypename<MethodType> | string>>,
     name?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['String'] | string>,
     precision?: GraphCacheResolver<WithTypename<AnalysisType>, Record<string, never>, Scalars['Int'] | string>,
@@ -10855,6 +11200,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, Scalars['String'] | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, Scalars['String'] | string>,
     max?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, Scalars['Float'] | string>,
     methodUid?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, Scalars['String'] | string>,
     min?: GraphCacheResolver<WithTypename<AnalysisUncertaintyType>, Record<string, never>, Scalars['Float'] | string>,
@@ -10881,6 +11228,8 @@ export type GraphCacheResolvers = {
     interims?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Array<WithTypename<AnalysisInterimType> | string>>,
     internalUse?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Scalars['Boolean'] | string>,
     keyword?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Scalars['String'] | string>,
     methods?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Array<WithTypename<MethodType> | string>>,
     name?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Scalars['String'] | string>,
     precision?: GraphCacheResolver<WithTypename<AnalysisWithProfiles>, Record<string, never>, Scalars['Int'] | string>,
@@ -10906,6 +11255,9 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['String'] | string>,
+    extras?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['JSONScalar'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['String'] | string>,
     stateAfter?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     stateBefore?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     targetType?: GraphCacheResolver<WithTypename<AuditLogType>, Record<string, never>, Scalars['String'] | string>,
@@ -10933,8 +11285,10 @@ export type GraphCacheResolvers = {
     dateIssued?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['DateTime'] | string>,
     internal?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['Boolean'] | string>,
     issuer?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryInstrument?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, WithTypename<LaboratoryInstrumentType> | string>,
     laboratoryInstrumentUid?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['String'] | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['String'] | string>,
     performedBy?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['String'] | string>,
     remarks?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<CalibrationCertificateType>, Record<string, never>, Scalars['String'] | string>,
@@ -10956,6 +11310,8 @@ export type GraphCacheResolvers = {
     emailCc?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['String'] | string>,
     firstName?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['String'] | string>,
     lastName?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['String'] | string>,
     mobilePhone?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ClientContactType>, Record<string, never>, Scalars['String'] | string>,
@@ -10987,6 +11343,8 @@ export type GraphCacheResolvers = {
     email?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
     emailCc?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
     internalUse?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
     phoneBusiness?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
     phoneMobile?: GraphCacheResolver<WithTypename<ClientType>, Record<string, never>, Scalars['String'] | string>,
@@ -11005,6 +11363,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<ClinicalDataCodingType>, Record<string, never>, Scalars['String'] | string>,
@@ -11019,6 +11379,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['String'] | string>,
     otherContext?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     pregnancyStatus?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Scalars['Boolean'] | string>,
     symptoms?: GraphCacheResolver<WithTypename<ClinicalDataType>, Record<string, never>, Array<Scalars['String'] | string>>,
@@ -11035,6 +11397,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<CodingStandardType>, Record<string, never>, Scalars['String'] | string>,
@@ -11064,6 +11428,7 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
     createdByUid?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DepartmentType>, Record<string, never>, Scalars['String'] | string>,
@@ -11116,6 +11481,8 @@ export type GraphCacheResolvers = {
     document?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<DocumentType> | string>,
     documentUid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
     ipAddress?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<DocumentAuditType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -11127,6 +11494,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentCategoryType>, Record<string, never>, Scalars['String'] | string>,
@@ -11159,6 +11528,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
     documents?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
     parent?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, WithTypename<DocumentFolderType> | string>,
     parentUid?: GraphCacheResolver<WithTypename<DocumentFolderType>, Record<string, never>, Scalars['String'] | string>,
@@ -11187,6 +11558,8 @@ export type GraphCacheResolvers = {
     endDate?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
     initiatedBy?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, WithTypename<UserType> | string>,
     initiatedByUid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
     startDate?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
     status?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Scalars['String'] | string>,
     steps?: GraphCacheResolver<WithTypename<DocumentReviewCycleType>, Record<string, never>, Array<WithTypename<DocumentReviewStepType> | string>>,
@@ -11211,6 +11584,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
     reviewCycle?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<DocumentReviewCycleType> | string>,
     reviewCycleUid?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, Scalars['String'] | string>,
     reviewer?: GraphCacheResolver<WithTypename<DocumentReviewStepType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -11239,6 +11614,8 @@ export type GraphCacheResolvers = {
     date?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
     document?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, WithTypename<DocumentType> | string>,
     documentUid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
     status?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentStatusType>, Record<string, never>, Scalars['String'] | string>,
@@ -11263,6 +11640,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
     document?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, WithTypename<DocumentType> | string>,
     documentUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
     subscriptionType?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentSubscriptionType>, Record<string, never>, Scalars['String'] | string>,
@@ -11286,6 +11665,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
     documents?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentTagType>, Record<string, never>, Scalars['String'] | string>,
@@ -11311,6 +11692,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
     documents?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Array<WithTypename<DocumentType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentTemplateType>, Record<string, never>, Scalars['String'] | string>,
@@ -11332,6 +11715,8 @@ export type GraphCacheResolvers = {
     editor?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
     folder?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<DocumentFolderType> | string>,
     folderUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
     lastAccessed?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
     lastAccessedBy?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, WithTypename<UserType> | string>,
     lastAccessedByUid?: GraphCacheResolver<WithTypename<DocumentType>, Record<string, never>, Scalars['String'] | string>,
@@ -11373,6 +11758,8 @@ export type GraphCacheResolvers = {
     document?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<DocumentType> | string>,
     documentUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     editor?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     thumbnail?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<DocumentVersionType>, Record<string, never>, Scalars['String'] | string>,
@@ -11408,6 +11795,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
     posters?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Array<WithTypename<GrindPosterType> | string>>,
     scheme?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, WithTypename<GrindSchemeType> | string>,
     schemeUid?: GraphCacheResolver<WithTypename<GrindBoardType>, Record<string, never>, Scalars['String'] | string>,
@@ -11431,6 +11820,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
     errand?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<GrindErrandType> | string>,
     errandUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
     parent?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, WithTypename<GrindErrandDiscussionType> | string>,
     parentUid?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Scalars['String'] | string>,
     subdiscussions?: GraphCacheResolver<WithTypename<GrindErrandDiscussionType>, Record<string, never>, Array<WithTypename<GrindErrandDiscussionType> | string>>,
@@ -11454,6 +11845,8 @@ export type GraphCacheResolvers = {
     endDate?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
     label?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<GrindLabelType> | string>,
     labelUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Scalars['String'] | string>,
     media?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindMediaType> | string>>,
     members?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
     milestones?: GraphCacheResolver<WithTypename<GrindErrandType>, Record<string, never>, Array<WithTypename<GrindMilestoneType> | string>>,
@@ -11488,6 +11881,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
     title?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<GrindLabelType>, Record<string, never>, Scalars['String'] | string>,
@@ -11512,6 +11907,8 @@ export type GraphCacheResolvers = {
     destination?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
     encoding?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
     filename?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
     mimetype?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
     originalName?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
     path?: GraphCacheResolver<WithTypename<GrindMediaType>, Record<string, never>, Scalars['String'] | string>,
@@ -11543,6 +11940,8 @@ export type GraphCacheResolvers = {
     description?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
     errand?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, WithTypename<GrindErrandType> | string>,
     errandUid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
     occurrences?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Array<WithTypename<GrindOccurrenceType> | string>>,
     title?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<GrindMilestoneType>, Record<string, never>, Scalars['String'] | string>,
@@ -11567,6 +11966,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
     target?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
     targetUid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<GrindOccurrenceType>, Record<string, never>, Scalars['String'] | string>,
@@ -11595,6 +11996,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
     errands?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Array<WithTypename<GrindErrandType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
     members?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
     stamps?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Array<WithTypename<GrindStampType> | string>>,
     status?: GraphCacheResolver<WithTypename<GrindPosterType>, Record<string, never>, Scalars['String'] | string>,
@@ -11623,6 +12026,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
     endDate?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
     members?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
     startDate?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
     title?: GraphCacheResolver<WithTypename<GrindSchemeType>, Record<string, never>, Scalars['String'] | string>,
@@ -11646,6 +12051,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
     title?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<GrindStampType>, Record<string, never>, Scalars['String'] | string>,
@@ -11687,6 +12094,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<HazardType>, Record<string, never>, Scalars['String'] | string>,
@@ -11710,8 +12119,10 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['String'] | string>,
     dateReported?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['DateTime'] | string>,
     endDate?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['DateTime'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryInstrument?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, WithTypename<LaboratoryInstrumentType> | string>,
     laboratoryInstrumentUid?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['String'] | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['String'] | string>,
     notesBefore?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['String'] | string>,
     performedBy?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['String'] | string>,
     remarks?: GraphCacheResolver<WithTypename<InstrumentCalibrationType>, Record<string, never>, Scalars['String'] | string>,
@@ -11734,6 +12145,8 @@ export type GraphCacheResolvers = {
     instrumentUid?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, Scalars['String'] | string>,
     internal?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, Scalars['Boolean'] | string>,
     issueDate?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, Scalars['DateTime'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<InstrumentCompetenceType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -11759,7 +12172,9 @@ export type GraphCacheResolvers = {
     instrumentType?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, WithTypename<InstrumentTypeType> | string>,
     instrumentTypeUid?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, Scalars['String'] | string>,
     keyword?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryInstruments?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, Array<WithTypename<LaboratoryInstrumentType> | string>>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, Scalars['String'] | string>,
     manufacturer?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, WithTypename<ManufacturerType> | string>,
     manufacturerUid?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, Scalars['String'] | string>,
     methods?: GraphCacheResolver<WithTypename<InstrumentType>, Record<string, never>, Array<WithTypename<MethodType> | string>>,
@@ -11786,6 +12201,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>,
@@ -11821,6 +12238,8 @@ export type GraphCacheResolvers = {
     instrument?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, WithTypename<InstrumentType> | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, Scalars['String'] | string>,
     labName?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, Scalars['String'] | string>,
     serialNumber?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<LaboratoryInstrumentType>, Record<string, never>, Scalars['String'] | string>,
@@ -11917,6 +12336,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, Scalars['String'] | string>,
     deletedBy?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, Scalars['String'] | string>,
     messages?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, Array<WithTypename<MessageType> | string>>,
     recipients?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
     uid?: GraphCacheResolver<WithTypename<MessageThreadType>, Record<string, never>, Scalars['String'] | string>,
@@ -11930,6 +12351,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, Scalars['String'] | string>,
     deletedBy?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, Array<WithTypename<UserType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, Scalars['String'] | string>,
     left?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, Scalars['Int'] | string>,
     parent?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, WithTypename<MessageType> | string>,
     parentId?: GraphCacheResolver<WithTypename<MessageType>, Record<string, never>, Scalars['String'] | string>,
@@ -11962,6 +12385,8 @@ export type GraphCacheResolvers = {
     description?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Scalars['String'] | string>,
     instruments?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Array<WithTypename<InstrumentType> | string>>,
     keyword?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<MethodType>, Record<string, never>, Scalars['String'] | string>,
@@ -11979,6 +12404,8 @@ export type GraphCacheResolvers = {
     departments?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Array<WithTypename<DepartmentType> | string>>,
     expiry?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Scalars['String'] | string>,
     groups?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Array<WithTypename<GroupType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Scalars['String'] | string>,
     title?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<NoticeType>, Record<string, never>, Scalars['String'] | string>,
@@ -11992,6 +12419,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, Scalars['String'] | string>,
     departments?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, WithTypename<DepartmentType> | string>,
     groups?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, WithTypename<GroupType> | string>,
+    laboratory?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, Scalars['String'] | string>,
     message?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, Scalars['String'] | string>,
     users?: GraphCacheResolver<WithTypename<NotificationType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -12076,6 +12505,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, Scalars['String'] | string>,
     identification?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, WithTypename<IdentificationType> | string>,
     identificationUid?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, Scalars['String'] | string>,
     patientUid?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<PatientIdentificationType>, Record<string, never>, Scalars['String'] | string>,
@@ -12104,6 +12535,8 @@ export type GraphCacheResolvers = {
     gender?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Scalars['String'] | string>,
     identifications?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Array<WithTypename<PatientIdentificationType> | string>>,
     internalUse?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Scalars['String'] | string>,
     lastName?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     middleName?: GraphCacheResolver<WithTypename<PatientType>, Record<string, never>, Scalars['String'] | string>,
@@ -12157,6 +12590,8 @@ export type GraphCacheResolvers = {
     discountType?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, Scalars['String'] | string>,
     endDate?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, Scalars['DateTime'] | string>,
     isActive?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, Scalars['String'] | string>,
     profile?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, WithTypename<ProfileType> | string>,
     profileUid?: GraphCacheResolver<WithTypename<ProfileDiscountType>, Record<string, never>, Scalars['String'] | string>,
@@ -12179,6 +12614,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, Scalars['String'] | string>,
     profile?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, WithTypename<ProfileType> | string>,
     profileUid?: GraphCacheResolver<WithTypename<ProfileMappingType>, Record<string, never>, Scalars['String'] | string>,
@@ -12198,6 +12635,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, Scalars['String'] | string>,
     profile?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, WithTypename<ProfileType> | string>,
     profileUid?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ProfilePriceType>, Record<string, never>, Scalars['String'] | string>,
@@ -12215,6 +12654,8 @@ export type GraphCacheResolvers = {
     departmentUid?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Scalars['String'] | string>,
     keyword?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Scalars['String'] | string>,
     sampleTypes?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Array<WithTypename<SampleTypeTyp> | string>>,
     tatLengthMinutes?: GraphCacheResolver<WithTypename<ProfileType>, Record<string, never>, Scalars['Int'] | string>,
@@ -12255,6 +12696,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, Scalars['String'] | string>,
     level?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<QcLevelType>, Record<string, never>, Scalars['String'] | string>,
@@ -12275,6 +12718,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     note?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
     status?: GraphCacheResolver<WithTypename<QcSetType>, Record<string, never>, Scalars['String'] | string>,
@@ -12287,6 +12732,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     note?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Scalars['String'] | string>,
     samples?: GraphCacheResolver<WithTypename<QcSetWithSamples>, Record<string, never>, Array<WithTypename<SamplesWithResults> | string>>,
@@ -12302,6 +12749,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Scalars['String'] | string>,
     departments?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Array<WithTypename<DepartmentType> | string>>,
     description?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Scalars['String'] | string>,
     qcLevels?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Array<WithTypename<QcLevelType> | string>>,
     uid?: GraphCacheResolver<WithTypename<QcTemplateType>, Record<string, never>, Scalars['String'] | string>,
@@ -12316,6 +12765,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     isReference?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['Boolean'] | string>,
     isReferral?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     password?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>,
@@ -12332,6 +12783,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
     level?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['Int'] | string>,
     reflexRule?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<ReflexRuleType> | string>,
     reflexRuleUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
@@ -12349,6 +12802,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
     finalise?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Array<WithTypename<ReflexBrainFinalType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
     priority?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['Int'] | string>,
     reflexBrain?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, WithTypename<ReflexBrainType> | string>,
     reflexBrainUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
@@ -12361,12 +12816,16 @@ export type GraphCacheResolvers = {
     analysis?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, WithTypename<AnalysisType> | string>,
     analysisUid?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['String'] | string>,
     count?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['Int'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['String'] | string>,
     reflexBrainAction?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, WithTypename<ReflexBrainActionType> | string>,
     reflexBrainActionUid?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['String'] | string>
   },
   ReflexBrainConditionCriteriaType?: {
     analysis?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, WithTypename<AnalysisType> | string>,
     analysisUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
     operator?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
     reflexBrainCondition?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, WithTypename<ReflexBrainConditionType> | string>,
     reflexBrainConditionUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
@@ -12375,6 +12834,8 @@ export type GraphCacheResolvers = {
   ReflexBrainConditionType?: {
     criteria?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Array<WithTypename<ReflexBrainConditionCriteriaType> | string>>,
     description?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>,
     priority?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['Int'] | string>,
     reflexBrain?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, WithTypename<ReflexBrainType> | string>,
     reflexBrainUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>,
@@ -12383,6 +12844,8 @@ export type GraphCacheResolvers = {
   ReflexBrainFinalType?: {
     analysis?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, WithTypename<AnalysisType> | string>,
     analysisUid?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>,
     reflexBrainAction?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, WithTypename<ReflexBrainActionType> | string>,
     reflexBrainActionUid?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>,
     value?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>
@@ -12394,6 +12857,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
     priority?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['Int'] | string>,
     reflexAction?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<ReflexBrainType> | string>,
     reflexActionUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
@@ -12418,6 +12883,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     priority?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['Int'] | string>,
     reflexActions?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Array<WithTypename<ReflexActionType> | string>>,
@@ -12430,6 +12897,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
     reason?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
@@ -12445,6 +12914,8 @@ export type GraphCacheResolvers = {
     generatedBy?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, WithTypename<UserType> | string>,
     generatedByUid?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, Scalars['String'] | string>,
     jsonContent?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, Scalars['JSONScalar'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, Scalars['String'] | string>,
     sample?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, WithTypename<SampleType> | string>,
     sampleUid?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, Scalars['String'] | string>,
     smsRequired?: GraphCacheResolver<WithTypename<ReportImpressType>, Record<string, never>, Scalars['Boolean'] | string>,
@@ -12460,6 +12931,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, Scalars['String'] | string>,
     dateColumn?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, Scalars['String'] | string>,
     location?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, Scalars['String'] | string>,
     periodEnd?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, Scalars['DateTime'] | string>,
     periodStart?: GraphCacheResolver<WithTypename<ReportMetaType>, Record<string, never>, Scalars['DateTime'] | string>,
@@ -12482,6 +12955,7 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>,
     date?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>,
     mutation?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>,
     resultUid?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<ResultMutationType>, Record<string, never>, Scalars['String'] | string>,
@@ -12499,6 +12973,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['String'] | string>,
     optionKey?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['Int'] | string>,
     sampleTypes?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Array<WithTypename<SampleTypeTyp> | string>>,
     uid?: GraphCacheResolver<WithTypename<ResultOptionType>, Record<string, never>, Scalars['String'] | string>,
@@ -12548,6 +13024,8 @@ export type GraphCacheResolvers = {
     internalUse?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['Boolean'] | string>,
     invalidatedBy?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, WithTypename<UserType> | string>,
     invalidatedByUid?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     parent?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, WithTypename<SampleType> | string>,
     parentId?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
@@ -12592,6 +13070,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, Scalars['String'] | string>,
     sampleType?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, WithTypename<SampleTypeTyp> | string>,
     sampleTypeUid?: GraphCacheResolver<WithTypename<SampleTypeMappingType>, Record<string, never>, Scalars['String'] | string>,
@@ -12608,6 +13088,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     internalUse?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<SampleTypeTyp>, Record<string, never>, Scalars['String'] | string>,
@@ -12639,6 +13121,8 @@ export type GraphCacheResolvers = {
     internalUse?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['Boolean'] | string>,
     invalidatedBy?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, WithTypename<UserType> | string>,
     invalidatedByUid?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['JSONScalar'] | string>,
     parent?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, WithTypename<SampleType> | string>,
     parentId?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
@@ -12707,7 +13191,7 @@ export type GraphCacheResolvers = {
     finalisedByUid?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, Scalars['String'] | string>,
     incoming?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, Scalars['Boolean'] | string>,
     jsonContent?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, Scalars['JSONScalar'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, WithTypename<ReferralLaboratoryType> | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryUid?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, Scalars['String'] | string>,
     pdfContent?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, Scalars['BytesScalar'] | string>,
     recalledBy?: GraphCacheResolver<WithTypename<ShipmentType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -12728,6 +13212,8 @@ export type GraphCacheResolvers = {
   ShippedSampleType?: {
     extSampleId?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, Scalars['String'] | string>,
     extSampleUid?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, Scalars['String'] | string>,
     resultNotified?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, Scalars['Boolean'] | string>,
     sample?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, WithTypename<SampleType> | string>,
     sampleUid?: GraphCacheResolver<WithTypename<ShippedSampleType>, Record<string, never>, Scalars['String'] | string>,
@@ -12748,6 +13234,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
     message?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
     recipient?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['String'] | string>,
     sentAt?: GraphCacheResolver<WithTypename<SmsMessageType>, Record<string, never>, Scalars['DateTime'] | string>,
@@ -12767,6 +13255,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
     specificationTrigger?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, SmsTrigger | string>,
     targetType?: GraphCacheResolver<WithTypename<SmsTemplateType>, Record<string, never>, Scalars['String'] | string>,
@@ -12798,6 +13288,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, Scalars['String'] | string>,
     product?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, WithTypename<StockItemVariantType> | string>,
     productUid?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, Scalars['String'] | string>,
     remarks?: GraphCacheResolver<WithTypename<StockAdjustmentType>, Record<string, never>, Scalars['String'] | string>,
@@ -12813,6 +13305,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<StockCategoryType>, Record<string, never>, Scalars['String'] | string>,
@@ -12838,6 +13332,8 @@ export type GraphCacheResolvers = {
     description?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, Scalars['String'] | string>,
     hazard?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, WithTypename<HazardType> | string>,
     hazardUid?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, Scalars['String'] | string>,
     maximumLevel?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, Scalars['Int'] | string>,
     minimumLevel?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, Scalars['Int'] | string>,
     name?: GraphCacheResolver<WithTypename<StockItemType>, Record<string, never>, Scalars['String'] | string>,
@@ -12862,6 +13358,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, Scalars['String'] | string>,
     maximumLevel?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, Scalars['Int'] | string>,
     minimumLevel?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, Scalars['Int'] | string>,
     name?: GraphCacheResolver<WithTypename<StockItemVariantType>, Record<string, never>, Scalars['String'] | string>,
@@ -12875,6 +13373,8 @@ export type GraphCacheResolvers = {
   },
   StockLotType?: {
     expiryDate?: GraphCacheResolver<WithTypename<StockLotType>, Record<string, never>, Scalars['DateTime'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockLotType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockLotType>, Record<string, never>, Scalars['String'] | string>,
     lotNumber?: GraphCacheResolver<WithTypename<StockLotType>, Record<string, never>, Scalars['String'] | string>,
     product?: GraphCacheResolver<WithTypename<StockLotType>, Record<string, never>, WithTypename<StockItemVariantType> | string>,
     productUid?: GraphCacheResolver<WithTypename<StockLotType>, Record<string, never>, Scalars['String'] | string>,
@@ -12900,6 +13400,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, Scalars['String'] | string>,
     order?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, WithTypename<StockOrderType> | string>,
     orderUid?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, Scalars['String'] | string>,
     product?: GraphCacheResolver<WithTypename<StockOrderProductType>, Record<string, never>, WithTypename<StockItemVariantType> | string>,
@@ -12920,6 +13422,8 @@ export type GraphCacheResolvers = {
     departmentUid?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, Scalars['String'] | string>,
     fulfilledBy?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, WithTypename<UserType> | string>,
     fulfilledByUid?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, Scalars['String'] | string>,
     orderBy?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, WithTypename<UserType> | string>,
     orderByUid?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, Scalars['String'] | string>,
     orderNumber?: GraphCacheResolver<WithTypename<StockOrderType>, Record<string, never>, Scalars['String'] | string>,
@@ -12934,6 +13438,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>,
@@ -12941,6 +13447,8 @@ export type GraphCacheResolvers = {
     updatedByUid?: GraphCacheResolver<WithTypename<StockPackagingType>, Record<string, never>, Scalars['String'] | string>
   },
   StockProductInventoryType?: {
+    laboratory?: GraphCacheResolver<WithTypename<StockProductInventoryType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockProductInventoryType>, Record<string, never>, Scalars['String'] | string>,
     product?: GraphCacheResolver<WithTypename<StockProductInventoryType>, Record<string, never>, WithTypename<StockItemVariantType> | string>,
     productUid?: GraphCacheResolver<WithTypename<StockProductInventoryType>, Record<string, never>, Scalars['String'] | string>,
     quantity?: GraphCacheResolver<WithTypename<StockProductInventoryType>, Record<string, never>, Scalars['Int'] | string>,
@@ -12950,6 +13458,8 @@ export type GraphCacheResolvers = {
     uid?: GraphCacheResolver<WithTypename<StockProductInventoryType>, Record<string, never>, Scalars['String'] | string>
   },
   StockReceiptType?: {
+    laboratory?: GraphCacheResolver<WithTypename<StockReceiptType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockReceiptType>, Record<string, never>, Scalars['String'] | string>,
     packageFactor?: GraphCacheResolver<WithTypename<StockReceiptType>, Record<string, never>, Scalars['Int'] | string>,
     packagesReceived?: GraphCacheResolver<WithTypename<StockReceiptType>, Record<string, never>, Scalars['Int'] | string>,
     product?: GraphCacheResolver<WithTypename<StockReceiptType>, Record<string, never>, WithTypename<StockItemVariantType> | string>,
@@ -12990,6 +13500,8 @@ export type GraphCacheResolvers = {
     issued?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, Scalars['Int'] | string>,
     issuedTo?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, WithTypename<UserType> | string>,
     issuedToUid?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, Scalars['String'] | string>,
     product?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, WithTypename<StockItemVariantType> | string>,
     productUid?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, Scalars['String'] | string>,
     transactionBy?: GraphCacheResolver<WithTypename<StockTransactionType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -13004,6 +13516,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, Scalars['String'] | string>,
     synonyms?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<StockUnitType>, Record<string, never>, Scalars['String'] | string>,
@@ -13018,6 +13532,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['String'] | string>,
     grid?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['String'] | string>,
     rowWise?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['Boolean'] | string>,
     rows?: GraphCacheResolver<WithTypename<StorageContainerType>, Record<string, never>, Scalars['Int'] | string>,
@@ -13037,6 +13553,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, Scalars['String'] | string>,
     storeRoom?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, WithTypename<StoreRoomType> | string>,
     storeRoomUid?: GraphCacheResolver<WithTypename<StorageLocationType>, Record<string, never>, Scalars['String'] | string>,
@@ -13052,6 +13570,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, Scalars['String'] | string>,
     storageLocation?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, WithTypename<StorageLocationType> | string>,
     storageLocationUid?: GraphCacheResolver<WithTypename<StorageSectionType>, Record<string, never>, Scalars['String'] | string>,
@@ -13067,6 +13587,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, Scalars['String'] | string>,
     description?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, Scalars['String'] | string>,
     tag?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<StoreRoomType>, Record<string, never>, Scalars['String'] | string>,
@@ -13103,6 +13625,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, Scalars['String'] | string>,
     jsonContent?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, Scalars['JSONScalar'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, Scalars['String'] | string>,
     pdfContent?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, Scalars['BytesScalar'] | string>,
     testBill?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, WithTypename<TestBillType> | string>,
     testBillUid?: GraphCacheResolver<WithTypename<TestBillInvoiceType>, Record<string, never>, Scalars['String'] | string>,
@@ -13120,6 +13644,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['String'] | string>,
     isSuccess?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['Boolean'] | string>,
     kind?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['String'] | string>,
     message?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['String'] | string>,
     notes?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['String'] | string>,
     processed?: GraphCacheResolver<WithTypename<TestBillTransactionType>, Record<string, never>, Scalars['Boolean'] | string>,
@@ -13139,6 +13665,8 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, Scalars['Boolean'] | string>,
     jsonContent?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, Scalars['JSONScalar'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, Scalars['String'] | string>,
     orders?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, Array<WithTypename<AnalysisRequestType> | string>>,
     partial?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, Scalars['Boolean'] | string>,
     patient?: GraphCacheResolver<WithTypename<TestBillType>, Record<string, never>, WithTypename<PatientType> | string>,
@@ -13238,6 +13766,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, Scalars['String'] | string>,
     isActive?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<VoucherCodeType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -13251,6 +13781,8 @@ export type GraphCacheResolvers = {
     createdAt?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, Scalars['String'] | string>,
     patient?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, WithTypename<PatientType> | string>,
     patientUid?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<VoucherCustomerType>, Record<string, never>, Scalars['String'] | string>,
@@ -13266,6 +13798,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, Scalars['String'] | string>,
     endDate?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, Scalars['String'] | string>,
     oncePerCustomer?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, Scalars['Boolean'] | string>,
     oncePerOrder?: GraphCacheResolver<WithTypename<VoucherType>, Record<string, never>, Scalars['Boolean'] | string>,
@@ -13297,6 +13831,8 @@ export type GraphCacheResolvers = {
     description?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, Scalars['String'] | string>,
     instrument?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, WithTypename<InstrumentType> | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, Scalars['String'] | string>,
     numberOfSamples?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, Scalars['Int'] | string>,
     qcLevels?: GraphCacheResolver<WithTypename<WorkSheetTemplateType>, Record<string, never>, Array<WithTypename<QcLevelType> | string>>,
@@ -13329,6 +13865,8 @@ export type GraphCacheResolvers = {
     dateVerified?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, Scalars['DateTime'] | string>,
     instrument?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, WithTypename<InstrumentType> | string>,
     instrumentUid?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, Scalars['String'] | string>,
     numberOfSamples?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, Scalars['Int'] | string>,
     reserved?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, Scalars['JSONScalar'] | string>,
     rowWise?: GraphCacheResolver<WithTypename<WorkSheetType>, Record<string, never>, Scalars['Boolean'] | string>,
@@ -14265,6 +14803,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
     organisms?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstPanelType>>, Record<string, never>>,
@@ -14287,6 +14827,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     guidelineYear?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     guidelineYearUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     organismResultUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAstResultType>>, Record<string, never>>,
@@ -14314,6 +14856,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
     guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
     guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticGuidelineType>>, Record<string, never>>,
@@ -14336,6 +14880,8 @@ export type GraphCacheUpdaters = {
     guidelines?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
     human?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
     jacCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
     loincafb?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
     loinccomp?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
     loincdisk?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxAntibioticType>>, Record<string, never>>,
@@ -14372,6 +14918,8 @@ export type GraphCacheUpdaters = {
     host?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     hostUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     i?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     organismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     organismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
     potency?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTyp>>, Record<string, never>>,
@@ -14405,6 +14953,7 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxBreakpointTypeTyp>>, Record<string, never>>,
@@ -14415,6 +14964,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
     phylum?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
     phylumUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxClassType>>, Record<string, never>>,
@@ -14445,6 +14996,8 @@ export type GraphCacheUpdaters = {
     exceptionOrganismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
     guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
     guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
     organismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
     organismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
     referenceTable?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpResPhenotypeType>>, Record<string, never>>,
@@ -14470,6 +15023,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
     organismCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
     organismCodeType?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
     ruleCode?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxExpertInterpretationRuleType>>, Record<string, never>>,
@@ -14483,6 +15038,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
     order?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
     orderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxFamilyType>>, Record<string, never>>,
@@ -14497,6 +15054,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
     family?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
     familyUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGenusType>>, Record<string, never>>,
@@ -14509,6 +15068,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxGuidelineType>>, Record<string, never>>,
@@ -14527,6 +15088,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxHostType>>, Record<string, never>>,
@@ -14537,6 +15100,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxKingdomType>>, Record<string, never>>,
@@ -14548,6 +15113,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxMediumType>>, Record<string, never>>,
@@ -14560,6 +15127,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrderType>>, Record<string, never>>,
@@ -14582,6 +15151,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
     isolateNumber?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
     organism?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
     organismUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismResultType>>, Record<string, never>>,
@@ -14606,6 +15177,8 @@ export type GraphCacheUpdaters = {
     fate?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
     hPhase1?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
     hPhase2?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
     oAntigens?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
     organism?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
     organismUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismSerotypeType>>, Record<string, never>>,
@@ -14639,6 +15212,8 @@ export type GraphCacheUpdaters = {
     genusUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     kingdom?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     kingdomUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     morphology?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     msfGrpClin?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxOrganismType>>, Record<string, never>>,
@@ -14666,6 +15241,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
     kingdom?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
     kingdomUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxPhylumType>>, Record<string, never>>,
@@ -14690,6 +15267,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
     guideline?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
     guidelineUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
     maximum?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
     medium?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
     mediumUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxQcRangeType>>, Record<string, never>>,
@@ -14710,6 +15289,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxSiteOfInfectionType>>, Record<string, never>>,
@@ -14721,6 +15302,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>,
@@ -14728,11 +15311,15 @@ export type GraphCacheUpdaters = {
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AbxTestMethodType>>, Record<string, never>>
   },
   ActivityFeedType?: {
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityFeedType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityFeedType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityFeedType>>, Record<string, never>>,
     subscribers?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityFeedType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityFeedType>>, Record<string, never>>
   },
   ActivityProcessType?: {
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityProcessType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityProcessType>>, Record<string, never>>,
     objectType?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityProcessType>>, Record<string, never>>,
     status?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityProcessType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityProcessType>>, Record<string, never>>
@@ -14747,6 +15334,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
     feeds?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
     target?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
     targetUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ActivityStreamType>>, Record<string, never>>,
@@ -14764,6 +15353,8 @@ export type GraphCacheUpdaters = {
     department?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
     departmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCategoryType>>, Record<string, never>>,
@@ -14777,6 +15368,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
     factor?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
     methodUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisCorrectionFactorType>>, Record<string, never>>,
@@ -14795,6 +15388,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
     lowerLimit?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
     methodUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDetectionLimitType>>, Record<string, never>>,
@@ -14812,6 +15407,8 @@ export type GraphCacheUpdaters = {
     discountType?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
     startDate?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisDiscountType>>, Record<string, never>>,
@@ -14835,6 +15432,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
     key?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisInterimType>>, Record<string, never>>,
@@ -14851,6 +15450,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisMappingType>>, Record<string, never>>,
@@ -14865,6 +15466,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisPriceType>>, Record<string, never>>,
@@ -14891,6 +15494,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     patient?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     patientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
@@ -14912,6 +15517,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     patient?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     patientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
@@ -14952,6 +15559,7 @@ export type GraphCacheUpdaters = {
     invalidatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
     laboratoryInstrument?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
     laboratoryInstrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
     method?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
     methodUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
@@ -14983,6 +15591,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
     gender?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
     max?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
     maxReport?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
     maxWarn?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisSpecificationType>>, Record<string, never>>,
@@ -15007,6 +15617,8 @@ export type GraphCacheUpdaters = {
     department?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
     departmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisTemplateType>>, Record<string, never>>,
@@ -15030,6 +15642,8 @@ export type GraphCacheUpdaters = {
     interims?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     keyword?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     methods?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
     precision?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisType>>, Record<string, never>>,
@@ -15056,6 +15670,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
     max?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
     methodUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
     min?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisUncertaintyType>>, Record<string, never>>,
@@ -15082,6 +15698,8 @@ export type GraphCacheUpdaters = {
     interims?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
     keyword?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
     methods?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
     precision?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisWithProfiles>>, Record<string, never>>,
@@ -15107,6 +15725,9 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
+    extras?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
     stateAfter?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
     stateBefore?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
     targetType?: GraphCacheUpdateResolver<Maybe<WithTypename<AuditLogType>>, Record<string, never>>,
@@ -15134,8 +15755,10 @@ export type GraphCacheUpdaters = {
     dateIssued?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     internal?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     issuer?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     laboratoryInstrument?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     laboratoryInstrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     performedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     remarks?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<CalibrationCertificateType>>, Record<string, never>>,
@@ -15157,6 +15780,8 @@ export type GraphCacheUpdaters = {
     emailCc?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
     firstName?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
     lastName?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
     mobilePhone?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientContactType>>, Record<string, never>>,
@@ -15188,6 +15813,8 @@ export type GraphCacheUpdaters = {
     email?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     emailCc?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     phoneBusiness?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
     phoneMobile?: GraphCacheUpdateResolver<Maybe<WithTypename<ClientType>>, Record<string, never>>,
@@ -15206,6 +15833,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataCodingType>>, Record<string, never>>,
@@ -15220,6 +15849,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
     otherContext?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
     pregnancyStatus?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
     symptoms?: GraphCacheUpdateResolver<Maybe<WithTypename<ClinicalDataType>>, Record<string, never>>,
@@ -15236,6 +15867,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<CodingStandardType>>, Record<string, never>>,
@@ -15265,6 +15898,7 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DepartmentType>>, Record<string, never>>,
@@ -15317,6 +15951,8 @@ export type GraphCacheUpdaters = {
     document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
     documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
     ipAddress?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentAuditType>>, Record<string, never>>,
@@ -15328,6 +15964,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentCategoryType>>, Record<string, never>>,
@@ -15360,6 +15998,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
     documents?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
     parent?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
     parentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentFolderType>>, Record<string, never>>,
@@ -15388,6 +16028,8 @@ export type GraphCacheUpdaters = {
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
     initiatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
     initiatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
     startDate?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
     status?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
     steps?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewCycleType>>, Record<string, never>>,
@@ -15412,6 +16054,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
     reviewCycle?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
     reviewCycleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
     reviewer?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentReviewStepType>>, Record<string, never>>,
@@ -15440,6 +16084,8 @@ export type GraphCacheUpdaters = {
     date?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
     document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
     documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
     status?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentStatusType>>, Record<string, never>>,
@@ -15464,6 +16110,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
     document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
     documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
     subscriptionType?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentSubscriptionType>>, Record<string, never>>,
@@ -15487,6 +16135,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
     documents?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTagType>>, Record<string, never>>,
@@ -15512,6 +16162,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
     documents?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentTemplateType>>, Record<string, never>>,
@@ -15533,6 +16185,8 @@ export type GraphCacheUpdaters = {
     editor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     folder?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     folderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     lastAccessed?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     lastAccessedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
     lastAccessedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentType>>, Record<string, never>>,
@@ -15574,6 +16228,8 @@ export type GraphCacheUpdaters = {
     document?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     documentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     editor?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     thumbnail?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<DocumentVersionType>>, Record<string, never>>,
@@ -15609,6 +16265,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
     posters?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
     scheme?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
     schemeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindBoardType>>, Record<string, never>>,
@@ -15632,6 +16290,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
     errand?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
     errandUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
     parent?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
     parentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
     subdiscussions?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandDiscussionType>>, Record<string, never>>,
@@ -15655,6 +16315,8 @@ export type GraphCacheUpdaters = {
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     label?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     labelUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     media?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
     milestones?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindErrandType>>, Record<string, never>>,
@@ -15689,6 +16351,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
     title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindLabelType>>, Record<string, never>>,
@@ -15713,6 +16377,8 @@ export type GraphCacheUpdaters = {
     destination?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
     encoding?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
     filename?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
     mimetype?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
     originalName?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
     path?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMediaType>>, Record<string, never>>,
@@ -15744,6 +16410,8 @@ export type GraphCacheUpdaters = {
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
     errand?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
     errandUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
     occurrences?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
     title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindMilestoneType>>, Record<string, never>>,
@@ -15768,6 +16436,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
     target?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
     targetUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindOccurrenceType>>, Record<string, never>>,
@@ -15796,6 +16466,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
     errands?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
     members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
     stamps?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
     status?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindPosterType>>, Record<string, never>>,
@@ -15824,6 +16496,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
     members?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
     startDate?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
     title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindSchemeType>>, Record<string, never>>,
@@ -15847,6 +16521,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
     title?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<GrindStampType>>, Record<string, never>>,
@@ -15888,6 +16564,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<HazardType>>, Record<string, never>>,
@@ -15911,8 +16589,10 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     dateReported?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     laboratoryInstrument?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     laboratoryInstrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     notesBefore?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     performedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
     remarks?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCalibrationType>>, Record<string, never>>,
@@ -15935,6 +16615,8 @@ export type GraphCacheUpdaters = {
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
     internal?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
     issueDate?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentCompetenceType>>, Record<string, never>>,
@@ -15960,7 +16642,9 @@ export type GraphCacheUpdaters = {
     instrumentType?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
     instrumentTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
     keyword?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
     laboratoryInstruments?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
     manufacturer?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
     manufacturerUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
     methods?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentType>>, Record<string, never>>,
@@ -15987,6 +16671,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
@@ -16022,6 +16708,8 @@ export type GraphCacheUpdaters = {
     instrument?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
     labName?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
     serialNumber?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryInstrumentType>>, Record<string, never>>,
@@ -16118,6 +16806,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
     deletedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
     messages?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
     recipients?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageThreadType>>, Record<string, never>>,
@@ -16131,6 +16821,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
     deletedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
     left?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
     parent?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
     parentId?: GraphCacheUpdateResolver<Maybe<WithTypename<MessageType>>, Record<string, never>>,
@@ -16163,6 +16855,8 @@ export type GraphCacheUpdaters = {
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
     instruments?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
     keyword?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<MethodType>>, Record<string, never>>,
@@ -16180,6 +16874,8 @@ export type GraphCacheUpdaters = {
     departments?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
     expiry?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
     groups?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
     title?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<NoticeType>>, Record<string, never>>,
@@ -16193,6 +16889,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
     departments?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
     groups?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
     message?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
     users?: GraphCacheUpdateResolver<Maybe<WithTypename<NotificationType>>, Record<string, never>>,
@@ -16277,6 +16975,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
     identification?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
     identificationUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
     patientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientIdentificationType>>, Record<string, never>>,
@@ -16305,6 +17005,8 @@ export type GraphCacheUpdaters = {
     gender?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
     identifications?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
     lastName?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
     middleName?: GraphCacheUpdateResolver<Maybe<WithTypename<PatientType>>, Record<string, never>>,
@@ -16358,6 +17060,8 @@ export type GraphCacheUpdaters = {
     discountType?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
     profile?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
     profileUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileDiscountType>>, Record<string, never>>,
@@ -16380,6 +17084,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
     profile?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
     profileUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileMappingType>>, Record<string, never>>,
@@ -16399,6 +17105,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
     profile?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
     profileUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfilePriceType>>, Record<string, never>>,
@@ -16416,6 +17124,8 @@ export type GraphCacheUpdaters = {
     departmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
     keyword?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
     sampleTypes?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
     tatLengthMinutes?: GraphCacheUpdateResolver<Maybe<WithTypename<ProfileType>>, Record<string, never>>,
@@ -16456,6 +17166,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
     level?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<QcLevelType>>, Record<string, never>>,
@@ -16476,6 +17188,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     note?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
     status?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetType>>, Record<string, never>>,
@@ -16488,6 +17202,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     note?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
     samples?: GraphCacheUpdateResolver<Maybe<WithTypename<QcSetWithSamples>>, Record<string, never>>,
@@ -16503,6 +17219,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
     departments?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
     qcLevels?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<QcTemplateType>>, Record<string, never>>,
@@ -16517,6 +17235,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
     isReference?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
     isReferral?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
     password?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
@@ -16533,6 +17253,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
     level?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
     reflexRule?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
     reflexRuleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
@@ -16550,6 +17272,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
     finalise?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
     priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
     reflexBrain?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
     reflexBrainUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
@@ -16562,12 +17286,16 @@ export type GraphCacheUpdaters = {
     analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
     analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
     count?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
     reflexBrainAction?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
     reflexBrainActionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>
   },
   ReflexBrainConditionCriteriaType?: {
     analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
     analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
     operator?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
     reflexBrainCondition?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
     reflexBrainConditionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
@@ -16576,6 +17304,8 @@ export type GraphCacheUpdaters = {
   ReflexBrainConditionType?: {
     criteria?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
     priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
     reflexBrain?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
     reflexBrainUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
@@ -16584,6 +17314,8 @@ export type GraphCacheUpdaters = {
   ReflexBrainFinalType?: {
     analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
     analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
     reflexBrainAction?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
     reflexBrainActionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
     value?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>
@@ -16595,6 +17327,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
     priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
     reflexAction?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
     reflexActionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
@@ -16619,6 +17353,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     reflexActions?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
@@ -16631,6 +17367,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
     reason?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,
@@ -16646,6 +17384,8 @@ export type GraphCacheUpdaters = {
     generatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
     generatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
     jsonContent?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
     sample?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
     sampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
     smsRequired?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportImpressType>>, Record<string, never>>,
@@ -16661,6 +17401,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
     dateColumn?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
     location?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
     periodEnd?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
     periodStart?: GraphCacheUpdateResolver<Maybe<WithTypename<ReportMetaType>>, Record<string, never>>,
@@ -16683,6 +17425,7 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
     date?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
     mutation?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
     resultUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultMutationType>>, Record<string, never>>,
@@ -16700,6 +17443,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
     optionKey?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
     sampleTypes?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ResultOptionType>>, Record<string, never>>,
@@ -16749,6 +17494,8 @@ export type GraphCacheUpdaters = {
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     invalidatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     invalidatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     parent?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     parentId?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
@@ -16793,6 +17540,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
     sampleType?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
     sampleTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeMappingType>>, Record<string, never>>,
@@ -16809,6 +17558,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleTypeTyp>>, Record<string, never>>,
@@ -16840,6 +17591,8 @@ export type GraphCacheUpdaters = {
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     invalidatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     invalidatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     parent?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     parentId?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
@@ -16929,6 +17682,8 @@ export type GraphCacheUpdaters = {
   ShippedSampleType?: {
     extSampleId?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
     extSampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
     resultNotified?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
     sample?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
     sampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ShippedSampleType>>, Record<string, never>>,
@@ -16949,6 +17704,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
     message?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
     recipient?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
     sentAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsMessageType>>, Record<string, never>>,
@@ -16968,6 +17725,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
     specificationTrigger?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
     targetType?: GraphCacheUpdateResolver<Maybe<WithTypename<SmsTemplateType>>, Record<string, never>>,
@@ -16999,6 +17758,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
     product?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
     productUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
     remarks?: GraphCacheUpdateResolver<Maybe<WithTypename<StockAdjustmentType>>, Record<string, never>>,
@@ -17014,6 +17775,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<StockCategoryType>>, Record<string, never>>,
@@ -17039,6 +17802,8 @@ export type GraphCacheUpdaters = {
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
     hazard?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
     hazardUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
     maximumLevel?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
     minimumLevel?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemType>>, Record<string, never>>,
@@ -17063,6 +17828,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
     maximumLevel?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
     minimumLevel?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StockItemVariantType>>, Record<string, never>>,
@@ -17076,6 +17843,8 @@ export type GraphCacheUpdaters = {
   },
   StockLotType?: {
     expiryDate?: GraphCacheUpdateResolver<Maybe<WithTypename<StockLotType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockLotType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockLotType>>, Record<string, never>>,
     lotNumber?: GraphCacheUpdateResolver<Maybe<WithTypename<StockLotType>>, Record<string, never>>,
     product?: GraphCacheUpdateResolver<Maybe<WithTypename<StockLotType>>, Record<string, never>>,
     productUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockLotType>>, Record<string, never>>,
@@ -17101,6 +17870,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
     order?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
     orderUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
     product?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderProductType>>, Record<string, never>>,
@@ -17121,6 +17892,8 @@ export type GraphCacheUpdaters = {
     departmentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
     fulfilledBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
     fulfilledByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
     orderBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
     orderByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
     orderNumber?: GraphCacheUpdateResolver<Maybe<WithTypename<StockOrderType>>, Record<string, never>>,
@@ -17135,6 +17908,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>,
@@ -17142,6 +17917,8 @@ export type GraphCacheUpdaters = {
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockPackagingType>>, Record<string, never>>
   },
   StockProductInventoryType?: {
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockProductInventoryType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockProductInventoryType>>, Record<string, never>>,
     product?: GraphCacheUpdateResolver<Maybe<WithTypename<StockProductInventoryType>>, Record<string, never>>,
     productUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockProductInventoryType>>, Record<string, never>>,
     quantity?: GraphCacheUpdateResolver<Maybe<WithTypename<StockProductInventoryType>>, Record<string, never>>,
@@ -17151,6 +17928,8 @@ export type GraphCacheUpdaters = {
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockProductInventoryType>>, Record<string, never>>
   },
   StockReceiptType?: {
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockReceiptType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockReceiptType>>, Record<string, never>>,
     packageFactor?: GraphCacheUpdateResolver<Maybe<WithTypename<StockReceiptType>>, Record<string, never>>,
     packagesReceived?: GraphCacheUpdateResolver<Maybe<WithTypename<StockReceiptType>>, Record<string, never>>,
     product?: GraphCacheUpdateResolver<Maybe<WithTypename<StockReceiptType>>, Record<string, never>>,
@@ -17191,6 +17970,8 @@ export type GraphCacheUpdaters = {
     issued?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
     issuedTo?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
     issuedToUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
     product?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
     productUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
     transactionBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockTransactionType>>, Record<string, never>>,
@@ -17205,6 +17986,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
     synonyms?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<StockUnitType>>, Record<string, never>>,
@@ -17219,6 +18002,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
     grid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
     rowWise?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
     rows?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageContainerType>>, Record<string, never>>,
@@ -17238,6 +18023,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
     storeRoom?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
     storeRoomUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageLocationType>>, Record<string, never>>,
@@ -17253,6 +18040,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
     storageLocation?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
     storageLocationUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StorageSectionType>>, Record<string, never>>,
@@ -17268,6 +18057,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
     tag?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<StoreRoomType>>, Record<string, never>>,
@@ -17304,6 +18095,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
     jsonContent?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
     pdfContent?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
     testBill?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
     testBillUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillInvoiceType>>, Record<string, never>>,
@@ -17321,6 +18114,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
     isSuccess?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
     kind?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
     message?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
     notes?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
     processed?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillTransactionType>>, Record<string, never>>,
@@ -17340,6 +18135,8 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
     jsonContent?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
     orders?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
     partial?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
     patient?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillType>>, Record<string, never>>,
@@ -17439,6 +18236,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCodeType>>, Record<string, never>>,
@@ -17452,6 +18251,8 @@ export type GraphCacheUpdaters = {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
     patient?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
     patientUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherCustomerType>>, Record<string, never>>,
@@ -17467,6 +18268,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
     endDate?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
     oncePerCustomer?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
     oncePerOrder?: GraphCacheUpdateResolver<Maybe<WithTypename<VoucherType>>, Record<string, never>>,
@@ -17498,6 +18301,8 @@ export type GraphCacheUpdaters = {
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
     instrument?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
     numberOfSamples?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
     qcLevels?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetTemplateType>>, Record<string, never>>,
@@ -17530,6 +18335,8 @@ export type GraphCacheUpdaters = {
     dateVerified?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
     instrument?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
     instrumentUid?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
     numberOfSamples?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
     reserved?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,
     rowWise?: GraphCacheUpdateResolver<Maybe<WithTypename<WorkSheetType>>, Record<string, never>>,

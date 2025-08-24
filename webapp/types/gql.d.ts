@@ -67,6 +67,8 @@ export type AbxAstPanelType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   organisms?: Maybe<Array<AbxOrganismType>>;
   uid: Scalars['String']['output'];
@@ -93,6 +95,8 @@ export type AbxAstResultType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   guidelineYear?: Maybe<AbxGuidelineYearType>;
   guidelineYearUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismResultUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -141,6 +145,8 @@ export type AbxAntibioticGuidelineType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   guideline?: Maybe<AbxGuidelineType>;
   guidelineUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -200,6 +206,8 @@ export type AbxAntibioticType = {
   guidelines?: Maybe<Array<AbxGuidelineType>>;
   human?: Maybe<Scalars['Boolean']['output']>;
   jacCode?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   loincafb?: Maybe<Scalars['String']['output']>;
   loinccomp?: Maybe<Scalars['String']['output']>;
   loincdisk?: Maybe<Scalars['String']['output']>;
@@ -268,6 +276,8 @@ export type AbxBreakpointTyp = {
   host?: Maybe<AbxHostType>;
   hostUid?: Maybe<Scalars['String']['output']>;
   i?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismCode: Scalars['String']['output'];
   organismCodeType: Scalars['String']['output'];
   potency?: Maybe<Scalars['String']['output']>;
@@ -314,6 +324,7 @@ export type AbxBreakpointTypeTyp = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -333,6 +344,8 @@ export type AbxClassType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   phylum?: Maybe<AbxPhylumType>;
   phylumUid?: Maybe<Scalars['String']['output']>;
@@ -384,6 +397,8 @@ export type AbxExpResPhenotypeType = {
   exceptionOrganismCodeType: Scalars['String']['output'];
   guideline?: Maybe<AbxGuidelineType>;
   guidelineUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismCode: Scalars['String']['output'];
   organismCodeType: Scalars['String']['output'];
   referenceTable?: Maybe<Scalars['String']['output']>;
@@ -427,6 +442,8 @@ export type AbxExpertInterpretationRuleType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organismCode: Scalars['String']['output'];
   organismCodeType: Scalars['String']['output'];
   ruleCode: Scalars['String']['output'];
@@ -449,6 +466,8 @@ export type AbxFamilyType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   order?: Maybe<AbxOrderType>;
   orderUid?: Maybe<Scalars['String']['output']>;
@@ -472,6 +491,8 @@ export type AbxGenusType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   family?: Maybe<AbxFamilyType>;
   familyUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -494,6 +515,8 @@ export type AbxGuidelineType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -523,6 +546,8 @@ export type AbxHostType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -541,6 +566,8 @@ export type AbxKingdomType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -561,6 +588,8 @@ export type AbxMediumType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -582,6 +611,8 @@ export type AbxOrderType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -630,6 +661,8 @@ export type AbxOrganismResultType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isolateNumber?: Maybe<Scalars['Int']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   organism?: Maybe<AbxOrganismType>;
   organismUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -674,6 +707,8 @@ export type AbxOrganismSerotypeType = {
   fate?: Maybe<Scalars['String']['output']>;
   hPhase1?: Maybe<Scalars['String']['output']>;
   hPhase2?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   oAntigens?: Maybe<Scalars['String']['output']>;
   organism?: Maybe<AbxOrganismType>;
   organismUid: Scalars['String']['output'];
@@ -709,6 +744,8 @@ export type AbxOrganismType = {
   genusUid?: Maybe<Scalars['String']['output']>;
   kingdom?: Maybe<AbxKingdomType>;
   kingdomUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   morphology?: Maybe<Scalars['String']['output']>;
   msfGrpClin?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
@@ -745,6 +782,8 @@ export type AbxPhylumType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   kingdom?: Maybe<AbxKingdomType>;
   kingdomUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -792,6 +831,8 @@ export type AbxQcRangeType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   guideline?: Maybe<AbxGuidelineType>;
   guidelineUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   maximum?: Maybe<Scalars['String']['output']>;
   medium?: Maybe<AbxMediumType>;
   mediumUid?: Maybe<Scalars['String']['output']>;
@@ -821,6 +862,8 @@ export type AbxSiteOfInfectionType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -841,6 +884,8 @@ export type AbxTestMethodType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -850,6 +895,8 @@ export type AbxTestMethodType = {
 
 export type ActivityFeedType = {
   __typename?: 'ActivityFeedType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   subscribers?: Maybe<Array<UserType>>;
   uid: Scalars['String']['output'];
@@ -857,6 +904,8 @@ export type ActivityFeedType = {
 
 export type ActivityProcessType = {
   __typename?: 'ActivityProcessType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   objectType: Scalars['String']['output'];
   status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -873,6 +922,8 @@ export type ActivityStreamType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   feeds?: Maybe<Array<ActivityFeedType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   target?: Maybe<Scalars['String']['output']>;
   targetUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -902,6 +953,8 @@ export type AnalysisCategoryType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -926,6 +979,8 @@ export type AnalysisCorrectionFactorType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   factor: Scalars['Float']['output'];
   instrumentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   methodUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -958,6 +1013,8 @@ export type AnalysisDetectionLimitType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   instrumentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lowerLimit: Scalars['Float']['output'];
   methodUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -979,6 +1036,8 @@ export type AnalysisDiscountType = {
   discountType: Scalars['String']['output'];
   endDate: Scalars['DateTime']['output'];
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   startDate: Scalars['DateTime']['output'];
   uid: Scalars['String']['output'];
@@ -1033,6 +1092,8 @@ export type AnalysisInterimType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   instrumentUid: Scalars['String']['output'];
   key: Scalars['Int']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -1062,6 +1123,8 @@ export type AnalysisMappingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1080,6 +1143,8 @@ export type AnalysisPriceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -1129,6 +1194,8 @@ export type AnalysisRequestType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   patient: PatientType;
   patientUid: Scalars['String']['output'];
@@ -1152,6 +1219,8 @@ export type AnalysisRequestWithSamples = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   patient: PatientType;
   patientUid: Scalars['String']['output'];
@@ -1204,6 +1273,7 @@ export type AnalysisResultType = {
   invalidatedByUid?: Maybe<Scalars['String']['output']>;
   laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
   laboratoryInstrumentUid?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   method?: Maybe<MethodType>;
   methodUid?: Maybe<Scalars['String']['output']>;
@@ -1256,6 +1326,8 @@ export type AnalysisSpecificationType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   gender?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   max?: Maybe<Scalars['Float']['output']>;
   maxReport?: Maybe<Scalars['String']['output']>;
   maxWarn?: Maybe<Scalars['Float']['output']>;
@@ -1292,6 +1364,8 @@ export type AnalysisTemplateType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1317,6 +1391,8 @@ export type AnalysisType = {
   interims?: Maybe<Array<AnalysisInterimType>>;
   internalUse?: Maybe<Scalars['Boolean']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   methods?: Maybe<Array<MethodType>>;
   name: Scalars['String']['output'];
   precision?: Maybe<Scalars['Int']['output']>;
@@ -1356,6 +1432,8 @@ export type AnalysisUncertaintyType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   instrumentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   max: Scalars['Float']['output'];
   methodUid: Scalars['String']['output'];
   min: Scalars['Float']['output'];
@@ -1384,6 +1462,8 @@ export type AnalysisWithProfiles = {
   interims?: Maybe<Array<AnalysisInterimType>>;
   internalUse?: Maybe<Scalars['Boolean']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   methods?: Maybe<Array<MethodType>>;
   name: Scalars['String']['output'];
   precision?: Maybe<Scalars['Int']['output']>;
@@ -1417,6 +1497,9 @@ export type AuditLogType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  extras?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   stateAfter?: Maybe<Scalars['JSONScalar']['output']>;
   stateBefore?: Maybe<Scalars['JSONScalar']['output']>;
   targetType?: Maybe<Scalars['String']['output']>;
@@ -1472,8 +1555,10 @@ export type CalibrationCertificateType = {
   dateIssued: Scalars['DateTime']['output'];
   internal: Scalars['Boolean']['output'];
   issuer: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
   laboratoryInstrumentUid: Scalars['String']['output'];
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   performedBy: Scalars['String']['output'];
   remarks: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -1510,6 +1595,8 @@ export type ClientContactType = {
   emailCc?: Maybe<Scalars['String']['output']>;
   firstName?: Maybe<Scalars['String']['output']>;
   isActive?: Maybe<Scalars['Boolean']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -1563,6 +1650,8 @@ export type ClientType = {
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   phoneBusiness?: Maybe<Scalars['String']['output']>;
   phoneMobile?: Maybe<Scalars['String']['output']>;
@@ -1583,6 +1672,8 @@ export type ClinicalDataCodingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1610,6 +1701,8 @@ export type ClinicalDataType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   otherContext?: Maybe<Scalars['JSONScalar']['output']>;
   pregnancyStatus?: Maybe<Scalars['Boolean']['output']>;
   symptoms?: Maybe<Array<Scalars['String']['output']>>;
@@ -1635,6 +1728,8 @@ export type CodingStandardType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1693,6 +1788,7 @@ export type DepartmentType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1784,6 +1880,8 @@ export type DocumentAuditType = {
   document: DocumentType;
   documentUid: Scalars['String']['output'];
   ipAddress?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -1805,6 +1903,8 @@ export type DocumentCategoryType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1865,6 +1965,8 @@ export type DocumentFolderType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   documents: Array<DocumentType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   parent?: Maybe<DocumentFolderType>;
   parentUid?: Maybe<Scalars['String']['output']>;
@@ -1965,6 +2067,8 @@ export type DocumentReviewCycleType = {
   endDate?: Maybe<Scalars['String']['output']>;
   initiatedBy: UserType;
   initiatedByUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   startDate: Scalars['String']['output'];
   status: Scalars['String']['output'];
   steps: Array<DocumentReviewStepType>;
@@ -2012,6 +2116,8 @@ export type DocumentReviewStepType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reviewCycle: DocumentReviewCycleType;
   reviewCycleUid: Scalars['String']['output'];
   reviewer: UserType;
@@ -2074,6 +2180,8 @@ export type DocumentStatusType = {
   date: Scalars['String']['output'];
   document?: Maybe<DocumentType>;
   documentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2126,6 +2234,8 @@ export type DocumentSubscriptionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   document: DocumentType;
   documentUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   subscriptionType: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2173,6 +2283,8 @@ export type DocumentTagType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   documents: Array<DocumentType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2224,6 +2336,8 @@ export type DocumentTemplateType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   documents: Array<DocumentType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2259,6 +2373,8 @@ export type DocumentType = {
   editor?: Maybe<Scalars['String']['output']>;
   folder?: Maybe<DocumentFolderType>;
   folderUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lastAccessed?: Maybe<Scalars['String']['output']>;
   lastAccessedBy?: Maybe<UserType>;
   lastAccessedByUid?: Maybe<Scalars['String']['output']>;
@@ -2342,6 +2458,8 @@ export type DocumentVersionType = {
   document?: Maybe<DocumentType>;
   documentUid: Scalars['String']['output'];
   editor: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   thumbnail?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2402,6 +2520,8 @@ export type GrindBoardType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   posters: Array<GrindPosterType>;
   scheme?: Maybe<GrindSchemeType>;
   schemeUid?: Maybe<Scalars['String']['output']>;
@@ -2547,6 +2667,8 @@ export type GrindErrandDiscussionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   errand?: Maybe<GrindErrandType>;
   errandUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   parent?: Maybe<GrindErrandDiscussionType>;
   parentUid?: Maybe<Scalars['String']['output']>;
   subdiscussions: Array<GrindErrandDiscussionType>;
@@ -2576,6 +2698,8 @@ export type GrindErrandType = {
   endDate?: Maybe<Scalars['String']['output']>;
   label?: Maybe<GrindLabelType>;
   labelUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   media: Array<GrindMediaType>;
   members: Array<UserType>;
   milestones: Array<GrindMilestoneType>;
@@ -2618,6 +2742,8 @@ export type GrindLabelType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2650,6 +2776,8 @@ export type GrindMediaType = {
   destination?: Maybe<Scalars['String']['output']>;
   encoding?: Maybe<Scalars['String']['output']>;
   filename?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   mimetype?: Maybe<Scalars['String']['output']>;
   originalName?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
@@ -2689,6 +2817,8 @@ export type GrindMilestoneType = {
   description?: Maybe<Scalars['String']['output']>;
   errand?: Maybe<GrindErrandType>;
   errandUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   occurrences: Array<GrindOccurrenceType>;
   title?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -2719,6 +2849,8 @@ export type GrindOccurrenceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   target?: Maybe<Scalars['String']['output']>;
   targetUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -2755,6 +2887,8 @@ export type GrindPosterType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   errands: Array<GrindErrandType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   members: Array<UserType>;
   stamps: Array<GrindStampType>;
   status?: Maybe<Scalars['String']['output']>;
@@ -2791,6 +2925,8 @@ export type GrindSchemeType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   endDate?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   members: Array<UserType>;
   startDate?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
@@ -2822,6 +2958,8 @@ export type GrindStampType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -2998,6 +3136,8 @@ export type HazardType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3042,8 +3182,10 @@ export type InstrumentCalibrationType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   dateReported: Scalars['DateTime']['output'];
   endDate: Scalars['DateTime']['output'];
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
   laboratoryInstrumentUid: Scalars['String']['output'];
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   notesBefore: Scalars['String']['output'];
   performedBy: Scalars['String']['output'];
   remarks: Scalars['String']['output'];
@@ -3080,6 +3222,8 @@ export type InstrumentCompetenceType = {
   instrumentUid: Scalars['String']['output'];
   internal: Scalars['Boolean']['output'];
   issueDate: Scalars['DateTime']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -3122,7 +3266,9 @@ export type InstrumentType = {
   instrumentType?: Maybe<InstrumentTypeType>;
   instrumentTypeUid?: Maybe<Scalars['String']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryInstruments?: Maybe<Array<LaboratoryInstrumentType>>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   manufacturer?: Maybe<ManufacturerType>;
   manufacturerUid?: Maybe<Scalars['String']['output']>;
   methods?: Maybe<Array<MethodType>>;
@@ -3162,6 +3308,8 @@ export type InstrumentTypeType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3258,6 +3406,8 @@ export type LaboratoryInstrumentType = {
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
   labName?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   serialNumber?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -3409,6 +3559,8 @@ export type MessageThreadType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   deletedBy?: Maybe<Array<UserType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   messages?: Maybe<Array<MessageType>>;
   recipients: Array<UserType>;
   uid: Scalars['String']['output'];
@@ -3424,6 +3576,8 @@ export type MessageType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   deletedBy?: Maybe<Array<UserType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   left: Scalars['Int']['output'];
   parent?: Maybe<MessageType>;
   parentId: Scalars['String']['output'];
@@ -3474,6 +3628,8 @@ export type MethodType = {
   description?: Maybe<Scalars['String']['output']>;
   instruments?: Maybe<Array<InstrumentType>>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5379,6 +5535,8 @@ export type NoticeType = {
   departments?: Maybe<Array<DepartmentType>>;
   expiry: Scalars['String']['output'];
   groups?: Maybe<Array<GroupType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5402,6 +5560,8 @@ export type NotificationType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   departments?: Maybe<DepartmentType>;
   groups?: Maybe<GroupType>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   users?: Maybe<UserType>;
@@ -5539,6 +5699,8 @@ export type PatientIdentificationType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   identification?: Maybe<IdentificationType>;
   identificationUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   patientUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5591,6 +5753,8 @@ export type PatientType = {
   gender?: Maybe<Scalars['String']['output']>;
   identifications?: Maybe<Array<PatientIdentificationType>>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   middleName?: Maybe<Scalars['String']['output']>;
@@ -5686,6 +5850,8 @@ export type ProfileDiscountType = {
   discountType: Scalars['String']['output'];
   endDate: Scalars['DateTime']['output'];
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   profile: ProfileType;
   profileUid: Scalars['String']['output'];
@@ -5731,6 +5897,8 @@ export type ProfileMappingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   profile?: Maybe<ProfileType>;
   profileUid: Scalars['String']['output'];
@@ -5765,6 +5933,8 @@ export type ProfilePriceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   profile: ProfileType;
   profileUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -5784,6 +5954,8 @@ export type ProfileType = {
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   sampleTypes?: Maybe<Array<SampleTypeTyp>>;
   tatLengthMinutes?: Maybe<Scalars['Int']['output']>;
@@ -5849,6 +6021,8 @@ export type QcLevelType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   level: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5884,6 +6058,8 @@ export type QcSetType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
   status: Scalars['String']['output'];
@@ -5898,6 +6074,8 @@ export type QcSetWithSamples = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   note: Scalars['String']['output'];
   samples?: Maybe<Array<SamplesWithResults>>;
@@ -5924,6 +6102,8 @@ export type QcTemplateType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   departments: Array<DepartmentType>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   qcLevels: Array<QcLevelType>;
   uid: Scalars['String']['output'];
@@ -7855,6 +8035,8 @@ export type ReferralLaboratoryType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   isReference?: Maybe<Scalars['Boolean']['output']>;
   isReferral?: Maybe<Scalars['Boolean']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   password?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
@@ -7883,6 +8065,8 @@ export type ReflexActionType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   level: Scalars['Int']['output'];
   reflexRule?: Maybe<ReflexRuleType>;
   reflexRuleUid: Scalars['String']['output'];
@@ -7912,6 +8096,8 @@ export type ReflexBrainActionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   finalise?: Maybe<Array<ReflexBrainFinalType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   priority: Scalars['Int']['output'];
   reflexBrain?: Maybe<ReflexBrainType>;
   reflexBrainUid: Scalars['String']['output'];
@@ -7926,6 +8112,8 @@ export type ReflexBrainAdditionType = {
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
   count: Scalars['Int']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reflexBrainAction?: Maybe<ReflexBrainActionType>;
   reflexBrainActionUid: Scalars['String']['output'];
 };
@@ -7934,6 +8122,8 @@ export type ReflexBrainConditionCriteriaType = {
   __typename?: 'ReflexBrainConditionCriteriaType';
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   operator: Scalars['String']['output'];
   reflexBrainCondition?: Maybe<ReflexBrainConditionType>;
   reflexBrainConditionUid: Scalars['String']['output'];
@@ -7950,6 +8140,8 @@ export type ReflexBrainConditionType = {
   __typename?: 'ReflexBrainConditionType';
   criteria?: Maybe<Array<ReflexBrainConditionCriteriaType>>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   priority: Scalars['Int']['output'];
   reflexBrain: ReflexBrainType;
   reflexBrainUid: Scalars['String']['output'];
@@ -7966,6 +8158,8 @@ export type ReflexBrainFinalType = {
   __typename?: 'ReflexBrainFinalType';
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reflexBrainAction?: Maybe<ReflexBrainActionType>;
   reflexBrainActionUid: Scalars['String']['output'];
   value: Scalars['String']['output'];
@@ -7989,6 +8183,8 @@ export type ReflexBrainType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   priority: Scalars['Int']['output'];
   reflexAction?: Maybe<ReflexBrainType>;
   reflexActionUid: Scalars['String']['output'];
@@ -8031,6 +8227,8 @@ export type ReflexRuleType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   priority: Scalars['Int']['output'];
   reflexActions?: Maybe<Array<ReflexActionType>>;
@@ -8047,6 +8245,8 @@ export type RejectionReasonType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   reason: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8064,6 +8264,8 @@ export type ReportImpressType = {
   generatedBy?: Maybe<UserType>;
   generatedByUid?: Maybe<Scalars['String']['output']>;
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   sample?: Maybe<SampleType>;
   sampleUid?: Maybe<Scalars['String']['output']>;
   smsRequired?: Maybe<Scalars['Boolean']['output']>;
@@ -8081,6 +8283,8 @@ export type ReportMetaType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   dateColumn: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Scalars['String']['output']>;
   periodEnd: Scalars['DateTime']['output'];
   periodStart: Scalars['DateTime']['output'];
@@ -8112,6 +8316,7 @@ export type ResultMutationType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   date?: Maybe<Scalars['String']['output']>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   mutation: Scalars['String']['output'];
   resultUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -8142,6 +8347,8 @@ export type ResultOptionType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   optionKey: Scalars['Int']['output'];
   sampleTypes?: Maybe<Array<SampleTypeTyp>>;
   uid: Scalars['String']['output'];
@@ -8218,6 +8425,8 @@ export type SampleType = {
   internalUse: Scalars['Boolean']['output'];
   invalidatedBy?: Maybe<UserType>;
   invalidatedByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   parent?: Maybe<SampleType>;
   parentId?: Maybe<Scalars['String']['output']>;
@@ -8283,6 +8492,8 @@ export type SampleTypeMappingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   sampleType?: Maybe<SampleTypeTyp>;
   sampleTypeUid: Scalars['String']['output'];
@@ -8303,6 +8514,8 @@ export type SampleTypeTyp = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8336,6 +8549,8 @@ export type SamplesWithResults = {
   internalUse: Scalars['Boolean']['output'];
   invalidatedBy?: Maybe<UserType>;
   invalidatedByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
   parent?: Maybe<SampleType>;
   parentId?: Maybe<Scalars['String']['output']>;
@@ -8426,7 +8641,7 @@ export type ShipmentType = {
   finalisedByUid?: Maybe<Scalars['String']['output']>;
   incoming: Scalars['Boolean']['output'];
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
-  laboratory?: Maybe<ReferralLaboratoryType>;
+  laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   pdfContent?: Maybe<Scalars['BytesScalar']['output']>;
   recalledBy?: Maybe<UserType>;
@@ -8457,6 +8672,8 @@ export type ShippedSampleType = {
   __typename?: 'ShippedSampleType';
   extSampleId?: Maybe<Scalars['String']['output']>;
   extSampleUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   resultNotified?: Maybe<Scalars['Boolean']['output']>;
   sample: SampleType;
   sampleUid: Scalars['String']['output'];
@@ -8488,6 +8705,8 @@ export type SmsMessageType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   message?: Maybe<Scalars['String']['output']>;
   recipient?: Maybe<Scalars['String']['output']>;
   sentAt?: Maybe<Scalars['DateTime']['output']>;
@@ -8524,6 +8743,8 @@ export type SmsTemplateType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   specificationTrigger?: Maybe<SmsTrigger>;
   targetType?: Maybe<Scalars['String']['output']>;
@@ -8589,6 +8810,8 @@ export type StockAdjustmentType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
   productUid?: Maybe<Scalars['String']['output']>;
   remarks?: Maybe<Scalars['String']['output']>;
@@ -8613,6 +8836,8 @@ export type StockCategoryType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8655,6 +8880,8 @@ export type StockItemType = {
   description?: Maybe<Scalars['String']['output']>;
   hazard?: Maybe<HazardType>;
   hazardUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   maximumLevel?: Maybe<Scalars['Int']['output']>;
   minimumLevel?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
@@ -8694,6 +8921,8 @@ export type StockItemVariantType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   maximumLevel?: Maybe<Scalars['Int']['output']>;
   minimumLevel?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
@@ -8709,6 +8938,8 @@ export type StockItemVariantType = {
 export type StockLotType = {
   __typename?: 'StockLotType';
   expiryDate: Scalars['DateTime']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   lotNumber: Scalars['String']['output'];
   product?: Maybe<StockItemVariantType>;
   productUid: Scalars['String']['output'];
@@ -8760,6 +8991,8 @@ export type StockOrderProductType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   order?: Maybe<StockOrderType>;
   orderUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
@@ -8784,6 +9017,8 @@ export type StockOrderType = {
   departmentUid?: Maybe<Scalars['String']['output']>;
   fulfilledBy?: Maybe<UserType>;
   fulfilledByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   orderBy?: Maybe<UserType>;
   orderByUid?: Maybe<Scalars['String']['output']>;
   orderNumber?: Maybe<Scalars['String']['output']>;
@@ -8800,6 +9035,8 @@ export type StockPackagingType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -8809,6 +9046,8 @@ export type StockPackagingType = {
 
 export type StockProductInventoryType = {
   __typename?: 'StockProductInventoryType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
   productUid: Scalars['String']['output'];
   quantity: Scalars['Int']['output'];
@@ -8837,6 +9076,8 @@ export type StockReceiptInputType = {
 
 export type StockReceiptType = {
   __typename?: 'StockReceiptType';
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   packageFactor?: Maybe<Scalars['Int']['output']>;
   packagesReceived?: Maybe<Scalars['Int']['output']>;
   product?: Maybe<StockItemVariantType>;
@@ -8883,6 +9124,8 @@ export type StockTransactionType = {
   issued?: Maybe<Scalars['Int']['output']>;
   issuedTo?: Maybe<UserType>;
   issuedToUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   product?: Maybe<StockItemVariantType>;
   productUid?: Maybe<Scalars['String']['output']>;
   transactionBy?: Maybe<UserType>;
@@ -8905,6 +9148,8 @@ export type StockUnitType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   synonyms: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -8934,6 +9179,8 @@ export type StorageContainerType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   grid?: Maybe<Scalars['Boolean']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   rowWise?: Maybe<Scalars['Boolean']['output']>;
   rows?: Maybe<Scalars['Int']['output']>;
@@ -8963,6 +9210,8 @@ export type StorageLocationType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   storeRoom?: Maybe<StoreRoomType>;
   storeRoomUid: Scalars['String']['output'];
@@ -8988,6 +9237,8 @@ export type StorageSectionType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   storageLocation?: Maybe<StorageLocationType>;
   storageLocationUid: Scalars['String']['output'];
@@ -9012,6 +9263,8 @@ export type StoreRoomType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   tag: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -9085,6 +9338,8 @@ export type TestBillInvoiceType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   pdfContent?: Maybe<Scalars['BytesScalar']['output']>;
   testBill: TestBillType;
   testBillUid: Scalars['String']['output'];
@@ -9106,6 +9361,8 @@ export type TestBillTransactionType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   isSuccess: Scalars['Boolean']['output'];
   kind: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   notes: Scalars['String']['output'];
   processed: Scalars['Boolean']['output'];
@@ -9127,6 +9384,8 @@ export type TestBillType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
   jsonContent?: Maybe<Scalars['JSONScalar']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   orders?: Maybe<Array<AnalysisRequestType>>;
   partial: Scalars['Boolean']['output'];
   patient: PatientType;
@@ -9268,6 +9527,8 @@ export type VoucherCodeType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
   updatedBy?: Maybe<UserType>;
@@ -9283,6 +9544,8 @@ export type VoucherCustomerType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   patient: PatientType;
   patientUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -9311,6 +9574,8 @@ export type VoucherType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   endDate: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   oncePerCustomer: Scalars['Boolean']['output'];
   oncePerOrder: Scalars['Boolean']['output'];
@@ -9352,6 +9617,8 @@ export type WorkSheetTemplateType = {
   description?: Maybe<Scalars['String']['output']>;
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   numberOfSamples?: Maybe<Scalars['Int']['output']>;
   qcLevels?: Maybe<Array<QcLevelType>>;
@@ -9386,6 +9653,8 @@ export type WorkSheetType = {
   dateVerified?: Maybe<Scalars['DateTime']['output']>;
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
   numberOfSamples?: Maybe<Scalars['Int']['output']>;
   reserved?: Maybe<Scalars['JSONScalar']['output']>;
   rowWise: Scalars['Boolean']['output'];

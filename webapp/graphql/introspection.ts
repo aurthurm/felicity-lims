@@ -182,6 +182,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -382,6 +399,23 @@ export default {
           },
           {
             "name": "guidelineYearUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -623,6 +657,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -809,6 +860,23 @@ export default {
           },
           {
             "name": "jacCode",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -1126,6 +1194,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "organismCode",
             "type": {
               "kind": "NON_NULL",
@@ -1421,6 +1506,14 @@ export default {
             "args": []
           },
           {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -1507,6 +1600,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -1797,6 +1907,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "organismCode",
             "type": {
               "kind": "NON_NULL",
@@ -2029,6 +2156,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "organismCode",
             "type": {
               "kind": "NON_NULL",
@@ -2148,6 +2292,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -2282,6 +2443,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -2384,6 +2562,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -2552,6 +2747,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -2638,6 +2850,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -2739,6 +2968,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -2849,6 +3095,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -3051,6 +3314,23 @@ export default {
           },
           {
             "name": "isolateNumber",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -3264,6 +3544,23 @@ export default {
           },
           {
             "name": "hPhase2",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -3542,6 +3839,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "morphology",
             "type": {
               "kind": "SCALAR",
@@ -3774,6 +4088,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -3999,6 +4330,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "maximum",
             "type": {
               "kind": "SCALAR",
@@ -4188,6 +4536,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -4289,6 +4654,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -4343,6 +4725,23 @@ export default {
         "name": "ActivityFeedType",
         "fields": [
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -4386,6 +4785,23 @@ export default {
         "kind": "OBJECT",
         "name": "ActivityProcessType",
         "fields": [
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
           {
             "name": "objectType",
             "type": {
@@ -4511,6 +4927,23 @@ export default {
                   "ofType": null
                 }
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -4672,6 +5105,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -4794,6 +5244,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -4973,6 +5440,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "lowerLimit",
             "type": {
               "kind": "NON_NULL",
@@ -5140,6 +5624,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -5361,6 +5862,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -5513,6 +6031,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "SCALAR",
@@ -5644,6 +6179,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -5908,6 +6460,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "metadataSnapshot",
             "type": {
               "kind": "SCALAR",
@@ -6106,6 +6675,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -6489,6 +7075,14 @@ export default {
             "args": []
           },
           {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "metadataSnapshot",
             "type": {
               "kind": "SCALAR",
@@ -6773,6 +7367,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "max",
             "type": {
               "kind": "SCALAR",
@@ -6977,6 +7588,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -7190,6 +7818,23 @@ export default {
           },
           {
             "name": "keyword",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -7467,6 +8112,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "max",
             "type": {
               "kind": "NON_NULL",
@@ -7713,6 +8375,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "methods",
             "type": {
               "kind": "LIST",
@@ -7948,6 +8627,31 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "extras",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -8222,6 +8926,15 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "laboratoryInstrument",
             "type": {
               "kind": "OBJECT",
@@ -8238,6 +8951,14 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -8431,6 +9152,23 @@ export default {
           },
           {
             "name": "isActive",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -8728,6 +9466,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -8872,6 +9627,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "SCALAR",
@@ -8980,6 +9752,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -9124,6 +9913,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -9401,6 +10207,14 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -9877,6 +10691,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -9975,6 +10806,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -10281,6 +11129,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -10581,6 +11446,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "startDate",
             "type": {
               "kind": "NON_NULL",
@@ -10802,6 +11684,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -11080,6 +11979,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "status",
             "type": {
               "kind": "NON_NULL",
@@ -11309,6 +12225,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "subscriptionType",
             "type": {
               "kind": "NON_NULL",
@@ -11529,6 +12462,23 @@ export default {
                   }
                 }
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -11770,6 +12720,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -11956,6 +12923,23 @@ export default {
           },
           {
             "name": "folderUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -12407,6 +13391,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "thumbnail",
             "type": {
               "kind": "SCALAR",
@@ -12719,6 +13720,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "posters",
             "type": {
               "kind": "NON_NULL",
@@ -12946,6 +13964,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "parent",
             "type": {
               "kind": "OBJECT",
@@ -13144,6 +14179,23 @@ export default {
           },
           {
             "name": "labelUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -13498,6 +14550,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "title",
             "type": {
               "kind": "NON_NULL",
@@ -13706,6 +14775,23 @@ export default {
           },
           {
             "name": "filename",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -13983,6 +15069,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "occurrences",
             "type": {
               "kind": "NON_NULL",
@@ -14185,6 +15288,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -14444,6 +15564,23 @@ export default {
                   }
                 }
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -14723,6 +15860,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "members",
             "type": {
               "kind": "NON_NULL",
@@ -14933,6 +16087,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -15299,6 +16470,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -15518,6 +16706,15 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "laboratoryInstrument",
             "type": {
               "kind": "OBJECT",
@@ -15534,6 +16731,14 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -15754,6 +16959,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -15983,6 +17205,15 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "laboratoryInstruments",
             "type": {
               "kind": "LIST",
@@ -15994,6 +17225,14 @@ export default {
                   "ofType": null
                 }
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -16228,6 +17467,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -16539,6 +17795,23 @@ export default {
           },
           {
             "name": "labName",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -17367,6 +18640,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "messages",
             "type": {
               "kind": "LIST",
@@ -17490,6 +18780,23 @@ export default {
                   "ofType": null
                 }
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -17785,6 +19092,23 @@ export default {
           },
           {
             "name": "keyword",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -26179,6 +27503,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "title",
             "type": {
               "kind": "NON_NULL",
@@ -26287,6 +27628,23 @@ export default {
               "kind": "OBJECT",
               "name": "GroupType",
               "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -27021,6 +28379,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "patientUid",
             "type": {
               "kind": "NON_NULL",
@@ -27285,6 +28660,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -27734,6 +29126,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -27950,6 +29359,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "SCALAR",
@@ -28137,6 +29563,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "profile",
             "type": {
               "kind": "NON_NULL",
@@ -28280,6 +29723,23 @@ export default {
           },
           {
             "name": "keyword",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -28662,6 +30122,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "level",
             "type": {
               "kind": "NON_NULL",
@@ -28845,6 +30322,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -28939,6 +30433,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -29095,6 +30606,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -38520,6 +40048,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "SCALAR",
@@ -38671,6 +40216,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -38832,6 +40394,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "priority",
             "type": {
               "kind": "NON_NULL",
@@ -38937,6 +40516,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "reflexBrainAction",
             "type": {
               "kind": "OBJECT",
@@ -38980,6 +40576,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -39056,6 +40669,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "priority",
             "type": {
               "kind": "NON_NULL",
@@ -39124,6 +40754,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -39248,6 +40895,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -39477,6 +41141,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -39589,6 +41270,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -39719,6 +41417,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "sample",
             "type": {
               "kind": "OBJECT",
@@ -39842,6 +41557,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -40034,6 +41766,14 @@ export default {
             "args": []
           },
           {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "mutation",
             "type": {
               "kind": "NON_NULL",
@@ -40183,6 +41923,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -40654,6 +42411,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "metadataSnapshot",
             "type": {
               "kind": "SCALAR",
@@ -41060,6 +42834,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "SCALAR",
@@ -41207,6 +42998,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -41477,6 +43285,23 @@ export default {
           },
           {
             "name": "invalidatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -42091,7 +43916,7 @@ export default {
             "name": "laboratory",
             "type": {
               "kind": "OBJECT",
-              "name": "ReferralLaboratoryType",
+              "name": "LaboratoryType",
               "ofType": null
             },
             "args": []
@@ -42283,6 +44108,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "resultNotified",
             "type": {
               "kind": "SCALAR",
@@ -42459,6 +44301,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "message",
             "type": {
               "kind": "SCALAR",
@@ -42620,6 +44479,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -42894,6 +44770,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "product",
             "type": {
               "kind": "OBJECT",
@@ -43019,6 +44912,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -43251,6 +45161,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "maximumLevel",
             "type": {
               "kind": "SCALAR",
@@ -43473,6 +45400,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "maximumLevel",
             "type": {
               "kind": "SCALAR",
@@ -43578,6 +45522,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -43802,6 +45763,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "order",
             "type": {
               "kind": "OBJECT",
@@ -43984,6 +45962,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "orderBy",
             "type": {
               "kind": "OBJECT",
@@ -44093,6 +46088,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -44146,6 +46158,23 @@ export default {
         "kind": "OBJECT",
         "name": "StockProductInventoryType",
         "fields": [
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
           {
             "name": "product",
             "type": {
@@ -44223,6 +46252,23 @@ export default {
         "kind": "OBJECT",
         "name": "StockReceiptType",
         "fields": [
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
           {
             "name": "packageFactor",
             "type": {
@@ -44574,6 +46620,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "product",
             "type": {
               "kind": "OBJECT",
@@ -44701,6 +46764,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -44822,6 +46902,23 @@ export default {
           },
           {
             "name": "grid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -45008,6 +47105,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -45155,6 +47269,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -45295,6 +47426,23 @@ export default {
           },
           {
             "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -45684,6 +47832,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "pdfContent",
             "type": {
               "kind": "SCALAR",
@@ -45848,6 +48013,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -46022,6 +48204,23 @@ export default {
           },
           {
             "name": "jsonContent",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -46995,6 +49194,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "uid",
             "type": {
               "kind": "NON_NULL",
@@ -47104,6 +49320,23 @@ export default {
           },
           {
             "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -47261,6 +49494,23 @@ export default {
                 "kind": "SCALAR",
                 "name": "Any"
               }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -47567,6 +49817,23 @@ export default {
             "args": []
           },
           {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "name",
             "type": {
               "kind": "NON_NULL",
@@ -47843,6 +50110,23 @@ export default {
           },
           {
             "name": "instrumentUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"

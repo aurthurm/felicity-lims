@@ -9,8 +9,9 @@ const FelTabs =  defineAsyncComponent(
 const sampleStore = useSampleStore();
 
 const targetUid = computed(() => sampleStore.sample?.uid || '');
-const canManageAnalyses = computed(() => ['received', 'awaiting'].includes(sampleStore.sample?.status!));
+const canManageAnalyses = computed(() => !['received', 'awaiting'].includes(sampleStore.sample?.status!));
 
+console.log(canManageAnalyses.value, sampleStore.sample?.status!)
 const tabs = [
   {
     id: 'analysis-results',

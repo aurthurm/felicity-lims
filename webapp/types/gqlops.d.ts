@@ -196,7 +196,7 @@ export type GetAuditLogsQueryVariables = Exact<{
 }>;
 
 
-export type GetAuditLogsQuery = { __typename?: 'Query', auditLogsFilter?: Array<{ __typename?: 'AuditLogType', uid: string, userUid?: string | null, targetType?: string | null, targetUid?: string | null, action?: number | null, stateBefore?: never | null, stateAfter?: never | null }> | null };
+export type GetAuditLogsQuery = { __typename?: 'Query', auditLogsFilter?: Array<{ __typename?: 'AuditLogType', uid: string, userUid?: string | null, targetType?: string | null, targetUid?: string | null, action?: number | null, stateBefore?: never | null, stateAfter?: never | null, extras?: never | null }> | null };
 
 export type GetAllDepartmentsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2686,7 +2686,7 @@ export type AddShipmentMutationVariables = Exact<{
 }>;
 
 
-export type AddShipmentMutation = { __typename?: 'Mutation', createShipment: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ShipmentListingType', shipments?: Array<{ __typename?: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, laboratoryUid?: string | null, createdAt?: string | null, laboratory?: { __typename?: 'ReferralLaboratoryType', name?: string | null } | null }> | null } };
+export type AddShipmentMutation = { __typename?: 'Mutation', createShipment: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ShipmentListingType', shipments?: Array<{ __typename?: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, laboratoryUid?: string | null, createdAt?: string | null, laboratory?: { __typename?: 'LaboratoryType', name: string } | null }> | null } };
 
 export type UpdateShipmentMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -2694,7 +2694,7 @@ export type UpdateShipmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateShipmentMutation = { __typename?: 'Mutation', updateShipment: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, incoming: boolean, comment?: string | null, createdAt?: string | null, courier?: string | null, laboratory?: { __typename?: 'ReferralLaboratoryType', uid: string, name?: string | null } | null } };
+export type UpdateShipmentMutation = { __typename?: 'Mutation', updateShipment: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, incoming: boolean, comment?: string | null, createdAt?: string | null, courier?: string | null, laboratory?: { __typename?: 'LaboratoryType', uid: string, name: string } | null } };
 
 export type ShipmentManageSamplesMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -2702,7 +2702,7 @@ export type ShipmentManageSamplesMutationVariables = Exact<{
 }>;
 
 
-export type ShipmentManageSamplesMutation = { __typename?: 'Mutation', shipmentManageSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, incoming: boolean, comment?: string | null, createdAt?: string | null, courier?: string | null, laboratory?: { __typename?: 'ReferralLaboratoryType', uid: string, name?: string | null } | null, samples?: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', patient: { __typename?: 'PatientType', uid: string } } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, keyword?: string | null }> | null }> | null } };
+export type ShipmentManageSamplesMutation = { __typename?: 'Mutation', shipmentManageSamples: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, incoming: boolean, comment?: string | null, createdAt?: string | null, courier?: string | null, laboratory?: { __typename?: 'LaboratoryType', uid: string, name: string } | null, samples?: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', patient: { __typename?: 'PatientType', uid: string } } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, keyword?: string | null }> | null }> | null } };
 
 export type ActionShipmentMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -2728,14 +2728,14 @@ export type GetAllShipmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllShipmentsQuery = { __typename?: 'Query', shipmentAll: { __typename?: 'ShipmentCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, incoming: boolean, state?: string | null, laboratoryUid?: string | null, courier?: string | null, createdAt?: string | null, laboratory?: { __typename?: 'ReferralLaboratoryType', name?: string | null } | null }> | null } };
+export type GetAllShipmentsQuery = { __typename?: 'Query', shipmentAll: { __typename?: 'ShipmentCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, incoming: boolean, state?: string | null, laboratoryUid?: string | null, courier?: string | null, createdAt?: string | null, laboratory?: { __typename?: 'LaboratoryType', name: string } | null }> | null } };
 
 export type GetShipmentByUidQueryVariables = Exact<{
   shipmentUid: Scalars['String']['input'];
 }>;
 
 
-export type GetShipmentByUidQuery = { __typename?: 'Query', shipmentByUid: { __typename?: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, incoming: boolean, comment?: string | null, createdAt?: string | null, courier?: string | null, jsonContent?: never | null, laboratory?: { __typename?: 'ReferralLaboratoryType', name?: string | null, url?: string | null, username?: string | null, password?: string | null } | null, shippedSamples?: Array<{ __typename?: 'ShippedSampleType', resultNotified?: boolean | null, extSampleId?: string | null, sample: { __typename?: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', clientRequestId: string, patient: { __typename?: 'PatientType', uid: string } } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, keyword?: string | null }> | null } }> | null } };
+export type GetShipmentByUidQuery = { __typename?: 'Query', shipmentByUid: { __typename?: 'ShipmentType', uid: string, shipmentId?: string | null, assignedCount?: number | null, state?: string | null, incoming: boolean, comment?: string | null, createdAt?: string | null, courier?: string | null, jsonContent?: never | null, laboratory?: { __typename?: 'LaboratoryType', name: string } | null, shippedSamples?: Array<{ __typename?: 'ShippedSampleType', resultNotified?: boolean | null, extSampleId?: string | null, sample: { __typename?: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', clientRequestId: string, patient: { __typename?: 'PatientType', uid: string } } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, keyword?: string | null }> | null } }> | null } };
 
 export type ManifestReportQueryVariables = Exact<{
   uid: Scalars['String']['input'];

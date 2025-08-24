@@ -18,12 +18,16 @@ class AuditLog(BaseEntity):
     state_before = Column(
         JSONB,
         doc="Stores a JSON representation of a dict containing the altered "
-        "column names and original values",
+            "column names and original values",
     )
     state_after = Column(
         JSONB,
         doc="Stores a JSON representation of a dict containing the altered "
-        "column names and new values",
+            "column names and new values",
+    )
+    extras = Column(
+        JSONB,
+        doc="Stores a JSON representation of a dict containing extra metadata",
     )
 
     def __repr__(self):

@@ -7,6 +7,7 @@ from sqlalchemy.orm.attributes import get_history
 
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.core.events import post_event
+from felicity.core.tenant_context import get_tenant_context
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -95,8 +96,17 @@ class EventListenable:
             logger.info("Only updated_at changed, returning empty dict")
             return False, {}
 
+        extras = {}
+        tenant_context = get_tenant_context()
+        if tenant_context is not None:
+            extras["laboratory_uid"] = tenant_context.laboratory_uid
+            extras["ip_address"] = tenant_context.ip_address
+            extras["user_agent"] = tenant_context.user_agent
+            extras["request_id"] = tenant_context.request_id
+
         return True, {
             "uid": getattr(target, "uid"),
             "state_before": state_before,
             "state_after": state_after,
+            "extras": extras
         }
