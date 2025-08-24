@@ -6,6 +6,7 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.multiplex.microbiology.entities import laboratory_antibiotics
 from felicity.apps.multiplex.microbiology.services import *
 from felicity.apps.setup.services import LaboratoryService
+from felicity.core.tenant_context import get_current_lab_uid
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -67,7 +68,8 @@ class MicrobiologyQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_laboratory_antibiotics(self, info) -> Optional[List[AbxAntibioticType]]:
-        laboratory = await LaboratoryService().get_by_setup_name("felicity")
+        lab_id = get_current_lab_uid()
+        laboratory = await LaboratoryService().get(uid=lab_id)
         antibiotic_uids = await AbxAntibioticService().repository.table_query(
             table=laboratory_antibiotics,
             columns=["antibiotic_uid"],

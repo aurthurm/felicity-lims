@@ -7,7 +7,7 @@ from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.notification.entities import (
     ActivityFeed,
     ActivityStream,
-    Notification,
+    Notification, user_notification, department_notification, group_notification,
 )
 from felicity.apps.notification.enum import NotificationChannel, NotificationObject
 from felicity.apps.notification.repository import (
@@ -134,16 +134,38 @@ class NotificationService(
         super().__init__(NotificationRepository())
 
     async def notify(self, message: str, users, departments=None, groups=None) -> None:
-        n_in = NotificationCreate(message=message)
-        notification = await super().create(
-            n_in, related=["users", "departments", "groups"]
-        )
         if not isinstance(users, list):
             users = [users]
-        notification.users = users if users else []
-        notification.departments = departments if departments else []
-        notification.groups = groups if groups else []
-        notification = await self.save(notification)
+        n_in = NotificationCreate(message=message)
+        async with self.transaction() as session:
+            notification = await super().create(n_in, session=session, commit=True)
+            if users:
+                await self.table_insert(
+                    table=user_notification,
+                    mappings=[{
+                        "notification_uid": notification.uid,
+                        "user_uid": user.uid
+                    } for user in users],
+                    session=session
+                )
+            if departments:
+                await self.table_insert(
+                    table=department_notification,
+                    mappings=[{
+                        "notification_uid": notification.uid,
+                        "department_uid": department.uid
+                    } for department in departments],
+                    session=session
+                )
+            if groups:
+                await self.table_insert(
+                    table=group_notification,
+                    mappings=[{
+                        "notification_uid": notification.uid,
+                        "group_uid": group.uid
+                    } for group in groups],
+                    session=session
+                )
         await broadcast.publish(
             NotificationChannel.NOTIFICATIONS, json.dumps(marshaller(notification))
         )

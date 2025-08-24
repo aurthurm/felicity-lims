@@ -3,6 +3,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import AnalysisType, SampleTypeTyp
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 
@@ -15,6 +16,8 @@ class ReflexRuleType:
     reflex_actions: Optional[List["ReflexActionType"]] = None
     is_active: bool
     priority: int
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -46,6 +49,8 @@ class ReflexBrainAdditionType:
     reflex_brain_action_uid: str
     reflex_brain_action: Optional["ReflexBrainActionType"] = None
     count: int
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -56,6 +61,8 @@ class ReflexBrainConditionCriteriaType:
     reflex_brain_condition: Optional["ReflexBrainConditionType"] = None
     operator: str
     value: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -65,6 +72,8 @@ class ReflexBrainFinalType:
     reflex_brain_action_uid: str
     reflex_brain_action: Optional["ReflexBrainActionType"] = None
     value: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -75,6 +84,8 @@ class ReflexBrainConditionType:
     description: str | None
     criteria: list["ReflexBrainConditionCriteriaType"] | None
     priority: int
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -86,6 +97,8 @@ class ReflexBrainType:
     uid: str
     description: str
     priority: int
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -104,6 +117,8 @@ class ReflexBrainActionType:
     add_new: Optional[List[ReflexBrainAdditionType]] = None
     finalise: Optional[List[ReflexBrainFinalType]] = None
     priority: int
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -124,6 +139,8 @@ class ReflexActionType:
     reflex_rule_uid: str
     reflex_rule: Optional[ReflexRuleType] = None
     brains: Optional[List[ReflexBrainType]] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

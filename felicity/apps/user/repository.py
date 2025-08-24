@@ -1,5 +1,7 @@
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.user.entities import Group, Permission, User, UserPreference
+from felicity.apps.user.entities import laboratory_user
+from felicity.apps.user.entities import permission_groups
 
 
 class UserRepository(BaseRepository[User]):
@@ -8,7 +10,6 @@ class UserRepository(BaseRepository[User]):
 
     async def get_users_by_laboratory(self, laboratory_uid: str) -> list[User]:
         """Get all users assigned to a specific laboratory"""
-        from felicity.apps.user.entities import laboratory_user
         user_uids = await self.table_query(
             table=laboratory_user,
             columns=["user_uid"],
@@ -18,18 +19,17 @@ class UserRepository(BaseRepository[User]):
 
     async def get_laboratories_by_user(self, user_uid: str) -> list[str]:
         """Get all laboratory UIDs a user has access to"""
-        from felicity.apps.user.entities import laboratory_user
-        return await self.table_query(
+        xxx = await self.table_query(
             table=laboratory_user,
             columns=["laboratory_uid"],
             user_uid=user_uid
         )
+        print(f"all labs for user {user_uid} : {xxx}")
+        return xxx
 
     async def assign_user_to_laboratory(self, user_uid: str, laboratory_uid: str) -> None:
         """Assign a user to a laboratory"""
-        from felicity.apps.user.entities import laboratory_user
-        from felicity.database.session import async_session
-        
+
         # Check if assignment already exists
         existing = await self.table_query(
             table=laboratory_user,
@@ -37,9 +37,9 @@ class UserRepository(BaseRepository[User]):
             user_uid=user_uid,
             laboratory_uid=laboratory_uid
         )
-        
+
         if not existing:
-            async with async_session() as session:
+            async with self.async_session() as session:
                 await session.execute(
                     laboratory_user.insert().values(
                         user_uid=user_uid,
@@ -50,10 +50,8 @@ class UserRepository(BaseRepository[User]):
 
     async def remove_user_from_laboratory(self, user_uid: str, laboratory_uid: str) -> None:
         """Remove a user from a laboratory"""
-        from felicity.apps.user.entities import laboratory_user
-        from felicity.database.session import async_session
-        
-        async with async_session() as session:
+
+        async with self.async_session() as session:
             await session.execute(
                 laboratory_user.delete().where(
                     laboratory_user.c.user_uid == user_uid,
@@ -63,7 +61,7 @@ class UserRepository(BaseRepository[User]):
             await session.commit()
 
     async def search_users(
-        self, text: str, laboratory_uid: str = None, limit: int = 10
+            self, text: str, laboratory_uid: str = None, limit: int = 10
     ) -> list[User]:
         """Search users by text in name, email, or username"""
         filters = {
@@ -74,7 +72,7 @@ class UserRepository(BaseRepository[User]):
                 "user_name__ilike": f"%{text}%",
             }
         }
-        
+
         if laboratory_uid:
             # If laboratory filter is provided, get users for that lab
             lab_users = await self.get_users_by_laboratory(laboratory_uid)
@@ -83,7 +81,7 @@ class UserRepository(BaseRepository[User]):
                 filters["uid__in"] = user_uids
             else:
                 return []  # No users in this lab
-        
+
         return await self.get_all(**filters, limit__exact=limit)
 
     async def get_user_by_email_or_username(self, identifier: str) -> User | None:
@@ -144,8 +142,7 @@ class GroupRepository(BaseRepository[Group]):
 
     async def get_groups_with_permission(self, permission_uid: str, laboratory_uid: str = None) -> list[Group]:
         """Get all groups that have a specific permission"""
-        from felicity.apps.user.entities import permission_groups
-        
+
         if laboratory_uid:
             group_uids = await self.table_query(
                 table=permission_groups,
@@ -160,11 +157,11 @@ class GroupRepository(BaseRepository[Group]):
                 permission_uid=permission_uid,
                 laboratory_uid=None
             )
-        
+
         return await self.get_by_uids(group_uids) if group_uids else []
 
     async def search_groups(
-        self, text: str, laboratory_uid: str = None, limit: int = 10
+            self, text: str, laboratory_uid: str = None, limit: int = 10
     ) -> list[Group]:
         """Search groups by text in name or keyword"""
         filters = {
@@ -173,21 +170,19 @@ class GroupRepository(BaseRepository[Group]):
                 "keyword__ilike": f"%{text}%",
             }
         }
-        
+
         if laboratory_uid:
             filters["laboratory_uid__exact"] = laboratory_uid
         else:
             filters["laboratory_uid__isnull"] = True
-        
+
         return await self.get_all(**filters, limit__exact=limit)
 
     async def assign_permission_to_group(
-        self, group_uid: str, permission_uid: str, laboratory_uid: str = None
+            self, group_uid: str, permission_uid: str, laboratory_uid: str = None
     ) -> None:
         """Assign a permission to a group in a laboratory context"""
-        from felicity.apps.user.entities import permission_groups
-        from felicity.database.session import async_session
-        
+
         # Check if assignment already exists
         existing = await self.table_query(
             table=permission_groups,
@@ -196,9 +191,9 @@ class GroupRepository(BaseRepository[Group]):
             permission_uid=permission_uid,
             laboratory_uid=laboratory_uid
         )
-        
+
         if not existing:
-            async with async_session() as session:
+            async with self.async_session() as session:
                 await session.execute(
                     permission_groups.insert().values(
                         group_uid=group_uid,
@@ -209,23 +204,21 @@ class GroupRepository(BaseRepository[Group]):
                 await session.commit()
 
     async def remove_permission_from_group(
-        self, group_uid: str, permission_uid: str, laboratory_uid: str = None
+            self, group_uid: str, permission_uid: str, laboratory_uid: str = None
     ) -> None:
         """Remove a permission from a group in a laboratory context"""
-        from felicity.apps.user.entities import permission_groups
-        from felicity.database.session import async_session
-        
-        async with async_session() as session:
+
+        async with self.async_session() as session:
             stmt = permission_groups.delete().where(
                 permission_groups.c.group_uid == group_uid,
                 permission_groups.c.permission_uid == permission_uid
             )
-            
+
             if laboratory_uid:
                 stmt = stmt.where(permission_groups.c.laboratory_uid == laboratory_uid)
             else:
                 stmt = stmt.where(permission_groups.c.laboratory_uid.is_(None))
-                
+
             await session.execute(stmt)
             await session.commit()
 

@@ -41,13 +41,15 @@ export type AddUserMutationVariables = Exact<{
   lastName: Scalars['String']['input'];
   email: Scalars['String']['input'];
   groupUid?: InputMaybe<Scalars['String']['input']>;
+  activeLaboratoryUid?: InputMaybe<Scalars['String']['input']>;
+  laboratoryUids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   userName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   passwordc: Scalars['String']['input'];
 }>;
 
 
-export type AddUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, userName: string, isBlocked: boolean, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+export type AddUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, userName: string, isBlocked: boolean, activeLaboratoryUid?: string | null, laboratories: Array<string>, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
 
 export type EditUserMutationVariables = Exact<{
   userUid: Scalars['String']['input'];
@@ -56,6 +58,8 @@ export type EditUserMutationVariables = Exact<{
   userName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
+  activeLaboratoryUid?: InputMaybe<Scalars['String']['input']>;
+  laboratoryUids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   mobilePhone?: InputMaybe<Scalars['String']['input']>;
   isActive?: InputMaybe<Scalars['Boolean']['input']>;
   isBlocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -64,7 +68,15 @@ export type EditUserMutationVariables = Exact<{
 }>;
 
 
-export type EditUserMutation = { __typename?: 'Mutation', updateUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, userName: string, isBlocked: boolean, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+export type EditUserMutation = { __typename?: 'Mutation', updateUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, userName: string, isBlocked: boolean, activeLaboratoryUid?: string | null, laboratories: Array<string>, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type SwitchActiveLaboratoryMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  laboratoryUid: Scalars['String']['input'];
+}>;
+
+
+export type SwitchActiveLaboratoryMutation = { __typename?: 'Mutation', setUserActiveLaboratory: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', activeLaboratoryUid?: string | null, laboratories: Array<string> } };
 
 export type AddGroupMutationVariables = Exact<{
   payload: GroupInputType;
@@ -104,6 +116,29 @@ export type EditDepartmentMutationVariables = Exact<{
 
 export type EditDepartmentMutation = { __typename?: 'Mutation', updateDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
+export type EditOrganizationMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: OrganizationInputType;
+}>;
+
+
+export type EditOrganizationMutation = { __typename?: 'Mutation', updateOrganization: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OrganizationType', uid: string, name: string, tagLine?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } };
+
+export type EditOrganizationSettingMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: OrganizationSettingInputType;
+}>;
+
+
+export type EditOrganizationSettingMutation = { __typename?: 'Mutation', updateOrganizationSetting: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'OrganizationSettingType', uid: string, passwordLifetime?: number | null, inactivityLogOut?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } };
+
+export type AddLaboratoryMutationVariables = Exact<{
+  payload: LaboratoryCreateInputType;
+}>;
+
+
+export type AddLaboratoryMutation = { __typename?: 'Mutation', createLaboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
 export type EditLaboratoryMutationVariables = Exact<{
   uid: Scalars['String']['input'];
   payload: LaboratoryInputType;
@@ -123,12 +158,12 @@ export type EditLaboratorySettingMutation = { __typename?: 'Mutation', updateLab
 export type GetOrganizationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOrganizationQuery = { __typename?: 'Query', organization: { __typename?: 'OrganizationType', uid: string, name: string, tagLine?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'OrganizationSettingType', uid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } } };
+export type GetOrganizationQuery = { __typename?: 'Query', organization: { __typename?: 'OrganizationType', uid: string, name: string, tagLine?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'OrganizationSettingType', uid: string, passwordLifetime?: number | null, inactivityLogOut?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } } };
 
 export type GetLaboratoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLaboratoryQuery = { __typename?: 'Query', laboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } } | { __typename?: 'OperationError', error: string, suggestion?: string | null } };
+export type GetLaboratoryQuery = { __typename?: 'Query', laboratory: { __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings?: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } | null } };
 
 export type GetAllLaboratoriesQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -138,7 +173,7 @@ export type GetAllLaboratoriesQueryVariables = Exact<{
 }>;
 
 
-export type GetAllLaboratoriesQuery = { __typename?: 'Query', laboratoryAll: { __typename?: 'LaboratoryCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } }> | null } };
+export type GetAllLaboratoriesQuery = { __typename?: 'Query', laboratoryAll: { __typename?: 'LaboratoryCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'LaboratoryType', uid: string, name: string, tagLine?: string | null, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, banking?: string | null, logo?: string | null, qualityStatement?: string | null, settings?: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null, allowBilling?: boolean | null, allowAutoBilling?: boolean | null, currency?: string | null, paymentTermsDays?: number | null } | null }> | null } };
 
 export type UserAllQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -148,7 +183,7 @@ export type UserAllQueryVariables = Exact<{
 }>;
 
 
-export type UserAllQuery = { __typename?: 'Query', userAll: { __typename?: 'UserCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, userName: string, isBlocked: boolean, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null }> | null } };
+export type UserAllQuery = { __typename?: 'Query', userAll: { __typename?: 'UserCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, userName: string, isBlocked: boolean, activeLaboratoryUid?: string | null, laboratories: Array<string>, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null }> | null } };
 
 export type GroupsAndPermissionsQueryVariables = Exact<{ [key: string]: never; }>;
 

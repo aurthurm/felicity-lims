@@ -11,6 +11,7 @@ from felicity.api.gql.analysis.types.analysis import (
 )
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.instrument.types import InstrumentType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 
@@ -36,6 +37,8 @@ class WorkSheetTemplateType:
     instrument: InstrumentType | None = None
     sample_type_uid: str | None = None
     sample_type: Optional[SampleTypeTyp] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     created_at: str | None = None
@@ -73,6 +76,8 @@ class WorkSheetType:
     verified_by_uid: str | None = None
     verified_by: UserType | None = None
     date_verified: datetime | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     created_at: str | None = None

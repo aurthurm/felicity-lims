@@ -18,6 +18,7 @@ from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.setup.types.setup import OrganizationType, OrganizationSettingType
 from felicity.api.gql.types import OperationError
 from felicity.apps.setup import schemas
+from felicity.apps.setup.schemas import LaboratorySettingCreate
 from felicity.apps.setup.services import (
     CountryService,
     DepartmentService,
@@ -92,8 +93,7 @@ UnitResponse = strawberry.union(
 
 
 @strawberry.input
-class OrganisationInputType:
-    uid: str
+class OrganizationInputType:
     name: str | None = ""
     tag_line: str | None = ""
     email: str | None = None
@@ -112,18 +112,9 @@ class OrganisationInputType:
 
 
 @strawberry.input
-class OrganisationSettingInputType:
-    laboratory_uid: str
-    allow_self_verification: bool | None = False
-    allow_patient_registration: bool | None = True
-    allow_sample_registration: bool | None = True
-    allow_worksheet_creation: bool | None = True
-    default_route: str | None = None
+class OrganizationSettingInputType:
     password_lifetime: int | None = None
     inactivity_log_out: int | None = None
-    default_theme: str | None = None
-    auto_receive_samples: bool | None = True
-    sticker_copies: int | None = 2
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
     currency: str | None = "USD"
@@ -248,16 +239,16 @@ class UnitInputType:
 @strawberry.type
 class SetupMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_organisation(
-            self, info, payload: OrganisationInputType
+    async def update_organization(
+            self, info, uid: str, payload: OrganizationInputType
     ) -> OrganizationResponse:  # noqa
-        if not payload.uid:
+        if not uid:
             return OperationError(error="Organization UID is required")
 
-        organization = await OrganizationService().get(uid=payload.uid)
+        organization = await OrganizationService().get(uid=uid)
         if not organization:
             return OperationError(
-                error=f"Organization with uid {payload.uid} not found. Cannot update obj ..."
+                error=f"Organization with uid {uid} not found. Cannot update obj ..."
             )
 
         obj_data = organization.to_dict()
@@ -270,11 +261,11 @@ class SetupMutations:
 
         obj_in = schemas.OrganizationUpdate(**organization.to_dict())
         organisation = await OrganizationService().update(organization.uid, obj_in)
-        return OrganizationType(**organisation.marshal_simple())
+        return OrganizationType(**organisation.marshal_simple(exclude=["settings", "laboratories"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_organisation_setting(
-            self, info, uid: str, payload: OrganisationSettingInputType
+    async def update_organization_setting(
+            self, info, uid: str, payload: OrganizationSettingInputType
     ) -> OrganizationSettingResponse:  # noqa
         await auth_from_info(info)
 
@@ -315,7 +306,25 @@ class SetupMutations:
                 incoming[k] = v
 
             obj_in = schemas.LaboratoryCreate(**incoming)
-            laboratory = await LaboratoryService().create_laboratory(obj_in)
+            async with LaboratoryService().transaction() as session:
+                laboratory = await LaboratoryService().create(obj_in, session=session, commit=True)
+                org_settings = await OrganizationSettingService().get(
+                    organization_uid=payload.organization_uid,
+                    session=session
+                )
+                ls_in = LaboratorySettingCreate(
+                    laboratory_uid=laboratory.uid,
+                    allow_self_verification=False,
+                    allow_patient_registration=True,
+                    allow_sample_registration=True,
+                    allow_worksheet_creation=True,
+                    default_route="DASHBOARD",
+                    default_theme="LIGHT",
+                    auto_receive_samples=True,
+                    sticker_copies=2,
+                    **org_settings.marshal_simple()
+                )
+                await LaboratorySettingService().create(ls_in, session=session)
             return LaboratoryType(**laboratory.marshal_simple())
         except ValueError as e:
             return OperationError(error=str(e))

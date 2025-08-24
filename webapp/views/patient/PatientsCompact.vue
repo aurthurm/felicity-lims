@@ -170,7 +170,7 @@ onMounted(() => {
         :initial="{ opacity: 0, y: 100 }"
         :enter="{ opacity: 1, y: 0 }"
         :delay="400"
-        class="col-span-3 h-[calc(100vh-200px)] overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        class="col-span-3  overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       >
         <fel-loader 
           v-if="fetchingPatients"

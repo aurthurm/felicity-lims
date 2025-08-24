@@ -5,6 +5,7 @@ import strawberry  # noqa
 from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.analytics.types import ReportMetaType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import GroupType, UserType
@@ -34,6 +35,8 @@ class ActivityFeedType:
     uid: str
     name: str
     subscribers: list[UserType] | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -47,6 +50,8 @@ class ActivityStreamType:
     target_uid: str | None = None
     target: str | None = None
     viewers: list[UserType] | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -113,6 +118,8 @@ class NotificationType:
     users: UserType | None = None
     message: str
     viewers: UserType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -123,3 +130,5 @@ class ActivityProcessType:
     uid: str
     object_type: str
     status: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None

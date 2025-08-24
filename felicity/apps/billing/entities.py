@@ -12,7 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity, MaybeLabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, MaybeLabScopedEntity, BaseEntity
 from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
 from felicity.core.dtz import timenow_dt
 
@@ -113,8 +113,7 @@ class VoucherCustomer(LabScopedEntity):
 """
 test_bill_item = Table(
     "test_bill_item",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("test_bill_uid", ForeignKey("test_bill.uid"), primary_key=True),
     Column(
         "analysis_request_uid", ForeignKey("analysis_request.uid"), primary_key=True

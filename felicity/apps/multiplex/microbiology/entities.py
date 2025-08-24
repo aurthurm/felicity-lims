@@ -331,8 +331,7 @@ class AbxQCRange(BaseEntity):
 # Association table for panels and antibiotic
 panel_antibiotic = Table(
     'abx_panel_antibiotic',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('panel_uid', String, ForeignKey('abx_ast_panel.uid'), primary_key=True),
     Column('antibiotic_uid', String, ForeignKey('abx_antibiotic.uid'), primary_key=True)
 )
@@ -340,8 +339,7 @@ panel_antibiotic = Table(
 # Association table for panels and organisms
 panel_organism = Table(
     'abx_panel_organism',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('panel_uid', String, ForeignKey('abx_ast_panel.uid'), primary_key=True),
     Column('organism_uid', String, ForeignKey('abx_organism.uid'), primary_key=True)
 )

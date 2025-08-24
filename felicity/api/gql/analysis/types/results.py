@@ -53,6 +53,7 @@ class AnalysisResultType:
     updated_by: UserType | None = None
     updated_at: str | None = None
     metadata_snapshot: JSONScalar | None = None
+    laboratory_uid: str | None = None
 
     @strawberry.field
     async def worksheet_id(self, info) -> str | None:
@@ -174,6 +175,7 @@ class ResultMutationType:
     after: str
     mutation: str
     date: str | None = None
+    laboratory_uid: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     created_at: str | None = None

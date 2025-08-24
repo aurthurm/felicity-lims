@@ -7,13 +7,12 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Table,
-    Text
+    Table
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity, BaseMPTT
+from felicity.apps.abstract import LabScopedEntity, BaseMPTT, BaseEntity
 from felicity.utils.hipaa_fields import EncryptedPHI
 
 logging.basicConfig(level=logging.INFO)
@@ -24,8 +23,7 @@ logger = logging.getLogger(__name__)
 """
 result_verification = Table(
     "result_verification",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("result_uid", ForeignKey("analysis_result.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -91,13 +89,13 @@ class AnalysisResult(LabScopedEntity, BaseMPTT):
     @property
     def keyword(self) -> str:
         return self.analysis.keyword
-    
+
     @property
     def sms_metadata(self) -> dict:
         result = {
-           "result": self.result, 
-           "date_collected": self.date_collected
-        }   
+            "result": self.result,
+            "date_collected": self.date_collected
+        }
 
         if self.analysis and hasattr(self.analysis, 'sms_metadata'):
             try:
@@ -106,8 +104,9 @@ class AnalysisResult(LabScopedEntity, BaseMPTT):
                     result.update(an_metadata)
             except Exception:
                 pass
-                
+
         return result
+
 
 class ResultMutation(LabScopedEntity):
     """Result Mutations tracker"""

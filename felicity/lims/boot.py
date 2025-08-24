@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator
 
 import sentry_sdk
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -20,7 +20,6 @@ from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_P
 
 from felicity.api.deps import get_gql_context
 from felicity.api.gql.schema import schema
-from felicity.lims.middleware import TenantContextMiddleware
 from felicity.api.rest.api_v1 import api
 from felicity.apps.common.channel import broadcast
 from felicity.apps.events import observe_events
@@ -28,6 +27,8 @@ from felicity.apps.iol.redis.client import create_redis_client
 from felicity.apps.job.sched import felicity_workforce_init
 from felicity.core.config import settings
 from felicity.database.session import async_engine
+from felicity.lims.gql_router import FelGraphQLRouter
+from felicity.lims.middleware import TenantContextMiddleware
 from felicity.lims.middleware.appactivity import APIActivityLogMiddleware
 from felicity.lims.middleware.ratelimit import RateLimitMiddleware
 from felicity.lims.seeds import initialize_felicity
@@ -100,7 +101,7 @@ def register_graphql(app: FastAPI) -> None:
     if settings.RUN_OPEN_TRACING:
         schema.extensions = list(schema.extensions) + [OpenTelemetryExtension]
 
-    graphql_app: GraphQLRouter = GraphQLRouter(
+    graphql_app: GraphQLRouter = FelGraphQLRouter(
         schema=schema,
         graphiql=True,
         context_getter=get_gql_context,

@@ -18,6 +18,7 @@ load_dotenv(dotenv_path=ENV_FILE)
 
 
 class Settings(BaseSettings):
+    DEBUG: bool = True
     BASE_DIR: str = BASE_DIR
     SEEDS_DIR: str = os.path.abspath(os.path.join(BASE_DIR, "lims", "seeds", "data"))
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")

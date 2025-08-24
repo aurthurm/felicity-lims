@@ -1,15 +1,17 @@
 import { defineStore } from 'pinia';
 
 import  useApiUtil  from '@/composables/api_util';
-import { GetAllDepartmentsDocument, GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables, GetLaboratoryDocument, GetLaboratoryQuery, GetLaboratoryQueryVariables, GetLaboratorySettingDocument, GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables } from '@/graphql/operations/_queries';
+import { GetAllDepartmentsDocument, GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables, GetAllLaboratoriesDocument, GetAllLaboratoriesQuery, GetAllLaboratoriesQueryVariables, GetLaboratoryDocument, GetLaboratoryQuery, GetLaboratoryQueryVariables, GetOrganizationQueryVariables, GetOrganizationQuery, GetOrganizationDocument } from '@/graphql/operations/_queries';
 import { GetAllInstrumentsDocument, GetAllInstrumentsQuery, GetAllInstrumentTypesDocument, GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables, GetAllLaboratoryInstrumentsDocument, GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables, GetAllManufacturersDocument, GetAllManufacturersQuery, GetAllManufacturersQueryVariables, GetAllMethodsDocument, GetAllMethodsQuery, GetAllMethodsQueryVariables, GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllUnitsDocument, GetAllUnitsQuery, GetAllUnitsQueryVariables } from '@/graphql/operations/instrument.queries';
 import { GetAllSampleTypesQueryVariables } from '@/graphql/operations/analyses.queries';
-import { DepartmentType, InstrumentType, LaboratoryInstrumentType, LaboratorySettingType, ManufacturerType, MethodType, SupplierType, UnitType, LaboratoryType, InstrumentTypeType } from '@/types/gql';
+import { DepartmentType, InstrumentType, LaboratoryInstrumentType, LaboratorySettingType, ManufacturerType, MethodType, SupplierType, UnitType, LaboratoryType, InstrumentTypeType, LaboratoryCursorPage, OrganizationType, OrganizationSettingType } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
 
 type SetupStateType = {
+    organization?: OrganizationType;
     laboratory?: LaboratoryType;
+    laboratories: LaboratoryType[];
     laboratorySetting?: LaboratorySettingType;
     departments: DepartmentType[];
     fetchingDepartments: boolean;
@@ -30,6 +32,9 @@ type SetupStateType = {
 
 export const useSetupStore = defineStore('setup', {
     state: (): SetupStateType => ({
+        organization: undefined,
+        // Initialize state with empty arrays and undefined values
+        laboratories: [],
         laboratory: undefined,
         laboratorySetting: undefined,
         departments: [],
@@ -49,6 +54,8 @@ export const useSetupStore = defineStore('setup', {
         fetchingUnits: false,
     }),
     getters: {
+        getOrganization: (state): OrganizationType | undefined => state.organization,
+        getLaboratories: (state): LaboratoryType[] => state.laboratories,
         getLaboratory: (state): LaboratoryType | undefined => state.laboratory,
         getLaboratorySetting: (state): LaboratorySettingType | undefined => state.laboratorySetting,
         getDepartments: (state): DepartmentType[] => state.departments,
@@ -100,22 +107,46 @@ export const useSetupStore = defineStore('setup', {
             }
         },
 
-        // LABORATORY
-        async fetchLaboratories(): Promise<void> {
+        // ORGANISATION && LABORATORY
+        async fetchOrganization(): Promise<void> {
             try {
-                const result = await withClientQuery<GetAllLaboratories, GetLaboratoryQueryVariables>(
-                    GetLaboratoryDocument, 
+                const result = await withClientQuery<GetOrganizationQuery, GetOrganizationQueryVariables>(
+                    GetOrganizationDocument, 
                     {}, 
-                    'laboratory'
+                    'organization'
                 );
                 
                 if (result && typeof result === 'object') {
-                    this.laboratory = result as LaboratoryType;
+                    this.organization = result as OrganizationType;
                 } else {
                     console.error('Invalid laboratory data received:', result);
                 }
             } catch (error) {
                 console.error('Error fetching laboratory:', error);
+            }
+        },
+        updateOrganization(payload: OrganizationType): void {
+            if (!payload?.uid) {
+                console.error('Invalid laboratory payload:', payload);
+                return;
+            }
+            this.organization = payload;
+        },
+        async fetchLaboratories(): Promise<void> {
+            try {
+                const result: LaboratoryCursorPage = await withClientQuery<GetAllLaboratoriesQuery, GetAllLaboratoriesQueryVariables>(
+                    GetAllLaboratoriesDocument, 
+                    {}, 
+                    'laboratoryAll'
+                ) as LaboratoryCursorPage;
+                
+                if (result?.items && result && Array.isArray(result?.items)) {
+                    this.laboratories = result?.items as LaboratoryType[];
+                } else {
+                    console.error('Invalid laboratories data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching laboratories:', error);
             }
         },
         async fetchLaboratory(): Promise<void> {
@@ -135,38 +166,45 @@ export const useSetupStore = defineStore('setup', {
                 console.error('Error fetching laboratory:', error);
             }
         },
-        updateLaboratory(payload: LaboratoryType): void {
+        addLaboratory(payload: LaboratoryType): void {
             if (!payload?.uid) {
                 console.error('Invalid laboratory payload:', payload);
                 return;
             }
-            this.laboratory = payload;
+            this.laboratories.unshift(payload);
+        },
+        updateLaboratory(payload: LaboratoryType, listing=false): void {
+            if (!payload?.uid) {
+                console.error('Invalid laboratory payload:', payload);
+                return;
+            }
+            if(listing) {
+                const index = this.laboratories.findIndex(item => item.uid === payload.uid);
+                if (index > -1) {
+                    this.laboratories[index] = {...this.laboratories[index], ...payload} as LaboratoryType;
+                }
+            } else {
+                this.laboratory = payload;
+
+            }
+        },
+
+        // ORGANIZATION SETTING
+        updateOrganizationSetting(payload: OrganizationSettingType): void {
+            if (!payload?.uid) {
+                console.error('Invalid organization setting payload:', payload);
+                return;
+            }
+            this.organization = { ...this.organization, settings: payload } as OrganizationType;
         },
 
         // LABORATORY SETTING
-        async fetchLaboratorySetting(): Promise<void> {
-            try {
-                const result = await withClientQuery<GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables>(
-                    GetLaboratorySettingDocument, 
-                    {}, 
-                    'laboratorySetting'
-                );
-                
-                if (result && typeof result === 'object') {
-                    this.laboratorySetting = result as LaboratorySettingType;
-                } else {
-                    console.error('Invalid laboratory setting data received:', result);
-                }
-            } catch (error) {
-                console.error('Error fetching laboratory setting:', error);
-            }
-        },
         updateLaboratorySetting(payload: LaboratorySettingType): void {
             if (!payload?.uid) {
                 console.error('Invalid laboratory setting payload:', payload);
                 return;
             }
-            this.laboratorySetting = payload;
+            this.laboratory = { ...this.laboratory, settings: payload } as LaboratoryType;
         },
 
         // SUPPLIERS

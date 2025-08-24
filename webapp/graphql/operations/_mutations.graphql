@@ -130,8 +130,28 @@ mutation TokenRefresh($refreshToken: String!) {
     }
 }
 
-mutation AddUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
-    createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid, userName: $userName, password: $password, passwordc: $passwordc) {
+mutation AddUser(
+    $firstName: String!, 
+    $lastName: String!, 
+    $email: String!, 
+    $groupUid: String, 
+    $activeLaboratoryUid: String
+    $laboratoryUids: [String!]
+    $userName: String!, 
+    $password: String!, 
+    $passwordc: String!
+    ) {
+    createUser(
+        firstName: $firstName, 
+        lastName: $lastName, 
+        email: $email, 
+        groupUid: $groupUid, 
+        activeLaboratoryUid: $activeLaboratoryUid
+        laboratoryUids: $laboratoryUids
+        userName: $userName, 
+        password: $password, 
+        passwordc: $passwordc
+        ) {
         ... on UserType {
             uid
             firstName
@@ -142,6 +162,8 @@ mutation AddUser($firstName: String!, $lastName: String!, $email: String!, $grou
             mobilePhone
             userName
             isBlocked
+            activeLaboratoryUid
+            laboratories
             groups {
                 permissions {
                     uid
@@ -169,6 +191,8 @@ mutation EditUser(
     $userName: String
     $email: String
     $groupUid: String
+    $activeLaboratoryUid: String
+    $laboratoryUids: [String!]
     $mobilePhone: String
     $isActive: Boolean
     $isBlocked: Boolean
@@ -182,6 +206,8 @@ mutation EditUser(
         userName: $userName
         email: $email
         groupUid: $groupUid
+        activeLaboratoryUid: $activeLaboratoryUid
+        laboratoryUids: $laboratoryUids
         mobilePhone: $mobilePhone
         isActive: $isActive
         isBlocked: $isBlocked
@@ -197,6 +223,8 @@ mutation EditUser(
             mobilePhone
             userName
             isBlocked
+            activeLaboratoryUid
+            laboratories
             groups {
                 permissions {
                     uid
@@ -208,6 +236,20 @@ mutation EditUser(
                 keyword
                 pages
             }
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation SwitchActiveLaboratory($userUid: String!, $laboratoryUid: String!) {
+    setUserActiveLaboratory(userUid: $userUid, laboratoryUid: $laboratoryUid) {
+        ... on UserType {
+            activeLaboratoryUid
+            laboratories
         }
         ... on OperationError {
             __typename
@@ -311,6 +353,73 @@ mutation EditDepartment($uid: String!, $payload: DepartmentInputType!) {
         ... on DepartmentType {
             uid
             name
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+
+mutation EditOrganization($uid: String!, $payload: OrganizationInputType!) {
+    updateOrganization(uid: $uid, payload: $payload) {
+        ... on OrganizationType {
+            uid
+            name
+            tagLine
+            email
+            emailCc
+            mobilePhone
+            businessPhone
+            address
+            banking
+            logo
+            qualityStatement
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditOrganizationSetting($uid: String!, $payload: OrganizationSettingInputType!) {
+    updateOrganizationSetting(uid: $uid, payload: $payload) {
+        ... on OrganizationSettingType {
+            uid
+            passwordLifetime
+            inactivityLogOut
+            allowBilling
+            allowAutoBilling
+            currency
+            paymentTermsDays
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation AddLaboratory($payload: LaboratoryCreateInputType!) {
+    createLaboratory(payload: $payload) {
+        ... on LaboratoryType {
+            uid
+            name
+            tagLine
+            labManagerUid
+            email
+            emailCc
+            mobilePhone
+            businessPhone
+            address
+            banking
+            logo
+            qualityStatement
         }
         ... on OperationError {
             __typename

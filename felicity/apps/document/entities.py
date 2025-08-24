@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey, Table, Text, Enum, Integer
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract.entity import LabScopedEntity
+from felicity.apps.abstract.entity import LabScopedEntity, BaseEntity
 from felicity.apps.document.enum import DocumentState
 from felicity.core.config import settings
 
@@ -20,32 +20,28 @@ class DocumentTag(LabScopedEntity):
 
 document_tagged = Table(
     "document_tagged",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("document_tag_uid", ForeignKey('document_tag.uid'), primary_key=True),
 )
 
 document_author = Table(
     "document_author",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("user_uid", ForeignKey('user.uid'), primary_key=True),
 )
 
 document_reader = Table(
     "document_reader",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("user_uid", ForeignKey('user.uid'), primary_key=True),
 )
 
 document_relation = Table(
     "document_relation",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("source_document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("target_document_uid", ForeignKey('document.uid'), primary_key=True),
     Column("relation_type", String)  # "references", "supersedes", "complements", etc.

@@ -12,6 +12,7 @@ from felicity.apps.multiplex.microbiology.schemas import AbxGuidelineCreate, Abx
 from felicity.apps.multiplex.microbiology.services import AbxAntibioticGuidelineService, AbxGuidelineService, \
     AbxAntibioticService
 from felicity.apps.setup.services import LaboratoryService
+from felicity.core.tenant_context import get_current_lab_uid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -165,7 +166,8 @@ async def update_abx_antibiotic(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def use_abx_antibiotic(info, uid: str) -> AbxAntibioticResponse:
-    laboratory = await LaboratoryService().get_by_setup_name("felicity")
+    lab_uid = get_current_lab_uid()
+    laboratory = await LaboratoryService().get(uid=lab_uid)
     exists = await AbxAntibioticService().repository.table_query(
         table=laboratory_antibiotics,
         columns=["antibiotic_uid"],
@@ -186,7 +188,8 @@ async def use_abx_antibiotic(info, uid: str) -> AbxAntibioticResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def discard_abx_antibiotic(info, uid: str) -> DeletedItem:
-    laboratory = await LaboratoryService().get_by_setup_name("felicity")
+    lab_uid = get_current_lab_uid()
+    laboratory = await LaboratoryService().get(uid=lab_uid)
     await AbxAntibioticService().repository.table_delete(
         table=laboratory_antibiotics,
         antibiotic_uid=uid,

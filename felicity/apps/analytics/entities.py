@@ -10,7 +10,6 @@ Many to Many Link between ReportMeta and Analysis
 analysis_reports = Table(
     "analysis_reports",
     LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("report_uid", ForeignKey("report_meta.uid"), primary_key=True),
 )

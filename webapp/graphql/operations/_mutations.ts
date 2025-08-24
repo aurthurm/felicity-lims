@@ -135,6 +135,8 @@ export type AddUserMutationVariables = Types.Exact<{
   lastName: Types.Scalars['String']['input'];
   email: Types.Scalars['String']['input'];
   groupUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  activeLaboratoryUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  laboratoryUids?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
   userName: Types.Scalars['String']['input'];
   password: Types.Scalars['String']['input'];
   passwordc: Types.Scalars['String']['input'];
@@ -148,7 +150,7 @@ export type AddUserMutation = (
     & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) | (
     { __typename?: 'UserType' }
-    & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'email' | 'isActive' | 'isSuperuser' | 'mobilePhone' | 'userName' | 'isBlocked'>
+    & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'email' | 'isActive' | 'isSuperuser' | 'mobilePhone' | 'userName' | 'isBlocked' | 'activeLaboratoryUid' | 'laboratories'>
     & { groups?: Types.Maybe<Array<(
       { __typename?: 'GroupType' }
       & Pick<Types.GroupType, 'uid' | 'name' | 'keyword' | 'pages'>
@@ -167,6 +169,8 @@ export type EditUserMutationVariables = Types.Exact<{
   userName?: Types.InputMaybe<Types.Scalars['String']['input']>;
   email?: Types.InputMaybe<Types.Scalars['String']['input']>;
   groupUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  activeLaboratoryUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  laboratoryUids?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
   mobilePhone?: Types.InputMaybe<Types.Scalars['String']['input']>;
   isActive?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
   isBlocked?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
@@ -182,7 +186,7 @@ export type EditUserMutation = (
     & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) | (
     { __typename?: 'UserType' }
-    & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'email' | 'isActive' | 'isSuperuser' | 'mobilePhone' | 'userName' | 'isBlocked'>
+    & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'email' | 'isActive' | 'isSuperuser' | 'mobilePhone' | 'userName' | 'isBlocked' | 'activeLaboratoryUid' | 'laboratories'>
     & { groups?: Types.Maybe<Array<(
       { __typename?: 'GroupType' }
       & Pick<Types.GroupType, 'uid' | 'name' | 'keyword' | 'pages'>
@@ -191,6 +195,23 @@ export type EditUserMutation = (
         & Pick<Types.PermissionType, 'uid' | 'action' | 'target'>
       )>> }
     )>> }
+  ) }
+);
+
+export type SwitchActiveLaboratoryMutationVariables = Types.Exact<{
+  userUid: Types.Scalars['String']['input'];
+  laboratoryUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type SwitchActiveLaboratoryMutation = (
+  { __typename?: 'Mutation' }
+  & { setUserActiveLaboratory: (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) | (
+    { __typename?: 'UserType' }
+    & Pick<Types.UserType, 'activeLaboratoryUid' | 'laboratories'>
   ) }
 );
 
@@ -289,6 +310,56 @@ export type EditDepartmentMutation = (
   & { updateDepartment: (
     { __typename?: 'DepartmentType' }
     & Pick<Types.DepartmentType, 'uid' | 'name'>
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
+export type EditOrganizationMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  payload: Types.OrganizationInputType;
+}>;
+
+
+export type EditOrganizationMutation = (
+  { __typename?: 'Mutation' }
+  & { updateOrganization: (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) | (
+    { __typename?: 'OrganizationType' }
+    & Pick<Types.OrganizationType, 'uid' | 'name' | 'tagLine' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
+  ) }
+);
+
+export type EditOrganizationSettingMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  payload: Types.OrganizationSettingInputType;
+}>;
+
+
+export type EditOrganizationSettingMutation = (
+  { __typename?: 'Mutation' }
+  & { updateOrganizationSetting: (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) | (
+    { __typename?: 'OrganizationSettingType' }
+    & Pick<Types.OrganizationSettingType, 'uid' | 'passwordLifetime' | 'inactivityLogOut' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+  ) }
+);
+
+export type AddLaboratoryMutationVariables = Types.Exact<{
+  payload: Types.LaboratoryCreateInputType;
+}>;
+
+
+export type AddLaboratoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createLaboratory: (
+    { __typename?: 'LaboratoryType' }
+    & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
   ) | (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
@@ -488,12 +559,14 @@ export function useTokenRefreshMutation() {
   return Urql.useMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(TokenRefreshDocument);
 };
 export const AddUserDocument = gql`
-    mutation AddUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
+    mutation AddUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $activeLaboratoryUid: String, $laboratoryUids: [String!], $userName: String!, $password: String!, $passwordc: String!) {
   createUser(
     firstName: $firstName
     lastName: $lastName
     email: $email
     groupUid: $groupUid
+    activeLaboratoryUid: $activeLaboratoryUid
+    laboratoryUids: $laboratoryUids
     userName: $userName
     password: $password
     passwordc: $passwordc
@@ -508,6 +581,8 @@ export const AddUserDocument = gql`
       mobilePhone
       userName
       isBlocked
+      activeLaboratoryUid
+      laboratories
       groups {
         permissions {
           uid
@@ -533,7 +608,7 @@ export function useAddUserMutation() {
   return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
 };
 export const EditUserDocument = gql`
-    mutation EditUser($userUid: String!, $firstName: String!, $lastName: String, $userName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean, $isBlocked: Boolean, $password: String, $passwordc: String) {
+    mutation EditUser($userUid: String!, $firstName: String!, $lastName: String, $userName: String, $email: String, $groupUid: String, $activeLaboratoryUid: String, $laboratoryUids: [String!], $mobilePhone: String, $isActive: Boolean, $isBlocked: Boolean, $password: String, $passwordc: String) {
   updateUser(
     userUid: $userUid
     firstName: $firstName
@@ -541,6 +616,8 @@ export const EditUserDocument = gql`
     userName: $userName
     email: $email
     groupUid: $groupUid
+    activeLaboratoryUid: $activeLaboratoryUid
+    laboratoryUids: $laboratoryUids
     mobilePhone: $mobilePhone
     isActive: $isActive
     isBlocked: $isBlocked
@@ -557,6 +634,8 @@ export const EditUserDocument = gql`
       mobilePhone
       userName
       isBlocked
+      activeLaboratoryUid
+      laboratories
       groups {
         permissions {
           uid
@@ -580,6 +659,25 @@ export const EditUserDocument = gql`
 
 export function useEditUserMutation() {
   return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
+};
+export const SwitchActiveLaboratoryDocument = gql`
+    mutation SwitchActiveLaboratory($userUid: String!, $laboratoryUid: String!) {
+  setUserActiveLaboratory(userUid: $userUid, laboratoryUid: $laboratoryUid) {
+    ... on UserType {
+      activeLaboratoryUid
+      laboratories
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useSwitchActiveLaboratoryMutation() {
+  return Urql.useMutation<SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables>(SwitchActiveLaboratoryDocument);
 };
 export const AddGroupDocument = gql`
     mutation AddGroup($payload: GroupInputType!) {
@@ -708,6 +806,87 @@ export const EditDepartmentDocument = gql`
 
 export function useEditDepartmentMutation() {
   return Urql.useMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument);
+};
+export const EditOrganizationDocument = gql`
+    mutation EditOrganization($uid: String!, $payload: OrganizationInputType!) {
+  updateOrganization(uid: $uid, payload: $payload) {
+    ... on OrganizationType {
+      uid
+      name
+      tagLine
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      banking
+      logo
+      qualityStatement
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditOrganizationMutation() {
+  return Urql.useMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument);
+};
+export const EditOrganizationSettingDocument = gql`
+    mutation EditOrganizationSetting($uid: String!, $payload: OrganizationSettingInputType!) {
+  updateOrganizationSetting(uid: $uid, payload: $payload) {
+    ... on OrganizationSettingType {
+      uid
+      passwordLifetime
+      inactivityLogOut
+      allowBilling
+      allowAutoBilling
+      currency
+      paymentTermsDays
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditOrganizationSettingMutation() {
+  return Urql.useMutation<EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables>(EditOrganizationSettingDocument);
+};
+export const AddLaboratoryDocument = gql`
+    mutation AddLaboratory($payload: LaboratoryCreateInputType!) {
+  createLaboratory(payload: $payload) {
+    ... on LaboratoryType {
+      uid
+      name
+      tagLine
+      labManagerUid
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      banking
+      logo
+      qualityStatement
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddLaboratoryMutation() {
+  return Urql.useMutation<AddLaboratoryMutation, AddLaboratoryMutationVariables>(AddLaboratoryDocument);
 };
 export const EditLaboratoryDocument = gql`
     mutation EditLaboratory($uid: String!, $payload: LaboratoryInputType!) {

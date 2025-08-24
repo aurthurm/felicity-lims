@@ -3321,10 +3321,12 @@ export type LaboratoryType = {
   banking?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;
   code?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<CountryType>;
   countryUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  district?: Maybe<DistrictType>;
   districtUid?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
@@ -3333,18 +3335,18 @@ export type LaboratoryType = {
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  organization?: Maybe<OrganizationType>;
   organizationUid?: Maybe<Scalars['String']['output']>;
+  province?: Maybe<ProvinceType>;
   provinceUid?: Maybe<Scalars['String']['output']>;
   qualityStatement?: Maybe<Scalars['String']['output']>;
-  settings: LaboratorySettingType;
+  settings?: Maybe<LaboratorySettingType>;
   tagLine?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
-
-export type LaboratoryTypeOperationError = LaboratoryType | OperationError;
 
 export type LaggardCounts = {
   __typename?: 'LaggardCounts';
@@ -3721,8 +3723,8 @@ export type Mutation = {
   updateManufacturer: ManufacturerResponse;
   updateMethod: MethodResponse;
   updateNotice: NoticeResponse;
-  updateOrganisation: OrganizationResponse;
-  updateOrganisationSetting: OrganizationSettingResponse;
+  updateOrganization: OrganizationResponse;
+  updateOrganizationSetting: OrganizationSettingResponse;
   updatePatient: PatientResponse;
   updateProfile: AnalysisProfileResponse;
   updateProfileDiscount: ProfileDiscountResponse;
@@ -4337,9 +4339,11 @@ export type MutationCreateUnitArgs = {
 
 
 export type MutationCreateUserArgs = {
+  activeLaboratoryUid?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   groupUid?: InputMaybe<Scalars['String']['input']>;
+  laboratoryUids?: InputMaybe<Array<Scalars['String']['input']>>;
   lastName: Scalars['String']['input'];
   openReg?: InputMaybe<Scalars['Boolean']['input']>;
   password: Scalars['String']['input'];
@@ -5069,13 +5073,14 @@ export type MutationUpdateNoticeArgs = {
 };
 
 
-export type MutationUpdateOrganisationArgs = {
-  payload: OrganisationInputType;
+export type MutationUpdateOrganizationArgs = {
+  payload: OrganizationInputType;
+  uid: Scalars['String']['input'];
 };
 
 
-export type MutationUpdateOrganisationSettingArgs = {
-  payload: OrganisationSettingInputType;
+export type MutationUpdateOrganizationSettingArgs = {
+  payload: OrganizationSettingInputType;
   uid: Scalars['String']['input'];
 };
 
@@ -5255,11 +5260,13 @@ export type MutationUpdateUnitArgs = {
 
 
 export type MutationUpdateUserArgs = {
+  activeLaboratoryUid?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
   isActive?: InputMaybe<Scalars['Boolean']['input']>;
   isBlocked?: InputMaybe<Scalars['Boolean']['input']>;
+  laboratoryUids?: InputMaybe<Array<Scalars['String']['input']>>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   mobilePhone?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
@@ -5414,7 +5421,7 @@ export type OperationSuccess = {
   message: Scalars['String']['output'];
 };
 
-export type OrganisationInputType = {
+export type OrganizationInputType = {
   address?: InputMaybe<Scalars['String']['input']>;
   banking?: InputMaybe<Scalars['String']['input']>;
   businessPhone?: InputMaybe<Scalars['String']['input']>;
@@ -5430,28 +5437,18 @@ export type OrganisationInputType = {
   provinceUid?: InputMaybe<Scalars['String']['input']>;
   qualityStatement?: InputMaybe<Scalars['String']['input']>;
   tagLine?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type OrganisationSettingInputType = {
-  allowAutoBilling?: InputMaybe<Scalars['Boolean']['input']>;
-  allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
-  allowPatientRegistration?: InputMaybe<Scalars['Boolean']['input']>;
-  allowSampleRegistration?: InputMaybe<Scalars['Boolean']['input']>;
-  allowSelfVerification?: InputMaybe<Scalars['Boolean']['input']>;
-  allowWorksheetCreation?: InputMaybe<Scalars['Boolean']['input']>;
-  autoReceiveSamples?: InputMaybe<Scalars['Boolean']['input']>;
-  currency?: InputMaybe<Scalars['String']['input']>;
-  defaultRoute?: InputMaybe<Scalars['String']['input']>;
-  defaultTheme?: InputMaybe<Scalars['String']['input']>;
-  inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
-  laboratoryUid: Scalars['String']['input'];
-  passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
-  paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
-  stickerCopies?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type OrganizationResponse = OperationError | OrganizationType;
+
+export type OrganizationSettingInputType = {
+  allowAutoBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
+  passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
+  paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+};
 
 export type OrganizationSettingResponse = OperationError | OrganizationSettingType;
 
@@ -5459,22 +5456,15 @@ export type OrganizationSettingType = {
   __typename?: 'OrganizationSettingType';
   allowAutoBilling?: Maybe<Scalars['Boolean']['output']>;
   allowBilling?: Maybe<Scalars['Boolean']['output']>;
-  allowPatientRegistration?: Maybe<Scalars['Boolean']['output']>;
-  allowSampleRegistration?: Maybe<Scalars['Boolean']['output']>;
-  allowSelfVerification?: Maybe<Scalars['Boolean']['output']>;
-  allowWorksheetCreation?: Maybe<Scalars['Boolean']['output']>;
-  autoReceiveSamples?: Maybe<Scalars['Boolean']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   currency?: Maybe<Scalars['String']['output']>;
-  defaultRoute?: Maybe<Scalars['String']['output']>;
-  defaultTatMinutes?: Maybe<Scalars['Int']['output']>;
-  defaultTheme?: Maybe<Scalars['String']['output']>;
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
+  organization?: Maybe<OrganizationType>;
+  organizationUid?: Maybe<Scalars['String']['output']>;
   passwordLifetime?: Maybe<Scalars['Int']['output']>;
   paymentTermsDays?: Maybe<Scalars['Int']['output']>;
-  stickerCopies?: Maybe<Scalars['Int']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -5487,21 +5477,25 @@ export type OrganizationType = {
   banking?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;
   code?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<CountryType>;
   countryUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  district?: Maybe<DistrictType>;
   districtUid?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  province?: Maybe<ProvinceType>;
   provinceUid?: Maybe<Scalars['String']['output']>;
   qualityStatement?: Maybe<Scalars['String']['output']>;
   settings: OrganizationSettingType;
   setupName: Scalars['String']['output'];
   tagLine?: Maybe<Scalars['String']['output']>;
+  timezone?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -6127,7 +6121,7 @@ export type Query = {
   instrumentTypeAll: InstrumentTypeCursorPage;
   instrumentTypeByUid: InstrumentTypeType;
   laboratoriesByOrganization: Array<LaboratoryType>;
-  laboratory: LaboratoryTypeOperationError;
+  laboratory: LaboratoryType;
   laboratoryAll: LaboratoryCursorPage;
   laboratoryByUid: LaboratoryType;
   laboratoryInstrumentAll: LaboratoryInstrumentCursorPage;
@@ -9246,6 +9240,7 @@ export type UserType = {
   isActive: Scalars['Boolean']['output'];
   isBlocked: Scalars['Boolean']['output'];
   isSuperuser: Scalars['Boolean']['output'];
+  laboratories: Array<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   loginRetry: Scalars['Int']['output'];
   mobilePhone?: Maybe<Scalars['String']['output']>;

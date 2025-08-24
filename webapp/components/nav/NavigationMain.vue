@@ -6,8 +6,11 @@ import {useRouter} from "vue-router";
 import useApiUtil from "@/composables/api_util";
 import userPreferenceComposable from "@/composables/preferences";
 import * as guards from "@/guards";
+import { VITE_USE_MEGA_MENU } from '@/conf'
 import { useFullscreen } from "@vueuse/core";
 import { LaboratoryType } from "@/types/gql";
+import { SwitchActiveLaboratoryDocument } from "@/graphql/operations/_mutations";
+import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables } from "@/types/gqlops";
 
 // Lazily load components for better performance
 const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
@@ -32,6 +35,9 @@ const authStore = useAuthStore();
 const activeLaboratory = computed<LaboratoryType | undefined>(
   () => authStore.auth?.activeLaboratory
 );
+const userLaboratories = computed(
+  () => authStore.auth?.laboratories
+);
 const userFullName = computed(() => {
   const firstName = authStore.auth?.user?.firstName || '';
   const lastName = authStore.auth?.user?.lastName || '';
@@ -39,7 +45,7 @@ const userFullName = computed(() => {
 });
 
 // Error handling
-const {errors, clearErrors} = useApiUtil();
+const {errors, clearErrors, withClientMutation} = useApiUtil();
 const showErrors = ref(false);
 
 // Notifications management
@@ -155,6 +161,27 @@ const handleKeyDown = (event: KeyboardEvent) => {
 onMounted(() => {
   document.addEventListener('keydown', handleKeyDown);
 });
+
+const showModal = ref(false);
+const targetLaboratoryUid = ref<string | null>(null);
+const switching = ref(false);
+const switchLabNow = () => {
+  if(!targetLaboratoryUid.value) {
+    alert("Please select a laboratory to switch to.");
+    return;
+  }
+  switching.value = true;
+  setTimeout(async () => {
+    await withClientMutation<SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables>(
+          SwitchActiveLaboratoryDocument, 
+          {userUid: authStore.auth?.user?.uid, laboratoryUid: targetLaboratoryUid.value}, 
+          'setUserActiveLaboratory'
+    ).then(_ => authStore.logout()).catch(error => console.error).finally(() => {
+      showModal.value = false;
+      switching.value = false;
+    });
+  }, 3000);
+};
 </script>
 
 <template>
@@ -174,16 +201,16 @@ onMounted(() => {
             class="flex items-center md:w-auto text-primary-foreground/80 hover:text-primary-foreground transition-colors"
             aria-label="Felicity LIMS Home"
         >
-          <Logo/>
-          <h1 class="text-left text-2xl font-medium mx-2">
+          <Logo />
+          <h1 class="text-left text-2xl font-medium ml-2">
             {{ activeLaboratory?.name ?? "Felicity LIMS" }}
           </h1>
         </router-link>
 
-        <span class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
+       <span v-if="VITE_USE_MEGA_MENU" class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
 
         <!-- Main menu dropdown trigger -->
-        <button
+        <button v-if="VITE_USE_MEGA_MENU" 
             @click="menuOpen = !menuOpen"
             class="hidden md:flex md:items-center focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md p-2"
             :aria-expanded="menuOpen"
@@ -310,6 +337,14 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <button v-if="(userLaboratories?.length ?? 0) > 1"
+          @click="showModal = true"
+          class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+          :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'">
+          <font-awesome-icon icon="shuffle"
+          class="text-muted-foreground transition-transform duration-200"
+          aria-hidden="true" />
+      </button>
       <button
           @click="toggle"
           class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
@@ -350,4 +385,52 @@ onMounted(() => {
       </ul>
     </template>
   </fel-drawer>
+
+    <!-- Lab Switcher -->
+  <fel-modal v-if="showModal" @close="showModal = false">
+    <template v-slot:header>
+      <h3 class="text-lg font-bold text-foreground">Current Laboratory Switcher</h3>
+    </template>
+
+    <template v-slot:body>
+      <form action="post" class="p-6 space-y-6">
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <label class="col-span-2 space-y-2">
+              <span class="text-md font-medium">Laboratory Name</span>
+              <select 
+                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                v-model="targetLaboratoryUid"
+              >
+                <option value="">Select Department</option>
+                <option v-for="lab in userLaboratories" :key="lab.uid" :value="lab?.uid">{{ lab.name }}</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          @click.prevent="switchLabNow()"
+          :class="[
+            'w-full rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring',
+            switching
+              ? 'bg-primary/50 text-primary-foreground cursor-not-allowed'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90'
+          ]"
+          :disabled="switching"
+        >
+          <span v-if="switching" class="flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 11-8 8z"></path>
+            </svg>
+            Switching…
+          </span>
+          <span v-else>Switch Laboratory</span>
+        </button>
+      </form>
+    </template>
+  </fel-modal>
+
 </template>

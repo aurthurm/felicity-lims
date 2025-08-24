@@ -6,6 +6,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import AnalysisResultType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 
@@ -16,6 +17,8 @@ class AbxGuidelineType:
     name: str
     code: str | None = None
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -31,6 +34,8 @@ class AbxAntibioticGuidelineType:
     antibiotic: AbxAntibioticType | None = None
     guideline_uid: str
     guideline: AbxGuidelineType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -72,6 +77,8 @@ class AbxAntibioticType:
     loincmlc: str | None = None
     comments: str | None = None
     guidelines: List[AbxGuidelineType] | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -98,6 +105,8 @@ class AbxAntibioticCursorPage:
 class AbxKingdomType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -110,6 +119,8 @@ class AbxKingdomType:
 class AbxPhylumType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     kingdom_uid: str | None = None
     kingdom: AbxKingdomType | None = None
     created_at: str | None = None
@@ -124,6 +135,8 @@ class AbxPhylumType:
 class AbxClassType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     phylum_uid: str | None = None
     phylum: AbxPhylumType | None = None
     created_at: str | None = None
@@ -138,6 +151,8 @@ class AbxClassType:
 class AbxOrderType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     class_uid: str | None = None
     class_: AbxClassType | None = None
     created_at: str | None = None
@@ -152,6 +167,8 @@ class AbxOrderType:
 class AbxFamilyType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     order_uid: str | None = None
     order: AbxOrderType | None = None
     created_at: str | None = None
@@ -166,6 +183,8 @@ class AbxFamilyType:
 class AbxGenusType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     family_uid: str | None = None
     family: AbxFamilyType | None = None
     created_at: str | None = None
@@ -180,6 +199,8 @@ class AbxGenusType:
 class AbxOrganismType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     whonet_org_code: str | None = None
     replaced_by: str | None = None
     taxonomic_status: str | None = None
@@ -248,6 +269,8 @@ class AbxOrganismSerotypeType:
     h_phase_2: str | None = None
     x997_check: str | None = None
     fate: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -274,6 +297,8 @@ class AbxOrganismSerotypeCursorPage:
 class AbxTestMethodType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     description: str | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
@@ -288,6 +313,7 @@ class AbxBreakpointTypeTyp:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -301,6 +327,8 @@ class AbxHostType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -314,6 +342,8 @@ class AbxSiteOfInfectionType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -357,6 +387,8 @@ class AbxBreakpointTyp:
     s: str | None = None
     ecv_ecoff: str | None = None
     ecv_ecoff_tentative: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -393,6 +425,8 @@ class AbxExpResPhenotypeType:
     abx_code_type: str
     antibiotic_exceptions: str
     comments: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -425,6 +459,8 @@ class AbxExpertInterpretationRuleType:
     rule_criteria: str
     affected_antibiotics: str
     antibiotic_exceptions: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -452,6 +488,8 @@ class AbxMediumType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -477,6 +515,8 @@ class AbxQCRangeType:
     medium: AbxMediumType | None = None
     minimum: str | None = None
     maximum: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -507,6 +547,8 @@ class AbxASTPanelType:
     organisms: Optional[List['AbxOrganismType']] = field(default_factory=list)
     antibiotics: Optional[List['AbxAntibioticType']] = field(default_factory=list)
     active: bool = True
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -544,6 +586,8 @@ class AbxASTResultType:
     breakpoint_uid: str | None = None
     breakpoint: Optional['AbxBreakpointTyp'] = None
     ast_value: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -559,6 +603,8 @@ class AbxOrganismResultType:
     organism_uid: str | None = None
     organism: Optional['AbxOrganismType'] = None
     isolate_number: int | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

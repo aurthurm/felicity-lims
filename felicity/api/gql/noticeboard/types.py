@@ -2,6 +2,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.user.types import GroupType, UserType
 
@@ -15,6 +16,8 @@ class NoticeType:
     body: str
     viewers: list[UserType] | None = None
     expiry: str  # datetime
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

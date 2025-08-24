@@ -5,6 +5,8 @@ from strawberry.permission import BasePermission
 
 from felicity.api.deps import Info
 from felicity.apps.guard import FAction, FObject, has_perm, FGroup, has_group
+from felicity.apps.user.services import UserService
+from felicity.core.tenant_context import get_current_user_uid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,6 +18,11 @@ class IsAuthenticated(BasePermission):
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
+        if user is None:
+            # websocket tenant context is injected on the fly
+            user_uid = get_current_user_uid()
+            if user_uid:
+                user = await UserService().get(uid=user_uid)
         return user is not None
 
 

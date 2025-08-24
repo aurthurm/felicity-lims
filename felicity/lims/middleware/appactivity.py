@@ -95,10 +95,7 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
                     # Parse GraphQL response if applicable
                     if is_graphql:
-                        try:
-                            graphql_response = json.loads(response_body)
-                        except json.JSONDecodeError:
-                            print("Failed to parse GraphQL response body as JSON")
+                        ...
 
                 # Reconstruct the response with the captured body
                 response = Response(

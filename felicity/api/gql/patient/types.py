@@ -4,7 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.client.types import ClientType
-from felicity.api.gql.setup.types import CountryType, DistrictType, ProvinceType
+from felicity.api.gql.setup.types import CountryType, DistrictType, ProvinceType, LaboratoryType
 from felicity.api.gql.types import PageInfo, JSONScalar
 from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import UserType
@@ -30,6 +30,8 @@ class PatientIdentificationType:
     identification_uid: str
     identification: Optional[IdentificationType] = None
     value: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -63,6 +65,8 @@ class PatientType:
     country_uid: str | None = None
     identifications: Optional[List[PatientIdentificationType]] = None
     metadata_snapshot: JSONScalar | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

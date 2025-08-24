@@ -40,7 +40,7 @@ onMounted(async () => {
 <template>
     <fel-heading title="Documents" />
 
-    <div class="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div class="flex overflow-hidden">
       <!-- Sidebar -->
       <div
         class="fixed inset-y-0 left-0 z-10 w-64 transform bg-doc-folder border-r border-border transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0"

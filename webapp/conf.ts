@@ -16,3 +16,6 @@ if (REST_BASE_URL?.includes('http')) {
 } else {
     WS_BASE_URL = `ws://${window.location.host}/felicity-gql`;
 }
+
+// Other
+export const VITE_USE_MEGA_MENU = import.meta.env.VITE_USE_MEGA_MENU || false;

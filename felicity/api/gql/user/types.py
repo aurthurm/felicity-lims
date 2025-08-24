@@ -4,6 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
+from felicity.apps.user.services import UserService
 
 
 @strawberry.type
@@ -67,8 +68,12 @@ class UserType:
     updated_by: Self | None = None
     updated_at: str | None = None
 
+    @strawberry.field
+    async def laboratories(self, info) -> list[str]:
+        return await UserService().get_laboratories_by_user(user_uid=self.uid)
 
-@strawberry.type 
+
+@strawberry.type
 class UserAccessSummaryType:
     user: UserType
     laboratories: list[str]

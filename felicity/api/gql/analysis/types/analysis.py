@@ -6,7 +6,7 @@ import strawberry  # noqa
 from felicity.api.gql.client.types import ClientType, ClientContactType
 from felicity.api.gql.instrument.types import InstrumentType, MethodType
 from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import UnitType, DistrictType, ProvinceType
+from felicity.api.gql.setup.types import UnitType, DistrictType, ProvinceType, LaboratoryType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.storage.types import StorageContainerType
 from felicity.api.gql.types.generic import PageInfo, JSONScalar, StrawberryMapper
@@ -19,6 +19,8 @@ class CodingStandardType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -36,6 +38,8 @@ class SampleTypeTyp:
     active: bool
     internal_use: bool
     abbr: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -55,6 +59,8 @@ class SampleTypeMappingType:
     name: str | None = None
     description: str | None = None
     code: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -68,6 +74,8 @@ class SampleTypeMappingType:
 class QCLevelType:
     uid: str
     level: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -83,6 +91,8 @@ class QCSetType:
     name: str
     note: str
     status: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -96,6 +106,8 @@ class QCSetType:
 class RejectionReasonType:
     uid: str
     reason: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -113,6 +125,8 @@ class ClinicalDataCodingType:
     code: str | None
     name: str | None
     description: str | None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -135,6 +149,8 @@ class ClinicalDataType:
     treatment_notes: str | None
     other_context: JSONScalar | None
     codings: list[ClinicalDataCodingType] | None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -157,6 +173,8 @@ class AnalysisRequestType:
     clinical_data: list[ClinicalDataType] | None
     internal_use: bool
     metadata_snapshot: JSONScalar | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -193,6 +211,8 @@ class AnalysisCategoryType:
     department: Optional[DepartmentType] = None
     description: str | None = None
     active: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -210,6 +230,8 @@ class ResultOptionType:
     analysis_uid: str
     # analysis: Optional['AnalysisType']
     sample_types: Optional[list[SampleTypeTyp]] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -250,6 +272,8 @@ class AnalysisType:
     hidden: bool | None = None
     internal_use: bool | None = None
     active: bool | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -269,6 +293,8 @@ class AnalysisMappingType:
     name: str | None = None
     description: str | None = None
     code: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -290,6 +316,8 @@ class ProfileType:
     analyses: Optional[List[AnalysisType]] = None
     sample_types: Optional[List[SampleTypeTyp]] = None
     active: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -309,6 +337,8 @@ class ProfileMappingType:
     name: str | None = None
     description: str | None = None
     code: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -345,6 +375,8 @@ class AnalysisTemplateType:
     department_uid: str | None = None
     department: Optional[DepartmentType] = None
     analyses: Optional[List[AnalysisType]] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -407,6 +439,8 @@ class SampleType:  # for Sample
     date_stored: datetime | None = None
     date_retrieved_from_storage: datetime | None = None
     metadata_snapshot: JSONScalar | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -460,6 +494,8 @@ class QCTemplateType:
     description: str | None = None
     departments: List[DepartmentType] = None
     qc_levels: List[QCLevelType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -476,6 +512,8 @@ class AnalysisInterimType:
     value: str
     analysis_uid: str
     instrument_uid: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -492,6 +530,8 @@ class AnalysisCorrectionFactorType:
     analysis_uid: str
     instrument_uid: str
     method_uid: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -509,6 +549,8 @@ class AnalysisDetectionLimitType:
     analysis_uid: str
     instrument_uid: str
     method_uid: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -527,6 +569,8 @@ class AnalysisUncertaintyType:
     analysis_uid: str
     instrument_uid: str
     method_uid: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -554,6 +598,8 @@ class AnalysisSpecificationType:
     method_uid: str | None = None
     unit_uid: str | None = None
     unit: Optional[UnitType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

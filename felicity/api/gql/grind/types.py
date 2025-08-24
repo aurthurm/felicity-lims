@@ -6,6 +6,7 @@ from typing import List, Optional
 import strawberry
 
 from felicity.api.gql.auth import auth_from_info
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.grind.enum import MediaTarget, OccurrenceTarget
@@ -21,6 +22,8 @@ class GrindSchemeType:
     assignee: UserType | None = None
     start_date: str | None = None
     end_date: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -62,6 +65,8 @@ class GrindBoardType:
     description: str | None = None
     scheme_uid: str | None = None
     scheme: GrindSchemeType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -101,6 +106,8 @@ class GrindPosterType:
     assignee_uid: str | None = None
     assignee: UserType | None = None
     status: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -146,6 +153,8 @@ class GrindStampType:
     uid: str
     title: str | None = None
     category: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -187,6 +196,8 @@ class GrindErrandType:
     start_date: str | None = None
     end_date: str | None = None
     progress: int | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -251,6 +262,8 @@ class GrindErrandDiscussionType:
     errand: GrindErrandType | None = None
     parent_uid: str | None = None
     parent: GrindErrandDiscussionType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -293,6 +306,8 @@ class GrindLabelType:
     uid: str
     title: str
     category: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -329,6 +344,8 @@ class GrindMediaType:
     path: str | None = None
     size: str | None = None
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -362,6 +379,8 @@ class GrindMilestoneType:
     complete: bool | None = None
     assignee_uid: str | None = None
     assignee: UserType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -398,6 +417,8 @@ class GrindOccurrenceType:
     actor_uid: str | None = None
     actor: UserType | None = None
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

@@ -1,12 +1,12 @@
 import logging
 from typing import TYPE_CHECKING, List, Union
 
-from felicity.apps.analysis.services.result import AnalysisResultService
-
-from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
 from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
 from .entities.analysis import Sample
 from .entities.results import AnalysisResult
+from ...core.tenant_context import get_current_lab_uid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 async def check_sample_verification(
-    samples: List[Union[str, Sample]], verifier: "User"
+        samples: List[Union[str, Sample]], verifier: "User"
 ) -> tuple[list[Sample] | None, list[Sample] | None, str, str]:
     """
     splits samples into allowed and restricted samples.
@@ -57,7 +57,7 @@ async def check_sample_verification(
 
 
 async def check_result_verification(
-    results: List[Union[str, AnalysisResult]], verifier: "User"
+        results: List[Union[str, AnalysisResult]], verifier: "User"
 ) -> tuple[list[AnalysisResult] | None, list[AnalysisResult] | None, str, str]:
     """
     splits results into allowed and restricted results.
@@ -69,7 +69,8 @@ async def check_result_verification(
     allowed = []
     restricted = []
 
-    laboratory = await LaboratoryService().get_by_setup_name("felicity")
+    lab_id = get_current_lab_uid()
+    laboratory = await LaboratoryService().get(uid=lab_id)
     settings = await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
 
     if isinstance(results[0], str):

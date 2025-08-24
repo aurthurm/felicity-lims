@@ -4,7 +4,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, T
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 from felicity.apps.analysis.entities import analysis as analysis_entities
 from felicity.apps.analysis.entities import qc as qc_entities
 from felicity.apps.instrument.entities import Instrument
@@ -30,8 +30,7 @@ Many to Many Link between WorkSheetTemplate and QCLevel
 """
 worksheet_template_qc_level = Table(
     "worksheet_template_qc_level",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("ws_template_uid", ForeignKey("worksheet_template.uid"), primary_key=True),
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
 )

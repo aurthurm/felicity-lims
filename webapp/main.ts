@@ -17,6 +17,8 @@ import {
     faCaravan,
     faCartShopping,
     faCheckCircle,
+    faChevronCircleLeft,
+    faChevronCircleRight,
     faChevronDown,
     faChevronUp,
     faCircleDot,
@@ -55,6 +57,7 @@ import {
     faQuestion,
     faRobot,
     faScaleBalanced,
+    faShuffle,
     faSignOutAlt,
     faSort,
     faStar,
@@ -95,7 +98,8 @@ const icons = [
     faInfoCircle, faAnchor, faThList, faTh, faInfo, faTrash, faAsterisk, faArrowUpWideShort, faArrowDownWideShort,
     faArrowDown, faLevelDownAlt, faPen, faDeleteLeft, faEllipsisH, faTablets, faScaleBalanced, faLifeRing,
     faBacteria, faCircleDot, faPills, faExclamationCircle, faRobot, faProjectDiagram, faFile, faStar,
-    faColumns, faTrashAlt, faChevronUp, faSignOutAlt, faExpand, faCompress
+    faColumns, faTrashAlt, faChevronUp, faSignOutAlt, faExpand, faCompress, faShuffle, faChevronCircleLeft,
+    faChevronCircleRight
 ]
 library.add(...icons);
 

@@ -21,7 +21,7 @@ from felicity.api.gql.setup.types import (
     UnitType, LaboratorySettingType, OrganizationType,
 )
 from felicity.api.gql.setup.types.department import DepartmentType
-from felicity.api.gql.types import PageInfo, OperationError
+from felicity.api.gql.types import PageInfo
 from felicity.apps.setup.services import (
     CountryService,
     DepartmentService,
@@ -215,16 +215,15 @@ class SetupQuery:
     )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def laboratory(self, info) -> LaboratoryType | OperationError:
+    async def laboratory(self, info) -> LaboratoryType:
         current_user: User = await auth_from_info(info)
         if not current_user.active_laboratory_uid:
-            return OperationError(error="You have not active laboratory set")
+            raise Exception("You have not active laboratory set")
         return await LaboratoryService().get(uid=current_user.active_laboratory_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def laboratory_by_uid(self, info, uid: str) -> LaboratoryType:
-        laboratory = await LaboratoryService().get(uid=uid)
-        return laboratory
+        return await LaboratoryService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def laboratory_setting_by_laboratory_uid(self, info, uid: str) -> LaboratorySettingType:

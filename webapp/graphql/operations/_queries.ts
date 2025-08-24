@@ -13,7 +13,7 @@ export type GetOrganizationQuery = (
     & Pick<Types.OrganizationType, 'uid' | 'name' | 'tagLine' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
     & { settings: (
       { __typename?: 'OrganizationSettingType' }
-      & Pick<Types.OrganizationSettingType, 'uid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+      & Pick<Types.OrganizationSettingType, 'uid' | 'passwordLifetime' | 'inactivityLogOut' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
     ) }
   ) }
 );
@@ -26,13 +26,10 @@ export type GetLaboratoryQuery = (
   & { laboratory: (
     { __typename?: 'LaboratoryType' }
     & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
-    & { settings: (
+    & { settings?: Types.Maybe<(
       { __typename?: 'LaboratorySettingType' }
       & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
-    ) }
-  ) | (
-    { __typename?: 'OperationError' }
-    & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )> }
   ) }
 );
 
@@ -55,10 +52,10 @@ export type GetAllLaboratoriesQuery = (
     ), items?: Types.Maybe<Array<(
       { __typename?: 'LaboratoryType' }
       & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
-      & { settings: (
+      & { settings?: Types.Maybe<(
         { __typename?: 'LaboratorySettingType' }
         & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
-      ) }
+      )> }
     )>> }
   ) }
 );
@@ -81,7 +78,7 @@ export type UserAllQuery = (
       & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
     ), items?: Types.Maybe<Array<(
       { __typename?: 'UserType' }
-      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'email' | 'isActive' | 'isSuperuser' | 'mobilePhone' | 'userName' | 'isBlocked'>
+      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'email' | 'isActive' | 'isSuperuser' | 'mobilePhone' | 'userName' | 'isBlocked' | 'activeLaboratoryUid' | 'laboratories'>
       & { groups?: Types.Maybe<Array<(
         { __typename?: 'GroupType' }
         & Pick<Types.GroupType, 'uid' | 'name' | 'keyword' | 'pages'>
@@ -154,16 +151,8 @@ export const GetOrganizationDocument = gql`
     qualityStatement
     settings {
       uid
-      allowSelfVerification
-      allowPatientRegistration
-      allowSampleRegistration
-      allowWorksheetCreation
-      defaultRoute
       passwordLifetime
       inactivityLogOut
-      defaultTheme
-      autoReceiveSamples
-      stickerCopies
       allowBilling
       allowAutoBilling
       currency
@@ -179,41 +168,35 @@ export function useGetOrganizationQuery(options: Omit<Urql.UseQueryArgs<never, G
 export const GetLaboratoryDocument = gql`
     query getLaboratory {
   laboratory {
-    ... on LaboratoryType {
+    uid
+    name
+    tagLine
+    labManagerUid
+    email
+    emailCc
+    mobilePhone
+    businessPhone
+    address
+    banking
+    logo
+    qualityStatement
+    settings {
       uid
-      name
-      tagLine
-      labManagerUid
-      email
-      emailCc
-      mobilePhone
-      businessPhone
-      address
-      banking
-      logo
-      qualityStatement
-      settings {
-        uid
-        laboratoryUid
-        allowSelfVerification
-        allowPatientRegistration
-        allowSampleRegistration
-        allowWorksheetCreation
-        defaultRoute
-        passwordLifetime
-        inactivityLogOut
-        defaultTheme
-        autoReceiveSamples
-        stickerCopies
-        allowBilling
-        allowAutoBilling
-        currency
-        paymentTermsDays
-      }
-    }
-    ... on OperationError {
-      error
-      suggestion
+      laboratoryUid
+      allowSelfVerification
+      allowPatientRegistration
+      allowSampleRegistration
+      allowWorksheetCreation
+      defaultRoute
+      passwordLifetime
+      inactivityLogOut
+      defaultTheme
+      autoReceiveSamples
+      stickerCopies
+      allowBilling
+      allowAutoBilling
+      currency
+      paymentTermsDays
     }
   }
 }
@@ -307,6 +290,8 @@ export const UserAllDocument = gql`
           target
         }
       }
+      activeLaboratoryUid
+      laboratories
     }
   }
 }

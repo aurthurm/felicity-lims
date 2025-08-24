@@ -7,11 +7,13 @@ import {
     TokenRefreshDocument, TokenRefreshMutation, TokenRefreshMutationVariables,
     RequestPassResetDocument, RequestPassResetMutation, RequestPassResetMutationVariables,
     PasswordResetDocument, PasswordResetMutation, PasswordResetMutationVariables,
-    ValidatePassResetTokenDocument, ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables 
+    ValidatePassResetTokenDocument, ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables, 
+    SwitchActiveLaboratoryDocument
 } from '@/graphql/operations/_mutations';
 import useApiUtil  from '@/composables/api_util';
 import jwtDecode from 'jwt-decode';
 import { authFromStorageSync, authToStorage } from '@/auth';
+import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables } from '@/types/gqlops';
 
 const { withClientMutation } = useApiUtil();    
 

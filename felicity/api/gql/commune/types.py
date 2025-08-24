@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import strawberry
 
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.commune.sms.enum import SmsTrigger, SmsAudience
@@ -20,6 +21,8 @@ class SmsTemplateType:
     specification_trigger: SmsTrigger | None
     audience: SmsAudience | None
     is_active: bool = False
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -39,6 +42,8 @@ class SmsMessageType:
     sent_at: datetime | None
     target_type: str | None
     target_uid: str | None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

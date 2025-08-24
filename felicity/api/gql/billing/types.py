@@ -10,6 +10,7 @@ from felicity.api.gql.analysis.types.analysis import (
 )
 from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.analysis.services.analysis import AnalysisRequestService
@@ -24,6 +25,8 @@ class AnalysisPriceType:
     analysis: AnalysisType
     is_active: bool
     amount: float
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -39,6 +42,8 @@ class ProfilePriceType:
     profile: ProfileType
     is_active: bool
     amount: float
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -62,6 +67,8 @@ class AnalysisDiscountType:
     value_percent: float
     value_amount: float
     is_active: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -85,6 +92,8 @@ class ProfileDiscountType:
     value_percent: float
     value_amount: float
     is_active: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -103,6 +112,8 @@ class VoucherType:
     end_date: str
     once_per_customer: bool
     once_per_order: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -124,6 +135,8 @@ class VoucherCodeType:
     usage_limit: int
     used: int
     is_active: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -139,6 +152,8 @@ class VoucherCustomerType:
     patient: PatientType
     voucher_code_uid: str
     voucher_code: VoucherCodeType
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -161,6 +176,8 @@ class TestBillType:
     total_charged: float
     total_paid: float
     json_content: JSONScalar | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -203,6 +220,8 @@ class TestBillTransactionType:
     notes: str
     message: str
     action_message: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -218,6 +237,8 @@ class TestBillInvoiceType:
     test_bill: TestBillType
     json_content: JSONScalar | None = None
     pdf_content: BytesScalar | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.setup.types import ManufacturerType, SupplierType
+from felicity.api.gql.setup.types import ManufacturerType, SupplierType, LaboratoryType
 from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
@@ -15,6 +15,8 @@ class InstrumentTypeType:
     uid: str
     name: str | None = None
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -51,6 +53,8 @@ class InstrumentType:
     manufacturer: Optional[ManufacturerType] = None
     instrument_type_uid: str | None = None
     instrument_type: Optional[InstrumentTypeType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -92,6 +96,8 @@ class LaboratoryInstrumentType:
     serial_number: str | None = None
     date_commissioned: datetime | None = None
     date_decommissioned: datetime | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -129,6 +135,8 @@ class InstrumentCalibrationType:
     notes_before: str
     work_done: str
     remarks: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -152,6 +160,8 @@ class CalibrationCertificateType:
     performed_by: str
     approved_by: str
     remarks: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -173,6 +183,8 @@ class InstrumentCompetenceType:
     expiry_date: datetime
     internal: bool
     competence: BytesScalar | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -188,6 +200,8 @@ class MethodType:
     name: str | None = None
     description: str | None = None
     keyword: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None

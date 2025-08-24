@@ -15,8 +15,8 @@ Many to Many Link between Laboratory and User
 """
 laboratory_user = Table(
     "laboratory_user",
-    MaybeLabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), nullable=True),
+    BaseEntity.metadata,
+    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
@@ -25,8 +25,7 @@ Many to Many Link between Group and User
 """
 user_groups = Table(
     "user_groups",
-    MaybeLabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), nullable=True),
+    BaseEntity.metadata,
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -36,8 +35,7 @@ Many to Many Link between Group and Permission
 """
 permission_groups = Table(
     "permission_groups",
-    MaybeLabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), nullable=True),
+    BaseEntity.metadata,
     Column("permission_uid", ForeignKey("permission.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -91,8 +89,7 @@ class Group(MaybeLabScopedEntity):
 
 department_preference = Table(
     "department_preference",
-    MaybeLabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
     Column("preference_uid", ForeignKey("user_preference.uid"), primary_key=True),
 )

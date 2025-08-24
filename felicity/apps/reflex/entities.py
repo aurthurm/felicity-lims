@@ -120,7 +120,6 @@ Many to Many Link between ReflexBrain and Analysis
 reflex_action_analysis = Table(
     "reflex_action_analysis",
     BaseEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("reflex_action_uid", ForeignKey("reflex_action.uid"), primary_key=True),
 )

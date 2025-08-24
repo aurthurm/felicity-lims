@@ -3324,10 +3324,12 @@ export type LaboratoryType = {
   banking?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;
   code?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<CountryType>;
   countryUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  district?: Maybe<DistrictType>;
   districtUid?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
@@ -3336,18 +3338,18 @@ export type LaboratoryType = {
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  organization?: Maybe<OrganizationType>;
   organizationUid?: Maybe<Scalars['String']['output']>;
+  province?: Maybe<ProvinceType>;
   provinceUid?: Maybe<Scalars['String']['output']>;
   qualityStatement?: Maybe<Scalars['String']['output']>;
-  settings: LaboratorySettingType;
+  settings?: Maybe<LaboratorySettingType>;
   tagLine?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
-
-export type LaboratoryTypeOperationError = LaboratoryType | OperationError;
 
 export type LaggardCounts = {
   __typename?: 'LaggardCounts';
@@ -3724,8 +3726,8 @@ export type Mutation = {
   updateManufacturer: ManufacturerResponse;
   updateMethod: MethodResponse;
   updateNotice: NoticeResponse;
-  updateOrganisation: OrganizationResponse;
-  updateOrganisationSetting: OrganizationSettingResponse;
+  updateOrganization: OrganizationResponse;
+  updateOrganizationSetting: OrganizationSettingResponse;
   updatePatient: PatientResponse;
   updateProfile: AnalysisProfileResponse;
   updateProfileDiscount: ProfileDiscountResponse;
@@ -4340,9 +4342,11 @@ export type MutationCreateUnitArgs = {
 
 
 export type MutationCreateUserArgs = {
+  activeLaboratoryUid?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   groupUid?: InputMaybe<Scalars['String']['input']>;
+  laboratoryUids?: InputMaybe<Array<Scalars['String']['input']>>;
   lastName: Scalars['String']['input'];
   openReg?: InputMaybe<Scalars['Boolean']['input']>;
   password: Scalars['String']['input'];
@@ -5072,13 +5076,14 @@ export type MutationUpdateNoticeArgs = {
 };
 
 
-export type MutationUpdateOrganisationArgs = {
-  payload: OrganisationInputType;
+export type MutationUpdateOrganizationArgs = {
+  payload: OrganizationInputType;
+  uid: Scalars['String']['input'];
 };
 
 
-export type MutationUpdateOrganisationSettingArgs = {
-  payload: OrganisationSettingInputType;
+export type MutationUpdateOrganizationSettingArgs = {
+  payload: OrganizationSettingInputType;
   uid: Scalars['String']['input'];
 };
 
@@ -5258,11 +5263,13 @@ export type MutationUpdateUnitArgs = {
 
 
 export type MutationUpdateUserArgs = {
+  activeLaboratoryUid?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   groupUid?: InputMaybe<Scalars['String']['input']>;
   isActive?: InputMaybe<Scalars['Boolean']['input']>;
   isBlocked?: InputMaybe<Scalars['Boolean']['input']>;
+  laboratoryUids?: InputMaybe<Array<Scalars['String']['input']>>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   mobilePhone?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
@@ -5417,7 +5424,7 @@ export type OperationSuccess = {
   message: Scalars['String']['output'];
 };
 
-export type OrganisationInputType = {
+export type OrganizationInputType = {
   address?: InputMaybe<Scalars['String']['input']>;
   banking?: InputMaybe<Scalars['String']['input']>;
   businessPhone?: InputMaybe<Scalars['String']['input']>;
@@ -5433,28 +5440,18 @@ export type OrganisationInputType = {
   provinceUid?: InputMaybe<Scalars['String']['input']>;
   qualityStatement?: InputMaybe<Scalars['String']['input']>;
   tagLine?: InputMaybe<Scalars['String']['input']>;
-  uid: Scalars['String']['input'];
-};
-
-export type OrganisationSettingInputType = {
-  allowAutoBilling?: InputMaybe<Scalars['Boolean']['input']>;
-  allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
-  allowPatientRegistration?: InputMaybe<Scalars['Boolean']['input']>;
-  allowSampleRegistration?: InputMaybe<Scalars['Boolean']['input']>;
-  allowSelfVerification?: InputMaybe<Scalars['Boolean']['input']>;
-  allowWorksheetCreation?: InputMaybe<Scalars['Boolean']['input']>;
-  autoReceiveSamples?: InputMaybe<Scalars['Boolean']['input']>;
-  currency?: InputMaybe<Scalars['String']['input']>;
-  defaultRoute?: InputMaybe<Scalars['String']['input']>;
-  defaultTheme?: InputMaybe<Scalars['String']['input']>;
-  inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
-  laboratoryUid: Scalars['String']['input'];
-  passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
-  paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
-  stickerCopies?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type OrganizationResponse = OperationError | OrganizationType;
+
+export type OrganizationSettingInputType = {
+  allowAutoBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
+  passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
+  paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+};
 
 export type OrganizationSettingResponse = OperationError | OrganizationSettingType;
 
@@ -5462,22 +5459,15 @@ export type OrganizationSettingType = {
   __typename?: 'OrganizationSettingType';
   allowAutoBilling?: Maybe<Scalars['Boolean']['output']>;
   allowBilling?: Maybe<Scalars['Boolean']['output']>;
-  allowPatientRegistration?: Maybe<Scalars['Boolean']['output']>;
-  allowSampleRegistration?: Maybe<Scalars['Boolean']['output']>;
-  allowSelfVerification?: Maybe<Scalars['Boolean']['output']>;
-  allowWorksheetCreation?: Maybe<Scalars['Boolean']['output']>;
-  autoReceiveSamples?: Maybe<Scalars['Boolean']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   currency?: Maybe<Scalars['String']['output']>;
-  defaultRoute?: Maybe<Scalars['String']['output']>;
-  defaultTatMinutes?: Maybe<Scalars['Int']['output']>;
-  defaultTheme?: Maybe<Scalars['String']['output']>;
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
+  organization?: Maybe<OrganizationType>;
+  organizationUid?: Maybe<Scalars['String']['output']>;
   passwordLifetime?: Maybe<Scalars['Int']['output']>;
   paymentTermsDays?: Maybe<Scalars['Int']['output']>;
-  stickerCopies?: Maybe<Scalars['Int']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -5490,21 +5480,25 @@ export type OrganizationType = {
   banking?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;
   code?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<CountryType>;
   countryUid?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
+  district?: Maybe<DistrictType>;
   districtUid?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   emailCc?: Maybe<Scalars['String']['output']>;
   logo?: Maybe<Scalars['String']['output']>;
   mobilePhone?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  province?: Maybe<ProvinceType>;
   provinceUid?: Maybe<Scalars['String']['output']>;
   qualityStatement?: Maybe<Scalars['String']['output']>;
   settings: OrganizationSettingType;
   setupName: Scalars['String']['output'];
   tagLine?: Maybe<Scalars['String']['output']>;
+  timezone?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -6130,7 +6124,7 @@ export type Query = {
   instrumentTypeAll: InstrumentTypeCursorPage;
   instrumentTypeByUid: InstrumentTypeType;
   laboratoriesByOrganization: Array<LaboratoryType>;
-  laboratory: LaboratoryTypeOperationError;
+  laboratory: LaboratoryType;
   laboratoryAll: LaboratoryCursorPage;
   laboratoryByUid: LaboratoryType;
   laboratoryInstrumentAll: LaboratoryInstrumentCursorPage;
@@ -9249,6 +9243,7 @@ export type UserType = {
   isActive: Scalars['Boolean']['output'];
   isBlocked: Scalars['Boolean']['output'];
   isSuperuser: Scalars['Boolean']['output'];
+  laboratories: Array<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   loginRetry: Scalars['Int']['output'];
   mobilePhone?: Maybe<Scalars['String']['output']>;
@@ -9927,7 +9922,7 @@ export type GraphCacheResolvers = {
     instrumentTypeAll?: GraphCacheResolver<WithTypename<Query>, QueryInstrumentTypeAllArgs, WithTypename<InstrumentTypeCursorPage> | string>,
     instrumentTypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryInstrumentTypeByUidArgs, WithTypename<InstrumentTypeType> | string>,
     laboratoriesByOrganization?: GraphCacheResolver<WithTypename<Query>, QueryLaboratoriesByOrganizationArgs, Array<WithTypename<LaboratoryType> | string>>,
-    laboratory?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, WithTypename<LaboratoryTypeOperationError> | string>,
+    laboratory?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryAll?: GraphCacheResolver<WithTypename<Query>, QueryLaboratoryAllArgs, WithTypename<LaboratoryCursorPage> | string>,
     laboratoryByUid?: GraphCacheResolver<WithTypename<Query>, QueryLaboratoryByUidArgs, WithTypename<LaboratoryType> | string>,
     laboratoryInstrumentAll?: GraphCacheResolver<WithTypename<Query>, QueryLaboratoryInstrumentAllArgs, WithTypename<LaboratoryInstrumentCursorPage> | string>,
@@ -11863,10 +11858,12 @@ export type GraphCacheResolvers = {
     banking?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     businessPhone?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     code?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
+    country?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<CountryType> | string>,
     countryUid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     createdAt?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
+    district?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<DistrictType> | string>,
     districtUid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     email?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     emailCc?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
@@ -11875,7 +11872,9 @@ export type GraphCacheResolvers = {
     logo?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     mobilePhone?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
+    organization?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<OrganizationType> | string>,
     organizationUid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
+    province?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<ProvinceType> | string>,
     provinceUid?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     qualityStatement?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     settings?: GraphCacheResolver<WithTypename<LaboratoryType>, Record<string, never>, WithTypename<LaboratorySettingType> | string>,
@@ -12008,22 +12007,15 @@ export type GraphCacheResolvers = {
   OrganizationSettingType?: {
     allowAutoBilling?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
     allowBilling?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
-    allowPatientRegistration?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
-    allowSampleRegistration?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
-    allowSelfVerification?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
-    allowWorksheetCreation?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
-    autoReceiveSamples?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
     createdAt?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     currency?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
-    defaultRoute?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
-    defaultTatMinutes?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
-    defaultTheme?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     inactivityLogOut?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
+    organization?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, WithTypename<OrganizationType> | string>,
+    organizationUid?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     passwordLifetime?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
     paymentTermsDays?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
-    stickerCopies?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
     uid?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -12034,21 +12026,25 @@ export type GraphCacheResolvers = {
     banking?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     businessPhone?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     code?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
+    country?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, WithTypename<CountryType> | string>,
     countryUid?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     createdAt?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
+    district?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, WithTypename<DistrictType> | string>,
     districtUid?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     email?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     emailCc?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     logo?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     mobilePhone?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
+    province?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, WithTypename<ProvinceType> | string>,
     provinceUid?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     qualityStatement?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     settings?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, WithTypename<OrganizationSettingType> | string>,
     setupName?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     tagLine?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
+    timezone?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<OrganizationType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -13225,6 +13221,7 @@ export type GraphCacheResolvers = {
     isActive?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['Boolean'] | string>,
     isBlocked?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['Boolean'] | string>,
     isSuperuser?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['Boolean'] | string>,
+    laboratories?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Array<Scalars['String'] | string>>,
     lastName?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['String'] | string>,
     loginRetry?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['Int'] | string>,
     mobilePhone?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['String'] | string>,
@@ -13598,8 +13595,8 @@ export type GraphCacheOptimisticUpdaters = {
   updateManufacturer?: GraphCacheOptimisticMutationResolver<MutationUpdateManufacturerArgs, WithTypename<ManufacturerResponse>>,
   updateMethod?: GraphCacheOptimisticMutationResolver<MutationUpdateMethodArgs, WithTypename<MethodResponse>>,
   updateNotice?: GraphCacheOptimisticMutationResolver<MutationUpdateNoticeArgs, WithTypename<NoticeResponse>>,
-  updateOrganisation?: GraphCacheOptimisticMutationResolver<MutationUpdateOrganisationArgs, WithTypename<OrganizationResponse>>,
-  updateOrganisationSetting?: GraphCacheOptimisticMutationResolver<MutationUpdateOrganisationSettingArgs, WithTypename<OrganizationSettingResponse>>,
+  updateOrganization?: GraphCacheOptimisticMutationResolver<MutationUpdateOrganizationArgs, WithTypename<OrganizationResponse>>,
+  updateOrganizationSetting?: GraphCacheOptimisticMutationResolver<MutationUpdateOrganizationSettingArgs, WithTypename<OrganizationSettingResponse>>,
   updatePatient?: GraphCacheOptimisticMutationResolver<MutationUpdatePatientArgs, WithTypename<PatientResponse>>,
   updateProfile?: GraphCacheOptimisticMutationResolver<MutationUpdateProfileArgs, WithTypename<AnalysisProfileResponse>>,
   updateProfileDiscount?: GraphCacheOptimisticMutationResolver<MutationUpdateProfileDiscountArgs, WithTypename<ProfileDiscountResponse>>,
@@ -13834,7 +13831,7 @@ export type GraphCacheUpdaters = {
     instrumentTypeAll?: GraphCacheUpdateResolver<{ instrumentTypeAll: WithTypename<InstrumentTypeCursorPage> }, QueryInstrumentTypeAllArgs>,
     instrumentTypeByUid?: GraphCacheUpdateResolver<{ instrumentTypeByUid: WithTypename<InstrumentTypeType> }, QueryInstrumentTypeByUidArgs>,
     laboratoriesByOrganization?: GraphCacheUpdateResolver<{ laboratoriesByOrganization: Array<WithTypename<LaboratoryType>> }, QueryLaboratoriesByOrganizationArgs>,
-    laboratory?: GraphCacheUpdateResolver<{ laboratory: WithTypename<LaboratoryTypeOperationError> }, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<{ laboratory: WithTypename<LaboratoryType> }, Record<string, never>>,
     laboratoryAll?: GraphCacheUpdateResolver<{ laboratoryAll: WithTypename<LaboratoryCursorPage> }, QueryLaboratoryAllArgs>,
     laboratoryByUid?: GraphCacheUpdateResolver<{ laboratoryByUid: WithTypename<LaboratoryType> }, QueryLaboratoryByUidArgs>,
     laboratoryInstrumentAll?: GraphCacheUpdateResolver<{ laboratoryInstrumentAll: WithTypename<LaboratoryInstrumentCursorPage> }, QueryLaboratoryInstrumentAllArgs>,
@@ -14200,8 +14197,8 @@ export type GraphCacheUpdaters = {
     updateManufacturer?: GraphCacheUpdateResolver<{ updateManufacturer: WithTypename<ManufacturerResponse> }, MutationUpdateManufacturerArgs>,
     updateMethod?: GraphCacheUpdateResolver<{ updateMethod: WithTypename<MethodResponse> }, MutationUpdateMethodArgs>,
     updateNotice?: GraphCacheUpdateResolver<{ updateNotice: WithTypename<NoticeResponse> }, MutationUpdateNoticeArgs>,
-    updateOrganisation?: GraphCacheUpdateResolver<{ updateOrganisation: WithTypename<OrganizationResponse> }, MutationUpdateOrganisationArgs>,
-    updateOrganisationSetting?: GraphCacheUpdateResolver<{ updateOrganisationSetting: WithTypename<OrganizationSettingResponse> }, MutationUpdateOrganisationSettingArgs>,
+    updateOrganization?: GraphCacheUpdateResolver<{ updateOrganization: WithTypename<OrganizationResponse> }, MutationUpdateOrganizationArgs>,
+    updateOrganizationSetting?: GraphCacheUpdateResolver<{ updateOrganizationSetting: WithTypename<OrganizationSettingResponse> }, MutationUpdateOrganizationSettingArgs>,
     updatePatient?: GraphCacheUpdateResolver<{ updatePatient: WithTypename<PatientResponse> }, MutationUpdatePatientArgs>,
     updateProfile?: GraphCacheUpdateResolver<{ updateProfile: WithTypename<AnalysisProfileResponse> }, MutationUpdateProfileArgs>,
     updateProfileDiscount?: GraphCacheUpdateResolver<{ updateProfileDiscount: WithTypename<ProfileDiscountResponse> }, MutationUpdateProfileDiscountArgs>,
@@ -16062,10 +16059,12 @@ export type GraphCacheUpdaters = {
     banking?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     businessPhone?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     code?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
+    country?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     countryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
+    district?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     districtUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     email?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     emailCc?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
@@ -16074,7 +16073,9 @@ export type GraphCacheUpdaters = {
     logo?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     mobilePhone?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
+    organization?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     organizationUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
+    province?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     provinceUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     qualityStatement?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
     settings?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratoryType>>, Record<string, never>>,
@@ -16207,22 +16208,15 @@ export type GraphCacheUpdaters = {
   OrganizationSettingType?: {
     allowAutoBilling?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     allowBilling?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    allowPatientRegistration?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    allowSampleRegistration?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    allowSelfVerification?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    allowWorksheetCreation?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    autoReceiveSamples?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     currency?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    defaultRoute?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    defaultTatMinutes?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    defaultTheme?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     inactivityLogOut?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
+    organization?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
+    organizationUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     passwordLifetime?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     paymentTermsDays?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
-    stickerCopies?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
@@ -16233,21 +16227,25 @@ export type GraphCacheUpdaters = {
     banking?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     businessPhone?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     code?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
+    country?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     countryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
+    district?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     districtUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     email?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     emailCc?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     logo?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     mobilePhone?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
+    province?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     provinceUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     qualityStatement?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     settings?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     setupName?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     tagLine?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
+    timezone?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationType>>, Record<string, never>>,
@@ -17424,6 +17422,7 @@ export type GraphCacheUpdaters = {
     isActive?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,
     isBlocked?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,
     isSuperuser?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,
+    laboratories?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,
     lastName?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,
     loginRetry?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,
     mobilePhone?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,

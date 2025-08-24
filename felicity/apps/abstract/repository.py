@@ -2,7 +2,7 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Any, Generic, List, TypeVar, Optional
 
-from sqlalchemy import inspect, or_ as sa_or_, Table
+from sqlalchemy import inspect, or_ as sa_or_, Table, or_
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -84,11 +84,11 @@ class BaseRepository(Generic[M]):
             lab_uid = get_current_lab_uid()
 
         if lab_uid is not None:
-            logger.warning(f"Lab context for {self.model.__name__} query lab_uid ={lab_uid}")
+            # logger.warning(f"Lab context for {self.model.__name__} query lab_uid ={lab_uid}")
             stmt = stmt.where(self.model.laboratory_uid == lab_uid)
         else:
             # If no lab context, log warning and return empty result
-            logger.warning(f"No lab context for {self.model.__name__} query")
+            # logger.warning(f"No lab context for {self.model.__name__} query")
             stmt = stmt.where(self.model.laboratory_uid.is_(None))  # Will return no results
 
         return stmt
@@ -114,7 +114,6 @@ class BaseRepository(Generic[M]):
                     data["created_by_uid"] = user_uid
                 if "updated_by_uid" not in data:
                     data["updated_by_uid"] = user_uid
-
         return data
 
     @asynccontextmanager
@@ -207,7 +206,6 @@ class BaseRepository(Generic[M]):
 
         # Auto-inject tenant context
         kwargs = self._inject_tenant_context(kwargs)
-
         filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled, commit=commit, session=session)
 
@@ -343,7 +341,7 @@ class BaseRepository(Generic[M]):
                 await self._commit_or_fail(session)
 
     async def table_query(
-            self, table: Table, columns: list[str] | None = None,
+            self, table: Table, columns: list[str] | None = None, is_or=False,
             session: Optional[AsyncSession] = None, **kwargs
     ):
         """
@@ -362,11 +360,20 @@ class BaseRepository(Generic[M]):
             stmt = select(*(table.c[column] for column in columns))
         else:
             stmt = select(table)
-        for k, v in kwargs.items():
-            stmt = stmt.where(table.c[k] == v)
+
+        conditions = [table.c[k] == v for k, v in kwargs.items()]
+
+        if is_or:
+            stmt = stmt.where(or_(*conditions))
+        else:
+            stmt = stmt.where(*conditions)
 
         # Apply lab filtering if table has laboratory_uid column
-        if not 'laboratory_uid' in kwargs and hasattr(table.c, 'laboratory_uid'):
+        if (
+                not 'laboratory_uid' in kwargs
+                and hasattr(table.c, 'laboratory_uid')
+                and (columns is None or 'laboratory_uid' not in columns)
+        ):
             lab_uid = get_current_lab_uid()
             if lab_uid:
                 stmt = stmt.where(table.c.laboratory_uid == lab_uid)
@@ -424,7 +431,7 @@ class BaseRepository(Generic[M]):
             raise ValueError("No arguments provided to get model")
 
         stmt = self.model.where(**kwargs)
-        stmt = self._apply_lab_filter(stmt)
+        stmt = self._apply_lab_filter(stmt, lab_uid=kwargs.get("laboratory_uid", None))
 
         if related:
             for key in related:
@@ -454,7 +461,7 @@ class BaseRepository(Generic[M]):
 
         # smart query
         stmt = self.model.smart_query(kwargs, sort_attrs)
-        stmt = self._apply_lab_filter(stmt)
+        stmt = self._apply_lab_filter(stmt, lab_uid=kwargs.get("laboratory_uid", None))
 
         if related:
             for key in related:
@@ -500,7 +507,7 @@ class BaseRepository(Generic[M]):
         start = (page - 1) * limit
 
         stmt = self.model.where(**kwargs).limit(limit).offset(start)
-        stmt = self._apply_lab_filter(stmt)
+        stmt = self._apply_lab_filter(stmt, lab_uid=kwargs.get("laboratory_uid", None))
 
         async with self.async_session() as session:
             results = await session.execute(stmt)
@@ -590,7 +597,7 @@ class BaseRepository(Generic[M]):
                 stmt = stmt.where(getattr(self.model, key) == value)
 
         # Apply lab filtering
-        stmt = self._apply_lab_filter(stmt)
+        stmt = self._apply_lab_filter(stmt, lab_uid=kwargs.get("laboratory_uid", None))
 
         if session:
             await session.execute(stmt)

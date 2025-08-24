@@ -7,6 +7,7 @@ class DepartmentType:
     name: str | None = None
     description: str | None = None
     code: str | None = None
+    laboratory_uid: str | None = None
     #
     created_by_uid: str | None = None
     created_at: str | None = None

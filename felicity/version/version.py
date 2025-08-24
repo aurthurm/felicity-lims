@@ -14,8 +14,9 @@ router = APIRouter()
 
 class FelicityVersion:
     _version = __version__
-    _owner = "beak-insights"
+    _owner = "aurthurm"  # beak-insights
     _repo = "felicity-lims"
+    _pat = "<REDACTED>"
     _cache = {}
     _cache_duration = _cache_duration
     _last_check = None
@@ -27,7 +28,7 @@ class FelicityVersion:
 
     async def _fetch_github_version(self) -> Dict:
         url = f"https://api.github.com/repos/{self._owner}/{self._repo}/releases/latest"
-        headers = {"Accept": "application/vnd.github.v3+json"}
+        headers = {"Accept": "application/vnd.github.v3+json", "Authorization": f"Bearer {self._pat}"}
 
         async with httpx.AsyncClient() as client:
             try:

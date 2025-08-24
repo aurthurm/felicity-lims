@@ -68,7 +68,6 @@ class SampleTypeCoding(BaseEntity):
 profile_sample_type = Table(
     "profile_sample_type",
     BaseEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -90,8 +89,7 @@ analysis_sample_type = Table(
 """
 analysis_profile = Table(
     "analysis_profile",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -153,8 +151,7 @@ class ProfileCoding(LabScopedEntity):
 """
 analysis_analysis_template = Table(
     "analysis_analysis_template",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column(
         "analysis_template_uid", ForeignKey("analysis_template.uid"), primary_key=True
@@ -379,8 +376,7 @@ class AnalysisSpecification(BaseEntity):
 """
 result_option_sample_type = Table(
     "result_option_sample_type",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("result_option_uid", ForeignKey("result_options.uid"), primary_key=True),
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
 )
@@ -487,8 +483,7 @@ Many to Many Link between Sample and Profile
 """
 sample_profile = Table(
     "sample_profile",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -498,8 +493,7 @@ Many to Many Link between Sample and Analysis
 """
 sample_analysis = Table(
     "sample_analysis",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -509,8 +503,7 @@ Many to Many Link between Sample and Rejection Reason
 """
 sample_rejection_reason = Table(
     "sample_rejection_reason",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column(
         "rejection_reason_uid", ForeignKey("rejection_reason.uid"), primary_key=True

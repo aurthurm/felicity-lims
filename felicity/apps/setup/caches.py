@@ -5,17 +5,22 @@ from felicity.apps.setup.services import LaboratoryService, LaboratorySettingSer
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
 from felicity.core.config import settings
+from felicity.core.tenant_context import get_current_lab_uid
 
 
 @AsyncLRU(maxsize=128)
-async def get_laboratory() -> Laboratory:
-    lab = await LaboratoryService().get_by_setup_name()
+async def get_laboratory(lab_uid: str = None) -> Laboratory:
+    if not lab_uid:
+        lab_uid = get_current_lab_uid()
+    lab = await LaboratoryService().get(uid=lab_uid)
     return lab
 
 
 @AsyncLRU(maxsize=128)
-async def get_laboratory_setting() -> tuple[Laboratory, LaboratorySetting]:
-    lab = await LaboratoryService().get_by_setup_name()
+async def get_laboratory_setting(lab_uid: str = None) -> tuple[Laboratory, LaboratorySetting]:
+    if not lab_uid:
+        lab_uid = get_current_lab_uid()
+    lab = await LaboratoryService().get(uid=lab_uid)
     setting = await LaboratorySettingService().get(laboratory_uid=lab.uid)
     return lab, setting
 

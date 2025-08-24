@@ -26,8 +26,7 @@
         </thead>
         <tbody class="bg-background divide-y divide-border">
           <tr v-for="user in users" :key="user.uid" class="hover:bg-muted/50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.firstName }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.lastName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.firstName }} {{ user.lastName }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.email }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">
               <span
@@ -51,6 +50,8 @@
                 {{ user.isBlocked ? 'Blocked' : 'Active' }}
               </span>
             </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ getLaboratoryName(user.activeLaboratoryUid || "") }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.laboratories?.length }} Labs</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-right">
               <button
                 @click="FormManager(false, user)"
@@ -186,7 +187,7 @@
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">Assigned Laboratories</label>
               <div class="border-2 border-gray-300 rounded-md p-3 space-y-2 max-h-32 overflow-y-auto">
-                <div v-for="lab in mockLaboratories" :key="lab.uid" class="flex items-center space-x-3">
+                <div v-for="lab in setupStore.getLaboratories" :key="lab.uid" class="flex items-center space-x-3">
                   <input
                     :id="`lab-${lab.uid}`"
                     v-model="form.laboratoryUids"
@@ -283,13 +284,16 @@ import {
 } from "@/graphql/operations/_mutations";
 import { UserType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
+import { useSetupStore } from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
 import FelProtectedInput from "@/components/ui/form/FelProtectedInput.vue";
 
 const userStore = useUserStore();
+const setupStore = useSetupStore();
 onMounted(() => {
   userStore.fetchUsers({});
   userStore.fetchGroupsAndPermissions();
+  setupStore.fetchLaboratories();
 })
 
 let users = computed<UserType[]>(() => userStore.getUsers);
@@ -313,12 +317,6 @@ let form = reactive({
 
 const formAction = ref<boolean>(true);
 
-// Mock laboratories data - in real implementation, these would come from GraphQL queries
-const mockLaboratories = ref([
-  { uid: "lab1", name: "Central Laboratory", code: "CENTRAL" },
-  { uid: "lab2", name: "Branch Laboratory", code: "BRANCH" },
-]);
-
 const { withClientMutation } = useApiUtil();
 function addUser(): void {
   withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, form, "createUser").then((result) =>
@@ -339,7 +337,10 @@ function userGroupsName(user: UserType): string {
 }
 
 const getLaboratoryName = (labUid: string) => {
-  const lab = mockLaboratories.value.find(l => l.uid === labUid);
+  const lab = setupStore.getLaboratories.find(l => l.uid === labUid);
+  if(!lab) {
+    return "-- Not Assigned --"
+  }
   return lab?.name || "Unknown Laboratory";
 };
 
@@ -368,7 +369,7 @@ function FormManager(create: boolean, obj: UserType = {} as UserType): void {
     form.isActive = obj.isActive ?? true;
     form.isBlocked = obj.isBlocked ?? false;
     form.userName = obj.userName ?? "";
-    form.laboratoryUids = obj.laboratories?.map(lab => lab.uid) || [];
+    form.laboratoryUids = obj.laboratories || [];
     form.activeLaboratoryUid = obj.activeLaboratoryUid || "";
     Object.assign(form, { ...obj });
   }
@@ -384,13 +385,14 @@ function saveUserForm(): void {
 }
 
 const headers = [
-  "First Name",
-  "Last Name",
+  "Full Name",
   "Email",
   "Active",
   "Group",
   "Username",
   "Blocked",
+  "Active Laboratory",
+  "Assigned Labs",
   "Actions"
 ];
 </script>

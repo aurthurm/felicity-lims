@@ -15,7 +15,7 @@ from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
 from felicity.core import get_settings  # noqa
 from felicity.core.tenant_context import (
-    get_tenant_context, 
+    get_tenant_context,
     TenantContext,
     require_lab_context,
     require_user_context
@@ -47,13 +47,13 @@ async def _get_user(token: str):
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+        token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User | None:
     return await _get_user(token)
 
 
 async def get_current_active_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+        token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User | None:
     current_user = await _get_user(token)
     if not current_user or not current_user.is_active:
@@ -65,7 +65,6 @@ class InfoContext(BaseContext):
     async def user(self) -> User | None:
         if not self.request:
             return None
-
         authorization = self.request.headers.get("Authorization", None)
         if not authorization:
             return None
@@ -123,7 +122,7 @@ async def get_current_user_from_context() -> User:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication required"
         )
-    
+
     user_service = UserService()
     user = await user_service.get(uid=context.user_uid)
     if not user:
@@ -131,7 +130,7 @@ async def get_current_user_from_context() -> User:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found"
         )
-    
+
     return user
 
 
@@ -140,7 +139,7 @@ def get_audit_context() -> dict:
     context = get_tenant_context()
     if not context:
         return {}
-    
+
     return {
         "user_uid": context.user_uid,
         "laboratory_uid": context.laboratory_uid,

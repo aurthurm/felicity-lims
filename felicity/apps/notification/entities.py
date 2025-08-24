@@ -1,15 +1,14 @@
 from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 
 """
  Many to Many Link between Users and ActivityFeed
 """
 activity_feed_subscription = Table(
     "activity_feed_subscription",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("activity_feed_uid", ForeignKey("activity_feed.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -31,8 +30,7 @@ class ActivityFeed(LabScopedEntity):
 """
 activity_stream_feed = Table(
     "activity_stream_feed",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("activity_feed_uid", ForeignKey("activity_feed.uid"), primary_key=True),
     Column("stream_uid", ForeignKey("activity_stream.uid"), primary_key=True),
 )
@@ -42,8 +40,7 @@ activity_stream_feed = Table(
 """
 activity_stream_view = Table(
     "activity_stream_view",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("activity_stream_uid", ForeignKey("activity_stream.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -80,8 +77,7 @@ class ActivityStream(LabScopedEntity):
 """
 user_notification = Table(
     "user_notification",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -91,8 +87,7 @@ user_notification = Table(
 """
 notification_view = Table(
     "notification_view",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -102,8 +97,7 @@ notification_view = Table(
 """
 group_notification = Table(
     "group_notification",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -113,8 +107,7 @@ group_notification = Table(
 """
 department_notification = Table(
     "department_notification",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
 )

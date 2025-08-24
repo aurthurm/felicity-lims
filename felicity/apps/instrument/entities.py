@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity, BaseEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity, MaybeLabScopedEntity
 from felicity.apps.user.entities import User
 from felicity.core.dtz import timenow_dt
 
@@ -66,7 +66,7 @@ class Instrument(BaseEntity):
     )
 
 
-class LaboratoryInstrument(LabScopedEntity):
+class LaboratoryInstrument(MaybeLabScopedEntity):
     """Laboratory Instrument"""
 
     __tablename__ = "laboratory_instrument"

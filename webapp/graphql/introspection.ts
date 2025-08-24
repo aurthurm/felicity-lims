@@ -16868,6 +16868,15 @@ export default {
             "args": []
           },
           {
+            "name": "country",
+            "type": {
+              "kind": "OBJECT",
+              "name": "CountryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "countryUid",
             "type": {
               "kind": "SCALAR",
@@ -16897,6 +16906,15 @@ export default {
             "type": {
               "kind": "SCALAR",
               "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "district",
+            "type": {
+              "kind": "OBJECT",
+              "name": "DistrictType",
+              "ofType": null
             },
             "args": []
           },
@@ -16969,10 +16987,28 @@ export default {
             "args": []
           },
           {
+            "name": "organization",
+            "type": {
+              "kind": "OBJECT",
+              "name": "OrganizationType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "organizationUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "province",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProvinceType",
+              "ofType": null
             },
             "args": []
           },
@@ -16995,12 +17031,9 @@ export default {
           {
             "name": "settings",
             "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "LaboratorySettingType",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "LaboratorySettingType",
+              "ofType": null
             },
             "args": []
           },
@@ -17050,20 +17083,6 @@ export default {
           }
         ],
         "interfaces": []
-      },
-      {
-        "kind": "UNION",
-        "name": "LaboratoryTypeOperationError",
-        "possibleTypes": [
-          {
-            "kind": "OBJECT",
-            "name": "LaboratoryType"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "OperationError"
-          }
-        ]
       },
       {
         "kind": "OBJECT",
@@ -20508,6 +20527,13 @@ export default {
             },
             "args": [
               {
+                "name": "activeLaboratoryUid",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
                 "name": "email",
                 "type": {
                   "kind": "NON_NULL",
@@ -20532,6 +20558,19 @@ export default {
                 "type": {
                   "kind": "SCALAR",
                   "name": "Any"
+                }
+              },
+              {
+                "name": "laboratoryUids",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
                 }
               },
               {
@@ -24446,7 +24485,7 @@ export default {
             ]
           },
           {
-            "name": "updateOrganisation",
+            "name": "updateOrganization",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -24465,11 +24504,21 @@ export default {
                     "name": "Any"
                   }
                 }
+              },
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
               }
             ]
           },
           {
-            "name": "updateOrganisationSetting",
+            "name": "updateOrganizationSetting",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -25470,6 +25519,13 @@ export default {
             },
             "args": [
               {
+                "name": "activeLaboratoryUid",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
                 "name": "email",
                 "type": {
                   "kind": "SCALAR",
@@ -25502,6 +25558,19 @@ export default {
                 "type": {
                   "kind": "SCALAR",
                   "name": "Any"
+                }
+              },
+              {
+                "name": "laboratoryUids",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Any"
+                    }
+                  }
                 }
               },
               {
@@ -26371,46 +26440,6 @@ export default {
             "args": []
           },
           {
-            "name": "allowPatientRegistration",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "allowSampleRegistration",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "allowSelfVerification",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "allowWorksheetCreation",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "autoReceiveSamples",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
             "name": "createdAt",
             "type": {
               "kind": "SCALAR",
@@ -26444,31 +26473,24 @@ export default {
             "args": []
           },
           {
-            "name": "defaultRoute",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "defaultTatMinutes",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "defaultTheme",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
             "name": "inactivityLogOut",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "organization",
+            "type": {
+              "kind": "OBJECT",
+              "name": "OrganizationType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "organizationUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -26485,14 +26507,6 @@ export default {
           },
           {
             "name": "paymentTermsDays",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "stickerCopies",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -26575,6 +26589,15 @@ export default {
             "args": []
           },
           {
+            "name": "country",
+            "type": {
+              "kind": "OBJECT",
+              "name": "CountryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "countryUid",
             "type": {
               "kind": "SCALAR",
@@ -26604,6 +26627,15 @@ export default {
             "type": {
               "kind": "SCALAR",
               "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "district",
+            "type": {
+              "kind": "OBJECT",
+              "name": "DistrictType",
+              "ofType": null
             },
             "args": []
           },
@@ -26659,6 +26691,15 @@ export default {
             "args": []
           },
           {
+            "name": "province",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProvinceType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "provinceUid",
             "type": {
               "kind": "SCALAR",
@@ -26699,6 +26740,14 @@ export default {
           },
           {
             "name": "tagLine",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "timezone",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -34737,8 +34786,8 @@ export default {
             "type": {
               "kind": "NON_NULL",
               "ofType": {
-                "kind": "UNION",
-                "name": "LaboratoryTypeOperationError",
+                "kind": "OBJECT",
+                "name": "LaboratoryType",
                 "ofType": null
               }
             },
@@ -46770,6 +46819,23 @@ export default {
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratories",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
               }
             },
             "args": []

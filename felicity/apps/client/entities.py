@@ -3,13 +3,13 @@ from uuid import uuid4
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.setup.entities import District, Province
 from felicity.apps.user.abstract import AbstractBaseUser
 from felicity.apps.user.enum import UserType
 
 
-class Client(LabScopedEntity):
+class Client(BaseEntity):
     """Client/Facility"""
 
     __tablename__ = "client"
@@ -50,11 +50,12 @@ class Client(LabScopedEntity):
     @property
     def sms_metadata(self) -> dict:
         result = {
-            "client_name": self.name, 
-            "client_id": self.code, 
+            "client_name": self.name,
+            "client_id": self.code,
         }
         return result
-    
+
+
 class ClientContact(AbstractBaseUser):
     __tablename__ = "client_contact"
 
@@ -85,7 +86,7 @@ class ClientContact(AbstractBaseUser):
     @property
     def sms_metadata(self) -> dict:
         result = {"contact_name": self.full_name}
-        
+
         if self.client and hasattr(self.client, 'sms_metadata'):
             try:
                 client_metadata = self.client.sms_metadata
@@ -93,5 +94,5 @@ class ClientContact(AbstractBaseUser):
                     result.update(client_metadata)
             except Exception:
                 pass
-                
+
         return result

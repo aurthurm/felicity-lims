@@ -200,6 +200,8 @@ class UserMutations:
             user_name: str,
             password: str,
             passwordc: str,
+            active_laboratory_uid: str | None = None,
+            laboratory_uids: list[str] | None = None,
             group_uid: str | None = None,
             open_reg: bool | None = False,
     ) -> UserResponse:
@@ -227,6 +229,7 @@ class UserMutations:
             "email": email,
             "user_name": user_name,
             "password": password,
+            "active_laboratory_uid": active_laboratory_uid,
             "is_superuser": False,
             "login_retry": 0,
             "created_by_uid": felicity_user.uid,
@@ -234,6 +237,10 @@ class UserMutations:
         }
         user_in = user_schemas.UserCreate(**user_in)
         user = await user_service.create(user_in=user_in, related=['groups'])
+        if isinstance(laboratory_uids, list):
+            for laboratory_uid in laboratory_uids:
+                await user_service.assign_user_to_laboratory(user.uid, laboratory_uid)
+
         if group_uid:
             group = await group_service.get(uid=group_uid)
             user.groups.append(group)
@@ -262,6 +269,8 @@ class UserMutations:
             group_uid: str | None,
             is_active: bool | None,
             is_blocked: bool | None,
+            active_laboratory_uid: str | None = None,
+            laboratory_uids: list[str] | None = None,
             password: str | None = None,
             passwordc: str | None = None,
     ) -> UserResponse:
@@ -280,6 +289,8 @@ class UserMutations:
             setattr(user, "last_name", last_name)
         if user_name and "user_name" in user_data:
             setattr(user, "user_name", user_name)
+        if active_laboratory_uid and "active_laboratory_uid" in user_data:
+            setattr(user, "active_laboratory_uid", active_laboratory_uid)
         if email and "email" in user_data:
             setattr(user, "email", email)
         if mobile_phone and "mobile_phone" in user_data:
@@ -297,6 +308,12 @@ class UserMutations:
             user_in.password = password
 
         user = await user_service.update(user.uid, user_in, related=['groups'])
+        if isinstance(laboratory_uids, list):
+            labs_for_user = await user_service.get_laboratories_by_user(user.uid)
+            for l_uid in labs_for_user:
+                await user_service.remove_user_from_laboratory(user.uid, l_uid)
+            for laboratory_uid in laboratory_uids:
+                await user_service.assign_user_to_laboratory(user.uid, laboratory_uid)
 
         # group management
         grp_ids = [grp.uid for grp in user.groups]
@@ -474,7 +491,7 @@ class UserMutations:
         setattr(group, "keyword", payload.__dict__["name"].upper())
 
         group = await group_service.save(group)
-        return GroupType(**group.marshal_simple())
+        return GroupType(**group.marshal_simple(exclude=["laboratory"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(

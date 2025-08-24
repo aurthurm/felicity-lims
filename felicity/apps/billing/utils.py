@@ -34,7 +34,8 @@ from felicity.apps.billing.services import (
     VoucherService,
 )
 from felicity.apps.impress.invoicing.utils import impress_invoice
-from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
+from felicity.apps.setup.caches import get_laboratory
+from felicity.apps.setup.services import LaboratorySettingService
 from felicity.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
@@ -42,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=False):
-    laboratory = await LaboratoryService().get_by_setup_name("felicity")
+    laboratory = await get_laboratory()
     lab_settings = await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
 
     if not lab_settings.allow_billing:

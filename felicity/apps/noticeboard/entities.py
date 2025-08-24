@@ -1,15 +1,14 @@
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 
 """
  Many to Many Link between Users and Notices
 """
 notice_view: Table = Table(
     "notice_view",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -19,8 +18,7 @@ notice_view: Table = Table(
 """
 group_notice: Table = Table(
     "group_notice",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -30,8 +28,7 @@ group_notice: Table = Table(
 """
 department_notice: Table = Table(
     "department_notice",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
 )

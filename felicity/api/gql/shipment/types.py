@@ -3,6 +3,7 @@ from datetime import datetime
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import SampleType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.shipment.services import ShippedSampleService
@@ -18,6 +19,8 @@ class ReferralLaboratoryType:
     password: str | None = None
     is_reference: bool | None = None
     is_referral: bool | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     created_at: str | None = None
@@ -55,6 +58,8 @@ class ShipmentType:
     received_by_uid: str | None = None
     received_by: UserType | None = None
     date_received: datetime | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     created_at: str | None = None
@@ -103,3 +108,5 @@ class ShippedSampleType:
     result_notified: bool | None = None
     ext_sample_uid: str | None = None
     ext_sample_id: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None

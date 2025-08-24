@@ -4,6 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import AnalysisType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.user.types import UserType
 
 
@@ -91,6 +92,8 @@ class ReportMetaType:
     status: str | None = None
     temp: str | None = None
     analyses: Optional[List[AnalysisType]] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

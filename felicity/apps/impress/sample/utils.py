@@ -33,12 +33,13 @@ exclude = [
 
 # TODO: Use pydantic to handle expected or structured inputs
 async def impress_samples(sample_meta: list[dict], user):
-    laboratory = await get_laboratory()
     to_return = []
 
     for s_meta in sample_meta:
         logger.info(f"sample s_meta {s_meta}")
         sample = await SampleService().get(uid=s_meta.get("uid"))
+        assert sample.laboratory_uid is not None
+        laboratory = await get_laboratory(lab_uid=sample.laboratory_uid)  # noqa
         logger.info(f"sample {sample} {sample.status}")
 
         if sample.status in [

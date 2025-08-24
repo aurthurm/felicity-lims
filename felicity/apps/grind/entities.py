@@ -3,15 +3,14 @@ from __future__ import annotations
 from sqlalchemy import Column, String, ForeignKey, Table, DateTime, Boolean, Enum, Integer
 from sqlalchemy.orm import relationship, backref
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 from felicity.apps.grind.enum import MediaTarget, LabelCategory, ErrandCategory, PosterCategory, OccurrenceTarget, \
     StampCategory
 
 # Association table for many-to-many relationship between Scheme and User (members)
 grind_scheme_member = Table(
     'grind_scheme_member',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('grind_scheme_uid', String, ForeignKey('grind_scheme.uid')),
     Column('user_uid', String, ForeignKey('user.uid'))
 )
@@ -51,8 +50,7 @@ class GrindBoard(LabScopedEntity):
 # Association table for many-to-many relationship between Poster and User (members)
 grind_poster_member = Table(
     'grind_poster_member',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('grind_poster_uid', String, ForeignKey('grind_poster.uid')),
     Column('user_uid', String, ForeignKey('user.uid'))
 )
@@ -60,8 +58,7 @@ grind_poster_member = Table(
 # Association table for many-to-many relationship between Poster and Stamp
 grind_poster_stamp = Table(
     'grind_poster_stamp',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('grind_poster_uid', String, ForeignKey('grind_poster.uid')),
     Column('grind_stamp_uid', String, ForeignKey('grind_stamp.uid'))
 )
@@ -97,8 +94,7 @@ class GrindPoster(LabScopedEntity):
 # Association table for many-to-many relationship between Errand and User (members)
 grind_errand_member = Table(
     'grind_errand_member',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('grind_errand_uid', String, ForeignKey('grind_errand.uid')),
     Column('grind_user_uid', String, ForeignKey('user.uid'))
 )
@@ -106,8 +102,7 @@ grind_errand_member = Table(
 # Association table for many-to-many relationship between Errand and Stamp
 grind_errand_stamp = Table(
     'grind_errand_stamp',
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column('grind_errand_uid', String, ForeignKey('grind_errand.uid')),
     Column('grind_stamp_uid', String, ForeignKey('grind_stamp.uid'))
 )

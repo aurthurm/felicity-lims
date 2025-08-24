@@ -13,6 +13,33 @@ query getOrganization {
         qualityStatement
         settings {
             uid
+            passwordLifetime
+            inactivityLogOut
+            allowBilling
+            allowAutoBilling
+            currency
+            paymentTermsDays
+        }
+    }
+}
+
+query getLaboratory {
+    laboratory {
+        uid
+        name
+        tagLine
+        labManagerUid
+        email
+        emailCc
+        mobilePhone
+        businessPhone
+        address
+        banking
+        logo
+        qualityStatement
+        settings {
+            uid
+            laboratoryUid
             allowSelfVerification
             allowPatientRegistration
             allowSampleRegistration
@@ -27,47 +54,6 @@ query getOrganization {
             allowAutoBilling
             currency
             paymentTermsDays
-        }
-    }
-}
-
-query getLaboratory {
-    laboratory {
-        ...on LaboratoryType {
-            uid
-            name
-            tagLine
-            labManagerUid
-            email
-            emailCc
-            mobilePhone
-            businessPhone
-            address
-            banking
-            logo
-            qualityStatement
-            settings {
-                uid
-                laboratoryUid
-                allowSelfVerification
-                allowPatientRegistration
-                allowSampleRegistration
-                allowWorksheetCreation
-                defaultRoute
-                passwordLifetime
-                inactivityLogOut
-                defaultTheme
-                autoReceiveSamples
-                stickerCopies
-                allowBilling
-                allowAutoBilling
-                currency
-                paymentTermsDays
-            }
-        }
-        ...on OperationError {
-            error
-            suggestion
         }
     }
 }
@@ -147,6 +133,8 @@ query userAll($first: Int, $after: String, $text: String, $sortBy: [String!] = [
                     target
                 }
             }
+            activeLaboratoryUid
+            laboratories
         }
     }
 }

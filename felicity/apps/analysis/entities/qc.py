@@ -4,7 +4,7 @@ from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Tab
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity
+from felicity.apps.abstract import LabScopedEntity, BaseEntity
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.setup.entities.setup import Department
 
@@ -30,8 +30,7 @@ Many to Many Link between QCReference and  Analysis
 """
 qc_reference_analysis = Table(
     "qc_reference_analysis",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("qc_reference_uid", ForeignKey("qc_reference.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -105,8 +104,7 @@ Many to Many Link between QCTemplate and Department
 """
 qc_template_department = Table(
     "qc_template_department",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
     Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
@@ -116,8 +114,7 @@ Many to Many Link between QCTemplate and  QCLevel
 """
 qc_template_qc_level = Table(
     "qc_template_qc_level",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
     Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )

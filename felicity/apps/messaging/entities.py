@@ -1,15 +1,14 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import LabScopedEntity, BaseMPTT
+from felicity.apps.abstract import LabScopedEntity, BaseMPTT, BaseEntity
 
 """
  Many to Many Link between Users (recipients)  and MessageThread
 """
 message_thread_recipient = Table(
     "message_thread_recipient",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("message_thread_uid", ForeignKey("message_thread.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -19,8 +18,7 @@ message_thread_recipient = Table(
 """
 message_thread_delete = Table(
     "message_thread_delete",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("message_thread_uid", ForeignKey("message_thread.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -44,8 +42,7 @@ class MessageThread(LabScopedEntity):
 """
 message_view = Table(
     "message_view",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("message_uid", ForeignKey("message.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -55,8 +52,7 @@ message_view = Table(
 """
 message_delete = Table(
     "message_delete",
-    LabScopedEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
+    BaseEntity.metadata,
     Column("message_uid", ForeignKey("message.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )

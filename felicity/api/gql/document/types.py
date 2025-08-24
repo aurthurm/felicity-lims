@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import strawberry
 
-from felicity.api.gql.setup.types import DepartmentType
+from felicity.api.gql.setup.types import DepartmentType, LaboratoryType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 
@@ -12,6 +12,8 @@ from felicity.api.gql.user.types import UserType
 class DocumentCategoryType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -39,6 +41,8 @@ class DocumentCategoryCursorPage:
 class DocumentTagType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -74,6 +78,8 @@ class DocumentFolderType:
     description: str | None = None
     parent_uid: str | None = None
     parent: Optional["DocumentFolderType"] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -115,6 +121,8 @@ class DocumentTemplateType:
     content: str
     category_uid: str | None = None
     category: DocumentCategoryType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -153,6 +161,8 @@ class DocumentVersionType:
     editor: str
     thumbnail: str | None = None
     change_summary: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -185,6 +195,8 @@ class DocumentStatusType:
     date: str
     user_uid: str
     user: UserType
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -219,6 +231,8 @@ class DocumentReviewStepType:
     status: str
     comments: str | None = None
     action_date: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -252,6 +266,8 @@ class DocumentReviewCycleType:
     initiated_by_uid: str
     initiated_by: UserType
     status: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -288,6 +304,8 @@ class DocumentSubscriptionType:
     user_uid: str
     user: UserType
     subscription_type: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -321,6 +339,8 @@ class DocumentAuditType:
     user_uid: str
     user: UserType
     ip_address: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -361,6 +381,8 @@ class DocumentType:
     last_accessed: str | None = None
     last_accessed_by_uid: str | None = None
     last_accessed_by: UserType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None

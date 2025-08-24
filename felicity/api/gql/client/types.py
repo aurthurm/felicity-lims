@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.setup.types import DistrictType, ProvinceType
+from felicity.api.gql.setup.types import DistrictType, ProvinceType, LaboratoryType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.client.services import ClientContactService
@@ -27,6 +27,8 @@ class ClientType:
     consent_sms: bool
     internal_use: bool
     active: bool
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -54,6 +56,8 @@ class ClientContactType:
     consent_sms: bool
     client_uid: str
     client: Optional[ClientType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_at: str | None = None
     creator_name: str | None = None

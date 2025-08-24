@@ -7,6 +7,7 @@ import {
     Exchange,
 } from '@urql/vue';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { createClient as createWSClient, SubscribePayload } from 'graphql-ws';
 import { pipe, tap } from 'wonka';
 
 import { getAuthData, authLogout, generateRequestId } from '@/auth';
@@ -20,16 +21,32 @@ const subscriptionClient = new SubscriptionClient(WS_BASE_URL, {
     lazy: true,
     connectionParams: () => {
         const authData = getAuthData();
+        console.log('WebSocket connectionParams called with token:', authData?.token ? 'present' : 'missing');
         return {
-            headers: {
-                'X-Request-ID': generateRequestId(),
-                ...(authData?.activeLaboratory && {
-                    'X-Laboratory-ID': authData?.activeLaboratory?.uid,
-                }),
-                ...(authData?.token && {
-                    Authorization: `Bearer ${authData?.token}`,
-                }),
-            },
+            'X-Request-ID': generateRequestId(),
+            ...(authData?.token && {
+                Authorization: `Bearer ${authData?.token}`,
+            }),
+            ...(authData?.activeLaboratory && {
+                'X-Laboratory-ID': authData?.activeLaboratory?.uid,
+            }),
+        };
+    },
+});
+
+const wsClient = createWSClient({
+    url: WS_BASE_URL,
+    connectionParams: () => {
+        const authData = getAuthData();
+        console.log('WebSocket connectionParams called with token:', authData?.token ? 'present' : 'missing');
+        return {
+            'X-Request-ID': generateRequestId(),
+            ...(authData?.token && {
+                Authorization: `Bearer ${authData?.token}`,
+            }),
+            ...(authData?.activeLaboratory && {
+                'X-Laboratory-ID': authData?.activeLaboratory?.uid,
+            }),
         };
     },
 });
@@ -75,9 +92,24 @@ export const urqlClient = createClient({
         }),
         resultInterceptorExchange,
         fetchExchange,
+        // subscriptionExchange({
+        //     forwardSubscription: request => subscriptionClient.request(request) as any,
+        // }),
         subscriptionExchange({
-            forwardSubscription: operation => subscriptionClient.request(operation) as any,
-        }),
+            forwardSubscription(operation) {
+              return {
+                subscribe: (sink) => {
+                  const dispose = wsClient.subscribe(
+                    operation as SubscribePayload, 
+                    sink,
+                  );
+                  return {
+                    unsubscribe: dispose,
+                  };
+                },
+              };
+            },
+          }),
     ],
     fetchOptions: () => {
         const authData = getAuthData();

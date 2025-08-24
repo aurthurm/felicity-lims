@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics.entities import ReportMeta
+from felicity.core.tenant_context import get_current_lab_uid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,32 +26,43 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         super().__init__(Sample)
 
     async def get_line_listing(
-        self,
-        period_start: str,
-        period_end: str,
-        sample_states: list[str],
-        date_column: str,
-        analysis_uids: list[str],
+            self,
+            period_start: str,
+            period_end: str,
+            sample_states: list[str],
+            date_column: str,
+            analysis_uids: list[str],
     ):
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
 
-        if len(analysis_uids) > 0:
-            an_uids = analysis_uids
-            if len(an_uids) == 1:
-                an_uids.append(analysis_uids[0])
-            an_uids = tuple(an_uids)
-        else:
-            an_uids = (0, 0)
+        # --- Dynamic WHERE conditions
+        conditions = [
+            f"sa.{date_column} >= :sd",
+            f"sa.{date_column} <= :ed",
+        ]
+        params = {"sd": start_date, "ed": end_date}
 
+        # Filter by analysis_uids if provided
+        if analysis_uids:
+            conditions.append("an.uid IN :an_uids")
+            params["an_uids"] = tuple(analysis_uids)  # noqa
+
+        # Filter by sample_states if provided
         if sample_states:
-            statuses = sample_states
-            if len(sample_states) == 1:
-                statuses.append(sample_states[0])
-            statuses = tuple(statuses)
-        else:
-            statuses = ("", "")
+            conditions.append("sa.status IN :statuses")
+            params["statuses"] = tuple(sample_states)  # noqa
 
+        # Tenant context filter
+        current_lab_uid = get_current_lab_uid()
+        if current_lab_uid:
+            conditions.append("re.laboratory_uid = :lab_uid")
+            params["lab_uid"] = current_lab_uid  # noqa
+
+        # Final WHERE clause
+        where_clause = " AND ".join(conditions)
+
+        # --- SQL statement
         stmt = text(
             f"""
             select 
@@ -87,26 +99,22 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
             inner join patient pt on pt.uid = ar.patient_uid
             left join instrument inst on inst.uid = re.instrument_uid
             left join method mt on mt.uid = re.method_uid
-            where
-                sa.{date_column} >= :sd and
-                sa.{date_column} <= :ed and 
-                an.uid in {an_uids} and
-                sa.status in {statuses}
+            where {where_clause}
         """
         )
 
         async with self.async_session() as session:
-            result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
+            result = await session.execute(stmt, params)
 
         # columns result.keys()/result._metadata.keys
         return result.keys(), result.all()
 
     async def get_counts_group_by(
-        self,
-        group_by: str,
-        start: tuple[str, str] | None,
-        end: tuple[str, str] | None,
-        group_in: list[str] | None = None,
+            self,
+            group_by: str,
+            start: tuple[str, str] | None,
+            end: tuple[str, str] | None,
+            group_in: list[str] | None = None,
     ):
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
@@ -135,6 +143,11 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
             end_column = getattr(self.model, end_column)
             stmt = stmt.filter(end_column <= end_date)
 
+        # Tenant context filter
+        current_lab_uid = get_current_lab_uid()
+        if current_lab_uid and hasattr(self.model, "laboratory_uid"):
+            stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)  # noqa
+
         if group_in:
             stmt = stmt.filter(group_by.in_(group_in))
 
@@ -146,7 +159,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         return result.all()
 
     async def count_analyses_retests(
-        self, start: tuple[str, str], end: tuple[str, str]
+            self, start: tuple[str, str], end: tuple[str, str]
     ):
         retest = getattr(self.model, "retest")
         stmt = select(func.count(self.model.uid).label("total")).filter(
@@ -171,13 +184,18 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
             end_column = getattr(self.model, end_column)
             stmt = stmt.filter(end_column <= end_date)
 
+        # Tenant context filter
+        current_lab_uid = get_current_lab_uid()
+        if current_lab_uid and hasattr(self.model, "laboratory_uid"):
+            stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)  # noqa
+
         async with self.async_session() as session:
             result = await session.execute(stmt)
 
         return result.all()
 
     async def get_sample_process_performance(
-        self, start: tuple[str, str], end: tuple[str, str]
+            self, start: tuple[str, str], end: tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -218,6 +236,15 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
                 "analysis_process_performance must have sample as root table"
             )
 
+        params = {"sd": start_date, "ed": end_date}
+
+        # --- Tenant filter
+        current_lab_uid = get_current_lab_uid()
+        lab_filter = ""
+        if current_lab_uid:
+            lab_filter = "AND laboratory_uid = :lab_uid"
+            params["lab_uid"] = current_lab_uid  # noqa
+
         raw_sql = f"""
             select 
                 COUNT(diff.total_days) as total_samples,
@@ -238,18 +265,19 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
                 where
                     {start_column} >= :sd and
                     {end_column} <= :ed
+                    {lab_filter}
               ) as diff
         """
 
         stmt = text(raw_sql)  # noqa SQL200
 
         async with self.async_session() as session:
-            result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
+            result = await session.execute(stmt, params)
 
         return result.all()
 
     async def get_analysis_process_performance(
-        self, start: tuple[str, str], end: tuple[str, str]
+            self, start: tuple[str, str], end: tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -290,6 +318,14 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
                 "analysis_process_performance must have sample as root table"
             )
 
+        # --- Tenant filter
+        current_lab_uid = get_current_lab_uid()
+        lab_filter = ""
+        params = {"sd": start_date, "ed": end_date}
+        if current_lab_uid:
+            lab_filter = "AND ar.laboratory_uid = :lab_uid"
+            params["lab_uid"] = current_lab_uid
+
         raw_sql = f"""
             select 
                 diff.name,
@@ -314,6 +350,7 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
                 where
                     {self.alias}.{start_column} >= :sd and
                     {self.alias}.{end_column} <= :ed
+                    {lab_filter}
               ) as diff
             group by
               diff.name
@@ -322,61 +359,69 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         stmt = text(raw_sql)  # noqa SQL200
 
         async with self.async_session() as session:
-            result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
+            result = await session.execute(stmt, params)
 
         return result.all()
 
     async def get_laggards(self):
         """
-        Stats on delayed samples
+        Stats on delayed samples (with tenant context filter)
         """
+        current_lab_uid = get_current_lab_uid()
+        lab_filter = ""
+        params = {}
+
+        if current_lab_uid and hasattr(self.model, "laboratory_uid"):
+            lab_filter = "AND laboratory_uid = :lab_uid"
+            params["lab_uid"] = current_lab_uid
 
         raw_sql_for_incomplete = f"""
-            select 
-                count(*) as total_incomplete,  
-                count(*) filter (where late is true) as total_delayed,  
-                count(*) filter (where late is false) as total_not_delayed,  
-                count(*) filter (where total_days<10) as "< 10",
-                count(*) filter (where total_days>=10 and total_days<20) as "10 - 20",
-                count(*) filter (where total_days>=20 and total_days<30) as "20 - 30",
-                count(*) filter (where total_days>=30) as "> 30"
-            from 
+            SELECT 
+                COUNT(*) AS total_incomplete,  
+                COUNT(*) FILTER (WHERE late IS TRUE) AS total_delayed,  
+                COUNT(*) FILTER (WHERE late IS FALSE) AS total_not_delayed,  
+                COUNT(*) FILTER (WHERE total_days < 10) AS "< 10",
+                COUNT(*) FILTER (WHERE total_days >= 10 AND total_days < 20) AS "10 - 20",
+                COUNT(*) FILTER (WHERE total_days >= 20 AND total_days < 30) AS "20 - 30",
+                COUNT(*) FILTER (WHERE total_days >= 30) AS "> 30"
+            FROM 
               (
-                select 
-                    DATE_PART('day', date_published::timestamp - date_received::timestamp) as total_days,
-                    due_date > date_published as late
-                from {self.table} {self.alias}
-                where
-                    status in ('due','received','to_be_verified', 'verified') and 
-                    due_date is not null
-              ) as incomplete
+                SELECT 
+                    DATE_PART('day', date_published::timestamp - date_received::timestamp) AS total_days,
+                    due_date > date_published AS late
+                FROM {self.table} {self.alias}
+                WHERE
+                    status IN ('due','received','to_be_verified','verified')
+                    AND due_date IS NOT NULL
+                    {lab_filter}
+              ) AS incomplete
         """
 
         raw_sql_for_complete = f"""
-            with completed_delayed as (
-                select 
-                    DATE_PART('day', date_published::timestamp - date_received::timestamp) as total_days
-                from {self.table} {self.alias}
-                where
-                    status in ('published') and
-                    due_date is not null and 
-                    due_date > date_published
+            WITH completed_delayed AS (
+                SELECT 
+                    DATE_PART('day', date_published::timestamp - date_received::timestamp) AS total_days
+                FROM {self.table} {self.alias}
+                WHERE
+                    status IN ('published')
+                    AND due_date IS NOT NULL 
+                    AND due_date > date_published
+                    {lab_filter}
             )
-            select
-                count(*) as total_delayed,  
-                count(*) filter (where total_days<10) as "< 10",
-                count(*) filter (where total_days>=10 and total_days<20) as "10 - 20",
-                count(*) filter (where total_days>=20 and total_days<30) as "20 - 30",
-                count(*) filter (where total_days>=30) as "> 30"
-            from
-              completed_delayed
+            SELECT
+                COUNT(*) AS total_delayed,  
+                COUNT(*) FILTER (WHERE total_days < 10) AS "< 10",
+                COUNT(*) FILTER (WHERE total_days >= 10 AND total_days < 20) AS "10 - 20",
+                COUNT(*) FILTER (WHERE total_days >= 20 AND total_days < 30) AS "20 - 30",
+                COUNT(*) FILTER (WHERE total_days >= 30) AS "> 30"
+            FROM completed_delayed
         """
 
         stmt_for_incomplete = text(raw_sql_for_incomplete)  # noqa SQL200
         stmt_for_complete = text(raw_sql_for_complete)  # noqa SQL200
 
         async with self.async_session() as session:
-            result_for_incomplete = await session.execute(stmt_for_incomplete)
-            result_for_complete = await session.execute(stmt_for_complete)
+            result_for_incomplete = await session.execute(stmt_for_incomplete, params)
+            result_for_complete = await session.execute(stmt_for_complete, params)
 
         return result_for_incomplete.all(), result_for_complete.all()

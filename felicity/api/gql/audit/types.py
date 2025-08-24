@@ -2,6 +2,7 @@ from typing import Optional
 
 import strawberry  # noqa
 
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import JSONScalar
 from felicity.api.gql.user import UserType
 
@@ -15,6 +16,8 @@ class AuditLogType:
     action: int | None = None
     state_before: Optional[JSONScalar] = None
     state_after: Optional[JSONScalar] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

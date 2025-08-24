@@ -4,6 +4,7 @@ from typing import Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import SampleType
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import JSONScalar
 from felicity.api.gql.user.types import UserType
 from felicity.core.config import settings
@@ -24,6 +25,8 @@ class ReportImpressType:
     sms_sent: bool | None = None
     generated_by_uid: str | None = None
     generated_by: UserType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
     created_at: datetime

@@ -17,11 +17,15 @@ const setupStore = useSetupStore();
 
 setupStore.fetchOrganization();
 const laboratory = computed(() => setupStore.getOrganization);
-const formOrganization = reactive({ ...laboratory.value }) as OrganizationType;
 
+const formOrganization = reactive({ ...laboratory.value }) as OrganizationType;
+const formSettings = reactive({ ...laboratory.value?.settings }) as OrganizationSettingType;
 watch(
   () => laboratory.value?.uid,
-  (anal, prev) => Object.assign(formOrganization, laboratory.value)
+  (anal, prev) => {
+    Object.assign(formOrganization, laboratory.value);
+    Object.assign(formSettings, laboratory.value?.settings)
+  }
 );
 
 const { withClientMutation } = useApiUtil();
@@ -31,7 +35,7 @@ const saveOrganizationForm = () => {
   const payload = { ...formOrganization };
   delete payload["uid"];
   delete payload["__typename"];
-  payload["labManagerUid"] = payload["labManagerUid"]!;
+  delete payload["settings"];
   withClientMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument, { uid: formOrganization.uid, payload }, "updateOrganization").then((result) => {
     setupStore.updateOrganization(result);
     processing.value = false;
@@ -39,14 +43,7 @@ const saveOrganizationForm = () => {
   });
 };
 
-setupStore.fetchOrganizationSetting();
-const laboratorySetting = computed(() => setupStore.getOrganizationSetting);
-const formSettings = reactive({ ...laboratorySetting.value }) as OrganizationSettingType;
 
-watch(
-  () => laboratorySetting.value?.uid,
-  (anal, prev) => Object.assign(formSettings, laboratorySetting.value)
-);
 
 const saveSettingForm = () => {
   processing.value = true;
@@ -91,24 +88,13 @@ const items = [
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Organization Name</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.labName" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.name" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Tag Line</span>
             <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.tagLine" placeholder="Tag Line ..."
               :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Lab Manager</span>
-            <div class="w-full">
-              <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.labManagerUid" :disabled="processing">
-                <option></option>
-                <option v-for="user in users" :key="user?.uid" :value="user.uid">
-                  {{ user?.firstName }} {{ user?.lastName }}
-                </option>
-              </select>
-            </div>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Organization Email</span>
@@ -160,16 +146,6 @@ const items = [
       <form class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Default Landing Page</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.defaultRoute" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Default Theme</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.defaultTheme" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Password Lifetime (days)</span>
             <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.passwordLifetime"
               placeholder="Name ..." :disabled="processing" />
@@ -178,42 +154,6 @@ const items = [
             <span class="text-sm font-medium text-foreground">Inactivity Auto Logout (minutes)</span>
             <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.inactivityLogOut"
               placeholder="Name ..." :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Default Sticker copies</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.stickerCopies"
-              placeholder="Name ..." :disabled="processing" />
-          </label>
-          <span class="block col-span-1"></span>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowSelfVerification" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow self verification</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowPatientRegistration" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow patient registration</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowSampleRegistration" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow sample registration</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowWorksheetCreation" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow worksheet creation</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.autoReceiveSamples" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Auto receive samples</span>
-            </div>
           </label>
           <span class="block col-span-1"></span>
         </div>

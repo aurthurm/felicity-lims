@@ -17,11 +17,15 @@ const setupStore = useSetupStore();
 
 setupStore.fetchLaboratory();
 const laboratory = computed(() => setupStore.getLaboratory);
-const formLaboratory = reactive({ ...laboratory.value }) as LaboratoryType;
 
+const formLaboratory = reactive({ ...laboratory.value }) as LaboratoryType;
+const formSettings = reactive({ ...laboratory.value?.settings }) as LaboratorySettingType;
 watch(
   () => laboratory.value?.uid,
-  (anal, prev) => Object.assign(formLaboratory, laboratory.value)
+  (anal, prev) => {
+    Object.assign(formLaboratory, laboratory.value);
+    Object.assign(formSettings, laboratory.value?.settings)
+  }
 );
 
 const { withClientMutation } = useApiUtil();
@@ -31,6 +35,7 @@ const saveLaboratoryForm = () => {
   const payload = { ...formLaboratory };
   delete payload["uid"];
   delete payload["__typename"];
+  delete payload["settings"];
   payload["labManagerUid"] = payload["labManagerUid"]!;
   withClientMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument, { uid: formLaboratory.uid, payload }, "updateLaboratory").then((result) => {
     setupStore.updateLaboratory(result);
@@ -39,13 +44,7 @@ const saveLaboratoryForm = () => {
   });
 };
 
-const laboratorySetting = computed(() => setupStore.getLaboratory?.settings);
-const formSettings = reactive({ ...laboratorySetting.value }) as LaboratorySettingType;
 
-watch(
-  () => laboratorySetting.value?.uid,
-  (anal, prev) => Object.assign(formSettings, laboratorySetting.value)
-);
 
 const saveSettingForm = () => {
   processing.value = true;
@@ -90,7 +89,7 @@ const items = [
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Laboratory Name</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.labName" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formLaboratory.name" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">

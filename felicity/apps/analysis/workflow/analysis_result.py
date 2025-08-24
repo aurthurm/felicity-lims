@@ -5,6 +5,7 @@ from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
+from felicity.core.tenant_context import get_current_lab_uid
 
 if TYPE_CHECKING:
     pass
@@ -163,7 +164,8 @@ class AnalysisResultWorkFlow:
     async def _guard_approve(
             self, analysis_results: list[AnalysisResult], approved_by_uid
     ) -> bool:
-        laboratory = await LaboratoryService().get_by_setup_name("felicity")
+        lab_id = get_current_lab_uid()
+        laboratory = await LaboratoryService().get(uid=lab_id)
         settings = await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
         states = [ResultState.RESULTED]
 

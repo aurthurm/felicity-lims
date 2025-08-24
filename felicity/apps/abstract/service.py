@@ -171,7 +171,7 @@ class BaseService(Generic[E, C, U]):
                     "request_id": context.request_id,
                 }
             )
-
+        print(f"Tenant context: {context}")
         created = await self.repository.create(commit=commit, session=session, **data)
         if not related:
             return created

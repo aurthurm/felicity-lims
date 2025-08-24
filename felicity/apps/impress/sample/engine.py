@@ -69,7 +69,7 @@ class FelicityImpress:
             h=5.5,
             align="L",
             w=10.0,
-            text=get_from_nested(laboratory, "lab_name"),
+            text=get_from_nested(laboratory, "name"),
             border=0,
         )
         self.pdf.set_font("helvetica", "I", 8)

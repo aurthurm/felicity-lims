@@ -2,6 +2,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
+from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.user.types import UserType
 from felicity.apps.storage.services import (
     StorageContainerService,
@@ -15,6 +16,8 @@ class StoreRoomType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -41,6 +44,8 @@ class StorageLocationType:
     description: str | None = None
     store_room_uid: str
     store_room: Optional[StoreRoomType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -67,6 +72,8 @@ class StorageSectionType:
     description: str | None = None
     storage_location_uid: str
     storage_location: Optional[StorageLocationType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -96,6 +103,8 @@ class StorageContainerType:
     description: str | None = None
     storage_section_uid: str
     storage_section: Optional[StorageSectionType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     grid: bool | None = None
     row_wise: bool | None = None
     cols: int | None = None

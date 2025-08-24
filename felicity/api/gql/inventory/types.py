@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.setup.types import SupplierType
+from felicity.api.gql.setup.types import SupplierType, LaboratoryType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
@@ -24,6 +24,8 @@ class StockItemType:
     minimum_level: int | None = None
     maximum_level: int | None = None
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -64,6 +66,8 @@ class StockItemVariantType:
     minimum_level: int | None = None
     maximum_level: int | None = None
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -100,6 +104,8 @@ class StockCategoryType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -113,6 +119,8 @@ class HazardType:
     uid: str
     name: str
     description: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -127,6 +135,8 @@ class StockUnitType:
     name: str
     description: str
     synonyms: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -139,6 +149,8 @@ class StockUnitType:
 class StockPackagingType:
     uid: str
     name: str
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -156,6 +168,8 @@ class StockLotType:
     expiry_date: datetime
     remarks: str | None = None
     quantity: int
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
     @strawberry.field
     async def quantity(self, info) -> int:
@@ -191,6 +205,8 @@ class StockProductInventoryType:
     stock_lot: Optional[StockLotType] = None
     quantity: int
     remarks: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -219,6 +235,8 @@ class StockOrderType:
     status: str | None = None
     remarks: str | None = None
     order_number: str | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -251,6 +269,8 @@ class StockOrderProductType:
     order_uid: str | None = None
     order: Optional[StockOrderType] = None
     quantity: int | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
@@ -285,6 +305,8 @@ class StockReceiptType:
     receipt_by_uid: str
     receipt_by: Optional[UserType] = None
     receipt_date: datetime
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -316,6 +338,8 @@ class StockIssueType:
     date_issued: datetime
     issue_by_uid: str
     issue_by: Optional[UserType] = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -351,6 +375,8 @@ class StockTransactionType:
     updated_at: str | None = None
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
 
 
 @strawberry.type
@@ -382,6 +408,8 @@ class StockAdjustmentType:
     adjustment_by: UserType | None = None
     adjustment_for_uid: str | None = None
     adjustment_for: UserType | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
