@@ -138,7 +138,9 @@ class NotificationService(
             users = [users]
         n_in = NotificationCreate(message=message)
         async with self.transaction() as session:
-            notification = await super().create(n_in, session=session, commit=True)
+            notification = await super().create({
+                **n_in.to_dict(), "laboratory_uid": None
+            }, session=session, commit=True)
             if users:
                 await self.table_insert(
                     table=user_notification,

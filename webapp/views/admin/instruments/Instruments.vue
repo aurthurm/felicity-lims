@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { InstrumentType } from '@/types/gql'
+  import { InstrumentInputType, InstrumentType } from '@/types/gql'
   import { AddInstrumentDocument, AddInstrumentMutation, AddInstrumentMutationVariables,
     EditInstrumentDocument, EditInstrumentMutation, EditInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useUserStore } from '@/stores/user';
@@ -38,8 +38,8 @@
 
   function addInstrument(): void {
     const payload = { 
-      name: instrument.name, 
-      keyword: instrument.keyword, 
+      name: instrument.name!, 
+      keyword: instrument.keyword!, 
       description: instrument.description,
       instrumentTypeUid: instrument.instrumentTypeUid,
       manufacturerUid: instrument.manufacturerUid,
@@ -51,8 +51,8 @@
 
   function editInstrument(): void {
     const payload = { 
-      name: instrument.name, 
-      keyword: instrument.keyword, 
+      name: instrument.name!, 
+      keyword: instrument.keyword!, 
       description: instrument.description,
       instrumentTypeUid: instrument.instrumentTypeUid,
       manufacturerUid: instrument.manufacturerUid,
@@ -119,44 +119,44 @@
   </div>
 
   <!-- Instrument Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = fasle" :title="formTitle">
+  <fel-modal v-if="showModal" @close="showModal = false"> :title="formTitle">
     <template v-slot:body>
       <form @submit.prevent="saveForm()" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2 md:col-span-2">
-            <label for="name" class="block text-sm font-medium text-foreground">
+            <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Instrument Name
             </label>
             <input
               id="name"
               v-model="instrument.name"
               type="text"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter instrument name"
             />
           </div>
           
           <div class="space-y-2">
-            <label for="keyword" class="block text-sm font-medium text-foreground">
+            <label for="keyword" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Keyword
             </label>
             <input
               id="keyword"
               v-model="instrument.keyword"
               type="text"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter keyword"
             />
           </div>
           
           <div class="space-y-2">
-            <label for="instrumentType" class="block text-sm font-medium text-foreground">
+            <label for="instrumentType" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Instrument Type
             </label>
             <select
               id="instrumentType"
               v-model="instrument.instrumentTypeUid"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select instrument type</option>
               <option 
@@ -170,13 +170,13 @@
           </div>
           
           <div class="space-y-2">
-            <label for="manufacturer" class="block text-sm font-medium text-foreground">
+            <label for="manufacturer" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Manufacturer
             </label>
             <select
               id="manufacturer"
               v-model="instrument.manufacturerUid"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select manufacturer</option>
               <option 
@@ -190,13 +190,13 @@
           </div>
           
           <div class="space-y-2">
-            <label for="supplier" class="block text-sm font-medium text-foreground">
+            <label for="supplier" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Supplier
             </label>
             <select
               id="supplier"
               v-model="instrument.supplierUid"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select supplier</option>
               <option 
@@ -210,14 +210,14 @@
           </div>
           
           <div class="space-y-2 md:col-span-2">
-            <label for="description" class="block text-sm font-medium text-foreground">
+            <label for="description" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Description
             </label>
             <textarea
               id="description"
               v-model="instrument.description"
               rows="3"
-              class="mt-1 block w-full rounded-md border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter description"
             ></textarea>
           </div>

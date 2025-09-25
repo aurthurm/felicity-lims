@@ -337,7 +337,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Level</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="actionForm.level"
                 type="number"
                 min="1"
@@ -348,7 +348,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
               <span class="text-sm font-medium text-foreground">Target Analyses</span>
               <select
                 v-model="actionForm.analyses"
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 multiple
               >
                 <option
@@ -363,7 +363,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Description</span>
               <textarea
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="actionForm.description"
                 placeholder="Description ..."
                 rows="3"
@@ -394,7 +394,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Description</span>
             <textarea
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="brainForm.description"
               placeholder="Description ..."
               rows="3"
@@ -443,7 +443,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <span class="text-sm font-medium text-foreground">Analysis</span>
                       <select
                         v-model="anVal.analysisUid"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         @change="setCriteriaResultOptions($event, anVal)"
                       >
                         <option value=""></option>
@@ -460,7 +460,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <span class="text-sm font-medium text-foreground">Operator</span>
                       <select
                         v-model="anVal.operator"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="eq">&equals;</option>
                         <option value="gt">&gt;</option>
@@ -472,7 +472,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <span class="text-sm font-medium text-foreground">Result</span>
                       <input
                         v-if="criteriaResultOptions.length == 0"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         v-model="anVal.value"
                         type="text"
                         placeholder="Result ..."
@@ -480,7 +480,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <select
                         v-else
                         v-model="anVal.value"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value=""></option>
                         <option
@@ -532,7 +532,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <span class="text-sm font-medium text-foreground">Analysis</span>
                       <select
                         v-model="addNu.analysisUid"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value=""></option>
                         <option
@@ -547,7 +547,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                     <label class="block">
                       <span class="text-sm font-medium text-foreground">Count</span>
                       <input
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         v-model="addNu.count"
                         type="number"
                         placeholder="How Many ..."
@@ -587,7 +587,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <span class="text-sm font-medium text-foreground">Analysis</span>
                       <select
                         v-model="final.analysisUid"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         @change="setFinalResultOptions($event, final)"
                       >
                         <option value=""></option>
@@ -604,7 +604,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <span class="text-sm font-medium text-foreground">Result</span>
                       <input
                         v-if="finalResultOptions.length == 0"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         v-model="final.value"
                         type="text"
                         placeholder="Result ..."
@@ -612,7 +612,7 @@ function deleteReflexBrain(actionUid: string, uid: string): void {
                       <select
                         v-else
                         v-model="final.value"
-                        class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value=""></option>
                         <option

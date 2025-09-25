@@ -70,7 +70,7 @@
             <tbody class="bg-background divide-y divide-border">
               <tr v-for="s_type in sampleTypes" :key="s_type?.uid">
                 <td class="px-4 py-2 whitespace-nowrap">
-                  <div class="text-sm font-medium text-foreground">{{ s_type?.name }}</div>
+                  <div class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ s_type?.name }}</div>
                 </td>
                 <td class="px-4 py-2 whitespace-nowrap">
                   <div class="text-sm text-primary">{{ s_type?.abbr }}</div>
@@ -104,32 +104,32 @@
       <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <div class="grid grid-cols-1 gap-4">
           <label class="block">
-            <span class="text-sm font-medium text-foreground">Sample Type Name</span>
+            <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sample Type Name</span>
             <input
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.name"
               placeholder="Name ..."
             />
           </label>
           <label class="block">
-            <span class="text-sm font-medium text-foreground">Prefix</span>
+            <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Prefix</span>
             <input
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.abbr"
               placeholder="Prefix ..."
             />
           </label>
           <label class="block">
-            <span class="text-sm font-medium text-foreground">Description</span>
+            <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</span>
             <textarea
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.description"
               placeholder="Description ..."
               rows="3"
             />
           </label>
           <div class="flex items-center">
-            <span class="text-sm font-medium text-foreground mr-2">Active</span>
+            <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mr-2">Active</span>
             <div class="relative inline-block w-10 align-middle select-none">
               <input 
                 type="checkbox" 

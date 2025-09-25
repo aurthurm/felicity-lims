@@ -19,13 +19,11 @@ class UserRepository(BaseRepository[User]):
 
     async def get_laboratories_by_user(self, user_uid: str) -> list[str]:
         """Get all laboratory UIDs a user has access to"""
-        xxx = await self.table_query(
+        return await self.table_query(
             table=laboratory_user,
             columns=["laboratory_uid"],
             user_uid=user_uid
         )
-        print(f"all labs for user {user_uid} : {xxx}")
-        return xxx
 
     async def assign_user_to_laboratory(self, user_uid: str, laboratory_uid: str) -> None:
         """Assign a user to a laboratory"""

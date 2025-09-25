@@ -40,10 +40,6 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
         # Get the payload from the connection_init message
         payload = message.payload or {}
 
-        logger.info(f"WebSocket connection_init received")
-        logger.info(f"Message: {message}")
-        logger.info(f"Payload: {payload}")
-
         if not isinstance(payload, dict):
             logger.warning("No valid payload in connection_init message")
             await self.close(4401, "Authentication required")

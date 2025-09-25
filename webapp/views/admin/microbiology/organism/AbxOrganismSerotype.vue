@@ -307,7 +307,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Serotype</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.serotype" 
               placeholder="Serotype ..." />
           </label>
@@ -317,14 +317,14 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Serogroup</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.serogroup" 
               placeholder="Serogroup ..." />
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Subspecies</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.subspecies" 
               placeholder="Subspecies ..." />
           </label>
@@ -334,14 +334,14 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">O Antigens</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.oAntigens" 
               placeholder="O Antigens ..." />
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">H Phase1</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.hPhase1" 
               placeholder="H Phase1 ..." />
           </label>
@@ -351,14 +351,14 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">H Phase2</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.hPhase2" 
               placeholder="H Phase2 ..." />
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">X997 Check</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.x997Check" 
               placeholder="X997 Check ..." />
           </label>
@@ -368,7 +368,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Fate</span>
             <input 
-              class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               v-model="form.fate" 
               placeholder="Fate ..." />
           </label>

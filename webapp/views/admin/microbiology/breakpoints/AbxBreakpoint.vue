@@ -397,7 +397,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Year</span>
               <input type="number"
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.year"
                 placeholder="Year"
               />
@@ -423,7 +423,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Potency</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.potency"
                 placeholder="Potency"
               />
@@ -431,7 +431,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Organism Code</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.organismCode"
                 placeholder="Organism Code"
               />
@@ -439,7 +439,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Organism Code Type</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.organismCodeType"
                 placeholder="Organism Code Type"
               />
@@ -447,7 +447,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Whonet AbxCode</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.whonetAbxCode"
                 placeholder="Whonet AbxCode"
               />
@@ -455,7 +455,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">R</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.r"
                 placeholder="R"
               />
@@ -463,7 +463,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">I</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.i"
                 placeholder="I"
               />
@@ -471,7 +471,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">SDD</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.sdd"
                 placeholder="SDD"
               />
@@ -479,7 +479,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">S</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.s"
                 placeholder="S"
               />
@@ -487,7 +487,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">EcvEcoff</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.ecvEcoff"
                 placeholder="EcvEcoff"
               />
@@ -495,7 +495,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">EcvEcoff Tentative</span>
               <input
-                class="mt-1 block w-full rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 v-model="form.ecvEcoffTentative"
                 placeholder="EcvEcoff Tentative"
               />

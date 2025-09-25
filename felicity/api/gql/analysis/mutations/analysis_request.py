@@ -249,6 +249,8 @@ async def create_analysis_request(
 
             for p_uid in s.profiles:
                 profile = await ProfileService().get(related=["analyses"], uid=p_uid, session=transaction_session)
+                if not profile:
+                    print(f"failed to retrieve profile information: {p_uid}")
                 profiles.append(profile)
                 analyses_ = profile.analyses
                 for _an in analyses_:
