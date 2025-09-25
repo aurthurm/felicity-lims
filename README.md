@@ -1,4 +1,5 @@
 # **Felicity LIMS**
+**(Under Active development - with breaking changes!)**
 
 *The Next Generation Open Source Laboratory Information Management System (LIMS)*
 
