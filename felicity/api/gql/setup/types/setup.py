@@ -5,6 +5,7 @@ import strawberry  # noqa
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.setup.services import LaboratorySettingService, OrganizationSettingService
+from felicity.apps.billing.enum import PaymentStatus
 
 
 @strawberry.type
@@ -180,6 +181,9 @@ class OrganizationSettingType:
     inactivity_log_out: int | None = None
     allow_auto_billing: bool | None = True
     allow_billing: bool | None = False
+    process_billed_only: bool | None = False
+    min_payment_status: PaymentStatus | None = None
+    min_partial_perentage: float | None = 0.5
     currency: str | None = "USD"
     payment_terms_days: int | None = 0
     #
@@ -269,6 +273,9 @@ class LaboratorySettingType:
     sticker_copies: int | None = 2
     allow_auto_billing: bool | None = True
     allow_billing: bool | None = False
+    process_billed_only: bool | None = False
+    min_payment_status: PaymentStatus | None = None
+    min_partial_perentage: float | None = 0.5
     currency: str | None = "USD"
     payment_terms_days: int | None = 0
     #

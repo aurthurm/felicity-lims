@@ -19,7 +19,7 @@ volumes:
 services:
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.2.0 # Pinning image version for stability
+    image: amusendame/felicity-static-nginx:0.2.1 # Pinning image version for stability
     restart: unless-stopped # Always restart unless explicitly stopped
     ports:
       - "80:80" # Expose Nginx on host port 80
@@ -40,7 +40,7 @@ services:
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.2.0 # Pinning image version for stability
+    image: amusendame/felicity-lims:api-0.2.1 # Pinning image version for stability
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file

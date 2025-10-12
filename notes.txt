@@ -2,30 +2,30 @@
 // For every push change and bump the version up
 
 // Server All in one
-export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target server-aio -t amusendame/felicity-lims:aio-0.2.0 .
-docker push amusendame/felicity-lims:aio-0.2.0
+export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target server-aio -t amusendame/felicity-lims:aio-0.2.1 .
+docker push amusendame/felicity-lims:aio-0.2.1
 
 // Server API
-export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target server-api -t amusendame/felicity-lims:api-0.2.0 .
-docker push amusendame/felicity-lims:api-0.2.0
+export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target server-api -t amusendame/felicity-lims:api-0.2.1 .
+docker push amusendame/felicity-lims:api-0.2.1
 
 // View a summary of image vulnerabilities and recommendations
 docker scout quickview
 
 // Build nginx static
-export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-nginx:0.2.0 .
-docker push amusendame/felicity-static-nginx:0.2.0
+export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-nginx:0.2.1 .
+docker push amusendame/felicity-static-nginx:0.2.1
 
 // Build caddy static
-export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target caddy-static -t amusendame/felicity-static-caddy:0.2.0 .
-docker push amusendame/felicity-static-caddy:0.2.0
+export $(grep -v '^#' .env | xargs) && docker build -f Dockerfile.prod --target caddy-static -t amusendame/felicity-static-caddy:0.2.1 .
+docker push amusendame/felicity-static-caddy:0.2.1
 
 // 
 psql -U postgres -p 5432 -d felicity_lims -c "grant all on schema public to felicity"
 
 // Git tags
-git tag -a v0.2.0 -m "Prepare release 0.2.0"
-git push origin v0.2.0
+git tag -a v0.2.1 -m "Prepare release 0.2.1"
+git push origin v0.2.1
 
 // setup mounted volumes
 mkdir -p ~/felicity_data/minio
@@ -34,10 +34,10 @@ mkdir -p ~/felicity_data/postgres
 mkdir -p ~/felicity_data/dbgate
 
 // inspect image file contents
-docker run --rm amusendame/felicity-lims:api-0.2.0 ls -ltr /ap
+docker run --rm amusendame/felicity-lims:api-0.2.1 ls -ltr /ap
 
 // inspect layers for size
-docker history amusendame/felicity-lims:aio-0.2.0
+docker history amusendame/felicity-lims:aio-0.2.1
 
 
 

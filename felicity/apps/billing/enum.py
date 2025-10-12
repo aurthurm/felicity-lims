@@ -1,5 +1,5 @@
 from enum import StrEnum, auto
-
+import strawberry
 
 class DiscountType(StrEnum):
     SALE = auto()
@@ -16,3 +16,17 @@ class TransactionKind(StrEnum):
     MEDICAL_AID = auto()
     E_PAYMENT = auto()
     AUTO_DISCOUNT = auto()
+
+
+# Stamp Categories
+PAYMENT_STATUS: list[str] = [
+    'unpaid',
+    'partial',
+    'paid',
+]
+
+@strawberry.enum
+class PaymentStatus(StrEnum):
+    UNPAID = 'unpaid'
+    PARTIAL = 'partial'
+    PAID = 'paid'

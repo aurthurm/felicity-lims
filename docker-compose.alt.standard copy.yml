@@ -21,7 +21,7 @@ services:
   # Option 1: Nginx as the primary reverse proxy
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.1.9 # Pinning image version
+    image: amusendame/felicity-static-nginx:0.2.1 # Pinning image version
     restart: unless-stopped
     # Uncomment these ports if you want to use Nginx as the primary entry point
     # and comment out Caddy's ports below to avoid conflicts.

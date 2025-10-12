@@ -73,7 +73,7 @@ services:
 
   felicity-aio:
     container_name: felicity-aio
-    image: amusendame/felicity-lims:aio-0.1.9 # Pinned image version
+    image: amusendame/felicity-lims:aio-0.2.1 # Pinned image version
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file

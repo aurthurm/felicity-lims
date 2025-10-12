@@ -647,6 +647,8 @@ class AnalysisRequestBase(BaseAuditModel):
     request_id: str | None = None
     client_request_id: str | None = None
     internal_use: bool | None = False
+    is_billed: bool | None = False
+    is_locked: bool | None = False
 
 
 class AnalysisRequestBaseInDB(AnalysisRequestBase):

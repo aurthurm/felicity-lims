@@ -1,6 +1,7 @@
 import logging
 
 from felicity.apps.analysis.entities import analysis as a_entities
+from felicity.apps.analysis.schemas import AnalysisRequestUpdate
 from felicity.apps.billing.entities import (
     TestBill,
     Voucher,
@@ -201,6 +202,30 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
             )
             await TestBillTransactionService().update(transaction.uid, tra_update_in, session=transaction_session)
 
+        # set analysis_request as billed and set service locking
+        is_billed = True
+        is_locked = lab_settings.process_billed_only
+        if is_locked:
+            if lab_settings.min_payment_status == PaymentStatus.UNPAID:
+                is_locked = False
+            elif lab_settings.min_payment_status == PaymentStatus.PARTIAL:
+                if bill.total_paid < (lab_settings.partial_percentage * bill.total_charged):
+                    is_locked = True
+                else:
+                    is_locked = False
+            else: # paid
+                if bill.total_paid < bill.total_charged:
+                    is_locked = True
+                else:
+                    is_locked = False
+        
+        await a_entities.AnalysisRequestService().update(
+            analysis_request.uid,
+            AnalysisRequestUpdate(is_billed=is_billed, is_locked=is_locked),
+            commit=False,
+            session=transaction_session
+        )
+
         # Save transaction
         await ProfilePriceService().repository.save_transaction(transaction_session)
 
@@ -341,7 +366,6 @@ async def apply_voucher(
                 {"patient_uid": customer_uid, "voucher_code_uid": code.uid},
                 commit=False, session=transaction_session
             )
-
         # save transaction
         await TestBillService().repository.save_transaction(transaction_session)
 

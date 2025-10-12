@@ -140,7 +140,7 @@ class NotificationService(
         async with self.transaction() as session:
             notification = await super().create({
                 **n_in.model_dump(exclude_unset=True),
-                "laboratory_uid": None
+                "laboratory_uid": users[0].active_laboratory_uid
             }, session=session, commit=True)
             if users:
                 await self.table_insert(

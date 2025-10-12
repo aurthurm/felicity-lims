@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from felicity.apps.common.schemas import BaseAuditModel
+from felicity.apps.billing.enum import PaymentStatus
 
 
 #
@@ -71,6 +72,9 @@ class OrganizationSettingBase(BaseModel):
     inactivity_log_out: int | None = None
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
+    process_billed_only: bool | None = False
+    min_payment_status: PaymentStatus | None = PaymentStatus.UNPAID
+    min_partial_perentage: float | None = 0.5
     currency: str | None = None
     payment_terms_days: int | None = 30
 
@@ -163,9 +167,11 @@ class LaboratorySettingBase(BaseAuditModel):
     default_theme: str | None = None
     auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
-
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
+    process_billed_only: bool | None = False
+    min_payment_status: PaymentStatus | None = PaymentStatus.UNPAID
+    min_partial_perentage: float | None = 0.5
     currency: str | None = "USD"
     payment_terms_days: int = 0
     password_lifetime: int | None = None

@@ -226,7 +226,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
           <fel-loader message="Fetching bills ..." />
         </div>
         <div v-else>
-          <ul class="space-y-2">
+          <ul class="space-y-2" v-if="bills?.length > 0">
             <li v-for="bill in bills" :key="bill.uid" :class="[
               'bg-background w-full p-3 rounded-lg shadow-sm border border-border transition-all duration-200 hover:shadow-md',
               { 'border-primary bg-primary/5': bill.uid === testBill.uid },
@@ -240,6 +240,9 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
               </div>
             </li>
           </ul>
+          <div v-else class="py-4 text-center bg-background w-full mb-2 rounded-lg shadow-sm border border-border">
+            No bills found for this patient.
+          </div>
         </div>
       </section>
 

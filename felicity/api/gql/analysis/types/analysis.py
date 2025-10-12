@@ -172,6 +172,8 @@ class AnalysisRequestType:
     client_contact: ClientContactType | None = None
     clinical_data: list[ClinicalDataType] | None
     internal_use: bool
+    is_billed: bool
+    is_locked: bool
     metadata_snapshot: JSONScalar | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None

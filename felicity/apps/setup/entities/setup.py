@@ -1,8 +1,9 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import BaseEntity, LabScopedEntity
 from felicity.apps.user.entities import User
+from felicity.apps.billing.enum import PaymentStatus
 
 
 class Organization(BaseEntity):
@@ -43,8 +44,13 @@ class OrganizationSetting(BaseEntity):
     )
     password_lifetime = Column(Integer, nullable=True)
     inactivity_log_out = Column(Integer, nullable=True)
+    # Billing settings
     allow_billing = Column(Boolean(), nullable=True, default=False)
     allow_auto_billing = Column(Boolean(), nullable=True, default=True)
+    process_billed_only = Column(Boolean(), nullable=True, default=False)
+    # minimum payment status to allow services
+    min_payment_status = Column(String, nullable=True, default=PaymentStatus.UNPAID)
+    min_partial_perentage = Column(Float, nullable=True, default=0.5)
     currency = Column(String, nullable=True, default="USD")
     payment_terms_days = Column(Integer, nullable=True, default=0)
 
@@ -103,8 +109,13 @@ class LaboratorySetting(LabScopedEntity):
     # organisation settings overrides
     password_lifetime = Column(Integer, nullable=True)
     inactivity_log_out = Column(Integer, nullable=True)
+    # Billing settings
     allow_billing = Column(Boolean(), nullable=True, default=False)
     allow_auto_billing = Column(Boolean(), nullable=True, default=True)
+    process_billed_only = Column(Boolean(), nullable=True, default=False)
+    # minimum payment status to allow services
+    min_payment_status = Column(String, nullable=True, default=PaymentStatus.UNPAID)
+    min_partial_perentage = Column(Float, nullable=True, default=0.5)
     currency = Column(String, nullable=True, default="USD")
     payment_terms_days = Column(Integer, nullable=True, default=0)
 
