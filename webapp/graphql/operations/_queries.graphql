@@ -17,6 +17,9 @@ query getOrganization {
             inactivityLogOut
             allowBilling
             allowAutoBilling
+            processBilledOnly
+            minPaymentStatus
+            minPartialPerentage
             currency
             paymentTermsDays
         }
@@ -52,6 +55,9 @@ query getLaboratory {
             stickerCopies
             allowBilling
             allowAutoBilling
+            processBilledOnly
+            minPaymentStatus
+            minPartialPerentage
             currency
             paymentTermsDays
         }
@@ -95,6 +101,9 @@ query getAllLaboratories($first: Int, $after: String, $text: String, $sortBy: [S
                 stickerCopies
                 allowBilling
                 allowAutoBilling
+                processBilledOnly
+                minPaymentStatus
+                minPartialPerentage
                 currency
                 paymentTermsDays
             }

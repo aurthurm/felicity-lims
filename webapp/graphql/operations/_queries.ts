@@ -13,7 +13,7 @@ export type GetOrganizationQuery = (
     & Pick<Types.OrganizationType, 'uid' | 'name' | 'tagLine' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
     & { settings: (
       { __typename?: 'OrganizationSettingType' }
-      & Pick<Types.OrganizationSettingType, 'uid' | 'passwordLifetime' | 'inactivityLogOut' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+      & Pick<Types.OrganizationSettingType, 'uid' | 'passwordLifetime' | 'inactivityLogOut' | 'allowBilling' | 'allowAutoBilling' | 'processBilledOnly' | 'minPaymentStatus' | 'minPartialPerentage' | 'currency' | 'paymentTermsDays'>
     ) }
   ) }
 );
@@ -28,7 +28,7 @@ export type GetLaboratoryQuery = (
     & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
     & { settings?: Types.Maybe<(
       { __typename?: 'LaboratorySettingType' }
-      & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+      & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'processBilledOnly' | 'minPaymentStatus' | 'minPartialPerentage' | 'currency' | 'paymentTermsDays'>
     )> }
   ) }
 );
@@ -54,7 +54,7 @@ export type GetAllLaboratoriesQuery = (
       & Pick<Types.LaboratoryType, 'uid' | 'name' | 'tagLine' | 'labManagerUid' | 'email' | 'emailCc' | 'mobilePhone' | 'businessPhone' | 'address' | 'banking' | 'logo' | 'qualityStatement'>
       & { settings?: Types.Maybe<(
         { __typename?: 'LaboratorySettingType' }
-        & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+        & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'processBilledOnly' | 'minPaymentStatus' | 'minPartialPerentage' | 'currency' | 'paymentTermsDays'>
       )> }
     )>> }
   ) }
@@ -155,6 +155,9 @@ export const GetOrganizationDocument = gql`
       inactivityLogOut
       allowBilling
       allowAutoBilling
+      processBilledOnly
+      minPaymentStatus
+      minPartialPerentage
       currency
       paymentTermsDays
     }
@@ -195,6 +198,9 @@ export const GetLaboratoryDocument = gql`
       stickerCopies
       allowBilling
       allowAutoBilling
+      processBilledOnly
+      minPaymentStatus
+      minPartialPerentage
       currency
       paymentTermsDays
     }
@@ -248,6 +254,9 @@ export const GetAllLaboratoriesDocument = gql`
         stickerCopies
         allowBilling
         allowAutoBilling
+        processBilledOnly
+        minPaymentStatus
+        minPartialPerentage
         currency
         paymentTermsDays
       }

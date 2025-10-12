@@ -346,7 +346,7 @@ export type EditOrganizationSettingMutation = (
     & Pick<Types.OperationError, 'error' | 'suggestion'>
   ) | (
     { __typename?: 'OrganizationSettingType' }
-    & Pick<Types.OrganizationSettingType, 'uid' | 'passwordLifetime' | 'inactivityLogOut' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+    & Pick<Types.OrganizationSettingType, 'uid' | 'passwordLifetime' | 'inactivityLogOut' | 'allowBilling' | 'allowAutoBilling' | 'processBilledOnly' | 'minPaymentStatus' | 'minPartialPerentage' | 'currency' | 'paymentTermsDays'>
   ) }
 );
 
@@ -393,7 +393,7 @@ export type EditLaboratorySettingMutation = (
   { __typename?: 'Mutation' }
   & { updateLaboratorySetting: (
     { __typename?: 'LaboratorySettingType' }
-    & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'currency' | 'paymentTermsDays'>
+    & Pick<Types.LaboratorySettingType, 'uid' | 'laboratoryUid' | 'allowSelfVerification' | 'allowPatientRegistration' | 'allowSampleRegistration' | 'allowWorksheetCreation' | 'defaultRoute' | 'passwordLifetime' | 'inactivityLogOut' | 'defaultTheme' | 'autoReceiveSamples' | 'stickerCopies' | 'allowBilling' | 'allowAutoBilling' | 'processBilledOnly' | 'minPaymentStatus' | 'minPartialPerentage' | 'currency' | 'paymentTermsDays'>
   ) | (
     { __typename: 'OperationError' }
     & Pick<Types.OperationError, 'error' | 'suggestion'>
@@ -844,6 +844,9 @@ export const EditOrganizationSettingDocument = gql`
       inactivityLogOut
       allowBilling
       allowAutoBilling
+      processBilledOnly
+      minPaymentStatus
+      minPartialPerentage
       currency
       paymentTermsDays
     }
@@ -935,6 +938,9 @@ export const EditLaboratorySettingDocument = gql`
       stickerCopies
       allowBilling
       allowAutoBilling
+      processBilledOnly
+      minPaymentStatus
+      minPartialPerentage
       currency
       paymentTermsDays
     }

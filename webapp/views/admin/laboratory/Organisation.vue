@@ -6,6 +6,7 @@ import { useSetupStore } from "@/stores/setup";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
 import { EditOrganizationMutation, EditOrganizationMutationVariables, EditOrganizationDocument, EditOrganizationSettingDocument, EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables } from "@/graphql/operations/_mutations";
+import { PaymentStatus } from "@/graphql/schema";
 
 const FelAsideTabs = defineAsyncComponent(
     () => import("@/components/ui/tabs/FelTabsAside.vue")
@@ -165,19 +166,47 @@ const items = [
               <span class="text-sm font-medium text-foreground">Enable Sample Billing</span>
             </div>
           </label>
-          <label class="block col-span-1 space-y-2">
+          <label class="block col-span-1 space-y-2"> 
             <div class="flex items-center space-x-2">
               <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowAutoBilling" :disabled="processing" />
               <span class="text-sm font-medium text-foreground">Allow automatic billing on sample registration</span>
             </div>
           </label>
+
+          <label class="block col-span-1 space-y-2"> 
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.processBilledOnly" :disabled="processing" />
+              <span class="text-sm font-medium text-foreground">Only process billed analysis requests</span>
+            </div>
+          </label>
+          <div class="block col-span-1 space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Minimum Allowed Payment status
+            </label>
+            <select 
+              v-model="formSettings.minPaymentStatus"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="">Select Payment Status</option>
+              <option v-for="pstatus in [PaymentStatus.Unpaid, PaymentStatus.Partial, PaymentStatus.Paid]" 
+              :key="pstatus" :value="pstatus">{{ pstatus }}</option>
+            </select>
+          </div>
+          <label class="block col-span-1 space-y-2">
+            <span class="text-sm font-medium text-foreground">Minimum Partial Percentage</span>
+            <input type="number" min="0.0" max="1.0" step="0.1" default="0.5" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+            v-model="formSettings.minPartialPerentage" :disabled="processing" />
+          </label>
+
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Currency</span>
-            <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.currency" :disabled="processing" />
+            <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+            v-model="formSettings.currency" :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Payment Terms (Days)</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.paymentTermsDays" :disabled="processing" />
+            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+            v-model="formSettings.paymentTermsDays" :disabled="processing" />
           </label>
         </div>
         <hr class="border-border" />

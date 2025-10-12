@@ -1197,6 +1197,8 @@ export type AnalysisRequestType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  isBilled: Scalars['Boolean']['output'];
+  isLocked: Scalars['Boolean']['output'];
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
@@ -1222,6 +1224,8 @@ export type AnalysisRequestWithSamples = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  isBilled: Scalars['Boolean']['output'];
+  isLocked: Scalars['Boolean']['output'];
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
@@ -3433,8 +3437,11 @@ export type LaboratorySettingInputType = {
   defaultTheme?: InputMaybe<Scalars['String']['input']>;
   inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
   laboratoryUid: Scalars['String']['input'];
+  minPartialPerentage?: InputMaybe<Scalars['Float']['input']>;
+  minPaymentStatus?: InputMaybe<PaymentStatus>;
   passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
   paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+  processBilledOnly?: InputMaybe<Scalars['Boolean']['input']>;
   stickerCopies?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -3459,8 +3466,11 @@ export type LaboratorySettingType = {
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
   laboratory: LaboratoryType;
   laboratoryUid: Scalars['String']['output'];
+  minPartialPerentage?: Maybe<Scalars['Float']['output']>;
+  minPaymentStatus?: Maybe<PaymentStatus>;
   passwordLifetime?: Maybe<Scalars['Int']['output']>;
   paymentTermsDays?: Maybe<Scalars['Int']['output']>;
+  processBilledOnly?: Maybe<Scalars['Boolean']['output']>;
   stickerCopies?: Maybe<Scalars['Int']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5609,8 +5619,11 @@ export type OrganizationSettingInputType = {
   allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
   currency?: InputMaybe<Scalars['String']['input']>;
   inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
+  minPartialPerentage?: InputMaybe<Scalars['Float']['input']>;
+  minPaymentStatus?: InputMaybe<PaymentStatus>;
   passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
   paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+  processBilledOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type OrganizationSettingResponse = OperationError | OrganizationSettingType;
@@ -5624,10 +5637,13 @@ export type OrganizationSettingType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   currency?: Maybe<Scalars['String']['output']>;
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
+  minPartialPerentage?: Maybe<Scalars['Float']['output']>;
+  minPaymentStatus?: Maybe<PaymentStatus>;
   organization?: Maybe<OrganizationType>;
   organizationUid?: Maybe<Scalars['String']['output']>;
   passwordLifetime?: Maybe<Scalars['Int']['output']>;
   paymentTermsDays?: Maybe<Scalars['Int']['output']>;
+  processBilledOnly?: Maybe<Scalars['Boolean']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -5776,6 +5792,12 @@ export type PatientidentificationInput = {
   identificationUid: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
+
+export enum PaymentStatus {
+  Paid = 'PAID',
+  Partial = 'PARTIAL',
+  Unpaid = 'UNPAID'
+}
 
 export type PermissionType = {
   __typename?: 'PermissionType';
@@ -11024,6 +11046,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     internalUse?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['Boolean'] | string>,
+    isBilled?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['Boolean'] | string>,
+    isLocked?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['Boolean'] | string>,
     laboratory?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<AnalysisRequestType>, Record<string, never>, Scalars['JSONScalar'] | string>,
@@ -11047,6 +11071,8 @@ export type GraphCacheResolvers = {
     createdBy?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<UserType> | string>,
     createdByUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     internalUse?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['Boolean'] | string>,
+    isBilled?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['Boolean'] | string>,
+    isLocked?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['Boolean'] | string>,
     laboratory?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryUid?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['String'] | string>,
     metadataSnapshot?: GraphCacheResolver<WithTypename<AnalysisRequestWithSamples>, Record<string, never>, Scalars['JSONScalar'] | string>,
@@ -12264,8 +12290,11 @@ export type GraphCacheResolvers = {
     inactivityLogOut?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['Int'] | string>,
     laboratory?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryUid?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['String'] | string>,
+    minPartialPerentage?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['Float'] | string>,
+    minPaymentStatus?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, PaymentStatus | string>,
     passwordLifetime?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['Int'] | string>,
     paymentTermsDays?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['Int'] | string>,
+    processBilledOnly?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['Boolean'] | string>,
     stickerCopies?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['Int'] | string>,
     uid?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<LaboratorySettingType>, Record<string, never>, Scalars['String'] | string>,
@@ -12441,10 +12470,13 @@ export type GraphCacheResolvers = {
     createdByUid?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     currency?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     inactivityLogOut?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
+    minPartialPerentage?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Float'] | string>,
+    minPaymentStatus?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, PaymentStatus | string>,
     organization?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, WithTypename<OrganizationType> | string>,
     organizationUid?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     passwordLifetime?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
     paymentTermsDays?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Int'] | string>,
+    processBilledOnly?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['Boolean'] | string>,
     uid?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<OrganizationSettingType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -15494,6 +15526,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    isBilled?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
+    isLocked?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestType>>, Record<string, never>>,
@@ -15517,6 +15551,8 @@ export type GraphCacheUpdaters = {
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     internalUse?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    isBilled?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
+    isLocked?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
     metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisRequestWithSamples>>, Record<string, never>>,
@@ -16734,8 +16770,11 @@ export type GraphCacheUpdaters = {
     inactivityLogOut?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
+    minPartialPerentage?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
+    minPaymentStatus?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     passwordLifetime?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     paymentTermsDays?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
+    processBilledOnly?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     stickerCopies?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<LaboratorySettingType>>, Record<string, never>>,
@@ -16911,10 +16950,13 @@ export type GraphCacheUpdaters = {
     createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     currency?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     inactivityLogOut?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
+    minPartialPerentage?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
+    minPaymentStatus?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     organization?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     organizationUid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     passwordLifetime?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     paymentTermsDays?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
+    processBilledOnly?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<OrganizationSettingType>>, Record<string, never>>,

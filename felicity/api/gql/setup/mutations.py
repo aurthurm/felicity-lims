@@ -30,6 +30,7 @@ from felicity.apps.setup.services import (
     SupplierService,
     UnitService, OrganizationService, OrganizationSettingService,
 )
+from felicity.apps.billing.enum import PaymentStatus
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -117,6 +118,9 @@ class OrganizationSettingInputType:
     inactivity_log_out: int | None = None
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
+    process_billed_only: bool | None = False
+    min_payment_status: PaymentStatus | None = PaymentStatus.PARTIAL
+    min_partial_perentage: float | None = 0.5
     currency: str | None = "USD"
     payment_terms_days: int | None = 0
 
@@ -175,6 +179,9 @@ class LaboratorySettingInputType:
     sticker_copies: int | None = 2
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
+    process_billed_only: bool | None = False
+    min_payment_status: PaymentStatus | None = PaymentStatus.PARTIAL
+    min_partial_perentage: float | None = 0.5
     currency: str | None = "USD"
     payment_terms_days: int | None = 0
 

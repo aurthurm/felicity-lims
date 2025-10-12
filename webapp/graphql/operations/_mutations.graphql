@@ -394,6 +394,9 @@ mutation EditOrganizationSetting($uid: String!, $payload: OrganizationSettingInp
             inactivityLogOut
             allowBilling
             allowAutoBilling
+            processBilledOnly
+            minPaymentStatus
+            minPartialPerentage
             currency
             paymentTermsDays
         }
@@ -470,6 +473,9 @@ mutation EditLaboratorySetting($uid: String!, $payload: LaboratorySettingInputTy
             stickerCopies
             allowBilling
             allowAutoBilling
+            processBilledOnly
+            minPaymentStatus
+            minPartialPerentage
             currency
             paymentTermsDays
         }

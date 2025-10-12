@@ -1198,6 +1198,8 @@ export type AnalysisRequestType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  isBilled: Scalars['Boolean']['output'];
+  isLocked: Scalars['Boolean']['output'];
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
@@ -1223,6 +1225,8 @@ export type AnalysisRequestWithSamples = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   internalUse: Scalars['Boolean']['output'];
+  isBilled: Scalars['Boolean']['output'];
+  isLocked: Scalars['Boolean']['output'];
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
@@ -3434,8 +3438,11 @@ export type LaboratorySettingInputType = {
   defaultTheme?: InputMaybe<Scalars['String']['input']>;
   inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
   laboratoryUid: Scalars['String']['input'];
+  minPartialPerentage?: InputMaybe<Scalars['Float']['input']>;
+  minPaymentStatus?: InputMaybe<PaymentStatus>;
   passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
   paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+  processBilledOnly?: InputMaybe<Scalars['Boolean']['input']>;
   stickerCopies?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -3460,8 +3467,11 @@ export type LaboratorySettingType = {
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
   laboratory: LaboratoryType;
   laboratoryUid: Scalars['String']['output'];
+  minPartialPerentage?: Maybe<Scalars['Float']['output']>;
+  minPaymentStatus?: Maybe<PaymentStatus>;
   passwordLifetime?: Maybe<Scalars['Int']['output']>;
   paymentTermsDays?: Maybe<Scalars['Int']['output']>;
+  processBilledOnly?: Maybe<Scalars['Boolean']['output']>;
   stickerCopies?: Maybe<Scalars['Int']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -5610,8 +5620,11 @@ export type OrganizationSettingInputType = {
   allowBilling?: InputMaybe<Scalars['Boolean']['input']>;
   currency?: InputMaybe<Scalars['String']['input']>;
   inactivityLogOut?: InputMaybe<Scalars['Int']['input']>;
+  minPartialPerentage?: InputMaybe<Scalars['Float']['input']>;
+  minPaymentStatus?: InputMaybe<PaymentStatus>;
   passwordLifetime?: InputMaybe<Scalars['Int']['input']>;
   paymentTermsDays?: InputMaybe<Scalars['Int']['input']>;
+  processBilledOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type OrganizationSettingResponse = OperationError | OrganizationSettingType;
@@ -5625,10 +5638,13 @@ export type OrganizationSettingType = {
   createdByUid?: Maybe<Scalars['String']['output']>;
   currency?: Maybe<Scalars['String']['output']>;
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
+  minPartialPerentage?: Maybe<Scalars['Float']['output']>;
+  minPaymentStatus?: Maybe<PaymentStatus>;
   organization?: Maybe<OrganizationType>;
   organizationUid?: Maybe<Scalars['String']['output']>;
   passwordLifetime?: Maybe<Scalars['Int']['output']>;
   paymentTermsDays?: Maybe<Scalars['Int']['output']>;
+  processBilledOnly?: Maybe<Scalars['Boolean']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -5777,6 +5793,12 @@ export type PatientidentificationInput = {
   identificationUid: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
+
+export enum PaymentStatus {
+  Paid = 'PAID',
+  Partial = 'PARTIAL',
+  Unpaid = 'UNPAID'
+}
 
 export type PermissionType = {
   __typename?: 'PermissionType';

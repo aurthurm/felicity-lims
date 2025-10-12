@@ -6460,6 +6460,28 @@ export default {
             "args": []
           },
           {
+            "name": "isBilled",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "isLocked",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
             "name": "laboratory",
             "type": {
               "kind": "OBJECT",
@@ -6669,6 +6691,28 @@ export default {
           },
           {
             "name": "internalUse",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "isBilled",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "isLocked",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -18042,6 +18086,22 @@ export default {
             "args": []
           },
           {
+            "name": "minPartialPerentage",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "minPaymentStatus",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "passwordLifetime",
             "type": {
               "kind": "SCALAR",
@@ -18051,6 +18111,14 @@ export default {
           },
           {
             "name": "paymentTermsDays",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "processBilledOnly",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
@@ -27839,6 +27907,22 @@ export default {
             "args": []
           },
           {
+            "name": "minPartialPerentage",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "minPaymentStatus",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "organization",
             "type": {
               "kind": "OBJECT",
@@ -27865,6 +27949,14 @@ export default {
           },
           {
             "name": "paymentTermsDays",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "processBilledOnly",
             "type": {
               "kind": "SCALAR",
               "name": "Any"
