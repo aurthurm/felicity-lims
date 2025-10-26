@@ -106,6 +106,20 @@ class LaboratoryInstrumentBase(BaseModel):
     serial_number: str | None = None
     date_commissioned: datetime | None = None
     date_decommissioned: datetime | None = None
+    is_active: Optional[bool] = False
+    host: Optional[str] = None
+    port: Optional[int] = None
+    path: Optional[str] = None
+    baud_rate: Optional[int] = None
+    auto_reconnect: bool
+    connection_type: Optional[str] = None
+    protocol_type: Optional[str] = None
+    socket_type: Optional[str] = None
+    connection: Optional[str] = None
+    transmission: Optional[str] = None
+    is_active: bool
+    lims_uid: Optional[str] = None
+    sync_units: Optional[bool] = False
 
 
 # Properties to receive via API on creation
@@ -301,4 +315,120 @@ class Method(MethodInDBBase):
 
 # Additional properties stored in DB
 class MethodInDB(MethodInDBBase):
+    pass
+
+
+#
+#  InstrumentRawData
+#
+
+
+# Shared properties
+class InstrumentRawDataBase(BaseModel):
+    content: str
+    laboratory_instrument_uid: str
+    is_transformed: bool | None = False
+    transformation_attempts: int | None = 0
+    last_transformation_attempt: str | None = None
+    transformation_error: str | None = None
+
+
+# Properties to receive via API on creation
+class InstrumentRawDataCreate(InstrumentRawDataBase):
+    pass
+
+
+# Properties to receive via API on update
+class InstrumentRawDataUpdate(InstrumentRawDataBase):
+    pass
+
+
+class InstrumentRawDataInDBBase(InstrumentRawDataBase):
+    uid: str | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class InstrumentRawData(InstrumentRawDataInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class InstrumentRawDataInDB(InstrumentRawDataInDBBase):
+    pass
+
+
+#
+#  InstrumentResultExclusions
+#
+
+
+# Shared properties
+class InstrumentResultExclusionsBase(BaseModel):
+    instrument_uid: str
+    result: str | None = None
+    reason: str | None = None
+
+
+# Properties to receive via API on creation
+class InstrumentResultExclusionsCreate(InstrumentResultExclusionsBase):
+    pass
+
+
+# Properties to receive via API on update
+class InstrumentResultExclusionsUpdate(InstrumentResultExclusionsBase):
+    pass
+
+
+class InstrumentResultExclusionsInDBBase(InstrumentResultExclusionsBase):
+    uid: str | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class InstrumentResultExclusions(InstrumentResultExclusionsInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class InstrumentResultExclusionsInDB(InstrumentResultExclusionsInDBBase):
+    pass
+
+
+#
+#  InstrumentResultTranslation
+#
+
+
+# Shared properties
+class InstrumentResultTranslationBase(BaseModel):
+    instrument_uid: str
+    original: str
+    translated: str
+    keyword: str | None = None
+    reason: str | None = None
+
+
+# Properties to receive via API on creation
+class InstrumentResultTranslationCreate(InstrumentResultTranslationBase):
+    pass
+
+
+# Properties to receive via API on update
+class InstrumentResultTranslationUpdate(InstrumentResultTranslationBase):
+    pass
+
+
+class InstrumentResultTranslationInDBBase(InstrumentResultTranslationBase):
+    uid: str | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class InstrumentResultTranslation(InstrumentResultTranslationInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class InstrumentResultTranslationInDB(InstrumentResultTranslationInDBBase):
     pass

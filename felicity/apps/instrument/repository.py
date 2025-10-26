@@ -6,7 +6,7 @@ from felicity.apps.instrument.entities import (
     InstrumentCompetence,
     InstrumentType,
     LaboratoryInstrument,
-    Method,
+    Method, InstrumentRawData, InstrumentResultExclusions, InstrumentResultTranslation,
 )
 
 
@@ -24,7 +24,7 @@ class LaboratoryInstrumentRepository(
     BaseRepository[LaboratoryInstrument],
 ):
     def __init__(
-        self,
+            self,
     ):
         super().__init__(LaboratoryInstrument)
 
@@ -48,6 +48,21 @@ class InstrumentCompetenceRepository(
     BaseRepository[InstrumentCompetence],
 ):
     def __init__(
-        self,
+            self,
     ):
         super().__init__(InstrumentCompetence)
+
+
+class InstrumentRawDataRepository(BaseRepository[InstrumentRawData]):
+    def __init__(self) -> None:
+        super().__init__(InstrumentRawData)
+
+
+class InstrumentResultExclusionsRepository(BaseRepository[InstrumentResultExclusions]):
+    def __init__(self) -> None:
+        super().__init__(InstrumentResultExclusions)
+
+
+class InstrumentResultTranslationRepository(BaseRepository[InstrumentResultTranslation]):
+    def __init__(self) -> None:
+        super().__init__(InstrumentResultTranslation)

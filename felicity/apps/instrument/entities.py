@@ -1,4 +1,6 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table, Integer, UniqueConstraint, \
+    event
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import LabScopedEntity, BaseEntity, MaybeLabScopedEntity
@@ -77,6 +79,22 @@ class LaboratoryInstrument(MaybeLabScopedEntity):
     serial_number = Column(String, nullable=False)
     date_commissioned = Column(DateTime, nullable=True)
     date_decommissioned = Column(DateTime, nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True)
+    # interfacing
+    is_interfacing = Column(Boolean(), nullable=False, default=False)
+    host = Column(String(100), nullable=True)  # ip address
+    port = Column(Integer, nullable=True)  # tcp port
+    path = Column(String(20), nullable=True)  # serial port path
+    baud_rate = Column(Integer, nullable=True)  # serial port baud rate
+    auto_reconnect = Column(Boolean, default=True)  # auto reconnect on connection lost
+    connection_type = Column(String(10), nullable=True)  # tcpip, serial
+    protocol_type = Column(String(10), nullable=True)  # astm, hl7
+    socket_type = Column(String(10), nullable=True)  # client or server
+    # connection status upated by the gateway
+    connection = Column(String(20), default="disconnected")  # connected, disconnected
+    transmission = Column(String(20), default="")  # "ended" ?? mabe not needed
+    # other
+    sync_units = Column(Boolean, default=True)  # sync units from instrument to LIMS
 
 
 class InstrumentCalibration(LabScopedEntity):
@@ -181,9 +199,61 @@ class InstrumentCompetence(LabScopedEntity):
     async def is_valid(self):
         return timenow_dt() < self.expiry_date
 
+
 # class MeasurementUncertainty(LabScopedEntity):
 #     __tablename__ = "measurement_uncertainty"
 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8199534/
 # https://github.com/1966bc/Biovarase
 # https://github.com/aurthurm/sqc-r-scripts
+
+
+class InstrumentRawData(MaybeLabScopedEntity):
+    __tablename__ = "instrument_raw_data"
+
+    content = Column(LONGTEXT, nullable=False)
+    laboratory_instrument_uid = Column(
+        Integer,
+        ForeignKey("laboratory_instruments.uid", ondelete="CASCADE"),
+        nullable=True
+    )
+    laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
+
+    # Transformation tracking
+    is_transformed = Column(Boolean, default=False, nullable=False)
+    transformation_attempts = Column(Integer, default=0, nullable=False)
+    last_transformation_attempt = Column(DateTime, nullable=True)
+    transformation_error = Column(LONGTEXT, nullable=True)
+
+
+class InstrumentResultExclusions(BaseEntity):
+    __tablename__ = 'instrument_result_exclusions'
+
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
+    instrument = relationship("Instrument", lazy="selectin")
+    result = Column(String(100), unique=True)
+    reason = Column(String(255), nullable=True)
+
+
+class InstrumentResultTranslation(BaseEntity):
+    __tablename__ = 'instrument_result_translations'
+    
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
+    instrument = relationship("Instrument", lazy="selectin")
+    original = Column(String(100))
+    translated = Column(String(100))
+    keyword = Column(String(50), nullable=True)
+    reason = Column(String(255), nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint('original', 'translated', 'keyword', name='uq_result_translation'),
+        {'extend_existing': True},
+    )
+
+
+def before_insert(mapper, connection, target):
+    if not target.keyword:
+        target.keyword = ''
+
+
+event.listen(InstrumentResultTranslation, 'before_insert', before_insert)
