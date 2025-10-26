@@ -1,6 +1,9 @@
+import asyncio
 import logging
 from abc import ABC, abstractmethod
 
+from felicity.apps.instrument.schemas import InstrumentRawDataCreate
+from felicity.apps.instrument.services import InstrumentRawDataService
 from felicity.apps.iol.analyzer.conf import EventType
 from felicity.core.events import post_event
 
@@ -42,17 +45,23 @@ class AbstractLink(ABC):
         """End of Transmission -> offload processed messages to storage"""
         logger.log("info", "Link: Offloading to storage...")
         # Save raw messages immediately (no threading to avoid message loss)
-        self._push_to_order_repository(instrument_uid, messages)
+        self._save_data(instrument_uid, messages)
 
-    def _push_to_order_repository(self, instrument_uid, messages):
+    def _save_data(self, instrument_uid, messages):
         if isinstance(messages, str):
             messages = [messages]
 
-        transformer = None  # Transformer()
+        raw_message_service = InstrumentRawDataService()
+        loop = asyncio.get_event_loop()
 
         while len(messages) > 0:
             msg = messages.pop()
-            transformer.transform_message(instrument_uid, msg)
+
+            rd_in = InstrumentRawDataCreate(
+                laboratory_instrument_uid=instrument_uid,
+                content=msg,
+            )
+            loop.create_task(raw_message_service.create(rd_in))
 
     def show_message(self, message):
         """Prints the messaged in stdout

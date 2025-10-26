@@ -15,7 +15,7 @@ from felicity.api.gql.instrument.types import (
     LaboratoryInstrumentType,
     MethodCursorPage,
     MethodEdge,
-    MethodType,
+    MethodType, InstrumentResultExclusionsType, InstrumentResultTranslationType,
 )
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
@@ -23,19 +23,19 @@ from felicity.apps.instrument.services import (
     InstrumentService,
     InstrumentTypeService,
     LaboratoryInstrumentService,
-    MethodService,
+    MethodService, InstrumentResultExclusionsService, InstrumentResultTranslationService,
 )
 from felicity.utils import has_value_or_is_truthy
 
 
 async def get_all_instrument_types(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> InstrumentTypeCursorPage:
     filters = {}
 
@@ -66,13 +66,13 @@ async def get_all_instrument_types(
 
 
 async def get_all_instruments(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> InstrumentCursorPage:
     filters = {}
 
@@ -113,13 +113,13 @@ async def get_all_instruments(
 
 
 async def get_all_laboratory_instruments(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> LaboratoryInstrumentCursorPage:
     filters = {}
 
@@ -155,13 +155,13 @@ async def get_all_laboratory_instruments(
 
 
 async def get_all_methods(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> MethodCursorPage:
     filters = {}
 
@@ -217,7 +217,7 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def laboratory_instrument_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> LaboratoryInstrumentType:
         return await LaboratoryInstrumentService().get(uid=uid)
 
@@ -228,3 +228,11 @@ class InstrumentQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def method_by_uid(self, info, uid: str) -> MethodType:
         return await MethodService().get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def instrument_result_exclusions(self, info, instrument_uid: str) -> list[InstrumentResultExclusionsType]:
+        return await InstrumentResultExclusionsService().get_all(instrument_uid=instrument_uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def instrument_result_translations(self, info, instrument_uid: str) -> list[InstrumentResultTranslationType]:
+        return await InstrumentResultTranslationService().get_all(instrument_uid=instrument_uid)

@@ -45,7 +45,7 @@ async def run_jobs_if_exists():
     # logging.info(f"There are {len(jobs)} Jobs pending running.")
 
     if len(jobs) == 0:
-        # felicity_pause_workforce()\
+        # felicity_pause_workforce()
         pass
     else:
         job_dispatch_table = {

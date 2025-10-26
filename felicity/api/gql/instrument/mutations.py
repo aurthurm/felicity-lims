@@ -13,6 +13,8 @@ from felicity.api.gql.instrument.types import (
     InstrumentTypeType,
     LaboratoryInstrumentType,
     MethodType,
+    InstrumentResultExclusionsType,
+    InstrumentResultTranslationType,
 )
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
@@ -33,6 +35,8 @@ from felicity.apps.instrument.services import (
     InstrumentTypeService,
     LaboratoryInstrumentService,
     MethodService,
+    InstrumentResultExclusionsService,
+    InstrumentResultTranslationService,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -72,6 +76,18 @@ InstrumentCalibrationResponse = strawberry.union(
 CalibrationCertificateResponse = strawberry.union(
     "CalibrationCertificateResponse",
     (CalibrationCertificateType, OperationError),
+    description="",  # noqa
+)
+
+InstrumentResultExclusionsResponse = strawberry.union(
+    "InstrumentResultExclusionsResponse",
+    (InstrumentResultExclusionsType, OperationError),
+    description="",  # noqa
+)
+
+InstrumentResultTranslationResponse = strawberry.union(
+    "InstrumentResultTranslationResponse",
+    (InstrumentResultTranslationType, OperationError),
     description="",  # noqa
 )
 
@@ -147,6 +163,24 @@ class InstrumentCompetenceInput:
     expiry_date: datetime
     internal: bool
     competence: str
+
+
+@strawberry.input
+class InstrumentResultExclusionsInput:
+    instrument_uid: str
+    instrument: InstrumentType
+    result: str
+    reason: str | None = None
+
+
+@strawberry.input
+class InstrumentResultTranslationInput:
+    instrument_uid: str
+    instrument: InstrumentType
+    original: str
+    translated: str
+    keyword: str
+    reason: str | None = None
 
 
 @strawberry.type
@@ -627,3 +661,79 @@ class InstrumentMutations:
         # info.context.background_tasks.add_task(process_snapshots, list(_added_analyses) + list(_sacked_analyses))
         asyncio.create_task(process_snapshots(linked_analyses))
         return MethodType(**method.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_instrument_result_exclusions(
+            self, info, payload: InstrumentResultExclusionsInput
+    ) -> InstrumentResultExclusionsResponse:  # noqa
+        instrument = await InstrumentService().get(uid=payload.instrument_uid)
+        if not instrument:
+            return OperationError(error="Provided instrument does not exist")
+
+        incoming: dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.InstrumentResultExclusionsCreate(**incoming)
+        exclusion = await InstrumentResultExclusionsService().create(obj_in)
+        return InstrumentResultExclusionsType(**exclusion.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_instrument_result_exclusions(
+            self, info, uid: str, payload: InstrumentResultExclusionsInput
+    ) -> InstrumentResultExclusionsResponse:  # noqa
+        exclusion = await InstrumentResultExclusionsService().get(uid=uid)
+        if not exclusion:
+            return OperationError(
+                error=f"instrument result exclusion with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = exclusion.to_dict()
+        for _field in obj_data:
+            if _field in payload.__dict__:
+                try:
+                    setattr(exclusion, _field, payload.__dict__[_field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.InstrumentResultExclusionsUpdate(**exclusion.to_dict())
+        exclusion = await InstrumentResultExclusionsService().update(exclusion.uid, obj_in)
+        return InstrumentResultExclusionsType(**exclusion.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_instrument_result_translation(
+            self, info, payload: InstrumentResultTranslationInput
+    ) -> InstrumentResultTranslationResponse:  # noqa
+        instrument = await InstrumentService().get(uid=payload.instrument_uid)
+        if not instrument:
+            return OperationError(error="Provided instrument does not exist")
+
+        incoming: dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.InstrumentResultTranslationCreate(**incoming)
+        translation = await InstrumentResultTranslationService().create(obj_in)
+        return InstrumentResultTranslationType(**translation.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_instrument_result_translation(
+            self, info, uid: str, payload: InstrumentResultTranslationInput
+    ) -> InstrumentResultTranslationResponse:  # noqa
+        translation = await InstrumentResultTranslationService().get(uid=uid)
+        if not translation:
+            return OperationError(
+                error=f"instrument result translation with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = translation.to_dict()
+        for _field in obj_data:
+            if _field in payload.__dict__:
+                try:
+                    setattr(translation, _field, payload.__dict__[_field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.InstrumentResultTranslationUpdate(**translation.to_dict())
+        translation = await InstrumentResultTranslationService().update(translation.uid, obj_in)
+        return InstrumentResultTranslationType(**translation.marshal_simple())

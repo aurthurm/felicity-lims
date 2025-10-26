@@ -3,7 +3,7 @@ import time
 import typing
 
 import serial
-from serial.serialutil import to_bytes
+from serial.serialutil import to_bytes  # noqa
 
 from felicity.apps.iol.analyzer.conf import EventType
 from felicity.apps.iol.analyzer.link.base import AbstractLink
@@ -424,7 +424,7 @@ class SerialLink(AbstractLink):
                 logger.log("info", "SerialLink:  No valid message. No <STX> or <EOT> received")
         else:
             logger.log("info", "SerialLink: Establishment phase not initiated")
-            # sysmex KX21N - Grab message here
+            # Sysmex KX21N - Grab message here -
             # <STX>D1U2510220000000000051000000S011900377001010030900820202680032700299001860008400730000220001000087004920010100085201490<ETX>
             _data = self.to_str(line)
             if _data.startswith('<STX>') and _data.endswith('<ETX>'):

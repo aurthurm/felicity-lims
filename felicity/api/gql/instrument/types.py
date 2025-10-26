@@ -98,6 +98,19 @@ class LaboratoryInstrumentType:
     date_decommissioned: datetime | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
+    is_active: bool = False
+    is_interfacing: bool = False
+    host: str | None = None
+    port: str | None = None
+    path: str | None = None
+    baud_rate: int | None = None
+    auto_reconnect: bool = False
+    connection_type: str | None = None
+    protocol_type: str | None = None
+    socket_type: str | None = None
+    connection: str | None = None
+    transmission: str | None = None
+    sync_units: bool = False
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -225,3 +238,35 @@ class MethodCursorPage:
     edges: Optional[List[MethodEdge]] = None
     items: Optional[List[MethodType]] = None
     total_count: int
+
+
+@strawberry.type
+class InstrumentRawDataType:
+    uid: str
+    content: str
+    laboratory_instrument_uid: str
+    laboratory_instrument: LaboratoryInstrumentType
+    is_transformed: bool
+    transformation_attempts: int
+    last_transformation_attempt: datetime | None = None
+    transformation_error: str | None = None
+
+
+@strawberry.type
+class InstrumentResultExclusionsType:
+    uid: str
+    instrument_uid: str
+    instrument: InstrumentType
+    result: str
+    reason: str | None = None
+
+
+@strawberry.type
+class InstrumentResultTranslationType:
+    uid: str
+    instrument_uid: str
+    instrument: InstrumentType
+    original: str
+    translated: str
+    keyword: str
+    reason: str | None = None
