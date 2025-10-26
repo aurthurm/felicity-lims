@@ -43,7 +43,7 @@ class AbstractLink(ABC):
 
     def eot_offload(self, instrument_uid, messages):
         """End of Transmission -> offload processed messages to storage"""
-        logger.log("info", "Link: Offloading to storage...")
+        logger.info("Link: Offloading to storage...")
         # Save raw messages immediately (no threading to avoid message loss)
         self._save_data(instrument_uid, messages)
 
@@ -68,9 +68,9 @@ class AbstractLink(ABC):
         """
 
         if not message:
-            logger.log("info", "-" * 80)
-            logger.log("info", f"Link: ------> NO MESSAGE")
-            logger.log("info", "-" * 80)
+            logger.info("-" * 80)
+            logger.info(f"Link: ------> NO MESSAGE")
+            logger.info("-" * 80)
             return
 
         if not isinstance(message, str):
@@ -79,9 +79,9 @@ class AbstractLink(ABC):
             else:
                 message = str(message)
 
-        logger.log("info", "-" * 80)
-        logger.log("info", f"Link: {message}")
-        logger.log("info", "-" * 80)
+        logger.info("-" * 80)
+        logger.info(f"Link: {message}")
+        logger.info("-" * 80)
 
         post_event(EventType.INSTRUMENT_LOG, **{
             'id': self.uid,
@@ -109,12 +109,12 @@ class AbstractLink(ABC):
         #  Latin-1 (often used by LIS systems with extended chars)
         try:
             decoded = message.replace(b"\x00", b"").decode("latin-1")
-            logger.log("info", "Decoded using Latin-1")
+            logger.info("Decoded using Latin-1")
             return decoded
         except UnicodeDecodeError:
             pass
 
         # Fallback UTF-8 with replacement
         decoded = message.decode("utf-8", errors="replace")
-        logger.log("warning", "Fallback to UTF-8 with replacement")
+        logger.warning("Fallback to UTF-8 with replacement")
         return decoded

@@ -1,7 +1,7 @@
 import logging
 import socket
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Literal
 from typing import Union, List
 
@@ -19,6 +19,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 RECV_BUFFER = 1024
+# Message size and timeout limits
+MAX_MESSAGE_SIZE = 10 * 1024 * 1024  # 10 MB max message size
+MESSAGE_TIMEOUT_SECONDS = 60  # 60 second timeout for incomplete messages
 
 # ASTM Constants
 STX = ASTMConstants.STX
@@ -73,14 +76,16 @@ class SocketLink(AbstractLink):
         self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
         self.in_transfer_state = False
         self._astm_message_fragments = []  # Store message fragments until complete message
+        self._session_start_time = None  # Track when session started for timeout detection
+        self._total_message_size = 0  # Track accumulated message size for limits
 
     def start_server(self, trials=1):
         """Start serial server"""
         if not self.is_active:
-            logger.log("info", f"SocketLink: Instrument {self.name} is deactivated. Cannot start server.")
+            logger.info(f"SocketLink: Instrument {self.name} is deactivated. Cannot start server.")
             time.sleep(60)
             return
-        logger.log("info", "SocketLink: Starting socket server ...")
+        logger.info("SocketLink: Starting socket server ...")
 
         if self.emit_events:
             post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTING,
@@ -95,17 +100,14 @@ class SocketLink(AbstractLink):
                     self._start_server(s)
         except OSError as e:
             if e.errno == 98:  # Address already in use
-                logger.log("error",
-                           f"SocketLink: Port {self.port} is already in use. Check if another instance is running or wait for the port to be released.")
-                logger.log("error",
-                           f"SocketLink: You can check for processes using: lsof -i :{self.port} or ss -tulpn | grep :{self.port}")
+                logger.error(f"SocketLink: Port {self.port} is already in use. Check if another instance is running or wait for the port to be released.")
+                logger.error(f"SocketLink: You can check for processes using: lsof -i :{self.port} or ss -tulpn | grep :{self.port}")
             elif e.errno == 13:  # Permission denied
-                logger.log("error",
-                           f"SocketLink: Permission denied binding to port {self.port}. Try running with elevated privileges or use a port > 1024.")
+                logger.error(f"SocketLink: Permission denied binding to port {self.port}. Try running with elevated privileges or use a port > 1024.")
             else:
-                logger.log("error", f"SocketLink: OS error: {e}")
+                logger.error(f"SocketLink: OS error: {e}")
         except Exception as e:
-            logger.log("error", f"SocketLink: An unexpected error occurred: {e}")
+            logger.error(f"SocketLink: An unexpected error occurred: {e}")
         finally:
             self._cleanup(trials)
 
@@ -116,14 +118,14 @@ class SocketLink(AbstractLink):
                        transmission="")
 
         if self.auto_reconnect and trials <= 5:
-            logger.log("info", f"SocketLink: Reconnecting ... trial: {trials}")
+            logger.info(f"SocketLink: Reconnecting ... trial: {trials}")
             trials += 1
             time.sleep(5)
             self.start_server(trials)
 
     def _start_client(self, s):
         """Start client socket"""
-        logger.log("info", "SocketLink: Attempting client connection ...")
+        logger.info("SocketLink: Attempting client connection ...")
         s.connect((self.host, self.port))
         set_keep_alive(s, after_idle_sec=60, interval_sec=60, max_fails=5)
 
@@ -137,7 +139,7 @@ class SocketLink(AbstractLink):
 
     def _start_server(self, s):
         """Start server socket"""
-        logger.log("info", "SocketLink: Attempting Server connection...")
+        logger.info("SocketLink: Attempting Server connection...")
         # Set socket options for better port reuse handling
         socket_options = [
             (socket.SOL_SOCKET, socket.SO_REUSEADDR, 1),
@@ -161,7 +163,7 @@ class SocketLink(AbstractLink):
         if self.emit_events:
             post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.OPEN, transmission="")
 
-        logger.log("info", "SocketLink: Server listening for connections ...")
+        logger.info("SocketLink: Server listening for connections ...")
         while True:
             try:
                 sckt, address = s.accept()
@@ -169,13 +171,13 @@ class SocketLink(AbstractLink):
                     post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED,
                                transmission="")
 
-                logger.log("info", f"SocketLink: [{self.name}] Accepted connection from {address}")
+                logger.info(f"SocketLink: [{self.name}] Accepted connection from {address}")
                 self._handle_connection(sckt)
             except socket.timeout:
-                logger.log("info", f"SocketLink: [{self.name}] Accept timeout, continuing to listen...")
+                logger.info(f"SocketLink: [{self.name}] Accept timeout, continuing to listen...")
                 continue  # Keep the server running
             except Exception as e:
-                logger.log("info", f"SocketLink: Server error: {e}")
+                logger.info(f"SocketLink: Server error: {e}")
                 break  # Exit the server loop on serious errors
 
     def _handle_connection(self, sckt):
@@ -201,12 +203,12 @@ class SocketLink(AbstractLink):
                 elif response == "NACK":
                     self.nack()
         except Exception as e:
-            logger.log("error", f"SocketLink: Error during connection handling: {e}")
+            logger.error(f"SocketLink: Error during connection handling: {e}")
             post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.DISCONNECTING,
                        transmission="")
         finally:
             sckt.close()
-            logger.log("info", "SocketLink: Connection closed")
+            logger.info("SocketLink: Connection closed")
             self.response = None
             self.close()
             post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.DISCONNECTED,
@@ -217,11 +219,11 @@ class SocketLink(AbstractLink):
             # read a frame
             return sckt.recv(RECV_BUFFER)
         except socket.timeout as e:
-            logger.log("error", f"SocketLink: Socket timeout: {e}")
+            logger.error(f"SocketLink: Socket timeout: {e}")
         except socket.error as e:
-            logger.log("error", f"SocketLink: Socket error: {e}")
+            logger.error(f"SocketLink: Socket error: {e}")
         except Exception as e:
-            logger.log("error", f"SocketLink: Error reading data: {e}")
+            logger.error(f"SocketLink: Error reading data: {e}")
 
     def is_open(self):
         return self._buffer is not None
@@ -229,8 +231,40 @@ class SocketLink(AbstractLink):
     def is_busy(self):
         return self.response is not None
 
+    def _check_message_timeout(self) -> bool:
+        """Check if current message has exceeded timeout threshold.
+
+        Returns:
+            True if message has timed out, False otherwise
+        """
+        if not self.in_transfer_state or not self._session_start_time:
+            return False
+
+        elapsed = datetime.now() - self._session_start_time
+        if elapsed.total_seconds() > MESSAGE_TIMEOUT_SECONDS:
+            logger.warning(f"SocketLink: Message timeout after {elapsed.total_seconds():.1f}s")
+            return True
+        return False
+
+    def _check_message_size(self, new_data_size: int) -> bool:
+        """Check if adding new data would exceed message size limit.
+
+        Args:
+            new_data_size: Size of new data being added
+
+        Returns:
+            True if adding data would exceed limit, False otherwise
+        """
+        if self._total_message_size + new_data_size > MAX_MESSAGE_SIZE:
+            logger.error(f"SocketLink: Message size limit exceeded. "
+                      f"Current: {self._total_message_size}, "
+                      f"New: {new_data_size}, "
+                      f"Limit: {MAX_MESSAGE_SIZE}")
+            return True
+        return False
+
     def open(self):
-        logger.log("info", "SocketLink: Opening session")
+        logger.info("SocketLink: Opening session")
         self._buffer = b''
         self.response = None
         self.establishment = False
@@ -238,12 +272,14 @@ class SocketLink(AbstractLink):
         self._astm_frame_number = 0
         self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
         self.in_transfer_state = False
+        self._session_start_time = datetime.now()  # Track session start for timeout detection
+        self._total_message_size = 0  # Reset message size tracking
         if self.emit_events:
             post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED,
                        transmission=TransmissionStatus.STARTED)
 
     def close(self):
-        logger.log("info", "SocketLink: Closing session: neutral state")
+        logger.info("SocketLink: Closing session: neutral state")
         self._buffer = b''  # Changed from None to b'' to match async implementation
         self.establishment = False
         self._astm_session_active = False
@@ -253,24 +289,27 @@ class SocketLink(AbstractLink):
         # Reset frame tracking for next session
         self._astm_frame_number = 0
         self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
+        # Reset size and timeout tracking
+        self._session_start_time = None
+        self._total_message_size = 0
         if self.emit_events:
             post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED,
                        transmission=TransmissionStatus.ENDED)
 
     def process(self, data: bytes) -> None:
         """Router method with auto-detection - directs to appropriate protocol handler"""
-        logger.log("info", f"SocketLink: Received data: {str(data)}")
+        logger.info(f"SocketLink: Received data: {str(data)}")
 
         # Auto-detect protocol if not explicitly set
         if not self.protocol_type:
             if data.startswith((ENQ, STX, EOT)):
-                logger.log("info", "SocketLink: Auto-detected ASTM protocol")
+                logger.info("SocketLink: Auto-detected ASTM protocol")
                 self.protocol_type = ProtocolType.ASTM
             elif data.startswith(HL7_SB) or data.lstrip().startswith(b"MSH"):
-                logger.log("info", "SocketLink: Auto-detected HL7 protocol")
+                logger.info("SocketLink: Auto-detected HL7 protocol")
                 self.protocol_type = ProtocolType.HL7
             else:
-                logger.log("warning", "SocketLink: Unknown protocol, defaulting to HL7")
+                logger.warning("SocketLink: Unknown protocol, defaulting to HL7")
                 self.protocol_type = ProtocolType.HL7
 
         if self.protocol_type == ProtocolType.ASTM:
@@ -283,7 +322,14 @@ class SocketLink(AbstractLink):
         if data is None:
             return
 
-        logger.log("info", f"SocketLink: Processing ASTM data ...")
+        logger.info(f"SocketLink: Processing ASTM data ...")
+
+        # Check for timeouts on incomplete messages
+        if self._check_message_timeout():
+            logger.error("SocketLink: Message timeout detected, closing session")
+            self.response = "NACK"
+            self.close()
+            return
 
         # Handle standard ASTM control characters
         if data.startswith(ENQ):
@@ -292,11 +338,11 @@ class SocketLink(AbstractLink):
             return
 
         elif data.startswith(ACK):
-            logger.log("info", "SocketLink: Received ASTM ACK from sender")
+            logger.info("SocketLink: Received ASTM ACK from sender")
             return
 
         elif data.startswith(NAK):
-            logger.log("warning", "SocketLink: Received ASTM NAK from sender")
+            logger.warning("SocketLink: Received ASTM NAK from sender")
             return
 
         elif data.startswith(EOT):
@@ -305,12 +351,22 @@ class SocketLink(AbstractLink):
 
         # Handle ASTM data frames
         elif data.startswith(STX):
+            # Check message size limit before processing
+            if self._check_message_size(len(data)):
+                logger.error("SocketLink: Message exceeds size limit, rejecting")
+                self.response = "NACK"
+                self.close()
+                return
+
             # If no session is active, start a session
             if not self._astm_session_active:
-                logger.log("info", "SocketLink: Auto-starting ASTM session on data receipt")
+                logger.info("SocketLink: Auto-starting ASTM session on data receipt")
                 self._astm_session_active = True
                 self._astm_last_frame_number = 0  # Reset for first frame acceptance
                 self.in_transfer_state = True
+
+            # Track accumulated message size
+            self._total_message_size += len(data)
 
             # Add data to buffer
             self._buffer += data
@@ -372,7 +428,7 @@ class SocketLink(AbstractLink):
         try:
             # Frame format: STX FN message ETX/ETB checksum CR LF
             if len(frame) < 5:  # Minimum frame size
-                logger.log("error", "SocketLink: ASTM frame too short")
+                logger.error("SocketLink: ASTM frame too short")
                 return False
 
             # Extract frame number from second byte
@@ -380,17 +436,15 @@ class SocketLink(AbstractLink):
 
             # For the very first frame, accept any frame number and reset sequence
             if len(self._received_messages) == 0:
-                logger.log("info", f"SocketLink: First ASTM frame, accepting frame {frame_number}")
+                logger.info(f"SocketLink: First ASTM frame, accepting frame {frame_number}")
                 expected_frame = frame_number
             else:
                 expected_frame = (self._astm_last_frame_number + 1) % 8
 
-            logger.log("info",
-                       f"SocketLink: ASTM frame number: {frame_number}, expected: {expected_frame}, last: {self._astm_last_frame_number}")
+            logger.info(f"SocketLink: ASTM frame number: {frame_number}, expected: {expected_frame}, last: {self._astm_last_frame_number}")
 
             if frame_number != expected_frame:
-                logger.log("error",
-                           f"SocketLink: ASTM frame sequence error. Expected {expected_frame}, got {frame_number}")
+                logger.error(f"SocketLink: ASTM frame sequence error. Expected {expected_frame}, got {frame_number}")
                 return False
 
             # Extract message content (remove STX, frame number, ETX/ETB, checksum, CR, LF)
@@ -410,11 +464,11 @@ class SocketLink(AbstractLink):
 
             # Validate checksum if needed (optional implementation)
             checksum_received = frame[-4:-2].decode('ascii', errors='ignore')
-            logger.log("info", f"SocketLink: ASTM checksum received: {checksum_received}")
+            logger.info(f"SocketLink: ASTM checksum received: {checksum_received}")
 
             # Log frame content with robust encoding handling
             frame_content = self.decode_message(message_fragment)
-            logger.log("info", f"SocketLink: ASTM frame content: {frame_content}")
+            logger.info(f"SocketLink: ASTM frame content: {frame_content}")
 
             # Accumulate message fragments
             self._received_messages.append(message_fragment)
@@ -422,11 +476,11 @@ class SocketLink(AbstractLink):
             # Just accumulate all frames - don't process until EOT
             # Update frame sequence for all frames
             self._astm_last_frame_number = frame_number
-            logger.log("info", f"SocketLink: ASTM frame {frame_number} accumulated, waiting for EOT")
+            logger.info(f"SocketLink: ASTM frame {frame_number} accumulated, waiting for EOT")
             return True
 
         except Exception as e:
-            logger.log("error", f"SocketLink: Error processing ASTM frame: {e}")
+            logger.error(f"SocketLink: Error processing ASTM frame: {e}")
             return False
 
     def _process_custom_astm_message(self, data: bytes) -> None:
@@ -435,7 +489,7 @@ class SocketLink(AbstractLink):
 
         # Check for start of custom message
         if b"H|" in self._buffer and not self.in_transfer_state:
-            logger.log("info", "SocketLink: ASTM custom message start detected (H|)")
+            logger.info("SocketLink: ASTM custom message start detected (H|)")
             # For custom messages, initialize session but don't clear buffer
             # as these messages don't use standard ASTM framing
             self.handle_astm_enq(clear_buffer=False)
@@ -444,14 +498,14 @@ class SocketLink(AbstractLink):
 
         # Check for end of custom message
         if self.in_transfer_state and b"L|1|N\r" in self._buffer:
-            logger.log("info", "SocketLink: ASTM custom message end detected (L|1|N\\r)")
+            logger.info("SocketLink: ASTM custom message end detected (L|1|N\\r)")
             full_message = self._buffer
             self._buffer = b""
             self.in_transfer_state = False
 
             # Validate custom message format
             if not self._validate_custom_message(full_message):
-                logger.log("error", "SocketLink: ASTM custom message validation failed")
+                logger.error("SocketLink: ASTM custom message validation failed")
                 self.response = "NACK"
                 return
 
@@ -465,38 +519,55 @@ class SocketLink(AbstractLink):
             self.handle_astm_eot()
             return
 
-        logger.log("info", "SocketLink: ASTM custom message incomplete, waiting for more data")
+        logger.info("SocketLink: ASTM custom message incomplete, waiting for more data")
 
     def _validate_custom_message(self, message: bytes) -> bool:
         """Validate custom ASTM message format"""
         try:
             # Basic validation for custom messages
             if not message.startswith(b"H|"):
-                logger.log("error", "SocketLink: Custom message doesn't start with H|")
-                logger.log("error", f"Custom message start with {message[:20]}")
+                logger.error("SocketLink: Custom message doesn't start with H|")
+                logger.error(f"Custom message start with {message[:20]}")
                 return False
 
             if not message.endswith(b"L|1|N\r"):
-                logger.log("error", "SocketLink: Custom message doesn't end with L|1|N\\r")
+                logger.error("SocketLink: Custom message doesn't end with L|1|N\\r")
                 return False
 
             # Check for minimum message length
             if len(message) < 10:
-                logger.log("error", "SocketLink: Custom message too short")
+                logger.error("SocketLink: Custom message too short")
                 return False
 
-            logger.log("info", "SocketLink: Custom ASTM message validation passed")
+            logger.info("SocketLink: Custom ASTM message validation passed")
             return True
 
         except Exception as e:
-            logger.log("error", f"SocketLink: Custom message validation error: {e}")
+            logger.error(f"SocketLink: Custom message validation error: {e}")
             return False
 
     def process_hl7(self, data: bytes) -> None:
         """Process HL7 messages with MLLP framing"""
         if data is None: return None
 
-        logger.log("info", f"SocketLink: Processing HL7 data: {str(data)}")
+        logger.info(f"SocketLink: Processing HL7 data: {str(data)}")
+
+        # Check for timeouts on incomplete messages
+        if self._check_message_timeout():
+            logger.error("SocketLink: HL7 message timeout detected, closing session")
+            self.response = "NACK"
+            self.close()
+            return
+
+        # Check message size limit before processing
+        if self._check_message_size(len(data)):
+            logger.error("SocketLink: HL7 message exceeds size limit, rejecting")
+            self.response = "NACK"
+            self.close()
+            return
+
+        # Track accumulated message size
+        self._total_message_size += len(data)
 
         if HL7_SB in data:
             self.handle_enq()
@@ -528,7 +599,7 @@ class SocketLink(AbstractLink):
             self.response = "ACK"
             return
         else:
-            logger.log("info", "SocketLink: HL7 establishment phase not initiated")
+            logger.info("SocketLink: HL7 establishment phase not initiated")
             self.response = "NACK"
 
         self.response = None
@@ -536,13 +607,13 @@ class SocketLink(AbstractLink):
 
     def handle_astm_enq(self, clear_buffer=True):
         """Handle ASTM ENQ (session initialization)"""
-        logger.log("info", "SocketLink: Received ASTM ENQ")
+        logger.info("SocketLink: Received ASTM ENQ")
 
         if self.is_busy():
-            logger.log("info", "SocketLink: Receiver is busy, sending NAK")
+            logger.info("SocketLink: Receiver is busy, sending NAK")
             self.response = "NACK"
         else:
-            logger.log("info", "SocketLink: Ready for ASTM transfer, sending ACK")
+            logger.info("SocketLink: Ready for ASTM transfer, sending ACK")
             self._astm_session_active = True
             self.in_transfer_state = True
             self._astm_frame_number = 0
@@ -553,7 +624,7 @@ class SocketLink(AbstractLink):
 
     def handle_astm_eot(self):
         """Handle ASTM EOT (end of transmission)"""
-        logger.log("info", "SocketLink: Received ASTM EOT")
+        logger.info("SocketLink: Received ASTM EOT")
         self._astm_session_active = False
         self.in_transfer_state = False
 
@@ -562,7 +633,7 @@ class SocketLink(AbstractLink):
             complete_message = b''.join(self._received_messages)
             decoded_message = self.decode_message(complete_message)
 
-            logger.log("info", f"SocketLink: Complete ASTM message assembled ({len(complete_message)} bytes)")
+            logger.info(f"SocketLink: Complete ASTM message assembled ({len(complete_message)} bytes)")
 
             # Process the single complete message
             self.show_message(decoded_message)
@@ -576,19 +647,19 @@ class SocketLink(AbstractLink):
 
     def handle_enq(self):
         """Handle HL7 ENQ (establishment)"""
-        logger.log("debug", "SocketLink: Initiating HL7 Establishment Phase")
+        logger.debug("SocketLink: Initiating HL7 Establishment Phase")
         if self.is_busy():
-            logger.log("info", "SocketLink: Receiver is busy")
+            logger.info("SocketLink: Receiver is busy")
             self.response = "NAK"
         else:
-            logger.log("info", "SocketLink: Ready for HL7 Transfer Phase")
+            logger.info("SocketLink: Ready for HL7 Transfer Phase")
             self.establishment = True
             self.in_transfer_state = True
             self.response = "ACK"
 
     def handle_eot(self):
         """Handles HL7 End Of Transmission message"""
-        logger.log("info", "SocketLink: HL7 transfer phase completed")
+        logger.info("SocketLink: HL7 transfer phase completed")
 
         # Decode messages with proper encoding handling for special characters
         msgs = []
@@ -598,11 +669,11 @@ class SocketLink(AbstractLink):
             else:
                 msgs.append(m)
 
-        logger.log("info", f"SocketLink: -----------------------------------------------------------------------")
-        logger.log("info", f"SocketLink: HL7 un-decoded messages: msgs={self._received_messages}")
-        logger.log("info", f"SocketLink: -----------------------------------------------------------------------")
-        logger.log("info", f"SocketLink: HL7 decoded messages: msgs={msgs}")
-        logger.log("info", f"SocketLink: -----------------------------------------------------------------------")
+        logger.info(f"SocketLink: -----------------------------------------------------------------------")
+        logger.info(f"SocketLink: HL7 un-decoded messages: msgs={self._received_messages}")
+        logger.info(f"SocketLink: -----------------------------------------------------------------------")
+        logger.info(f"SocketLink: HL7 decoded messages: msgs={msgs}")
+        logger.info(f"SocketLink: -----------------------------------------------------------------------")
 
         # Show each message individually
         for msg in msgs:
@@ -614,20 +685,20 @@ class SocketLink(AbstractLink):
     def nack(self):
         """Send NACK response"""
         if self.protocol_type == ProtocolType.ASTM:
-            logger.log("info", "SocketLink: <- ASTM NACK")
+            logger.info("SocketLink: <- ASTM NACK")
             self.socket.send(NAK)
         else:
-            logger.log("info", f"SocketLink: <- HL7 NACK : {self.msg_id}")
+            logger.info(f"SocketLink: <- HL7 NACK : {self.msg_id}")
             nack = self._nack_msg(self.msg_id)
             self.send_message(nack)
 
     def ack(self):
         """Send ACK response"""
         if self.protocol_type == ProtocolType.ASTM:
-            logger.log("info", "SocketLink: <- ASTM ACK")
+            logger.info("SocketLink: <- ASTM ACK")
             self.socket.send(ACK)
         else:
-            logger.log("info", f"SocketLink: <- HL7 ACK : {self.msg_id}")
+            logger.info(f"SocketLink: <- HL7 ACK : {self.msg_id}")
             ack = self._ack_msg(self.msg_id)
             self.send_message(ack)
 
@@ -704,7 +775,7 @@ class SocketLink(AbstractLink):
 
     def get_response(self):
         if self.response:
-            logger.log("debug", "SocketLink: Response <- {}".format(self.response))
+            logger.debug("SocketLink: Response <- {}".format(self.response))
         resp = self.response
         self.response = None
         return resp
