@@ -1,781 +1,465 @@
-import logging
-import socket
-import time
-from datetime import datetime, timedelta
-from typing import Literal
-from typing import Union, List
+# -*- coding: utf-8 -*-
+"""
+Socket Link - Non-blocking instrument communication
 
-from hl7apy.core import Message as HL7Message
+Uses asyncio for non-blocking TCP/IP communication with laboratory instruments.
+Supports both ASTM and HL7 protocols with automatic detection.
+
+Architecture:
+- SocketLink: Main connection handler
+- ASTMProtocolHandler: ASTM protocol logic
+- HL7ProtocolHandler: HL7 protocol logic
+"""
+
+import asyncio
+import logging
+from datetime import datetime, timedelta
+from typing import Optional, Literal, Union
 
 from felicity.apps.iol.analyzer.conf import EventType, CONNECTED_DISABLE_TIMEOUT
 from felicity.apps.iol.analyzer.link.base import AbstractLink
-from felicity.apps.iol.analyzer.link.conf import ASTMConstants, HL7Constants, SocketType, ProtocolType, \
-    ConnectionStatus, TransmissionStatus
+from felicity.apps.iol.analyzer.link.conf import (
+    SocketType, ProtocolType, ConnectionStatus, TransmissionStatus
+)
 from felicity.apps.iol.analyzer.link.schema import InstrumentConfig
 from felicity.apps.iol.analyzer.link.utils import set_keep_alive
+from felicity.apps.iol.analyzer.link.fsocket.astm import ASTMProtocolHandler
+from felicity.apps.iol.analyzer.link.fsocket.hl7 import HL7ProtocolHandler
 from felicity.core.events import post_event
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Connection parameters
 RECV_BUFFER = 1024
-# Message size and timeout limits
-MAX_MESSAGE_SIZE = 10 * 1024 * 1024  # 10 MB max message size
-MESSAGE_TIMEOUT_SECONDS = 60  # 60 second timeout for incomplete messages
+CONNECT_TIMEOUT = 10
+RECONNECT_DELAY = 5
+MAX_RECONNECT_ATTEMPTS = 5
+KEEP_ALIVE_INTERVAL = 10
 
-# ASTM Constants
-STX = ASTMConstants.STX
-ETX = ASTMConstants.ETX
-EOT = ASTMConstants.EOT
-ENQ = ASTMConstants.ENQ
-ACK = ASTMConstants.ACK
-NAK = ASTMConstants.NAK
-ETB = ASTMConstants.ETB
-LF = ASTMConstants.LF
-CR = ASTMConstants.CR
-CRLF = ASTMConstants.CRLF
-
-# HL7 Constants
-HL7_SB = HL7Constants.SB
-HL7_EB = HL7Constants.EB
-HL7_CR = HL7Constants.CR
-HL7_FF = HL7Constants.FF
+# Message safety limits
+MAX_MESSAGE_SIZE = 10 * 1024 * 1024  # 10 MB
+MESSAGE_TIMEOUT_SECONDS = 60  # 60 seconds
 
 
 class SocketLink(AbstractLink):
+    """
+    TCP/IP socket connection handler for laboratory instruments.
+
+    Async implementation using asyncio for non-blocking I/O.
+
+    Supports:
+    - Client and server modes
+    - ASTM and HL7 protocols
+    - Automatic protocol detection
+    - Non-blocking I/O
+    - Graceful shutdown
+    - Multiple concurrent connections (server mode)
+    """
+
     def __init__(self, instrument_config: InstrumentConfig, emit_events=True):
         self.emit_events = emit_events
+
         # Instrument configuration
         self.uid = instrument_config.uid
         self.name = instrument_config.name
         self.host = instrument_config.host
         self.port = instrument_config.port
-        self.socket_type: SocketType | None = instrument_config.socket_type
-        self.protocol_type: ProtocolType | None = instrument_config.protocol_type
+        self.socket_type: Optional[SocketType] = instrument_config.socket_type
+        self.protocol_type: Optional[ProtocolType] = instrument_config.protocol_type
         self.auto_reconnect: bool = instrument_config.auto_reconnect
         self.is_active: bool = instrument_config.is_active
-        self.encoding = "utf-8"
-        # socket
-        self.socket = None
-        self.timeout = 10
-        self.keep_alive_interval = 10
-        self.keep_alive_running = False
-        # base
-        self._received_messages: List[bytes] = list()
-        self._chunks: List[bytes] = list()  # For ASTM chunked messages
-        self.establishment = False
-        self.response: Literal['ACK', 'NACK'] | None = None
-        self._buffer = b''
-        # ACK | NACK
-        self.msg_id = None
-        self.expect_ack = False
 
-        # ASTM specific
-        self._astm_session_active = False
-        self._astm_frame_number = 0
-        self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
-        self.in_transfer_state = False
-        self._astm_message_fragments = []  # Store message fragments until complete message
-        self._session_start_time = None  # Track when session started for timeout detection
-        self._total_message_size = 0  # Track accumulated message size for limits
+        # Socket state
+        self.server: Optional[asyncio.Server] = None
+        self.socket_timeout = 10
+        self.keep_alive_interval = KEEP_ALIVE_INTERVAL
 
-    def start_server(self, trials=1):
-        """Start serial server"""
-        if not self.is_active:
-            logger.info(f"SocketLink: Instrument {self.name} is deactivated. Cannot start server.")
-            time.sleep(60)
-            return
-        logger.info("SocketLink: Starting socket server ...")
+        # Message tracking
+        self._session_start_time: Optional[datetime] = None
+        self._total_message_size = 0
 
-        if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTING,
-                       transmission="")
+        # Protocol handlers
+        self.astm_handler = ASTMProtocolHandler(self.uid, self.name, emit_events)
+        self.hl7_handler = HL7ProtocolHandler(self.uid, self.name, emit_events)
 
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.settimeout(self.timeout)
-                if self.socket_type == SocketType.CLIENT:
-                    self._start_client(s)
-                elif self.socket_type == SocketType.SERVER:
-                    self._start_server(s)
-        except OSError as e:
-            if e.errno == 98:  # Address already in use
-                logger.error(f"SocketLink: Port {self.port} is already in use. Check if another instance is running or wait for the port to be released.")
-                logger.error(f"SocketLink: You can check for processes using: lsof -i :{self.port} or ss -tulpn | grep :{self.port}")
-            elif e.errno == 13:  # Permission denied
-                logger.error(f"SocketLink: Permission denied binding to port {self.port}. Try running with elevated privileges or use a port > 1024.")
-            else:
-                logger.error(f"SocketLink: OS error: {e}")
-        except Exception as e:
-            logger.error(f"SocketLink: An unexpected error occurred: {e}")
-        finally:
-            self._cleanup(trials)
+        # Protocol detection
+        self._protocol_detected = False
+        self._detected_protocol: Optional[ProtocolType] = None
 
-    def _cleanup(self, trials):
-        self.socket = None
-        if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.DISCONNECTED,
-                       transmission="")
-
-        if self.auto_reconnect and trials <= 5:
-            logger.info(f"SocketLink: Reconnecting ... trial: {trials}")
-            trials += 1
-            time.sleep(5)
-            self.start_server(trials)
-
-    def _start_client(self, s):
-        """Start client socket"""
-        logger.info("SocketLink: Attempting client connection ...")
-        s.connect((self.host, self.port))
-        set_keep_alive(s, after_idle_sec=60, interval_sec=60, max_fails=5)
-
-        if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED, transmission="")
-
-        if CONNECTED_DISABLE_TIMEOUT:
-            s.settimeout(None)
-
-        self._handle_connection(s)
-
-    def _start_server(self, s):
-        """Start server socket"""
-        logger.info("SocketLink: Attempting Server connection...")
-        # Set socket options for better port reuse handling
-        socket_options = [
-            (socket.SOL_SOCKET, socket.SO_REUSEADDR, 1),
-            (socket.SOL_SOCKET, socket.SO_REUSEPORT, 1),
-        ]
-
-        for level, option, value in socket_options:
-            try:
-                s.setsockopt(level, option, value)
-            except OSError:
-                # Some options might not be available on all systems
-                pass
-
-        s.bind((self.host, self.port))
-        s.listen(1)
-        set_keep_alive(s, after_idle_sec=60, interval_sec=60, max_fails=5)
-
-        if CONNECTED_DISABLE_TIMEOUT:
-            s.settimeout(None)
-
-        if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.OPEN, transmission="")
-
-        logger.info("SocketLink: Server listening for connections ...")
-        while True:
-            try:
-                sckt, address = s.accept()
-                if self.emit_events:
-                    post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED,
-                               transmission="")
-
-                logger.info(f"SocketLink: [{self.name}] Accepted connection from {address}")
-                self._handle_connection(sckt)
-            except socket.timeout:
-                logger.info(f"SocketLink: [{self.name}] Accept timeout, continuing to listen...")
-                continue  # Keep the server running
-            except Exception as e:
-                logger.info(f"SocketLink: Server error: {e}")
-                break  # Exit the server loop on serious errors
-
-    def _handle_connection(self, sckt):
-        self.socket = sckt
-
-        try:
-            while True:
-                data = self._read_data(sckt)
-                if data == b'':
-                    raise Exception("SocketLink: Closing connection -> Received empty bytes!!")
-
-                # Is this a new session ?
-                if not self.is_open():
-                    self.open()
-
-                # Process data based on protocol type
-                self.process(data)
-
-                # Does the receiver have to send something back?
-                response = self.get_response()
-                if response == "ACK":
-                    self.ack()
-                elif response == "NACK":
-                    self.nack()
-        except Exception as e:
-            logger.error(f"SocketLink: Error during connection handling: {e}")
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.DISCONNECTING,
-                       transmission="")
-        finally:
-            sckt.close()
-            logger.info("SocketLink: Connection closed")
-            self.response = None
-            self.close()
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.DISCONNECTED,
-                       transmission="")
-
-    def _read_data(self, sckt):
-        try:
-            # read a frame
-            return sckt.recv(RECV_BUFFER)
-        except socket.timeout as e:
-            logger.error(f"SocketLink: Socket timeout: {e}")
-        except socket.error as e:
-            logger.error(f"SocketLink: Socket error: {e}")
-        except Exception as e:
-            logger.error(f"SocketLink: Error reading data: {e}")
-
-    def is_open(self):
-        return self._buffer is not None
-
-    def is_busy(self):
-        return self.response is not None
-
-    def _check_message_timeout(self) -> bool:
-        """Check if current message has exceeded timeout threshold.
-
-        Returns:
-            True if message has timed out, False otherwise
+    async def start_server(self, trials: int = 1):
         """
-        if not self.in_transfer_state or not self._session_start_time:
-            return False
+        Start async server for receiving instrument data.
 
-        elapsed = datetime.now() - self._session_start_time
-        if elapsed.total_seconds() > MESSAGE_TIMEOUT_SECONDS:
-            logger.warning(f"SocketLink: Message timeout after {elapsed.total_seconds():.1f}s")
-            return True
-        return False
-
-    def _check_message_size(self, new_data_size: int) -> bool:
-        """Check if adding new data would exceed message size limit.
+        Supports both client and server modes:
+        - Server: Listens on host:port for incoming connections
+        - Client: Connects to host:port and listens for data
 
         Args:
-            new_data_size: Size of new data being added
-
-        Returns:
-            True if adding data would exceed limit, False otherwise
+            trials: Number of reconnection attempts (not used in async, for compatibility)
         """
-        if self._total_message_size + new_data_size > MAX_MESSAGE_SIZE:
-            logger.error(f"SocketLink: Message size limit exceeded. "
-                      f"Current: {self._total_message_size}, "
-                      f"New: {new_data_size}, "
-                      f"Limit: {MAX_MESSAGE_SIZE}")
+        if not self.is_active:
+            logger.info(f"SocketLink {self.name}: Instrument deactivated, cannot start server")
+            return
+
+        try:
+            if self.socket_type == SocketType.SERVER:
+                await self._start_server_mode()
+            else:
+                await self._start_client_mode()
+
+        except Exception as e:
+            logger.error(f"SocketLink {self.name}: Error starting server: {e}")
+            if self.emit_events:
+                post_event(EventType.INSTRUMENT_STREAM,
+                          id=self.uid,
+                          connection=ConnectionStatus.DISCONNECTED)
+
+    async def _start_server_mode(self):
+        """
+        Start server mode - listen for incoming instrument connections.
+
+        Creates async server that handles multiple concurrent client connections.
+        """
+        logger.info(f"SocketLink {self.name}: Starting server mode on {self.host}:{self.port}")
+
+        try:
+            # Create async server
+            self.server = await asyncio.start_server(
+                self._handle_client,
+                self.host or '0.0.0.0',
+                self.port
+            )
+
+            # Get server socket for keepalive
+            for sock in self.server.sockets:
+                set_keep_alive(sock, self.keep_alive_interval)
+
+            if self.emit_events:
+                post_event(EventType.INSTRUMENT_STREAM,
+                          id=self.uid,
+                          connection=ConnectionStatus.CONNECTED)
+
+            logger.info(f"SocketLink {self.name}: Server listening on {self.host}:{self.port}")
+
+            # Serve forever
+            async with self.server:
+                await self.server.serve_forever()
+
+        except OSError as e:
+            if e.errno in (98, 13):  # Address in use or Permission denied
+                logger.error(f"SocketLink {self.name}: Port error ({e.errno}): {e}")
+            else:
+                raise
+        except asyncio.CancelledError:
+            logger.info(f"SocketLink {self.name}: Server shutdown")
+        except Exception as e:
+            logger.error(f"SocketLink {self.name}: Server error: {e}")
+
+    async def _handle_client(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+        """
+        Handle individual client connection (server mode).
+
+        Args:
+            reader: Async stream reader
+            writer: Async stream writer
+        """
+        addr = writer.get_extra_info('peername')
+        logger.info(f"SocketLink {self.name}: Client connected from {addr}")
+
+        # Set keepalive on client socket
+        sock = writer.get_extra_info('socket')
+        if sock:
+            set_keep_alive(sock, self.keep_alive_interval)
+
+        if self.emit_events:
+            post_event(EventType.INSTRUMENT_STREAM,
+                      id=self.uid,
+                      connection=ConnectionStatus.CONNECTED,
+                      transmission=TransmissionStatus.STARTED)
+
+        try:
+            self._open_session()
+
+            while True:
+                try:
+                    # Read data with timeout
+                    data = await asyncio.wait_for(
+                        reader.read(RECV_BUFFER),
+                        timeout=self.socket_timeout
+                    )
+
+                except asyncio.TimeoutError:
+                    logger.warning(f"SocketLink {self.name}: Read timeout from {addr}")
+                    break
+
+                if not data:
+                    logger.info(f"SocketLink {self.name}: Connection closed by {addr}")
+                    break
+
+                # Check message timeout
+                if self._check_message_timeout():
+                    logger.error(f"SocketLink {self.name}: Message timeout detected")
+                    response = self._encode_response("NACK")
+                    writer.write(response)
+                    await writer.drain()
+                    self._close_session()
+                    break
+
+                # Check message size
+                if self._check_message_size(len(data)):
+                    logger.error(f"SocketLink {self.name}: Message exceeds size limit")
+                    response = self._encode_response("NACK")
+                    writer.write(response)
+                    await writer.drain()
+                    self._close_session()
+                    break
+
+                # Track message size
+                self._total_message_size += len(data)
+
+                # Process data
+                response = await self.process(data)
+
+                # Send response if any
+                if response:
+                    if isinstance(response, tuple):
+                        # (response_str, message_bytes) from HL7
+                        resp_str, msg_bytes = response
+                        if msg_bytes:
+                            writer.write(msg_bytes)
+                        else:
+                            writer.write(self._encode_response(resp_str))
+                    else:
+                        writer.write(self._encode_response(response))
+
+                    await writer.drain()
+
+        except asyncio.CancelledError:
+            logger.info(f"SocketLink {self.name}: Client handler cancelled")
+
+        except Exception as e:
+            logger.error(f"SocketLink {self.name}: Client error: {e}")
+
+        finally:
+            writer.close()
+            await writer.wait_closed()
+            self._close_session()
+
+            if self.emit_events:
+                post_event(EventType.INSTRUMENT_STREAM,
+                          id=self.uid,
+                          connection=ConnectionStatus.DISCONNECTED)
+
+    async def _start_client_mode(self):
+        """
+        Start client mode - connect to remote instrument server.
+
+        Maintains persistent connection and processes incoming data.
+        """
+        logger.info(f"SocketLink {self.name}: Starting client mode, connecting to {self.host}:{self.port}")
+
+        reconnect_count = 0
+
+        while reconnect_count < MAX_RECONNECT_ATTEMPTS:
+            try:
+                # Connect to server
+                reader, writer = await asyncio.wait_for(
+                    asyncio.open_connection(self.host, self.port),
+                    timeout=CONNECT_TIMEOUT
+                )
+
+                logger.info(f"SocketLink {self.name}: Connected to {self.host}:{self.port}")
+
+                if self.emit_events:
+                    post_event(EventType.INSTRUMENT_STREAM,
+                              id=self.uid,
+                              connection=ConnectionStatus.CONNECTED)
+
+                reconnect_count = 0  # Reset on successful connection
+                self._open_session()
+
+                try:
+                    # Set keepalive
+                    sock = writer.get_extra_info('socket')
+                    if sock:
+                        set_keep_alive(sock, self.keep_alive_interval)
+
+                    # Read loop
+                    while True:
+                        try:
+                            data = await asyncio.wait_for(
+                                reader.read(RECV_BUFFER),
+                                timeout=self.socket_timeout
+                            )
+
+                        except asyncio.TimeoutError:
+                            logger.warning(f"SocketLink {self.name}: Read timeout")
+                            break
+
+                        if not data:
+                            logger.info(f"SocketLink {self.name}: Server closed connection")
+                            break
+
+                        # Check timeout
+                        if self._check_message_timeout():
+                            logger.error(f"SocketLink {self.name}: Message timeout")
+                            response = self._encode_response("NACK")
+                            writer.write(response)
+                            await writer.drain()
+                            self._close_session()
+                            break
+
+                        # Check size
+                        if self._check_message_size(len(data)):
+                            logger.error(f"SocketLink {self.name}: Message size limit exceeded")
+                            response = self._encode_response("NACK")
+                            writer.write(response)
+                            await writer.drain()
+                            self._close_session()
+                            break
+
+                        self._total_message_size += len(data)
+
+                        # Process data
+                        response = await self.process(data)
+
+                        if response:
+                            if isinstance(response, tuple):
+                                resp_str, msg_bytes = response
+                                if msg_bytes:
+                                    writer.write(msg_bytes)
+                                else:
+                                    writer.write(self._encode_response(resp_str))
+                            else:
+                                writer.write(self._encode_response(response))
+
+                            await writer.drain()
+
+                finally:
+                    writer.close()
+                    await writer.wait_closed()
+                    self._close_session()
+
+            except asyncio.TimeoutError:
+                logger.error(f"SocketLink {self.name}: Connection timeout")
+                reconnect_count += 1
+
+            except ConnectionRefusedError:
+                logger.error(f"SocketLink {self.name}: Connection refused")
+                reconnect_count += 1
+
+            except Exception as e:
+                logger.error(f"SocketLink {self.name}: Connection error: {e}")
+                reconnect_count += 1
+
+            if reconnect_count < MAX_RECONNECT_ATTEMPTS and self.auto_reconnect:
+                logger.info(f"SocketLink {self.name}: Reconnecting... (attempt {reconnect_count}/{MAX_RECONNECT_ATTEMPTS})")
+                await asyncio.sleep(RECONNECT_DELAY)
+
+        if self.emit_events:
+            post_event(EventType.INSTRUMENT_STREAM,
+                      id=self.uid,
+                      connection=ConnectionStatus.DISCONNECTED)
+
+    def _open_session(self):
+        """Initialize session state"""
+        self._session_start_time = datetime.now()
+        self._total_message_size = 0
+        self.astm_handler.reset_session()
+        self.hl7_handler.reset_session()
+        self._protocol_detected = False
+        self._detected_protocol = None
+
+    def _close_session(self):
+        """Clean up session state"""
+        self._session_start_time = None
+        self._total_message_size = 0
+
+    def _check_message_timeout(self) -> bool:
+        """Check if message has timed out"""
+        if not self._session_start_time:
+            return False
+
+        elapsed = (datetime.now() - self._session_start_time).total_seconds()
+        if elapsed > MESSAGE_TIMEOUT_SECONDS:
+            logger.warning(f"SocketLink {self.name}: Message timeout after {elapsed:.1f}s")
             return True
         return False
 
-    def open(self):
-        logger.info("SocketLink: Opening session")
-        self._buffer = b''
-        self.response = None
-        self.establishment = False
-        self._astm_session_active = False
-        self._astm_frame_number = 0
-        self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
-        self.in_transfer_state = False
-        self._session_start_time = datetime.now()  # Track session start for timeout detection
-        self._total_message_size = 0  # Reset message size tracking
-        if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED,
-                       transmission=TransmissionStatus.STARTED)
+    def _check_message_size(self, new_size: int) -> bool:
+        """Check if message size exceeds limit"""
+        if self._total_message_size + new_size > MAX_MESSAGE_SIZE:
+            logger.error(f"SocketLink {self.name}: Message size limit exceeded "
+                      f"(current: {self._total_message_size}, new: {new_size}, limit: {MAX_MESSAGE_SIZE})")
+            return True
+        return False
 
-    def close(self):
-        logger.info("SocketLink: Closing session: neutral state")
-        self._buffer = b''  # Changed from None to b'' to match async implementation
-        self.establishment = False
-        self._astm_session_active = False
-        self.in_transfer_state = False
-        self._received_messages = list()
-        self._chunks = list()
-        # Reset frame tracking for next session
-        self._astm_frame_number = 0
-        self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
-        # Reset size and timeout tracking
-        self._session_start_time = None
-        self._total_message_size = 0
-        if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM, id=self.uid, connection=ConnectionStatus.CONNECTED,
-                       transmission=TransmissionStatus.ENDED)
+    async def process(self, data: bytes) -> Optional[Union[str, bytes, tuple]]:
+        """
+        Process incoming data with automatic protocol detection.
 
-    def process(self, data: bytes) -> None:
-        """Router method with auto-detection - directs to appropriate protocol handler"""
-        logger.info(f"SocketLink: Received data: {str(data)}")
+        Args:
+            data: Raw bytes received
 
-        # Auto-detect protocol if not explicitly set
-        if not self.protocol_type:
-            if data.startswith((ENQ, STX, EOT)):
-                logger.info("SocketLink: Auto-detected ASTM protocol")
-                self.protocol_type = ProtocolType.ASTM
-            elif data.startswith(HL7_SB) or data.lstrip().startswith(b"MSH"):
-                logger.info("SocketLink: Auto-detected HL7 protocol")
-                self.protocol_type = ProtocolType.HL7
-            else:
-                logger.warning("SocketLink: Unknown protocol, defaulting to HL7")
-                self.protocol_type = ProtocolType.HL7
-
-        if self.protocol_type == ProtocolType.ASTM:
-            self.process_astm(data)
-        else:
-            self.process_hl7(data)
-
-    def process_astm(self, data: bytes) -> None:
-        """Process ASTM messages with enhanced frame validation"""
+        Returns: Response ("ACK", "NACK") or (response, message) tuple
+        """
         if data is None:
-            return
+            return None
 
-        logger.info(f"SocketLink: Processing ASTM data ...")
+        logger.info(f"SocketLink {self.name}: Received {len(data)} bytes")
 
-        # Check for timeouts on incomplete messages
-        if self._check_message_timeout():
-            logger.error("SocketLink: Message timeout detected, closing session")
-            self.response = "NACK"
-            self.close()
-            return
+        # Auto-detect protocol if not specified
+        if self.protocol_type is None and not self._protocol_detected:
+            self._detected_protocol = self._detect_protocol(data)
+            self._protocol_detected = True
+            logger.info(f"SocketLink {self.name}: Detected protocol: {self._detected_protocol}")
 
-        # Handle standard ASTM control characters
-        if data.startswith(ENQ):
-            self.handle_astm_enq()
-            self.response = "ACK"
-            return
+        # Route to appropriate handler
+        protocol = self.protocol_type or self._detected_protocol
 
-        elif data.startswith(ACK):
-            logger.info("SocketLink: Received ASTM ACK from sender")
-            return
-
-        elif data.startswith(NAK):
-            logger.warning("SocketLink: Received ASTM NAK from sender")
-            return
-
-        elif data.startswith(EOT):
-            self.handle_astm_eot()
-            return
-
-        # Handle ASTM data frames
-        elif data.startswith(STX):
-            # Check message size limit before processing
-            if self._check_message_size(len(data)):
-                logger.error("SocketLink: Message exceeds size limit, rejecting")
-                self.response = "NACK"
-                self.close()
-                return
-
-            # If no session is active, start a session
-            if not self._astm_session_active:
-                logger.info("SocketLink: Auto-starting ASTM session on data receipt")
-                self._astm_session_active = True
-                self._astm_last_frame_number = 0  # Reset for first frame acceptance
-                self.in_transfer_state = True
-
-            # Track accumulated message size
-            self._total_message_size += len(data)
-
-            # Add data to buffer
-            self._buffer += data
-
-            # Look for complete frames
-            while True:
-                # Find STX
-                stx_pos = self._buffer.find(STX)
-                if stx_pos == -1:
-                    break
-
-                # Remove any data before STX
-                self._buffer = self._buffer[stx_pos:]
-
-                # Find ETX or ETB
-                etx_pos = self._buffer.find(ETX)
-                etb_pos = self._buffer.find(ETB)
-
-                end_pos = -1
-
-                if etx_pos != -1 and (etb_pos == -1 or etx_pos < etb_pos):
-                    end_pos = etx_pos
-                elif etb_pos != -1:
-                    end_pos = etb_pos
-
-                if end_pos == -1:
-                    # No complete frame yet
-                    break
-
-                # Find the end of the frame (including checksum and CRLF)
-                frame_end = end_pos + 1
-                # Look for checksum + CRLF (2 bytes checksum + 2 bytes CRLF)
-                if frame_end + 4 <= len(self._buffer):
-                    frame_end += 4
-                elif frame_end + 3 <= len(self._buffer):
-                    frame_end += 3  # Sometimes just CR or LF
-                elif frame_end + 2 <= len(self._buffer):
-                    frame_end += 2  # Just checksum
-
-                # Extract the frame
-                frame = self._buffer[:frame_end]
-                self._buffer = self._buffer[frame_end:]
-
-                # Process the frame
-                if self._process_astm_frame(frame):
-                    self.response = "ACK"
-                else:
-                    self.response = "NACK"
-                    break
-            return
-
-        # Handle custom messages (H| to L|1|N\r) for devices that don't use standard ASTM markers
+        if protocol == ProtocolType.ASTM:
+            return await self.astm_handler.process_data(data)
+        elif protocol == ProtocolType.HL7:
+            return await self.hl7_handler.process_data(data)
         else:
-            self._process_custom_astm_message(data)
-            return
+            logger.warning(f"SocketLink {self.name}: Unknown protocol, defaulting to ASTM")
+            return await self.astm_handler.process_data(data)
 
-    def _process_astm_frame(self, frame: bytes) -> bool:
-        """Process a single ASTM frame with simplified sequence tracking"""
-        try:
-            # Frame format: STX FN message ETX/ETB checksum CR LF
-            if len(frame) < 5:  # Minimum frame size
-                logger.error("SocketLink: ASTM frame too short")
-                return False
+    def _detect_protocol(self, data: bytes) -> ProtocolType:
+        """
+        Auto-detect protocol from first data bytes.
 
-            # Extract frame number from second byte
-            frame_number = int(chr(frame[1]))
+        Args:
+            data: Initial data received
 
-            # For the very first frame, accept any frame number and reset sequence
-            if len(self._received_messages) == 0:
-                logger.info(f"SocketLink: First ASTM frame, accepting frame {frame_number}")
-                expected_frame = frame_number
-            else:
-                expected_frame = (self._astm_last_frame_number + 1) % 8
-
-            logger.info(f"SocketLink: ASTM frame number: {frame_number}, expected: {expected_frame}, last: {self._astm_last_frame_number}")
-
-            if frame_number != expected_frame:
-                logger.error(f"SocketLink: ASTM frame sequence error. Expected {expected_frame}, got {frame_number}")
-                return False
-
-            # Extract message content (remove STX, frame number, ETX/ETB, checksum, CR, LF)
-            # Find the position of ETX or ETB to properly extract message content
-            etx_pos = frame.find(ETX)
-            etb_pos = frame.find(ETB)
-
-            if etx_pos != -1:
-                # Final frame with ETX
-                message_fragment = frame[2:etx_pos]
-            elif etb_pos != -1:
-                # Intermediate frame with ETB
-                message_fragment = frame[2:etb_pos]
-            else:
-                # Fallback to old method if no ETX/ETB found
-                message_fragment = frame[2:-4]
-
-            # Validate checksum if needed (optional implementation)
-            checksum_received = frame[-4:-2].decode('ascii', errors='ignore')
-            logger.info(f"SocketLink: ASTM checksum received: {checksum_received}")
-
-            # Log frame content with robust encoding handling
-            frame_content = self.decode_message(message_fragment)
-            logger.info(f"SocketLink: ASTM frame content: {frame_content}")
-
-            # Accumulate message fragments
-            self._received_messages.append(message_fragment)
-
-            # Just accumulate all frames - don't process until EOT
-            # Update frame sequence for all frames
-            self._astm_last_frame_number = frame_number
-            logger.info(f"SocketLink: ASTM frame {frame_number} accumulated, waiting for EOT")
-            return True
-
-        except Exception as e:
-            logger.error(f"SocketLink: Error processing ASTM frame: {e}")
-            return False
-
-    def _process_custom_astm_message(self, data: bytes) -> None:
-        """Process custom ASTM messages with validation"""
-        self._buffer += data
-
-        # Check for start of custom message
-        if b"H|" in self._buffer and not self.in_transfer_state:
-            logger.info("SocketLink: ASTM custom message start detected (H|)")
-            # For custom messages, initialize session but don't clear buffer
-            # as these messages don't use standard ASTM framing
-            self.handle_astm_enq(clear_buffer=False)
-            self.response = "ACK"
-            return
-
-        # Check for end of custom message
-        if self.in_transfer_state and b"L|1|N\r" in self._buffer:
-            logger.info("SocketLink: ASTM custom message end detected (L|1|N\\r)")
-            full_message = self._buffer
-            self._buffer = b""
-            self.in_transfer_state = False
-
-            # Validate custom message format
-            if not self._validate_custom_message(full_message):
-                logger.error("SocketLink: ASTM custom message validation failed")
-                self.response = "NACK"
-                return
-
-            # Decode bytes to string for processing, similar to standard ASTM processing
-            decoded_message = self.decode_message(full_message)
-
-            self._received_messages.append(decoded_message)
-            self.response = "ACK"
-            self.show_message(decoded_message)
-            self.eot_offload(self.uid, [decoded_message])
-            self.handle_astm_eot()
-            return
-
-        logger.info("SocketLink: ASTM custom message incomplete, waiting for more data")
-
-    def _validate_custom_message(self, message: bytes) -> bool:
-        """Validate custom ASTM message format"""
-        try:
-            # Basic validation for custom messages
-            if not message.startswith(b"H|"):
-                logger.error("SocketLink: Custom message doesn't start with H|")
-                logger.error(f"Custom message start with {message[:20]}")
-                return False
-
-            if not message.endswith(b"L|1|N\r"):
-                logger.error("SocketLink: Custom message doesn't end with L|1|N\\r")
-                return False
-
-            # Check for minimum message length
-            if len(message) < 10:
-                logger.error("SocketLink: Custom message too short")
-                return False
-
-            logger.info("SocketLink: Custom ASTM message validation passed")
-            return True
-
-        except Exception as e:
-            logger.error(f"SocketLink: Custom message validation error: {e}")
-            return False
-
-    def process_hl7(self, data: bytes) -> None:
-        """Process HL7 messages with MLLP framing"""
-        if data is None: return None
-
-        logger.info(f"SocketLink: Processing HL7 data: {str(data)}")
-
-        # Check for timeouts on incomplete messages
-        if self._check_message_timeout():
-            logger.error("SocketLink: HL7 message timeout detected, closing session")
-            self.response = "NACK"
-            self.close()
-            return
-
-        # Check message size limit before processing
-        if self._check_message_size(len(data)):
-            logger.error("SocketLink: HL7 message exceeds size limit, rejecting")
-            self.response = "NACK"
-            self.close()
-            return
-
-        # Track accumulated message size
-        self._total_message_size += len(data)
-
-        if HL7_SB in data:
-            self.handle_enq()
-            self._buffer = b''
-            self._get_message_id(self.decode_message(data.strip(HL7_SB)))
-
-        if self.in_transfer_state:
-            # Establishment phase has been initiated already and we are now in Transfer phase
-
-            # try to find a complete message(s) in the combined the buffer and data
-            # usually should be broken up by EB, but I have seen FF separating messages
-            messages = (self._buffer + data).split(HL7_EB if HL7_FF not in data else HL7_FF)
-            # whatever is in the last chunk is an uncompleted message, so put back
-            # into the buffer
-            self._buffer = messages.pop(-1)
-
-            for m in messages:
-                # strip the rest of the MLLP shell from the HL7 message
-                m = m.strip(HL7_SB)
-
-                # only handle messages with data
-                if len(m) > 0:
-                    self._received_messages.append(m)
-
-            if HL7_EB in data:
-                # Received an End Of Transmission. Resume and enter to neutral
-                self.handle_eot()
-
-            self.response = "ACK"
-            return
+        Returns: Detected ProtocolType
+        """
+        if data.startswith(b'\x0B'):  # HL7_SB
+            return ProtocolType.HL7
+        elif data.startswith(b'\x05'):  # ENQ
+            return ProtocolType.ASTM
+        elif data.startswith(b'\x02'):  # STX
+            return ProtocolType.ASTM
         else:
-            logger.info("SocketLink: HL7 establishment phase not initiated")
-            self.response = "NACK"
+            return ProtocolType.ASTM  # Default
 
-        self.response = None
-        return
+    def _encode_response(self, response: str) -> bytes:
+        """
+        Encode response string to bytes.
 
-    def handle_astm_enq(self, clear_buffer=True):
-        """Handle ASTM ENQ (session initialization)"""
-        logger.info("SocketLink: Received ASTM ENQ")
+        Args:
+            response: "ACK" or "NACK"
 
-        if self.is_busy():
-            logger.info("SocketLink: Receiver is busy, sending NAK")
-            self.response = "NACK"
+        Returns: Encoded response bytes
+        """
+        if response == "ACK":
+            return b'\x06'  # ACK character
+        elif response == "NACK":
+            return b'\x15'  # NAK character
         else:
-            logger.info("SocketLink: Ready for ASTM transfer, sending ACK")
-            self._astm_session_active = True
-            self.in_transfer_state = True
-            self._astm_frame_number = 0
-            self._astm_last_frame_number = 0  # Start expecting any frame (first frame logic will handle it)
-            if clear_buffer:
-                self._buffer = b''  # Clear buffer
-            self.response = "ACK"
+            return b''
 
-    def handle_astm_eot(self):
-        """Handle ASTM EOT (end of transmission)"""
-        logger.info("SocketLink: Received ASTM EOT")
-        self._astm_session_active = False
-        self.in_transfer_state = False
-
-        if self._received_messages:
-            # Combine all frame fragments into single complete message
-            complete_message = b''.join(self._received_messages)
-            decoded_message = self.decode_message(complete_message)
-
-            logger.info(f"SocketLink: Complete ASTM message assembled ({len(complete_message)} bytes)")
-
-            # Process the single complete message
-            self.show_message(decoded_message)
-            self.eot_offload(self.uid, [decoded_message])
-
-        # Reset and close
-        self._received_messages = []
-
-        self.response = None
-        self.close()
-
-    def handle_enq(self):
-        """Handle HL7 ENQ (establishment)"""
-        logger.debug("SocketLink: Initiating HL7 Establishment Phase")
-        if self.is_busy():
-            logger.info("SocketLink: Receiver is busy")
-            self.response = "NAK"
-        else:
-            logger.info("SocketLink: Ready for HL7 Transfer Phase")
-            self.establishment = True
-            self.in_transfer_state = True
-            self.response = "ACK"
-
-    def handle_eot(self):
-        """Handles HL7 End Of Transmission message"""
-        logger.info("SocketLink: HL7 transfer phase completed")
-
-        # Decode messages with proper encoding handling for special characters
-        msgs = []
-        for m in self._received_messages:
-            if isinstance(m, bytes):
-                msgs.append(self.decode_message(m))
-            else:
-                msgs.append(m)
-
-        logger.info(f"SocketLink: -----------------------------------------------------------------------")
-        logger.info(f"SocketLink: HL7 un-decoded messages: msgs={self._received_messages}")
-        logger.info(f"SocketLink: -----------------------------------------------------------------------")
-        logger.info(f"SocketLink: HL7 decoded messages: msgs={msgs}")
-        logger.info(f"SocketLink: -----------------------------------------------------------------------")
-
-        # Show each message individually
-        for msg in msgs:
-            self.show_message(msg)
-        self.eot_offload(self.uid, msgs)
-        self.response = None
-        self.close()
-
-    def nack(self):
-        """Send NACK response"""
-        if self.protocol_type == ProtocolType.ASTM:
-            logger.info("SocketLink: <- ASTM NACK")
-            self.socket.send(NAK)
-        else:
-            logger.info(f"SocketLink: <- HL7 NACK : {self.msg_id}")
-            nack = self._nack_msg(self.msg_id)
-            self.send_message(nack)
-
-    def ack(self):
-        """Send ACK response"""
-        if self.protocol_type == ProtocolType.ASTM:
-            logger.info("SocketLink: <- ASTM ACK")
-            self.socket.send(ACK)
-        else:
-            logger.info(f"SocketLink: <- HL7 ACK : {self.msg_id}")
-            ack = self._ack_msg(self.msg_id)
-            self.send_message(ack)
-
-    def send_message(self, message: Union[bytes, str, HL7Message]):
-        if isinstance(message, bytes):
-            # Assume we have the correct encoding
-            binary = message
-        else:
-            # Encode the unicode message into a bytestring
-            if isinstance(message, HL7Message):
-                message = str(message)
-            binary = message.encode(self.encoding)
-
-        if self.protocol_type == ProtocolType.ASTM:
-            # For ASTM, messages are sent as-is (they should already be framed)
-            data = binary
-        else:
-            # wrap in MLLP message container for HL7
-            data = HL7_SB + binary + HL7_EB + HL7_CR
-
-        return self._send(data)
-
-    def _send(self, data):
-        """Low-level, direct access to the socket.send"""
-        # upload the data
-        self.socket.send(data)
-
-        # wait for the ACK/NACK if expected
-        if self.expect_ack:
-            response = self.socket.recv(RECV_BUFFER)
-            if self.protocol_type == ProtocolType.ASTM:
-                return response.decode() if len(response) == 1 else response.decode()
-            else:
-                # HL7 MLLP
-                response = response.replace(HL7_SB, b"").replace(HL7_EB, b"").decode()
-                return response
-
-    def _get_message_id(self, message):
-        """Extract message ID from HL7 message"""
-        # Split the HL7 message into segments
-        segments = message.split('\r')
-
-        # Find the MSH segment
-        msh_segment = None
-        for segment in segments:
-            if segment.startswith('MSH'):
-                msh_segment = segment
-                break
-
-        if msh_segment:
-            # Split the MSH segment into fields
-            fields = msh_segment.split('|')
-
-            # Return the 10th field (Message Control ID)
-            self.msg_id = fields[9] if len(fields) > 9 else None
-        else:
-            self.msg_id = None
-
-    def _ack_msg(self, original_control_id, ack_code='AA', text_message='', error_code=''):
-        """Create HL7 ACK message"""
-        ack = [
-            f"MSH|^~\&|FELICIY|FELICIY|FELICIY|FELICIY|{datetime.now().strftime('%Y%m%d%H%M%S')}||ACK|{original_control_id}|P|2.5.1",
-            f"MSA|{ack_code}|{original_control_id}|{text_message}|{error_code}"
-        ]
-        return '\r'.join(ack)
-
-    def _nack_msg(self, original_control_id, text_message='', error_code=''):
-        """Create HL7 NACK message"""
-        nack = [
-            f"MSH|^~\&|FELICIY|FELICIY|FELICIY|FELICIY|{datetime.now().strftime('%Y%m%d%H%M%S')}||NACK|{original_control_id}|P|2.5.1",
-            f"MSA|AR|{original_control_id}|{text_message}|{error_code}"
-        ]
-        return '\r'.join(nack)
-
-    def get_response(self):
-        if self.response:
-            logger.debug("SocketLink: Response <- {}".format(self.response))
-        resp = self.response
-        self.response = None
-        return resp
+    def __repr__(self):
+        return (f"SocketLink(uid={self.uid}, name={self.name}, "
+                f"host={self.host}, port={self.port}, type={self.socket_type})")

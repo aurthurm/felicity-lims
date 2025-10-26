@@ -80,14 +80,12 @@ class LaboratoryInstrument(MaybeLabScopedEntity):
     date_commissioned = Column(DateTime, nullable=True)
     date_decommissioned = Column(DateTime, nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
-    # interfacing
+    # interfacing (TCP/IP only)
     is_interfacing = Column(Boolean(), nullable=False, default=False)
     host = Column(String(100), nullable=True)  # ip address
     port = Column(Integer, nullable=True)  # tcp port
-    path = Column(String(20), nullable=True)  # serial port path
-    baud_rate = Column(Integer, nullable=True)  # serial port baud rate
     auto_reconnect = Column(Boolean, default=True)  # auto reconnect on connection lost
-    connection_type = Column(String(10), nullable=True)  # tcpip, serial
+    connection_type = Column(String(10), nullable=True)  # tcpip (serial no longer supported)
     protocol_type = Column(String(10), nullable=True)  # astm, hl7
     socket_type = Column(String(10), nullable=True)  # client or server
     # connection status upated by the gateway

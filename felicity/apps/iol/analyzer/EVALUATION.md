@@ -260,14 +260,39 @@ def _get_link(self, instrument: LaboratoryInstrument):
 
 ### CRITICAL
 
-1. **Logging API Misuse** (Code Quality)
+1. **⚠️ SERIAL CONNECTION SUPPORT IS REDUNDANT** (Architecture Flaw)
+   - **Observation**: This LIMS is server-hosted, serial connections require direct machine attachment
+   - **Current State**: SerialLink implementation exists but is **not used in production**
+   - **Evidence**:
+     - No GraphQL mutations expose serial connection fields (host, port, path, baud_rate)
+     - No seed data configures serial instruments (see `setup_instruments.py`)
+     - Device database schema includes serial fields but they're never populated
+     - ConnectionService._get_serial_link() never called in actual workflows
+   - **Code Impact**:
+     - ~250 lines of dead code in `link/fserial/conn.py`
+     - Additional imports and dependencies (pyserial)
+     - Unused database columns (path, baud_rate)
+     - Maintenance burden and confusion for future developers
+   - **Recommendation**:
+     - **REMOVE** the entire `link/fserial/` directory
+     - **REMOVE** serial-related code from ConnectionService (lines 53-63)
+     - **REMOVE** `connection_type == "serial"` condition
+     - **REMOVE** path, baud_rate columns from LaboratoryInstrument entity
+     - **UPDATE** EVALUATION.md and architectural diagrams
+     - **SIMPLIFY** InstrumentConfig model (remove path, baud_rate fields)
+   - **Result**: Cleaner codebase, TCP/IP-only server communication
+   - **Migration Path**:
+     - If future lab needs serial, use dedicated device gateway (e.g., Modbus TCP bridge)
+     - Keep only SocketLink client/server for all instrument communication
+
+2. **Logging API Misuse** (Code Quality)
    - **Pattern**: `logger.log("info", "message")` throughout codebase
    - **Issue**: `.log()` expects `(level_int, message)`, should use `.info()`, `.error()`, etc.
    - **Impact**: All logging may fail silently or log at wrong levels
    - **Files**: base.py, fsocket/conn.py, fserial/conn.py (100+ occurrences)
    - **Fix**: Replace with `logger.info()`, `logger.error()`, `logger.warning()`, `logger.debug()`
 
-2. **Blocking Architecture**
+3. **Blocking Architecture**
    - **Issue**: `start_server()` blocks forever in scheduler thread
    - **Impact**: Cannot gracefully shutdown instruments; no timeout protection
    - **Code**: `SocketLink._start_client()` (line 124), `_start_server()` (line 138)
@@ -275,7 +300,7 @@ def _get_link(self, instrument: LaboratoryInstrument):
 
 ### HIGH
 
-3. **Frame Sequence Reset on First Frame** (Logic Risk)
+4. **Frame Sequence Reset on First Frame** (Logic Risk)
    - **Issue**: First frame logic resets sequence, could accept out-of-order frames
    - **Code**: `SocketLink._process_astm_frame()` (lines 382-387)
    ```python
@@ -284,19 +309,19 @@ def _get_link(self, instrument: LaboratoryInstrument):
    ```
    - **Risk**: Retransmitted frames could be accepted as new messages
 
-4. **Unbounded Message Accumulation** (Memory Leak Risk)
+5. **Unbounded Message Accumulation** (Memory Leak Risk)
    - **Issue**: No maximum size limit on `_received_messages[]`
    - **Impact**: Large or malformed messages could exhaust memory
    - **Code**: Accumulation happens in `_process_astm_frame()` (line 420)
    - **Fix**: Implement max message size and cleanup timeout
 
-5. **No Timeout on Incomplete Messages**
+6. **No Timeout on Incomplete Messages**
    - **Issue**: Incomplete chunked messages wait indefinitely for final frame
    - **Scenario**: Network disconnect mid-transmission leaves fragments in buffer
    - **Impact**: Memory leak + stale state on reconnection
    - **Code**: Buffer cleared only on EOT (line 450) or session close
 
-6. **Serial Connection Resource Leak** (Performance)
+7. **Serial Connection Resource Leak** (Performance)
    - **Issue**: Creates new `serial.Serial()` for each response
    - **Code**: `SerialLink.process()` (line 334)
    ```python
@@ -308,26 +333,26 @@ def _get_link(self, instrument: LaboratoryInstrument):
 
 ### MEDIUM
 
-7. **Hardcoded Custom Message Pattern** (Maintainability)
+8. **Hardcoded Custom Message Pattern** (Maintainability)
    - **Issue**: ASTM custom message patterns hardcoded in source
    - **Code**: `_process_custom_astm_message()` (lines 437, 446)
    - **Patterns**: `b"H|"` and `b"L|1|N\r"`
    - **Problem**: Instrument-specific behavior mixed with protocol logic
    - **Fix**: Externalize to instrument configuration
 
-8. **Protocol Auto-Detection Ambiguity** (Robustness)
+9. **Protocol Auto-Detection Ambiguity** (Robustness)
    - **Code**: `process()` (lines 265-274)
    - **Issue**: Heuristics could misidentify protocols
    - **Example**: Raw bytes starting with `0x0B` (HL7_SB) might not be HL7
    - **Recommendation**: Require explicit protocol configuration for production
 
-9. **Incomplete Error Handling in Message Transformation**
+10. **Incomplete Error Handling in Message Transformation**
    - **File**: `transformer.py`
    - **Issue**: `parse_message()` silently handles encoding/line ending issues
    - **Line 110**: `raw_message.replace("\\r", "\r")` - assumes escaped format
    - **Problem**: May produce incorrect output for edge cases
 
-10. **No Validation on Instrument Configuration**
+11. **No Validation on Instrument Configuration**
     - **File**: `services/connection.py`
     - **Issue**: No checks that required fields are populated
     - **Example**: Creating SocketLink with empty `host` would fail at runtime
@@ -335,17 +360,17 @@ def _get_link(self, instrument: LaboratoryInstrument):
 
 ### LOW
 
-11. **TCP Socket Timeout Configuration** (Operational)
+12. **TCP Socket Timeout Configuration** (Operational)
     - **Default**: `self.timeout = 10` (SocketLink, line 57)
     - **Issue**: Hardcoded; not configurable per instrument
     - **Fix**: Add timeout field to InstrumentConfig
 
-12. **Keep-Alive Interval Not Configurable**
+13. **Keep-Alive Interval Not Configurable**
     - **Code**: `line 58`: `self.keep_alive_interval = 10`
     - **Impact**: May not suit all instrument types
     - **Fix**: Add to InstrumentConfig or settings
 
-13. **Minimal Test Coverage**
+14. **Minimal Test Coverage**
     - **Status**: No unit tests found in repository
     - **Critical paths**: ASTM frame parsing, checksum validation, HL7 message assembly
     - **Recommendation**: Add pytest suite for protocol parsers
@@ -371,25 +396,31 @@ def _get_link(self, instrument: LaboratoryInstrument):
 ## 10. Recommendations - Prioritized
 
 ### Phase 1: Critical Fixes (Do First)
-1. **Fix logging calls** - Replace `logger.log()` with proper methods
-2. **Add message size limits** - Prevent memory exhaustion
-3. **Add timeout for incomplete messages** - 30-60 second TTL on buffered fragments
+1. **Remove serial connection support** - Delete `link/fserial/` directory and related code
+   - Delete entire `link/fserial/` directory (250+ lines dead code)
+   - Remove `_get_serial_link()` method from ConnectionService (lines 53-63)
+   - Remove serial branch from `_get_link()`
+   - Remove serial-related fields from InstrumentConfig (path, baud_rate)
+   - Remove unused database columns (path, baud_rate) from LaboratoryInstrument entity
+2. **Fix logging calls** - Replace `logger.log()` with proper methods (100+ occurrences)
+3. **Add message size limits** - Prevent memory exhaustion (max_message_size)
+4. **Add timeout for incomplete messages** - 30-60 second TTL on buffered fragments
 
 ### Phase 2: Modernization (Next Sprint)
-4. **Convert to async/await** - Remove blocking `start_server()` calls
-5. **Implement proper frame sequence validation** - Don't reset on first frame
-6. **Fix serial connection pooling** - Maintain persistent handle
+5. **Convert to async/await** - Remove blocking `start_server()` calls
+6. **Implement proper frame sequence validation** - Don't reset on first frame
+7. **Update TCP connection pooling** - Maintain persistent handle and improve reuse
 
 ### Phase 3: Robustness (Future)
-7. **Externalize message patterns** - Move to configuration
-8. **Add comprehensive tests** - ASTM/HL7 parsing unit tests
-9. **Add observability** - Metrics for message rates, error rates, connection stability
-10. **Configuration validation** - Pre-flight checks for instrument setup
+8. **Externalize message patterns** - Move to configuration
+9. **Add comprehensive tests** - ASTM/HL7 parsing unit tests
+10. **Add observability** - Metrics for message rates, error rates, connection stability
+11. **Configuration validation** - Pre-flight checks for instrument setup
 
 ### Phase 4: Enhancement (Long-term)
-11. **Add protocol plugins** - Support Modbus, DNP3, custom protocols
-12. **Message transformation framework** - Decouple parsing from persistence
-13. **Connection pooling** - Support multiple connections per instrument
+12. **Add protocol plugins** - Support Modbus, DNP3, custom protocols
+13. **Message transformation framework** - Decouple parsing from persistence
+14. **Connection pooling** - Support multiple connections per instrument
 
 ---
 
