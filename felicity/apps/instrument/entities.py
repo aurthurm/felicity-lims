@@ -214,7 +214,7 @@ class InstrumentRawData(MaybeLabScopedEntity):
     content = Column(LONGTEXT, nullable=False)
     laboratory_instrument_uid = Column(
         Integer,
-        ForeignKey("laboratory_instruments.uid", ondelete="CASCADE"),
+        ForeignKey("laboratory_instrument.uid", ondelete="CASCADE"),
         nullable=True
     )
     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
@@ -237,7 +237,7 @@ class InstrumentResultExclusions(BaseEntity):
 
 class InstrumentResultTranslation(BaseEntity):
     __tablename__ = 'instrument_result_translations'
-    
+
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
     instrument = relationship("Instrument", lazy="selectin")
     original = Column(String(100))
