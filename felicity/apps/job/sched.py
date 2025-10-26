@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -10,6 +11,7 @@ from felicity.apps.impress.sample.tasks import (
     prepare_for_impress,
     cleanup_jobs,
 )
+from felicity.apps.iol.analyzer.services.connection import ConnectionService
 from felicity.apps.job.enum import JobAction, JobCategory
 from felicity.apps.job.services import JobService
 from felicity.apps.shipment.tasks import (
@@ -93,4 +95,18 @@ def felicity_workforce_init():
         trigger=IntervalTrigger(seconds=60 * 60 * 24),
         id="felicity_jobs_clean",
     )
+
+    # Instrument connections
+    conn_service = ConnectionService()
+    connections = asyncio.run(conn_service.get_links())
+    for _conn in connections:
+        # Each instrument gets its own persistent job that runs forever
+        scheduler.add_job(
+            _conn.connect,
+            args=[_conn],
+            id=f"instrument_{_conn.uid}",
+            replace_existing=True
+        )
+
+    # Start scheduler
     scheduler.start()
