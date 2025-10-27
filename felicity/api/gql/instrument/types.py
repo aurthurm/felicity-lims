@@ -102,10 +102,7 @@ class LaboratoryInstrumentType:
     is_interfacing: bool = False
     host: str | None = None
     port: str | None = None
-    path: str | None = None
-    baud_rate: int | None = None
     auto_reconnect: bool = False
-    connection_type: str | None = None
     protocol_type: str | None = None
     socket_type: str | None = None
     connection: str | None = None

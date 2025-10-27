@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table, Integer, UniqueConstraint, \
-    event
+    event, JSON
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import relationship
 
@@ -66,6 +66,8 @@ class Instrument(BaseEntity):
     methods = relationship(
         "Method", secondary=method_instrument, back_populates="instruments"
     )
+    # JSON driver for mapping ASTM/HL7 message fields to required data
+    driver_mapping = Column(JSON, nullable=True, default=None)  # Generic driver template
 
 
 class LaboratoryInstrument(MaybeLabScopedEntity):
@@ -85,7 +87,6 @@ class LaboratoryInstrument(MaybeLabScopedEntity):
     host = Column(String(100), nullable=True)  # ip address
     port = Column(Integer, nullable=True)  # tcp port
     auto_reconnect = Column(Boolean, default=True)  # auto reconnect on connection lost
-    connection_type = Column(String(10), nullable=True)  # tcpip (serial no longer supported)
     protocol_type = Column(String(10), nullable=True)  # astm, hl7
     socket_type = Column(String(10), nullable=True)  # client or server
     # connection status upated by the gateway
@@ -93,6 +94,8 @@ class LaboratoryInstrument(MaybeLabScopedEntity):
     transmission = Column(String(20), default="")  # "ended" ?? mabe not needed
     # other
     sync_units = Column(Boolean, default=True)  # sync units from instrument to LIMS
+    # JSON driver for mapping ASTM/HL7 message fields (lab-specific override)
+    driver_mapping = Column(JSON, nullable=True, default=None)  # Lab-specific override of generic driver
 
 
 class InstrumentCalibration(LabScopedEntity):

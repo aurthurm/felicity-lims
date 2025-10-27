@@ -62,6 +62,7 @@ class InstrumentBase(BaseModel):
     manufacturer: ManufacturerInDB | None = None
     supplier_uid: str | None = None
     supplier: SupplierInDB | None = None
+    driver_mapping: dict | None = None  # JSON driver for field mapping
 
 
 # Properties to receive via API on creation
@@ -109,10 +110,7 @@ class LaboratoryInstrumentBase(BaseModel):
     is_active: Optional[bool] = False
     host: Optional[str] = None
     port: Optional[int] = None
-    path: Optional[str] = None
-    baud_rate: Optional[int] = None
     auto_reconnect: bool
-    connection_type: Optional[str] = None
     protocol_type: Optional[str] = None
     socket_type: Optional[str] = None
     connection: Optional[str] = None
@@ -120,6 +118,7 @@ class LaboratoryInstrumentBase(BaseModel):
     is_active: bool
     lims_uid: Optional[str] = None
     sync_units: Optional[bool] = False
+    driver_mapping: dict | None = None  # Lab-specific override of generic driver
 
 
 # Properties to receive via API on creation
