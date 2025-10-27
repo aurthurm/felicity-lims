@@ -12,11 +12,10 @@ Supports:
 """
 
 import logging
-from datetime import datetime
 from typing import Optional, List, Tuple
 
-from felicity.apps.iol.analyzer.link.conf import ASTMConstants, ProtocolType
-from felicity.apps.iol.analyzer.link.utils import validate_checksum, split_message
+from felicity.apps.iol.analyzer.link.conf import ASTMConstants
+from felicity.apps.iol.analyzer.link.utils import validate_checksum
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,7 +64,7 @@ class ASTMProtocolHandler:
         self.response: Optional[str] = None  # "ACK" or "NACK"
 
     def reset_session(self):
-        """Reset protocol state for new session"""
+        """Reset protocol state for the new session"""
         self._session_active = False
         self._frame_number = 0
         self._last_frame_number = 0
@@ -80,11 +79,11 @@ class ASTMProtocolHandler:
         return data.startswith(ENQ)
 
     def is_ack(self, data: bytes) -> bool:
-        """Check if data is ACK from sender"""
+        """Check if data is ACK from the sender"""
         return data.startswith(ACK)
 
     def is_nak(self, data: bytes) -> bool:
-        """Check if data is NAK from sender"""
+        """Check if data is NAK from the sender"""
         return data.startswith(NAK)
 
     def is_eot(self, data: bytes) -> bool:
@@ -136,12 +135,12 @@ class ASTMProtocolHandler:
             logger.info(f"ASTM {self.instrument_name}: No messages received")
             return "ACK", None
 
-        # Combine all frame fragments into single complete message
+        # Combine all frame fragments into a single complete message
         complete_message = b''.join(self._received_messages)
         logger.info(f"ASTM {self.instrument_name}: Complete message assembled "
-                  f"({len(complete_message)} bytes)")
+                    f"({len(complete_message)} bytes)")
 
-        # Reset for next session
+        # Reset for the next session
         self._received_messages = []
         self.establishment = False
 
@@ -193,7 +192,7 @@ class ASTMProtocolHandler:
 
             if frame_number != expected_frame:
                 logger.error(f"ASTM {self.instrument_name}: Frame sequence error. "
-                          f"Expected {expected_frame}, got {frame_number}")
+                             f"Expected {expected_frame}, got {frame_number}")
                 return False
 
             # Extract message content (remove STX, frame number, ETX/ETB, checksum, CRLF)
@@ -211,7 +210,7 @@ class ASTMProtocolHandler:
                 message_fragment = frame[2:-4]
 
             logger.info(f"ASTM {self.instrument_name}: Frame {frame_number} accepted "
-                      f"({len(message_fragment)} bytes)")
+                        f"({len(message_fragment)} bytes)")
 
             # Accumulate message
             self._received_messages.append(message_fragment)
@@ -246,7 +245,7 @@ class ASTMProtocolHandler:
                 return False
 
             logger.info(f"ASTM {self.instrument_name}: Custom message validated "
-                      f"({len(message)} bytes)")
+                        f"({len(message)} bytes)")
 
             # Store custom message
             self._received_messages.append(message)

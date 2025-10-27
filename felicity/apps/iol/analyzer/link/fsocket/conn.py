@@ -13,18 +13,18 @@ Architecture:
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
-from typing import Optional, Literal, Union
+from datetime import datetime
+from typing import Optional, Union
 
-from felicity.apps.iol.analyzer.conf import EventType, CONNECTED_DISABLE_TIMEOUT
+from felicity.apps.iol.analyzer.conf import EventType
 from felicity.apps.iol.analyzer.link.base import AbstractLink
 from felicity.apps.iol.analyzer.link.conf import (
     SocketType, ProtocolType, ConnectionStatus, TransmissionStatus
 )
-from felicity.apps.iol.analyzer.link.schema import InstrumentConfig
-from felicity.apps.iol.analyzer.link.utils import set_keep_alive
 from felicity.apps.iol.analyzer.link.fsocket.astm import ASTMProtocolHandler
 from felicity.apps.iol.analyzer.link.fsocket.hl7 import HL7ProtocolHandler
+from felicity.apps.iol.analyzer.link.schema import InstrumentConfig
+from felicity.apps.iol.analyzer.link.utils import set_keep_alive
 from felicity.core.events import post_event
 
 logging.basicConfig(level=logging.INFO)
@@ -112,8 +112,8 @@ class SocketLink(AbstractLink):
             logger.error(f"SocketLink {self.name}: Error starting server: {e}")
             if self.emit_events:
                 post_event(EventType.INSTRUMENT_STREAM,
-                          id=self.uid,
-                          connection=ConnectionStatus.DISCONNECTED)
+                           id=self.uid,
+                           connection=ConnectionStatus.DISCONNECTED)
 
     async def _start_server_mode(self):
         """
@@ -137,8 +137,8 @@ class SocketLink(AbstractLink):
 
             if self.emit_events:
                 post_event(EventType.INSTRUMENT_STREAM,
-                          id=self.uid,
-                          connection=ConnectionStatus.CONNECTED)
+                           id=self.uid,
+                           connection=ConnectionStatus.CONNECTED)
 
             logger.info(f"SocketLink {self.name}: Server listening on {self.host}:{self.port}")
 
@@ -167,16 +167,16 @@ class SocketLink(AbstractLink):
         addr = writer.get_extra_info('peername')
         logger.info(f"SocketLink {self.name}: Client connected from {addr}")
 
-        # Set keepalive on client socket
+        # Set keepalive on the client socket
         sock = writer.get_extra_info('socket')
         if sock:
             set_keep_alive(sock, self.keep_alive_interval)
 
         if self.emit_events:
             post_event(EventType.INSTRUMENT_STREAM,
-                      id=self.uid,
-                      connection=ConnectionStatus.CONNECTED,
-                      transmission=TransmissionStatus.STARTED)
+                       id=self.uid,
+                       connection=ConnectionStatus.CONNECTED,
+                       transmission=TransmissionStatus.STARTED)
 
         try:
             self._open_session()
@@ -248,8 +248,8 @@ class SocketLink(AbstractLink):
 
             if self.emit_events:
                 post_event(EventType.INSTRUMENT_STREAM,
-                          id=self.uid,
-                          connection=ConnectionStatus.DISCONNECTED)
+                           id=self.uid,
+                           connection=ConnectionStatus.DISCONNECTED)
 
     async def _start_client_mode(self):
         """
@@ -273,8 +273,8 @@ class SocketLink(AbstractLink):
 
                 if self.emit_events:
                     post_event(EventType.INSTRUMENT_STREAM,
-                              id=self.uid,
-                              connection=ConnectionStatus.CONNECTED)
+                               id=self.uid,
+                               connection=ConnectionStatus.CONNECTED)
 
                 reconnect_count = 0  # Reset on successful connection
                 self._open_session()
@@ -354,13 +354,14 @@ class SocketLink(AbstractLink):
                 reconnect_count += 1
 
             if reconnect_count < MAX_RECONNECT_ATTEMPTS and self.auto_reconnect:
-                logger.info(f"SocketLink {self.name}: Reconnecting... (attempt {reconnect_count}/{MAX_RECONNECT_ATTEMPTS})")
+                logger.info(
+                    f"SocketLink {self.name}: Reconnecting... (attempt {reconnect_count}/{MAX_RECONNECT_ATTEMPTS})")
                 await asyncio.sleep(RECONNECT_DELAY)
 
         if self.emit_events:
             post_event(EventType.INSTRUMENT_STREAM,
-                      id=self.uid,
-                      connection=ConnectionStatus.DISCONNECTED)
+                       id=self.uid,
+                       connection=ConnectionStatus.DISCONNECTED)
 
     def _open_session(self):
         """Initialize session state"""
@@ -391,7 +392,7 @@ class SocketLink(AbstractLink):
         """Check if message size exceeds limit"""
         if self._total_message_size + new_size > MAX_MESSAGE_SIZE:
             logger.error(f"SocketLink {self.name}: Message size limit exceeded "
-                      f"(current: {self._total_message_size}, new: {new_size}, limit: {MAX_MESSAGE_SIZE})")
+                         f"(current: {self._total_message_size}, new: {new_size}, limit: {MAX_MESSAGE_SIZE})")
             return True
         return False
 
