@@ -1,4 +1,3 @@
-import asyncio
 import logging
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -97,10 +96,13 @@ def felicity_workforce_init():
     )
 
     # Instrument connections
+    # Use sync method since we're in felicity_workforce_init (sync context)
+    # The scheduler will handle the async execution of connect() jobs
     conn_service = ConnectionService()
-    connections = asyncio.run(conn_service.get_links())
+    connections = conn_service.get_links_sync()
     for _conn in connections:
         # Each instrument gets its own persistent job that runs forever
+        # connect() creates an asyncio.create_task internally for async execution
         scheduler.add_job(
             _conn.connect,
             args=[_conn],

@@ -23,15 +23,39 @@ class ConnectionService:
         """Initialize connection service."""
         self.instrument_service = LaboratoryInstrumentService()
 
-    async def get_link_for(self, uid: int):
-        """Get connection link for specific instrument"""
-        instrument = await self.instrument_service.get(uid=uid)
-        return self._get_link(instrument)
+    def get_links_sync(self):
+        """
+        Get all connection links for active interfacing instruments (sync version).
+
+        For APScheduler initialization in sync context (felicity_workforce_init).
+        Uses asyncio.run() to execute async operation in sync code.
+
+        Returns: List of SocketLink instances for all active interfacing instruments
+        """
+        return asyncio.run(self.get_links())
 
     async def get_links(self):
-        """Get all connection links for active interfacing instruments"""
+        """
+        Get all connection links for active interfacing instruments (async version).
+
+        For use in async contexts where event loop is already running.
+
+        Returns: List of SocketLink instances for all active interfacing instruments
+        """
         instruments = await self.instrument_service.all()
         return [self._get_link(inst) for inst in instruments if inst.is_interfacing]
+
+    async def get_link_for(self, uid: int):
+        """
+        Get connection link for specific instrument (async version).
+
+        Args:
+            uid: Unique identifier of the instrument
+
+        Returns: SocketLink instance for the instrument
+        """
+        instrument = await self.instrument_service.get(uid=uid)
+        return self._get_link(instrument)
 
     def connect(self, link: AbstractLink):
         """
