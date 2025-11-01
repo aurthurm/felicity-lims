@@ -55,15 +55,29 @@ class MessageTransformer:
                 "subcomponent": enc[3],
             }
         else:  # ASTM
-            # ASTM fields: first char after segment ID is separator, assume H|^& style
+            # ASTM fields: first char after segment ID is field separator
+            # ASTM header format: H|^&\~
+            # where: | = field sep, ^ = component sep, & = subcomponent sep, \ = escape, ~ = repeat sep
             f_sep = first_line[1] if len(first_line) > 1 else "|"
-            enc = first_line[2:5] if len(first_line) >= 5 else "^&\\"
+
+            # For ASTM, if we see characters after field separator, parse them
+            # Common format: H|^&\ where order is: component, subcomponent, escape, repeat(implicit ~)
+            if len(first_line) > 2:
+                # Extract separators from positions 2+ (after field separator)
+                component_sep = first_line[2] if len(first_line) > 2 else "^"
+                subcomponent_sep = first_line[3] if len(first_line) > 3 else "&"
+                escape_char = first_line[4] if len(first_line) > 4 else "\\"
+            else:
+                component_sep = "^"
+                subcomponent_sep = "&"
+                escape_char = "\\"
+
             return {
                 "field": f_sep,
-                "component": enc[0] if len(enc) > 0 else "^",
-                "repeat": enc[1] if len(enc) > 1 else "~",
-                "escape": enc[2] if len(enc) > 2 else "\\",
-                "subcomponent": "&",  # ASTM rarely uses subcomponents
+                "component": component_sep,
+                "repeat": "~",  # ASTM typically uses ~ or is implicit
+                "escape": escape_char,
+                "subcomponent": subcomponent_sep,
             }
 
     def parse_message(self, raw_message: str) -> dict:
@@ -119,7 +133,7 @@ class MessageTransformer:
         message = {}
 
         for line in lines:
-            seg_name = line[:1] if line[0] in "HOPRA" else line[:3]  # ASTM usually 1 char, HL7 3 char
+            seg_name = line.split("|")[0]  # ASTM usually 1 char, HL7 3 char
             fields = line.split(f_sep)
 
             seg_obj = {"raw": line, "fields": {}}
@@ -162,9 +176,52 @@ class MessageTransformer:
 
         return message
 
+    def _extract_from_raw_field(
+            self, raw_field: str, component: int | None = None,
+            subcomponent: int | None = None
+    ) -> str | None:
+        """
+        Extract value from raw field string using component/subcomponent separators.
+        Fallback method when structured field data is not available.
+
+        Args:
+            raw_field (str): Raw field string (e.g., "WBC^1" or "WBC&sub1&sub2^1")
+            component (int): Component number (1-indexed), optional
+            subcomponent (int): Subcomponent number (1-indexed), optional
+
+        Returns:
+            str | None: Extracted value or None if not found
+        """
+        if not raw_field or component is None:
+            return raw_field
+
+        # Split by ^ (component separator)
+        components = raw_field.split('^')
+        logger.debug(f"_extract_from_raw_field: raw_field='{raw_field}', component={component}, components={components}")
+
+        if component < 1 or component > len(components):
+            logger.warning(f"Component {component} out of range for components: {components}")
+            return None
+
+        comp_value = components[component - 1]  # Convert from 1-indexed to 0-indexed
+        logger.debug(f"Extracted component {component}: '{comp_value}'")
+
+        if subcomponent is None:
+            return comp_value
+
+        # Split component by & (subcomponent separator)
+        subcomponents = comp_value.split('&')
+        if subcomponent < 1 or subcomponent > len(subcomponents):
+            logger.warning(f"Subcomponent {subcomponent} out of range for subcomponents: {subcomponents}")
+            return None
+
+        result = subcomponents[subcomponent - 1]  # Convert from 1-indexed to 0-indexed
+        logger.debug(f"Extracted subcomponent {subcomponent}: '{result}'")
+        return result
+
     def _navigate_parsed_message(
-        self, parsed_message: dict, segment_id: str, field: int, repeat: int = 0,
-        component: int | None = None, subcomponent: int | None = None
+            self, parsed_message: dict, segment_id: str, field: int, repeat: int = 0,
+            component: int | None = None, subcomponent: int | None = None
     ) -> str | None:
         """
         Navigate parsed message structure using segment/field/repeat/component/subcomponent hierarchy.
@@ -172,7 +229,7 @@ class MessageTransformer:
         Args:
             parsed_message (dict): Parsed message from parse_message()
             segment_id (str): Segment ID (e.g., "OBX", "OBR")
-            field (int): Field number (1-indexed)
+            field (int): Field number (0-indexed, as stored in the message)
             repeat (int): Repeat index (0-indexed), defaults to first repeat
             component (int): Component number (1-indexed), optional
             subcomponent (int): Subcomponent number (1-indexed), optional
@@ -190,62 +247,89 @@ class MessageTransformer:
                 return None
 
             segment = segments[0]  # Use first segment occurrence
-            if "fields" not in segment:
+
+            # Try to use structured field data first
+            if "fields" in segment and segment["fields"]:
+                field_key = str(field)
+                if field_key in segment["fields"]:
+                    field_data = segment["fields"][field_key]
+
+                    # Handle simple scalar field
+                    if "repeats" not in field_data:
+                        return field_data.get("raw")
+
+                    # Handle repeats
+                    repeats = field_data.get("repeats", [])
+                    if repeat >= len(repeats):
+                        return None
+
+                    repeat_data = repeats[repeat]
+
+                    # No component requested, return repeat raw
+                    if component is None:
+                        return repeat_data.get("raw")
+
+                    # Handle components
+                    if "components" not in repeat_data:
+                        return repeat_data.get("raw")
+
+                    components = repeat_data["components"]
+                    comp_key = str(component)
+                    if comp_key not in components:
+                        return None
+
+                    comp_data = components[comp_key]
+
+                    # No subcomponent requested, return component raw
+                    if subcomponent is None:
+                        return comp_data.get("raw")
+
+                    # Handle subcomponents
+                    if "subcomponents" not in comp_data:
+                        return comp_data.get("raw")
+
+                    subcomponents = comp_data["subcomponents"]
+                    subcomp_key = str(subcomponent)
+                    if subcomp_key not in subcomponents:
+                        return None
+
+                    return subcomponents[subcomp_key]
+
+            # Fallback: Parse from raw segment string
+            # This handles cases where structured field data is not available
+            if "raw" not in segment:
                 return None
 
-            field_key = str(field)
-            if field_key not in segment["fields"]:
+            raw_segment = segment["raw"]
+            fields = raw_segment.split('|')
+            logger.debug(f"_navigate_parsed_message fallback: segment={segment_id}, field={field}, component={component}, subcomponent={subcomponent}")
+            logger.debug(f"Raw segment: {raw_segment}")
+            logger.debug(f"Fields split by |: {fields}")
+
+            # Field index validation (0-indexed from split, but we store 0-indexed)
+            if field < 0 or field >= len(fields):
+                logger.warning(f"Field {field} out of range for fields in segment {segment_id}")
                 return None
 
-            field_data = segment["fields"][field_key]
+            raw_field = fields[field]
+            logger.debug(f"Raw field at index {field}: '{raw_field}'")
 
-            # Handle simple scalar field
-            if "repeats" not in field_data:
-                return field_data.get("raw")
-
-            # Handle repeats
-            repeats = field_data.get("repeats", [])
-            if repeat >= len(repeats):
-                return None
-
-            repeat_data = repeats[repeat]
-
-            # No component requested, return repeat raw
+            # If no component specified, return the entire field
             if component is None:
-                return repeat_data.get("raw")
+                return raw_field if raw_field else None
 
-            # Handle components
-            if "components" not in repeat_data:
-                return repeat_data.get("raw")
-
-            components = repeat_data["components"]
-            comp_key = str(component)
-            if comp_key not in components:
-                return None
-
-            comp_data = components[comp_key]
-
-            # No subcomponent requested, return component raw
-            if subcomponent is None:
-                return comp_data.get("raw")
-
-            # Handle subcomponents
-            if "subcomponents" not in comp_data:
-                return comp_data.get("raw")
-
-            subcomponents = comp_data["subcomponents"]
-            subcomp_key = str(subcomponent)
-            if subcomp_key not in subcomponents:
-                return None
-
-            return subcomponents[subcomp_key]
+            # Handle components and subcomponents from raw field
+            # Extract the component value directly
+            result = self._extract_from_raw_field(raw_field, component, subcomponent)
+            logger.debug(f"Extracted value: '{result}'")
+            return result
 
         except (KeyError, IndexError, TypeError) as e:
             logger.warning(f"Error navigating parsed message: {e}")
             return None
 
     def extract_fields(
-        self, parsed_message: dict, driver: dict
+            self, message: dict | str, driver: dict
     ) -> dict:
         """
         Extract required fields from parsed message using driver mappings.
@@ -318,13 +402,21 @@ class MessageTransformer:
                     ]
                 }
         """
+        logger.info(f"extract_fields called with driver type: {type(driver)}, driver: {driver}")
+
         if not driver:
             logger.error("Driver mapping is None or empty")
-            return {"sample_id": None, "results": []}
+            return {"sample_id": None, "instrument": None, "results": []}
 
         if not isinstance(driver, dict):
             logger.error(f"Driver must be a dict, got {type(driver)}")
-            return {"sample_id": None, "results": []}
+            return {"sample_id": None, "instrument": None, "results": []}
+
+        if not isinstance(message, dict):
+            logger.error(f"Message is not a dict, parsing {type(message)} message")
+            parsed_message = self.parse_message(message)
+        else:
+            parsed_message = message
 
         try:
             # Extract sample_id (typically once from first segment)
@@ -340,9 +432,22 @@ class MessageTransformer:
                     sample_id_config.get("subcomponent"),
                 )
 
-            # Extract multiple results from result segments (typically OBX)
+            # Extract instrument
+            instrument = None
+            if "instrument" in driver:
+                instrument_config = driver["instrument"]
+                instrument = self._navigate_parsed_message(
+                    parsed_message,
+                    instrument_config.get("segment"),
+                    instrument_config.get("field"),
+                    instrument_config.get("repeat", 0),
+                    instrument_config.get("component"),
+                    instrument_config.get("subcomponent"),
+                )
+
+            # Extract multiple results from result segments (typically OBX, R)
             results = []
-            result_segment_id = driver.get("result", {}).get("segment", "OBX")
+            result_segment_id = driver.get("result", {}).get("segment")
 
             if result_segment_id in parsed_message:
                 result_segments = parsed_message[result_segment_id]
@@ -350,22 +455,9 @@ class MessageTransformer:
                 for segment_idx, segment in enumerate(result_segments):
                     result_obj = {}
 
-                    # Extract test_code (required per result segment)
-                    if "test_code" in driver:
-                        test_code_config = driver["test_code"]
-                        test_code = self._navigate_parsed_message(
-                            {result_segment_id: [segment]},
-                            result_segment_id,
-                            test_code_config.get("field"),
-                            test_code_config.get("repeat", 0),
-                            test_code_config.get("component"),
-                            test_code_config.get("subcomponent"),
-                        )
-                        result_obj["test_code"] = test_code
-
                     # Extract test_keyword (optional)
-                    if "test_keyword" in driver:
-                        keyword_config = driver["test_keyword"]
+                    if "keyword" in driver:
+                        keyword_config = driver["keyword"]
                         keyword = self._navigate_parsed_message(
                             {result_segment_id: [segment]},
                             result_segment_id,
@@ -374,8 +466,9 @@ class MessageTransformer:
                             keyword_config.get("component"),
                             keyword_config.get("subcomponent"),
                         )
+                        logger.info(f"Extracted keyword: config={keyword_config}, result='{keyword}'")
                         if keyword:
-                            result_obj["test_keyword"] = keyword
+                            result_obj["keyword"] = keyword
 
                     # Extract result value
                     if "result" in driver:
@@ -391,9 +484,9 @@ class MessageTransformer:
                         result_obj["result"] = result_value
 
                     # Extract unit (optional)
-                    if "unit" in driver:
-                        unit_config = driver["unit"]
-                        unit = self._navigate_parsed_message(
+                    if "units" in driver:
+                        unit_config = driver["units"]
+                        units = self._navigate_parsed_message(
                             {result_segment_id: [segment]},
                             result_segment_id,
                             unit_config.get("field"),
@@ -401,12 +494,12 @@ class MessageTransformer:
                             unit_config.get("component"),
                             unit_config.get("subcomponent"),
                         )
-                        result_obj["unit"] = unit if unit else None
+                        result_obj["units"] = units if units else None
 
-                    # Extract date_tested
-                    if "date_tested" in driver:
-                        date_config = driver["date_tested"]
-                        date_tested = self._navigate_parsed_message(
+                    # Extract result_date
+                    if "result_date" in driver:
+                        date_config = driver["result_date"]
+                        result_date = self._navigate_parsed_message(
                             {result_segment_id: [segment]},
                             result_segment_id,
                             date_config.get("field"),
@@ -414,25 +507,11 @@ class MessageTransformer:
                             date_config.get("component"),
                             date_config.get("subcomponent"),
                         )
-                        result_obj["date_tested"] = date_tested
-
-                    # Extract tester_name (optional)
-                    if "tester_name" in driver:
-                        tester_config = driver["tester_name"]
-                        tester_name = self._navigate_parsed_message(
-                            {result_segment_id: [segment]},
-                            result_segment_id,
-                            tester_config.get("field"),
-                            tester_config.get("repeat", 0),
-                            tester_config.get("component"),
-                            tester_config.get("subcomponent"),
-                        )
-                        if tester_name:
-                            result_obj["tester_name"] = tester_name
+                        result_obj["result_date"] = result_date
 
                     # Extract is_final marker
-                    if "is_final_marker" in driver:
-                        marker_config = driver["is_final_marker"]
+                    if "result_status" in driver:
+                        marker_config = driver["result_status"]
                         marker_value = self._navigate_parsed_message(
                             {result_segment_id: [segment]},
                             result_segment_id,
@@ -446,15 +525,15 @@ class MessageTransformer:
 
                     results.append(result_obj)
 
-            return {"sample_id": sample_id, "results": results}
+            return {"sample_id": sample_id, "instrument": instrument, "results": results}
 
         except Exception as e:
             logger.error(f"Error extracting fields with driver: {e}", exc_info=True)
-            return {"sample_id": None, "results": []}
+            return {"sample_id": None, "instrument": None, "results": []}
 
     async def get_driver(
-        self, laboratory_instrument_uid: str,
-        lab_instrument_service=None, instrument_service=None
+            self, laboratory_instrument_uid: str,
+            lab_instrument_service=None, instrument_service=None
     ) -> dict | None:
         """
         Get the JSON driver for a laboratory instrument with fallback logic.
@@ -513,8 +592,8 @@ class MessageTransformer:
             return None
 
     async def transform_message(
-        self, raw_message: str, laboratory_instrument_uid: str,
-        lab_instrument_service=None, instrument_service=None
+            self, raw_message: str, laboratory_instrument_uid: str,
+            lab_instrument_service=None, instrument_service=None
     ) -> dict:
         """
         Transform a raw ASTM/HL7 message to extracted JSON result using driver mappings.
@@ -603,7 +682,7 @@ class MessageTransformer:
                 result["results"] = extracted.get("results", [])
                 result["success"] = True
                 logger.info(f"Successfully transformed message: sample_id={result['sample_id']}, "
-                           f"{len(result['results'])} results extracted")
+                            f"{len(result['results'])} results extracted")
             except Exception as extract_error:
                 result["error"] = f"Failed to extract fields: {str(extract_error)}"
                 logger.error(result["error"], exc_info=True)

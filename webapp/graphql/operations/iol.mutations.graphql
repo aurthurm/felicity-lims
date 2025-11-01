@@ -1,0 +1,13 @@
+mutation ParseAnalyserMessage($message: String!) {
+    parseAnalyserMessage(message: $message) {
+        ... on AnalyzerParsedMessageType {
+            __typename
+            message
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
