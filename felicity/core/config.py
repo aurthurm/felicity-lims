@@ -169,6 +169,9 @@ class Settings(BaseSettings):
     HIPAA_ENCRYPTION_KEY: str | None = getenv_value("HIPAA_ENCRYPTION_KEY", None)
     SEARCH_ENCRYPTION_KEY: str | None = getenv_value("SEARCH_ENCRYPTION_KEY", None)
 
+    # git personal access token
+    GITHUB_PAT: str | None = getenv_value("GITHUB_PAT", None)
+
     #
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,

@@ -8,6 +8,8 @@ from packaging import version
 
 __version__ = "0.2.1"
 
+from felicity.core.config import settings
+
 _cache_duration = timedelta(hours=1)
 router = APIRouter()
 
@@ -16,7 +18,7 @@ class FelicityVersion:
     _version = __version__
     _owner = "aurthurm"  # beak-insights
     _repo = "felicity-lims"
-    _pat = ""
+    _pat = settings.GITHUB_PAT
     _cache = {}
     _cache_duration = _cache_duration
     _last_check = None
