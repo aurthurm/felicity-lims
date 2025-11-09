@@ -7,7 +7,7 @@ from felicity.apps.instrument.entities import (
     InstrumentCompetence,
     InstrumentType,
     LaboratoryInstrument,
-    Method, InstrumentRawData, InstrumentResultExclusions, InstrumentResultTranslation,
+    Method, InstrumentRawData, InstrumentResultExclusions, InstrumentResultTranslation, InstrumentInterface,
 )
 from felicity.apps.instrument.repository import (
     CalibrationCertificateRepository,
@@ -17,7 +17,7 @@ from felicity.apps.instrument.repository import (
     InstrumentTypeRepository,
     LaboratoryInstrumentRepository,
     MethodRepository, InstrumentRawDataRepository, InstrumentResultExclusionsRepository,
-    InstrumentResultTranslationRepository,
+    InstrumentResultTranslationRepository, InstrumentInterfaceRepository,
 )
 from felicity.apps.instrument.schemas import (
     CalibrationCertificateCreate,
@@ -35,6 +35,7 @@ from felicity.apps.instrument.schemas import (
     MethodCreate,
     MethodUpdate, InstrumentRawDataCreate, InstrumentRawDataUpdate, InstrumentResultExclusionsCreate,
     InstrumentResultExclusionsUpdate, InstrumentResultTranslationCreate, InstrumentResultTranslationUpdate,
+    InstrumentInterfaceCreate, InstrumentInterfaceUpdate,
 )
 
 
@@ -117,6 +118,17 @@ class InstrumentCompetenceService(
             self,
     ):
         super().__init__(InstrumentCompetenceRepository())
+
+
+class InstrumentInterfaceService(
+    BaseService[
+        InstrumentInterface, InstrumentInterfaceCreate, InstrumentInterfaceUpdate
+    ],
+):
+    def __init__(
+            self,
+    ):
+        super().__init__(InstrumentInterfaceRepository())
 
 
 class InstrumentRawDataService(

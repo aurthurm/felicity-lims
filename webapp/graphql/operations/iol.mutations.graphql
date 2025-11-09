@@ -3,6 +3,21 @@ mutation ParseAnalyserMessage($message: String!) {
         ... on AnalyzerParsedMessageType {
             __typename
             message
+            seperators
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation ExtractAnalyserMessage($message: String!, $driver: JSONScalar!) {
+    extractAnalyserMessage(message: $message, driver: $driver) {
+        ... on AnalyzerExtractedMessageType {
+            __typename
+            message
         }
         ... on OperationError {
             __typename

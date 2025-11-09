@@ -16,7 +16,7 @@ class FelicityVersion:
     _version = __version__
     _owner = "aurthurm"  # beak-insights
     _repo = "felicity-lims"
-    _pat = "<REDACTED>"
+    _pat = ""
     _cache = {}
     _cache_duration = _cache_duration
     _last_check = None

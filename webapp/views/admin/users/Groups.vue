@@ -31,6 +31,7 @@
     shield.pages.REFERRAL,
     shield.pages.SCHEMES,
     shield.pages.DOCUMENT,
+    shield.pages.BILLING,
   ]
 
   let userStore = useUserStore()

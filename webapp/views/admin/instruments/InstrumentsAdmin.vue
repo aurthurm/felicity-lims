@@ -15,6 +15,9 @@
   const Units = defineAsyncComponent(
     () => import('./Units.vue')
   )
+  const InstrumentInterface = defineAsyncComponent(
+    () => import('./InstrumentInterface.vue')
+  )
 
 const tabs = [
     { 
@@ -41,7 +44,12 @@ const tabs = [
       id:"units", 
       label: 'Units', 
       component: Units
-    },  
+    }, ,
+    { 
+      id:"instconn", 
+      label: 'Instrument Interfaces',
+      component: InstrumentInterface
+    },   
   ];
 </script>
 

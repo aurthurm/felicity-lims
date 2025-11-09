@@ -13,6 +13,7 @@ from felicity.apps.impress.sample.helpers import get_report_user
 from felicity.core.config import get_settings
 from felicity.core.dtz import timenow_str, format_datetime
 from felicity.utils.helpers import get_from_nested, strtobool
+from felicity.utils.logo import get_logo_path
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +32,7 @@ class PDF(FPDF):
 
 class FelicityImpress:
     def __init__(self):
-        self.logo_path = settings.BASE_DIR + "/assets/logo.png"
+        self.logo_path = get_logo_path()
         self.pdf = PDF(orientation="P", unit="mm", format="A4")
         self.pdf.set_font("Helvetica")
         self.pdf.set_page_background((255, 255, 255))

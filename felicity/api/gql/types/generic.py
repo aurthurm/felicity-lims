@@ -11,7 +11,7 @@ T = TypeVar("T")
 
 JSONScalar = strawberry.scalar(
     NewType("JSONScalar", Any),
-    serialize=lambda v: marshaller(v),
+    serialize=lambda v: marshaller(v, depth=10),
     parse_value=lambda v: json.loads(v),
     description="json field",
 )

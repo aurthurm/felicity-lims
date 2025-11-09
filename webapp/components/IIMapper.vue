@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import useApiUtil from '@/composables/api_util';
+import { 
+  ParseAnalyserMessageMutation, ParseAnalyserMessageMutationVariables, ParseAnalyserMessageDocument,
+  ExtractAnalyserMessageMutation, ExtractAnalyserMessageMutationVariables, ExtractAnalyserMessageDocument
+} from '@/graphql/operations/iol.mutations';
+
 
 // Types
 type ParsedSegment = {
@@ -26,7 +32,15 @@ type ParsedMessage = {
   [segmentId: string]: ParsedSegment[];
 };
 
-type MappingKey = 'result' | 'reference_range' | 'result_date' | 'units' | 'sample_id' | 'instrument' | 'result_status';
+type Separators = {
+  field: string;
+  component: string;
+  repeat: string;
+  escape: string;
+  subcomponent: string;
+}
+
+type MappingKey = 'result' | 'keyword' | 'reference_range' | 'result_date' | 'units' | 'sample_id' | 'instrument' | 'result_status';
 
 interface FieldMapping {
   [key: string]: string[];
@@ -50,13 +64,18 @@ const emit = defineEmits<{
   save: [driverMapping: Record<string, any>];
 }>();
 
+// API
+const { withClientMutation } = useApiUtil();
+
 // Reactive state
 const parsedMessage = ref<ParsedMessage | null>(null);
+const parsedSeparators = ref<Separators | null>(null);
 const rawInput = ref('');
 const isLoading = ref(false);
 const parseError = ref('');
 const mappings = ref<FieldMapping>({
   result: [],
+  keyword: [],
   reference_range: [],
   result_date: [],
   units: [],
@@ -71,6 +90,7 @@ const showMappingModal = ref(false);
 // Target fields configuration
 const targetFields = [
   { key: 'result' as MappingKey, label: 'Result', color: 'bg-blue-100 border-blue-300' },
+  { key: 'keyword' as MappingKey, label: 'Keyword', color: 'bg-red-100 border-red-300' },
   { key: 'reference_range' as MappingKey, label: 'Reference Range', color: 'bg-green-100 border-green-300' },
   { key: 'result_date' as MappingKey, label: 'Result Date', color: 'bg-purple-100 border-purple-300' },
   { key: 'units' as MappingKey, label: 'Units', color: 'bg-yellow-100 border-yellow-300' },
@@ -82,69 +102,83 @@ const targetFields = [
 // Computed driver mapping (from FRONTEND_DRIVER_MAPPING.md)
 const driverMapping = computed(() => {
   const driver: Record<string, any> = {};
-  
+
   for (const [fieldName, paths] of Object.entries(mappings.value)) {
     if (paths.length === 0) continue;
-    
+
     // Take the first path (or can be configured to use all)
     const path = paths[0];
     const pathConfig = parsePathToConfig(path);
-    
+
     if (pathConfig) {
       driver[fieldName] = pathConfig;
     }
   }
-  
+
   return driver;
+});
+
+// Debug: Log parsed message structure
+const showDebugInfo = ref(false);
+const debugInfo = computed(() => {
+  if (!parsedMessage.value) return null;
+  const firstSegmentKey = Object.keys(parsedMessage.value)[0];
+  if (!firstSegmentKey) return null;
+  const firstSegment = parsedMessage.value[firstSegmentKey]?.[0];
+  return {
+    segmentKey: firstSegmentKey,
+    segment: firstSegment,
+    fieldsKeys: firstSegment?.fields ? Object.keys(firstSegment.fields) : [],
+    sampleStructure: firstSegment?.fields?.['0'] ? JSON.stringify(firstSegment.fields['0'], null, 2) : 'Field 0 not found'
+  };
 });
 
 // Parse path string to driver config
 function parsePathToConfig(path: string): any {
-  // Path format: "OBX[0].fields.3.repeats[0].components.1.raw"
-  // or simpler: "OBX[0].fields.3"
-  
-  const parts = path.split('.');
-  const segmentMatch = parts[0].match(/^(\w+)\[(\d+)\]$/);
-  
-  if (!segmentMatch) return null;
-  
-  const segmentId = segmentMatch[1];
-  const segmentIndex = parseInt(segmentMatch[2]);
-  
+  // Supported path formats from frontend rendering:
+  // 1. "PID[0].fields.3" -> segment, field
+  // 2. "OBX[0].fields.5.components.1" -> segment, field, component
+  // 3. "OBX[0].fields.5.components.1.subcomponents.1" -> segment, field, component, subcomponent
+  // 4. "OBX[0].fields.3.repeats[0].raw" -> segment, field, repeat (backend structured data)
+  // 5. "OBX[0].fields.3.repeats[0].components.1.raw" -> segment, field, repeat, component (backend structured data)
+
   const config: any = {
-    segment: segmentId,
+    segment: undefined,
     field: undefined,
-    repeat: undefined,
     component: undefined,
-    subcomponent: undefined
+    subcomponent: undefined,
   };
-  
-  let fieldMatch = parts[1]?.match(/^fields\.(\d+)$/);
+
+  // Parse segment name and index: "PID[0]" or "OBX[0]"
+  const segmentMatch = path.match(/^(\w+)\[(\d+)\]/);
+  if (!segmentMatch) return null;
+  config.segment = segmentMatch[1];
+
+  // Parse field: "fields.3"
+  const fieldMatch = path.match(/\.fields\.(\d+)/);
   if (fieldMatch) {
     config.field = parseInt(fieldMatch[1]);
   }
-  
-  if (parts[2] === 'repeats') {
-    const repeatMatch = parts[3]?.match(/^\[(\d+)\]$/);
-    if (repeatMatch) {
-      config.repeat = parseInt(repeatMatch[1]);
-    }
+
+  // Parse component: "components.1"
+  const componentMatch = path.match(/\.components\.(\d+)/);
+  if (componentMatch) {
+    config.component = parseInt(componentMatch[1]);
   }
-  
-  if (parts[4] === 'components') {
-    const compMatch = parts[5]?.match(/^(\d+)$/);
-    if (compMatch) {
-      config.component = parseInt(compMatch[1]);
-    }
+
+  // Parse subcomponent: "subcomponents.1"
+  const subcomponentMatch = path.match(/\.subcomponents\.(\d+)/);
+  if (subcomponentMatch) {
+    config.subcomponent = parseInt(subcomponentMatch[1]);
   }
-  
-  if (parts[6] === 'subcomponents') {
-    const subMatch = parts[7]?.match(/^(\d+)$/);
-    if (subMatch) {
-      config.subcomponent = parseInt(subMatch[1]);
+
+  // Remove undefined fields to keep config clean
+  Object.keys(config).forEach(key => {
+    if (config[key] === undefined) {
+      delete config[key];
     }
-  }
-  
+  });
+
   return config;
 }
 
@@ -159,90 +193,165 @@ async function handleParse() {
   parseError.value = '';
   
   try {
-    // TODO: Replace with actual GraphQL query when backend is ready
-    // For now, we'll use a mock parser
-    const parsed = parseMessageMock(rawInput.value);
-    parsedMessage.value = parsed;
-    
-    // Clear previous mappings when new message is parsed
-    mappings.value = {
-      result: [],
-      reference_range: [],
-      result_date: [],
-      units: [],
-      sample_id: [],
-      instrument: [],
-      result_status: []
-    };
-    extractedData.value = null;
+    withClientMutation<ParseAnalyserMessageMutation, ParseAnalyserMessageMutationVariables>(ParseAnalyserMessageDocument, { message: rawInput.value } ,"parseAnalyserMessage")
+    .then((result) => {
+      console.log(result);
+      if (result && result.message) {
+        parsedSeparators.value = result.seperators as any;
+        parsedMessage.value = result.message as any;
+        // Clear previous mappings when new message is parsed
+        mappings.value = {
+          result: [],
+          keyword: [],
+          reference_range: [],
+          result_date: [],
+          units: [],
+          sample_id: [],
+          instrument: [],
+          result_status: []
+        };
+        extractedData.value = null;
+      } else {
+        parseError.value = 'Failed to parse message';
+        parsedMessage.value = null;
+        parsedSeparators.value = null;
+      }
+    });
   } catch (err) {
     console.error('Parse error:', err);
     parseError.value = 'Failed to parse message';
     parsedMessage.value = null;
+    parsedSeparators.value = null;
   } finally {
     isLoading.value = false;
   }
 }
 
-// Mock parser - replace with actual GraphQL call
-function parseMessageMock(rawMessage: string): ParsedMessage {
-  // This is a simplified mock parser
-  // In production, this would call the backend parseMessage GraphQL query
-  
-  const lines = rawMessage.trim().split('\n').filter(l => l.trim());
-  const message: ParsedMessage = {};
-  
-  for (const line of lines) {
-    const parts = line.split('|');
-    if (parts.length === 0) continue;
-    
-    const segmentId = parts[0];
-    const segment: ParsedSegment = {
-      raw: line,
-      fields: {}
-    };
-    
-    for (let i = 1; i < parts.length; i++) {
-      const fieldValue = parts[i];
-      
-      // Simple field parsing - check for repeats (^) and components (~)
-      if (fieldValue.includes('^') || fieldValue.includes('~')) {
-        segment.fields![i.toString()] = {
-          raw: fieldValue,
-          repeats: [{
-            raw: fieldValue,
-            components: parseComponents(fieldValue, '^')
-          }]
-        };
+// Render segment fields (adapted from React version)
+function renderSegmentFields(segment: ParsedSegment, segmentKey: string, segmentIndex: number): Array<{type: string, content: string, path?: string}> {
+  const parts: Array<{type: string, content: string, path?: string}> = [];
+  const raw = segment.raw || '';
+  const fields = raw.split(parsedSeparators.value?.field!);
+
+  fields.forEach((field: string, fieldIndex: number) => {
+    // Check if we have field data from the parser
+    const fieldData = segment.fields?.[String(fieldIndex)];
+
+    if (fieldIndex > 0) {
+      parts.push({ type: 'separator', content: parsedSeparators.value?.field! });
+    }
+
+    // If we have structured field data with repeats, use it
+    if (fieldData?.repeats) {
+      const repeats = field.split(parsedSeparators.value?.repeat!);
+      const fieldRepeats = fieldData.repeats;
+
+      repeats.forEach((repeat: string, repeatIndex: number) => {
+        if (repeatIndex > 0) {
+          parts.push({ type: 'separator', content: parsedSeparators.value?.repeat! });
+        }
+
+        const path = `${segmentKey}[${segmentIndex}].fields.${fieldIndex}.repeats[${repeatIndex}].raw`;
+
+        // Check if this repeat has components in the parsed data
+        if (repeatIndex < fieldRepeats.length && fieldRepeats[repeatIndex]?.components) {
+          // Split by backslash for components
+          const components = repeat.split(parsedSeparators.value?.component!);
+
+          components.forEach((compStr: string, compIndex: number) => {
+            if (compIndex > 0) {
+              parts.push({ type: 'separator', content: parsedSeparators.value?.component! });
+            }
+
+            const compPath = `${segmentKey}[${segmentIndex}].fields.${fieldIndex}.repeats[${repeatIndex}].components.${compIndex + 1}.raw`;
+            parts.push({
+              type: 'button',
+              content: compStr,
+              path: compPath
+            });
+          });
+        } else {
+          // No components, render repeat itself
+          parts.push({ type: 'button', content: repeat, path: path });
+        }
+      });
+    } else {
+      // Fallback: Parse the raw field string on the frontend
+      // Split by ^ (component separator) for components
+      const components = field.split(parsedSeparators.value?.component!);
+
+      if (components.length > 1) {
+        // Field has components
+        components.forEach((comp: string, compIndex: number) => {
+          if (compIndex > 0) {
+            parts.push({ type: 'separator', content: parsedSeparators.value?.component! });
+          }
+
+          // Split by & (subcomponent separator) for subcomponents
+          const subcomponents = comp.split(parsedSeparators.value?.subcomponent!);
+
+          if (subcomponents.length > 1) {
+            // Component has subcomponents
+            subcomponents.forEach((subcomp: string, subcompIndex: number) => {
+              if (subcompIndex > 0) {
+                parts.push({ type: 'separator', content: parsedSeparators.value?.subcomponent! });
+              }
+
+              const subcompPath = `${segmentKey}[${segmentIndex}].fields.${fieldIndex}.components.${compIndex + 1}.subcomponents.${subcompIndex + 1}`;
+              parts.push({
+                type: 'button',
+                content: subcomp,
+                path: subcompPath
+              });
+            });
+          } else {
+            // No subcomponents, render component itself
+            const compPath = `${segmentKey}[${segmentIndex}].fields.${fieldIndex}.components.${compIndex + 1}`;
+            parts.push({
+              type: 'button',
+              content: comp,
+              path: compPath
+            });
+          }
+        });
       } else {
-        segment.fields![i.toString()] = { raw: fieldValue };
+        // Simple field with no components
+        const path = fieldIndex === 0
+          ? `${segmentKey}[${segmentIndex}]`
+          : `${segmentKey}[${segmentIndex}].fields.${fieldIndex}`;
+
+        parts.push({
+          type: 'button',
+          content: field,
+          path: path
+        });
       }
     }
-    
-    if (!message[segmentId]) {
-      message[segmentId] = [];
-    }
-    message[segmentId].push(segment);
-  }
-  
-  return message;
-}
+  });
 
-function parseComponents(value: string, separator: string): Record<string, ParsedComponent> {
-  const components: Record<string, ParsedComponent> = {};
-  const parts = value.split(separator);
-  
-  for (let i = 0; i < parts.length; i++) {
-    components[(i + 1).toString()] = { raw: parts[i] };
-  }
-  
-  return components;
+  return parts;
 }
 
 // Handle field click
 function handleFieldClick(path: string) {
   selectedPath.value = path;
   showMappingModal.value = true;
+}
+
+// Handle button hover
+function handleButtonHover(event: MouseEvent, isEnter: boolean) {
+  const btn = event.currentTarget as HTMLButtonElement;
+  if (!btn) return;
+
+  if (isEnter) {
+    btn.style.backgroundColor = 'rgba(253, 224, 71, 1)';
+    btn.style.borderColor = 'rgb(234, 179, 8)';
+    btn.style.fontWeight = '500';
+  } else {
+    btn.style.backgroundColor = 'rgba(253, 224, 71, 0)';
+    btn.style.borderColor = 'rgba(209, 213, 219, 0.5)';
+    btn.style.fontWeight = '400';
+  }
 }
 
 // Add mapping
@@ -285,32 +394,31 @@ function applyMappings() {
     return;
   }
 
-  const result: ExtractedData = {};
-  
-  for (const [field, paths] of Object.entries(mappings.value)) {
-    if (paths.length === 0) continue;
-    
-    const values = paths.map(path => extractValues(parsedMessage.value, path)).filter(v => v !== null && v !== undefined);
-    
-    if (values.length === 1) {
-      result[field] = values[0];
-    } else if (values.length > 1) {
-      result[field] = values;
-    }
-  }
-  
-  extractedData.value = result;
-  parseError.value = '';
+  withClientMutation<ExtractAnalyserMessageMutation, ExtractAnalyserMessageMutationVariables>(
+    ExtractAnalyserMessageDocument, { message: rawInput.value, driver: JSON.stringify(driverMapping.value) } ,"extractAnalyserMessage")
+    .then((result) => {
+      console.log(result);
+      if (result && result.message) {
+        extractedData.value = result.message as any;
+        parseError.value = '';
+      } else {
+        parseError.value = 'Failed to extract data';
+        extractedData.value = null;
+      }
+  });
 }
 
-// Download mapping config
+// Download driver mapping (the formatted driver config that will be saved)
 function downloadMappingConfig() {
-  const config = { mappings: mappings.value, timestamp: new Date().toISOString() };
+  const config = {
+    driver: driverMapping.value,
+    timestamp: new Date().toISOString()
+  };
   const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'field-mappings.json';
+  a.download = 'driver-mapping.json';
   a.click();
 }
 
@@ -325,12 +433,6 @@ function downloadExtractedData() {
   a.click();
 }
 
-// Render clickable segment (adapted from React)
-function renderClickableSegment(segmentKey: string, segmentIndex: number, segment: ParsedSegment) {
-  // This will be rendered in the template using v-for
-  return { segmentKey, segmentIndex, segment };
-}
-
 // Clear all
 function clearAll() {
   rawInput.value = '';
@@ -339,6 +441,7 @@ function clearAll() {
   parseError.value = '';
   mappings.value = {
     result: [],
+    keyword: [],
     reference_range: [],
     result_date: [],
     units: [],
@@ -365,7 +468,7 @@ watch(() => props.isOpen, (newVal) => {
 </script>
 
 <template>
-  <fel-modal v-if="isOpen" @close="emit('close')" size="xl">
+  <fel-modal v-if="isOpen" @close="emit('close')" contentWidth="w-full max-w-7xl">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">
         Driver Mapper - {{ instrumentInterface?.laboratoryInstrument?.labName || 'Instrument' }}
@@ -375,7 +478,7 @@ watch(() => props.isOpen, (newVal) => {
     <template v-slot:body>
       <div class="space-y-4">
         <!-- Raw Message Input -->
-        <div class="border border-border bg-background rounded-lg p-4">
+        <div class="">
           <h4 class="text-md font-semibold text-foreground mb-3">Paste ASTM/HL7 Message</h4>
           
           <textarea
@@ -423,75 +526,80 @@ watch(() => props.isOpen, (newVal) => {
           </div>
         </div>
 
+        <!-- Debug Info Toggle -->
+        <div class="flex gap-2">
+          <button
+            @click="showDebugInfo = !showDebugInfo"
+            class="px-3 py-1 text-xs bg-gray-400 text-white rounded hover:bg-gray-500 transition"
+          >
+            {{ showDebugInfo ? 'Hide' : 'Show' }} Debug Info
+          </button>
+        </div>
+
+        <!-- Debug Info Panel -->
+        <div v-if="showDebugInfo && debugInfo" class="bg-gray-100 border border-gray-300 rounded p-3 text-xs font-mono">
+          <div class="mb-2">
+            <strong>First Segment:</strong> {{ debugInfo.segmentKey }}
+          </div>
+          <div class="mb-2">
+            <strong>Field Keys:</strong> {{ debugInfo.fieldsKeys.join(', ') }}
+          </div>
+          <div class="mb-2">
+            <strong>Sample Field Structure (Field 0):</strong>
+            <pre class="bg-white border border-gray-200 p-2 rounded mt-1 overflow-auto max-h-40">{{ debugInfo.sampleStructure }}</pre>
+          </div>
+          <div>
+            <strong>Full Parsed Message:</strong>
+            <pre class="bg-white border border-gray-200 p-2 rounded mt-1 overflow-auto max-h-64">{{ JSON.stringify(parsedMessage, null, 2) }}</pre>
+          </div>
+        </div>
+
         <!-- Three Column Layout -->
         <div v-if="parsedMessage" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <!-- Left: Parsed Message Segments -->
           <div class="col-span-1 bg-white border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
-            <h4 class="text-md font-semibold mb-3 sticky top-0 bg-white pb-2 border-b">Parsed Message</h4>
+            <h4 class="text-md font-semibold mb-3 sticky top-0 bg-white pb-2 border-b">Parsed Message Segments</h4>
             <div class="space-y-3 font-mono text-xs">
-              <div v-for="(segments, segmentKey) in parsedMessage" :key="segmentKey" class="mb-4">
-                <div
-                  v-for="(segment, segmentIndex) in segments"
-                  :key="`${segmentKey}-${segmentIndex}`"
-                  class="mb-3"
-                >
-                  <div class="font-bold text-blue-600 mb-1">{{ segmentKey }}[{{ segmentIndex }}]</div>
-                  
-                  <!-- Fields -->
-                  <div v-if="segment.fields" class="ml-4 space-y-1">
-                    <div
-                      v-for="(field, fieldKey) in segment.fields"
-                      :key="fieldKey"
-                      class="hover:bg-gray-100 p-1 rounded cursor-pointer"
-                    >
-                      <span class="font-semibold text-purple-600">Field {{ fieldKey }}:</span>
+              <template v-for="(segments, skey) in parsedMessage" :key="skey">
+                <div class="mb-6">
+                  <template v-for="(segment, sIdx) in segments" :key="`${skey}-${sIdx}`">
+                    <div class="mb-3">
+                      <div class="font-bold text-blue-600 mb-2">{{ skey }}:</div>
                       
-                      <!-- Simple field -->
-                      <button
-                        v-if="!field.repeats"
-                        @click="handleFieldClick(`${segmentKey}[${segmentIndex}].fields.${fieldKey}.raw`)"
-                        class="hover:bg-yellow-200 px-1 rounded transition-colors"
-                      >
-                        {{ field.raw || '(empty)' }}
-                      </button>
-                      
-                      <!-- Field with repeats -->
-                      <div v-else class="ml-2">
-                        <div
-                          v-for="(repeat, repeatIndex) in field.repeats"
-                          :key="repeatIndex"
+                      <!-- Render clickable segment -->
+                      <div v-if="!segment.fields" class="ml-4">
+                        <button
+                          @click="handleFieldClick(`${skey}[${sIdx}].raw`)"
+                          class="hover:bg-yellow-200 px-1 rounded transition-colors"
                         >
-                          <!-- Has components -->
-                          <div v-if="repeat.components" class="space-y-0.5">
-                            <div
-                              v-for="(comp, compKey) in repeat.components"
-                              :key="compKey"
-                              class="flex items-center gap-1"
-                            >
-                              <span class="text-gray-400">^</span>
-                              <button
-                                @click="handleFieldClick(`${segmentKey}[${segmentIndex}].fields.${fieldKey}.repeats[${repeatIndex}].components.${compKey}.raw`)"
-                                class="hover:bg-yellow-200 px-1 rounded transition-colors"
-                              >
-                                {{ comp.raw || '(empty)' }}
-                              </button>
-                            </div>
-                          </div>
-                          
-                          <!-- No components -->
+                          "{{ segment.raw }}"
+                        </button>
+                      </div>
+                      
+                      <div v-else class="ml-4 mt-2 font-mono text-sm break-all">
+                        <template v-for="(fieldPart, idx) in renderSegmentFields(segment, skey as string, sIdx)" :key="`fld-${skey}-${sIdx}-${idx}`">
+                          <!-- Separator -->
+                          <span v-if="fieldPart.type === 'separator'" class="text-gray-400 select-none">{{ fieldPart.content }}</span>
+                          <!-- Clickable button -->
                           <button
-                            v-else
-                            @click="handleFieldClick(`${segmentKey}[${segmentIndex}].fields.${fieldKey}.repeats[${repeatIndex}].raw`)"
-                            class="hover:bg-yellow-200 px-1 rounded transition-colors"
+                            v-else-if="fieldPart.type === 'button' && fieldPart.path"
+                            type="button"
+                            @click.stop="handleFieldClick(fieldPart.path)"
+                            @mouseenter="(e) => handleButtonHover(e as MouseEvent, true)"
+                            @mouseleave="(e) => handleButtonHover(e as MouseEvent, false)"
+                            class="inline px-1.5 py-0.5 rounded cursor-pointer transition-all duration-200 font-mono text-sm"
+                            style="background-color: rgba(253, 224, 71, 0); border: 1px solid rgba(209, 213, 219, 0.5);"
                           >
-                            {{ repeat.raw || '(empty)' }}
+                            {{ fieldPart.content }}
                           </button>
-                        </div>
+                          <!-- Plain text -->
+                          <span v-else>{{ fieldPart.content }}</span>
+                        </template>
                       </div>
                     </div>
-                  </div>
+                  </template>
                 </div>
-              </div>
+              </template>
               
               <div class="p-2 bg-gray-100 rounded text-xs text-gray-600 mt-2">
                 💡 Click on any field to map it to a target variable
@@ -534,26 +642,35 @@ watch(() => props.isOpen, (newVal) => {
 
           <!-- Right: Extracted Data & Driver Preview -->
           <div class="col-span-1 bg-white border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
-            <div class="flex items-center justify-between mb-3 sticky top-0 bg-white pb-2 border-b">
-              <h4 class="text-md font-semibold">Driver & Preview</h4>
-              <button
-                v-if="extractedData"
-                @click="downloadExtractedData"
-                class="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition"
-              >
-                Download
-              </button>
-            </div>
-            
             <!-- Driver JSON -->
             <div class="mb-4">
-              <h5 class="text-sm font-semibold mb-2 text-gray-700">Driver Configuration:</h5>
-              <pre class="bg-gray-50 border border-gray-200 p-2 rounded text-xs overflow-auto max-h-[200px]">{{ JSON.stringify(driverMapping, null, 2) }}</pre>
+              <div class="flex items-center justify-between mb-2">
+                <h5 class="text-sm font-semibold text-gray-700">Driver Configuration:</h5>
+                <button
+                  v-if="Object.keys(driverMapping).length > 0"
+                  @click="downloadMappingConfig"
+                  class="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition"
+                  title="Download driver configuration"
+                >
+                  Download
+                </button>
+              </div>
+              <pre class="bg-gray-50 border border-gray-200 p-2 rounded text-xs overflow-auto max-h-[250px]">{{ JSON.stringify(driverMapping, null, 2) }}</pre>
             </div>
-            
+
             <!-- Extracted Data -->
             <div class="mb-4">
-              <h5 class="text-sm font-semibold mb-2 text-gray-700">Extracted Data:</h5>
+              <div class="flex items-center justify-between mb-2">
+                <h5 class="text-sm font-semibold text-gray-700">Extracted Data:</h5>
+                <button
+                  v-if="extractedData"
+                  @click="downloadExtractedData"
+                  class="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition"
+                  title="Download extracted data"
+                >
+                  Download
+                </button>
+              </div>
               <pre v-if="extractedData" class="bg-gray-50 border border-gray-200 p-2 rounded text-xs overflow-auto max-h-[200px]">
                 {{ JSON.stringify(extractedData, null, 2) }}
               </pre>

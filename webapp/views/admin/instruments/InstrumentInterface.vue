@@ -1,74 +1,136 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { LaboratoryInstrumentType } from '@/types/gql'
-  import { AddLaboratoryInstrumentDocument, AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables,
-    EditLaboratoryInstrumentDocument, EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
+  import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
+  import { InstrumentInterfaceType, LaboratoryInstrumentType } from '@/types/gql'
+  import { AddInstrumentInterfaceDocument, EditInstrumentInterfaceDocument, EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
+import { GetInstrumentInterfacesDocument } from '@/graphql/operations/instrument.queries';
+import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables, GetInstrumentInterfacesQuery, GetInstrumentInterfacesQueryVariables } from '@/types/gqlops';
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
+  
+  const IIMapper = defineAsyncComponent(
+    () => import('@/components/IIMapper.vue')
+  )
 
   const setupStore = useSetupStore()
-  const { withClientMutation } = useApiUtil()
+  const { withClientMutation, withClientQuery } = useApiUtil()
 
   let showModal = ref(false);
+  let showMapperModal = ref(false);
+  let selectedInterfaceForMapping = ref<InstrumentInterfaceType | null>(null);
   let formTitle = ref('');
   const formAction = ref(true);
 
-  let instrument = reactive({})  as LaboratoryInstrumentType;
+  let instrumentInterfaces = ref<InstrumentInterfaceType[]>([]);
+  let instrumemtInterface = reactive({})  as InstrumentInterfaceType;
 
-  setupStore.fetchInstruments();    
-  setupStore.fetchLaboratoryInstruments();   
+  onMounted(() => {
+    setupStore.fetchLaboratoryInstruments();
+    withClientQuery<GetInstrumentInterfacesQuery, GetInstrumentInterfacesQueryVariables>(GetInstrumentInterfacesDocument, {}, "instrumentInterfaces") 
+    .then((result) => {
+      instrumentInterfaces.value = (result ?? []) as InstrumentInterfaceType[];
+    });
+  });
+  
   const instruments = computed(() => setupStore.getInstruments)
   const laboratoryInstruments = computed(() => setupStore.getLaboratoryInstruments)
 
-  function addLabInstrument(): void {
+  function addInstrumentInterface(): void {
     const payload = { 
-      labName: instrument.labName, 
-      serialNumber: instrument.serialNumber, 
-      dateCommissioned: instrument.dateCommissioned,
-      dateDecommissioned: instrument.dateDecommissioned,
-      instrumentUid: instrument.instrumentUid,
+      laboratoryInstrumentUid: instrumemtInterface.laboratoryInstrumentUid, 
+      host: instrumemtInterface.host, 
+      port: instrumemtInterface.port,
+      protocolType: instrumemtInterface.protocolType,
+      socketType: instrumemtInterface.socketType,
+      syncUnits: instrumemtInterface.syncUnits,
+      driverMapping: instrumemtInterface.driverMapping,
+      isActive: instrumemtInterface.isActive,
     }
-    withClientMutation<AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables>(AddLaboratoryInstrumentDocument, { payload }, "createLaboratoryInstrument")
-    .then((result) => setupStore.addLaboratoryInstrument(result));
+    console.log(payload);
+    withClientMutation<AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables>
+    (AddInstrumentInterfaceDocument, { payload }, "createInstrumentInterface")
+    .then((result) => instrumentInterfaces.value.push(result));
   }
 
-  function editLabInstrument(): void {
+  function editInstrumentInterface(): void {
     const payload = { 
-      labName: instrument.labName, 
-      serialNumber: instrument.serialNumber, 
-      dateCommissioned: instrument.dateCommissioned,
-      dateDecommissioned: instrument.dateDecommissioned,
-      instrumentUid: instrument.instrumentUid,
+      laboratoryInstrumentUid: instrumemtInterface.laboratoryInstrumentUid, 
+      host: instrumemtInterface.host || '', 
+      port: instrumemtInterface.port || '',
+      protocolType: instrumemtInterface.protocolType || '',
+      socketType: instrumemtInterface.socketType || '',
+      syncUnits: instrumemtInterface.syncUnits,
+      driverMapping: instrumemtInterface.driverMapping as any,
+      isActive: instrumemtInterface.isActive,
     }
-    withClientMutation<EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables>(EditLaboratoryInstrumentDocument, { uid: instrument.uid, payload },"updateLaboratoryInstrument")
-    .then((result) => setupStore.updateLaboratoryInstrument(result));
+    console.log(instrumemtInterface, payload);
+    withClientMutation<EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables>(EditInstrumentInterfaceDocument, { uid: instrumemtInterface.uid, payload } ,"updateInstrumentInterface")
+    .then((result) => {
+      const index = instrumentInterfaces.value.findIndex((instInt) => instInt.uid === result.uid);
+      if (index !== -1) {
+        instrumentInterfaces.value[index] = result;
+      }
+    });
   }
 
-  function FormManager(create: boolean, obj = {} as LaboratoryInstrumentType): void {
+  function FormManager(create: boolean, obj = {} as InstrumentInterfaceType): void {
     formAction.value = create;
     showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "LABORATORY INSTRUMENT";
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT INTERFACE";
     if (create) {
-      Object.assign(instrument, { ...({} as LaboratoryInstrumentType) });
+      Object.assign(instrumemtInterface, { ...({} as InstrumentInterfaceType) });
     } else {
-      Object.assign(instrument, { ...obj });
+      Object.assign(instrumemtInterface, { ...obj });
     }
   }
 
   function saveForm():void {
-    if (formAction.value === true) addLabInstrument();
-    if (formAction.value === false) editLabInstrument();
+    if (formAction.value === true) addInstrumentInterface();
+    if (formAction.value === false) editInstrumentInterface();
     showModal.value = false;
+  }
+
+  // Driver Mapping
+  function mapDriver(instInt: InstrumentInterfaceType): void {
+    selectedInterfaceForMapping.value = instInt;
+    showMapperModal.value = true;
+  }
+
+  function onMapperSave(driverMapping: Record<string, any>): void {
+    if (!selectedInterfaceForMapping.value) return;
+    
+    // Create payload to update the interface with new driver mapping
+    const payload = { 
+      laboratoryInstrumentUid: selectedInterfaceForMapping.value.laboratoryInstrumentUid, 
+      host: selectedInterfaceForMapping.value.host || '', 
+      port: selectedInterfaceForMapping.value.port || '',
+      protocolType: selectedInterfaceForMapping.value.protocolType || '',
+      socketType: selectedInterfaceForMapping.value.socketType || '',
+      syncUnits: selectedInterfaceForMapping.value.syncUnits,
+      driverMapping: JSON.stringify(driverMapping) as any,
+      isActive: selectedInterfaceForMapping.value.isActive,
+    }
+    
+    // Update via GraphQL
+    withClientMutation<EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables>(
+      EditInstrumentInterfaceDocument, 
+      { uid: selectedInterfaceForMapping.value.uid, payload }, 
+      "updateInstrumentInterface"
+    ).then((result) => {
+      const index = instrumentInterfaces.value.findIndex((instInt) => instInt.uid === result.uid);
+      if (index !== -1) {
+        instrumentInterfaces.value[index] = result;
+      }
+    });
   }
 </script>
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Laboratory Instruments">
-      <fel-button @click="FormManager(true)"> Add Laboratory Instrument</fel-button>
+    <fel-heading title="Instrument Interfaces">
+      <fel-button @click="FormManager(true)">Add Instrument Interface</fel-button>
     </fel-heading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
@@ -76,27 +138,39 @@
         <table class="w-full caption-bottom text-sm">
           <thead class="[&_tr]:border-b">
             <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Instrument</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Lab Name/ID</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Serial Number</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Date Commissioned</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Date Decommissioned</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Laboratory Instrument</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">TCPIP</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Protocol</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Socket Type</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Auto Reconnect</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Sync Units</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Mapped</th>
+              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Active</th>
               <th class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody class="[&_tr:last-child]:border-0">
-            <tr v-for="inst in laboratoryInstruments" :key="inst?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <td class="px-4 py-2 align-middle">{{ inst?.instrument?.name }}</td>
-              <td class="px-4 py-2 align-middle">{{ inst?.labName }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ inst?.serialNumber }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ inst?.dateCommissioned }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ inst?.dateDecommissioned }}</td>
+            <tr v-for="instInt in instrumentInterfaces" :key="instInt?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <td class="px-4 py-2 align-middle">{{ instInt?.laboratoryInstrument?.labName }}</td>
+              <td class="px-4 py-2 align-middle">{{ instInt?.host }}:{{ instInt?.port }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.protocolType }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.socketType }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.autoReconnect }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.syncUnits }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.driverMapping ? 'Yes' : 'No' }}</td>
+              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.isActive }}</td>
               <td class="px-4 py-2 align-middle text-right">
                 <button 
-                  @click="FormManager(false, inst)"
+                  @click="FormManager(false, instInt)"
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
                 >
                   Edit
+                </button>
+                <button 
+                  @click="mapDriver(instInt)"
+                  class="ml-2 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                >
+                  Mapper
                 </button>
               </td>
             </tr>
@@ -115,64 +189,91 @@
     <template v-slot:body>
       <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-2">
+          <div class="space-y-2 col-span-1 md:col-span-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Instrument
             </label>
             <select 
-              v-model="instrument.instrumentUid"
+              v-model="instrumemtInterface.laboratoryInstrumentUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <option value="">Select Instrument</option>
-              <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
-                {{ instrument?.name }}
+              <option value="">Select Laboratory Instrument</option>
+              <option v-for="instrument in laboratoryInstruments" :key="instrument?.uid" :value="instrument.uid">
+                {{ instrument?.labName }}
               </option>
             </select>
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Laboratory Name/ID
+              Host
             </label>
             <input
-              v-model="instrument.labName"
+              v-model="instrumemtInterface.host"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter lab name or ID..."
+              placeholder="Host Adress..."
             />
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Serial Number
+              Port
             </label>
             <input
-              v-model="instrument.serialNumber"
+              v-model="instrumemtInterface.port"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter serial number..."
+              placeholder="Port Number..."
             />
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Date Commissioned
+              Protocol Type
             </label>
-            <input
-              type="date"
-              v-model="instrument.dateCommissioned"
+            <select
+              id="instrumentType"
+              v-model="instrumemtInterface.protocolType"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
+            >
+              <option value="hl7">HL7</option>
+              <option value="astm">ASTM</option>
+            </select>
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Date Decommissioned
+              Socket Type
             </label>
-            <input
-              type="date"
-              v-model="instrument.dateDecommissioned"
+            <select
+              id="instrumentType"
+              v-model="instrumemtInterface.socketType"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
+            >
+              <option value="server">Server</option>
+              <option value="client">Client</option>
+            </select>
           </div>
+
+          <div class="flex items-center space-x-2">
+            <input 
+              type="checkbox" 
+              id="autoReconnect"
+              v-model="instrumemtInterface.autoReconnect"
+              class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            />
+            <label for="autoReconnect" class="text-sm font-medium text-muted-foreground">Auto Reconnect</label>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <input 
+              type="checkbox" 
+              id="isActive"
+              v-model="instrumemtInterface.isActive"
+              class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            />
+            <label for="isActive" class="text-sm font-medium text-muted-foreground">Is Active</label>
+          </div>
+
         </div>
 
         <div class="flex justify-end">
@@ -186,4 +287,13 @@
       </form>
     </template>
   </fel-modal>
+
+  <!-- Driver Mapper Modal -->
+  <IIMapper 
+    v-if="showMapperModal"
+    :isOpen="showMapperModal"
+    :instrumentInterface="selectedInterfaceForMapping"
+    @close="showMapperModal = false; selectedInterfaceForMapping = null"
+    @save="onMapperSave"
+  />
 </template>

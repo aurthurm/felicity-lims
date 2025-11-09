@@ -89,6 +89,31 @@ query getAllLaboratoryInstruments {
     }
 }
 
+query getInstrumentInterfaces {
+    instrumentInterfaces {
+        uid
+        laboratoryInstrumentUid
+        laboratoryInstrument {
+            uid
+            labName
+            instrument {
+                uid
+                name
+            }
+        }
+        isActive
+        host
+        port
+        autoReconnect
+        protocolType
+        socketType
+        connection
+        transmission
+        syncUnits
+        driverMapping
+    }
+}
+
 query getAllMethods {
     methodAll {
         totalCount
@@ -116,5 +141,13 @@ query getAllUnits {
     unitAll {
         uid
         name
+    }
+}
+
+query parseMessage($rawMessage: String!) {
+    parseMessage(rawMessage: $rawMessage) {
+        success
+        parsedMessage
+        error
     }
 }

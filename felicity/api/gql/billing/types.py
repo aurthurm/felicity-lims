@@ -245,3 +245,51 @@ class TestBillInvoiceType:
     updated_at: str | None = None
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
+
+
+# Billing Metrics Types
+@strawberry.type
+class KeyMetrics:
+    """Key financial metrics for billing overview"""
+    total_charged: float
+    total_paid: float
+    outstanding_balance: float
+    collection_rate: float
+
+
+@strawberry.type
+class VolumeMetrics:
+    """Volume metrics for bills"""
+    active_bills: int
+    inactive_bills: int
+    pending_confirmation: int
+    partial_bills: int
+    complete_bills: int
+
+
+@strawberry.type
+class TransactionMetrics:
+    """Transaction metrics"""
+    successful_transactions: int
+    failed_transactions: int
+    pending_transactions: int
+    total_transaction_amount: float
+
+
+@strawberry.type
+class DiscountMetrics:
+    """Discount and voucher metrics"""
+    total_discount_amount: float
+    active_vouchers: int
+    total_vouchers: int
+    voucher_redemption_rate: float
+    vouchers_with_available_usage: int
+
+
+@strawberry.type
+class BillingOverviewMetrics:
+    """Complete billing overview metrics"""
+    key_metrics: KeyMetrics
+    volume_metrics: VolumeMetrics
+    transaction_metrics: TransactionMetrics
+    discount_metrics: DiscountMetrics

@@ -13,6 +13,9 @@ from felicity.api.gql.billing.query import BillingQuery
 from felicity.api.gql.client import client_types
 from felicity.api.gql.client.mutations import ClientMutations
 from felicity.api.gql.client.query import ClientQuery
+from felicity.api.gql.commune import commune_types
+from felicity.api.gql.commune.mutations import CommuneMutations
+from felicity.api.gql.commune.query import CommuneQuery
 from felicity.api.gql.document import document_types
 from felicity.api.gql.document.mutations import DocumentMutations
 from felicity.api.gql.document.query import DocumentQuery
@@ -27,6 +30,7 @@ from felicity.api.gql.instrument.query import InstrumentQuery
 from felicity.api.gql.inventory import inventory_types
 from felicity.api.gql.inventory.mutations import InventoryMutations
 from felicity.api.gql.inventory.query import InventoryQuery
+from felicity.api.gql.iol import iol_types, IOLMutations
 from felicity.api.gql.messaging import messaging_types
 from felicity.api.gql.messaging.mutations import MessageMutations
 from felicity.api.gql.messaging.query import MessageQuery
@@ -61,9 +65,6 @@ from felicity.api.gql.user.query import UserQuery
 from felicity.api.gql.worksheet import worksheet_types
 from felicity.api.gql.worksheet.mutations import WorkSheetMutations
 from felicity.api.gql.worksheet.query import WorkSheetQuery
-from felicity.api.gql.commune import commune_types
-from felicity.api.gql.commune.query import CommuneQuery
-from felicity.api.gql.commune.mutations import CommuneMutations
 
 types = (
         generic_types
@@ -89,6 +90,7 @@ types = (
         + grind_types
         + document_types
         + commune_types
+        + iol_types
 )
 
 
@@ -139,7 +141,8 @@ class Mutation(
     MicrobiologyMutations,
     GrindMutations,
     DocumentMutations,
-    CommuneMutations
+    CommuneMutations,
+    IOLMutations
 ):
     pass
 

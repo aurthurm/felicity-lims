@@ -362,19 +362,6 @@ class BaseService(Generic[E, C, U]):
         if "uid" in update:
             del update["uid"]
 
-        context = get_tenant_context()
-        if context:
-            logger.info(
-                f"Updating {self.repository.model.__name__} {uid}",
-                extra={
-                    "audit_action": f"UPDATE_{self.repository.model.__name__.upper()}",
-                    "entity_uid": uid,
-                    "user_uid": context.user_uid,
-                    "laboratory_uid": context.laboratory_uid,
-                    "request_id": context.request_id,
-                }
-            )
-
         updated = await self.repository.update(uid=uid, commit=commit, session=session, **self._import(update))
         if not related:
             return updated

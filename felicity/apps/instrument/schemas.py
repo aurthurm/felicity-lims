@@ -108,17 +108,6 @@ class LaboratoryInstrumentBase(BaseModel):
     date_commissioned: datetime | None = None
     date_decommissioned: datetime | None = None
     is_active: Optional[bool] = False
-    host: Optional[str] = None
-    port: Optional[int] = None
-    auto_reconnect: bool
-    protocol_type: Optional[str] = None
-    socket_type: Optional[str] = None
-    connection: Optional[str] = None
-    transmission: Optional[str] = None
-    is_active: bool
-    lims_uid: Optional[str] = None
-    sync_units: Optional[bool] = False
-    driver_mapping: dict | None = None  # Lab-specific override of generic driver
 
 
 # Properties to receive via API on creation
@@ -144,6 +133,54 @@ class LaboratoryInstrument(LaboratoryInstrumentInDBBase):
 
 # Additional properties stored in DB
 class LaboratoryInstrumentInDB(LaboratoryInstrumentInDBBase):
+    pass
+
+
+#
+# Instrument Interface
+#
+
+
+# Shared properties
+class InstrumentInterfaceBase(BaseModel):
+    laboratory_instrument_uid: str | None = None
+    laboratory_instrument: LaboratoryInstrument | None = None
+    host: Optional[str] = None
+    port: Optional[int] = None
+    auto_reconnect: bool
+    protocol_type: Optional[str] = None
+    socket_type: Optional[str] = None
+    connection: Optional[str] = None
+    transmission: Optional[str] = None
+    is_active: bool
+    lims_uid: Optional[str] = None
+    sync_units: Optional[bool] = False
+    driver_mapping: dict | None = None  # Lab-specific override of generic driver
+
+
+# Properties to receive via API on creation
+class InstrumentInterfaceCreate(InstrumentInterfaceBase):
+    laboratory_instrument_uid: str
+
+
+# Properties to receive via API on update
+class InstrumentInterfaceUpdate(InstrumentInterfaceBase):
+    pass
+
+
+class InstrumentInterfaceInDBBase(InstrumentInterfaceBase):
+    uid: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class InstrumentInterface(InstrumentInterfaceInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class InstrumentInterfaceInDB(InstrumentInterfaceInDBBase):
     pass
 
 

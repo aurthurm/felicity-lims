@@ -93,6 +93,25 @@ export type GetAllLaboratoryInstrumentsQuery = (
   ) }
 );
 
+export type GetInstrumentInterfacesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetInstrumentInterfacesQuery = (
+  { __typename?: 'Query' }
+  & { instrumentInterfaces: Array<(
+    { __typename?: 'InstrumentInterfaceType' }
+    & Pick<Types.InstrumentInterfaceType, 'uid' | 'laboratoryInstrumentUid' | 'isActive' | 'host' | 'port' | 'autoReconnect' | 'protocolType' | 'socketType' | 'connection' | 'transmission' | 'syncUnits' | 'driverMapping'>
+    & { laboratoryInstrument?: Types.Maybe<(
+      { __typename?: 'LaboratoryInstrumentType' }
+      & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
+      & { instrument?: Types.Maybe<(
+        { __typename?: 'InstrumentType' }
+        & Pick<Types.InstrumentType, 'uid' | 'name'>
+      )> }
+    )> }
+  )> }
+);
+
 export type GetAllMethodsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
@@ -124,6 +143,19 @@ export type GetAllUnitsQuery = (
     { __typename?: 'UnitType' }
     & Pick<Types.UnitType, 'uid' | 'name'>
   )> }
+);
+
+export type ParseMessageQueryVariables = Types.Exact<{
+  rawMessage: Types.Scalars['String']['input'];
+}>;
+
+
+export type ParseMessageQuery = (
+  { __typename?: 'Query' }
+  & { parseMessage: (
+    { __typename?: 'ParseMessageResult' }
+    & Pick<Types.ParseMessageResult, 'success' | 'parsedMessage' | 'error'>
+  ) }
 );
 
 
@@ -242,6 +274,36 @@ export const GetAllLaboratoryInstrumentsDocument = gql`
 export function useGetAllLaboratoryInstrumentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllLaboratoryInstrumentsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllLaboratoryInstrumentsQuery>({ query: GetAllLaboratoryInstrumentsDocument, ...options });
 };
+export const GetInstrumentInterfacesDocument = gql`
+    query getInstrumentInterfaces {
+  instrumentInterfaces {
+    uid
+    laboratoryInstrumentUid
+    laboratoryInstrument {
+      uid
+      labName
+      instrument {
+        uid
+        name
+      }
+    }
+    isActive
+    host
+    port
+    autoReconnect
+    protocolType
+    socketType
+    connection
+    transmission
+    syncUnits
+    driverMapping
+  }
+}
+    `;
+
+export function useGetInstrumentInterfacesQuery(options: Omit<Urql.UseQueryArgs<never, GetInstrumentInterfacesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetInstrumentInterfacesQuery>({ query: GetInstrumentInterfacesDocument, ...options });
+};
 export const GetAllMethodsDocument = gql`
     query getAllMethods {
   methodAll {
@@ -281,4 +343,17 @@ export const GetAllUnitsDocument = gql`
 
 export function useGetAllUnitsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllUnitsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllUnitsQuery>({ query: GetAllUnitsDocument, ...options });
+};
+export const ParseMessageDocument = gql`
+    query parseMessage($rawMessage: String!) {
+  parseMessage(rawMessage: $rawMessage) {
+    success
+    parsedMessage
+    error
+  }
+}
+    `;
+
+export function useParseMessageQuery(options: Omit<Urql.UseQueryArgs<never, ParseMessageQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ParseMessageQuery>({ query: ParseMessageDocument, ...options });
 };

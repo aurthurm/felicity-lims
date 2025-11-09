@@ -6,6 +6,7 @@ from fpdf import FPDF
 from felicity.core.config import get_settings
 from felicity.core.dtz import datetime_math, format_datetime, timenow_str
 from felicity.utils.helpers import get_from_nested
+from felicity.utils.logo import get_logo_path
 
 settings = get_settings()
 
@@ -25,7 +26,7 @@ class PDF(FPDF):
 
 class FelicityInvoice:
     def __init__(self):
-        self.logo_path = settings.BASE_DIR + "/assets/logo.png"
+        self.logo_path = get_logo_path()
         self.pdf = PDF(orientation="P", unit="mm", format="A4")
         self.pdf.set_font("helvetica", "", 13)
         self.pdf.set_page_background((255, 255, 255))
@@ -55,8 +56,8 @@ class FelicityInvoice:
 
         # Barcode
         bill_id = get_from_nested(bill, "bill_id")
-        self.pdf.code39(bill_id, x=20, y=42, w=1, h=5)
-        self.pdf.set_font("arial", "", 8)
+        self.pdf.code39(f"*{bill_id}*", x=20, y=42, w=1, h=5)
+        self.pdf.set_font("helvetica", "", 8)
         self.pdf.set_xy(20.0, 47)
         self.pdf.cell(ln=0, h=5, align="L", w=10.0, text=bill_id, border=0)
 
@@ -65,33 +66,33 @@ class FelicityInvoice:
         self.pdf.rect(85.0, 15.0, 30.0, 10.0)
 
         # Invoice
-        self.pdf.set_font("arial", "B", 16)
+        self.pdf.set_font("helvetica", "B", 16)
         self.pdf.set_xy(95.0, 18.0)
         self.pdf.cell(ln=0, h=2.0, align="C", w=10.0, text="INVOICE", border=0)
-        self.pdf.set_font("arial", "", 8)
+        self.pdf.set_font("helvetica", "", 8)
         self.pdf.set_xy(63.0, 21.0)
         self.pdf.cell(ln=0, h=4.0, align="C", w=75.0, text="- original -", border=0)
 
         # invoice Details
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(135.0, 25)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Invoice #: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(170.0, 23)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=bill_id, border=0)
         # ---inst_in
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(135.0, 30)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Invoice Date: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(170.0, 28)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=timenow_str(), border=0)
         # ---
         bill_created = get_from_nested(bill, "created_at")
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(135.0, 35)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Billed on: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(170.0, 33)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=format_datetime(bill_created), border=0)
         # ---
@@ -103,17 +104,17 @@ class FelicityInvoice:
             _delta_datetime = datetime_math(bill_created, terms_days, addition=True)
             due_date = format_datetime(_delta_datetime)
 
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(135.0, 40)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Payment Terms: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(170.0, 38)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=days, border=0)
         # ---
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(135.0, 45)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, text="Due Date: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(170.0, 43)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, text=format_datetime(due_date), border=0)
 
@@ -126,21 +127,21 @@ class FelicityInvoice:
                 + " "
                 + get_from_nested(customer, "last_name")
         )
-        self.pdf.set_font("arial", "B", 14)
+        self.pdf.set_font("helvetica", "B", 14)
         self.pdf.set_xy(20, 55)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Bill to: ", border=0)
         # ---
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(20, 60)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Full Name: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(45, 58)
         self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, text=full_name, border=0)
         # ---
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(20, 65)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Client: ", border=0)
-        self.pdf.set_font("arial", "", 12)
+        self.pdf.set_font("helvetica", "", 12)
         self.pdf.set_xy(45, 63)
         self.pdf.cell(
             ln=0,
@@ -156,12 +157,12 @@ class FelicityInvoice:
 
         # Order Details
         oy = 75
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(20, oy)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Order Details: ", border=0)
         # ---
         oy += 5
-        self.pdf.set_font("arial", "B", 10)
+        self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(20, oy)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Quantity", border=0)
         self.pdf.set_xy(45, oy)
@@ -242,7 +243,7 @@ class FelicityInvoice:
         # ---
         total_charged = float(get_from_nested(bill, "total_charged"))
         oy += 5
-        self.pdf.set_font("arial", "B", 10)
+        self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(120, oy)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Total Charged:", border=0)
         self.pdf.set_xy(150, oy)
@@ -256,14 +257,14 @@ class FelicityInvoice:
 
         # Transaction Details
         ty = oy + 2
-        self.pdf.set_font("arial", "B", 12)
+        self.pdf.set_font("helvetica", "B", 12)
         self.pdf.set_xy(20, ty)
         self.pdf.cell(
             ln=0, h=5.5, align="L", w=10.0, text="Transaction Details: ", border=0
         )
         ty += 5
         # ---
-        self.pdf.set_font("arial", "B", 10)
+        self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(20, ty)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Date", border=0)
         self.pdf.set_xy(70, ty)
@@ -306,7 +307,7 @@ class FelicityInvoice:
         # ---
         total_paid = float(get_from_nested(bill, "total_paid"))
         ty += 5
-        self.pdf.set_font("arial", "B", 10)
+        self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(130, ty)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Total Paid:", border=0)
         self.pdf.set_xy(150, ty)
@@ -320,7 +321,7 @@ class FelicityInvoice:
 
         # Balance Remaining
         br = ty + 2
-        self.pdf.set_font("arial", "B", 14)
+        self.pdf.set_font("helvetica", "B", 14)
         self.pdf.set_xy(20, br)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Balance Due: ", border=0)
         self.pdf.set_xy(150, br)
@@ -337,10 +338,10 @@ class FelicityInvoice:
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 220.0, 180.0, 220.0)
         # ---
-        self.pdf.set_font("arial", "B", 14)
+        self.pdf.set_font("helvetica", "B", 14)
         self.pdf.set_xy(20, 225)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Our Location", border=0)
-        self.pdf.set_font("arial", "", 10)
+        self.pdf.set_font("helvetica", "", 10)
         self.pdf.set_xy(20, 231)
         self.pdf.cell(
             ln=0,
@@ -353,10 +354,10 @@ class FelicityInvoice:
         self.pdf.set_xy(20, 236)
         self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
         # ---
-        self.pdf.set_font("arial", "B", 14)
+        self.pdf.set_font("helvetica", "B", 14)
         self.pdf.set_xy(80, 225)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Get in touch", border=0)
-        self.pdf.set_font("arial", "", 10)
+        self.pdf.set_font("helvetica", "", 10)
         self.pdf.set_xy(80, 231)
         self.pdf.cell(
             ln=0,
@@ -385,10 +386,10 @@ class FelicityInvoice:
             border=0,
         )
         # ---
-        self.pdf.set_font("arial", "B", 14)
+        self.pdf.set_font("helvetica", "B", 14)
         self.pdf.set_xy(140, 225)
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Payment Details", border=0)
-        self.pdf.set_font("arial", "", 10)
+        self.pdf.set_font("helvetica", "", 10)
         self.pdf.set_xy(140, 231)
         self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "banking"))
 
@@ -396,7 +397,7 @@ class FelicityInvoice:
         self.pdf.set_line_width(0.0)
         self.pdf.line(30.0, 251.0, 170.0, 251.0)
         # ---
-        self.pdf.set_font("arial", "I", 10)
+        self.pdf.set_font("helvetica", "I", 10)
         self.pdf.set_xy(20, 253)
         self.pdf.cell(
             w=150.0,

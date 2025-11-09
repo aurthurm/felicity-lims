@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, KeepAlive } from 'vue';
 
 interface Tab {
   id: string;
@@ -63,11 +63,14 @@ watch(visibleTabs, (newTabs) => {
       </div>
     </nav>
     <div class="mt-4">
-      <component
-        v-if="currentTab"
-        :is="currentTab.component"
-        v-bind="currentTab.props || {}"
-      />
+      <KeepAlive>
+        <component
+          v-if="currentTab"
+          :key="currentTab.id"
+          :is="currentTab.component"
+          v-bind="currentTab.props || {}"
+        />
+      </KeepAlive>
     </div>
   </section>
 </template>

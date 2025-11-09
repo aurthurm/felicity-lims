@@ -1,35 +1,35 @@
 <template>
-  <Transition
-    appear
-    name="modal"
-    @after-leave="$emit('after-leave')"
-  >
-    <div 
-      v-if="true"
-      class="modal-mask fixed inset-0 z-50 overflow-y-auto bg-muted/50 backdrop-blur-sm"
-      @click="handleOutsideClick"
-      role="dialog"
-      aria-modal="true"
+  <Teleport to="body">
+    <Transition
+      appear
+      name="modal"
+      @after-leave="$emit('after-leave')"
     >
-      <div 
-        class="min-h-screen px-4 flex items-center justify-center"
+      <div
+        v-if="true"
+        class="modal-mask fixed inset-0 z-50 overflow-y-auto bg-muted/50 backdrop-blur-sm"
+        @click="handleOutsideClick"
+        role="dialog"
+        aria-modal="true"
       >
-        <Transition
-          name="modal-inner"
-          appear
+        <div
+          class="min-h-screen px-4 flex items-center justify-center"
         >
-          <div 
-            :class="[
-              'modal-container bg-card text-card-foreground rounded-lg shadow-xl transform',
-              'max-h-[90vh] overflow-y-auto',
-              contentWidth ? contentWidth : 'w-full max-w-2xl'
-            ]"
-            @click.stop
-            ref="modalRef"
+          <Transition
+            name="modal-inner"
+            appear
           >
-            <div class="p-6">
+            <div
+              :class="[
+                'modal-container bg-card text-card-foreground rounded-lg shadow-xl transform',
+                'max-h-[90vh] overflow-hidden flex flex-col',
+                contentWidth ? contentWidth : 'w-full max-w-2xl'
+              ]"
+              @click.stop
+              ref="modalRef"
+            >
               <!-- Header -->
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex-shrink-0 flex items-center justify-between border-b border-border p-6">
                 <div class="flex-1">
                   <slot name="header">
                     <h3 class="text-lg font-semibold text-card-foreground">
@@ -39,8 +39,8 @@
                 </div>
                 <button
                   @click="$emit('close')"
-                  class="inline-flex items-center justify-center w-8 h-8 ml-4 text-muted-foreground 
-                         transition-colors duration-200 rounded-full hover:text-destructive-foreground 
+                  class="inline-flex items-center justify-center w-8 h-8 ml-4 text-muted-foreground
+                         transition-colors duration-200 rounded-full hover:text-destructive-foreground
                          hover:bg-destructive focus:outline-none focus:ring-2 focus:ring-ring"
                   aria-label="Close modal"
                 >
@@ -50,26 +50,20 @@
                 </button>
               </div>
 
-              <!-- Divider -->
-              <div class="h-px bg-border my-4"></div>
-
               <!-- Body -->
-              <div class="modal-body">
+              <div class="flex-1 overflow-y-auto p-6">
                 <slot name="body">
                   Default body content
                 </slot>
               </div>
 
-              <!-- Divider -->
-              <div class="h-px bg-border my-4"></div>
-
               <!-- Footer -->
-              <div class="modal-footer">
+              <div class="flex-shrink-0 border-t border-border p-6">
                 <slot name="footer">
                   <div class="flex justify-end space-x-3">
                     <button
-                      class="px-4 py-2 text-sm font-medium text-secondary-foreground bg-secondary border 
-                             border-border rounded-lg shadow-sm hover:bg-secondary/80 
+                      class="px-4 py-2 text-sm font-medium text-secondary-foreground bg-secondary border
+                             border-border rounded-lg shadow-sm hover:bg-secondary/80
                              focus:outline-none focus:ring-2 focus:ring-ring"
                       @click="$emit('close')"
                     >
@@ -79,15 +73,15 @@
                 </slot>
               </div>
             </div>
-          </div>
-        </Transition>
+          </Transition>
+        </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, Teleport } from 'vue'
 
 export default defineComponent({
   name: 'enhanced-modal',

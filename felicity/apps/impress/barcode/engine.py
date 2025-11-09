@@ -8,6 +8,7 @@ from barcode.writer import ImageWriter
 from fpdf import FPDF
 
 from felicity.apps.impress.barcode.schema import BarCode
+from felicity.utils.logo import get_logo_path
 
 Barcode.default_writer_options["write_text"] = False
 ImageWriter.human = " "
@@ -15,9 +16,10 @@ ImageWriter.human = " "
 
 class FelicityBarCoder:
     def __init__(
-        self, page_width=40.0, page_height=30.0, barcode_width=30, barcode_height=7.5
+            self, page_width=40.0, page_height=30.0, barcode_width=30, barcode_height=7.5
     ):
         assert page_width > barcode_width and page_height > barcode_height
+        self.logo_path = get_logo_path()
         self.pdf = FPDF(unit="mm", format=(page_width, page_height))
         self.pdf.set_auto_page_break(auto=False, margin=0.0)
         self.margin_left = (self.pdf.w - barcode_width) / 2

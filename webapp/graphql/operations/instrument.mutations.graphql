@@ -199,6 +199,73 @@ mutation EditLaboratoryInstrument($uid: String!, $payload: LaboratoryInstrumentI
     }
 }
 
+mutation AddInstrumentInterface($payload: InstrumentInterfaceInput!) {
+    createInstrumentInterface(payload: $payload) {
+        ... on InstrumentInterfaceType {
+            uid
+            laboratoryInstrumentUid
+                laboratoryInstrument {
+                    uid
+                    labName
+                    instrument {
+                        uid
+                        name
+                    }
+                }
+                isActive
+                host
+                port
+                autoReconnect
+                protocolType
+                socketType
+                connection
+                transmission
+                syncUnits
+                driverMapping
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+mutation EditInstrumentInterface($uid: String!, $payload: InstrumentInterfaceInput!) {
+    updateInstrumentInterface(uid: $uid, payload: $payload) {
+        ... on InstrumentInterfaceType {
+            uid
+            laboratoryInstrumentUid
+                laboratoryInstrument {
+                    uid
+                    labName
+                    instrument {
+                        uid
+                        name
+                    }
+                }
+                isActive
+                host
+                port
+                autoReconnect
+                protocolType
+                socketType
+                connection
+                transmission
+                syncUnits
+                driverMapping
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
+
 mutation AddMethod($payload: MethodInputType!) {
     createMethod(payload: $payload) {
         ... on MethodType {

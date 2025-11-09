@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         redis_client = await create_redis_client()
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
-    felicity_workforce_init()
+    await felicity_workforce_init()
     observe_events()
     await broadcast.connect()
 

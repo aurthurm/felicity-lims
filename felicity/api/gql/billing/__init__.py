@@ -1,6 +1,9 @@
 from .types import (
     AnalysisDiscountType,
     AnalysisPriceType,
+    BillingOverviewMetrics,
+    DiscountMetrics,
+    KeyMetrics,
     ProfileDiscountType,
     ProfilePriceType,
     TestBillCursorPage,
@@ -8,6 +11,8 @@ from .types import (
     TestBillInvoiceType,
     TestBillTransactionType,
     TestBillType,
+    TransactionMetrics,
+    VolumeMetrics,
     VoucherCodeType,
     VoucherCustomerType,
     VoucherType,
@@ -26,4 +31,9 @@ billing_types = [
     TestBillCursorPage,
     TestBillTransactionType,
     TestBillInvoiceType,
+    KeyMetrics,
+    VolumeMetrics,
+    TransactionMetrics,
+    DiscountMetrics,
+    BillingOverviewMetrics,
 ]

@@ -5,7 +5,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.setup.types import ManufacturerType, SupplierType, LaboratoryType
-from felicity.api.gql.types import BytesScalar, PageInfo
+from felicity.api.gql.types import BytesScalar, PageInfo, JSONScalar
 from felicity.api.gql.user.types import UserType
 from felicity.apps.instrument.services import LaboratoryInstrumentService, MethodService
 
@@ -55,6 +55,7 @@ class InstrumentType:
     instrument_type: Optional[InstrumentTypeType] = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
+    driver_mapping: JSONScalar | None = None
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -99,15 +100,6 @@ class LaboratoryInstrumentType:
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
     is_active: bool = False
-    is_interfacing: bool = False
-    host: str | None = None
-    port: str | None = None
-    auto_reconnect: bool = False
-    protocol_type: str | None = None
-    socket_type: str | None = None
-    connection: str | None = None
-    transmission: str | None = None
-    sync_units: bool = False
     #
     created_by_uid: str | None = None
     created_by: Optional["UserType"] = None
@@ -129,6 +121,31 @@ class LaboratoryInstrumentCursorPage:
     edges: Optional[List[LaboratoryInstrumentEdge]] = None
     items: Optional[List[LaboratoryInstrumentType]] = None
     total_count: int
+
+
+@strawberry.type
+class InstrumentInterfaceType:
+    uid: str
+    laboratory_uid: str | None = None
+    laboratory_instrument_uid: str
+    laboratory_instrument: LaboratoryInstrumentType | None = None
+    is_active: bool = False
+    host: str | None = None
+    port: str | None = None
+    auto_reconnect: bool = False
+    protocol_type: str | None = None
+    socket_type: str | None = None
+    connection: str | None = None
+    transmission: str | None = None
+    sync_units: bool = False
+    driver_mapping: JSONScalar | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -267,3 +284,10 @@ class InstrumentResultTranslationType:
     translated: str
     keyword: str
     reason: str | None = None
+
+
+@strawberry.type
+class ParseMessageResult:
+    success: bool
+    parsed_message: Optional[JSONScalar] = None
+    error: Optional[str] = None

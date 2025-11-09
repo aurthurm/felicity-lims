@@ -14,10 +14,10 @@ from felicity.api.gql.instrument.types import (
     LaboratoryInstrumentType,
     MethodType,
     InstrumentResultExclusionsType,
-    InstrumentResultTranslationType,
+    InstrumentResultTranslationType, InstrumentInterfaceType,
 )
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import OperationError
+from felicity.api.gql.types import OperationError, JSONScalar
 from felicity.apps.analysis.entities.analysis import (
     analysis_instrument,
     analysis_method,
@@ -36,7 +36,7 @@ from felicity.apps.instrument.services import (
     LaboratoryInstrumentService,
     MethodService,
     InstrumentResultExclusionsService,
-    InstrumentResultTranslationService,
+    InstrumentResultTranslationService, InstrumentInterfaceService,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -55,6 +55,11 @@ InstrumentResponse = strawberry.union(
 LaboratoryInstrumentResponse = strawberry.union(
     "LaboratoryInstrumentResponse",
     (LaboratoryInstrumentType, OperationError),
+    description="",  # noqa
+)
+InstrumentInterfaceResponse = strawberry.union(
+    "InstrumentInterfaceResponse",
+    (InstrumentInterfaceType, OperationError),
     description="",  # noqa
 )
 InstrumentCompetenceResponse = strawberry.union(
@@ -106,6 +111,7 @@ class InstrumentInputType:
     instrument_type_uid: str | None = None
     supplier_uid: str | None = None
     manufacturer_uid: str | None = None
+    driver_mapping: JSONScalar | None = None
 
 
 @strawberry.input
@@ -115,6 +121,21 @@ class LaboratoryInstrumentInputType:
     serial_number: str | None = None
     date_commissioned: datetime | None = None
     date_decommissioned: datetime | None = None
+
+
+@strawberry.input
+class InstrumentInterfaceInput:
+    laboratory_instrument_uid: str
+    host: str
+    port: str
+    auto_reconnect: bool | None = True
+    protocol_type: str
+    socket_type: str
+    connection: str | None = None
+    transmission: str | None = None
+    is_active: bool | None = True
+    sync_units: bool | None = False
+    driver_mapping: JSONScalar | None = None
 
 
 @strawberry.input
@@ -166,9 +187,8 @@ class InstrumentCompetenceInput:
 
 
 @strawberry.input
-class InstrumentResultExclusionsInput:
+class InstrumentResultExclusionInput:
     instrument_uid: str
-    instrument: InstrumentType
     result: str
     reason: str | None = None
 
@@ -176,7 +196,6 @@ class InstrumentResultExclusionsInput:
 @strawberry.input
 class InstrumentResultTranslationInput:
     instrument_uid: str
-    instrument: InstrumentType
     original: str
     translated: str
     keyword: str
@@ -366,6 +385,41 @@ class InstrumentMutations:
         obj_in = schemas.LaboratoryInstrumentUpdate(**instrument.to_dict())
         instrument = await LaboratoryInstrumentService().update(instrument.uid, obj_in)
         return LaboratoryInstrumentType(**instrument.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_instrument_interface(
+            self, info, payload: InstrumentInterfaceInput
+    ) -> InstrumentInterfaceResponse:  # noqa
+
+        incoming: dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.InstrumentInterfaceCreate(**incoming)
+        instrument_interface = await InstrumentInterfaceService().create(obj_in)
+        return InstrumentInterfaceType(**instrument_interface.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_instrument_interface(
+            self, info, uid: str, payload: InstrumentInterfaceInput
+    ) -> InstrumentInterfaceResponse:  # noqa
+        instrument_interface = await InstrumentInterfaceService().get(uid=uid)
+        if not instrument_interface:
+            return OperationError(
+                error=f"instrument interface with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = instrument_interface.to_dict()
+        for _field in obj_data:
+            if _field in payload.__dict__:
+                try:
+                    setattr(instrument_interface, _field, payload.__dict__[_field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.InstrumentInterfaceUpdate(**instrument_interface.to_dict())
+        instrument_interface = await InstrumentInterfaceService().update(instrument_interface.uid, obj_in)
+        return InstrumentInterfaceType(**instrument_interface.marshal_simple(exclude=["laboratory"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_caliberation(
@@ -664,7 +718,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_result_exclusions(
-            self, info, payload: InstrumentResultExclusionsInput
+            self, info, payload: InstrumentResultExclusionInput
     ) -> InstrumentResultExclusionsResponse:  # noqa
         instrument = await InstrumentService().get(uid=payload.instrument_uid)
         if not instrument:
@@ -680,7 +734,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_result_exclusions(
-            self, info, uid: str, payload: InstrumentResultExclusionsInput
+            self, info, uid: str, payload: InstrumentResultExclusionInput
     ) -> InstrumentResultExclusionsResponse:  # noqa
         exclusion = await InstrumentResultExclusionsService().get(uid=uid)
         if not exclusion:

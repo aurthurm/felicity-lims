@@ -89,6 +89,48 @@ class VoucherService(BaseService[Voucher, VoucherCreate, VoucherUpdate]):
     def __init__(self) -> None:
         super().__init__(VoucherRepository())
 
+    async def get_discount_metrics(self) -> dict:
+        """Calculate discount and voucher metrics"""
+        # Get all active discounts
+        analysis_discounts = await AnalysisDiscountService().get_all(is_active=True)
+        profile_discounts = await ProfileDiscountService().get_all(is_active=True)
+
+        # Calculate total discount amounts
+        analysis_discount_amount = sum(
+            d.value_amount if d.value_amount else 0 for d in analysis_discounts
+        )
+        profile_discount_amount = sum(
+            d.value_amount if d.value_amount else 0 for d in profile_discounts
+        )
+        total_discount_amount = analysis_discount_amount + profile_discount_amount
+
+        # Get voucher metrics
+        vouchers = await self.all()
+        total_vouchers = len(vouchers)
+        active_vouchers = sum(1 for v in vouchers if v.usage_limit == 0 or v.used < v.usage_limit)
+
+        # Calculate redemption rate
+        total_voucher_usage = sum(v.used for v in vouchers)
+        total_voucher_limit = sum(v.usage_limit for v in vouchers if v.usage_limit > 0)
+        voucher_redemption_rate = (
+            (total_voucher_usage / total_voucher_limit * 100)
+            if total_voucher_limit > 0
+            else 0.0
+        )
+
+        # Count vouchers with available usage
+        vouchers_with_available_usage = sum(
+            1 for v in vouchers if v.usage_limit == 0 or v.used < v.usage_limit
+        )
+
+        return {
+            "total_discount_amount": total_discount_amount,
+            "active_vouchers": active_vouchers,
+            "total_vouchers": total_vouchers,
+            "voucher_redemption_rate": voucher_redemption_rate,
+            "vouchers_with_available_usage": vouchers_with_available_usage,
+        }
+
 
 class VoucherCodeService(
     BaseService[VoucherCode, VoucherCodeCreate, VoucherCodeUpdate]
@@ -130,6 +172,57 @@ class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
 
     async def get_for_client(self, client_uid: str) -> list[TestBill]:
         return await self.get_all(client_uid=client_uid)
+
+    async def get_key_metrics(self) -> dict:
+        """Calculate key financial metrics"""
+        bills = await self.all()
+
+        total_charged = sum(bill.total_charged for bill in bills)
+        total_paid = sum(bill.total_paid for bill in bills)
+        outstanding_balance = total_charged - total_paid
+        collection_rate = (total_paid / total_charged * 100) if total_charged > 0 else 0.0
+
+        return {
+            "total_charged": total_charged,
+            "total_paid": total_paid,
+            "outstanding_balance": outstanding_balance,
+            "collection_rate": collection_rate,
+        }
+
+    async def get_volume_metrics(self) -> dict:
+        """Calculate bill volume metrics"""
+        bills = await self.all()
+
+        active_bills = sum(1 for bill in bills if bill.is_active)
+        inactive_bills = sum(1 for bill in bills if not bill.is_active)
+        pending_confirmation = sum(1 for bill in bills if bill.to_confirm)
+        partial_bills = sum(1 for bill in bills if bill.partial)
+        complete_bills = sum(1 for bill in bills if not bill.partial)
+
+        return {
+            "active_bills": active_bills,
+            "inactive_bills": inactive_bills,
+            "pending_confirmation": pending_confirmation,
+            "partial_bills": partial_bills,
+            "complete_bills": complete_bills,
+        }
+
+    async def get_transaction_metrics(self) -> dict:
+        """Calculate transaction metrics"""
+        transactions = await self.test_bill_transaction_service.all()
+
+        successful_transactions = sum(1 for t in transactions if t.is_success)
+        failed_transactions = sum(1 for t in transactions if not t.is_success and t.processed)
+        pending_transactions = sum(1 for t in transactions if not t.processed)
+        total_transaction_amount = sum(t.amount for t in transactions if t.is_success)
+
+        return {
+            "successful_transactions": successful_transactions,
+            "failed_transactions": failed_transactions,
+            "pending_transactions": pending_transactions,
+            "total_transaction_amount": total_transaction_amount,
+        }
+
 
 class TestBillTransactionService(
     BaseService[

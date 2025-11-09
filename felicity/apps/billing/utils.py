@@ -1,14 +1,13 @@
 import logging
 
-from felicity.apps.analysis.entities import analysis as a_entities
-from felicity.apps.analysis.schemas import AnalysisRequestUpdate
+from felicity.apps.analysis.services.analysis import AnalysisRequestService
 from felicity.apps.billing.entities import (
     TestBill,
     Voucher,
     VoucherCode,
     test_bill_item,
 )
-from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind
+from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind, PaymentStatus
 from felicity.apps.billing.exceptions import (
     CustomerAlreadyUsedVoucherException,
     InactiveTestBillException,
@@ -35,7 +34,6 @@ from felicity.apps.billing.services import (
     VoucherService,
 )
 from felicity.apps.impress.invoicing.utils import impress_invoice
-from felicity.apps.setup.caches import get_laboratory
 from felicity.apps.setup.services import LaboratorySettingService
 from felicity.core.dtz import timenow_dt
 
@@ -43,33 +41,38 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=False):
-    laboratory = await get_laboratory()
-    lab_settings = await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
-
-    if not lab_settings.allow_billing:
-        logger.info("Billing is not allowed")
-        return
-
-    # auto_billing ?? or user initiated
-    if auto_bill and not lab_settings.allow_auto_billing:
-        logger.info("Auto billing is not allowed")
-        return
-
-    logger.info("Billing order ...")
-
-    # calculate bill and marshall prices for future reference
-    total_charged = 0.00
-    profile_uids = []
-    analysis_uids = []
-
-    for sample in analysis_request.samples:
-        for _prof in sample.profiles:
-            profile_uids.append(_prof.uid)
-        for _an in sample.analyses:
-            analysis_uids.append(_an.uid)
-
+async def bill_order(analysis_request_uid: str, auto_bill=False):
     async with ProfilePriceService().repository.async_session() as transaction_session:
+        analysis_request = await AnalysisRequestService().get(
+            uid=analysis_request_uid,
+            related=['samples', 'samples.profiles', 'samples.analyses'],
+            session=transaction_session
+        )
+        lab_settings = await LaboratorySettingService().get(laboratory_uid=analysis_request.laboratory_uid,
+                                                            session=transaction_session)
+
+        if not lab_settings.allow_billing:
+            logger.info("Billing is not allowed")
+            return
+
+        # auto_billing ?? or user initiated
+        if auto_bill and not lab_settings.allow_auto_billing:
+            logger.info("Auto billing is not allowed")
+            return
+
+        logger.info("Billing order ...")
+
+        # calculate bill and marshall prices for future reference
+        total_charged = 0.00
+        profile_uids = []
+        analysis_uids = []
+
+        for sample in analysis_request.samples:
+            for _prof in sample.profiles:
+                profile_uids.append(_prof.uid)
+            for _an in sample.analyses:
+                analysis_uids.append(_an.uid)
+
         profiles_prices = await ProfilePriceService().get_all(profile_uid__in=profile_uids, session=transaction_session)
         analysis_prices = await AnalysisPriceService().get_all(
             analysis_uid__in=analysis_uids, session=transaction_session
@@ -213,24 +216,21 @@ async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=Fal
                     is_locked = True
                 else:
                     is_locked = False
-            else: # paid
+            else:  # paid
                 if bill.total_paid < bill.total_charged:
                     is_locked = True
                 else:
                     is_locked = False
-        
-        await a_entities.AnalysisRequestService().update(
-            analysis_request.uid,
-            AnalysisRequestUpdate(is_billed=is_billed, is_locked=is_locked),
-            commit=False,
-            session=transaction_session
-        )
+
+        analysis_request.is_billed = is_billed
+        analysis_request.is_locked = is_locked
+        await AnalysisRequestService().save(analysis_request, commit=False, session=transaction_session)
 
         # Save transaction
         await ProfilePriceService().repository.save_transaction(transaction_session)
 
     logger.info("invoicing...")
-    bill = await TestBillService().get(uid=bill.uid, related=['patient'], session=transaction_session)
+    bill = await TestBillService().get(uid=bill.uid, related=['patient'])
     await impress_invoice(bill)
 
 

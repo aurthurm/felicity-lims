@@ -1493,6 +1493,21 @@ export type AnalysisWithProfiles = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type AnalyzerExtractedMessageResponse = AnalyzerExtractedMessageType | OperationError;
+
+export type AnalyzerExtractedMessageType = {
+  __typename?: 'AnalyzerExtractedMessageType';
+  message: Scalars['JSONScalar']['output'];
+};
+
+export type AnalyzerParsedMessageResponse = AnalyzerParsedMessageType | OperationError;
+
+export type AnalyzerParsedMessageType = {
+  __typename?: 'AnalyzerParsedMessageType';
+  message: Scalars['JSONScalar']['output'];
+  seperators: Scalars['JSONScalar']['output'];
+};
+
 export type ApplyVoucherInput = {
   customerUid: Scalars['String']['input'];
   testBillUid: Scalars['String']['input'];
@@ -1536,6 +1551,14 @@ export type BillTransactionInput = {
   kind: Scalars['String']['input'];
   notes?: InputMaybe<Scalars['String']['input']>;
   testBillUid: Scalars['String']['input'];
+};
+
+export type BillingOverviewMetrics = {
+  __typename?: 'BillingOverviewMetrics';
+  discountMetrics: DiscountMetrics;
+  keyMetrics: KeyMetrics;
+  transactionMetrics: TransactionMetrics;
+  volumeMetrics: VolumeMetrics;
 };
 
 export type CalibrationCertificateInput = {
@@ -1801,6 +1824,15 @@ export type DepartmentType = {
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DiscountMetrics = {
+  __typename?: 'DiscountMetrics';
+  activeVouchers: Scalars['Int']['output'];
+  totalDiscountAmount: Scalars['Float']['output'];
+  totalVouchers: Scalars['Int']['output'];
+  voucherRedemptionRate: Scalars['Float']['output'];
+  vouchersWithAvailableUsage: Scalars['Int']['output'];
 };
 
 export type DistrictCursorPage = {
@@ -3256,6 +3288,7 @@ export type InstrumentEdge = {
 
 export type InstrumentInputType = {
   description?: InputMaybe<Scalars['String']['input']>;
+  driverMapping?: InputMaybe<Scalars['JSONScalar']['input']>;
   instrumentTypeUid?: InputMaybe<Scalars['String']['input']>;
   keyword: Scalars['String']['input'];
   manufacturerUid?: InputMaybe<Scalars['String']['input']>;
@@ -3263,7 +3296,97 @@ export type InstrumentInputType = {
   supplierUid?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type InstrumentInterfaceInput = {
+  autoReconnect?: InputMaybe<Scalars['Boolean']['input']>;
+  connection?: InputMaybe<Scalars['String']['input']>;
+  driverMapping?: InputMaybe<Scalars['JSONScalar']['input']>;
+  host: Scalars['String']['input'];
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  laboratoryInstrumentUid: Scalars['String']['input'];
+  port: Scalars['String']['input'];
+  protocolType: Scalars['String']['input'];
+  socketType: Scalars['String']['input'];
+  syncUnits?: InputMaybe<Scalars['Boolean']['input']>;
+  transmission?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type InstrumentInterfaceResponse = InstrumentInterfaceType | OperationError;
+
+export type InstrumentInterfaceType = {
+  __typename?: 'InstrumentInterfaceType';
+  autoReconnect: Scalars['Boolean']['output'];
+  connection?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  driverMapping?: Maybe<Scalars['JSONScalar']['output']>;
+  host?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  laboratoryInstrument?: Maybe<LaboratoryInstrumentType>;
+  laboratoryInstrumentUid: Scalars['String']['output'];
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  port?: Maybe<Scalars['String']['output']>;
+  protocolType?: Maybe<Scalars['String']['output']>;
+  socketType?: Maybe<Scalars['String']['output']>;
+  syncUnits: Scalars['Boolean']['output'];
+  transmission?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type InstrumentRawDataType = {
+  __typename?: 'InstrumentRawDataType';
+  content: Scalars['String']['output'];
+  isTransformed: Scalars['Boolean']['output'];
+  laboratoryInstrument: LaboratoryInstrumentType;
+  laboratoryInstrumentUid: Scalars['String']['output'];
+  lastTransformationAttempt?: Maybe<Scalars['DateTime']['output']>;
+  transformationAttempts: Scalars['Int']['output'];
+  transformationError?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+};
+
 export type InstrumentResponse = InstrumentType | OperationError;
+
+export type InstrumentResultExclusionInput = {
+  instrumentUid: Scalars['String']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
+  result: Scalars['String']['input'];
+};
+
+export type InstrumentResultExclusionsResponse = InstrumentResultExclusionsType | OperationError;
+
+export type InstrumentResultExclusionsType = {
+  __typename?: 'InstrumentResultExclusionsType';
+  instrument: InstrumentType;
+  instrumentUid: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  result: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+};
+
+export type InstrumentResultTranslationInput = {
+  instrumentUid: Scalars['String']['input'];
+  keyword: Scalars['String']['input'];
+  original: Scalars['String']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
+  translated: Scalars['String']['input'];
+};
+
+export type InstrumentResultTranslationResponse = InstrumentResultTranslationType | OperationError;
+
+export type InstrumentResultTranslationType = {
+  __typename?: 'InstrumentResultTranslationType';
+  instrument: InstrumentType;
+  instrumentUid: Scalars['String']['output'];
+  keyword: Scalars['String']['output'];
+  original: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  translated: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+};
 
 export type InstrumentType = {
   __typename?: 'InstrumentType';
@@ -3271,6 +3394,7 @@ export type InstrumentType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  driverMapping?: Maybe<Scalars['JSONScalar']['output']>;
   instrumentType?: Maybe<InstrumentTypeType>;
   instrumentTypeUid?: Maybe<Scalars['String']['output']>;
   keyword?: Maybe<Scalars['String']['output']>;
@@ -3323,6 +3447,14 @@ export type InstrumentTypeType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type KeyMetrics = {
+  __typename?: 'KeyMetrics';
+  collectionRate: Scalars['Float']['output'];
+  outstandingBalance: Scalars['Float']['output'];
+  totalCharged: Scalars['Float']['output'];
+  totalPaid: Scalars['Float']['output'];
 };
 
 export enum LabelCategory {
@@ -3413,6 +3545,7 @@ export type LaboratoryInstrumentType = {
   dateDecommissioned?: Maybe<Scalars['DateTime']['output']>;
   instrument?: Maybe<InstrumentType>;
   instrumentUid?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
   labName?: Maybe<Scalars['String']['output']>;
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
@@ -3728,6 +3861,9 @@ export type Mutation = {
   createInstrument: InstrumentResponse;
   createInstrumentCaliberation: InstrumentCalibrationResponse;
   createInstrumentCompetence: InstrumentCompetenceResponse;
+  createInstrumentInterface: InstrumentInterfaceResponse;
+  createInstrumentResultExclusions: InstrumentResultExclusionsResponse;
+  createInstrumentResultTranslation: InstrumentResultTranslationResponse;
   createInstrumentType: InstrumentTypeResponse;
   createLaboratory: LaboratoryResponse;
   createLaboratoryInstrument: LaboratoryInstrumentResponse;
@@ -3795,9 +3931,11 @@ export type Mutation = {
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
   discardAbxAntibiotic: DeletedItem;
+  extractAnalyserMessage: AnalyzerExtractedMessageResponse;
   invalidateSamples: SampleActionResponse;
   issueStockOrder: StockOrderResponse;
   manageAnalyses: ResultedSampleActionResponse;
+  parseAnalyserMessage: AnalyzerParsedMessageResponse;
   printSamples: SampleActionResponse;
   publishSamples: SampleActionResponse;
   reInstateAnalysisResults: AnalysisResultResponse;
@@ -3885,6 +4023,9 @@ export type Mutation = {
   updateInstrument: InstrumentResponse;
   updateInstrumentCaliberation: InstrumentCalibrationResponse;
   updateInstrumentCompetence: InstrumentCompetenceResponse;
+  updateInstrumentInterface: InstrumentInterfaceResponse;
+  updateInstrumentResultExclusions: InstrumentResultExclusionsResponse;
+  updateInstrumentResultTranslation: InstrumentResultTranslationResponse;
   updateInstrumentType: InstrumentTypeResponse;
   updateLaboratory: LaboratoryResponse;
   updateLaboratoryInstrument: LaboratoryInstrumentResponse;
@@ -4322,6 +4463,21 @@ export type MutationCreateInstrumentCompetenceArgs = {
 };
 
 
+export type MutationCreateInstrumentInterfaceArgs = {
+  payload: InstrumentInterfaceInput;
+};
+
+
+export type MutationCreateInstrumentResultExclusionsArgs = {
+  payload: InstrumentResultExclusionInput;
+};
+
+
+export type MutationCreateInstrumentResultTranslationArgs = {
+  payload: InstrumentResultTranslationInput;
+};
+
+
 export type MutationCreateInstrumentTypeArgs = {
   payload: InstrumentTypeInputType;
 };
@@ -4669,6 +4825,12 @@ export type MutationDiscardAbxAntibioticArgs = {
 };
 
 
+export type MutationExtractAnalyserMessageArgs = {
+  driver: Scalars['JSONScalar']['input'];
+  message: Scalars['String']['input'];
+};
+
+
 export type MutationInvalidateSamplesArgs = {
   samples: Array<Scalars['String']['input']>;
 };
@@ -4683,6 +4845,11 @@ export type MutationIssueStockOrderArgs = {
 export type MutationManageAnalysesArgs = {
   payload: ManageAnalysisInputType;
   sampleUid: Scalars['String']['input'];
+};
+
+
+export type MutationParseAnalyserMessageArgs = {
+  message: Scalars['String']['input'];
 };
 
 
@@ -5195,6 +5362,24 @@ export type MutationUpdateInstrumentCompetenceArgs = {
 };
 
 
+export type MutationUpdateInstrumentInterfaceArgs = {
+  payload: InstrumentInterfaceInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateInstrumentResultExclusionsArgs = {
+  payload: InstrumentResultExclusionInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateInstrumentResultTranslationArgs = {
+  payload: InstrumentResultTranslationInput;
+  uid: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateInstrumentTypeArgs = {
   payload: InstrumentTypeInputType;
   uid: Scalars['String']['input'];
@@ -5688,6 +5873,13 @@ export type PageInfo = {
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
   startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type ParseMessageResult = {
+  __typename?: 'ParseMessageResult';
+  error?: Maybe<Scalars['String']['output']>;
+  parsedMessage?: Maybe<Scalars['JSONScalar']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type PasswordResetValidityResponse = OperationError | PasswordResetValidityType;
@@ -6218,7 +6410,7 @@ export type Query = {
   billInvoiceCreate?: Maybe<Scalars['BytesScalar']['output']>;
   billInvoices?: Maybe<Array<TestBillInvoiceType>>;
   billTransactions?: Maybe<Array<TestBillTransactionType>>;
-  bills: TestBillCursorPage;
+  billingOverviewMetrics: BillingOverviewMetrics;
   billsForClient?: Maybe<Array<TestBillType>>;
   billsForPatient?: Maybe<Array<TestBillType>>;
   clientAll: ClientCursorPage;
@@ -6324,6 +6516,10 @@ export type Query = {
   impressReportsMeta: Array<ReportImpressType>;
   instrumentAll: InstrumentCursorPage;
   instrumentByUid: InstrumentType;
+  instrumentInterfaces: Array<InstrumentInterfaceType>;
+  instrumentRawData: Array<InstrumentRawDataType>;
+  instrumentResultExclusions: Array<InstrumentResultExclusionsType>;
+  instrumentResultTranslations: Array<InstrumentResultTranslationType>;
   instrumentTypeAll: InstrumentTypeCursorPage;
   instrumentTypeByUid: InstrumentTypeType;
   laboratoriesByOrganization: Array<LaboratoryType>;
@@ -6346,6 +6542,7 @@ export type Query = {
   notificationFilter: Array<NotificationType>;
   ordersByBillUid: Array<AnalysisRequestType>;
   organization: OrganizationType;
+  parseMessage: ParseMessageResult;
   patientAll: PatientCursorPage;
   patientByPatientId?: Maybe<PatientType>;
   patientByUid?: Maybe<PatientType>;
@@ -6394,6 +6591,7 @@ export type Query = {
   samplesByStorageContainerUid: Array<SampleType>;
   samplesByUids: Array<SamplesWithResults>;
   samplesForShipmentAssign: SampleCursorPage;
+  searchBills: TestBillCursorPage;
   shipmentAll: ShipmentCursorPage;
   shipmentById: ShipmentType;
   shipmentByStatus: Array<ShipmentType>;
@@ -6773,18 +6971,6 @@ export type QueryBillInvoicesArgs = {
 
 export type QueryBillTransactionsArgs = {
   billUid: Scalars['String']['input'];
-};
-
-
-export type QueryBillsArgs = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
-  beforeCursor?: InputMaybe<Scalars['String']['input']>;
-  clientUid?: InputMaybe<Scalars['String']['input']>;
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-  partial?: InputMaybe<Scalars['Boolean']['input']>;
-  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  text?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -7388,6 +7574,21 @@ export type QueryInstrumentByUidArgs = {
 };
 
 
+export type QueryInstrumentRawDataArgs = {
+  instrumentUid: Scalars['String']['input'];
+};
+
+
+export type QueryInstrumentResultExclusionsArgs = {
+  instrumentUid: Scalars['String']['input'];
+};
+
+
+export type QueryInstrumentResultTranslationsArgs = {
+  instrumentUid: Scalars['String']['input'];
+};
+
+
 export type QueryInstrumentTypeAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
@@ -7501,6 +7702,11 @@ export type QueryNotificationFilterArgs = {
 
 export type QueryOrdersByBillUidArgs = {
   uid: Scalars['String']['input'];
+};
+
+
+export type QueryParseMessageArgs = {
+  rawMessage: Scalars['String']['input'];
 };
 
 
@@ -7737,6 +7943,18 @@ export type QuerySamplesForShipmentAssignArgs = {
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySearchBillsArgs = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  clientUid?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  partial?: InputMaybe<Scalars['Boolean']['input']>;
   sortBy?: InputMaybe<Array<Scalars['String']['input']>>;
   text?: InputMaybe<Scalars['String']['input']>;
 };
@@ -9425,6 +9643,14 @@ export type TestBillType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type TransactionMetrics = {
+  __typename?: 'TransactionMetrics';
+  failedTransactions: Scalars['Int']['output'];
+  pendingTransactions: Scalars['Int']['output'];
+  successfulTransactions: Scalars['Int']['output'];
+  totalTransactionAmount: Scalars['Float']['output'];
+};
+
 export type UnitInputType = {
   isSiUnit: Scalars['Boolean']['input'];
   name: Scalars['String']['input'];
@@ -9535,6 +9761,15 @@ export type UserType = {
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
   userName: Scalars['String']['output'];
+};
+
+export type VolumeMetrics = {
+  __typename?: 'VolumeMetrics';
+  activeBills: Scalars['Int']['output'];
+  completeBills: Scalars['Int']['output'];
+  inactiveBills: Scalars['Int']['output'];
+  partialBills: Scalars['Int']['output'];
+  pendingConfirmation: Scalars['Int']['output'];
 };
 
 export type VoucherCodeInput = {

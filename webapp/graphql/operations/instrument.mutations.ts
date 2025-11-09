@@ -196,6 +196,55 @@ export type EditLaboratoryInstrumentMutation = (
   ) }
 );
 
+export type AddInstrumentInterfaceMutationVariables = Types.Exact<{
+  payload: Types.InstrumentInterfaceInput;
+}>;
+
+
+export type AddInstrumentInterfaceMutation = (
+  { __typename?: 'Mutation' }
+  & { createInstrumentInterface: (
+    { __typename?: 'InstrumentInterfaceType' }
+    & Pick<Types.InstrumentInterfaceType, 'uid' | 'laboratoryInstrumentUid' | 'isActive' | 'host' | 'port' | 'autoReconnect' | 'protocolType' | 'socketType' | 'connection' | 'transmission' | 'syncUnits' | 'driverMapping'>
+    & { laboratoryInstrument?: Types.Maybe<(
+      { __typename?: 'LaboratoryInstrumentType' }
+      & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
+      & { instrument?: Types.Maybe<(
+        { __typename?: 'InstrumentType' }
+        & Pick<Types.InstrumentType, 'uid' | 'name'>
+      )> }
+    )> }
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
+export type EditInstrumentInterfaceMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  payload: Types.InstrumentInterfaceInput;
+}>;
+
+
+export type EditInstrumentInterfaceMutation = (
+  { __typename?: 'Mutation' }
+  & { updateInstrumentInterface: (
+    { __typename?: 'InstrumentInterfaceType' }
+    & Pick<Types.InstrumentInterfaceType, 'uid' | 'laboratoryInstrumentUid' | 'isActive' | 'host' | 'port' | 'autoReconnect' | 'protocolType' | 'socketType' | 'connection' | 'transmission' | 'syncUnits' | 'driverMapping'>
+    & { laboratoryInstrument?: Types.Maybe<(
+      { __typename?: 'LaboratoryInstrumentType' }
+      & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
+      & { instrument?: Types.Maybe<(
+        { __typename?: 'InstrumentType' }
+        & Pick<Types.InstrumentType, 'uid' | 'name'>
+      )> }
+    )> }
+  ) | (
+    { __typename: 'OperationError' }
+    & Pick<Types.OperationError, 'error' | 'suggestion'>
+  ) }
+);
+
 export type AddMethodMutationVariables = Types.Exact<{
   payload: Types.MethodInputType;
 }>;
@@ -502,6 +551,80 @@ export const EditLaboratoryInstrumentDocument = gql`
 
 export function useEditLaboratoryInstrumentMutation() {
   return Urql.useMutation<EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables>(EditLaboratoryInstrumentDocument);
+};
+export const AddInstrumentInterfaceDocument = gql`
+    mutation AddInstrumentInterface($payload: InstrumentInterfaceInput!) {
+  createInstrumentInterface(payload: $payload) {
+    ... on InstrumentInterfaceType {
+      uid
+      laboratoryInstrumentUid
+      laboratoryInstrument {
+        uid
+        labName
+        instrument {
+          uid
+          name
+        }
+      }
+      isActive
+      host
+      port
+      autoReconnect
+      protocolType
+      socketType
+      connection
+      transmission
+      syncUnits
+      driverMapping
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddInstrumentInterfaceMutation() {
+  return Urql.useMutation<AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables>(AddInstrumentInterfaceDocument);
+};
+export const EditInstrumentInterfaceDocument = gql`
+    mutation EditInstrumentInterface($uid: String!, $payload: InstrumentInterfaceInput!) {
+  updateInstrumentInterface(uid: $uid, payload: $payload) {
+    ... on InstrumentInterfaceType {
+      uid
+      laboratoryInstrumentUid
+      laboratoryInstrument {
+        uid
+        labName
+        instrument {
+          uid
+          name
+        }
+      }
+      isActive
+      host
+      port
+      autoReconnect
+      protocolType
+      socketType
+      connection
+      transmission
+      syncUnits
+      driverMapping
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditInstrumentInterfaceMutation() {
+  return Urql.useMutation<EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables>(EditInstrumentInterfaceDocument);
 };
 export const AddMethodDocument = gql`
     mutation AddMethod($payload: MethodInputType!) {

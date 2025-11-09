@@ -4,6 +4,7 @@ import logging
 from fpdf import FPDF
 
 from felicity.utils import get_from_nested
+from felicity.utils.logo import get_logo_path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ class PDF(FPDF):
 
 class ManifetReport:
     def __init__(self):
+        self.logo_path = get_logo_path()
         self.pdf = PDF(orientation="P", unit="mm", format="A4")
         self.pdf.set_font("Helvetica")
         self.pdf.set_page_background((255, 255, 255))

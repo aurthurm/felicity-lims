@@ -38,49 +38,39 @@ class MessageTransformer:
             - Works dynamically for both HL7 (MSH present) and ASTM (H|P|O|R|A segments).
         """
 
-        lines = [l.strip() for l in raw_message.strip().splitlines() if l.strip()]
-        if not lines:
-            # Defaults
-            return {"field": "|", "component": "^", "repeat": "~", "escape": "\\", "subcomponent": "&"}
+        first_line = [l.strip() for l in raw_message.strip().splitlines() if l.strip()][0]
+        logger.info(f"first_line: {first_line}")
 
-        first_line = lines[0]
-        if first_line.startswith("MSH"):  # HL7
-            f_sep = first_line[3]
-            enc = first_line[4:8] if len(first_line) >= 8 else "^~\\&"
-            return {
-                "field": f_sep,
-                "component": enc[0],
-                "repeat": enc[1],
-                "escape": enc[2],
-                "subcomponent": enc[3],
+        if first_line.startswith("MSH"):  # HL7 aka MSH|^~\&
+            seps = {
+                "field": first_line[3],
+                "component": first_line[4],
+                "repeat": first_line[5],
+                "escape": first_line[6],
+                "subcomponent": first_line[7],
             }
-        else:  # ASTM
-            # ASTM fields: first char after segment ID is field separator
-            # ASTM header format: H|^&\~
-            # where: | = field sep, ^ = component sep, & = subcomponent sep, \ = escape, ~ = repeat sep
-            f_sep = first_line[1] if len(first_line) > 1 else "|"
+            logger.info(f"HL7 message detected, using MSH separators: {seps}")
+            return seps
+        else:  # ASTM aka H|\^&
+            # Check if positions 2 and 3 both return '\' (escape sequence issue)
+            offset = 0
+            if len(first_line) > 3 and first_line[2] == '\\' and first_line[3] == '\\':
+                offset = 1
+                logger.info("Detected escape sequence issue, adjusting indices by +1")
 
-            # For ASTM, if we see characters after field separator, parse them
-            # Common format: H|^&\ where order is: component, subcomponent, escape, repeat(implicit ~)
-            if len(first_line) > 2:
-                # Extract separators from positions 2+ (after field separator)
-                component_sep = first_line[2] if len(first_line) > 2 else "^"
-                subcomponent_sep = first_line[3] if len(first_line) > 3 else "&"
-                escape_char = first_line[4] if len(first_line) > 4 else "\\"
-            else:
-                component_sep = "^"
-                subcomponent_sep = "&"
-                escape_char = "\\"
-
-            return {
-                "field": f_sep,
-                "component": component_sep,
-                "repeat": "~",  # ASTM typically uses ~ or is implicit
-                "escape": escape_char,
-                "subcomponent": subcomponent_sep,
+            subcomponent = first_line[5 + offset] if len(first_line) > 5 + offset else None
+            seps = {
+                "field": first_line[1],
+                "repeat": first_line[2 + offset],
+                "component": first_line[3 + offset],
+                "escape": first_line[4 + offset],
+                "subcomponent": subcomponent if subcomponent != first_line[1] else None,
             }
 
-    def parse_message(self, raw_message: str) -> dict:
+            logger.info(f"ASTM message detected, using H separators: {seps}")
+            return seps
+
+    def parse_message(self, raw_message: str) -> tuple[dict, dict]:
         """
         Parses a raw HL7 or ASTM message into a structured JSON-friendly dictionary.
 
@@ -133,28 +123,30 @@ class MessageTransformer:
         message = {}
 
         for line in lines:
-            seg_name = line.split("|")[0]  # ASTM usually 1 char, HL7 3 char
+            seg_name = line[:1] if line[0] in "HOPRA" else line[:3]  # ASTM usually 1 char, HL7 3 char
             fields = line.split(f_sep)
 
             seg_obj = {"raw": line, "fields": {}}
 
             for idx, field in enumerate(fields[1:], start=1):
                 # Determine if we need a repeat structure
-                need_repeat = r_sep in field or c_sep in field or s_sep in field
+                need_repeat = r_sep in field or c_sep in field or (s_sep and s_sep in field)
                 if need_repeat:
                     field_dict = {"raw": field, "repeats": []}
+                    logger.info(f"Field {field} contains repeats, need_repeat={need_repeat}  :: r_sep: {r_sep} ")
                     repeats = field.split(r_sep) if r_sep in field else [field]
+                    logger.info(f"repeats: {repeats} ")
 
                     for repeat in repeats:
                         repeat_dict = {"raw": repeat}
 
                         # Determine if we need components
-                        if c_sep in repeat or s_sep in repeat:
+                        if c_sep in repeat or (s_sep and s_sep in repeat):
                             repeat_dict["components"] = {}
                             components = repeat.split(c_sep)
                             for c_idx, comp in enumerate(components, start=1):
                                 # Determine if we need subcomponents
-                                if s_sep in comp:
+                                if s_sep and s_sep in comp:
                                     comp_dict = {"raw": comp, "subcomponents": {}}
                                     subcomponents = comp.split(s_sep)
                                     for s_idx, sub in enumerate(subcomponents, start=1):
@@ -174,50 +166,8 @@ class MessageTransformer:
 
             message.setdefault(seg_name, []).append(seg_obj)
 
-        return message
-
-    def _extract_from_raw_field(
-            self, raw_field: str, component: int | None = None,
-            subcomponent: int | None = None
-    ) -> str | None:
-        """
-        Extract value from raw field string using component/subcomponent separators.
-        Fallback method when structured field data is not available.
-
-        Args:
-            raw_field (str): Raw field string (e.g., "WBC^1" or "WBC&sub1&sub2^1")
-            component (int): Component number (1-indexed), optional
-            subcomponent (int): Subcomponent number (1-indexed), optional
-
-        Returns:
-            str | None: Extracted value or None if not found
-        """
-        if not raw_field or component is None:
-            return raw_field
-
-        # Split by ^ (component separator)
-        components = raw_field.split('^')
-        logger.debug(f"_extract_from_raw_field: raw_field='{raw_field}', component={component}, components={components}")
-
-        if component < 1 or component > len(components):
-            logger.warning(f"Component {component} out of range for components: {components}")
-            return None
-
-        comp_value = components[component - 1]  # Convert from 1-indexed to 0-indexed
-        logger.debug(f"Extracted component {component}: '{comp_value}'")
-
-        if subcomponent is None:
-            return comp_value
-
-        # Split component by & (subcomponent separator)
-        subcomponents = comp_value.split('&')
-        if subcomponent < 1 or subcomponent > len(subcomponents):
-            logger.warning(f"Subcomponent {subcomponent} out of range for subcomponents: {subcomponents}")
-            return None
-
-        result = subcomponents[subcomponent - 1]  # Convert from 1-indexed to 0-indexed
-        logger.debug(f"Extracted subcomponent {subcomponent}: '{result}'")
-        return result
+        logger.info(f"Parsed message: {message}")
+        return message, sep
 
     def _navigate_parsed_message(
             self, parsed_message: dict, segment_id: str, field: int, repeat: int = 0,
@@ -248,7 +198,6 @@ class MessageTransformer:
 
             segment = segments[0]  # Use first segment occurrence
 
-            # Try to use structured field data first
             if "fields" in segment and segment["fields"]:
                 field_key = str(field)
                 if field_key in segment["fields"]:
@@ -294,35 +243,7 @@ class MessageTransformer:
                         return None
 
                     return subcomponents[subcomp_key]
-
-            # Fallback: Parse from raw segment string
-            # This handles cases where structured field data is not available
-            if "raw" not in segment:
-                return None
-
-            raw_segment = segment["raw"]
-            fields = raw_segment.split('|')
-            logger.debug(f"_navigate_parsed_message fallback: segment={segment_id}, field={field}, component={component}, subcomponent={subcomponent}")
-            logger.debug(f"Raw segment: {raw_segment}")
-            logger.debug(f"Fields split by |: {fields}")
-
-            # Field index validation (0-indexed from split, but we store 0-indexed)
-            if field < 0 or field >= len(fields):
-                logger.warning(f"Field {field} out of range for fields in segment {segment_id}")
-                return None
-
-            raw_field = fields[field]
-            logger.debug(f"Raw field at index {field}: '{raw_field}'")
-
-            # If no component specified, return the entire field
-            if component is None:
-                return raw_field if raw_field else None
-
-            # Handle components and subcomponents from raw field
-            # Extract the component value directly
-            result = self._extract_from_raw_field(raw_field, component, subcomponent)
-            logger.debug(f"Extracted value: '{result}'")
-            return result
+            return None
 
         except (KeyError, IndexError, TypeError) as e:
             logger.warning(f"Error navigating parsed message: {e}")
@@ -414,7 +335,7 @@ class MessageTransformer:
 
         if not isinstance(message, dict):
             logger.error(f"Message is not a dict, parsing {type(message)} message")
-            parsed_message = self.parse_message(message)
+            parsed_message, _ = self.parse_message(message)
         else:
             parsed_message = message
 

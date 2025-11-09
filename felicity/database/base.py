@@ -68,6 +68,7 @@ from felicity.apps.impress.entities import ReportImpress  # noqa
 from felicity.apps.instrument.entities import CalibrationCertificate  # noqa
 from felicity.apps.instrument.entities import Instrument  # noqa
 from felicity.apps.instrument.entities import InstrumentCalibration  # noqa
+from felicity.apps.instrument.entities import InstrumentInterface  # noqa
 from felicity.apps.instrument.entities import InstrumentRawData  # noqa
 from felicity.apps.instrument.entities import InstrumentResultExclusions  # noqa
 from felicity.apps.instrument.entities import InstrumentResultTranslation  # noqa

@@ -136,6 +136,10 @@ class NotificationService(
     async def notify(self, message: str, users, departments=None, groups=None) -> None:
         if not isinstance(users, list):
             users = [users]
+        
+        if not users[0].active_laboratory_uid:
+            return
+
         n_in = NotificationCreate(message=message)
         async with self.transaction() as session:
             notification = await super().create({

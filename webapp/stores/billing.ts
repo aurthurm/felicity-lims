@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { 
+import {
     GetPiceForProfileDocument, GetPiceForProfileQuery, GetPiceForProfileQueryVariables,
     GetDiscountForProfileDocument, GetDiscountForProfileQuery, GetDiscountForProfileQueryVariables,
     GetPriceForAnalysisDocument, GetPriceForAnalysisQuery, GetPriceForAnalysisQueryVariables,
@@ -10,6 +10,7 @@ import {
     GetBillsForPatientDocument, GetBillsForPatientQueryVariables, GetBillsForPatientQuery,
     GetBillsForClientDocument, GetBillsForClientQueryVariables, GetBillsForClientQuery,
     GetBillTransactionsDocument, GetBillTransactionsQueryVariables, GetBillTransactionsQuery,
+    SearchBillsDocument, SearchBillsQuery, SearchBillsQueryVariables,
 } from '@/graphql/operations/billing.queries'
 
 import  useApiUtil  from '@/composables/api_util';
@@ -41,6 +42,13 @@ type BillingStateType = {
     fetchingVoucherCodes: boolean;
     bills: TestBillType[];
     fetchingBills: boolean;
+    billPageInfo?: {
+        hasNextPage: boolean;
+        hasPreviousPage?: boolean;
+        endCursor?: string | null;
+        startCursor?: string | null;
+        totalCount: number;
+    };
     transactions: TestBillTransactionType[];
     fetchingTransactions: boolean;
 };
@@ -60,6 +68,7 @@ export const useBillingStore = defineStore('billing', {
             fetchingVoucherCodes: false,
             bills: [],
             fetchingBills: false,
+            billPageInfo: undefined,
             transactions: [],
             fetchingTransactions: false,
         };
@@ -430,13 +439,61 @@ export const useBillingStore = defineStore('billing', {
                 console.error('Invalid transaction payload:', transaction);
                 return;
             }
-            
+
             const index = this.transactions?.findIndex(item => item.uid === transaction.uid);
             if (index > -1) {
                 this.transactions[index] = {
                     ...this.transactions[index],
                     ...transaction
                 };
+            }
+        },
+
+        // Search bills with filters
+        async searchBills(params: {
+            pageSize?: number;
+            afterCursor?: string;
+            beforeCursor?: string;
+            text?: string;
+            isActive?: boolean | null;
+            partial?: boolean | null;
+            clientUid?: string;
+            sortBy?: string[];
+        }): Promise<void> {
+            try {
+                this.fetchingBills = true;
+                const result = await withClientQuery<SearchBillsQuery, SearchBillsQueryVariables>(
+                    SearchBillsDocument,
+                    {
+                        pageSize: params.pageSize || 50,
+                        afterCursor: params.afterCursor || undefined,
+                        beforeCursor: params.beforeCursor || undefined,
+                        text: params.text || undefined,
+                        isActive: params.isActive !== null && params.isActive !== undefined ? params.isActive : undefined,
+                        partial: params.partial !== null && params.partial !== undefined ? params.partial : undefined,
+                        clientUid: params.clientUid || undefined,
+                        sortBy: params.sortBy || ['-uid'],
+                    },
+                    'searchBills'
+                );
+
+                if (result && typeof result === 'object' && 'items' in result) {
+                    const fetchedBills = (result as any).items ?? [];
+                    this.bills = fetchedBills;
+                    this.billPageInfo = {
+                        hasNextPage: (result as any).pageInfo?.hasNextPage ?? false,
+                        hasPreviousPage: (result as any).pageInfo?.hasPreviousPage ?? false,
+                        endCursor: (result as any).pageInfo?.endCursor ?? null,
+                        startCursor: (result as any).pageInfo?.startCursor ?? null,
+                        totalCount: (result as any).totalCount ?? 0,
+                    };
+                } else {
+                    console.error('Invalid bills data received:', result);
+                }
+            } catch (error) {
+                console.error('Error searching bills:', error);
+            } finally {
+                this.fetchingBills = false;
             }
         }
     },

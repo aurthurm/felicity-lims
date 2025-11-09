@@ -79,7 +79,7 @@ async def run_jobs_if_exists():
             await action_function(job.uid)
 
 
-def felicity_workforce_init():
+async def felicity_workforce_init():
     logging.info("Initialising felicity workforce ...")
     scheduler.add_job(
         func=run_jobs_if_exists, trigger=IntervalTrigger(seconds=10), id="felicity_wf"
@@ -96,15 +96,12 @@ def felicity_workforce_init():
     )
 
     # Instrument connections
-    # Use sync method since we're in felicity_workforce_init (sync context)
-    # The scheduler will handle the async execution of connect() jobs
     conn_service = ConnectionService()
-    connections = conn_service.get_links_sync()
+    connections = await conn_service.get_links()
     for _conn in connections:
         # Each instrument gets its own persistent job that runs forever
-        # connect() creates an asyncio.create_task internally for async execution
         scheduler.add_job(
-            _conn.connect,
+            _conn.start_server,
             args=[_conn],
             id=f"instrument_{_conn.uid}",
             replace_existing=True

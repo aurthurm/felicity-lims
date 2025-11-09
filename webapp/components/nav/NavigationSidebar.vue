@@ -54,6 +54,13 @@ function toggleNavText(): void {
           <span :class="['nav-text', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">Dashboard</span>
           <span v-show="!viewNavText" class="tooltip">Dashboard</span>
         </router-link>
+
+        <router-link v-show="guards.canAccessPage(guards.pages.BILLING)" to="/billing" id="billing-link"
+          class="flex items-center has-tooltip mt-1 p-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">
+          <span class="mr-4"><font-awesome-icon icon="money-bill" /></span>
+          <span :class="['nav-text', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">Billing</span>
+          <span v-show="!viewNavText" class="tooltip">Billing</span>
+        </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.PATIENTS_COMPACT)" to="/patients-compact"
           id="patients-compact-link"

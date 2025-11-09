@@ -108,6 +108,47 @@ export type GetVoucherCodesQuery = (
   )>> }
 );
 
+export type SearchBillsQueryVariables = Types.Exact<{
+  pageSize: Types.Scalars['Int']['input'];
+  afterCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  beforeCursor?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  text?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  isActive?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+  partial?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+  clientUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+}>;
+
+
+export type SearchBillsQuery = (
+  { __typename?: 'Query' }
+  & { searchBills: (
+    { __typename?: 'TestBillCursorPage' }
+    & Pick<Types.TestBillCursorPage, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
+    ), items?: Types.Maybe<Array<(
+      { __typename?: 'TestBillType' }
+      & Pick<Types.TestBillType, 'uid' | 'billId' | 'patientUid' | 'clientUid' | 'isActive' | 'toConfirm' | 'partial' | 'totalCharged' | 'totalPaid' | 'createdAt' | 'updatedAt'>
+      & { client: (
+        { __typename?: 'ClientType' }
+        & Pick<Types.ClientType, 'name'>
+      ), orders?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisRequestType' }
+        & Pick<Types.AnalysisRequestType, 'uid' | 'requestId' | 'clientRequestId' | 'patientUid'>
+        & { patient: (
+          { __typename?: 'PatientType' }
+          & Pick<Types.PatientType, 'firstName' | 'lastName' | 'clientPatientId' | 'gender' | 'dateOfBirth'>
+        ), samples: Array<(
+          { __typename?: 'SampleType' }
+          & Pick<Types.SampleType, 'uid' | 'sampleId' | 'status'>
+        )> }
+      )>> }
+    )>> }
+  ) }
+);
+
 export type GetBillsForPatientQueryVariables = Types.Exact<{
   patientUid: Types.Scalars['String']['input'];
 }>;
@@ -199,6 +240,29 @@ export type GetOrdersByBillUidQuery = (
       )> }
     )> }
   )> }
+);
+
+export type GetBillingOverviewMetricsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetBillingOverviewMetricsQuery = (
+  { __typename?: 'Query' }
+  & { billingOverviewMetrics: (
+    { __typename?: 'BillingOverviewMetrics' }
+    & { keyMetrics: (
+      { __typename?: 'KeyMetrics' }
+      & Pick<Types.KeyMetrics, 'totalCharged' | 'totalPaid' | 'outstandingBalance' | 'collectionRate'>
+    ), volumeMetrics: (
+      { __typename?: 'VolumeMetrics' }
+      & Pick<Types.VolumeMetrics, 'activeBills' | 'inactiveBills' | 'pendingConfirmation' | 'partialBills' | 'completeBills'>
+    ), transactionMetrics: (
+      { __typename?: 'TransactionMetrics' }
+      & Pick<Types.TransactionMetrics, 'successfulTransactions' | 'failedTransactions' | 'pendingTransactions' | 'totalTransactionAmount'>
+    ), discountMetrics: (
+      { __typename?: 'DiscountMetrics' }
+      & Pick<Types.DiscountMetrics, 'totalDiscountAmount' | 'activeVouchers' | 'totalVouchers' | 'voucherRedemptionRate' | 'vouchersWithAvailableUsage'>
+    ) }
+  ) }
 );
 
 
@@ -374,6 +438,66 @@ export const GetVoucherCodesDocument = gql`
 export function useGetVoucherCodesQuery(options: Omit<Urql.UseQueryArgs<never, GetVoucherCodesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetVoucherCodesQuery>({ query: GetVoucherCodesDocument, ...options });
 };
+export const SearchBillsDocument = gql`
+    query SearchBills($pageSize: Int!, $afterCursor: String, $beforeCursor: String, $text: String, $isActive: Boolean, $partial: Boolean, $clientUid: String, $sortBy: [String!]) {
+  searchBills(
+    pageSize: $pageSize
+    afterCursor: $afterCursor
+    beforeCursor: $beforeCursor
+    text: $text
+    isActive: $isActive
+    partial: $partial
+    clientUid: $clientUid
+    sortBy: $sortBy
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    items {
+      uid
+      billId
+      patientUid
+      clientUid
+      client {
+        name
+      }
+      isActive
+      toConfirm
+      partial
+      totalCharged
+      totalPaid
+      orders {
+        uid
+        requestId
+        clientRequestId
+        patientUid
+        patient {
+          firstName
+          lastName
+          clientPatientId
+          gender
+          dateOfBirth
+        }
+        samples {
+          uid
+          sampleId
+          status
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+export function useSearchBillsQuery(options: Omit<Urql.UseQueryArgs<never, SearchBillsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SearchBillsQuery>({ query: SearchBillsDocument, ...options });
+};
 export const GetBillsForPatientDocument = gql`
     query getBillsForPatient($patientUid: String!) {
   billsForPatient(patientUid: $patientUid) {
@@ -503,4 +627,40 @@ export const GetOrdersByBillUidDocument = gql`
 
 export function useGetOrdersByBillUidQuery(options: Omit<Urql.UseQueryArgs<never, GetOrdersByBillUidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetOrdersByBillUidQuery>({ query: GetOrdersByBillUidDocument, ...options });
+};
+export const GetBillingOverviewMetricsDocument = gql`
+    query getBillingOverviewMetrics {
+  billingOverviewMetrics {
+    keyMetrics {
+      totalCharged
+      totalPaid
+      outstandingBalance
+      collectionRate
+    }
+    volumeMetrics {
+      activeBills
+      inactiveBills
+      pendingConfirmation
+      partialBills
+      completeBills
+    }
+    transactionMetrics {
+      successfulTransactions
+      failedTransactions
+      pendingTransactions
+      totalTransactionAmount
+    }
+    discountMetrics {
+      totalDiscountAmount
+      activeVouchers
+      totalVouchers
+      voucherRedemptionRate
+      vouchersWithAvailableUsage
+    }
+  }
+}
+    `;
+
+export function useGetBillingOverviewMetricsQuery(options: Omit<Urql.UseQueryArgs<never, GetBillingOverviewMetricsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetBillingOverviewMetricsQuery>({ query: GetBillingOverviewMetricsDocument, ...options });
 };

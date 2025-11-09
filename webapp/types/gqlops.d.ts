@@ -1048,6 +1048,20 @@ export type GetVoucherCodesQueryVariables = Exact<{
 
 export type GetVoucherCodesQuery = { __typename?: 'Query', voucherCodes?: Array<{ __typename?: 'VoucherCodeType', uid: string, voucherUid: string, code: string, usageLimit: number, used: number, isActive: boolean, createdAt: string, createdByUid?: string | null, updatedAt: string, updatedByUid?: string | null }> | null };
 
+export type SearchBillsQueryVariables = Exact<{
+  pageSize: Scalars['Int']['input'];
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  partial?: InputMaybe<Scalars['Boolean']['input']>;
+  clientUid?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type SearchBillsQuery = { __typename?: 'Query', searchBills: { __typename?: 'TestBillCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'TestBillType', uid: string, billId: string, patientUid: string, clientUid: string, isActive: boolean, toConfirm: boolean, partial: boolean, totalCharged: number, totalPaid: number, createdAt?: string | null, updatedAt?: string | null, client: { __typename?: 'ClientType', name: string }, orders?: Array<{ __typename?: 'AnalysisRequestType', uid: string, requestId: string, clientRequestId: string, patientUid: string, patient: { __typename?: 'PatientType', firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null }, samples: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, status?: string | null }> }> | null }> | null } };
+
 export type GetBillsForPatientQueryVariables = Exact<{
   patientUid: Scalars['String']['input'];
 }>;
@@ -1082,6 +1096,11 @@ export type GetOrdersByBillUidQueryVariables = Exact<{
 
 
 export type GetOrdersByBillUidQuery = { __typename?: 'Query', ordersByBillUid: Array<{ __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, requestId: string, createdAt?: string | null, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, samples: Array<{ __typename?: 'SampleType', uid: string, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> }> };
+
+export type GetBillingOverviewMetricsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBillingOverviewMetricsQuery = { __typename?: 'Query', billingOverviewMetrics: { __typename?: 'BillingOverviewMetrics', keyMetrics: { __typename?: 'KeyMetrics', totalCharged: number, totalPaid: number, outstandingBalance: number, collectionRate: number }, volumeMetrics: { __typename?: 'VolumeMetrics', activeBills: number, inactiveBills: number, pendingConfirmation: number, partialBills: number, completeBills: number }, transactionMetrics: { __typename?: 'TransactionMetrics', successfulTransactions: number, failedTransactions: number, pendingTransactions: number, totalTransactionAmount: number }, discountMetrics: { __typename?: 'DiscountMetrics', totalDiscountAmount: number, activeVouchers: number, totalVouchers: number, voucherRedemptionRate: number, vouchersWithAvailableUsage: number } } };
 
 export type AddClientMutationVariables = Exact<{
   payload: ClientInputType;
@@ -1571,6 +1590,21 @@ export type EditLaboratoryInstrumentMutationVariables = Exact<{
 
 export type EditLaboratoryInstrumentMutation = { __typename?: 'Mutation', updateLaboratoryInstrument: { __typename?: 'LaboratoryInstrumentType', uid: string, labName?: string | null, serialNumber?: string | null, instrumentUid?: string | null, dateCommissioned?: never | null, dateDecommissioned?: never | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
+export type AddInstrumentInterfaceMutationVariables = Exact<{
+  payload: InstrumentInterfaceInput;
+}>;
+
+
+export type AddInstrumentInterfaceMutation = { __typename?: 'Mutation', createInstrumentInterface: { __typename?: 'InstrumentInterfaceType', uid: string, laboratoryInstrumentUid: string, isActive: boolean, host?: string | null, port?: string | null, autoReconnect: boolean, protocolType?: string | null, socketType?: string | null, connection?: string | null, transmission?: string | null, syncUnits: boolean, driverMapping?: never | null, laboratoryInstrument?: { __typename?: 'LaboratoryInstrumentType', uid: string, labName?: string | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null } | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditInstrumentInterfaceMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: InstrumentInterfaceInput;
+}>;
+
+
+export type EditInstrumentInterfaceMutation = { __typename?: 'Mutation', updateInstrumentInterface: { __typename?: 'InstrumentInterfaceType', uid: string, laboratoryInstrumentUid: string, isActive: boolean, host?: string | null, port?: string | null, autoReconnect: boolean, protocolType?: string | null, socketType?: string | null, connection?: string | null, transmission?: string | null, syncUnits: boolean, driverMapping?: never | null, laboratoryInstrument?: { __typename?: 'LaboratoryInstrumentType', uid: string, labName?: string | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null } | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
 export type AddMethodMutationVariables = Exact<{
   payload: MethodInputType;
 }>;
@@ -1626,6 +1660,11 @@ export type GetAllLaboratoryInstrumentsQueryVariables = Exact<{ [key: string]: n
 
 export type GetAllLaboratoryInstrumentsQuery = { __typename?: 'Query', laboratoryInstrumentAll: { __typename?: 'LaboratoryInstrumentCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'LaboratoryInstrumentType', uid: string, labName?: string | null, serialNumber?: string | null, instrumentUid?: string | null, dateCommissioned?: never | null, dateDecommissioned?: never | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null }> | null } };
 
+export type GetInstrumentInterfacesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetInstrumentInterfacesQuery = { __typename?: 'Query', instrumentInterfaces: Array<{ __typename?: 'InstrumentInterfaceType', uid: string, laboratoryInstrumentUid: string, isActive: boolean, host?: string | null, port?: string | null, autoReconnect: boolean, protocolType?: string | null, socketType?: string | null, connection?: string | null, transmission?: string | null, syncUnits: boolean, driverMapping?: never | null, laboratoryInstrument?: { __typename?: 'LaboratoryInstrumentType', uid: string, labName?: string | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null } | null }> };
+
 export type GetAllMethodsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1635,6 +1674,13 @@ export type GetAllUnitsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllUnitsQuery = { __typename?: 'Query', unitAll: Array<{ __typename?: 'UnitType', uid: string, name: string }> };
+
+export type ParseMessageQueryVariables = Exact<{
+  rawMessage: Scalars['String']['input'];
+}>;
+
+
+export type ParseMessageQuery = { __typename?: 'Query', parseMessage: { __typename?: 'ParseMessageResult', success: boolean, parsedMessage?: never | null, error?: string | null } };
 
 export type AddHazardMutationVariables = Exact<{
   payload: HazardInputType;
@@ -1848,6 +1894,21 @@ export type GetAllStockAdjustmentsQueryVariables = Exact<{
 
 
 export type GetAllStockAdjustmentsQuery = { __typename?: 'Query', stockAdjustmentAll: { __typename?: 'StockAdjustmentCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'StockAdjustmentType', uid: string, productUid?: string | null, adjustmentType?: string | null, adjust?: number | null, adjustmentDate?: string | null, remarks?: string | null, adjustmentByUid?: string | null, createdAt?: string | null, createdByUid?: string | null, updatedAt?: string | null, updatedByUid?: string | null, product?: { __typename?: 'StockItemVariantType', name: string } | null, adjustmentBy?: { __typename?: 'UserType', firstName?: string | null, lastName?: string | null } | null }> | null } };
+
+export type ParseAnalyserMessageMutationVariables = Exact<{
+  message: Scalars['String']['input'];
+}>;
+
+
+export type ParseAnalyserMessageMutation = { __typename?: 'Mutation', parseAnalyserMessage: { __typename: 'AnalyzerParsedMessageType', message: never, seperators: never } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type ExtractAnalyserMessageMutationVariables = Exact<{
+  message: Scalars['String']['input'];
+  driver: Scalars['JSONScalar']['input'];
+}>;
+
+
+export type ExtractAnalyserMessageMutation = { __typename?: 'Mutation', extractAnalyserMessage: { __typename: 'AnalyzerExtractedMessageType', message: never } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type AddAbxGuidelineMutationVariables = Exact<{
   payload: AbxGuidelineInputType;

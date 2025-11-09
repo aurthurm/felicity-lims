@@ -136,6 +136,52 @@ query getVoucherCodes ($voucherUid: String!) {
     }
 }
 
+query SearchBills($pageSize: Int!, $afterCursor: String, $beforeCursor: String, $text: String, $isActive: Boolean, $partial: Boolean, $clientUid: String, $sortBy: [String!]) {
+    searchBills(pageSize: $pageSize, afterCursor: $afterCursor, beforeCursor: $beforeCursor, text: $text, isActive: $isActive, partial: $partial, clientUid: $clientUid, sortBy: $sortBy) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            billId
+            patientUid
+            clientUid
+            client {
+                name
+            }
+            isActive
+            toConfirm
+            partial
+            totalCharged
+            totalPaid
+            orders {
+                uid
+                requestId
+                clientRequestId
+                patientUid
+                patient {
+                    firstName
+                    lastName
+                    clientPatientId
+                    gender
+                    dateOfBirth
+                }
+                samples {
+                    uid
+                    sampleId
+                    status
+                }
+            }
+            createdAt
+            updatedAt 
+        }
+    }
+}
+
 query getBillsForPatient($patientUid: String!) {
     billsForPatient(patientUid: $patientUid) {
         uid
@@ -237,6 +283,37 @@ query getOrdersByBillUid($uid: String!) {
                 uid
                 name
             }
+        }
+    }
+}
+
+query getBillingOverviewMetrics {
+    billingOverviewMetrics {
+        keyMetrics {
+            totalCharged
+            totalPaid
+            outstandingBalance
+            collectionRate
+        }
+        volumeMetrics {
+            activeBills
+            inactiveBills
+            pendingConfirmation
+            partialBills
+            completeBills
+        }
+        transactionMetrics {
+            successfulTransactions
+            failedTransactions
+            pendingTransactions
+            totalTransactionAmount
+        }
+        discountMetrics {
+            totalDiscountAmount
+            activeVouchers
+            totalVouchers
+            voucherRedemptionRate
+            vouchersWithAvailableUsage
         }
     }
 }

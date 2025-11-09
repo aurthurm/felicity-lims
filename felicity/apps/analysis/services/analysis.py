@@ -394,7 +394,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         analysis, referred = await self.get_referred_analyses(uid)
         return len(analysis) != len(referred) and len(referred) > 0
 
-    async def receive(self, uid: str, received_by):
+    async def receive(self, uid: str, received_by, commit: bool = True, session: AsyncSession | None = None) -> Sample:
         sample = await self.get(uid=uid)
         sample.status = SampleState.RECEIVED
         sample.received_by_uid = received_by.uid
@@ -402,7 +402,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         if not sample.date_received:
             sample.date_received = timenow_dt()
 
-        saved_sample = await super().save(sample)
+        saved_sample = await super().save(sample, commit=commit, session=session)
         await self.streamer_service.stream(
             saved_sample, received_by, "received", NotificationObject.SAMPLE
         )

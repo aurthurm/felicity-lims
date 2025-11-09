@@ -360,7 +360,8 @@ async def create_analysis_request(
         await ReflexEngineService().set_reflex_actions(analyses)
 
     # auto_bill=True during sample registration
-    await bill_order(analysis_request, auto_bill=True)
+    await bill_order(analysis_request.uid, auto_bill=True)
+    #
     _ar = analysis_request.marshal_simple()
     del _ar["client"]
     return a_types.AnalysisRequestWithSamples(**_ar)

@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table, Integer, UniqueConstraint, \
-    event, JSON
-from sqlalchemy.dialects.mysql import LONGTEXT
+    event, TEXT
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import LabScopedEntity, BaseEntity, MaybeLabScopedEntity
@@ -67,7 +67,7 @@ class Instrument(BaseEntity):
         "Method", secondary=method_instrument, back_populates="instruments"
     )
     # JSON driver for mapping ASTM/HL7 message fields to required data
-    driver_mapping = Column(JSON, nullable=True, default=None)  # Generic driver template
+    driver_mapping = Column(JSONB, nullable=True, default=None)  # Generic driver template
 
 
 class LaboratoryInstrument(MaybeLabScopedEntity):
@@ -82,8 +82,18 @@ class LaboratoryInstrument(MaybeLabScopedEntity):
     date_commissioned = Column(DateTime, nullable=True)
     date_decommissioned = Column(DateTime, nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
-    # interfacing (TCP/IP only)
-    is_interfacing = Column(Boolean(), nullable=False, default=False)
+
+
+class InstrumentInterface(MaybeLabScopedEntity):
+    """Laboratory Instrument"""
+
+    __tablename__ = "instrument_interface"
+
+    laboratory_instrument_uid = Column(
+        String, ForeignKey("laboratory_instrument.uid"), nullable=False
+    )
+    laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
+    is_active = Column(Boolean(), nullable=False, default=False)
     host = Column(String(100), nullable=True)  # ip address
     port = Column(Integer, nullable=True)  # tcp port
     auto_reconnect = Column(Boolean, default=True)  # auto reconnect on connection lost
@@ -95,7 +105,7 @@ class LaboratoryInstrument(MaybeLabScopedEntity):
     # other
     sync_units = Column(Boolean, default=True)  # sync units from instrument to LIMS
     # JSON driver for mapping ASTM/HL7 message fields (lab-specific override)
-    driver_mapping = Column(JSON, nullable=True, default=None)  # Lab-specific override of generic driver
+    driver_mapping = Column(JSONB, nullable=True, default=None)  # Lab-specific override of generic driver
 
 
 class InstrumentCalibration(LabScopedEntity):
@@ -212,9 +222,9 @@ class InstrumentCompetence(LabScopedEntity):
 class InstrumentRawData(MaybeLabScopedEntity):
     __tablename__ = "instrument_raw_data"
 
-    content = Column(LONGTEXT, nullable=False)
+    content = Column(TEXT, nullable=False)
     laboratory_instrument_uid = Column(
-        Integer,
+        String,
         ForeignKey("laboratory_instrument.uid", ondelete="CASCADE"),
         nullable=True
     )
@@ -224,7 +234,7 @@ class InstrumentRawData(MaybeLabScopedEntity):
     is_transformed = Column(Boolean, default=False, nullable=False)
     transformation_attempts = Column(Integer, default=0, nullable=False)
     last_transformation_attempt = Column(DateTime, nullable=True)
-    transformation_error = Column(LONGTEXT, nullable=True)
+    transformation_error = Column(TEXT, nullable=True)
 
 
 class InstrumentResultExclusions(BaseEntity):

@@ -5,7 +5,6 @@ import strawberry  # noqa
 from strawberry.permission import PermissionExtension
 
 from felicity.api.gql.analysis.types import AnalysisRequestType
-from felicity.apps.analysis.services.analysis import AnalysisRequestService
 from felicity.api.gql.billing import types
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import BytesScalar, PageInfo
@@ -23,6 +22,7 @@ from felicity.apps.billing.services import (
 from felicity.apps.guard import FAction, FObject
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.utils import has_value_or_is_truthy
+from decimal import Decimal
 
 
 @strawberry.type
@@ -32,7 +32,7 @@ class BillingQuery:
             permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
         )]
     )
-    async def bills(
+    async def search_bills(
             self,
             info,
             page_size: int | None = None,
@@ -93,7 +93,7 @@ class BillingQuery:
     )
     async def orders_by_bill_uid(self, info, uid: str) -> list[AnalysisRequestType]:
         bill = await TestBillService().get(uid=uid, is_active=True, related=["orders"])
-        return bill.orders
+        return bill.orders if hasattr(bill, "orders") else []
 
     @strawberry.field(
         extensions=[PermissionExtension(
@@ -232,3 +232,57 @@ class BillingQuery:
             self, info, voucher_uid: str
     ) -> Optional[list[types.VoucherCodeType]]:
         return await VoucherCodeService().get_all(voucher_uid=voucher_uid)
+
+    @strawberry.field(
+        extensions=[PermissionExtension(
+            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.BILLING)]
+        )]
+    )
+    async def billing_overview_metrics(self, info) -> types.BillingOverviewMetrics:
+        """Get complete billing overview metrics"""
+        bill_service = TestBillService()
+        voucher_service = VoucherService()
+
+        # Get all metrics
+        key_metrics_data = await bill_service.get_key_metrics()
+        volume_metrics_data = await bill_service.get_volume_metrics()
+        transaction_metrics_data = await bill_service.get_transaction_metrics()
+        discount_metrics_data = await voucher_service.get_discount_metrics()
+
+        # Create metric objects
+        key_metrics = types.KeyMetrics(
+            total_charged=float(key_metrics_data["total_charged"]),
+            total_paid=float(key_metrics_data["total_paid"]),
+            outstanding_balance=float(key_metrics_data["outstanding_balance"]),
+            collection_rate=round(key_metrics_data["collection_rate"], 2),
+        )
+
+        volume_metrics = types.VolumeMetrics(
+            active_bills=volume_metrics_data["active_bills"],
+            inactive_bills=volume_metrics_data["inactive_bills"],
+            pending_confirmation=volume_metrics_data["pending_confirmation"],
+            partial_bills=volume_metrics_data["partial_bills"],
+            complete_bills=volume_metrics_data["complete_bills"],
+        )
+
+        transaction_metrics = types.TransactionMetrics(
+            successful_transactions=transaction_metrics_data["successful_transactions"],
+            failed_transactions=transaction_metrics_data["failed_transactions"],
+            pending_transactions=transaction_metrics_data["pending_transactions"],
+            total_transaction_amount=float(transaction_metrics_data["total_transaction_amount"]),
+        )
+
+        discount_metrics = types.DiscountMetrics(
+            total_discount_amount=float(discount_metrics_data["total_discount_amount"]),
+            active_vouchers=discount_metrics_data["active_vouchers"],
+            total_vouchers=discount_metrics_data["total_vouchers"],
+            voucher_redemption_rate=round(discount_metrics_data["voucher_redemption_rate"], 2),
+            vouchers_with_available_usage=discount_metrics_data["vouchers_with_available_usage"],
+        )
+
+        return types.BillingOverviewMetrics(
+            key_metrics=key_metrics,
+            volume_metrics=volume_metrics,
+            transaction_metrics=transaction_metrics,
+            discount_metrics=discount_metrics,
+        )

@@ -15,7 +15,9 @@ from felicity.api.gql.instrument.types import (
     LaboratoryInstrumentType,
     MethodCursorPage,
     MethodEdge,
-    MethodType, InstrumentResultExclusionsType, InstrumentResultTranslationType,
+    MethodType, InstrumentResultExclusionsType, InstrumentResultTranslationType, InstrumentRawDataType,
+    InstrumentInterfaceType,
+    ParseMessageResult,
 )
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
@@ -23,7 +25,8 @@ from felicity.apps.instrument.services import (
     InstrumentService,
     InstrumentTypeService,
     LaboratoryInstrumentService,
-    MethodService, InstrumentResultExclusionsService, InstrumentResultTranslationService,
+    MethodService, InstrumentResultExclusionsService, InstrumentResultTranslationService, InstrumentRawDataService,
+    InstrumentInterfaceService,
 )
 from felicity.utils import has_value_or_is_truthy
 
@@ -230,9 +233,46 @@ class InstrumentQuery:
         return await MethodService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def instrument_interfaces(self, info, ) -> list[InstrumentInterfaceType]:
+        return await InstrumentInterfaceService().all()
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def instrument_raw_data(self, info, instrument_uid: str) -> list[InstrumentRawDataType]:
+        return await InstrumentRawDataService().get_all(instrument_uid=instrument_uid, limit=30)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_result_exclusions(self, info, instrument_uid: str) -> list[InstrumentResultExclusionsType]:
         return await InstrumentResultExclusionsService().get_all(instrument_uid=instrument_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_result_translations(self, info, instrument_uid: str) -> list[InstrumentResultTranslationType]:
         return await InstrumentResultTranslationService().get_all(instrument_uid=instrument_uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def parse_message(self, info, raw_message: str) -> ParseMessageResult:
+        """
+        Parse raw ASTM/HL7 message into structured JSON without applying driver.
+        Used by frontend for interactive mapping.
+        """
+        if not raw_message or not raw_message.strip():
+            return ParseMessageResult(
+                success=False,
+                parsed_message=None,
+                error="Raw message is empty"
+            )
+
+        try:
+            from felicity.apps.iol.analyzer.services.transformer import MessageTransformer
+            transformer = MessageTransformer()
+            parsed = transformer.parse_message(raw_message)
+            return ParseMessageResult(
+                success=True,
+                parsed_message=parsed,
+                error=None
+            )
+        except Exception as e:
+            return ParseMessageResult(
+                success=False,
+                parsed_message=None,
+                error=f"Failed to parse message: {str(e)}"
+            )

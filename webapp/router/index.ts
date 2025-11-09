@@ -43,6 +43,14 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/billing',
+        name: guards.pages.BILLING,
+        component: () => import('@/views/billing/Billing.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/patients',
         name: guards.pages.PATIENTS,
         component: () => import('@/views/patient/Patients.vue'),
@@ -224,6 +232,9 @@ function hasAccess(page: any) {
         case guards.pages.DASHBOARD:
             return guards.canAccessPage(guards.pages.DASHBOARD);
 
+        case guards.pages.BILLING:
+            return guards.canAccessPage(guards.pages.BILLING);
+
         case guards.pages.PATIENTS:
             return guards.canAccessPage(guards.pages.PATIENTS);
 
@@ -255,7 +266,7 @@ function hasAccess(page: any) {
             return guards.canAccessPage(guards.pages.SCHEMES);
 
         case guards.pages.DOCUMENT:
-            return true;
+            return guards.canAccessPage(guards.pages.DOCUMENT);
 
         case guards.pages.BIO_BANKING:
             return guards.canAccessPage(guards.pages.BIO_BANKING);
