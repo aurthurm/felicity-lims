@@ -147,7 +147,7 @@ class InstrumentInterfaceBase(BaseModel):
     laboratory_instrument: LaboratoryInstrument | None = None
     host: Optional[str] = None
     port: Optional[int] = None
-    auto_reconnect: bool
+    auto_reconnect: Optional[bool] = False
     protocol_type: Optional[str] = None
     socket_type: Optional[str] = None
     connection: Optional[str] = None

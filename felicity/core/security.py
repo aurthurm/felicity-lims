@@ -15,7 +15,7 @@ settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
 
 
 #  Passwords
@@ -29,7 +29,7 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-    subject: Union[str, Any], expires_delta: timedelta | None = None
+        subject: Union[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     if expires_delta:
         expire = timenow_dt() + expires_delta
@@ -56,7 +56,7 @@ def create_access_token_from_refresh(refresh: str) -> str | None:
 
 
 def create_refresh_token(
-    subject: Union[str, Any], expires_delta: timedelta | None = None
+        subject: Union[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     if expires_delta:
         expires = timenow_dt() + expires_delta
@@ -96,7 +96,7 @@ def verify_password_reset_token(token: str) -> str | None:
 
 
 def password_similarity(
-    username: str, password: str, max_similarity: float = 0.7
+        username: str, password: str, max_similarity: float = 0.7
 ) -> tuple[bool, float]:
     """
     check is the similarity between the password and username
@@ -144,12 +144,12 @@ def password_check(password: str, username: str) -> dict:
 
     # overall result
     password_ok = not (
-        length_error
-        or digit_error
-        or uppercase_error
-        or lowercase_error
-        or symbol_error
-        or similar_error
+            length_error
+            or digit_error
+            or uppercase_error
+            or lowercase_error
+            or symbol_error
+            or similar_error
     )
     message = ""
     if not password_ok:

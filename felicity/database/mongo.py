@@ -24,10 +24,10 @@ class MongoCollection(StrEnum):
 
 class MongoService:
     def __init__(self) -> None:
-        self.db = client.felicity
+        self.db = client.felicity_lims
 
     async def create(
-        self, collection_name: MongoCollection, data: dict
+            self, collection_name: MongoCollection, data: dict
     ) -> Optional[dict]:
         logger.info(f"mongodb -- create:{collection_name} --")
         collection = self.db.get_collection(collection_name)
@@ -35,7 +35,7 @@ class MongoService:
         return await collection.find_one({"_id": created.inserted_id})
 
     async def upsert(
-        self, collection_name: MongoCollection, uid: str, data: dict
+            self, collection_name: MongoCollection, uid: str, data: dict
     ) -> Optional[dict]:
         logger.info(f"mongodb -- upsert:{collection_name} --")
         collection = self.db.get_collection(collection_name)
@@ -53,11 +53,11 @@ class MongoService:
         return item
 
     async def search(
-        self,
-        collection_name: MongoCollection,
-        filters: dict[str, Any],
-        projection: dict[str, int] | None = None,
-        limit: int = 100,
+            self,
+            collection_name: MongoCollection,
+            filters: dict[str, Any],
+            projection: dict[str, int] | None = None,
+            limit: int = 100,
     ) -> list[dict[str, Any]]:
         """
         Search documents in MongoDB based on user-defined filters.
@@ -76,7 +76,7 @@ class MongoService:
         return results
 
     async def update(
-        self, collection_name: MongoCollection, uid: str, data: dict
+            self, collection_name: MongoCollection, uid: str, data: dict
     ) -> Optional[bool]:
         logger.info(f"mongodb -- update:{collection_name} --")
         collection = self.db.get_collection(collection_name)

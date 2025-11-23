@@ -3,6 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, Response
 
+from felicity.core.dtz import timenow_dt
 from felicity.version import felicity_version
 from felicity.version.version import _cache_duration
 
@@ -28,4 +29,17 @@ async def updates(response: Response) -> Any:
     response.headers["Cache-Control"] = (
         f"max-age={int(_cache_duration.total_seconds())}"
     )
-    return await felicity_version.check_github_version()
+    try:
+        return await felicity_version.check_github_version()
+    except Exception as e:
+        logger.warning(f"Version check failed: {str(e)}")
+        return {
+            "current_version": felicity_version.version,
+            "latest_version": felicity_version.version,
+            "update_available": False,
+            "message": "Version check unavailable",
+            "error": str(e) if logger.level == logging.DEBUG else None,
+            "release_notes": "",
+            "release_url": "",
+            "last_checked": timenow_dt().isoformat(),
+        }

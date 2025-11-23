@@ -1,23 +1,56 @@
-FROM node:18.16.0-alpine AS webapp
-RUN apk update && apk add bash
-RUN npm i -g pnpm
-RUN mkdir -p /app
+# syntax=docker/dockerfile:1.4
+FROM node:18.20.4-alpine AS webapp
+
+# Install system dependencies in one layer
+RUN apk update && \
+    apk add --no-cache bash && \
+    npm i -g pnpm && \
+    mkdir -p /app && \
+    rm -rf /var/cache/apk/*
+
 WORKDIR /app
-COPY ./package.json /app
-COPY ./pnpm-lock.yaml /app
-RUN pnpm install
-COPY ./webapp /app/webapp
-COPY ./index.html /app
-COPY ./public /app/public
-COPY ./*.js /app
-COPY ./*.json /app
+
+# Copy dependency files first (better layer caching)
+COPY package.json pnpm-lock.yaml ./
+
+# Use BuildKit cache mount for faster pnpm installs
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install
+
+# Copy application code (changes more frequently)
+COPY index.html ./
+COPY public ./public
+COPY webapp ./webapp
+COPY *.js *.json ./
 
 FROM tiangolo/uvicorn-gunicorn:python3.11 AS webapi
 LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
-RUN apt-get update && apt-get install -y git libpq-dev gcc
-COPY ./requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        libpq-dev \
+        libcairo2-dev \
+        gcc \
+        g++ \
+        poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-COPY . /app
-RUN pip install -e .
+
+# Copy and install Python dependencies first (better layer caching)
+COPY requirements.txt /tmp/requirements.txt
+
+# Use BuildKit cache mount for pip packages
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip wheel setuptools \
+    && pip install --upgrade --no-cache-dir -r /tmp/requirements.txt
+
+# Copy application code (changes more frequently)
+COPY . ./app
+
+# Install app in editable mode
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -e .
+
 ENV PYTHONPATH=/app

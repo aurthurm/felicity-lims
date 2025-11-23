@@ -113,7 +113,7 @@ services:
       LABEL_mg: Felicity Mongo
       # Connects to the native MongoDB installation on the host, using env vars for credentials
       URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@host.docker.internal:27017/
-      DATABASE_mg: felicity
+      DATABASE_mg: felicity_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo
       READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
     networks:

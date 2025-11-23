@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Dict
 
 import httpx
@@ -9,6 +9,7 @@ from packaging import version
 __version__ = "0.2.2"
 
 from felicity.core.config import settings
+from felicity.core.dtz import timenow_dt
 
 _cache_duration = timedelta(hours=1)
 router = APIRouter()
@@ -30,10 +31,9 @@ class FelicityVersion:
 
     async def _fetch_github_version(self) -> Dict:
         url = f"https://api.github.com/repos/{self._owner}/{self._repo}/releases/latest"
-        headers = {
-            "Accept": "application/vnd.github.v3+json",
-            "Authorization": f"Bearer {self._pat}",
-        }
+        headers = {"Accept": "application/vnd.github.v3+json"}
+        if self._pat:
+            headers["Authorization"] = f"Bearer {self._pat}"
 
         async with httpx.AsyncClient() as client:
             try:
@@ -45,17 +45,22 @@ class FelicityVersion:
                     status_code=504, detail="GitHub API request timed out"
                 )
             except httpx.HTTPError as e:
-                if e.response.status_code == 403:
-                    raise HTTPException(
-                        status_code=429, detail="GitHub API rate limit exceeded"
-                    )
+                if e.response:  # noqa
+                    if e.response.status_code == 403:  # noqa
+                        raise HTTPException(
+                            status_code=429, detail="GitHub API rate limit exceeded"
+                        )
+                    elif e.response.status_code == 401:  # noqa
+                        raise HTTPException(status_code=503, detail="Version check unavailable (GitHub auth required)")
+                    else:
+                        ...
                 raise HTTPException(
                     status_code=502, detail=f"GitHub API error: {str(e)}"
                 )
 
     async def check_github_version(self) -> Dict:
         async with self._lock:
-            now = datetime.now()
+            now = timenow_dt()
 
             # Return cached response if valid
             if self._last_check and (now - self._last_check) < self._cache_duration:

@@ -17,7 +17,7 @@ class SupervisorSystemUpgrade:
             "/path/to/felicity",
         )
         self.backup_dir = Path("/path/to/backups")
-        self.db_url = "postgresql://user:pass@localhost/felicity"
+        self.db_url = "postgresql://user:pass@localhost/felicity_lims"
         self.alembic_ini_path = "/path/to/alembic.ini"
         self._upgrade_lock = asyncio.Lock()
         self.supervisor = xmlrpc.client.ServerProxy("http://localhost:9001/RPC2")
@@ -131,7 +131,7 @@ password=your_secure_password
 
 class DockerSystemUpgrade:
     def __init__(
-        self, container_name: str, repo_path: str, backup_dir: str, db_url: str
+            self, container_name: str, repo_path: str, backup_dir: str, db_url: str
     ):
         self.container_name = container_name
         self.repo_path = Path(repo_path)
@@ -180,7 +180,6 @@ class DockerSystemUpgrade:
             if backup_path:
                 await self.restore_backup(backup_path)
             raise
-
 
 #
 #

@@ -1,5 +1,7 @@
 # Git and version control
 .git
+.gitignore
+.gitattributes
 
 # Python cache and bytecode
 __pycache__
@@ -10,6 +12,8 @@ __pycache__
 **/*.pyc
 *.pyo
 *.pyd
+.pytest_cache
+.ruff_cache
 
 # Database and log files
 *.db
@@ -18,6 +22,7 @@ __pycache__
 
 # Node.js build artifacts
 node_modules
+.pnpm-store
 
 # Build artifacts
 dist
@@ -25,6 +30,10 @@ build
 
 # Environment and virtual environment files
 .env
+.env.*
+venv/
+env/
+ENV/
 
 # Python egg and packaging files
 *.egg-info
@@ -33,6 +42,8 @@ Felicity_LIMS.egg-info
 # Test files
 tests
 **/tests/
+*.test.js
+*.test.ts
 
 # Media and log files that shouldn't be part of the image
 media
@@ -43,9 +54,40 @@ logs
 .vscode
 **/.vscode/
 
+.idea
+*.swp
+*.swo
+*~
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
 # Python type checking and Jupyter checkpoint files
 .pytype
 .ipynb_checkpoints
+
+# Documentation files (not needed in image)
+*.md
+docs/
+claudedocs/
+
+# Docker files (not needed in image)
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+.buildkitignore
+docker-bake.hcl
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+
+# Coverage and profiling
+.coverage
+htmlcov/
+*.cover
 
 # Unused Seeds files yet
 felicity/lims/seeds/data/amr-r

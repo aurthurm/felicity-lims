@@ -15,6 +15,9 @@ from felicity.core.tenant_context import TenantContext, set_tenant_context
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
+# Even if not authenticated always allow connection
+ALWAYS_ALLOW_CONNECTION = False
+
 
 class ConnectionRejectionError(Exception):
     def __init__(self, payload=None):
@@ -42,7 +45,11 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
 
         if not isinstance(payload, dict):
             logger.warning("No valid payload in connection_init message")
-            await self.close(4401, "Authentication required")
+            if ALWAYS_ALLOW_CONNECTION:
+                ## Accept connection anyway - let subscriptions handle auth
+                await super().handle_connection_init(message)
+            else:
+                await self.close(4401, "Authentication required")
             return
 
         try:
@@ -51,7 +58,12 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
 
             if not tenant_context or not tenant_context.is_authenticated:
                 logger.warning("Unauthenticated WebSocket connection attempt")
-                await self.close(4401, "Only accessible to authenticated users")
+                if ALWAYS_ALLOW_CONNECTION:
+                    logger.info("WebSocket connection without authentication - subscriptions will require auth")
+                    # Still accept the connection, auth will be enforced at subscription level
+                    await super().handle_connection_init(message)
+                else:
+                    await self.close(4401, "Only accessible to authenticated users")
                 return
 
             # Set the tenant context for this WebSocket connection
@@ -70,7 +82,12 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
 
         except Exception as e:
             logger.error(f"Error during WebSocket authentication: {str(e)}")
-            await self.close(4500, "Authentication failed")
+            if ALWAYS_ALLOW_CONNECTION:
+                logger.warning(f"Error during WebSocket authentication (non-fatal): {str(e)}")
+                # Still allow connection - auth enforced at subscription level
+                await super().handle_connection_init(message)
+            else:
+                await self.close(4500, "Authentication failed")
             return
 
     async def handle_request(self):
@@ -80,7 +97,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
         return await super().handle_request()
 
     async def _extract_websocket_context(
-        self, payload: Dict
+            self, payload: Dict
     ) -> Optional[TenantContext]:
         """
         Extract tenant context from WebSocket connection payload.
@@ -187,7 +204,7 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
         return await super().handle_request()
 
     async def _extract_websocket_context(
-        self, payload: Dict
+            self, payload: Dict
     ) -> Optional[TenantContext]:
         """Same context extraction logic as the transport WS handler"""
 

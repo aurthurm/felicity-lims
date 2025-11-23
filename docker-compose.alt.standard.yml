@@ -240,7 +240,7 @@ services:
       READONLY_pg: 1
       LABEL_mg: Felicity Mongo
       URL_mg: mongodb://felicity:felicity@felicity-mongo:27017/ # Consider using ${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD} from .env
-      DATABASE_mg: felicity
+      DATABASE_mg: felicity_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo
       READONLY_mg: 1
     networks:

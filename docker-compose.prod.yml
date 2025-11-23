@@ -186,7 +186,7 @@ services:
       READONLY_pg: 1 # Set PostgreSQL connection as read-only in DbGate
       LABEL_mg: Felicity Mongo
       URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@felicity-mongo:27017/ # Connects to containerized Mongo service by name
-      DATABASE_mg: felicity
+      DATABASE_mg: felicity_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo
       READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
     networks:
