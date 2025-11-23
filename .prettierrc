@@ -16,3 +16,6 @@ overrides:
   - files: "*.py"
     options:
       tabWidth: 4
+    
+plugins: 
+  - prettier-plugin-tailwindcss
