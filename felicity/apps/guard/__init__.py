@@ -30,14 +30,19 @@ async def has_perm(user_uid: str, action: FAction | str, target: FObject):
     Returns:
         bool: True if the user has permission, False otherwise
     """
-    if not user_uid: return False
+    if not user_uid:
+        return False
     permissions = await _get_user_permissions(user_uid)
-    if len(permissions) == 0: return False
+    if len(permissions) == 0:
+        return False
 
-    found = list(filter(
-        lambda p: p.action.lower() == action.lower() and p.target.lower() == target.lower(),
-        permissions
-    ))
+    found = list(
+        filter(
+            lambda p: p.action.lower() == action.lower()
+            and p.target.lower() == target.lower(),
+            permissions,
+        )
+    )
     return len(found) > 0
 
 
@@ -52,9 +57,11 @@ async def has_group(user_uid: str, group: FGroup):
     Returns:
         bool: True if the user has permission, False otherwise
     """
-    if not user_uid or not group: return False
+    if not user_uid or not group:
+        return False
     groups = await _get_user_groups(user_uid)
-    if len(groups) == 0: return False
+    if len(groups) == 0:
+        return False
 
     found = list(filter(lambda g: g.name.lower() == group.lower(), groups))
     return len(found) > 0

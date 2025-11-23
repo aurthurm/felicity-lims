@@ -1,5 +1,5 @@
 import { toRefs, reactive } from 'vue';
-import axios from "@/composables/axios";
+import axios from '@/composables/axios';
 
 import useNotifyToast from './alert_toast';
 import type { ReportListingType } from '@/types/report';
@@ -38,16 +38,13 @@ export default function useAnalyticsComposable() {
 
     const deleteReport = async (report: ReportListingType): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'Are you sure you want to delete this report?',
-                'Delete Report'
-            );
+            const result = await swalConfirm('Are you sure you want to delete this report?', 'Delete Report');
 
             if (result.isConfirmed) {
                 const response = await axios.delete(`reports/${report.uid}`);
                 const data = response.data;
                 const index = state.reports.findIndex(x => x.uid === data.uid);
-                
+
                 if (index > -1) {
                     state.reports.splice(index, 1);
                     toastSuccess(data.message || 'Report deleted successfully');

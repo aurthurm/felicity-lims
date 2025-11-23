@@ -1,9 +1,15 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { AddStockCategoryDocument, AddStockCategoryMutation, AddStockCategoryMutationVariables,
-  EditStockCategoryDocument, EditStockCategoryMutation, EditStockCategoryMutationVariables } from '@/graphql/operations/inventory.mutations';
+import {
+    AddStockCategoryDocument,
+    AddStockCategoryMutation,
+    AddStockCategoryMutationVariables,
+    EditStockCategoryDocument,
+    EditStockCategoryMutation,
+    EditStockCategoryMutationVariables,
+} from '@/graphql/operations/inventory.mutations';
 import { useInventoryStore } from '@/stores/inventory';
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import { StockCategoryInputType, StockCategoryType } from '@/types/gql';
 
 const StockCategory = defineComponent({
@@ -22,8 +28,11 @@ const StockCategory = defineComponent({
 
         function addStockCategory(): void {
             const payload = { ...form } as StockCategoryInputType;
-            withClientMutation<AddStockCategoryMutation, AddStockCategoryMutationVariables>(AddStockCategoryDocument, { payload }, 'createStockCategory')
-            .then(result => inventoryStore.addCategory(result));
+            withClientMutation<AddStockCategoryMutation, AddStockCategoryMutationVariables>(
+                AddStockCategoryDocument,
+                { payload },
+                'createStockCategory'
+            ).then(result => inventoryStore.addCategory(result));
         }
 
         function editStockCategory(): void {
@@ -31,10 +40,11 @@ const StockCategory = defineComponent({
                 name: form.name,
                 description: form.description,
             } as StockCategoryInputType;
-            withClientMutation<EditStockCategoryMutation, EditStockCategoryMutationVariables>(EditStockCategoryDocument, { uid: form.uid, payload }, 'updateStockCategory')
-            .then(result =>
-                inventoryStore.updateCategory(result)
-            );
+            withClientMutation<EditStockCategoryMutation, EditStockCategoryMutationVariables>(
+                EditStockCategoryDocument,
+                { uid: form.uid, payload },
+                'updateStockCategory'
+            ).then(result => inventoryStore.updateCategory(result));
         }
 
         function FormManager(create: boolean, obj: StockCategoryType | null): void {
@@ -88,7 +98,10 @@ const StockCategory = defineComponent({
                             </thead>
                             <tbody class="[&_tr:last-child]:border-0">
                                 {this.stockCategories.map(category => (
-                                    <tr key={category?.uid} class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                    <tr
+                                        key={category?.uid}
+                                        class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                                    >
                                         <td class="p-4 align-middle">{category?.name}</td>
                                         <td class="p-4 align-middle text-primary">{category?.description}</td>
                                         <td class="p-4 align-middle text-right">
@@ -111,7 +124,13 @@ const StockCategory = defineComponent({
                         {{
                             header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
                             body: () => (
-                                <form onSubmit={(e) => { e.preventDefault(); this.saveForm(); }} class="space-y-6">
+                                <form
+                                    onSubmit={e => {
+                                        e.preventDefault();
+                                        this.saveForm();
+                                    }}
+                                    class="space-y-6"
+                                >
                                     <div class="space-y-4">
                                         <div class="space-y-2">
                                             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -119,7 +138,7 @@ const StockCategory = defineComponent({
                                             </label>
                                             <input
                                                 value={this.form.name}
-                                                onChange={(e) => this.form.name = e.target.value}
+                                                onChange={e => (this.form.name = e.target.value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter category name..."
                                             />
@@ -130,7 +149,7 @@ const StockCategory = defineComponent({
                                             </label>
                                             <textarea
                                                 value={this.form.description}
-                                                onChange={(e) => this.form.description = e.target.value}
+                                                onChange={e => (this.form.description = e.target.value)}
                                                 class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter description..."
                                             />
@@ -145,7 +164,7 @@ const StockCategory = defineComponent({
                                         </button>
                                     </div>
                                 </form>
-                            )
+                            ),
                         }}
                     </fel-modal>
                 )}
@@ -155,4 +174,4 @@ const StockCategory = defineComponent({
 });
 
 export { StockCategory };
-export default StockCategory
+export default StockCategory;

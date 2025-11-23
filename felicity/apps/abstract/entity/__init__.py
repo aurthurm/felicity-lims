@@ -13,6 +13,7 @@ class BaseEntity(Base, Auditable, EventListenable):
 
 class LabScopedEntity(BaseEntity):
     """Base entity for models that are scoped to a specific laboratory"""
+
     __abstract__ = True
 
     @declared_attr
@@ -21,12 +22,15 @@ class LabScopedEntity(BaseEntity):
 
     @declared_attr
     def laboratory(self):
-        return relationship("Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin")
+        return relationship(
+            "Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin"
+        )
 
 
 class MaybeLabScopedEntity(BaseEntity):
     """Base entity for models that may be scoped to a specific laboratory (optional)
     If no laboratory_uid then its global"""
+
     __abstract__ = True
 
     @declared_attr
@@ -35,4 +39,6 @@ class MaybeLabScopedEntity(BaseEntity):
 
     @declared_attr
     def laboratory(self):
-        return relationship("Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin")
+        return relationship(
+            "Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin"
+        )

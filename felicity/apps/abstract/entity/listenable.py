@@ -109,5 +109,5 @@ class EventListenable:
             "uid": getattr(target, "uid"),
             "state_before": state_before,
             "state_after": state_after,
-            "extras": extras
+            "extras": extras,
         }

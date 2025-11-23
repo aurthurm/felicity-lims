@@ -1,16 +1,32 @@
 import { defineStore } from 'pinia';
 
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 
 import {
-    GetAllHazardsDocument, GetAllHazardsQuery, GetAllHazardsQueryVariables,
-    GetAllStockAdjustmentsDocument, GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables,
-    GetAllStockCategoriesDocument, GetAllStockCategoriesQuery, GetAllStockCategoriesQueryVariables,
-    GetAllStockItemsDocument, GetAllStockItemsQuery, GetAllStockItemsQueryVariables,
-    GetAllStockItemVariantsDocument, GetAllStockItemVariantsQuery, GetAllStockItemVariantsQueryVariables,
-    GetAllStockOrdersDocument, GetAllStockOrdersQuery, GetAllStockOrdersQueryVariables,
-    GetAllStockProductsDocument, GetAllStockProductsQuery, GetAllStockProductsQueryVariables,
-    GetAllStockUnitsDocument, GetAllStockUnitsQuery, GetAllStockUnitsQueryVariables,
+    GetAllHazardsDocument,
+    GetAllHazardsQuery,
+    GetAllHazardsQueryVariables,
+    GetAllStockAdjustmentsDocument,
+    GetAllStockAdjustmentsQuery,
+    GetAllStockAdjustmentsQueryVariables,
+    GetAllStockCategoriesDocument,
+    GetAllStockCategoriesQuery,
+    GetAllStockCategoriesQueryVariables,
+    GetAllStockItemsDocument,
+    GetAllStockItemsQuery,
+    GetAllStockItemsQueryVariables,
+    GetAllStockItemVariantsDocument,
+    GetAllStockItemVariantsQuery,
+    GetAllStockItemVariantsQueryVariables,
+    GetAllStockOrdersDocument,
+    GetAllStockOrdersQuery,
+    GetAllStockOrdersQueryVariables,
+    GetAllStockProductsDocument,
+    GetAllStockProductsQuery,
+    GetAllStockProductsQueryVariables,
+    GetAllStockUnitsDocument,
+    GetAllStockUnitsQuery,
+    GetAllStockUnitsQueryVariables,
 } from '@/graphql/operations/inventory.queries';
 
 import {
@@ -21,7 +37,7 @@ import {
     StockItemVariantType,
     StockOrderType,
     StockAdjustmentType,
-    PageInfo
+    PageInfo,
 } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
@@ -108,11 +124,11 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingHazards = true;
                 const result = await withClientQuery<GetAllHazardsQuery, GetAllHazardsQueryVariables>(
-                    GetAllHazardsDocument, 
-                    {}, 
+                    GetAllHazardsDocument,
+                    {},
                     'hazardAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.hazards = result as HazardType[];
                 } else {
@@ -129,7 +145,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid hazard payload:', payload);
                 return;
             }
-            
+
             this.hazards.unshift(payload);
         },
         updateHazard(payload: HazardType): void {
@@ -137,7 +153,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid hazard payload:', payload);
                 return;
             }
-            
+
             const index = this.hazards.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.hazards[index] = payload;
@@ -149,11 +165,11 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingCategories = true;
                 const result = await withClientQuery<GetAllStockCategoriesQuery, GetAllStockCategoriesQueryVariables>(
-                    GetAllStockCategoriesDocument, 
-                    {}, 
+                    GetAllStockCategoriesDocument,
+                    {},
                     'stockCategoryAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.categories = result as StockCategoryType[];
                 } else {
@@ -170,7 +186,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid category payload:', payload);
                 return;
             }
-            
+
             this.categories.unshift(payload);
         },
         updateCategory(payload: StockCategoryType): void {
@@ -178,7 +194,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid category payload:', payload);
                 return;
             }
-            
+
             const index = this.categories.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.categories[index] = payload;
@@ -190,11 +206,11 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingUnits = true;
                 const result = await withClientQuery<GetAllStockUnitsQuery, GetAllStockUnitsQueryVariables>(
-                    GetAllStockUnitsDocument, 
-                    {}, 
+                    GetAllStockUnitsDocument,
+                    {},
                     'stockUnitAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.units = result as StockUnitType[];
                 } else {
@@ -211,7 +227,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid unit payload:', payload);
                 return;
             }
-            
+
             this.units.unshift(payload);
         },
         updateUnit(payload: StockUnitType): void {
@@ -219,7 +235,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid unit payload:', payload);
                 return;
             }
-            
+
             const index = this.units.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.units[index] = payload;
@@ -231,11 +247,11 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingProducts = true;
                 const result = await withClientQuery<GetAllStockProductsQuery, GetAllStockProductsQueryVariables>(
-                    GetAllStockProductsDocument, 
-                    params, 
+                    GetAllStockProductsDocument,
+                    params,
                     'stockProductAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.products = result.items as StockItemVariantType[];
                     this.productsPaging.totalCount = result.totalCount;
@@ -254,7 +270,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid product payload:', payload);
                 return;
             }
-            
+
             this.products.unshift(payload);
         },
         updateProduct(payload: StockItemVariantType): void {
@@ -262,7 +278,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid product payload:', payload);
                 return;
             }
-            
+
             const index = this.products.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 const old = this.products[index];
@@ -275,11 +291,11 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingItems = true;
                 const result = await withClientQuery<GetAllStockItemsQuery, GetAllStockItemsQueryVariables>(
-                    GetAllStockItemsDocument, 
-                    params, 
+                    GetAllStockItemsDocument,
+                    params,
                     'stockItemAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.stockItems = result.items || [];
                     this.stockItemsPaging.totalCount = result.totalCount;
@@ -298,7 +314,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock item payload:', payload);
                 return;
             }
-            
+
             this.stockItems.unshift(payload);
         },
         updateItem(payload: StockItemType): void {
@@ -306,7 +322,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock item payload:', payload);
                 return;
             }
-            
+
             const index = this.stockItems.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.stockItems[index] = payload;
@@ -317,14 +333,14 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock item UID provided to fetchItemVariants');
                 return;
             }
-            
+
             try {
                 const result = await withClientQuery<GetAllStockItemVariantsQuery, GetAllStockItemVariantsQueryVariables>(
-                    GetAllStockItemVariantsDocument, 
-                    { stockItemUid }, 
+                    GetAllStockItemVariantsDocument,
+                    { stockItemUid },
                     'stockItemVariants'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.stockItems.forEach(item => {
                         if (item.uid === stockItemUid) {
@@ -343,7 +359,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock item variant payload:', payload);
                 return;
             }
-            
+
             this.stockItems.forEach(item => {
                 if (item.uid === payload.stockItemUid) {
                     if (!item.variants) {
@@ -358,7 +374,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock item variant payload:', payload);
                 return;
             }
-            
+
             this.stockItems.forEach(item => {
                 if (item.uid === payload.stockItemUid && item.variants) {
                     const index = item.variants.findIndex(v => v.uid === payload.uid);
@@ -374,13 +390,13 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingStockOrders = true;
                 this.stockOrders = [];
-                
+
                 const result = await withClientQuery<GetAllStockOrdersQuery, GetAllStockOrdersQueryVariables>(
-                    GetAllStockOrdersDocument, 
-                    params, 
+                    GetAllStockOrdersDocument,
+                    params,
                     'stockOrderAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.stockOrders = result.items as StockOrderType[];
                     this.stockOrdersPaging.totalCount = result.totalCount;
@@ -399,7 +415,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock order payload:', payload);
                 return;
             }
-            
+
             this.stockOrders.unshift(payload);
         },
         updateStockOrder(payload: StockOrderType): void {
@@ -407,7 +423,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock order payload:', payload);
                 return;
             }
-            
+
             const index = this.stockOrders.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 const old = this.stockOrders[index];
@@ -419,9 +435,9 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock order payload:', payload);
                 return;
             }
-            
+
             this.updateStockOrder(payload.stockOrder);
-            
+
             if (payload.orderProducts && Array.isArray(payload.orderProducts)) {
                 payload.orderProducts.forEach(op => {
                     if (op.product?.uid) {
@@ -436,11 +452,11 @@ export const useInventoryStore = defineStore('inventory', {
             try {
                 this.fetchingAdjustments = true;
                 const result = await withClientQuery<GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables>(
-                    GetAllStockAdjustmentsDocument, 
-                    params, 
+                    GetAllStockAdjustmentsDocument,
+                    params,
                     'stockAdjustmentAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.adjustments = result.items as StockAdjustmentType[];
                     this.adjustmentsPaging.totalCount = result.totalCount;
@@ -459,7 +475,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock adjustment payload:', payload);
                 return;
             }
-            
+
             this.adjustments.unshift(payload);
         },
         updateAdjustment(payload: StockAdjustmentType): void {
@@ -467,7 +483,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid stock adjustment payload:', payload);
                 return;
             }
-            
+
             const index = this.adjustments.findIndex(item => item.uid === payload.uid);
             if (index > -1) {
                 this.adjustments[index] = payload;
@@ -480,13 +496,13 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid parameters provided to addToBasket');
                 return;
             }
-            
+
             const index = this.products.findIndex(item => item.uid === uid);
             if (index === -1) {
                 console.error('Product not found:', uid);
                 return;
             }
-            
+
             const product = this.products[index];
             const orderItem = {
                 product,
@@ -509,14 +525,14 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid parameters provided to updateBasket');
                 return;
             }
-            
+
             // modify quantity
             const basketIndex = this.basket.findIndex(oi => oi.product.uid === uid);
             if (basketIndex === -1) {
                 console.error('Item not found in basket:', uid);
                 return;
             }
-            
+
             this.basket[basketIndex].quantity = quantity;
         },
         removeFromBasket(uid: string): void {
@@ -524,7 +540,7 @@ export const useInventoryStore = defineStore('inventory', {
                 console.error('Invalid UID provided to removeFromBasket');
                 return;
             }
-            
+
             this.basket = this.basket.filter(oi => oi.product.uid !== uid);
         },
         clearBasket(): void {

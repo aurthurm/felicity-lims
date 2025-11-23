@@ -5,19 +5,35 @@ import strawberry  # noqa
 from sqlalchemy import or_
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.multiplex.microbiology import AbxASTPanelType, AbxASTResultType
+from felicity.api.gql.multiplex.microbiology import AbxASTPanelType
+from felicity.api.gql.multiplex.microbiology.types import AbxASTResultType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis.enum import SampleState, ResultState
 from felicity.apps.analysis.schemas import AnalysisResultCreate
 from felicity.apps.analysis.services.analysis import SampleService, AnalysisService
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.multiplex.microbiology.entities import panel_organism, panel_antibiotic
-from felicity.apps.multiplex.microbiology.schemas import AbxASTPanelCreate, AbxASTPanelUpdate, AbxASTResultCreate, \
-    AbxASTResultUpdate
-from felicity.apps.multiplex.microbiology.services import AbxASTPanelService, AbxBreakpointService, AbxASTResultService, \
-    AbxBreakpointTypeService, AbxHostService
-from felicity.apps.multiplex.microbiology.utils import interpret_ast, handle_ast_user_interpreted
+from felicity.apps.multiplex.microbiology.entities import (
+    panel_organism,
+    panel_antibiotic,
+)
+from felicity.apps.multiplex.microbiology.schemas import (
+    AbxASTPanelCreate,
+    AbxASTPanelUpdate,
+    AbxASTResultCreate,
+    AbxASTResultUpdate,
+)
+from felicity.apps.multiplex.microbiology.services import (
+    AbxASTPanelService,
+    AbxBreakpointService,
+    AbxASTResultService,
+    AbxBreakpointTypeService,
+    AbxHostService,
+)
+from felicity.apps.multiplex.microbiology.utils import (
+    interpret_ast,
+    handle_ast_user_interpreted,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -81,8 +97,7 @@ class AbxASTResultsUpdateInput:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_ast_panel(
-        info,
-        payload: AbxASTPanelInputType
+    info, payload: AbxASTPanelInputType
 ) -> AbxASTPanelResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -99,23 +114,21 @@ async def create_abx_ast_panel(
         for organism_uid in payload.organisms:
             await AbxBreakpointService().repository.table_insert(
                 panel_organism,
-                [{"panel_uid": astp_panel.uid, "organism_uid": organism_uid}]
+                [{"panel_uid": astp_panel.uid, "organism_uid": organism_uid}],
             )
 
     if payload.antibiotics:
         for antibiotic_uid in payload.antibiotics:
             await AbxBreakpointService().repository.table_insert(
                 panel_antibiotic,
-                [{"panel_uid": astp_panel.uid, "antibiotic_uid": antibiotic_uid}]
+                [{"panel_uid": astp_panel.uid, "antibiotic_uid": antibiotic_uid}],
             )
     return AbxASTPanelType(**astp_panel.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_ast_panel(
-        info,
-        uid: str,
-        payload: AbxASTPanelInputType
+    info, uid: str, payload: AbxASTPanelInputType
 ) -> AbxASTPanelResponse:
     felicity_user = await auth_from_info(info)
     astp_panel = await AbxASTPanelService().get(uid=uid)
@@ -123,7 +136,7 @@ async def update_abx_ast_panel(
     panel_data = astp_panel.to_dict()
     for field in panel_data:
         if field in payload.__dict__:
-            if field in ['organisms', 'antibiotics']:  # Handle separately
+            if field in ["organisms", "antibiotics"]:  # Handle separately
                 try:
                     setattr(astp_panel, field, payload.__dict__[field])
                 except Exception as e:
@@ -138,38 +151,35 @@ async def update_abx_ast_panel(
     if payload.organisms is not None:
         # Remove existing associations
         await AbxBreakpointService().repository.table_delete(
-            panel_organism,
-            panel_uid=astp_panel.uid
+            panel_organism, panel_uid=astp_panel.uid
         )
 
         # Create new associations
         for organism_uid in payload.organisms:
             await AbxBreakpointService().repository.table_insert(
                 panel_organism,
-                [{"panel_uid": astp_panel.uid, "organism_uid": organism_uid}]
+                [{"panel_uid": astp_panel.uid, "organism_uid": organism_uid}],
             )
 
     # Update antibiotic associations if provided
     if payload.antibiotics is not None:
         # Remove existing associations
         await AbxBreakpointService().repository.table_delete(
-            panel_antibiotic,
-            panel_uid=astp_panel.uid
+            panel_antibiotic, panel_uid=astp_panel.uid
         )
 
         # Create new associations
         for antibiotic_uid in payload.antibiotics:
             await AbxBreakpointService().repository.table_insert(
                 panel_antibiotic,
-                [{"panel_uid": astp_panel.uid, "antibiotic_uid": antibiotic_uid}]
+                [{"panel_uid": astp_panel.uid, "antibiotic_uid": antibiotic_uid}],
             )
     return AbxASTPanelType(**astp_panel.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def apply_abx_ast_panel(
-        info,
-        payload: AbxApplyAstPanelInput
+    info, payload: AbxApplyAstPanelInput
 ) -> AbxASTResultsResponse:
     felicity_user = await auth_from_info(info)
     sample = await SampleService().get(uid=payload.sample_uid)
@@ -182,7 +192,9 @@ async def apply_abx_ast_panel(
             error=f"Samples in {sample.status} can not be added analyses"
         )
 
-    panel = await AbxASTPanelService().get(uid=payload.panel_uid, related=["antibiotics"])
+    panel = await AbxASTPanelService().get(
+        uid=payload.panel_uid, related=["antibiotics"]
+    )
 
     # create and attach result objects for each Analyses
     logger.info(
@@ -198,7 +210,9 @@ async def apply_abx_ast_panel(
         metadata_snapshot={},
     )
 
-    abx_analysis_service = await AnalysisService().get(keyword="felicity_ast_abx_antibiotic")
+    abx_analysis_service = await AnalysisService().get(
+        keyword="felicity_ast_abx_antibiotic"
+    )
     abx_results = []
     for antibiotic in panel.antibiotics:
         schema_in = a_result_schema.model_copy(
@@ -207,15 +221,21 @@ async def apply_abx_ast_panel(
                 "due_date": None,
             }
         )
-        a_result = await AnalysisResultService().create(schema_in, related=["sample", "analysis"])
+        a_result = await AnalysisResultService().create(
+            schema_in, related=["sample", "analysis"]
+        )
         abx_result_in = AbxASTResultCreate(
             analysis_result_uid=a_result.uid,
             organism_result_uid=payload.organism_result_uid,
             antibiotic_uid=antibiotic.uid,
             ast_method_uid=None,
-            ast_value=None
+            ast_value=None,
         )
-        abx_results.append(await AbxASTResultService().create(abx_result_in, related=["analysis_result"]))
+        abx_results.append(
+            await AbxASTResultService().create(
+                abx_result_in, related=["analysis_result"]
+            )
+        )
         await AnalysisResultService().snapshot([a_result])
 
     if sample.status != SampleState.RECEIVED:
@@ -224,12 +244,17 @@ async def apply_abx_ast_panel(
         )
 
     return AbxASTResultsType(
-        ast_results=[AbxASTResultType(**abx_r.marshal_simple(exclude=["organism_result"])) for abx_r in abx_results]
+        ast_results=[
+            AbxASTResultType(**abx_r.marshal_simple(exclude=["organism_result"]))
+            for abx_r in abx_results
+        ]
     )
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> AbxASTResultsResponse:
+async def update_abx_ast_results(
+    info, payload: AbxASTResultsUpdateInput
+) -> AbxASTResultsResponse:
     felicity_user = await auth_from_info(info)
 
     bp_type = await AbxBreakpointTypeService().get(name__ilike="human")
@@ -250,8 +275,14 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
 
         ast_result_in = AbxASTResultUpdate(**ast_result.to_dict())
         ast_result = await AbxASTResultService().update(
-            ast_result.uid, ast_result_in,
-            related=["antibiotic", "organism_result.organism", "ast_method", "analysis_result"],
+            ast_result.uid,
+            ast_result_in,
+            related=[
+                "antibiotic",
+                "organism_result.organism",
+                "ast_method",
+                "analysis_result",
+            ],
         )
 
         # Interpretations
@@ -269,8 +300,12 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
                 # ?? might need to flag to user that potency missing in breakpoint if used
                 or_: [{"potency": _abx.potency}, {"potency": ""}],
                 # IRS are not empty or null
-                "i__isnull": False, "r__isnull": False, "s__isnull": False,
-                "i__ne": "", "r__ne": "", "s__ne": "",
+                "i__isnull": False,
+                "r__isnull": False,
+                "s__isnull": False,
+                "i__ne": "",
+                "r__ne": "",
+                "s__ne": "",
             }
         )
 
@@ -282,13 +317,12 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
             ("serovar_group", _org.serovar_group.lower()),
             ("species_group", _org.species_group.lower()),
         ]
-        code_filters = [
-            item for item in _code_filters
-            if item[1] not in [None, ""]
-        ]
+        code_filters = [item for item in _code_filters if item[1] not in [None, ""]]
         filtered_break_points = [
-            bpt for bpt in break_points_tables
-            if (bpt.organism_code_type.lower(), bpt.organism_code.lower()) in code_filters
+            bpt
+            for bpt in break_points_tables
+            if (bpt.organism_code_type.lower(), bpt.organism_code.lower())
+            in code_filters
         ]
 
         if len(filtered_break_points) == 1:
@@ -308,26 +342,40 @@ async def update_abx_ast_results(info, payload: AbxASTResultsUpdateInput) -> Abx
         ast_result = await AbxASTResultService().update(
             ast_result.uid,
             {
-                "breakpoint_uid": None if interpretation["user_provided"] else interpretation["breakpoint_uid"],
+                "breakpoint_uid": None
+                if interpretation["user_provided"]
+                else interpretation["breakpoint_uid"],
             },
-            related=["analysis_result"]
+            related=["analysis_result"],
         )
 
-        analysis_result = await AnalysisResultService().get(uid=ast_result.analysis_result_uid)
+        analysis_result = await AnalysisResultService().get(
+            uid=ast_result.analysis_result_uid
+        )
         analysis_result = await AnalysisResultService().update(
-            analysis_result.uid, {
+            analysis_result.uid,
+            {
                 "result": interpretation["interpreted"],
-                "reportable": result_payload.reportable
-            }, related=["sample", "analysis"]
+                "reportable": result_payload.reportable,
+            },
+            related=["sample", "analysis"],
         )
         await AnalysisResultService().snapshot([analysis_result])
 
         ast_result = await AbxASTResultService().get(
             uid=ast_result.uid,
-            related=["antibiotic", "organism_result.organism", "ast_method", "analysis_result"],
+            related=[
+                "antibiotic",
+                "organism_result.organism",
+                "ast_method",
+                "analysis_result",
+            ],
         )
         outputs.append(ast_result)
 
     return AbxASTResultsType(
-        ast_results=[AbxASTResultType(**abx_r.marshal_simple(exclude=["organism_result"])) for abx_r in outputs]
+        ast_results=[
+            AbxASTResultType(**abx_r.marshal_simple(exclude=["organism_result"]))
+            for abx_r in outputs
+        ]
     )

@@ -104,7 +104,7 @@ async def felicity_workforce_init():
             _conn.start_server,
             args=[_conn],
             id=f"instrument_{_conn.uid}",
-            replace_existing=True
+            replace_existing=True,
         )
 
     # Start scheduler

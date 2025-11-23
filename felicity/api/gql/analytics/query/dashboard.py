@@ -41,9 +41,14 @@ async def get_instrument(val):
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
     analytics = EntityAnalyticsInit(Sample)
@@ -66,9 +71,14 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_analyte_group_by_status(info) -> types.GroupedCounts:
     analytics = EntityAnalyticsInit(AnalysisResult)
@@ -88,9 +98,14 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_extras_group_by_status(info) -> types.GroupedCounts:
     sample_analytics = EntityAnalyticsInit(Sample)
@@ -133,9 +148,14 @@ async def count_extras_group_by_status(info) -> types.GroupedCounts:
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     analytics = EntityAnalyticsInit(WorkSheet)
@@ -154,12 +174,17 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_analyte_group_by_instrument(
-        info, start_date: str | None = None, end_date: str | None = None
+    info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedCounts:
     analytics = EntityAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by(
@@ -178,12 +203,17 @@ async def count_analyte_group_by_instrument(
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_sample_group_by_action(
-        info, start_date: str | None = None, end_date: str | None = None
+    info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedData:
     analytics = EntityAnalyticsInit(Sample)
     created = await analytics.get_counts_group_by(
@@ -232,12 +262,17 @@ async def count_sample_group_by_action(
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def sample_process_performance(
-        info, start_date: str, end_date: str
+    info, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
     analytics = EntityAnalyticsInit(Sample)
     received_to_published = await analytics.get_sample_process_performance(
@@ -311,12 +346,17 @@ async def sample_process_performance(
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def analysis_process_performance(
-        info, process: str, start_date: str, end_date: str
+    info, process: str, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
     analytics = EntityAnalyticsInit(Sample)
     processes = [
@@ -368,9 +408,14 @@ async def analysis_process_performance(
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def sample_laggards(info) -> types.LaggardStatistics:
     analytics = EntityAnalyticsInit(Sample)

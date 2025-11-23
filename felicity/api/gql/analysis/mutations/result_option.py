@@ -35,7 +35,7 @@ ResultOptionResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_result_option(
-        info, payload: ResultOptionInputType
+    info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -77,7 +77,7 @@ async def create_result_option(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_result_option(
-        info, uid: str, payload: ResultOptionInputType
+    info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
     await auth_from_info(info)
 

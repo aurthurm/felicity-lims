@@ -4,7 +4,7 @@ import { INotificationType, AlertType } from '@/types/notification';
 type ToastStateType = {
     alert: AlertType;
     notification: INotificationType;
-}
+};
 
 type ToastIcon = 'success' | 'error' | 'warning' | 'info' | 'question';
 
@@ -20,7 +20,7 @@ export const useToastStore = defineStore('toast', {
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
-            data: null
+            data: null,
         },
         notification: {
             data: null,
@@ -33,8 +33,8 @@ export const useToastStore = defineStore('toast', {
             position: 'top-end',
             showConfirmButton: false,
             timer: 3000,
-            timerProgressBar: true
-        }
+            timerProgressBar: true,
+        },
     }),
     getters: {
         getCurrentToast: (state): ToastStateType => state,
@@ -84,7 +84,7 @@ export const useToastStore = defineStore('toast', {
                 ...this.alert,
                 message,
                 icon,
-                ticks: Date.now()
+                ticks: Date.now(),
             };
         },
 
@@ -93,8 +93,8 @@ export const useToastStore = defineStore('toast', {
                 ...this.notification,
                 data,
                 icon,
-                ticks: Date.now()
+                ticks: Date.now(),
             };
-        }
+        },
     },
 });

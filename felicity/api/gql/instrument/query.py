@@ -15,7 +15,10 @@ from felicity.api.gql.instrument.types import (
     LaboratoryInstrumentType,
     MethodCursorPage,
     MethodEdge,
-    MethodType, InstrumentResultExclusionsType, InstrumentResultTranslationType, InstrumentRawDataType,
+    MethodType,
+    InstrumentResultExclusionsType,
+    InstrumentResultTranslationType,
+    InstrumentRawDataType,
     InstrumentInterfaceType,
     ParseMessageResult,
 )
@@ -25,20 +28,23 @@ from felicity.apps.instrument.services import (
     InstrumentService,
     InstrumentTypeService,
     LaboratoryInstrumentService,
-    MethodService, InstrumentResultExclusionsService, InstrumentResultTranslationService, InstrumentRawDataService,
+    MethodService,
+    InstrumentResultExclusionsService,
+    InstrumentResultTranslationService,
+    InstrumentRawDataService,
     InstrumentInterfaceService,
 )
 from felicity.utils import has_value_or_is_truthy
 
 
 async def get_all_instrument_types(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+    self,
+    info,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> InstrumentTypeCursorPage:
     filters = {}
 
@@ -69,13 +75,13 @@ async def get_all_instrument_types(
 
 
 async def get_all_instruments(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+    self,
+    info,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> InstrumentCursorPage:
     filters = {}
 
@@ -116,13 +122,13 @@ async def get_all_instruments(
 
 
 async def get_all_laboratory_instruments(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+    self,
+    info,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> LaboratoryInstrumentCursorPage:
     filters = {}
 
@@ -158,13 +164,13 @@ async def get_all_laboratory_instruments(
 
 
 async def get_all_methods(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+    self,
+    info,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> MethodCursorPage:
     filters = {}
 
@@ -220,7 +226,7 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def laboratory_instrument_by_uid(
-            self, info, uid: str
+        self, info, uid: str
     ) -> LaboratoryInstrumentType:
         return await LaboratoryInstrumentService().get(uid=uid)
 
@@ -233,20 +239,35 @@ class InstrumentQuery:
         return await MethodService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def instrument_interfaces(self, info, ) -> list[InstrumentInterfaceType]:
+    async def instrument_interfaces(
+        self,
+        info,
+    ) -> list[InstrumentInterfaceType]:
         return await InstrumentInterfaceService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def instrument_raw_data(self, info, instrument_uid: str) -> list[InstrumentRawDataType]:
-        return await InstrumentRawDataService().get_all(instrument_uid=instrument_uid, limit=30)
+    async def instrument_raw_data(
+        self, info, instrument_uid: str
+    ) -> list[InstrumentRawDataType]:
+        return await InstrumentRawDataService().get_all(
+            instrument_uid=instrument_uid, limit=30
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def instrument_result_exclusions(self, info, instrument_uid: str) -> list[InstrumentResultExclusionsType]:
-        return await InstrumentResultExclusionsService().get_all(instrument_uid=instrument_uid)
+    async def instrument_result_exclusions(
+        self, info, instrument_uid: str
+    ) -> list[InstrumentResultExclusionsType]:
+        return await InstrumentResultExclusionsService().get_all(
+            instrument_uid=instrument_uid
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def instrument_result_translations(self, info, instrument_uid: str) -> list[InstrumentResultTranslationType]:
-        return await InstrumentResultTranslationService().get_all(instrument_uid=instrument_uid)
+    async def instrument_result_translations(
+        self, info, instrument_uid: str
+    ) -> list[InstrumentResultTranslationType]:
+        return await InstrumentResultTranslationService().get_all(
+            instrument_uid=instrument_uid
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def parse_message(self, info, raw_message: str) -> ParseMessageResult:
@@ -256,23 +277,20 @@ class InstrumentQuery:
         """
         if not raw_message or not raw_message.strip():
             return ParseMessageResult(
-                success=False,
-                parsed_message=None,
-                error="Raw message is empty"
+                success=False, parsed_message=None, error="Raw message is empty"
             )
 
         try:
-            from felicity.apps.iol.analyzer.services.transformer import MessageTransformer
+            from felicity.apps.iol.analyzer.services.transformer import (
+                MessageTransformer,
+            )
+
             transformer = MessageTransformer()
             parsed = transformer.parse_message(raw_message)
-            return ParseMessageResult(
-                success=True,
-                parsed_message=parsed,
-                error=None
-            )
+            return ParseMessageResult(success=True, parsed_message=parsed, error=None)
         except Exception as e:
             return ParseMessageResult(
                 success=False,
                 parsed_message=None,
-                error=f"Failed to parse message: {str(e)}"
+                error=f"Failed to parse message: {str(e)}",
             )

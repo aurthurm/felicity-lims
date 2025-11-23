@@ -33,18 +33,21 @@ logger = logging.getLogger(__name__)
 
 # Union Response Types
 
+
 @strawberry.type
 class DocumentMutations:
     # Document Category Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_document_category(
-            self, info, payload: inputs.DocumentCategoryInputType
+        self, info, payload: inputs.DocumentCategoryInputType
     ) -> responses.DocumentCategoryResponse:
         felicity_user = await auth_from_info(info)
 
         exists = await DocumentCategoryService().get(name=payload.name)
         if exists:
-            return OperationError(error="Document category with this name already exists")
+            return OperationError(
+                error="Document category with this name already exists"
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -59,7 +62,7 @@ class DocumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_document_category(
-            self, info, uid: str, payload: inputs.DocumentCategoryUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentCategoryUpdateInputType
     ) -> responses.DocumentCategoryResponse:
         felicity_user = await auth_from_info(info)
 
@@ -84,7 +87,9 @@ class DocumentMutations:
         return types.DocumentCategoryType(**category.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_category(self, info, uid: str) -> responses.DocumentCategoryResponse:
+    async def delete_document_category(
+        self, info, uid: str
+    ) -> responses.DocumentCategoryResponse:
         category = await DocumentCategoryService().get(uid=uid)
         if not category:
             return OperationError(error=f"Document category with uid {uid} not found.")
@@ -102,7 +107,7 @@ class DocumentMutations:
     # Document Tag Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_document_tag(
-            self, info, payload: inputs.DocumentTagInputType
+        self, info, payload: inputs.DocumentTagInputType
     ) -> responses.DocumentTagResponse:
         felicity_user = await auth_from_info(info)
 
@@ -123,7 +128,7 @@ class DocumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_document_tag(
-            self, info, uid: str, payload: inputs.DocumentTagUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentTagUpdateInputType
     ) -> responses.DocumentTagResponse:
         felicity_user = await auth_from_info(info)
 
@@ -148,7 +153,9 @@ class DocumentMutations:
         return types.DocumentTagType(**tag.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_tag(self, info, uid: str) -> responses.DocumentTagResponse:
+    async def delete_document_tag(
+        self, info, uid: str
+    ) -> responses.DocumentTagResponse:
         tag = await DocumentTagService().get(uid=uid)
         if not tag:
             return OperationError(error=f"Document tag with uid {uid} not found.")
@@ -162,12 +169,17 @@ class DocumentMutations:
 
     # Document Folder Mutations
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def create_document_folder(
-            self, info, payload: inputs.DocumentFolderInputType
+        self, info, payload: inputs.DocumentFolderInputType
     ) -> responses.DocumentFolderResponse:
         felicity_user = await auth_from_info(info)
 
@@ -175,7 +187,9 @@ class DocumentMutations:
         if payload.parent_uid:
             parent_folder = await DocumentFolderService().get(uid=payload.parent_uid)
             if not parent_folder:
-                return OperationError(error=f"Parent folder with uid {payload.parent_uid} not found.")
+                return OperationError(
+                    error=f"Parent folder with uid {payload.parent_uid} not found."
+                )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -195,12 +209,17 @@ class DocumentMutations:
         return types.DocumentFolderType(**folder.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def update_document_folder(
-            self, info, uid: str, payload: inputs.DocumentFolderUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentFolderUpdateInputType
     ) -> responses.DocumentFolderResponse:
         felicity_user = await auth_from_info(info)
 
@@ -217,7 +236,9 @@ class DocumentMutations:
         if payload.parent_uid:
             parent_folder = await DocumentFolderService().get(uid=payload.parent_uid)
             if not parent_folder:
-                return OperationError(error=f"Parent folder with uid {payload.parent_uid} not found.")
+                return OperationError(
+                    error=f"Parent folder with uid {payload.parent_uid} not found."
+                )
             # Prevent creating circular references
             if payload.parent_uid == uid:
                 return OperationError(error="Folder cannot be its own parent.")
@@ -238,11 +259,18 @@ class DocumentMutations:
         return types.DocumentFolderType(**folder.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.DELETE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def delete_document_folder(self, info, uid: str) -> responses.DocumentFolderResponse:
+    async def delete_document_folder(
+        self, info, uid: str
+    ) -> responses.DocumentFolderResponse:
         folder = await DocumentFolderService().get(uid=uid)
         if not folder:
             return OperationError(error=f"Document folder with uid {uid} not found.")
@@ -266,12 +294,17 @@ class DocumentMutations:
 
     # Document Template Mutations
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def create_document_template(
-            self, info, payload: inputs.DocumentTemplateInputType
+        self, info, payload: inputs.DocumentTemplateInputType
     ) -> responses.DocumentTemplateResponse:
         felicity_user = await auth_from_info(info)
 
@@ -279,7 +312,9 @@ class DocumentMutations:
         if payload.category:
             category = await DocumentCategoryService().get(uid=payload.category)
             if not category:
-                return OperationError(error=f"Category with uid {payload.category} not found.")
+                return OperationError(
+                    error=f"Category with uid {payload.category} not found."
+                )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -299,12 +334,17 @@ class DocumentMutations:
         return types.DocumentTemplateType(**template.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def update_document_template(
-            self, info, uid: str, payload: inputs.DocumentTemplateUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentTemplateUpdateInputType
     ) -> responses.DocumentTemplateResponse:
         felicity_user = await auth_from_info(info)
 
@@ -321,7 +361,9 @@ class DocumentMutations:
         if payload.category:
             category = await DocumentCategoryService().get(uid=payload.category)
             if not category:
-                return OperationError(error=f"Category with uid {payload.category} not found.")
+                return OperationError(
+                    error=f"Category with uid {payload.category} not found."
+                )
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
@@ -339,11 +381,18 @@ class DocumentMutations:
         return types.DocumentTemplateType(**template.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def delete_document_template(self, info, uid: str) -> responses.DocumentTemplateResponse:
+    async def delete_document_template(
+        self, info, uid: str
+    ) -> responses.DocumentTemplateResponse:
         template = await DocumentTemplateService().get(uid=uid)
         if not template:
             return OperationError(error=f"Document template with uid {uid} not found.")
@@ -360,41 +409,56 @@ class DocumentMutations:
 
     # Document Mutations
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def create_document(
-            self, info, payload: inputs.DocumentInputType
+        self, info, payload: inputs.DocumentInputType
     ) -> responses.DocumentResponse:
         felicity_user = await auth_from_info(info)
 
         # Check for duplicate document_id
         exists = await DocumentService().get(document_id=payload.document_id)
         if exists:
-            return OperationError(error=f"Document with ID {payload.document_id} already exists")
+            return OperationError(
+                error=f"Document with ID {payload.document_id} already exists"
+            )
 
         # Validate foreign keys
         if payload.folderUid:
             folder = await DocumentFolderService().get(uid=payload.folderUid)
             if not folder:
-                return OperationError(error=f"Folder with uid {payload.folderUid} not found.")
+                return OperationError(
+                    error=f"Folder with uid {payload.folderUid} not found."
+                )
 
         if payload.categoryUid:
             category = await DocumentCategoryService().get(uid=payload.categoryUid)
             if not category:
-                return OperationError(error=f"Category with uid {payload.categoryUid} not found.")
+                return OperationError(
+                    error=f"Category with uid {payload.categoryUid} not found."
+                )
 
         if payload.departmentUid:
             # Assuming you have a DepartmentService
             department = await DepartmentService().get(uid=payload.departmentUid)
             if not department:
-                return OperationError(error=f"Department with uid {payload.departmentUid} not found.")
+                return OperationError(
+                    error=f"Department with uid {payload.departmentUid} not found."
+                )
 
         if payload.templateUid:
             template = await DocumentTemplateService().get(uid=payload.templateUid)
             if not template:
-                return OperationError(error=f"Template with uid {payload.templateUid} not found.")
+                return OperationError(
+                    error=f"Template with uid {payload.templateUid} not found."
+                )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -412,9 +476,17 @@ class DocumentMutations:
             incoming["template_uid"] = payload.templateUid
 
         for k, v in payload.__dict__.items():
-            if k not in ["folderUid", "departmentUid", "categoryUid", "templateUid", "tags", "authors", "readers",
-                         "initial_content",
-                         "initial_version"]:
+            if k not in [
+                "folderUid",
+                "departmentUid",
+                "categoryUid",
+                "templateUid",
+                "tags",
+                "authors",
+                "readers",
+                "initial_content",
+                "initial_version",
+            ]:
                 incoming[k] = v
 
         obj_in = schemas.DocumentCreate(**incoming)
@@ -473,20 +545,41 @@ class DocumentMutations:
         await DocumentAuditService().create(audit_in)
 
         document = await DocumentService().get(uid=document.uid)
-        return types.DocumentType(**document.marshal_simple(
-            exclude=["tags", "authors", "readers", "related_to", "related_from", "versions", "statuses"
-                                                                                             "review_cycles",
-                     "subscriptions", "audit_records", "ai_authoring_sessions", "compliance_checks",
-                     "analytics", "latest_version", "content", "editor", "status"]
-        ))
+        return types.DocumentType(
+            **document.marshal_simple(
+                exclude=[
+                    "tags",
+                    "authors",
+                    "readers",
+                    "related_to",
+                    "related_from",
+                    "versions",
+                    "statuses" "review_cycles",
+                    "subscriptions",
+                    "audit_records",
+                    "ai_authoring_sessions",
+                    "compliance_checks",
+                    "analytics",
+                    "latest_version",
+                    "content",
+                    "editor",
+                    "status",
+                ]
+            )
+        )
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def update_document(
-            self, info, uid: str, payload: inputs.DocumentUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentUpdateInputType
     ) -> responses.DocumentResponse:
         felicity_user = await auth_from_info(info)
 
@@ -503,24 +596,32 @@ class DocumentMutations:
         if payload.document_id and payload.document_id != document.document_id:
             exists = await DocumentService().get(document_id=payload.document_id)
             if exists:
-                return OperationError(error=f"Document with ID {payload.document_id} already exists")
+                return OperationError(
+                    error=f"Document with ID {payload.document_id} already exists"
+                )
 
         # Validate foreign keys
         if payload.folderUid:
             folder = await DocumentFolderService().get(uid=payload.folderUid)
             if not folder:
-                return OperationError(error=f"Folder with uid {payload.folderUid} not found.")
+                return OperationError(
+                    error=f"Folder with uid {payload.folderUid} not found."
+                )
 
         if payload.categoryUid:
             category = await DocumentCategoryService().get(uid=payload.categoryUid)
             if not category:
-                return OperationError(error=f"Category with uid {payload.categoryUid} not found.")
+                return OperationError(
+                    error=f"Category with uid {payload.categoryUid} not found."
+                )
 
         if payload.departmentUid:
             # Assuming you have a DepartmentService
             department = await DepartmentService().get(uid=payload.departmentUid)
             if not department:
-                return OperationError(error=f"Department with uid {payload.departmentUid} not found.")
+                return OperationError(
+                    error=f"Department with uid {payload.departmentUid} not found."
+                )
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
@@ -533,8 +634,14 @@ class DocumentMutations:
             update_data["category_uid"] = payload.categoryUid
 
         for field in document.to_dict():
-            if field in payload.__dict__ and field not in ["folderUid", "departmentUid", "categoryUid", "tags",
-                                                           "authors", "readers"]:
+            if field in payload.__dict__ and field not in [
+                "folderUid",
+                "departmentUid",
+                "categoryUid",
+                "tags",
+                "authors",
+                "readers",
+            ]:
                 if payload.__dict__[field] is not None:
                     update_data[field] = payload.__dict__[field]
 
@@ -578,13 +685,16 @@ class DocumentMutations:
         return types.DocumentType(**document.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def delete_document(self, info, uid: str) -> responses.DocumentResponse:
-        felicity_user = await auth_from_info(info)
-
         document = await DocumentService().get(uid=uid)
         if not document:
             return OperationError(error=f"Document with uid {uid} not found.")
@@ -603,7 +713,9 @@ class DocumentMutations:
         # Review cycles and steps
         review_cycles = await DocumentReviewCycleService().get_all(document_uid=uid)
         for cycle in review_cycles:
-            steps = await DocumentReviewStepService().get_all(review_cycle_uid=cycle.uid)
+            steps = await DocumentReviewStepService().get_all(
+                review_cycle_uid=cycle.uid
+            )
             for step in steps:
                 await DocumentReviewStepService().delete(step.uid)
             await DocumentReviewCycleService().delete(cycle.uid)
@@ -631,19 +743,26 @@ class DocumentMutations:
 
     # Document Version Mutations
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def create_document_version(
-            self, info, payload: inputs.DocumentVersionInputType
+        self, info, payload: inputs.DocumentVersionInputType
     ) -> responses.DocumentVersionResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if document exists
         document = await DocumentService().get(uid=payload.document)
         if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
+            return OperationError(
+                error=f"Document with uid {payload.document} not found."
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -672,12 +791,17 @@ class DocumentMutations:
         return types.DocumentVersionType(**version.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def update_document_version(
-            self, info, uid: str, payload: inputs.DocumentVersionUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentVersionUpdateInputType
     ) -> responses.DocumentVersionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -693,13 +817,10 @@ class DocumentMutations:
         thumbnail = None
         try:
             thumbnail = get_thumbnail(payload.content)
-        except Exception as e:
+        except Exception:
             ...
 
-        update_data = {
-            "thumbnail": thumbnail,
-            "updated_by_uid": felicity_user.uid
-        }
+        update_data = {"thumbnail": thumbnail, "updated_by_uid": felicity_user.uid}
 
         for field in version.to_dict():
             if field in payload.__dict__:
@@ -722,11 +843,18 @@ class DocumentMutations:
         return types.DocumentVersionType(**version.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.DELETE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def delete_document_version(self, info, uid: str) -> responses.DocumentVersionResponse:
+    async def delete_document_version(
+        self, info, uid: str
+    ) -> responses.DocumentVersionResponse:
         felicity_user = await auth_from_info(info)
 
         version = await DocumentVersionService().get(uid=uid)
@@ -734,7 +862,9 @@ class DocumentMutations:
             return OperationError(error=f"Document version with uid {uid} not found.")
 
         # Check if this is the only version
-        versions = await DocumentVersionService().get_all(document_uid=version.document_uid)
+        versions = await DocumentVersionService().get_all(
+            document_uid=version.document_uid
+        )
         if len(versions) <= 1:
             return OperationError(error="Cannot delete the only version of a document.")
 
@@ -755,14 +885,16 @@ class DocumentMutations:
     # Document Status Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_document_status(
-            self, info, payload: inputs.DocumentStatusInputType
+        self, info, payload: inputs.DocumentStatusInputType
     ) -> responses.DocumentStatusResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if document exists
         document = await DocumentService().get(uid=payload.document)
         if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
+            return OperationError(
+                error=f"Document with uid {payload.document} not found."
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -794,7 +926,7 @@ class DocumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_document_status(
-            self, info, uid: str, payload: inputs.DocumentStatusUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentStatusUpdateInputType
     ) -> responses.DocumentStatusResponse:
         felicity_user = await auth_from_info(info)
 
@@ -811,7 +943,9 @@ class DocumentMutations:
         if payload.document and payload.document != status.document_uid:
             document = await DocumentService().get(uid=payload.document)
             if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
+                return OperationError(
+                    error=f"Document with uid {payload.document} not found."
+                )
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
@@ -831,19 +965,26 @@ class DocumentMutations:
 
     # Document Review Cycle Mutations
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def create_document_review_cycle(
-            self, info, payload: inputs.DocumentReviewCycleInputType
+        self, info, payload: inputs.DocumentReviewCycleInputType
     ) -> responses.DocumentReviewCycleResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if document exists
         document = await DocumentService().get(uid=payload.document)
         if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
+            return OperationError(
+                error=f"Document with uid {payload.document} not found."
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -854,7 +995,11 @@ class DocumentMutations:
         }
 
         for k, v in payload.__dict__.items():
-            if k not in ["document", "start_date", "reviewers"]:  # Skip fields we've handled
+            if k not in [
+                "document",
+                "start_date",
+                "reviewers",
+            ]:  # Skip fields we've handled
                 incoming[k] = v
 
         obj_in = schemas.DocumentReviewCycleCreate(**incoming)
@@ -887,12 +1032,17 @@ class DocumentMutations:
         return types.DocumentReviewCycleType(**review_cycle.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def update_document_review_cycle(
-            self, info, uid: str, payload: inputs.DocumentReviewCycleUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentReviewCycleUpdateInputType
     ) -> responses.DocumentReviewCycleResponse:
         felicity_user = await auth_from_info(info)
 
@@ -909,7 +1059,9 @@ class DocumentMutations:
         if payload.document and payload.document != review_cycle.document_uid:
             document = await DocumentService().get(uid=payload.document)
             if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
+                return OperationError(
+                    error=f"Document with uid {payload.document} not found."
+                )
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
@@ -924,17 +1076,25 @@ class DocumentMutations:
 
         # Check if status is being updated to completed
         status_changed_to_completed = False
-        if payload.status and payload.status == "completed" and review_cycle.status != "completed":
+        if (
+            payload.status
+            and payload.status == "completed"
+            and review_cycle.status != "completed"
+        ):
             status_changed_to_completed = True
             update_data["end_date"] = timenow_dt()
 
         obj_in = schemas.DocumentReviewCycleUpdate(**update_data)
-        review_cycle = await DocumentReviewCycleService().update(review_cycle.uid, obj_in)
+        review_cycle = await DocumentReviewCycleService().update(
+            review_cycle.uid, obj_in
+        )
 
         # Update reviewers if provided
         if payload.reviewers is not None:
             # Delete existing steps
-            steps = await DocumentReviewStepService().get_all(review_cycle_uid=review_cycle.uid)
+            steps = await DocumentReviewStepService().get_all(
+                review_cycle_uid=review_cycle.uid
+            )
             for step in steps:
                 await DocumentReviewStepService().delete(step.uid)
 
@@ -965,16 +1125,25 @@ class DocumentMutations:
         return types.DocumentReviewCycleType(**review_cycle.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def delete_document_review_cycle(self, info, uid: str) -> responses.DocumentReviewCycleResponse:
+    async def delete_document_review_cycle(
+        self, info, uid: str
+    ) -> responses.DocumentReviewCycleResponse:
         felicity_user = await auth_from_info(info)
 
         review_cycle = await DocumentReviewCycleService().get(uid=uid)
         if not review_cycle:
-            return OperationError(error=f"Document review cycle with uid {uid} not found.")
+            return OperationError(
+                error=f"Document review cycle with uid {uid} not found."
+            )
 
         # Delete associated review steps
         steps = await DocumentReviewStepService().get_all(review_cycle_uid=uid)
@@ -997,12 +1166,17 @@ class DocumentMutations:
 
     # Document Review Step Mutations
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def update_document_review_step(
-            self, info, uid: str, payload: inputs.DocumentReviewStepUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentReviewStepUpdateInputType
     ) -> responses.DocumentReviewStepResponse:
         felicity_user = await auth_from_info(info)
 
@@ -1019,7 +1193,9 @@ class DocumentMutations:
         if payload.review_cycle and payload.review_cycle != step.review_cycle_uid:
             cycle = await DocumentReviewCycleService().get(uid=payload.review_cycle)
             if not cycle:
-                return OperationError(error=f"Review cycle with uid {payload.review_cycle} not found.")
+                return OperationError(
+                    error=f"Review cycle with uid {payload.review_cycle} not found."
+                )
 
         update_data = {"updated_by_uid": felicity_user.uid}
 
@@ -1043,7 +1219,9 @@ class DocumentMutations:
                         status_changed = True
 
         # Set action date if status is changing
-        if status_changed and (payload.status == "approved" or payload.status == "rejected"):
+        if status_changed and (
+            payload.status == "approved" or payload.status == "rejected"
+        ):
             update_data["action_date"] = timenow_dt()
 
         obj_in = schemas.DocumentReviewStepUpdate(**update_data)
@@ -1065,41 +1243,52 @@ class DocumentMutations:
             await DocumentAuditService().create(audit_in)
 
             # Check if all steps are complete, update the review cycle if needed
-            all_steps = await DocumentReviewStepService().get_all(review_cycle_uid=step.review_cycle_uid)
+            all_steps = await DocumentReviewStepService().get_all(
+                review_cycle_uid=step.review_cycle_uid
+            )
             all_complete = all(s.status in ["approved", "rejected"] for s in all_steps)
 
             if all_complete and review_cycle.status != "completed":
                 cycle_update = schemas.DocumentReviewCycleUpdate(
                     status="completed",
                     end_date=timenow_dt(),
-                    updated_by_uid=felicity_user.uid
+                    updated_by_uid=felicity_user.uid,
                 )
-                await DocumentReviewCycleService().update(review_cycle.uid, cycle_update)
+                await DocumentReviewCycleService().update(
+                    review_cycle.uid, cycle_update
+                )
 
         return types.DocumentReviewStepType(**step.marshal_simple())
 
     # Document Subscription Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_document_subscription(
-            self, info, payload: inputs.DocumentSubscriptionInputType
+        self, info, payload: inputs.DocumentSubscriptionInputType
     ) -> responses.DocumentSubscriptionResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if document exists
         document = await DocumentService().get(uid=payload.document)
         if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
+            return OperationError(
+                error=f"Document with uid {payload.document} not found."
+            )
 
         # Check if user exists
         from felicity.apps.user.services import UserService
+
         user = await UserService().get(uid=payload.user)
         if not user:
             return OperationError(error=f"User with uid {payload.user} not found.")
 
         # Check if subscription already exists
-        exists = await DocumentSubscriptionService().get(document_uid=payload.document, user_uid=payload.user)
+        exists = await DocumentSubscriptionService().get(
+            document_uid=payload.document, user_uid=payload.user
+        )
         if exists:
-            return OperationError(error="Subscription already exists for this user and document.")
+            return OperationError(
+                error="Subscription already exists for this user and document."
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -1119,7 +1308,7 @@ class DocumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_document_subscription(
-            self, info, uid: str, payload: inputs.DocumentSubscriptionUpdateInputType
+        self, info, uid: str, payload: inputs.DocumentSubscriptionUpdateInputType
     ) -> responses.DocumentSubscriptionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -1136,10 +1325,13 @@ class DocumentMutations:
         if payload.document and payload.document != subscription.document_uid:
             document = await DocumentService().get(uid=payload.document)
             if not document:
-                return OperationError(error=f"Document with uid {payload.document} not found.")
+                return OperationError(
+                    error=f"Document with uid {payload.document} not found."
+                )
 
         if payload.user and payload.user != subscription.user_uid:
             from felicity.apps.user.services import UserService
+
             user = await UserService().get(uid=payload.user)
             if not user:
                 return OperationError(error=f"User with uid {payload.user} not found.")
@@ -1160,17 +1352,21 @@ class DocumentMutations:
                     update_data[field] = payload.__dict__[field]
 
         obj_in = schemas.DocumentSubscriptionUpdate(**update_data)
-        subscription = await DocumentSubscriptionService().update(subscription.uid, obj_in)
+        subscription = await DocumentSubscriptionService().update(
+            subscription.uid, obj_in
+        )
 
         return types.DocumentSubscriptionType(**subscription.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def delete_document_subscription(self, info, uid: str) -> responses.DocumentSubscriptionResponse:
-        felicity_user = await auth_from_info(info)
-
+    async def delete_document_subscription(
+        self, info, uid: str
+    ) -> responses.DocumentSubscriptionResponse:
         subscription = await DocumentSubscriptionService().get(uid=uid)
         if not subscription:
-            return OperationError(error=f"Document subscription with uid {uid} not found.")
+            return OperationError(
+                error=f"Document subscription with uid {uid} not found."
+            )
 
         await DocumentSubscriptionService().delete(uid)
         return types.DocumentSubscriptionType(**subscription.marshal_simple())
@@ -1178,14 +1374,16 @@ class DocumentMutations:
     # Document Audit Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_document_audit(
-            self, info, payload: inputs.DocumentAuditInputType
+        self, info, payload: inputs.DocumentAuditInputType
     ) -> responses.DocumentAuditResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if document exists
         document = await DocumentService().get(uid=payload.document)
         if not document:
-            return OperationError(error=f"Document with uid {payload.document} not found.")
+            return OperationError(
+                error=f"Document with uid {payload.document} not found."
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -1207,19 +1405,23 @@ class DocumentMutations:
     # Document Relation Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_document_relation(
-            self, info, payload: inputs.DocumentRelationInputType
+        self, info, payload: inputs.DocumentRelationInputType
     ) -> responses.DocumentRelationResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if source document exists
         source_document = await DocumentService().get(uid=payload.source_document)
         if not source_document:
-            return OperationError(error=f"Source document with uid {payload.source_document} not found.")
+            return OperationError(
+                error=f"Source document with uid {payload.source_document} not found."
+            )
 
         # Check if target document exists
         target_document = await DocumentService().get(uid=payload.target_document)
         if not target_document:
-            return OperationError(error=f"Target document with uid {payload.target_document} not found.")
+            return OperationError(
+                error=f"Target document with uid {payload.target_document} not found."
+            )
 
         # Prevent self-referencing
         if payload.source_document == payload.target_document:
@@ -1229,7 +1431,7 @@ class DocumentMutations:
         exists = await DocumentService().relation_exists(
             source_uid=payload.source_document,
             target_uid=payload.target_document,
-            relation_type=payload.relation_type
+            relation_type=payload.relation_type,
         )
         if exists:
             return OperationError(error="This relation already exists.")
@@ -1238,7 +1440,7 @@ class DocumentMutations:
         await DocumentService().add_relation(
             source_uid=payload.source_document,
             target_uid=payload.target_document,
-            relation_type=payload.relation_type
+            relation_type=payload.relation_type,
         )
 
         # Create audit record for relation creation
@@ -1256,25 +1458,29 @@ class DocumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_document_relation(
-            self, info, payload: inputs.DocumentRelationInputType
+        self, info, payload: inputs.DocumentRelationInputType
     ) -> responses.DocumentRelationResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if source document exists
         source_document = await DocumentService().get(uid=payload.source_document)
         if not source_document:
-            return OperationError(error=f"Source document with uid {payload.source_document} not found.")
+            return OperationError(
+                error=f"Source document with uid {payload.source_document} not found."
+            )
 
         # Check if target document exists
         target_document = await DocumentService().get(uid=payload.target_document)
         if not target_document:
-            return OperationError(error=f"Target document with uid {payload.target_document} not found.")
+            return OperationError(
+                error=f"Target document with uid {payload.target_document} not found."
+            )
 
         # Check if relation exists
         exists = await DocumentService().relation_exists(
             source_uid=payload.source_document,
             target_uid=payload.target_document,
-            relation_type=payload.relation_type
+            relation_type=payload.relation_type,
         )
         if not exists:
             return OperationError(error="This relation does not exist.")
@@ -1283,7 +1489,7 @@ class DocumentMutations:
         await DocumentService().remove_relation(
             source_uid=payload.source_document,
             target_uid=payload.target_document,
-            relation_type=payload.relation_type
+            relation_type=payload.relation_type,
         )
 
         # Create audit record for relation deletion

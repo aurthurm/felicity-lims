@@ -90,6 +90,9 @@ class Patient(LabScopedEntity):
         # Safely process identifications
         if self.identifications:
             for identification in self.identifications:
-                if hasattr(identification, 'sms_metadata') and identification.sms_metadata:
+                if (
+                    hasattr(identification, "sms_metadata")
+                    and identification.sms_metadata
+                ):
                     result.update(identification.sms_metadata)
         return result

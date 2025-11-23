@@ -18,7 +18,7 @@ from felicity.apps.patient.entities import Patient
 from felicity.apps.patient.search_indices import (
     PatientSearchIndex,
     PhoneSearchIndex,
-    DateSearchIndex
+    DateSearchIndex,
 )
 from felicity.core.config import settings
 from felicity.utils.exception_logger import log_exception
@@ -27,7 +27,7 @@ from felicity.utils.exception_logger import log_exception
 class SearchableEncryptionService:
     """
     Service for managing searchable encryption indices for patient data.
-    
+
     This service creates and maintains cryptographic indices that allow
     efficient searching of encrypted patient data without exposing plaintext.
     """
@@ -40,7 +40,11 @@ class SearchableEncryptionService:
 
     def _get_search_key(self) -> bytes:
         """Get the search key for HMAC operations."""
-        search_key = settings.SEARCH_ENCRYPTION_KEY if settings.SEARCH_ENCRYPTION_KEY else settings.SECRET_KEY
+        search_key = (
+            settings.SEARCH_ENCRYPTION_KEY
+            if settings.SEARCH_ENCRYPTION_KEY
+            else settings.SECRET_KEY
+        )
         return search_key.encode() if isinstance(search_key, str) else search_key
 
     def _create_search_hash(self, value: str, salt: str = "") -> str:
@@ -63,9 +67,15 @@ class SearchableEncryptionService:
 
         normalized = value.lower().strip()
         return {
-            'partial_hash_3': self._create_search_hash(normalized[:3]) if len(normalized) >= 3 else None,
-            'partial_hash_4': self._create_search_hash(normalized[:4]) if len(normalized) >= 4 else None,
-            'partial_hash_5': self._create_search_hash(normalized[:5]) if len(normalized) >= 5 else None,
+            "partial_hash_3": self._create_search_hash(normalized[:3])
+            if len(normalized) >= 3
+            else None,
+            "partial_hash_4": self._create_search_hash(normalized[:4])
+            if len(normalized) >= 4
+            else None,
+            "partial_hash_5": self._create_search_hash(normalized[:5])
+            if len(normalized) >= 5
+            else None,
         }
 
     def _create_phonetic_hash(self, value: str) -> Optional[str]:
@@ -74,19 +84,31 @@ class SearchableEncryptionService:
             return None
 
         # Remove non-alphabetic characters and convert to uppercase
-        clean_value = re.sub(r'[^A-Za-z]', '', value).upper()
+        clean_value = re.sub(r"[^A-Za-z]", "", value).upper()
         if not clean_value:
             return None
 
         # Simplified phonetic algorithm
         # Map similar sounding letters
         phonetic_map = {
-            'B': '1', 'F': '1', 'P': '1', 'V': '1',
-            'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
-            'D': '3', 'T': '3',
-            'L': '4',
-            'M': '5', 'N': '5',
-            'R': '6'
+            "B": "1",
+            "F": "1",
+            "P": "1",
+            "V": "1",
+            "C": "2",
+            "G": "2",
+            "J": "2",
+            "K": "2",
+            "Q": "2",
+            "S": "2",
+            "X": "2",
+            "Z": "2",
+            "D": "3",
+            "T": "3",
+            "L": "4",
+            "M": "5",
+            "N": "5",
+            "R": "6",
         }
 
         phonetic = clean_value[0]  # Keep first letter
@@ -108,7 +130,7 @@ class SearchableEncryptionService:
         """Normalize phone number by extracting digits only."""
         if not phone:
             return ""
-        return re.sub(r'[^\d]', '', phone)
+        return re.sub(r"[^\d]", "", phone)
 
     def _create_phone_hashes(self, phone: str) -> dict:
         """Create phone-specific search hashes."""
@@ -120,14 +142,20 @@ class SearchableEncryptionService:
             return {}
 
         result = {
-            'normalized_hash': self._create_search_hash(normalized),
-            'last_four_hash': self._create_search_hash(normalized[-4:]) if len(normalized) >= 4 else None,
+            "normalized_hash": self._create_search_hash(normalized),
+            "last_four_hash": self._create_search_hash(normalized[-4:])
+            if len(normalized) >= 4
+            else None,
         }
 
         # Extract area code (first 3 digits for US numbers)
         if len(normalized) >= 10:
-            area_code = normalized[:3] if normalized.startswith('1') and len(normalized) == 11 else normalized[:3]
-            result['area_code_hash'] = self._create_search_hash(area_code)
+            area_code = (
+                normalized[:3]
+                if normalized.startswith("1") and len(normalized) == 11
+                else normalized[:3]
+            )
+            result["area_code_hash"] = self._create_search_hash(area_code)
 
         return result
 
@@ -142,21 +170,19 @@ class SearchableEncryptionService:
         age_range = f"{(age // 10) * 10}-{((age // 10) + 1) * 10 - 1}"
 
         return {
-            'year_hash': self._create_search_hash(str(date_value.year)),
-            'month_hash': self._create_search_hash(f"{date_value.month:02d}"),
-            'day_hash': self._create_search_hash(f"{date_value.day:02d}"),
-            'date_hash': self._create_search_hash(date_value.strftime('%Y-%m-%d')),
-            'age_range_hash': self._create_search_hash(age_range),
+            "year_hash": self._create_search_hash(str(date_value.year)),
+            "month_hash": self._create_search_hash(f"{date_value.month:02d}"),
+            "day_hash": self._create_search_hash(f"{date_value.day:02d}"),
+            "date_hash": self._create_search_hash(date_value.strftime("%Y-%m-%d")),
+            "age_range_hash": self._create_search_hash(age_range),
         }
 
     async def create_patient_indices(
-            self,
-            patient: Patient,
-            session: Optional[AsyncSession] = None
+        self, patient: Patient, session: Optional[AsyncSession] = None
     ) -> None:
         """
         Create searchable indices for a patient.
-        
+
         Args:
             patient: Patient entity to index
             session: Optional database session
@@ -164,37 +190,37 @@ class SearchableEncryptionService:
         try:
             # Create text field indices
             text_fields = {
-                'first_name': patient.first_name,
-                'middle_name': patient.middle_name,
-                'last_name': patient.last_name,
-                'email': patient.email,
+                "first_name": patient.first_name,
+                "middle_name": patient.middle_name,
+                "last_name": patient.last_name,
+                "email": patient.email,
             }
 
             for field_name, field_value in text_fields.items():
                 if field_value:
                     # Create main search index
                     search_data = {
-                        'patient_uid': patient.uid,
-                        'field_name': field_name,
-                        'search_hash': self._create_search_hash(field_value),
-                        'phonetic_hash': self._create_phonetic_hash(field_value),
-                        **self._create_partial_hashes(field_value)
+                        "patient_uid": patient.uid,
+                        "field_name": field_name,
+                        "search_hash": self._create_search_hash(field_value),
+                        "phonetic_hash": self._create_phonetic_hash(field_value),
+                        **self._create_partial_hashes(field_value),
                     }
 
                     await self.patient_index_repo.create(session=session, **search_data)
 
             # Create phone indices
             phone_fields = {
-                'phone_mobile': patient.phone_mobile,
-                'phone_home': patient.phone_home,
+                "phone_mobile": patient.phone_mobile,
+                "phone_home": patient.phone_home,
             }
 
             for field_name, field_value in phone_fields.items():
                 if field_value:
                     phone_data = {
-                        'patient_uid': patient.uid,
-                        'field_name': field_name,
-                        **self._create_phone_hashes(field_value)
+                        "patient_uid": patient.uid,
+                        "field_name": field_name,
+                        **self._create_phone_hashes(field_value),
                     }
 
                     await self.phone_index_repo.create(session=session, **phone_data)
@@ -205,15 +231,15 @@ class SearchableEncryptionService:
                 dob = patient.date_of_birth
                 if isinstance(dob, str):
                     try:
-                        dob = datetime.fromisoformat(dob.replace('Z', '+00:00'))
+                        dob = datetime.fromisoformat(dob.replace("Z", "+00:00"))
                     except (ValueError, TypeError):
                         dob = None
 
                 if dob:
                     date_data = {
-                        'patient_uid': patient.uid,
-                        'field_name': 'date_of_birth',
-                        **self._create_date_hashes(dob)
+                        "patient_uid": patient.uid,
+                        "field_name": "date_of_birth",
+                        **self._create_date_hashes(dob),
                     }
 
                     await self.date_index_repo.create(session=session, **date_data)
@@ -223,13 +249,11 @@ class SearchableEncryptionService:
             raise
 
     async def update_patient_indices(
-            self,
-            patient: Patient,
-            session: Optional[AsyncSession] = None
+        self, patient: Patient, session: Optional[AsyncSession] = None
     ) -> None:
         """
         Update searchable indices for a patient.
-        
+
         Args:
             patient: Patient entity to update indices for
             session: Optional database session
@@ -246,39 +270,43 @@ class SearchableEncryptionService:
             raise
 
     async def delete_patient_indices(
-            self,
-            patient_uid: str,
-            session: Optional[AsyncSession] = None
+        self, patient_uid: str, session: Optional[AsyncSession] = None
     ) -> None:
         """
         Delete all searchable indices for a patient.
-        
+
         Args:
             patient_uid: UID of the patient
             session: Optional database session
         """
         try:
-            await self.patient_index_repo.delete_where(patient_uid=patient_uid, session=session)
-            await self.phone_index_repo.delete_where(patient_uid=patient_uid, session=session)
-            await self.date_index_repo.delete_where(patient_uid=patient_uid, session=session)
+            await self.patient_index_repo.delete_where(
+                patient_uid=patient_uid, session=session
+            )
+            await self.phone_index_repo.delete_where(
+                patient_uid=patient_uid, session=session
+            )
+            await self.date_index_repo.delete_where(
+                patient_uid=patient_uid, session=session
+            )
 
         except Exception as e:
             log_exception(e)
             raise
 
     async def search_by_indices(
-            self,
-            first_name: Optional[str] = None,
-            last_name: Optional[str] = None,
-            email: Optional[str] = None,
-            phone: Optional[str] = None,
-            date_of_birth: Optional[str] = None,
-            fuzzy_match: bool = False,
-            session: Optional[AsyncSession] = None
+        self,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email: Optional[str] = None,
+        phone: Optional[str] = None,
+        date_of_birth: Optional[str] = None,
+        fuzzy_match: bool = False,
+        session: Optional[AsyncSession] = None,
     ) -> Set[str]:
         """
         Search for patient UIDs using searchable indices.
-        
+
         Args:
             first_name: First name to search for
             last_name: Last name to search for
@@ -287,7 +315,7 @@ class SearchableEncryptionService:
             date_of_birth: Date of birth to search for (YYYY-MM-DD format)
             fuzzy_match: Whether to use phonetic matching
             session: Optional database session
-            
+
         Returns:
             Set of patient UIDs matching the search criteria
         """
@@ -296,9 +324,9 @@ class SearchableEncryptionService:
 
             # Search text fields
             text_searches = {
-                'first_name': first_name,
-                'last_name': last_name,
-                'email': email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
             }
 
             for field_name, search_value in text_searches.items():
@@ -308,9 +336,7 @@ class SearchableEncryptionService:
                     # Exact hash match
                     search_hash = self._create_search_hash(search_value)
                     exact_matches = await self.patient_index_repo.get_all(
-                        field_name=field_name,
-                        search_hash=search_hash,
-                        session=session
+                        field_name=field_name, search_hash=search_hash, session=session
                     )
                     field_uids.update(idx.patient_uid for idx in exact_matches)
 
@@ -322,9 +348,11 @@ class SearchableEncryptionService:
                                 partial_matches = await self.patient_index_repo.get_all(
                                     field_name=field_name,
                                     **{partial_field: partial_hash},
-                                    session=session
+                                    session=session,
                                 )
-                                field_uids.update(idx.patient_uid for idx in partial_matches)
+                                field_uids.update(
+                                    idx.patient_uid for idx in partial_matches
+                                )
 
                     # Phonetic match if enabled
                     if fuzzy_match:
@@ -333,9 +361,11 @@ class SearchableEncryptionService:
                             phonetic_matches = await self.patient_index_repo.get_all(
                                 field_name=field_name,
                                 phonetic_hash=phonetic_hash,
-                                session=session
+                                session=session,
                             )
-                            field_uids.update(idx.patient_uid for idx in phonetic_matches)
+                            field_uids.update(
+                                idx.patient_uid for idx in phonetic_matches
+                            )
 
                     # Intersect or union results
                     matching_uids.update(field_uids)
@@ -348,8 +378,7 @@ class SearchableEncryptionService:
                 for hash_field, hash_value in phone_hashes.items():
                     if hash_value:
                         phone_matches = await self.phone_index_repo.get_all(
-                            **{hash_field: hash_value},
-                            session=session
+                            **{hash_field: hash_value}, session=session
                         )
                         phone_uids.update(idx.patient_uid for idx in phone_matches)
 
@@ -359,16 +388,16 @@ class SearchableEncryptionService:
             # Search dates
             if date_of_birth:
                 try:
-                    dob = datetime.strptime(date_of_birth, '%Y-%m-%d')
+                    dob = datetime.strptime(date_of_birth, "%Y-%m-%d")
                     date_hashes = self._create_date_hashes(dob)
                     date_uids = set()
 
                     # Use exact date hash for precise matching
-                    if date_hashes.get('date_hash'):
+                    if date_hashes.get("date_hash"):
                         date_matches = await self.date_index_repo.get_all(
-                            field_name='date_of_birth',
-                            date_hash=date_hashes['date_hash'],
-                            session=session
+                            field_name="date_of_birth",
+                            date_hash=date_hashes["date_hash"],
+                            session=session,
                         )
                         date_uids.update(idx.patient_uid for idx in date_matches)
 

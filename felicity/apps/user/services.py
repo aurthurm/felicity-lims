@@ -4,7 +4,14 @@ from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.exceptions import AlreadyExistsError, ValidationError
-from felicity.apps.user.entities import Group, Permission, User, UserPreference, user_groups, permission_groups
+from felicity.apps.user.entities import (
+    Group,
+    Permission,
+    User,
+    UserPreference,
+    user_groups,
+    permission_groups,
+)
 from felicity.apps.user.repository import (
     GroupRepository,
     PermissionRepository,
@@ -30,7 +37,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         super().__init__(UserRepository())
 
     async def create(
-            self, user_in: UserCreate, related: list[str] | None = None
+        self, user_in: UserCreate, related: list[str] | None = None
     ) -> User:
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
@@ -125,40 +132,41 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
     async def get_user_permissions(self, user_uid: str) -> list[Permission]:
         user = await self.get(uid=user_uid)
         is_global = user.user_name in [
-            settings.SYSTEM_DAEMON_USERNAME, settings.FIRST_SUPERUSER_USERNAME
+            settings.SYSTEM_DAEMON_USERNAME,
+            settings.FIRST_SUPERUSER_USERNAME,
         ]
         if is_global:
             user_groups_uid = await self.repository.table_query(
-                user_groups, ["group_uid"],
-                user_uid=user_uid
+                user_groups, ["group_uid"], user_uid=user_uid
             )
         else:
             user_groups_uid = await self.repository.table_query(
-                user_groups, ["group_uid"],
-                user_uid=user_uid
+                user_groups, ["group_uid"], user_uid=user_uid
             )
         permissions_uid = set()
         for user_group_uid in user_groups_uid:
             if is_global:
                 groups_permissions = await self.repository.table_query(
-                    permission_groups, ["permission_uid"],
-                    group_uid=user_group_uid
+                    permission_groups, ["permission_uid"], group_uid=user_group_uid
                 )
             else:
                 groups_permissions = await self.repository.table_query(
-                    permission_groups, ["permission_uid"],
-                    group_uid=user_group_uid
+                    permission_groups, ["permission_uid"], group_uid=user_group_uid
                 )
             for permission_uid in groups_permissions:
                 permissions_uid.add(permission_uid)
         return await PermissionService().get_by_uids(list(permissions_uid))
 
     async def get_user_groups(self, user_uid: str) -> list[Group]:
-        user_groups_uid = await self.repository.table_query(user_groups, ["group_uid"], user_uid=user_uid)
-        return await GroupService().get_by_uids(user_groups_uid) if user_groups_uid else []
+        user_groups_uid = await self.repository.table_query(
+            user_groups, ["group_uid"], user_uid=user_uid
+        )
+        return (
+            await GroupService().get_by_uids(user_groups_uid) if user_groups_uid else []
+        )
 
     async def set_active_laboratory(self, user_uid: str, laboratory_uid: str) -> None:
-        await super().update(user_uid, {'active_laboratory_uid': laboratory_uid})
+        await super().update(user_uid, {"active_laboratory_uid": laboratory_uid})
 
     async def get_users_by_laboratory(self, laboratory_uid: str) -> list[User]:
         """Get all users assigned to a specific laboratory"""
@@ -168,7 +176,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         """Get all laboratory UIDs a user has access to"""
         return await self.repository.get_laboratories_by_user(user_uid)
 
-    async def assign_user_to_laboratory(self, user_uid: str, laboratory_uid: str) -> User:
+    async def assign_user_to_laboratory(
+        self, user_uid: str, laboratory_uid: str
+    ) -> User:
         """Assign a user to a laboratory"""
         user = await self.get(uid=user_uid)
         if not user:
@@ -176,6 +186,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
 
         # Check if laboratory exists
         from felicity.apps.setup.services import LaboratoryService
+
         laboratory = await LaboratoryService().get(uid=laboratory_uid)
         if not laboratory:
             raise ValueError(f"Laboratory with uid '{laboratory_uid}' not found")
@@ -188,7 +199,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
 
         return await self.get(uid=user_uid)
 
-    async def remove_user_from_laboratory(self, user_uid: str, laboratory_uid: str) -> User:
+    async def remove_user_from_laboratory(
+        self, user_uid: str, laboratory_uid: str
+    ) -> User:
         """Remove a user from a laboratory"""
         user = await self.get(uid=user_uid)
         if not user:
@@ -208,7 +221,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         return await self.get(uid=user_uid)
 
     async def search_users(
-            self, text: str, laboratory_uid: str = None, limit: int = 10
+        self, text: str, laboratory_uid: str = None, limit: int = 10
     ) -> list[User]:
         """Search users by text"""
         return await self.repository.search_users(text, laboratory_uid, limit)
@@ -218,7 +231,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         return await self.repository.get_user_by_email_or_username(identifier)
 
     async def create_user_with_laboratory(
-            self, user_data: UserCreate, laboratory_uid: str, group_uid: str = None
+        self, user_data: UserCreate, laboratory_uid: str, group_uid: str = None
     ) -> User:
         """Create a new user and assign to laboratory"""
         # Create the user
@@ -238,7 +251,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         return user
 
     async def bulk_assign_users_to_laboratory(
-            self, user_uids: list[str], laboratory_uid: str
+        self, user_uids: list[str], laboratory_uid: str
     ) -> list[User]:
         """Assign multiple users to a laboratory"""
         results = []
@@ -269,7 +282,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
             "permissions": permissions,
             "is_active": user.is_active,
             "is_blocked": user.is_blocked,
-            "is_superuser": user.is_superuser
+            "is_superuser": user.is_superuser,
         }
 
 
@@ -281,18 +294,22 @@ class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
         """Get all groups for a specific laboratory or global groups"""
         return await self.repository.get_groups_by_laboratory(laboratory_uid)
 
-    async def get_group_by_name(self, name: str, laboratory_uid: str = None) -> Group | None:
+    async def get_group_by_name(
+        self, name: str, laboratory_uid: str = None
+    ) -> Group | None:
         """Get group by name within laboratory scope"""
         return await self.repository.get_group_by_name(name, laboratory_uid)
 
     async def create_group_for_laboratory(
-            self, group_data: GroupCreate, laboratory_uid: str = None
+        self, group_data: GroupCreate, laboratory_uid: str = None
     ) -> Group:
         """Create a new group in laboratory context"""
         # Check if group already exists in this context
         existing = await self.get_group_by_name(group_data.name, laboratory_uid)
         if existing:
-            scope = "globally" if not laboratory_uid else f"in laboratory {laboratory_uid}"
+            scope = (
+                "globally" if not laboratory_uid else f"in laboratory {laboratory_uid}"
+            )
             raise ValueError(f"Group '{group_data.name}' already exists {scope}")
 
         # Set laboratory context
@@ -303,13 +320,13 @@ class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
         return await self.create(group_dict)
 
     async def search_groups(
-            self, text: str, laboratory_uid: str = None, limit: int = 10
+        self, text: str, laboratory_uid: str = None, limit: int = 10
     ) -> list[Group]:
         """Search groups by text"""
         return await self.repository.search_groups(text, laboratory_uid, limit)
 
     async def assign_permission_to_group(
-            self, group_uid: str, permission_uid: str, laboratory_uid: str = None
+        self, group_uid: str, permission_uid: str, laboratory_uid: str = None
     ) -> Group:
         """Assign a permission to a group"""
         group = await self.get(uid=group_uid)
@@ -321,49 +338,65 @@ class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
         if not permission:
             raise ValueError(f"Permission with uid '{permission_uid}' not found")
 
-        await self.repository.assign_permission_to_group(group_uid, permission_uid, laboratory_uid)
+        await self.repository.assign_permission_to_group(
+            group_uid, permission_uid, laboratory_uid
+        )
 
         # Return updated group with permissions
-        return await self.get(uid=group_uid, related=['permissions'])
+        return await self.get(uid=group_uid, related=["permissions"])
 
     async def remove_permission_from_group(
-            self, group_uid: str, permission_uid: str, laboratory_uid: str = None
+        self, group_uid: str, permission_uid: str, laboratory_uid: str = None
     ) -> Group:
         """Remove a permission from a group"""
         group = await self.get(uid=group_uid)
         if not group:
             raise ValueError(f"Group with uid '{group_uid}' not found")
 
-        await self.repository.remove_permission_from_group(group_uid, permission_uid, laboratory_uid)
+        await self.repository.remove_permission_from_group(
+            group_uid, permission_uid, laboratory_uid
+        )
 
         # Return updated group with permissions
-        return await self.get(uid=group_uid, related=['permissions'])
+        return await self.get(uid=group_uid, related=["permissions"])
 
-    async def get_groups_with_permission(self, permission_uid: str, laboratory_uid: str = None) -> list[Group]:
+    async def get_groups_with_permission(
+        self, permission_uid: str, laboratory_uid: str = None
+    ) -> list[Group]:
         """Get all groups that have a specific permission"""
-        return await self.repository.get_groups_with_permission(permission_uid, laboratory_uid)
+        return await self.repository.get_groups_with_permission(
+            permission_uid, laboratory_uid
+        )
 
-    async def clone_group_to_laboratory(self, group_uid: str, target_laboratory_uid: str) -> Group:
+    async def clone_group_to_laboratory(
+        self, group_uid: str, target_laboratory_uid: str
+    ) -> Group:
         """Clone a group from global or another laboratory to target laboratory"""
-        source_group = await self.get(uid=group_uid, related=['permissions'])
+        source_group = await self.get(uid=group_uid, related=["permissions"])
         if not source_group:
             raise ValueError(f"Source group with uid '{group_uid}' not found")
 
         # Check if group already exists in target laboratory
-        existing = await self.get_group_by_name(source_group.name, target_laboratory_uid)
+        existing = await self.get_group_by_name(
+            source_group.name, target_laboratory_uid
+        )
         if existing:
-            raise ValueError(f"Group '{source_group.name}' already exists in target laboratory")
+            raise ValueError(
+                f"Group '{source_group.name}' already exists in target laboratory"
+            )
 
         # Create new group data
         group_data = GroupCreate(
             name=source_group.name,
             keyword=source_group.keyword,
             pages=source_group.pages,
-            active=source_group.active
+            active=source_group.active,
         )
 
         # Create the group in target laboratory
-        new_group = await self.create_group_for_laboratory(group_data, target_laboratory_uid)
+        new_group = await self.create_group_for_laboratory(
+            group_data, target_laboratory_uid
+        )
 
         # Copy permissions
         if source_group.permissions:
@@ -372,14 +405,16 @@ class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
                     new_group.uid, permission.uid, target_laboratory_uid
                 )
 
-        return await self.get(uid=new_group.uid, related=['permissions'])
+        return await self.get(uid=new_group.uid, related=["permissions"])
 
 
 class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):
     def __init__(self):
         super().__init__(PermissionRepository())
 
-    async def get_permissions_by_action_target(self, action: str, target: str) -> list[Permission]:
+    async def get_permissions_by_action_target(
+        self, action: str, target: str
+    ) -> list[Permission]:
         """Get permissions by action and target"""
         return await self.repository.get_permissions_by_action_target(action, target)
 
@@ -395,21 +430,23 @@ class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpda
         """Search permissions by text"""
         return await self.repository.search_permissions(text, limit)
 
-    async def create_permission_if_not_exists(self, action: str, target: str) -> Permission:
+    async def create_permission_if_not_exists(
+        self, action: str, target: str
+    ) -> Permission:
         """Create a permission if it doesn't already exist"""
-        existing = await self.repository.get_permissions_by_action_target(action, target)
+        existing = await self.repository.get_permissions_by_action_target(
+            action, target
+        )
         if existing:
             return existing[0]
 
-        permission_data = PermissionCreate(
-            action=action,
-            target=target,
-            active=True
-        )
+        permission_data = PermissionCreate(action=action, target=target, active=True)
 
         return await self.create(permission_data)
 
-    async def bulk_create_permissions(self, permissions_data: list[dict]) -> list[Permission]:
+    async def bulk_create_permissions(
+        self, permissions_data: list[dict]
+    ) -> list[Permission]:
         """Create multiple permissions at once"""
         created_permissions = []
 
@@ -432,7 +469,9 @@ class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpda
             raise ValueError(f"Permission with uid '{permission_uid}' not found")
 
         # Get groups with this permission (both global and lab-specific)
-        global_groups = await GroupService().get_groups_with_permission(permission_uid, None)
+        global_groups = await GroupService().get_groups_with_permission(
+            permission_uid, None
+        )
 
         # This could be extended to get lab-specific groups as well
         # For now, just return global usage
@@ -440,7 +479,7 @@ class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpda
         return {
             "permission": permission,
             "global_groups": global_groups,
-            "total_groups": len(global_groups)
+            "total_groups": len(global_groups),
         }
 
 

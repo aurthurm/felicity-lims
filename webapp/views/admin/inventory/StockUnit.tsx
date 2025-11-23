@@ -1,13 +1,13 @@
-import {computed, defineComponent, reactive, ref} from 'vue';
+import { computed, defineComponent, reactive, ref } from 'vue';
 import {
     AddStockUnitDocument,
     AddStockUnitMutation,
     AddStockUnitMutationVariables,
     EditStockUnitDocument,
     EditStockUnitMutation,
-    EditStockUnitMutationVariables
+    EditStockUnitMutationVariables,
 } from '@/graphql/operations/inventory.mutations';
-import {useInventoryStore} from '@/stores/inventory';
+import { useInventoryStore } from '@/stores/inventory';
 import useApiUtil from '@/composables/api_util';
 import { StockUnitType } from '@/types/gql';
 
@@ -15,7 +15,7 @@ const StockUnit = defineComponent({
     name: 'stock-unit',
     setup(props, ctx) {
         const inventoryStore = useInventoryStore();
-        const {withClientMutation} = useApiUtil();
+        const { withClientMutation } = useApiUtil();
 
         let showModal = ref(false);
         let formTitle = ref('');
@@ -26,30 +26,36 @@ const StockUnit = defineComponent({
         const stockUnits = computed(() => inventoryStore.getUnits);
 
         function addStockUnit(): void {
-            const payload = {...form};
-            withClientMutation<AddStockUnitMutation, AddStockUnitMutationVariables>(AddStockUnitDocument, {payload}, 'createStockUnit').then(result => inventoryStore.addUnit(result));
+            const payload = { ...form };
+            withClientMutation<AddStockUnitMutation, AddStockUnitMutationVariables>(
+                AddStockUnitDocument,
+                { payload },
+                'createStockUnit'
+            ).then(result => inventoryStore.addUnit(result));
         }
 
         function editStockUnit(): void {
             const payload = {
                 name: form.name,
             };
-            withClientMutation<EditStockUnitMutation, EditStockUnitMutationVariables>(EditStockUnitDocument, {
-                uid: form.uid,
-                payload
-            }, 'updateStockUnit').then(result =>
-                inventoryStore.updateUnit(result as any)
-            );
+            withClientMutation<EditStockUnitMutation, EditStockUnitMutationVariables>(
+                EditStockUnitDocument,
+                {
+                    uid: form.uid,
+                    payload,
+                },
+                'updateStockUnit'
+            ).then(result => inventoryStore.updateUnit(result as any));
         }
 
-        function FormManager(create: boolean, obj: StockUnitType  | null): void {
+        function FormManager(create: boolean, obj: StockUnitType | null): void {
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK UNIT';
             showModal.value = true;
             if (create) {
                 Object.assign(form, {} as StockUnitType);
             } else {
-                Object.assign(form, {...obj});
+                Object.assign(form, { ...obj });
             }
         }
 
@@ -114,7 +120,13 @@ const StockUnit = defineComponent({
                         {{
                             header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
                             body: () => (
-                                <form onSubmit={(e) => { e.preventDefault(); this.saveForm(); }} class="space-y-6">
+                                <form
+                                    onSubmit={e => {
+                                        e.preventDefault();
+                                        this.saveForm();
+                                    }}
+                                    class="space-y-6"
+                                >
                                     <div class="space-y-4">
                                         <div class="space-y-2">
                                             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -122,7 +134,7 @@ const StockUnit = defineComponent({
                                             </label>
                                             <input
                                                 value={this.form.name}
-                                                onChange={(e) => this.form.name = e.target.value}
+                                                onChange={e => (this.form.name = e.target.value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter unit name..."
                                             />
@@ -137,7 +149,7 @@ const StockUnit = defineComponent({
                                         </button>
                                     </div>
                                 </form>
-                            )
+                            ),
                         }}
                     </fel-modal>
                 )}
@@ -146,5 +158,5 @@ const StockUnit = defineComponent({
     },
 });
 
-export {StockUnit};
-export default StockUnit
+export { StockUnit };
+export default StockUnit;

@@ -3,7 +3,7 @@
  * @param str - String to check
  * @returns boolean indicating if string is empty
  */
-export const isNullOrWs = (str: any): boolean => 
+export const isNullOrWs = (str: any): boolean =>
     typeof str === 'undefined' || str === null || (typeof str === 'string' && str.trim().length === 0);
 
 /**
@@ -20,15 +20,15 @@ export const hasValue = (x: any): boolean => [undefined, null, ''].includes(x);
  */
 export const snakeToCamel = (val: any): any => {
     const convert = (s: string): string => s.replace(/(_\w)/g, (k: string) => k[1].toUpperCase());
-    
+
     if (typeof val === 'object') {
         return Object.entries(val).reduce((x: any, [k, v]) => (x[convert(k)] = v) && x, {});
     }
-    
+
     if (typeof val === 'string') {
         return convert(val);
     }
-    
+
     throw new Error('Invalid input for snakeToCamel conversion');
 };
 
@@ -67,7 +67,7 @@ export const getUserInitials = (firstName?: string, lastName?: string): string =
     const first = firstName?.charAt(0).toUpperCase() || '';
     const last = lastName?.charAt(0).toUpperCase() || '';
     return `${first}${last}`;
-}; 
+};
 
 const special = [
     'zeroth',

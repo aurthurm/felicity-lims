@@ -3,19 +3,29 @@ import { ref, watch } from 'vue';
 import { AuthenticatedData, LaboratoryType, UserType } from '@/types/gql';
 import { STORAGE_AUTH_KEY } from '@/conf';
 import {
-    AuthenticateUserDocument, AuthenticateUserMutation, AuthenticateUserMutationVariables,
-    TokenRefreshDocument, TokenRefreshMutation, TokenRefreshMutationVariables,
-    RequestPassResetDocument, RequestPassResetMutation, RequestPassResetMutationVariables,
-    PasswordResetDocument, PasswordResetMutation, PasswordResetMutationVariables,
-    ValidatePassResetTokenDocument, ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables, 
-    SwitchActiveLaboratoryDocument
+    AuthenticateUserDocument,
+    AuthenticateUserMutation,
+    AuthenticateUserMutationVariables,
+    TokenRefreshDocument,
+    TokenRefreshMutation,
+    TokenRefreshMutationVariables,
+    RequestPassResetDocument,
+    RequestPassResetMutation,
+    RequestPassResetMutationVariables,
+    PasswordResetDocument,
+    PasswordResetMutation,
+    PasswordResetMutationVariables,
+    ValidatePassResetTokenDocument,
+    ValidatePassResetTokenMutation,
+    ValidatePassResetTokenMutationVariables,
+    SwitchActiveLaboratoryDocument,
 } from '@/graphql/operations/_mutations';
-import useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import jwtDecode from 'jwt-decode';
 import { authFromStorageSync, authToStorage } from '@/auth';
 import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables } from '@/types/gqlops';
 
-const { withClientMutation } = useApiUtil();    
+const { withClientMutation } = useApiUtil();
 
 interface IAuth {
     token?: string;
@@ -31,8 +41,8 @@ interface IAuth {
         canReset: boolean;
         username?: string;
     };
-    activeLaboratory?: LaboratoryType,
-    laboratories?: LaboratoryType[]
+    activeLaboratory?: LaboratoryType;
+    laboratories?: LaboratoryType[];
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -51,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
             username: '',
         },
         activeLaboratory: undefined,
-        laboratories: undefined
+        laboratories: undefined,
     };
 
     const auth = ref({ ...initialState });
@@ -81,27 +91,27 @@ export const useAuthStore = defineStore('auth', () => {
             console.error('No refresh token available');
             return;
         }
-        
+
         // Prevent multiple refresh attempts
         if (auth.value.processing) {
             console.warn('Token refresh already in progress');
             return;
         }
-        
+
         auth.value.processing = true;
-        
+
         try {
             const res = await withClientMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(
-                TokenRefreshDocument, 
-                { refreshToken: auth.value.refresh }, 
+                TokenRefreshDocument,
+                { refreshToken: auth.value.refresh },
                 'refresh'
             );
-            
+
             if (!res) {
                 console.warn('Token refresh returned no data');
                 return;
             }
-            
+
             await persistAuth(res);
             // The watch function will handle starting a new timer
         } catch (err) {
@@ -112,37 +122,36 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const startRefreshTokenTimer = () => {
-        
         if (!auth.value.token) return;
-        
+
         try {
             // Clear any existing timer first
             stopRefreshTokenTimer();
-            
+
             const decodedToken: any = jwtDecode(auth.value.token);
             if (!decodedToken || !decodedToken.exp) {
                 console.error('Invalid token format');
                 return;
             }
-            
+
             // Calculate time until token expires (in milliseconds)
-            const expiresAt = new Date(+(decodedToken.exp) * 1000);
+            const expiresAt = new Date(+decodedToken.exp * 1000);
             const now = new Date();
             const timeUntilExpiry = expiresAt.getTime() - now.getTime();
-            
+
             // Refresh 5 minutes before expiry
             const refreshTime = 5 * 60 * 1000; // 5 minutes in milliseconds
             const timeout = Math.max(0, timeUntilExpiry - refreshTime);
-            
+
             // If token is already expired or will expire in less than 5 minutes
             if (timeout <= 0) {
                 console.warn('Token is expired or about to expire, refreshing immediately');
                 refreshToken();
                 return;
             }
-            
+
             console.log(`Setting refresh token timer for ${new Date(now.getTime() + timeout).toLocaleTimeString()}`);
-            
+
             // Set new timer
             auth.value.refreshTokenTimeout = setTimeout(() => {
                 refreshToken();
@@ -176,19 +185,22 @@ export const useAuthStore = defineStore('auth', () => {
     initializeFromStorage();
 
     // Watch for changes to auth state
-    watch(() => auth.value, (authValue, oldValue) => {
-        // Only update storage and start timer if token or user has changed
-        if ((authValue?.token !== oldValue?.token || authValue?.user !== oldValue?.user) && 
-            authValue?.user && authValue?.token) {
-            try {
-                authToStorage(authValue as AuthenticatedData);
-                // startRefreshTokenTimer();
-            } catch (error) {
-                console.error('Failed to persist auth state:', error);
-                reset();
+    watch(
+        () => auth.value,
+        (authValue, oldValue) => {
+            // Only update storage and start timer if token or user has changed
+            if ((authValue?.token !== oldValue?.token || authValue?.user !== oldValue?.user) && authValue?.user && authValue?.token) {
+                try {
+                    authToStorage(authValue as AuthenticatedData);
+                    // startRefreshTokenTimer();
+                } catch (error) {
+                    console.error('Failed to persist auth state:', error);
+                    reset();
+                }
             }
-        }
-    }, { deep: true });
+        },
+        { deep: true }
+    );
 
     const persistAuth = async (data: any) => {
         try {
@@ -206,21 +218,21 @@ export const useAuthStore = defineStore('auth', () => {
     const authenticate = async (payload: AuthenticateUserMutationVariables) => {
         auth.value.processing = true;
         await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(
-            AuthenticateUserDocument, 
-            payload, 
+            AuthenticateUserDocument,
+            payload,
             'authenticateUser'
         )
-        .then(res => {
-            if(!res) {
+            .then(res => {
+                if (!res) {
+                    auth.value.processing = false;
+                    return;
+                }
+                persistAuth(res);
+            })
+            .catch(err => {
+                console.error('Authentication failed:', err);
                 auth.value.processing = false;
-                return;
-            }
-            persistAuth(res);
-        })
-        .catch(err => {
-            console.error('Authentication failed:', err);
-            auth.value.processing = false;
-        });
+            });
     };
 
     const setForgotPassword = (v: boolean) => {
@@ -234,38 +246,38 @@ export const useAuthStore = defineStore('auth', () => {
     const resetPasswordRequest = async (email: string) => {
         auth.value.processing = true;
         await withClientMutation<RequestPassResetMutation, RequestPassResetMutationVariables>(
-            RequestPassResetDocument, 
-            { email }, 
+            RequestPassResetDocument,
+            { email },
             'requestPasswordReset'
         )
-        .then(({ message }) => {
-            setReceivedResetToken(true);
-            auth.value.processing = false;
-        })
-        .catch(err => {
-            console.error('Password reset request failed:', err);
-            auth.value.processing = false;
-        });
+            .then(({ message }) => {
+                setReceivedResetToken(true);
+                auth.value.processing = false;
+            })
+            .catch(err => {
+                console.error('Password reset request failed:', err);
+                auth.value.processing = false;
+            });
     };
 
     const validatePasswordResetToken = async (token: string) => {
         auth.value.processing = true;
         await withClientMutation<ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables>(
-            ValidatePassResetTokenDocument, 
-            { token }, 
+            ValidatePassResetTokenDocument,
+            { token },
             'validatePasswordResetToken'
         )
-        .then(res => {
-            auth.value.resetData = {
-                canReset: !!!res?.username,
-                username: res?.username
-            };
-            auth.value.processing = false;
-        })
-        .catch(err => {
-            console.error('Token validation failed:', err);
-            auth.value.processing = false;
-        });
+            .then(res => {
+                auth.value.resetData = {
+                    canReset: !!!res?.username,
+                    username: res?.username,
+                };
+                auth.value.processing = false;
+            })
+            .catch(err => {
+                console.error('Token validation failed:', err);
+                auth.value.processing = false;
+            });
     };
 
     const resetPassword = async (password: string, passwordc: string) => {
@@ -277,22 +289,22 @@ export const useAuthStore = defineStore('auth', () => {
 
         auth.value.processing = true;
         await withClientMutation<PasswordResetMutation, PasswordResetMutationVariables>(
-            PasswordResetDocument, 
-            { 
-                userUid: auth.value.resetData.username, 
-                password, 
-                passwordc 
-            }, 
+            PasswordResetDocument,
+            {
+                userUid: auth.value.resetData.username,
+                password,
+                passwordc,
+            },
             'resetPassword'
         )
-        .then(res => {
-            setForgotPassword(false);
-            auth.value.processing = false;
-        })
-        .catch(err => {
-            console.error('Password reset failed:', err);
-            auth.value.processing = false;
-        });
+            .then(res => {
+                setForgotPassword(false);
+                auth.value.processing = false;
+            })
+            .catch(err => {
+                console.error('Password reset failed:', err);
+                auth.value.processing = false;
+            });
     };
 
     return {
@@ -305,6 +317,6 @@ export const useAuthStore = defineStore('auth', () => {
         setForgotPassword,
         reset,
         persistAuth,
-        logout
+        logout,
     };
 });

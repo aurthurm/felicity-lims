@@ -64,12 +64,17 @@ class ClientContactInputType:
 @strawberry.type
 class ClientMutations:
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.CLIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.CLIENT),
+                ]
+            )
+        ]
     )
     async def create_client(
-            self, info: Info, payload: ClientInputType
+        self, info: Info, payload: ClientInputType
     ) -> ClientResponse:
         felicity_user = await auth_from_info(info)
 
@@ -110,12 +115,17 @@ class ClientMutations:
         return ClientType(**client.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.CLIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.CLIENT),
+                ]
+            )
+        ]
     )
     async def update_client(
-            self, info, uid: str, payload: ClientInputType
+        self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
         await auth_from_info(info)
 
@@ -140,12 +150,17 @@ class ClientMutations:
         return ClientType(**client.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.CLIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.CLIENT),
+                ]
+            )
+        ]
     )
     async def create_client_contact(
-            self, info, payload: ClientContactInputType
+        self, info, payload: ClientContactInputType
     ) -> ClientContactResponse:
         felicity_user = await auth_from_info(info)
 
@@ -181,12 +196,17 @@ class ClientMutations:
         )
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.CLIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.CLIENT),
+                ]
+            )
+        ]
     )
     async def update_client_contact(
-            self, info, uid: str, payload: ClientContactInputType
+        self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
         await auth_from_info(info)
 
@@ -213,9 +233,14 @@ class ClientMutations:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.CLIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.DELETE, FObject.CLIENT),
+                ]
+            )
+        ]
     )
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
         await auth_from_info(info)

@@ -15,8 +15,7 @@ const isValidJson = (str: any): boolean => {
 /**
  * Check if an object is empty
  */
-export const isEmptyObject = (obj: any): boolean => 
-    obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype;
+export const isEmptyObject = (obj: any): boolean => obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype;
 
 /**
  * Check if  empty
@@ -24,7 +23,7 @@ export const isEmptyObject = (obj: any): boolean =>
 export const ifZeroEmpty = (val: any): any => {
     if (val === undefined) return '';
     return val === 0 ? '' : val;
-}
+};
 
 /**
  * Parse data into an object
@@ -45,8 +44,7 @@ export const parseUrlParams = (): Record<string, string> => {
 
     const str = search.replace(/&/g, '","').replace(/=/g, '":"');
     const json = `{"${str}"}`;
-    const transform = (key: any, value: any) => 
-        (isNullOrWs(key) ? value : decodeURIComponent(value));
+    const transform = (key: any, value: any) => (isNullOrWs(key) ? value : decodeURIComponent(value));
 
     return isValidJson(json) ? JSON.parse(json, transform) : {};
 };
@@ -54,8 +52,7 @@ export const parseUrlParams = (): Record<string, string> => {
 /**
  * Check if an object is a plain object
  */
-export const isObject = (obj: any): boolean => 
-    obj === Object(obj) && !Array.isArray(obj) && typeof obj !== 'function';
+export const isObject = (obj: any): boolean => obj === Object(obj) && !Array.isArray(obj) && typeof obj !== 'function';
 
 /**
  * Convert all object keys to camelCase
@@ -71,4 +68,4 @@ export const keysToCamel = (obj: any): any => {
         return obj.map(i => keysToCamel(i));
     }
     return obj;
-}; 
+};

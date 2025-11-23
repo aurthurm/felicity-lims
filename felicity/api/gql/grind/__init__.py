@@ -1,5 +1,15 @@
-from felicity.api.gql.grind.types import GrindSchemeType, GrindBoardType, GrindPosterType, GrindStampType, \
-    GrindErrandType, GrindMediaType, GrindMilestoneType, GrindOccurrenceType, GrindLabelType, GrindErrandDiscussionType
+from felicity.api.gql.grind.types import (
+    GrindSchemeType,
+    GrindBoardType,
+    GrindPosterType,
+    GrindStampType,
+    GrindErrandType,
+    GrindMediaType,
+    GrindMilestoneType,
+    GrindOccurrenceType,
+    GrindLabelType,
+    GrindErrandDiscussionType,
+)
 
 grind_types = [
     GrindSchemeType,
@@ -11,5 +21,5 @@ grind_types = [
     GrindMediaType,
     GrindLabelType,
     GrindMilestoneType,
-    GrindOccurrenceType
+    GrindOccurrenceType,
 ]

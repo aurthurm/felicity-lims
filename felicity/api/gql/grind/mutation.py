@@ -22,7 +22,8 @@ from felicity.apps.grind.services import (
     GrindMediaService,
     GrindMilestoneService,
     GrindOccurrenceService,
-    GrindStampService, GrindErrandDiscussionService,
+    GrindStampService,
+    GrindErrandDiscussionService,
 )
 from felicity.apps.guard import FAction, FObject
 from felicity.apps.iol.minio import MinioClient
@@ -37,12 +38,17 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class GrindMutations:
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SCHEMES)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.SCHEMES),
+                ]
+            )
+        ]
     )
     async def create_grind_scheme(
-            self, info, payload: inputs.GrindCreateSchemeInput
+        self, info, payload: inputs.GrindCreateSchemeInput
     ) -> responses.GrindSchemeResponse:
         felicity_user = await auth_from_info(info)
 
@@ -61,7 +67,9 @@ class GrindMutations:
 
         # Process other fields from the input
         for k, v in payload.__dict__.items():
-            if k != "assignee" and k != "members":  # Skip these as they're handled specially
+            if (
+                k != "assignee" and k != "members"
+            ):  # Skip these as they're handled specially
                 incoming[k] = v
 
         # Create the scheme
@@ -75,12 +83,17 @@ class GrindMutations:
         return types.GrindSchemeType(**scheme.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SCHEMES, "modify")]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.SCHEMES, "modify"),
+                ]
+            )
+        ]
     )
     async def update_grind_scheme(
-            self, info, uid: str, payload: inputs.GrindUpdateSchemeInput
+        self, info, uid: str, payload: inputs.GrindUpdateSchemeInput
     ) -> responses.GrindSchemeResponse:
         felicity_user = await auth_from_info(info)
 
@@ -114,12 +127,19 @@ class GrindMutations:
         if payload.members is not None:
             await GrindSchemeService().update_members(scheme.uid, payload.members)
 
-        return types.GrindSchemeType(**scheme.marshal_simple(exclude=["members", "boards"]))
+        return types.GrindSchemeType(
+            **scheme.marshal_simple(exclude=["members", "boards"])
+        )
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.SCHEMES)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.DELETE, FObject.SCHEMES),
+                ]
+            )
+        ]
     )
     async def delete_grind_scheme(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)
@@ -141,7 +161,7 @@ class GrindMutations:
     # Board Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_board(
-            self, info, payload: inputs.GrindCreateBoardInput
+        self, info, payload: inputs.GrindCreateBoardInput
     ) -> responses.GrindBoardResponse:
         felicity_user = await auth_from_info(info)
 
@@ -149,7 +169,9 @@ class GrindMutations:
         if payload.schemeUid:
             scheme = await GrindSchemeService().get(uid=payload.schemeUid)
             if not scheme:
-                return OperationError(error=f"Scheme with uid {payload.schemeUid} not found.")
+                return OperationError(
+                    error=f"Scheme with uid {payload.schemeUid} not found."
+                )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -173,7 +195,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_board(
-            self, info, uid: str, payload: inputs.GrindUpdateBoardInput
+        self, info, uid: str, payload: inputs.GrindUpdateBoardInput
     ) -> responses.GrindBoardResponse:
         felicity_user = await auth_from_info(info)
 
@@ -190,7 +212,9 @@ class GrindMutations:
         if payload.schemeUid:
             scheme = await GrindSchemeService().get(uid=payload.schemeUid)
             if not scheme:
-                return OperationError(error=f"Scheme with uid {payload.schemeUid} not found.")
+                return OperationError(
+                    error=f"Scheme with uid {payload.schemeUid} not found."
+                )
 
         # Prepare update data
         update_data = {"updated_by_uid": felicity_user.uid}
@@ -232,7 +256,7 @@ class GrindMutations:
     # Poster Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_poster(
-            self, info, payload: inputs.GrindCreatePosterInput
+        self, info, payload: inputs.GrindCreatePosterInput
     ) -> responses.GrindPosterResponse:
         felicity_user = await auth_from_info(info)
 
@@ -240,7 +264,9 @@ class GrindMutations:
         if payload.boardUid:
             board = await GrindBoardService().get(uid=payload.boardUid)
             if not board:
-                return OperationError(error=f"Board with uid {payload.boardUid} not found.")
+                return OperationError(
+                    error=f"Board with uid {payload.boardUid} not found."
+                )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -274,7 +300,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_poster(
-            self, info, uid: str, payload: inputs.GrindUpdatePosterInput
+        self, info, uid: str, payload: inputs.GrindUpdatePosterInput
     ) -> responses.GrindPosterResponse:
         felicity_user = await auth_from_info(info)
 
@@ -291,7 +317,9 @@ class GrindMutations:
         if payload.boardUid:
             board = await GrindBoardService().get(uid=payload.boardUid)
             if not board:
-                return OperationError(error=f"Board with uid {payload.boardUid} not found.")
+                return OperationError(
+                    error=f"Board with uid {payload.boardUid} not found."
+                )
 
         # Prepare update data
         update_data = {"updated_by_uid": felicity_user.uid}
@@ -304,7 +332,12 @@ class GrindMutations:
 
         # Process other fields from the input
         for field in poster.to_dict():
-            if field in payload.__dict__ and field not in ["board", "assignee", "members", "stamps"]:
+            if field in payload.__dict__ and field not in [
+                "board",
+                "assignee",
+                "members",
+                "stamps",
+            ]:
                 if payload.__dict__[field] is not None:
                     update_data[field] = payload.__dict__[field]
 
@@ -343,7 +376,7 @@ class GrindMutations:
     # Errand Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_errand(
-            self, info, payload: inputs.GrindCreateErrandInput
+        self, info, payload: inputs.GrindCreateErrandInput
     ) -> responses.GrindErrandResponse:
         felicity_user = await auth_from_info(info)
 
@@ -351,13 +384,17 @@ class GrindMutations:
         if payload.posterUid:
             poster = await GrindPosterService().get(uid=payload.posterUid)
             if not poster:
-                return OperationError(error=f"Poster with uid {payload.posterUid} not found.")
+                return OperationError(
+                    error=f"Poster with uid {payload.posterUid} not found."
+                )
 
         # Check if label exists if provided
         if payload.labelUid:
             label = await GrindLabelService().get(uid=payload.labelUid)
             if not label:
-                return OperationError(error=f"Label with uid {payload.labelUid} not found.")
+                return OperationError(
+                    error=f"Label with uid {payload.labelUid} not found."
+                )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -376,7 +413,15 @@ class GrindMutations:
 
         # Process other fields from the input
         for k, v in payload.__dict__.items():
-            if k not in ["poster", "label", "assignee", "reporter", "members", "stamps", "milestones"]:
+            if k not in [
+                "poster",
+                "label",
+                "assignee",
+                "reporter",
+                "members",
+                "stamps",
+                "milestones",
+            ]:
                 incoming[k] = v
 
         # Create the errand
@@ -406,7 +451,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_errand(
-            self, info, uid: str, payload: inputs.GrindUpdateErrandInput
+        self, info, uid: str, payload: inputs.GrindUpdateErrandInput
     ) -> responses.GrindErrandResponse:
         felicity_user = await auth_from_info(info)
 
@@ -423,13 +468,17 @@ class GrindMutations:
         if payload.posterUid:
             poster = await GrindPosterService().get(uid=payload.posterUid)
             if not poster:
-                return OperationError(error=f"Poster with uid {payload.posterUid} not found.")
+                return OperationError(
+                    error=f"Poster with uid {payload.posterUid} not found."
+                )
 
         # Check if label exists if provided
         if payload.labelUid:
             label = await GrindLabelService().get(uid=payload.labelUid)
             if not label:
-                return OperationError(error=f"Label with uid {payload.labelUid} not found.")
+                return OperationError(
+                    error=f"Label with uid {payload.labelUid} not found."
+                )
 
         # Prepare update data
         update_data = {"updated_by_uid": felicity_user.uid}
@@ -446,8 +495,15 @@ class GrindMutations:
 
         # Process other fields from the input
         for field in errand.to_dict():
-            if field in payload.__dict__ and field not in ["poster", "label", "assignee", "reporter", "members",
-                                                           "stamps", "milestones"]:
+            if field in payload.__dict__ and field not in [
+                "poster",
+                "label",
+                "assignee",
+                "reporter",
+                "members",
+                "stamps",
+                "milestones",
+            ]:
                 if payload.__dict__[field] is not None:
                     update_data[field] = payload.__dict__[field]
 
@@ -463,9 +519,11 @@ class GrindMutations:
         if payload.stamps is not None:
             await GrindErrandService().update_stamps(errand.uid, payload.stamps)
 
-        return types.GrindErrandType(**errand.marshal_simple(
-            exclude=["stamps", "milestones", "members", "occurrences", "media"]
-        ))
+        return types.GrindErrandType(
+            **errand.marshal_simple(
+                exclude=["stamps", "milestones", "members", "occurrences", "media"]
+            )
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_grind_errand(self, info, uid: str) -> DeleteResponse:
@@ -491,14 +549,17 @@ class GrindMutations:
     # Label Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_label(
-            self, info, payload: inputs.GrindCreateLabelInput
+        self, info, payload: inputs.GrindCreateLabelInput
     ) -> responses.GrindLabelResponse:
         felicity_user = await auth_from_info(info)
 
-        exists = await GrindLabelService().get(title=payload.title, category=payload.category)
+        exists = await GrindLabelService().get(
+            title=payload.title, category=payload.category
+        )
         if exists:
             return OperationError(
-                error=f"Label with title '{payload.title}' and category '{payload.category}' already exists")
+                error=f"Label with title '{payload.title}' and category '{payload.category}' already exists"
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -517,7 +578,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_label(
-            self, info, uid: str, payload: inputs.GrindUpdateLabelInput
+        self, info, uid: str, payload: inputs.GrindUpdateLabelInput
     ) -> responses.GrindLabelResponse:
         felicity_user = await auth_from_info(info)
 
@@ -566,7 +627,7 @@ class GrindMutations:
     # Media Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_media(
-            self, info, payload: inputs.GrindCreateMediaInput
+        self, info, payload: inputs.GrindCreateMediaInput
     ) -> responses.GrindMediaResponse:
         felicity_user = await auth_from_info(info)
 
@@ -593,7 +654,7 @@ class GrindMutations:
             destination = resolve_media_dirs_for(payload.target.value)
             path = os.path.join(destination, filename)
 
-            with open(path, 'wb') as dest_file:
+            with open(path, "wb") as dest_file:
                 shutil.copyfileobj(io.BytesIO(file_bytes), dest_file)  # type: ignore
 
             incoming: dict = {
@@ -620,8 +681,7 @@ class GrindMutations:
 
             # Update the media record with the MinIO object path
             await GrindMediaService().update(
-                uid=media.uid,
-                update={"path": object_name}
+                uid=media.uid, update={"path": object_name}
             )
 
             # Store file in MinIO
@@ -654,7 +714,10 @@ class GrindMutations:
 
         try:
             # Determine storage type and delete accordingly
-            if getattr(media, "destination", "local") == "minio" or settings.OBJECT_STORAGE:
+            if (
+                getattr(media, "destination", "local") == "minio"
+                or settings.OBJECT_STORAGE
+            ):
                 # Delete from MinIO
                 object_name = media.path
                 bucket = MinioBucket.GRIND_MEDIA
@@ -667,8 +730,10 @@ class GrindMutations:
             else:
                 # Delete from local filesystem
                 delete_file(media.path)
-        except OSError as e:
-            return OperationError(error=f"Failed to delete associated file to media {uid}.")
+        except OSError:
+            return OperationError(
+                error=f"Failed to delete associated file to media {uid}."
+            )
 
         await GrindMediaService().delete(uid)
         return DeletedItem(uid=uid)
@@ -676,14 +741,16 @@ class GrindMutations:
     # Milestone Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_milestone(
-            self, info, payload: inputs.GrindCreateMilestoneInput
+        self, info, payload: inputs.GrindCreateMilestoneInput
     ) -> responses.GrindMilestoneResponse:
         felicity_user = await auth_from_info(info)
 
         # Check if errand exists
         errand = await GrindErrandService().get(uid=payload.errandUid)
         if not errand:
-            return OperationError(error=f"Errand with uid {payload.errandUid} not found.")
+            return OperationError(
+                error=f"Errand with uid {payload.errandUid} not found."
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -697,7 +764,10 @@ class GrindMutations:
 
         # Process other fields from the input
         for k, v in payload.__dict__.items():
-            if k not in ["errand", "assignee"]:  # Skip these as they're handled specially
+            if k not in [
+                "errand",
+                "assignee",
+            ]:  # Skip these as they're handled specially
                 incoming[k] = v
 
         # Create the milestone
@@ -719,7 +789,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_milestone(
-            self, info, uid: str, payload: inputs.GrindUpdateMilestoneInput
+        self, info, uid: str, payload: inputs.GrindUpdateMilestoneInput
     ) -> responses.GrindMilestoneResponse:
         felicity_user = await auth_from_info(info)
 
@@ -778,7 +848,9 @@ class GrindMutations:
             return OperationError(error=f"Milestone with uid {uid} not found.")
 
         # Delete associated occurrences
-        occurrences = await GrindOccurrenceService().get_all(target="MILESTONE", target_uid=uid)
+        occurrences = await GrindOccurrenceService().get_all(
+            target="MILESTONE", target_uid=uid
+        )
         for occurrence in occurrences:
             await GrindOccurrenceService().delete(occurrence.uid)
 
@@ -800,14 +872,17 @@ class GrindMutations:
     # Stamp Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_stamp(
-            self, info, payload: inputs.GrindCreateStampInput
+        self, info, payload: inputs.GrindCreateStampInput
     ) -> responses.GrindStampResponse:
         felicity_user = await auth_from_info(info)
 
-        exists = await GrindStampService().get(title=payload.title, category=payload.category)
+        exists = await GrindStampService().get(
+            title=payload.title, category=payload.category
+        )
         if exists:
             return OperationError(
-                error=f"Stamp with title '{payload.title}' and category '{payload.category}' already exists")
+                error=f"Stamp with title '{payload.title}' and category '{payload.category}' already exists"
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -826,7 +901,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_stamp(
-            self, info, uid: str, payload: inputs.GrindUpdateStampInput
+        self, info, uid: str, payload: inputs.GrindUpdateStampInput
     ) -> responses.GrindStampResponse:
         felicity_user = await auth_from_info(info)
 
@@ -866,7 +941,9 @@ class GrindMutations:
         used_by_posters = await GrindStampService().get_posters(uid)
         used_by_errands = await GrindStampService().get_errands(uid)
 
-        if (used_by_posters and len(used_by_posters) > 0) or (used_by_errands and len(used_by_errands) > 0):
+        if (used_by_posters and len(used_by_posters) > 0) or (
+            used_by_errands and len(used_by_errands) > 0
+        ):
             return OperationError(
                 error="Cannot delete stamp that is in use. Remove from posters and errands first."
             )
@@ -877,14 +954,15 @@ class GrindMutations:
     # Stamp Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_grind_errand_discussion(
-            self, info, payload: inputs.GrindCreateErrandDiscussionInput
+        self, info, payload: inputs.GrindCreateErrandDiscussionInput
     ) -> responses.GrindErrandDiscussionResponse:
         felicity_user = await auth_from_info(info)
 
-        exists = await GrindErrandDiscussionService().get(comment=payload.comment, errand_uid=payload.errand_uid)
+        exists = await GrindErrandDiscussionService().get(
+            comment=payload.comment, errand_uid=payload.errand_uid
+        )
         if exists:
-            return OperationError(
-                error=f"Comment '{payload.comment}' already exists")
+            return OperationError(error=f"Comment '{payload.comment}' already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -903,7 +981,7 @@ class GrindMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_grind_errand_discussion(
-            self, info, uid: str, payload: inputs.GrindUpdateErrandDiscussionInput
+        self, info, uid: str, payload: inputs.GrindUpdateErrandDiscussionInput
     ) -> responses.GrindErrandDiscussionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -917,9 +995,7 @@ class GrindMutations:
             )
 
         if comment.created_by_uid == felicity_user.uid:
-            return OperationError(
-                error=f"Oops this is not your comment"
-            )
+            return OperationError(error="Oops this is not your comment")
 
         # Prepare update data
         update_data = {"updated_by_uid": felicity_user.uid}

@@ -9,7 +9,6 @@ const ContainerColumn = defineComponent({
         return { container };
     },
     render() {
-
         const slotSample = (slotIndex: number) => {
             if (!this.container?.samples) {
                 console.log('Samples not found in container');
@@ -36,9 +35,7 @@ const ContainerColumn = defineComponent({
                                     { 'bg-emerald-500/20 hover:bg-emerald-500/30': slotSample(slotIdx + 1) !== null },
                                 ]}
                             >
-                                <div class="text-sm font-medium">
-                                    {slotSample(slotIdx + 1)?.sampleId || 'Empty'}
-                                </div>
+                                <div class="text-sm font-medium">{slotSample(slotIdx + 1)?.sampleId || 'Empty'}</div>
                             </div>
                         </div>
                     );
@@ -48,4 +45,4 @@ const ContainerColumn = defineComponent({
     },
 });
 export { ContainerColumn };
-export default ContainerColumn
+export default ContainerColumn;

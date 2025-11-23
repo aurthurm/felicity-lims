@@ -1,44 +1,44 @@
 overwrite: true
 debug: true
 schema:
-  - "http://127.0.0.1:8000/felicity-gql"
+    - 'http://127.0.0.1:8000/felicity-gql'
 documents:
-  - "./webapp/graphql/operations/**/*.graphql"
+    - './webapp/graphql/operations/**/*.graphql'
 ignoreNoDocuments: true
 config:
-  scalars:
-    Long: number
-  defaultScalarType: never
-  useTypeImports: true
+    scalars:
+        Long: number
+    defaultScalarType: never
+    useTypeImports: true
 generates:
-  webapp/types/gql.d.ts:
-    plugins:
-      - typescript
-    config:
-      useTypeImports: true
-  webapp/types/gqlops.d.ts:
-    plugins:
-      - typescript-operations
-    config:
-      useTypeImports: true
-  webapp/graphql/:
-    preset: client
-    config:
-      useTypeImports: true
-  webapp/graphql/schema.ts:
-    plugins:
-      - typescript
-      - typescript-urql-graphcache
-  webapp/graphql/operations:
-    preset: near-operation-file
-    presetConfig:
-      baseTypesPath: ../schema.ts
-      extension: .ts
-    config:
-      preResolveTypes: false
-    plugins:
-      - typescript-operations
-      - typescript-vue-urql
-  webapp/graphql/introspection.ts:
-    plugins:
-      - urql-introspection
+    webapp/types/gql.d.ts:
+        plugins:
+            - typescript
+        config:
+            useTypeImports: true
+    webapp/types/gqlops.d.ts:
+        plugins:
+            - typescript-operations
+        config:
+            useTypeImports: true
+    webapp/graphql/:
+        preset: client
+        config:
+            useTypeImports: true
+    webapp/graphql/schema.ts:
+        plugins:
+            - typescript
+            - typescript-urql-graphcache
+    webapp/graphql/operations:
+        preset: near-operation-file
+        presetConfig:
+            baseTypesPath: ../schema.ts
+            extension: .ts
+        config:
+            preResolveTypes: false
+        plugins:
+            - typescript-operations
+            - typescript-vue-urql
+    webapp/graphql/introspection.ts:
+        plugins:
+            - urql-introspection

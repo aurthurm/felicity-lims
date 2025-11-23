@@ -3,13 +3,27 @@ import { ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import {
-    GetSampleGroupByStatusDocument, GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables,
-    GetAnalysisGroupByStatusDocument, GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables,
-    GetWorksheetGroupByStatusDocument, GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables,
-    GetExtrasGroupByStatusDocument, GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables,
-    GetAnalysisGroupByInstrumentDocument, GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables,
-    GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables, GetAnalysisProcessPeformanceDocument,
-    GetSampleLaggardsDocument, GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables,
+    GetSampleGroupByStatusDocument,
+    GetSampleGroupByStatusQuery,
+    GetSampleGroupByStatusQueryVariables,
+    GetAnalysisGroupByStatusDocument,
+    GetAnalysisGroupByStatusQuery,
+    GetAnalysisGroupByStatusQueryVariables,
+    GetWorksheetGroupByStatusDocument,
+    GetWorksheetGroupByStatusQuery,
+    GetWorksheetGroupByStatusQueryVariables,
+    GetExtrasGroupByStatusDocument,
+    GetExtrasGroupByStatusQuery,
+    GetExtrasGroupByStatusQueryVariables,
+    GetAnalysisGroupByInstrumentDocument,
+    GetAnalysisGroupByInstrumentQuery,
+    GetAnalysisGroupByInstrumentQueryVariables,
+    GetAnalysisProcessPeformanceQuery,
+    GetAnalysisProcessPeformanceQueryVariables,
+    GetAnalysisProcessPeformanceDocument,
+    GetSampleLaggardsDocument,
+    GetSampleLaggardsQuery,
+    GetSampleLaggardsQueryVariables,
     SampleGroupByActionQuery,
     SampleGroupByActionQueryVariables,
     SampleGroupByActionDocument,
@@ -20,11 +34,7 @@ import {
 import { mapOrder } from '@/utils';
 
 import useApiUtil from '@/composables/api_util';
-import { 
-    GroupCount, 
-    GroupData, 
-    LaggardData, 
-} from '@/types/gql';
+import { GroupCount, GroupData, LaggardData } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
 
@@ -133,14 +143,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const countSamplesGroupsByStatus = async (): Promise<void> => {
         try {
             const filters: { [key: string]: never } = {};
-            
+
             const result = await withClientQuery<GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables>(
-                GetSampleGroupByStatusDocument, 
-                filters, 
-                'countSampleGroupByStatus', 
+                GetSampleGroupByStatusDocument,
+                filters,
+                'countSampleGroupByStatus',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.overViewStats.samples = mapOrder(
                     result.data,
@@ -159,20 +169,16 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const countAnalysisGroupsByStatus = async (): Promise<void> => {
         try {
             const filters: { [key: string]: never } = {};
-            
+
             const result = await withClientQuery<GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables>(
-                GetAnalysisGroupByStatusDocument, 
-                {}, 
-                'countAnalyteGroupByStatus', 
+                GetAnalysisGroupByStatusDocument,
+                {},
+                'countAnalyteGroupByStatus',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
-                dashboard.value.overViewStats.analyses = mapOrder(
-                    result.data, 
-                    ['pending', 'resulted'], 
-                    'group'
-                );
+                dashboard.value.overViewStats.analyses = mapOrder(result.data, ['pending', 'resulted'], 'group');
             } else {
                 console.error('Invalid analysis group by status data received:', result);
             }
@@ -185,20 +191,16 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const countWrksheetGroupsByStatus = async (): Promise<void> => {
         try {
             const filters: { [key: string]: never } = {};
-            
+
             const result = await withClientQuery<GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables>(
-                GetWorksheetGroupByStatusDocument, 
-                filters, 
-                'countWorksheetGroupByStatus', 
+                GetWorksheetGroupByStatusDocument,
+                filters,
+                'countWorksheetGroupByStatus',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
-                dashboard.value.overViewStats.worksheets = mapOrder(
-                    result.data, 
-                    ['empty', 'awaiting', 'pending'], 
-                    'group'
-                );
+                dashboard.value.overViewStats.worksheets = mapOrder(result.data, ['empty', 'awaiting', 'pending'], 'group');
             } else {
                 console.error('Invalid worksheet group by status data received:', result);
             }
@@ -211,14 +213,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const countExtrasGroupsByStatus = async (): Promise<void> => {
         try {
             const filters: { [key: string]: never } = {};
-            
+
             const result = await withClientQuery<GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables>(
-                GetExtrasGroupByStatusDocument, 
-                filters, 
-                'countExtrasGroupByStatus', 
+                GetExtrasGroupByStatusDocument,
+                filters,
+                'countExtrasGroupByStatus',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.overViewStats.extras = mapOrder(
                     result.data,
@@ -240,14 +242,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 startDate: dashboard.value.filterRange.fromIso,
                 endDate: dashboard.value.filterRange.toIso,
             };
-            
+
             const result = await withClientQuery<GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables>(
-                GetAnalysisGroupByInstrumentDocument, 
-                filters, 
-                'countAnalyteGroupByInstrument', 
+                GetAnalysisGroupByInstrumentDocument,
+                filters,
+                'countAnalyteGroupByInstrument',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.resourceStats.instruments = result.data;
             } else {
@@ -265,14 +267,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 startDate: dashboard.value.filterRange.fromIso,
                 endDate: dashboard.value.filterRange.toIso,
             };
-            
+
             const result = await withClientQuery<SampleGroupByActionQuery, SampleGroupByActionQueryVariables>(
-                SampleGroupByActionDocument, 
-                filters, 
-                'countSampleGroupByAction', 
+                SampleGroupByActionDocument,
+                filters,
+                'countSampleGroupByAction',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.resourceStats.samples = result.data;
             } else {
@@ -287,19 +289,19 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const getSampleProcessPeformance = async (): Promise<void> => {
         try {
             dashboard.value.fetchingSampePeformanceStats = true;
-            
+
             const filters = {
                 startDate: dayjs().startOf('day').subtract(dashboard.value.currentPeformancePeriod, 'day').toISOString(),
                 endDate: dayjs().endOf('day').toISOString(),
             };
-            
+
             const result = await withClientQuery<SampleProcessPeformanceQuery, SampleProcessPeformanceQueryVariables>(
-                SampleProcessPeformanceDocument, 
-                filters, 
-                'sampleProcessPerformance', 
+                SampleProcessPeformanceDocument,
+                filters,
+                'sampleProcessPerformance',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.peformanceStats.sample = result.data as unknown as Process[];
             } else {
@@ -316,20 +318,20 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const getAnalysisProcessPeformance = async (): Promise<void> => {
         try {
             dashboard.value.fetchingAnalysisPeformanceStats = true;
-            
+
             const filters = {
                 process: dashboard.value.currentPeformance,
                 startDate: dayjs().startOf('day').subtract(dashboard.value.currentPeformancePeriod, 'day').toISOString(),
                 endDate: dayjs().endOf('day').toISOString(),
             };
-            
+
             const result = await withClientQuery<GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables>(
-                GetAnalysisProcessPeformanceDocument, 
-                filters, 
-                'analysisProcessPerformance', 
+                GetAnalysisProcessPeformanceDocument,
+                filters,
+                'analysisProcessPerformance',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.peformanceStats.analysis = result.data as unknown as Process[];
             } else {
@@ -346,14 +348,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const getSampleLaggards = async (): Promise<void> => {
         try {
             dashboard.value.fetchingLaggards = true;
-            
+
             const result = await withClientQuery<GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables>(
-                GetSampleLaggardsDocument, 
-                {}, 
-                'sampleLaggards', 
+                GetSampleLaggardsDocument,
+                {},
+                'sampleLaggards',
                 'network-only'
             );
-            
+
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.laggards = result.data as unknown as Record<string, LaggardData[]>;
             } else {
@@ -369,29 +371,29 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const setCurrentTab = (tab: string): void => {
         dashboard.value.currentTab = tab;
     };
-    
+
     const setCurrentFilter = (filter: string): void => {
         dashboard.value.currentFilter = filter;
     };
-    
+
     const setFilterRange = (from: dayjs.Dayjs, to: dayjs.Dayjs): void => {
         dashboard.value.filterRange.from = from.toDate().toLocaleDateString();
         dashboard.value.filterRange.fromIso = from.toISOString();
         dashboard.value.filterRange.to = to.toDate().toLocaleDateString();
         dashboard.value.filterRange.toIso = to.toISOString();
     };
-    
+
     const setCurrentPeformance = (event: Event): void => {
         const target = event.target as HTMLSelectElement;
         dashboard.value.currentPeformance = target.value;
     };
-    
+
     const setCurrentPeformancePeriod = (event: Event): void => {
         const target = event.target as HTMLSelectElement;
         const period: number = +target.value;
         dashboard.value.currentPeformancePeriod = period;
     };
-    
+
     const setShowFilters = (show: boolean): void => {
         dashboard.value.showFilters = show;
     };
@@ -439,12 +441,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 break;
         }
     };
-    
+
     calculateFilterRange(dashboard.value.currentFilter);
 
     watch(
         () => dashboard.value.currentFilter,
-        (filter) => {
+        filter => {
             calculateFilterRange(filter);
         }
     );

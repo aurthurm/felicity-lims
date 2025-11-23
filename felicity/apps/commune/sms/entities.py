@@ -28,12 +28,12 @@ class SmsTemplate(BaseEntity):
 
 class SmsMessage(BaseEntity):
     __tablename__ = "sms_message"
-    
+
     template_uid = Column(String, ForeignKey("sms_template.uid"), nullable=True)
     recipient = Column(String(20), nullable=False)
     message = Column(Text, nullable=False)
     status = Column(String(20), default="pending")  # pending, sent, failed
-    error =  Column(String, nullable=True)
+    error = Column(String, nullable=True)
     sent_at = Column(DateTime, nullable=True)
     template = relationship("SmsTemplate", back_populates="messages")
     target_type = Column(

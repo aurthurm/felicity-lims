@@ -6,31 +6,31 @@ class NotConnectedException(Exception):
 
 
 class ConnectionType(StrEnum):
-    SERIAL = 'serial'
-    TCPIP = 'tcpip'
+    SERIAL = "serial"
+    TCPIP = "tcpip"
 
 
 class SocketType(StrEnum):
-    CLIENT = 'client'
-    SERVER = 'server'
+    CLIENT = "client"
+    SERVER = "server"
 
 
 class ProtocolType(StrEnum):
-    HL7 = 'hl7'
-    ASTM = 'astm'
+    HL7 = "hl7"
+    ASTM = "astm"
 
 
 class ConnectionStatus(StrEnum):
-    OPEN = 'open'
-    CONNECTED = 'connected'
-    DISCONNECTED = 'disconnected'
-    CONNECTING = 'connecting'
-    DISCONNECTING = 'disconnecting'
+    OPEN = "open"
+    CONNECTED = "connected"
+    DISCONNECTED = "disconnected"
+    CONNECTING = "connecting"
+    DISCONNECTING = "disconnecting"
 
 
 class TransmissionStatus(StrEnum):
-    STARTED = 'started'
-    ENDED = 'ended'
+    STARTED = "started"
+    ENDED = "ended"
 
 
 class ASTMConstants:
@@ -51,19 +51,19 @@ class ASTMConstants:
     NAK = b"\x15"
     #: Message chunk end token.
     ETB = b"\x17"
-    LF = b"\x0A"
-    CR = b"\x0D"
+    LF = b"\x0a"
+    CR = b"\x0d"
     #: CR + LF shortcut.
     CRLF = CR + LF
 
     #: Message records delimiter.
-    RECORD_SEP = b"\x0D"  # \r #
+    RECORD_SEP = b"\x0d"  # \r #
     #: Record fields delimiter.
-    FIELD_SEP = b"\x7C"  # |  #
+    FIELD_SEP = b"\x7c"  # |  #
     #: Delimeter for repeated fields.
-    REPEAT_SEP = b"\x5C"  # \  #
+    REPEAT_SEP = b"\x5c"  # \  #
     #: Field components delimiter.
-    COMPONENT_SEP = b"\x5E"  # ^  #
+    COMPONENT_SEP = b"\x5e"  # ^  #
     #: Date escape token.
     ESCAPE_SEP = b"\x26"  # &  #
 

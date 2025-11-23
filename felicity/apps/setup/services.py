@@ -20,7 +20,10 @@ from felicity.apps.setup.repositories import (
     SupplierRepository,
     UnitRepository,
 )
-from felicity.apps.setup.repositories.setup import OrganizationRepository, OrganizationSettingRepository
+from felicity.apps.setup.repositories.setup import (
+    OrganizationRepository,
+    OrganizationSettingRepository,
+)
 from felicity.apps.setup.schemas import (
     CountryCreate,
     CountryUpdate,
@@ -39,11 +42,17 @@ from felicity.apps.setup.schemas import (
     SupplierCreate,
     SupplierUpdate,
     UnitCreate,
-    UnitUpdate, OrganizationCreate, OrganizationUpdate, OrganizationSettingCreate, OrganizationSettingUpdate,
+    UnitUpdate,
+    OrganizationCreate,
+    OrganizationUpdate,
+    OrganizationSettingCreate,
+    OrganizationSettingUpdate,
 )
 
 
-class OrganizationService(BaseService[Organization, OrganizationCreate, OrganizationUpdate]):
+class OrganizationService(
+    BaseService[Organization, OrganizationCreate, OrganizationUpdate]
+):
     def __init__(self):
         super().__init__(OrganizationRepository())
 
@@ -52,7 +61,9 @@ class OrganizationService(BaseService[Organization, OrganizationCreate, Organiza
 
 
 class OrganizationSettingService(
-    BaseService[OrganizationSetting, OrganizationSettingCreate, OrganizationSettingUpdate]
+    BaseService[
+        OrganizationSetting, OrganizationSettingCreate, OrganizationSettingUpdate
+    ]
 ):
     def __init__(self):
         super().__init__(OrganizationSettingRepository())
@@ -68,11 +79,15 @@ class LaboratoryService(BaseService[Laboratory, LaboratoryCreate, LaboratoryUpda
             laboratory_data.name, laboratory_data.organization_uid
         )
         if existing:
-            raise ValueError(f"Laboratory with name '{laboratory_data.name}' already exists in this organization")
-        
+            raise ValueError(
+                f"Laboratory with name '{laboratory_data.name}' already exists in this organization"
+            )
+
         return await self.create(laboratory_data)
 
-    async def get_laboratories_by_organization(self, organization_uid: str) -> list[Laboratory]:
+    async def get_laboratories_by_organization(
+        self, organization_uid: str
+    ) -> list[Laboratory]:
         """Get all laboratories for an organization"""
         return await self.repository.get_laboratories_by_organization(organization_uid)
 
@@ -82,19 +97,23 @@ class LaboratoryService(BaseService[Laboratory, LaboratoryCreate, LaboratoryUpda
         """Search laboratories by text"""
         return await self.repository.search_laboratories(text, organization_uid, limit)
 
-    async def get_laboratory_by_name(self, name: str, organization_uid: str = None) -> Laboratory | None:
+    async def get_laboratory_by_name(
+        self, name: str, organization_uid: str = None
+    ) -> Laboratory | None:
         """Get laboratory by name"""
         return await self.repository.get_laboratory_by_name(name, organization_uid)
 
-    async def update_laboratory_manager(self, laboratory_uid: str, manager_uid: str) -> Laboratory:
+    async def update_laboratory_manager(
+        self, laboratory_uid: str, manager_uid: str
+    ) -> Laboratory:
         """Update laboratory manager"""
         laboratory = await self.get(uid=laboratory_uid)
         if not laboratory:
             raise ValueError(f"Laboratory with uid '{laboratory_uid}' not found")
-        
+
         update_data = LaboratoryUpdate(**laboratory.to_dict())
         update_data.lab_manager_uid = manager_uid
-        
+
         return await self.update(laboratory_uid, update_data)
 
 

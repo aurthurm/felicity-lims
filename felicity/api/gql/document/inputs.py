@@ -32,8 +32,12 @@ class DocumentTagUpdateInputType(DocumentTagInputType):
 @strawberry.input
 class DocumentFolderInputType:
     name: str = strawberry.field(description="Folder name")
-    description: Optional[str] = strawberry.field(description="Folder description", default=None)
-    parent_uid: Optional[str] = strawberry.field(description="Parent folder UID", default=None)
+    description: Optional[str] = strawberry.field(
+        description="Folder description", default=None
+    )
+    parent_uid: Optional[str] = strawberry.field(
+        description="Parent folder UID", default=None
+    )
 
 
 @strawberry.input
@@ -46,7 +50,9 @@ class DocumentFolderUpdateInputType(DocumentFolderInputType):
 @strawberry.input
 class DocumentTemplateInputType:
     name: str = strawberry.field(description="Template name")
-    description: Optional[str] = strawberry.field(description="Template description", default=None)
+    description: Optional[str] = strawberry.field(
+        description="Template description", default=None
+    )
     content: str = strawberry.field(description="Template content")
     category: Optional[str] = strawberry.field(description="Category UID", default=None)
 
@@ -55,7 +61,9 @@ class DocumentTemplateInputType:
 class DocumentTemplateUpdateInputType(DocumentTemplateInputType):
     uid: str
     name: Optional[str] = strawberry.field(description="Template name", default=None)
-    content: Optional[str] = strawberry.field(description="Template content", default=None)
+    content: Optional[str] = strawberry.field(
+        description="Template content", default=None
+    )
 
 
 # Document Version Inputs
@@ -64,7 +72,9 @@ class DocumentVersionInputType:
     document: str = strawberry.field(description="Document UID")
     version_number: str = strawberry.field(description="Version number")
     content: str = strawberry.field(description="Document content")
-    change_summary: Optional[str] = strawberry.field(description="Change summary", default=None)
+    change_summary: Optional[str] = strawberry.field(
+        description="Change summary", default=None
+    )
 
 
 @strawberry.input
@@ -84,7 +94,9 @@ class DocumentStatusInputType:
 class DocumentStatusUpdateInputType(DocumentStatusInputType):
     uid: str
     document: Optional[str] = strawberry.field(description="Document UID", default=None)
-    status: Optional[str] = strawberry.field(description="Document status", default=None)
+    status: Optional[str] = strawberry.field(
+        description="Document status", default=None
+    )
 
 
 # Document Review Step Inputs
@@ -94,16 +106,24 @@ class DocumentReviewStepInputType:
     reviewer: str = strawberry.field(description="Reviewer UID")
     sequence: int = strawberry.field(description="Review sequence")
     status: str = strawberry.field(description="Review status")
-    comments: Optional[str] = strawberry.field(description="Review comments", default=None)
-    action_date: Optional[datetime] = strawberry.field(description="Action date", default=None)
+    comments: Optional[str] = strawberry.field(
+        description="Review comments", default=None
+    )
+    action_date: Optional[datetime] = strawberry.field(
+        description="Action date", default=None
+    )
 
 
 @strawberry.input
 class DocumentReviewStepUpdateInputType(DocumentReviewStepInputType):
     uid: str
-    review_cycle: Optional[str] = strawberry.field(description="Review cycle UID", default=None)
+    review_cycle: Optional[str] = strawberry.field(
+        description="Review cycle UID", default=None
+    )
     reviewer: Optional[str] = strawberry.field(description="Reviewer UID", default=None)
-    sequence: Optional[int] = strawberry.field(description="Review sequence", default=None)
+    sequence: Optional[int] = strawberry.field(
+        description="Review sequence", default=None
+    )
     status: Optional[str] = strawberry.field(description="Review status", default=None)
 
 
@@ -112,17 +132,25 @@ class DocumentReviewStepUpdateInputType(DocumentReviewStepInputType):
 class DocumentReviewCycleInputType:
     document: str = strawberry.field(description="Document UID")
     start_date: datetime = strawberry.field(description="Start date")
-    end_date: Optional[datetime] = strawberry.field(description="End date", default=None)
+    end_date: Optional[datetime] = strawberry.field(
+        description="End date", default=None
+    )
     status: str = strawberry.field(description="Review cycle status")
-    reviewers: Optional[List[str]] = strawberry.field(description="Reviewers UIDs", default_factory=list)
+    reviewers: Optional[List[str]] = strawberry.field(
+        description="Reviewers UIDs", default_factory=list
+    )
 
 
 @strawberry.input
 class DocumentReviewCycleUpdateInputType(DocumentReviewCycleInputType):
     uid: str
     document: Optional[str] = strawberry.field(description="Document UID", default=None)
-    start_date: Optional[datetime] = strawberry.field(description="Start date", default=None)
-    status: Optional[str] = strawberry.field(description="Review cycle status", default=None)
+    start_date: Optional[datetime] = strawberry.field(
+        description="Start date", default=None
+    )
+    status: Optional[str] = strawberry.field(
+        description="Review cycle status", default=None
+    )
 
 
 # Document Subscription Inputs
@@ -138,7 +166,9 @@ class DocumentSubscriptionUpdateInputType(DocumentSubscriptionInputType):
     uid: str
     document: Optional[str] = strawberry.field(description="Document UID", default=None)
     user: Optional[str] = strawberry.field(description="User UID", default=None)
-    subscription_type: Optional[str] = strawberry.field(description="Subscription type", default=None)
+    subscription_type: Optional[str] = strawberry.field(
+        description="Subscription type", default=None
+    )
 
 
 # Document Audit Inputs
@@ -161,7 +191,9 @@ class DocumentAuditUpdateInputType(DocumentAuditInputType):
 @strawberry.input
 class DocumentAIModelInputType:
     name: str = strawberry.field(description="Model name")
-    description: Optional[str] = strawberry.field(description="Model description", default=None)
+    description: Optional[str] = strawberry.field(
+        description="Model description", default=None
+    )
     api_endpoint: str = strawberry.field(description="API endpoint")
     capabilities: str = strawberry.field(description="Model capabilities")
     is_active: Optional[bool] = strawberry.field(description="Is active", default=True)
@@ -171,8 +203,12 @@ class DocumentAIModelInputType:
 class DocumentAIModelUpdateInputType(DocumentAIModelInputType):
     uid: str
     name: Optional[str] = strawberry.field(description="Model name", default=None)
-    api_endpoint: Optional[str] = strawberry.field(description="API endpoint", default=None)
-    capabilities: Optional[str] = strawberry.field(description="Model capabilities", default=None)
+    api_endpoint: Optional[str] = strawberry.field(
+        description="API endpoint", default=None
+    )
+    capabilities: Optional[str] = strawberry.field(
+        description="Model capabilities", default=None
+    )
 
 
 # AI Authoring Session Inputs
@@ -190,7 +226,9 @@ class DocumentAIAuthoringSessionUpdateInputType(DocumentAIAuthoringSessionInputT
     document: Optional[str] = strawberry.field(description="Document UID", default=None)
     model: Optional[str] = strawberry.field(description="AI Model UID", default=None)
     prompt: Optional[str] = strawberry.field(description="Prompt", default=None)
-    conversation: Optional[str] = strawberry.field(description="Conversation", default=None)
+    conversation: Optional[str] = strawberry.field(
+        description="Conversation", default=None
+    )
 
 
 # Compliance Standard Inputs
@@ -206,9 +244,15 @@ class DocumentComplianceStandardInputType:
 class DocumentComplianceStandardUpdateInputType(DocumentComplianceStandardInputType):
     uid: str
     name: Optional[str] = strawberry.field(description="Standard name", default=None)
-    description: Optional[str] = strawberry.field(description="Standard description", default=None)
-    content: Optional[str] = strawberry.field(description="Standard content", default=None)
-    version: Optional[str] = strawberry.field(description="Standard version", default=None)
+    description: Optional[str] = strawberry.field(
+        description="Standard description", default=None
+    )
+    content: Optional[str] = strawberry.field(
+        description="Standard content", default=None
+    )
+    version: Optional[str] = strawberry.field(
+        description="Standard version", default=None
+    )
 
 
 # Compliance Issue Inputs
@@ -224,10 +268,18 @@ class DocumentComplianceIssueInputType:
 @strawberry.input
 class DocumentComplianceIssueUpdateInputType(DocumentComplianceIssueInputType):
     uid: str
-    check: Optional[str] = strawberry.field(description="Compliance check UID", default=None)
-    section: Optional[str] = strawberry.field(description="Document section", default=None)
-    description: Optional[str] = strawberry.field(description="Issue description", default=None)
-    severity: Optional[str] = strawberry.field(description="Issue severity", default=None)
+    check: Optional[str] = strawberry.field(
+        description="Compliance check UID", default=None
+    )
+    section: Optional[str] = strawberry.field(
+        description="Document section", default=None
+    )
+    description: Optional[str] = strawberry.field(
+        description="Issue description", default=None
+    )
+    severity: Optional[str] = strawberry.field(
+        description="Issue severity", default=None
+    )
     suggestion: Optional[str] = strawberry.field(description="Suggestion", default=None)
 
 
@@ -247,9 +299,13 @@ class DocumentAIComplianceCheckInputType:
 class DocumentAIComplianceCheckUpdateInputType:
     uid: str
     document: Optional[str] = strawberry.field(description="Document UID", default=None)
-    standard: Optional[str] = strawberry.field(description="Compliance standard UID", default=None)
+    standard: Optional[str] = strawberry.field(
+        description="Compliance standard UID", default=None
+    )
     results: Optional[str] = strawberry.field(description="Check results", default=None)
-    compliance_score: Optional[float] = strawberry.field(description="Compliance score", default=None)
+    compliance_score: Optional[float] = strawberry.field(
+        description="Compliance score", default=None
+    )
 
 
 # AI Review Feedback Inputs
@@ -263,9 +319,13 @@ class DocumentAIReviewFeedbackInputType:
 @strawberry.input
 class DocumentAIReviewFeedbackUpdateInputType(DocumentAIReviewFeedbackInputType):
     uid: str
-    review_step: Optional[str] = strawberry.field(description="Review step UID", default=None)
+    review_step: Optional[str] = strawberry.field(
+        description="Review step UID", default=None
+    )
     model: Optional[str] = strawberry.field(description="AI Model UID", default=None)
-    suggestions: Optional[str] = strawberry.field(description="AI suggestions", default=None)
+    suggestions: Optional[str] = strawberry.field(
+        description="AI suggestions", default=None
+    )
 
 
 # Document Analytics Inputs
@@ -277,17 +337,27 @@ class DocumentAnalyticsInputType:
     complexity_score: float = strawberry.field(description="Complexity score")
     summary: str = strawberry.field(description="Document summary")
     key_topics: str = strawberry.field(description="Key topics")
-    generated_date: Optional[datetime] = strawberry.field(description="Generated date", default=None)
+    generated_date: Optional[datetime] = strawberry.field(
+        description="Generated date", default=None
+    )
 
 
 @strawberry.input
 class DocumentAnalyticsUpdateInputType(DocumentAnalyticsInputType):
     uid: str
     document: Optional[str] = strawberry.field(description="Document UID", default=None)
-    readability_score: Optional[float] = strawberry.field(description="Readability score", default=None)
-    sentiment_score: Optional[float] = strawberry.field(description="Sentiment score", default=None)
-    complexity_score: Optional[float] = strawberry.field(description="Complexity score", default=None)
-    summary: Optional[str] = strawberry.field(description="Document summary", default=None)
+    readability_score: Optional[float] = strawberry.field(
+        description="Readability score", default=None
+    )
+    sentiment_score: Optional[float] = strawberry.field(
+        description="Sentiment score", default=None
+    )
+    complexity_score: Optional[float] = strawberry.field(
+        description="Complexity score", default=None
+    )
+    summary: Optional[str] = strawberry.field(
+        description="Document summary", default=None
+    )
     key_topics: Optional[str] = strawberry.field(description="Key topics", default=None)
 
 
@@ -295,30 +365,60 @@ class DocumentAnalyticsUpdateInputType(DocumentAnalyticsInputType):
 @strawberry.input
 class DocumentInputType:
     name: str = strawberry.field(description="Document name")
-    subtitle: Optional[str] = strawberry.field(description="Document subtitle", default=None)
+    subtitle: Optional[str] = strawberry.field(
+        description="Document subtitle", default=None
+    )
     document_id: str = strawberry.field(description="Document ID")
     folderUid: Optional[str] = strawberry.field(description="Folder UID", default=None)
-    departmentUid: Optional[str] = strawberry.field(description="Department UID", default=None)
-    categoryUid: Optional[str] = strawberry.field(description="Category UID", default=None)
-    templateUid: Optional[str] = strawberry.field(description="Template UID", default=None)
-    tags: Optional[List[str]] = strawberry.field(description="Tag UIDs", default_factory=list)
-    authors: Optional[List[str]] = strawberry.field(description="Author UIDs", default_factory=list)
-    readers: Optional[List[str]] = strawberry.field(description="Reader UIDs", default_factory=list)
-    initial_version: Optional[str] = strawberry.field(description="Initial version number", default="1.0")
+    departmentUid: Optional[str] = strawberry.field(
+        description="Department UID", default=None
+    )
+    categoryUid: Optional[str] = strawberry.field(
+        description="Category UID", default=None
+    )
+    templateUid: Optional[str] = strawberry.field(
+        description="Template UID", default=None
+    )
+    tags: Optional[List[str]] = strawberry.field(
+        description="Tag UIDs", default_factory=list
+    )
+    authors: Optional[List[str]] = strawberry.field(
+        description="Author UIDs", default_factory=list
+    )
+    readers: Optional[List[str]] = strawberry.field(
+        description="Reader UIDs", default_factory=list
+    )
+    initial_version: Optional[str] = strawberry.field(
+        description="Initial version number", default="1.0"
+    )
 
 
 @strawberry.input
 class DocumentUpdateInputType:
     uid: str
     name: Optional[str] = strawberry.field(description="Document name", default=None)
-    subtitle: Optional[str] = strawberry.field(description="Document subtitle", default=None)
-    document_id: Optional[str] = strawberry.field(description="Document ID", default=None)
+    subtitle: Optional[str] = strawberry.field(
+        description="Document subtitle", default=None
+    )
+    document_id: Optional[str] = strawberry.field(
+        description="Document ID", default=None
+    )
     folderUid: Optional[str] = strawberry.field(description="Folder UID", default=None)
-    departmentUid: Optional[str] = strawberry.field(description="Department UID", default=None)
-    categoryUid: Optional[str] = strawberry.field(description="Category UID", default=None)
-    tags: Optional[List[str]] = strawberry.field(description="Tag UIDs", default_factory=list)
-    authors: Optional[List[str]] = strawberry.field(description="Author UIDs", default_factory=list)
-    readers: Optional[List[str]] = strawberry.field(description="Reader UIDs", default_factory=list)
+    departmentUid: Optional[str] = strawberry.field(
+        description="Department UID", default=None
+    )
+    categoryUid: Optional[str] = strawberry.field(
+        description="Category UID", default=None
+    )
+    tags: Optional[List[str]] = strawberry.field(
+        description="Tag UIDs", default_factory=list
+    )
+    authors: Optional[List[str]] = strawberry.field(
+        description="Author UIDs", default_factory=list
+    )
+    readers: Optional[List[str]] = strawberry.field(
+        description="Reader UIDs", default_factory=list
+    )
 
 
 # Document Relation Inputs
@@ -331,6 +431,12 @@ class DocumentRelationInputType:
 
 @strawberry.input
 class DocumentRelationUpdateInputType(DocumentRelationInputType):
-    source_document: Optional[str] = strawberry.field(description="Source document UID", default=None)
-    target_document: Optional[str] = strawberry.field(description="Target document UID", default=None)
-    relation_type: Optional[str] = strawberry.field(description="Relation type", default=None)
+    source_document: Optional[str] = strawberry.field(
+        description="Source document UID", default=None
+    )
+    target_document: Optional[str] = strawberry.field(
+        description="Target document UID", default=None
+    )
+    relation_type: Optional[str] = strawberry.field(
+        description="Relation type", default=None
+    )

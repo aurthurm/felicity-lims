@@ -6,7 +6,7 @@ from felicity.apps.abstract import BaseEntity
 
 class LocationBase(BaseEntity):
     __abstract__ = True
-    
+
     code = Column(String, index=True, unique=True, nullable=True)
     name = Column(String)
     email = Column(String, nullable=True)

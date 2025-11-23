@@ -58,7 +58,7 @@ class ASTMProtocolHandler:
 
         # Message assembly
         self._received_messages: List[bytes] = []
-        self._buffer = b''
+        self._buffer = b""
 
         # Response tracking
         self.response: Optional[str] = None  # "ACK" or "NACK"
@@ -71,7 +71,7 @@ class ASTMProtocolHandler:
         self.in_transfer_state = False
         self.establishment = False
         self._received_messages = []
-        self._buffer = b''
+        self._buffer = b""
         self.response = None
 
     def is_enq(self, data: bytes) -> bool:
@@ -136,9 +136,11 @@ class ASTMProtocolHandler:
             return "ACK", None
 
         # Combine all frame fragments into a single complete message
-        complete_message = b''.join(self._received_messages)
-        logger.info(f"ASTM {self.instrument_name}: Complete message assembled "
-                    f"({len(complete_message)} bytes)")
+        complete_message = b"".join(self._received_messages)
+        logger.info(
+            f"ASTM {self.instrument_name}: Complete message assembled "
+            f"({len(complete_message)} bytes)"
+        )
 
         # Reset for the next session
         self._received_messages = []
@@ -162,11 +164,15 @@ class ASTMProtocolHandler:
                 return False
 
             if not frame.startswith(STX):
-                logger.error(f"ASTM {self.instrument_name}: Frame doesn't start with STX")
+                logger.error(
+                    f"ASTM {self.instrument_name}: Frame doesn't start with STX"
+                )
                 return False
 
             if not frame.endswith(CRLF):
-                logger.error(f"ASTM {self.instrument_name}: Frame doesn't end with CRLF")
+                logger.error(
+                    f"ASTM {self.instrument_name}: Frame doesn't end with CRLF"
+                )
                 return False
 
             # Validate checksum
@@ -184,15 +190,19 @@ class ASTMProtocolHandler:
             # Validate frame sequence
             if len(self._received_messages) == 0:
                 # First frame - accept any frame number
-                logger.info(f"ASTM {self.instrument_name}: First frame accepted (#{frame_number})")
+                logger.info(
+                    f"ASTM {self.instrument_name}: First frame accepted (#{frame_number})"
+                )
                 expected_frame = frame_number
             else:
                 # Subsequent frames - expect consecutive sequence (modulo 8)
                 expected_frame = (self._last_frame_number + 1) % 8
 
             if frame_number != expected_frame:
-                logger.error(f"ASTM {self.instrument_name}: Frame sequence error. "
-                             f"Expected {expected_frame}, got {frame_number}")
+                logger.error(
+                    f"ASTM {self.instrument_name}: Frame sequence error. "
+                    f"Expected {expected_frame}, got {frame_number}"
+                )
                 return False
 
             # Extract message content (remove STX, frame number, ETX/ETB, checksum, CRLF)
@@ -209,8 +219,10 @@ class ASTMProtocolHandler:
                 # Fallback
                 message_fragment = frame[2:-4]
 
-            logger.info(f"ASTM {self.instrument_name}: Frame {frame_number} accepted "
-                        f"({len(message_fragment)} bytes)")
+            logger.info(
+                f"ASTM {self.instrument_name}: Frame {frame_number} accepted "
+                f"({len(message_fragment)} bytes)"
+            )
 
             # Accumulate message
             self._received_messages.append(message_fragment)
@@ -233,26 +245,34 @@ class ASTMProtocolHandler:
         """
         try:
             if not message.startswith(b"H|"):
-                logger.error(f"ASTM {self.instrument_name}: Custom message doesn't start with H|")
+                logger.error(
+                    f"ASTM {self.instrument_name}: Custom message doesn't start with H|"
+                )
                 return False
 
             if not message.endswith(b"L|1|N\r"):
-                logger.error(f"ASTM {self.instrument_name}: Custom message doesn't end with L|1|N\\r")
+                logger.error(
+                    f"ASTM {self.instrument_name}: Custom message doesn't end with L|1|N\\r"
+                )
                 return False
 
             if len(message) < 10:
                 logger.error(f"ASTM {self.instrument_name}: Custom message too short")
                 return False
 
-            logger.info(f"ASTM {self.instrument_name}: Custom message validated "
-                        f"({len(message)} bytes)")
+            logger.info(
+                f"ASTM {self.instrument_name}: Custom message validated "
+                f"({len(message)} bytes)"
+            )
 
             # Store custom message
             self._received_messages.append(message)
             return True
 
         except Exception as e:
-            logger.error(f"ASTM {self.instrument_name}: Custom message validation error: {e}")
+            logger.error(
+                f"ASTM {self.instrument_name}: Custom message validation error: {e}"
+            )
             return False
 
     async def process_data(self, data: bytes) -> str:
@@ -292,7 +312,9 @@ class ASTMProtocolHandler:
         # Handle data frames
         elif self.is_data_frame(data):
             if not self._session_active:
-                logger.info(f"ASTM {self.instrument_name}: Auto-starting session on data receipt")
+                logger.info(
+                    f"ASTM {self.instrument_name}: Auto-starting session on data receipt"
+                )
                 self._session_active = True
                 self.in_transfer_state = True
                 self._last_frame_number = 0
@@ -359,17 +381,21 @@ class ASTMProtocolHandler:
                     self.response = "NACK"
                     return "NACK"
 
-            logger.info(f"ASTM {self.instrument_name}: Custom message incomplete, waiting")
+            logger.info(
+                f"ASTM {self.instrument_name}: Custom message incomplete, waiting"
+            )
             return None
 
         else:
-            logger.warning(f"ASTM {self.instrument_name}: Unknown data format, defaulting to NACK")
+            logger.warning(
+                f"ASTM {self.instrument_name}: Unknown data format, defaulting to NACK"
+            )
             return "NACK"
 
     def get_accumulated_message(self) -> Optional[bytes]:
         """Get accumulated message fragments"""
         if self._received_messages:
-            return b''.join(self._received_messages)
+            return b"".join(self._received_messages)
         return None
 
     def clear_accumulated_message(self):

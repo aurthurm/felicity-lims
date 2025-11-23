@@ -9,6 +9,7 @@ from sqlalchemy_mixins.utils import classproperty
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.core.uid_gen import get_flake_uid
 
+
 def new_query(cls):
     """
     New implementation of query method that returns select(cls).
@@ -47,7 +48,7 @@ class Base(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAtt
             else:
                 raise KeyError("Attribute '{}' doesn't exist".format(name))
         return self
-    
+
     def marshall(self, exclude=None, depth=1):
         return marshaller(self, exclude=exclude, depth=depth)
 

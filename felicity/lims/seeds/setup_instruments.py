@@ -21,7 +21,6 @@ async def seed_instrument_categories() -> None:
     instrument_type_service = InstrumentTypeService()
     instrument_service = InstrumentService()
     method_service = MethodService()
-    laboratory_instrument_service = LaboratoryInstrumentService()
 
     data = get_seeds("instrument")
     if not data:

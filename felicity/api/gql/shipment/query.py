@@ -24,20 +24,25 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class ShipmentQuery:
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def shipment_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            incoming: bool = False,
-            status: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        incoming: bool = False,
+        status: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> ShipmentCursorPage:
         filters = [{"incoming": incoming}]
 
@@ -74,28 +79,43 @@ class ShipmentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def shipment_by_uid(self, info, shipment_uid: str) -> ShipmentType:
         return await ShipmentService().get(uid=shipment_uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def shipment_by_id(self, info, shipment_id: str) -> ShipmentType:
         return await ShipmentService().get(shipment_id=shipment_id)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def shipment_by_status(
-            self, info, shipment_status: str
+        self, info, shipment_status: str
     ) -> List[ShipmentType]:
         return await ShipmentService().get_all(status__exact=shipment_status)
 
@@ -105,20 +125,25 @@ class ShipmentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_uid(
-            self, info, uid: str
+        self, info, uid: str
     ) -> ReferralLaboratoryType:
         return await ReferralLaboratoryService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_code(
-            self, info, code: str
+        self, info, code: str
     ) -> ReferralLaboratoryType:
         return await ReferralLaboratoryService().get(code=code)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def manifest_report_download(self, info, uid: str) -> BytesScalar | None:
         shipment = await ShipmentService().get(uid=uid)

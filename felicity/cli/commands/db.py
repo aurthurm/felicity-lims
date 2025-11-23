@@ -10,7 +10,7 @@ alembic_service = FelicityMigrator()
 
 @app.command()
 def upgrade(
-        revision: str = typer.Option("head", help="Target revision to upgrade to"),
+    revision: str = typer.Option("head", help="Target revision to upgrade to"),
 ) -> None:
     """Upgrade to a specified revision."""
     alembic_service.upgrade(revision)
@@ -19,7 +19,7 @@ def upgrade(
 
 @app.command()
 def downgrade(
-        revision: str = typer.Argument(..., help="Target revision to downgrade to"),
+    revision: str = typer.Argument(..., help="Target revision to downgrade to"),
 ) -> None:
     """Downgrade to a specified revision."""
     alembic_service.downgrade(revision)
@@ -28,7 +28,7 @@ def downgrade(
 
 @app.command()
 def revision(
-        message: str = typer.Argument(..., help="Message for the new revision"),
+    message: str = typer.Argument(..., help="Message for the new revision"),
 ) -> None:
     """Not working --- no idea why yet
     Create a new Alembic revision with a message."""

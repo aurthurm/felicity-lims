@@ -28,7 +28,9 @@ from felicity.apps.setup.services import (
     ManufacturerService,
     ProvinceService,
     SupplierService,
-    UnitService, OrganizationService, OrganizationSettingService,
+    UnitService,
+    OrganizationService,
+    OrganizationSettingService,
 )
 from felicity.apps.billing.enum import PaymentStatus
 
@@ -247,7 +249,7 @@ class UnitInputType:
 class SetupMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_organization(
-            self, info, uid: str, payload: OrganizationInputType
+        self, info, uid: str, payload: OrganizationInputType
     ) -> OrganizationResponse:  # noqa
         if not uid:
             return OperationError(error="Organization UID is required")
@@ -268,11 +270,13 @@ class SetupMutations:
 
         obj_in = schemas.OrganizationUpdate(**organization.to_dict())
         organisation = await OrganizationService().update(organization.uid, obj_in)
-        return OrganizationType(**organisation.marshal_simple(exclude=["settings", "laboratories"]))
+        return OrganizationType(
+            **organisation.marshal_simple(exclude=["settings", "laboratories"])
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_organization_setting(
-            self, info, uid: str, payload: OrganizationSettingInputType
+        self, info, uid: str, payload: OrganizationSettingInputType
     ) -> OrganizationSettingResponse:  # noqa
         await auth_from_info(info)
 
@@ -299,7 +303,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_laboratory(
-            self, info, payload: LaboratoryCreateInputType
+        self, info, payload: LaboratoryCreateInputType
     ) -> LaboratoryResponse:  # noqa
         if not payload.name:
             return OperationError(error="Laboratory name is required")
@@ -314,10 +318,11 @@ class SetupMutations:
 
             obj_in = schemas.LaboratoryCreate(**incoming)
             async with LaboratoryService().transaction() as session:
-                laboratory = await LaboratoryService().create(obj_in, session=session, commit=True)
+                laboratory = await LaboratoryService().create(
+                    obj_in, session=session, commit=True
+                )
                 org_settings = await OrganizationSettingService().get(
-                    organization_uid=payload.organization_uid,
-                    session=session
+                    organization_uid=payload.organization_uid, session=session
                 )
                 ls_in = LaboratorySettingCreate(
                     laboratory_uid=laboratory.uid,
@@ -329,7 +334,7 @@ class SetupMutations:
                     default_theme="LIGHT",
                     auto_receive_samples=True,
                     sticker_copies=2,
-                    **org_settings.marshal_simple()
+                    **org_settings.marshal_simple(),
                 )
                 await LaboratorySettingService().create(ls_in, session=session)
             return LaboratoryType(**laboratory.marshal_simple())
@@ -341,7 +346,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory(
-            self, info, uid: str, payload: LaboratoryInputType
+        self, info, uid: str, payload: LaboratoryInputType
     ) -> LaboratoryResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -366,7 +371,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_manager(
-            self, info, laboratory_uid: str, manager_uid: str
+        self, info, laboratory_uid: str, manager_uid: str
     ) -> LaboratoryResponse:  # noqa
         if not laboratory_uid:
             return OperationError(error="Laboratory UID is required")
@@ -387,7 +392,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_setting(
-            self, info, uid: str, payload: LaboratorySettingInputType
+        self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
         await auth_from_info(info)
 
@@ -415,7 +420,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_department(
-            root, info, payload: DepartmentInputType
+        root, info, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please Provide a name for your department")
@@ -438,7 +443,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_department(
-            self, info, uid: str, payload: DepartmentInputType
+        self, info, uid: str, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -465,7 +470,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_supplier(
-            self, info, payload: SupplierInputType
+        self, info, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please Provide a name for your supplier")
@@ -486,7 +491,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_supplier(
-            self, info, uid: str, payload: SupplierInputType
+        self, info, uid: str, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -511,7 +516,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_manufacturer(
-            self, info, payload: ManufacturerInputType
+        self, info, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please a name for your manufacturer")
@@ -532,7 +537,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_manufacturer(
-            self, info, uid: str, payload: ManufacturerInputType
+        self, info, uid: str, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -576,7 +581,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_country(
-            self, info, uid: str, payload: CountryInputType
+        self, info, uid: str, payload: CountryInputType
     ) -> CountryResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -601,7 +606,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_province(
-            self, info, payload: ProvinceInputType
+        self, info, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please Provide a name for the Province")
@@ -622,7 +627,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_province(
-            self, info, uid: str, payload: ProvinceInputType
+        self, info, uid: str, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -647,7 +652,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_district(
-            self, info, payload: DistrictInputType
+        self, info, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please Provide a name for the district")
@@ -668,7 +673,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_district(
-            self, info, uid: str, payload: DistrictInputType
+        self, info, uid: str, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")

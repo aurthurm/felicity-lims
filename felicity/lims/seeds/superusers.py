@@ -41,7 +41,9 @@ async def seed_daemon_user() -> None:
     # initial user-preferences
     preference = await preference_service.get(user_uid=system_daemon.uid)
     if not preference:
-        pref_in = schemas.UserPreferenceCreate(user_uid=system_daemon.uid, expanded_menu=False, theme="light")
+        pref_in = schemas.UserPreferenceCreate(
+            user_uid=system_daemon.uid, expanded_menu=False, theme="light"
+        )
         await preference_service.create(pref_in)
 
     logger.info("Done Setting up system daemon")
@@ -76,7 +78,9 @@ async def seed_super_user() -> None:
     # initial user-preferences
     preference = await preference_service.get(user_uid=super_user.uid)
     if not preference:
-        pref_in = schemas.UserPreferenceCreate(user_uid=super_user.uid, expanded_menu=False, theme="light")
+        pref_in = schemas.UserPreferenceCreate(
+            user_uid=super_user.uid, expanded_menu=False, theme="light"
+        )
         await preference_service.create(pref_in)
 
     logger.info("Done Setting up system admin")

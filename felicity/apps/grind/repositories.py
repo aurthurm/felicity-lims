@@ -1,6 +1,16 @@
 from felicity.apps.abstract import BaseRepository
-from felicity.apps.grind.entities import GrindScheme, GrindBoard, GrindPoster, GrindErrand, GrindLabel, GrindMedia, \
-    GrindMilestone, GrindOccurrence, GrindStamp, GrindErrandDiscussion
+from felicity.apps.grind.entities import (
+    GrindScheme,
+    GrindBoard,
+    GrindPoster,
+    GrindErrand,
+    GrindLabel,
+    GrindMedia,
+    GrindMilestone,
+    GrindOccurrence,
+    GrindStamp,
+    GrindErrandDiscussion,
+)
 
 
 class GrindSchemeRepository(BaseRepository[GrindScheme]):

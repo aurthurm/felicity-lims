@@ -105,8 +105,13 @@ class WorkSheetService(BaseService[WorkSheet, WorkSheetCreate, WorkSheetUpdate])
         )
         return worksheet
 
-    async def create(self, obj_in: dict | WorkSheetCreate, related: list[str] | None = None, commit: bool = True,
-                     session: AsyncSession = None) -> WorkSheet:
+    async def create(
+        self,
+        obj_in: dict | WorkSheetCreate,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession = None,
+    ) -> WorkSheet:
         data = self._import(obj_in)
         data["worksheet_id"] = (await self.id_sequence_service.get_next_number("WS"))[1]
         return await super().create(data, related, commit, session)

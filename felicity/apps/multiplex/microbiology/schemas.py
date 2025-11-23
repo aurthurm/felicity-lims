@@ -455,8 +455,14 @@ class AbxBreakpointBase(BaseAuditModel):
     ecv_ecoff_tentative: str | None = None
 
     @field_validator(
-        "reference_sequence", "r", "i", "s", "sdd", "ecv_ecoff", "ecv_ecoff_tentative",
-        mode="before"
+        "reference_sequence",
+        "r",
+        "i",
+        "s",
+        "sdd",
+        "ecv_ecoff",
+        "ecv_ecoff_tentative",
+        mode="before",
     )
     @classmethod
     def convert_to_str(cls, value):

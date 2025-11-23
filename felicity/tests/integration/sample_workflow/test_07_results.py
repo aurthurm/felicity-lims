@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.asyncio
 @pytest.mark.order(80)
 async def test_submit_results(
-        app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
+    app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
 ):
     add_gql = """
      mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: String!) {
@@ -407,7 +407,9 @@ async def test_verify_sample_results(app_gql, users, samples):
     sample = None
     results = None
     for _sample in samples:
-        results = list(filter(lambda r: r["status"] == "resulted", _sample["analysisResults"]))
+        results = list(
+            filter(lambda r: r["status"] == "resulted", _sample["analysisResults"])
+        )
         if len(results) > 0:
             sample = _sample
             break

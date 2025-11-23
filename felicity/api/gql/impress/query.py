@@ -29,13 +29,13 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-            self, info, uids: List[str]
+        self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpressService().get_all(sample_uid__in=uids)  # noqa
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-            self, info, sample_ids: List[str]
+        self, info, sample_ids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         if settings.OBJECT_STORAGE:
@@ -107,7 +107,7 @@ class ReportImpressQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def barcode_samples(
-            self, info, sample_uids: list[str]
+        self, info, sample_uids: list[str]
     ) -> list[BytesScalar] | None:
         samples = await SampleService().get_all(uid__in=sample_uids)
 

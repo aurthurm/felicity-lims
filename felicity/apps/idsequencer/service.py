@@ -16,14 +16,20 @@ class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
         super().__init__(self.repository)
 
     async def get_next_number(
-            self, prefix: str | None = None, generic=False, commit: bool = True, session: AsyncSession | None = None
+        self,
+        prefix: str | None = None,
+        generic=False,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ) -> tuple[int, str]:
         if not prefix:
             raise IncompleDataError("A prefix is required")
         prefix_year = str(timenow_dt().year)[2:]
 
         if generic:
-            fetch = await self.get_all(prefix__istartswith=f"{prefix}{prefix_year}", session=session)
+            fetch = await self.get_all(
+                prefix__istartswith=f"{prefix}{prefix_year}", session=session
+            )
             if not fetch:
                 alpha = "AA"
             else:
@@ -44,6 +50,8 @@ class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
             if prefix_year not in prefix:
                 prefix = f"{prefix}{prefix_year}"
 
-        next_number = await self.repository.next_number(prefix=prefix, commit=commit, session=session)
+        next_number = await self.repository.next_number(
+            prefix=prefix, commit=commit, session=session
+        )
 
         return next_number, f"{prefix}-{sequencer(next_number, PADDING_LENGTH)}"

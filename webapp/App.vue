@@ -11,19 +11,20 @@ const authStore = useAuthStore();
 const streamStore = useStreamStore();
 const {loadPreferredTheme} = userPreferenceComposable();
 
-if (!authStore.auth.isAuthenticated) {
-  push({name: "LOGIN"});
-}
-
 watch(
-    () => authStore.auth.isAuthenticated,
-    (newAuth) => {
-      if (!newAuth) {
-        push({name: "LOGIN"});
-      } else {
-        push({name: "DASHBOARD"});
+  () => authStore.auth.isAuthenticated,
+  (isAuthenticated) => {
+    if (!isAuthenticated) {
+      push({ name: "LOGIN" });
+    } else {
+      streamStore.subscribeToActivityStream();
+      // Only redirect to dashboard if we are on login page
+      if (currentRoute.value.name === "LOGIN") {
+        push({ name: "DASHBOARD" });
       }
     }
+  },
+  { immediate: true }
 );
 
 onBeforeMount(() => {
@@ -36,7 +37,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
   loadPreferredTheme();
-  streamStore.subscribeToActivityStream();
 });
 
 if (

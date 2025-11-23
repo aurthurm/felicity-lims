@@ -19,34 +19,34 @@ export const useNotificationStore = defineStore('notification', {
         showNotifications(val: boolean): void {
             this.show = val;
         },
-        
+
         addNotification(notification: INotificationType): void {
             if (!notification) {
                 console.error('Invalid notification payload');
                 return;
             }
-            
+
             this.notifications.push(notification);
             this.show = true;
         },
-        
+
         removeNotification(uid: string): void {
             if (!uid) {
                 console.error('Invalid notification uid');
                 return;
             }
-            
+
             const index = this.notifications.findIndex(notification => notification.uid === uid);
             if (index > -1) {
                 this.notifications.splice(index, 1);
-                
+
                 // Hide notification panel if no notifications left
                 if (this.notifications.length === 0) {
                     this.show = false;
                 }
             }
         },
-        
+
         clearNotifications(): void {
             this.notifications = [];
             this.show = false;

@@ -61,19 +61,19 @@ interface ILaboratoryStore {
     laboratoryContext: ILaboratoryContext;
     laboratorySettings: Record<string, ILaboratorySettings>;
     laboratoryUsers: Record<string, IUserAssignment[]>;
-    
+
     // UI state
     isLoading: boolean;
     isCreating: boolean;
     isUpdating: boolean;
     isDeleting: boolean;
-    
+
     // Search and filtering
     searchQuery: string;
     selectedOrganization: string | null;
     sortBy: 'name' | 'created_at' | 'updated_at';
     sortOrder: 'asc' | 'desc';
-    
+
     // Error handling
     lastError: string | null;
     errorHistory: Array<{
@@ -90,7 +90,7 @@ const MAX_HISTORY_ITEMS = 20;
 
 export const useLaboratoryStore = defineStore('laboratory', () => {
     const authStore = useEnhancedAuthStore();
-    
+
     // Initialize store state
     const initialState: ILaboratoryStore = {
         // Core laboratory data
@@ -106,19 +106,19 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
         },
         laboratorySettings: {},
         laboratoryUsers: {},
-        
+
         // UI state
         isLoading: false,
         isCreating: false,
         isUpdating: false,
         isDeleting: false,
-        
+
         // Search and filtering
         searchQuery: '',
         selectedOrganization: null,
         sortBy: 'name',
         sortOrder: 'asc',
-        
+
         // Error handling
         lastError: null,
         errorHistory: [],
@@ -155,28 +155,27 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
     const filteredLaboratories = computed(() => {
         let filtered = [...store.value.laboratories];
-        
+
         // Apply search filter
         if (store.value.searchQuery) {
             const query = store.value.searchQuery.toLowerCase();
-            filtered = filtered.filter(lab => 
-                lab.name.toLowerCase().includes(query) ||
-                lab.code?.toLowerCase().includes(query) ||
-                lab.email?.toLowerCase().includes(query)
+            filtered = filtered.filter(
+                lab =>
+                    lab.name.toLowerCase().includes(query) ||
+                    lab.code?.toLowerCase().includes(query) ||
+                    lab.email?.toLowerCase().includes(query)
             );
         }
-        
+
         // Apply organization filter
         if (store.value.selectedOrganization) {
-            filtered = filtered.filter(lab => 
-                lab.organization_uid === store.value.selectedOrganization
-            );
+            filtered = filtered.filter(lab => lab.organization_uid === store.value.selectedOrganization);
         }
-        
+
         // Apply sorting
         filtered.sort((a, b) => {
             let aValue: any, bValue: any;
-            
+
             switch (store.value.sortBy) {
                 case 'name':
                     aValue = a.name.toLowerCase();
@@ -194,14 +193,14 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     aValue = a.name.toLowerCase();
                     bValue = b.name.toLowerCase();
             }
-            
+
             if (store.value.sortOrder === 'desc') {
                 return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
             } else {
                 return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
             }
         });
-        
+
         return filtered;
     });
 
@@ -210,7 +209,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
         const activeLabs = store.value.laboratories.filter(lab => lab.is_active).length;
         const userAssignments = Object.values(store.value.laboratoryUsers);
         const totalUsers = userAssignments.reduce((sum, assignments) => sum + assignments.length, 0);
-        
+
         return {
             totalLaboratories: totalLabs,
             activeLaboratories: activeLabs,
@@ -228,15 +227,15 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             context,
             laboratory_uid: laboratoryUid,
         };
-        
+
         store.value.errorHistory.unshift(errorEntry);
         store.value.lastError = error;
-        
+
         // Keep only last 20 errors
         if (store.value.errorHistory.length > 20) {
             store.value.errorHistory = store.value.errorHistory.slice(0, 20);
         }
-        
+
         console.error(`Laboratory Store Error [${context}]:`, error);
     };
 
@@ -248,7 +247,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
     // Core laboratory operations
     const fetchLaboratories = async (forceRefresh = false): Promise<void> => {
         store.value.isLoading = true;
-        
+
         try {
             const response = await withClientQuery(
                 `query GetLaboratories {
@@ -266,15 +265,13 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 {}
             );
-            
+
             if (response?.laboratories) {
                 store.value.laboratories = response.laboratories;
-                
+
                 // Sync with auth store
-                store.value.laboratoryContext.availableLaboratories = 
-                    authStore.auth.laboratoryContext.availableLaboratories;
+                store.value.laboratoryContext.availableLaboratories = authStore.auth.laboratoryContext.availableLaboratories;
             }
-            
         } catch (error) {
             recordError(String(error), 'fetchLaboratories');
             toastError('Failed to fetch laboratories');
@@ -285,7 +282,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
     const createLaboratory = async (laboratoryData: any): Promise<LaboratoryType | null> => {
         store.value.isCreating = true;
-        
+
         try {
             const response = await withClientMutation(
                 `mutation CreateLaboratory($laboratoryInput: LaboratoryCreateInputType!) {
@@ -308,10 +305,10 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 { laboratoryInput: laboratoryData }
             );
-            
+
             if (response?.createLaboratory) {
                 const result = response.createLaboratory;
-                
+
                 if (result.__typename === 'LaboratoryType') {
                     store.value.laboratories.push(result);
                     toastSuccess(`Laboratory "${result.name}" created successfully`);
@@ -320,25 +317,20 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     throw new Error(result.error || 'Failed to create laboratory');
                 }
             }
-            
+
             throw new Error('No response received');
-            
         } catch (error) {
             recordError(String(error), 'createLaboratory');
             toastError('Failed to create laboratory');
             return null;
-            
         } finally {
             store.value.isCreating = false;
         }
     };
 
-    const updateLaboratory = async (
-        laboratoryUid: string,
-        updateData: any
-    ): Promise<LaboratoryType | null> => {
+    const updateLaboratory = async (laboratoryUid: string, updateData: any): Promise<LaboratoryType | null> => {
         store.value.isUpdating = true;
-        
+
         try {
             const response = await withClientMutation(
                 `mutation UpdateLaboratory($laboratoryUid: String!, $laboratoryInput: LaboratoryUpdateInputType!) {
@@ -364,36 +356,34 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     laboratoryInput: updateData,
                 }
             );
-            
+
             if (response?.updateLaboratory) {
                 const result = response.updateLaboratory;
-                
+
                 if (result.__typename === 'LaboratoryType') {
                     // Update in laboratories list
                     const index = store.value.laboratories.findIndex(lab => lab.uid === laboratoryUid);
                     if (index > -1) {
                         store.value.laboratories[index] = result;
                     }
-                    
+
                     // Update active laboratory if it's the same
                     if (store.value.laboratoryContext.activeLaboratory?.uid === laboratoryUid) {
                         store.value.laboratoryContext.activeLaboratory = result;
                     }
-                    
+
                     toastSuccess(`Laboratory "${result.name}" updated successfully`);
                     return result;
                 } else {
                     throw new Error(result.error || 'Failed to update laboratory');
                 }
             }
-            
+
             throw new Error('No response received');
-            
         } catch (error) {
             recordError(String(error), 'updateLaboratory', laboratoryUid);
             toastError('Failed to update laboratory');
             return null;
-            
         } finally {
             store.value.isUpdating = false;
         }
@@ -401,7 +391,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
     const deleteLaboratory = async (laboratoryUid: string): Promise<boolean> => {
         store.value.isDeleting = true;
-        
+
         try {
             const response = await withClientMutation(
                 `mutation DeleteLaboratory($laboratoryUid: String!) {
@@ -416,40 +406,36 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 { laboratoryUid }
             );
-            
+
             if (response?.deleteLaboratory) {
                 const result = response.deleteLaboratory;
-                
+
                 if (result.__typename === 'MessageType') {
                     // Remove from laboratories list
                     store.value.laboratories = store.value.laboratories.filter(lab => lab.uid !== laboratoryUid);
-                    
+
                     // Clear related data
                     delete store.value.laboratorySettings[laboratoryUid];
                     delete store.value.laboratoryUsers[laboratoryUid];
-                    
+
                     // Switch active laboratory if needed
                     if (store.value.laboratoryContext.activeLaboratory?.uid === laboratoryUid) {
-                        const availableLabs = store.value.laboratoryContext.availableLaboratories
-                            .filter(lab => lab.uid !== laboratoryUid);
-                        store.value.laboratoryContext.activeLaboratory = 
-                            availableLabs.length > 0 ? availableLabs[0] : null;
+                        const availableLabs = store.value.laboratoryContext.availableLaboratories.filter(lab => lab.uid !== laboratoryUid);
+                        store.value.laboratoryContext.activeLaboratory = availableLabs.length > 0 ? availableLabs[0] : null;
                     }
-                    
+
                     toastSuccess('Laboratory deleted successfully');
                     return true;
                 } else {
                     throw new Error(result.error || 'Failed to delete laboratory');
                 }
             }
-            
+
             throw new Error('No response received');
-            
         } catch (error) {
             recordError(String(error), 'deleteLaboratory', laboratoryUid);
             toastError('Failed to delete laboratory');
             return false;
-            
         } finally {
             store.value.isDeleting = false;
         }
@@ -461,58 +447,52 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             toastWarning('Laboratory switch already in progress');
             return false;
         }
-        
-        const targetLab = store.value.laboratoryContext.availableLaboratories
-            .find(lab => lab.uid === laboratoryUid);
+
+        const targetLab = store.value.laboratoryContext.availableLaboratories.find(lab => lab.uid === laboratoryUid);
         if (!targetLab) {
             toastError('Laboratory not found');
             return false;
         }
-        
+
         if (store.value.laboratoryContext.activeLaboratory?.uid === laboratoryUid) {
             toastInfo('Laboratory is already active');
             return true;
         }
-        
+
         store.value.laboratoryContext.contextSwitching = true;
-        
+
         try {
             // Switch in auth store first
             const success = await authStore.switchActiveLaboratory(laboratoryUid);
-            
+
             if (success) {
                 const previousLab = store.value.laboratoryContext.activeLaboratory;
                 store.value.laboratoryContext.activeLaboratory = targetLab;
                 store.value.laboratoryContext.lastSwitchTime = new Date();
-                
+
                 // Add to context history
                 addToContextHistory(targetLab);
-                
+
                 // Update recent and frequent laboratories
                 updateRecentLaboratories(targetLab);
                 updateFrequentLaboratories();
-                
+
                 // Load laboratory-specific data
-                await Promise.all([
-                    fetchLaboratorySettings(laboratoryUid),
-                    fetchLaboratoryUsers(laboratoryUid),
-                ]);
-                
+                await Promise.all([fetchLaboratorySettings(laboratoryUid), fetchLaboratoryUsers(laboratoryUid)]);
+
                 // Emit context change event
                 emitContextChangeEvent(previousLab, targetLab);
-                
+
                 toastSuccess(`Switched to ${targetLab.name}`);
                 return true;
             } else {
                 toastError('Failed to switch laboratory');
                 return false;
             }
-            
         } catch (error) {
             recordError(String(error), 'switchActiveLaboratory', laboratoryUid);
             toastError('Failed to switch laboratory');
             return false;
-            
         } finally {
             store.value.laboratoryContext.contextSwitching = false;
         }
@@ -520,15 +500,11 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
     const addToContextHistory = (laboratory: LaboratoryType) => {
         const now = new Date();
-        const lastItem = store.value.laboratoryContext.contextHistory[
-            store.value.laboratoryContext.contextHistory.length - 1
-        ];
-        
+        const lastItem = store.value.laboratoryContext.contextHistory[store.value.laboratoryContext.contextHistory.length - 1];
+
         // Update session duration for previous item
         if (lastItem && store.value.laboratoryContext.lastSwitchTime) {
-            const duration = Math.floor(
-                (now.getTime() - store.value.laboratoryContext.lastSwitchTime.getTime()) / (1000 * 60)
-            );
+            const duration = Math.floor((now.getTime() - store.value.laboratoryContext.lastSwitchTime.getTime()) / (1000 * 60));
             lastItem.session_duration = duration;
         }
 
@@ -543,8 +519,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
         // Keep only last MAX_HISTORY_ITEMS
         if (store.value.laboratoryContext.contextHistory.length > MAX_HISTORY_ITEMS) {
-            store.value.laboratoryContext.contextHistory = 
-                store.value.laboratoryContext.contextHistory.slice(-MAX_HISTORY_ITEMS);
+            store.value.laboratoryContext.contextHistory = store.value.laboratoryContext.contextHistory.slice(-MAX_HISTORY_ITEMS);
         }
 
         saveContextToStorage();
@@ -553,13 +528,13 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
     const updateRecentLaboratories = (laboratory: LaboratoryType) => {
         const recent = store.value.laboratoryContext.recentLaboratories;
         const existingIndex = recent.findIndex(lab => lab.uid === laboratory.uid);
-        
+
         if (existingIndex > -1) {
             recent.splice(existingIndex, 1);
         }
-        
+
         recent.unshift(laboratory);
-        
+
         // Keep only last 5 recent laboratories
         if (recent.length > 5) {
             store.value.laboratoryContext.recentLaboratories = recent.slice(0, 5);
@@ -568,10 +543,9 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
     const updateFrequentLaboratories = () => {
         const labCounts = new Map<string, { lab: LaboratoryType; count: number; lastUsed: Date }>();
-        
+
         store.value.laboratoryContext.contextHistory.forEach(item => {
-            const lab = store.value.laboratoryContext.availableLaboratories
-                .find(l => l.uid === item.laboratory_uid);
+            const lab = store.value.laboratoryContext.availableLaboratories.find(l => l.uid === item.laboratory_uid);
             if (lab) {
                 const existing = labCounts.get(item.laboratory_uid);
                 if (existing) {
@@ -599,7 +573,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             })
             .slice(0, 3) // Top 3 frequently used
             .map(item => item.lab);
-        
+
         store.value.laboratoryContext.frequentLaboratories = frequent;
     };
 
@@ -644,25 +618,21 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 { laboratoryUid }
             );
-            
+
             if (response?.laboratorySettings) {
                 const settings = response.laboratorySettings;
                 store.value.laboratorySettings[laboratoryUid] = settings;
                 return settings;
             }
-            
+
             return null;
-            
         } catch (error) {
             recordError(String(error), 'fetchLaboratorySettings', laboratoryUid);
             return null;
         }
     };
 
-    const updateLaboratorySettings = async (
-        laboratoryUid: string,
-        settingsData: Partial<ILaboratorySettings>
-    ): Promise<boolean> => {
+    const updateLaboratorySettings = async (laboratoryUid: string, settingsData: Partial<ILaboratorySettings>): Promise<boolean> => {
         try {
             const response = await withClientMutation(
                 `mutation UpdateLaboratorySettings($laboratoryUid: String!, $settingsInput: LaboratorySettingsInputType!) {
@@ -675,7 +645,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     settingsInput: settingsData,
                 }
             );
-            
+
             if (response?.updateLaboratorySettings) {
                 // Update local cache
                 if (store.value.laboratorySettings[laboratoryUid]) {
@@ -685,13 +655,12 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         updated_at: new Date(),
                     };
                 }
-                
+
                 toastSuccess('Laboratory settings updated successfully');
                 return true;
             }
-            
+
             return false;
-            
         } catch (error) {
             recordError(String(error), 'updateLaboratorySettings', laboratoryUid);
             toastError('Failed to update laboratory settings');
@@ -715,26 +684,21 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 { laboratoryUid }
             );
-            
+
             if (response?.laboratoryUsers) {
                 const users = response.laboratoryUsers;
                 store.value.laboratoryUsers[laboratoryUid] = users;
                 return users;
             }
-            
+
             return [];
-            
         } catch (error) {
             recordError(String(error), 'fetchLaboratoryUsers', laboratoryUid);
             return [];
         }
     };
 
-    const assignUserToLaboratory = async (
-        laboratoryUid: string,
-        userUid: string,
-        role: string = 'user'
-    ): Promise<boolean> => {
+    const assignUserToLaboratory = async (laboratoryUid: string, userUid: string, role: string = 'user'): Promise<boolean> => {
         try {
             const response = await withClientMutation(
                 `mutation AssignUserToLaboratory($laboratoryUid: String!, $userUid: String!, $role: String!) {
@@ -749,10 +713,10 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 { laboratoryUid, userUid, role }
             );
-            
+
             if (response?.assignUserToLaboratory) {
                 const result = response.assignUserToLaboratory;
-                
+
                 if (result.__typename === 'MessageType') {
                     // Refresh laboratory users
                     await fetchLaboratoryUsers(laboratoryUid);
@@ -762,9 +726,8 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     throw new Error(result.error || 'Failed to assign user');
                 }
             }
-            
+
             return false;
-            
         } catch (error) {
             recordError(String(error), 'assignUserToLaboratory', laboratoryUid);
             toastError('Failed to assign user to laboratory');
@@ -772,10 +735,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
         }
     };
 
-    const removeUserFromLaboratory = async (
-        laboratoryUid: string,
-        userUid: string
-    ): Promise<boolean> => {
+    const removeUserFromLaboratory = async (laboratoryUid: string, userUid: string): Promise<boolean> => {
         try {
             const response = await withClientMutation(
                 `mutation RemoveUserFromLaboratory($laboratoryUid: String!, $userUid: String!) {
@@ -790,10 +750,10 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 }`,
                 { laboratoryUid, userUid }
             );
-            
+
             if (response?.removeUserFromLaboratory) {
                 const result = response.removeUserFromLaboratory;
-                
+
                 if (result.__typename === 'MessageType') {
                     // Refresh laboratory users
                     await fetchLaboratoryUsers(laboratoryUid);
@@ -803,9 +763,8 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     throw new Error(result.error || 'Failed to remove user');
                 }
             }
-            
+
             return false;
-            
         } catch (error) {
             recordError(String(error), 'removeUserFromLaboratory', laboratoryUid);
             toastError('Failed to remove user from laboratory');
@@ -829,8 +788,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
 
     // Validation methods
     const validateLaboratoryAccess = (laboratoryUid: string): boolean => {
-        return store.value.laboratoryContext.availableLaboratories
-            .some(lab => lab.uid === laboratoryUid);
+        return store.value.laboratoryContext.availableLaboratories.some(lab => lab.uid === laboratoryUid);
     };
 
     const canAccessLaboratory = (laboratoryUid: string): boolean => {
@@ -880,7 +838,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             const stored = localStorage.getItem(STORAGE_LABORATORY_KEY);
             if (stored) {
                 const storeData = JSON.parse(stored);
-                
+
                 if (storeData.searchQuery) {
                     store.value.searchQuery = storeData.searchQuery;
                 }
@@ -904,7 +862,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             const stored = localStorage.getItem(STORAGE_CONTEXT_KEY);
             if (stored) {
                 const contextData = JSON.parse(stored);
-                
+
                 if (contextData.lastSwitchTime) {
                     store.value.laboratoryContext.lastSwitchTime = new Date(contextData.lastSwitchTime);
                 }
@@ -924,24 +882,22 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
     const initializeStore = async () => {
         loadFromStorage();
         loadContextFromStorage();
-        
+
         // Sync with auth store
         if (authStore.auth.isAuthenticated) {
-            store.value.laboratoryContext.availableLaboratories = 
-                authStore.auth.laboratoryContext.availableLaboratories;
-            store.value.laboratoryContext.activeLaboratory = 
-                authStore.auth.laboratoryContext.activeLaboratory;
-            
+            store.value.laboratoryContext.availableLaboratories = authStore.auth.laboratoryContext.availableLaboratories;
+            store.value.laboratoryContext.activeLaboratory = authStore.auth.laboratoryContext.activeLaboratory;
+
             // Fetch initial data
             await fetchLaboratories();
-            
+
             if (store.value.laboratoryContext.activeLaboratory) {
                 await Promise.all([
                     fetchLaboratorySettings(store.value.laboratoryContext.activeLaboratory.uid),
                     fetchLaboratoryUsers(store.value.laboratoryContext.activeLaboratory.uid),
                 ]);
             }
-            
+
             // Update frequent and recent laboratories
             updateFrequentLaboratories();
         }
@@ -955,36 +911,38 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
     };
 
     // Watch for auth store changes
-    watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
-        if (isAuthenticated) {
-            initializeStore();
-        } else {
-            resetStore();
+    watch(
+        () => authStore.auth.isAuthenticated,
+        isAuthenticated => {
+            if (isAuthenticated) {
+                initializeStore();
+            } else {
+                resetStore();
+            }
         }
-    });
+    );
 
     // Watch for active laboratory changes in auth store
-    watch(() => authStore.auth.laboratoryContext.activeLaboratory, (newActiveLab) => {
-        if (newActiveLab && newActiveLab.uid !== store.value.laboratoryContext.activeLaboratory?.uid) {
-            store.value.laboratoryContext.activeLaboratory = newActiveLab;
-            
-            // Load laboratory-specific data
-            Promise.all([
-                fetchLaboratorySettings(newActiveLab.uid),
-                fetchLaboratoryUsers(newActiveLab.uid),
-            ]);
+    watch(
+        () => authStore.auth.laboratoryContext.activeLaboratory,
+        newActiveLab => {
+            if (newActiveLab && newActiveLab.uid !== store.value.laboratoryContext.activeLaboratory?.uid) {
+                store.value.laboratoryContext.activeLaboratory = newActiveLab;
+
+                // Load laboratory-specific data
+                Promise.all([fetchLaboratorySettings(newActiveLab.uid), fetchLaboratoryUsers(newActiveLab.uid)]);
+            }
         }
-    });
+    );
 
     // Auto-save to storage on state changes
-    watch(() => [
-        store.value.searchQuery,
-        store.value.selectedOrganization,
-        store.value.sortBy,
-        store.value.sortOrder,
-    ], () => {
-        saveToStorage();
-    }, { deep: true });
+    watch(
+        () => [store.value.searchQuery, store.value.selectedOrganization, store.value.sortBy, store.value.sortOrder],
+        () => {
+            saveToStorage();
+        },
+        { deep: true }
+    );
 
     // Initialize on store creation
     initializeStore();
@@ -992,7 +950,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
     return {
         // State
         store: computed(() => store.value),
-        
+
         // Computed properties
         hasMultipleLaboratories,
         canSwitchLaboratories,
@@ -1002,39 +960,39 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
         activeLaboratoryUsers,
         filteredLaboratories,
         laboratoryStatistics,
-        
+
         // Core operations
         fetchLaboratories,
         createLaboratory,
         updateLaboratory,
         deleteLaboratory,
-        
+
         // Context switching
         switchActiveLaboratory,
-        
+
         // Settings management
         fetchLaboratorySettings,
         updateLaboratorySettings,
-        
+
         // User management
         fetchLaboratoryUsers,
         assignUserToLaboratory,
         removeUserFromLaboratory,
-        
+
         // Search and filtering
         setSearchQuery,
         setOrganizationFilter,
         setSorting,
-        
+
         // Validation
         validateLaboratoryAccess,
         canAccessLaboratory,
         getLaboratoryByUid,
         getLaboratoryByCode,
-        
+
         // Error handling
         clearErrors,
-        
+
         // Store management
         initializeStore,
         resetStore,

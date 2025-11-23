@@ -1,9 +1,29 @@
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.multiplex.microbiology.entities import (
-    AbxGuideline, AbxAntibioticGuideline, AbxAntibiotic,
-    AbxKingdom, AbxPhylum, AbxClass, AbxOrder, AbxFamily, AbxGenus, AbxOrganism, AbxOrganismSerotype, AbxTestMethod,
-    AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxExpResPhenotype,
-    AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel, AbxASTResult, AbxOrganismResult, AbxGuidelineYear
+    AbxGuideline,
+    AbxAntibioticGuideline,
+    AbxAntibiotic,
+    AbxKingdom,
+    AbxPhylum,
+    AbxClass,
+    AbxOrder,
+    AbxFamily,
+    AbxGenus,
+    AbxOrganism,
+    AbxOrganismSerotype,
+    AbxTestMethod,
+    AbxBreakpointType,
+    AbxHost,
+    AbxSiteOfInfection,
+    AbxBreakpoint,
+    AbxExpResPhenotype,
+    AbxExpertInterpretationRule,
+    AbxMedium,
+    AbxQCRange,
+    AbxASTPanel,
+    AbxASTResult,
+    AbxOrganismResult,
+    AbxGuidelineYear,
 )
 
 
@@ -97,7 +117,9 @@ class AbxExpResPhenotypeRepository(BaseRepository[AbxExpResPhenotype]):
         super().__init__(AbxExpResPhenotype)
 
 
-class AbxExpertInterpretationRuleRepository(BaseRepository[AbxExpertInterpretationRule]):
+class AbxExpertInterpretationRuleRepository(
+    BaseRepository[AbxExpertInterpretationRule]
+):
     def __init__(self) -> None:
         super().__init__(AbxExpertInterpretationRule)
 

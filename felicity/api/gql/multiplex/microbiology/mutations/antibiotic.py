@@ -7,10 +7,17 @@ from felicity.api.gql.multiplex.microbiology import AbxAntibioticType, AbxGuidel
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError, DeletedItem
 from felicity.apps.multiplex.microbiology.entities import laboratory_antibiotics
-from felicity.apps.multiplex.microbiology.schemas import AbxGuidelineCreate, AbxGuidelineUpdate, AbxAntibioticCreate, \
-    AbxAntibioticUpdate
-from felicity.apps.multiplex.microbiology.services import AbxAntibioticGuidelineService, AbxGuidelineService, \
-    AbxAntibioticService
+from felicity.apps.multiplex.microbiology.schemas import (
+    AbxGuidelineCreate,
+    AbxGuidelineUpdate,
+    AbxAntibioticCreate,
+    AbxAntibioticUpdate,
+)
+from felicity.apps.multiplex.microbiology.services import (
+    AbxAntibioticGuidelineService,
+    AbxGuidelineService,
+    AbxAntibioticService,
+)
 from felicity.apps.setup.services import LaboratoryService
 from felicity.core.tenant_context import get_current_lab_uid
 
@@ -74,7 +81,9 @@ AbxAntibioticResponse = strawberry.union(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_guideline(info, payload: AbxGuidelineInputType) -> AbxGuidelineResponse:
+async def create_abx_guideline(
+    info, payload: AbxGuidelineInputType
+) -> AbxGuidelineResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -90,7 +99,7 @@ async def create_abx_guideline(info, payload: AbxGuidelineInputType) -> AbxGuide
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_guideline(
-        info, uid: str, payload: AbxGuidelineInputType
+    info, uid: str, payload: AbxGuidelineInputType
 ) -> AbxGuidelineResponse:
     felicity_user = await auth_from_info(info)
     abx_guideline = await AbxGuidelineService().get(uid=uid)
@@ -106,12 +115,16 @@ async def update_abx_guideline(
     setattr(abx_guideline, "updated_by_uid", felicity_user.uid)
 
     abx_guideline_in = AbxGuidelineUpdate(**abx_guideline.to_dict())
-    abx_guideline = await AbxGuidelineService().update(abx_guideline.uid, abx_guideline_in)
+    abx_guideline = await AbxGuidelineService().update(
+        abx_guideline.uid, abx_guideline_in
+    )
     return AbxGuidelineType(**abx_guideline.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_antibiotic(info, payload: AbxAntibioticInputType) -> AbxAntibioticResponse:
+async def create_abx_antibiotic(
+    info, payload: AbxAntibioticInputType
+) -> AbxAntibioticResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -124,16 +137,15 @@ async def create_abx_antibiotic(info, payload: AbxAntibioticInputType) -> AbxAnt
     abx_antibiotic = await AbxAntibioticService().create(obj_in)
 
     for guideline in payload.guidelines:
-        await AbxAntibioticGuidelineService().create({
-            "antibiotic_uid": abx_antibiotic.uid,
-            "guideline_uid": guideline
-        })
+        await AbxAntibioticGuidelineService().create(
+            {"antibiotic_uid": abx_antibiotic.uid, "guideline_uid": guideline}
+        )
     return AbxAntibioticType(**abx_antibiotic.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_antibiotic(
-        info, uid: str, payload: AbxAntibioticInputType
+    info, uid: str, payload: AbxAntibioticInputType
 ) -> AbxAntibioticResponse:
     felicity_user = await auth_from_info(info)
     abx_antibiotic = await AbxAntibioticService().get(uid=uid)
@@ -149,17 +161,20 @@ async def update_abx_antibiotic(
     setattr(abx_antibiotic, "updated_by_uid", felicity_user.uid)
 
     abx_antibiotic_in = AbxAntibioticUpdate(**abx_antibiotic.to_dict())
-    abx_antibiotic = await AbxAntibioticService().update(abx_antibiotic.uid, abx_antibiotic_in)
+    abx_antibiotic = await AbxAntibioticService().update(
+        abx_antibiotic.uid, abx_antibiotic_in
+    )
 
     # remove previous association
-    await AbxAntibioticGuidelineService().delete_where(antibiotic_uid=abx_antibiotic.uid)
+    await AbxAntibioticGuidelineService().delete_where(
+        antibiotic_uid=abx_antibiotic.uid
+    )
 
     # add current association
     for guideline in payload.guidelines:
-        await AbxAntibioticGuidelineService().create({
-            "antibiotic_uid": abx_antibiotic.uid,
-            "guideline_uid": guideline
-        })
+        await AbxAntibioticGuidelineService().create(
+            {"antibiotic_uid": abx_antibiotic.uid, "guideline_uid": guideline}
+        )
 
     return AbxAntibioticType(**abx_antibiotic.marshal_simple())
 
@@ -172,14 +187,14 @@ async def use_abx_antibiotic(info, uid: str) -> AbxAntibioticResponse:
         table=laboratory_antibiotics,
         columns=["antibiotic_uid"],
         antibiotic_uid=uid,
-        laboratory_uid=laboratory.uid
+        laboratory_uid=laboratory.uid,
     )
     if exists:
         return OperationError(error="Antibiotic already used in this laboratory.")
 
     await AbxAntibioticService().repository.table_insert(
         laboratory_antibiotics,
-        [{"antibiotic_uid": uid, "laboratory_uid": laboratory.uid}]
+        [{"antibiotic_uid": uid, "laboratory_uid": laboratory.uid}],
     )
 
     antibiotic = await AbxAntibioticService().get(uid=uid)
@@ -191,8 +206,6 @@ async def discard_abx_antibiotic(info, uid: str) -> DeletedItem:
     lab_uid = get_current_lab_uid()
     laboratory = await LaboratoryService().get(uid=lab_uid)
     await AbxAntibioticService().repository.table_delete(
-        table=laboratory_antibiotics,
-        antibiotic_uid=uid,
-        laboratory_uid=laboratory.uid
+        table=laboratory_antibiotics, antibiotic_uid=uid, laboratory_uid=laboratory.uid
     )
     return DeletedItem(uid=uid)

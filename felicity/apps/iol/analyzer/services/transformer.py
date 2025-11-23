@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class MessageTransformer:
-
     def _get_separators(self, raw_message: str) -> dict:
         """
         Detects and returns message separators dynamically for HL7 and ASTM messages.
@@ -15,7 +14,7 @@ class MessageTransformer:
             - Field separator is MSH-1 (4th character of MSH line)
             - Encoding characters (MSH-2) define:
                 component separator (^), repeat separator (~),
-                escape character (\), subcomponent separator (&)
+                escape character (\\), subcomponent separator (&)
 
         ASTM:
             - Usually first character after segment ID is field separator
@@ -37,8 +36,9 @@ class MessageTransformer:
             - Defaults are provided if separators cannot be detected.
             - Works dynamically for both HL7 (MSH present) and ASTM (H|P|O|R|A segments).
         """
-
-        first_line = [l.strip() for l in raw_message.strip().splitlines() if l.strip()][0]
+        first_line = [
+            line.strip() for line in raw_message.strip().splitlines() if line.strip()
+        ][0]
         logger.info(f"first_line: {first_line}")
 
         if first_line.startswith("MSH"):  # HL7 aka MSH|^~\&
@@ -54,11 +54,13 @@ class MessageTransformer:
         else:  # ASTM aka H|\^&
             # Check if positions 2 and 3 both return '\' (escape sequence issue)
             offset = 0
-            if len(first_line) > 3 and first_line[2] == '\\' and first_line[3] == '\\':
+            if len(first_line) > 3 and first_line[2] == "\\" and first_line[3] == "\\":
                 offset = 1
                 logger.info("Detected escape sequence issue, adjusting indices by +1")
 
-            subcomponent = first_line[5 + offset] if len(first_line) > 5 + offset else None
+            subcomponent = (
+                first_line[5 + offset] if len(first_line) > 5 + offset else None
+            )
             seps = {
                 "field": first_line[1],
                 "repeat": first_line[2 + offset],
@@ -114,26 +116,39 @@ class MessageTransformer:
         raw_message = raw_message.replace("\\r", "\r")
 
         sep = self._get_separators(raw_message)
-        f_sep, c_sep, r_sep, s_sep = sep["field"], sep["component"], sep["repeat"], sep["subcomponent"]
+        f_sep, c_sep, r_sep, s_sep = (
+            sep["field"],
+            sep["component"],
+            sep["repeat"],
+            sep["subcomponent"],
+        )
 
-        lines = [l.strip() for l in raw_message.strip().splitlines() if l.strip()]
+        lines = [
+            line.strip() for line in raw_message.strip().splitlines() if line.strip()
+        ]
         if not lines:
             return {}
 
         message = {}
 
         for line in lines:
-            seg_name = line[:1] if line[0] in "HOPRA" else line[:3]  # ASTM usually 1 char, HL7 3 char
+            seg_name = (
+                line[:1] if line[0] in "HOPRA" else line[:3]
+            )  # ASTM usually 1 char, HL7 3 char
             fields = line.split(f_sep)
 
             seg_obj = {"raw": line, "fields": {}}
 
             for idx, field in enumerate(fields[1:], start=1):
                 # Determine if we need a repeat structure
-                need_repeat = r_sep in field or c_sep in field or (s_sep and s_sep in field)
+                need_repeat = (
+                        r_sep in field or c_sep in field or (s_sep and s_sep in field)
+                )
                 if need_repeat:
                     field_dict = {"raw": field, "repeats": []}
-                    logger.info(f"Field {field} contains repeats, need_repeat={need_repeat}  :: r_sep: {r_sep} ")
+                    logger.info(
+                        f"Field {field} contains repeats, need_repeat={need_repeat}  :: r_sep: {r_sep} "
+                    )
                     repeats = field.split(r_sep) if r_sep in field else [field]
                     logger.info(f"repeats: {repeats} ")
 
@@ -170,8 +185,13 @@ class MessageTransformer:
         return message, sep
 
     def _navigate_parsed_message(
-            self, parsed_message: dict, segment_id: str, field: int, repeat: int = 0,
-            component: int | None = None, subcomponent: int | None = None
+            self,
+            parsed_message: dict,
+            segment_id: str,
+            field: int,
+            repeat: int = 0,
+            component: int | None = None,
+            subcomponent: int | None = None,
     ) -> str | None:
         """
         Navigate parsed message structure using segment/field/repeat/component/subcomponent hierarchy.
@@ -249,9 +269,7 @@ class MessageTransformer:
             logger.warning(f"Error navigating parsed message: {e}")
             return None
 
-    def extract_fields(
-            self, message: dict | str, driver: dict
-    ) -> dict:
+    def extract_fields(self, message: dict | str, driver: dict) -> dict:
         """
         Extract required fields from parsed message using driver mappings.
 
@@ -323,7 +341,9 @@ class MessageTransformer:
                     ]
                 }
         """
-        logger.info(f"extract_fields called with driver type: {type(driver)}, driver: {driver}")
+        logger.info(
+            f"extract_fields called with driver type: {type(driver)}, driver: {driver}"
+        )
 
         if not driver:
             logger.error("Driver mapping is None or empty")
@@ -387,7 +407,9 @@ class MessageTransformer:
                             keyword_config.get("component"),
                             keyword_config.get("subcomponent"),
                         )
-                        logger.info(f"Extracted keyword: config={keyword_config}, result='{keyword}'")
+                        logger.info(
+                            f"Extracted keyword: config={keyword_config}, result='{keyword}'"
+                        )
                         if keyword:
                             result_obj["keyword"] = keyword
 
@@ -442,19 +464,27 @@ class MessageTransformer:
                             marker_config.get("subcomponent"),
                         )
                         final_value = marker_config.get("final_value", "F")
-                        result_obj["is_final"] = marker_value == final_value if marker_value else False
+                        result_obj["is_final"] = (
+                            marker_value == final_value if marker_value else False
+                        )
 
                     results.append(result_obj)
 
-            return {"sample_id": sample_id, "instrument": instrument, "results": results}
+            return {
+                "sample_id": sample_id,
+                "instrument": instrument,
+                "results": results,
+            }
 
         except Exception as e:
             logger.error(f"Error extracting fields with driver: {e}", exc_info=True)
             return {"sample_id": None, "instrument": None, "results": []}
 
     async def get_driver(
-            self, laboratory_instrument_uid: str,
-            lab_instrument_service=None, instrument_service=None
+            self,
+            laboratory_instrument_uid: str,
+            lab_instrument_service=None,
+            instrument_service=None,
     ) -> dict | None:
         """
         Get the JSON driver for a laboratory instrument with fallback logic.
@@ -480,41 +510,62 @@ class MessageTransformer:
             ValueError: If required services are not provided
         """
         if not lab_instrument_service or not instrument_service:
-            logger.error("Required services (lab_instrument_service, instrument_service) not provided")
+            logger.error(
+                "Required services (lab_instrument_service, instrument_service) not provided"
+            )
             return None
 
         try:
             # Fetch laboratory instrument
             lab_instrument = await lab_instrument_service.get(laboratory_instrument_uid)
             if not lab_instrument:
-                logger.warning(f"Laboratory instrument {laboratory_instrument_uid} not found")
+                logger.warning(
+                    f"Laboratory instrument {laboratory_instrument_uid} not found"
+                )
                 return None
 
             # Check for lab-specific driver override
             if lab_instrument.driver_mapping:
-                logger.info(f"Using lab-specific driver for {laboratory_instrument_uid}")
+                logger.info(
+                    f"Using lab-specific driver for {laboratory_instrument_uid}"
+                )
                 return lab_instrument.driver_mapping
 
             # Fallback to generic instrument driver
-            if not hasattr(lab_instrument, "instrument_uid") or not lab_instrument.instrument_uid:
-                logger.warning(f"Laboratory instrument {laboratory_instrument_uid} has no associated instrument")
+            if (
+                    not hasattr(lab_instrument, "instrument_uid")
+                    or not lab_instrument.instrument_uid
+            ):
+                logger.warning(
+                    f"Laboratory instrument {laboratory_instrument_uid} has no associated instrument"
+                )
                 return None
 
             instrument = await instrument_service.get(lab_instrument.instrument_uid)
             if not instrument or not instrument.driver_mapping:
-                logger.warning(f"No driver found for instrument {lab_instrument.instrument_uid}")
+                logger.warning(
+                    f"No driver found for instrument {lab_instrument.instrument_uid}"
+                )
                 return None
 
-            logger.info(f"Using generic driver for instrument {lab_instrument.instrument_uid}")
+            logger.info(
+                f"Using generic driver for instrument {lab_instrument.instrument_uid}"
+            )
             return instrument.driver_mapping
 
         except Exception as e:
-            logger.error(f"Error retrieving driver for {laboratory_instrument_uid}: {e}", exc_info=True)
+            logger.error(
+                f"Error retrieving driver for {laboratory_instrument_uid}: {e}",
+                exc_info=True,
+            )
             return None
 
     async def transform_message(
-            self, raw_message: str, laboratory_instrument_uid: str,
-            lab_instrument_service=None, instrument_service=None
+            self,
+            raw_message: str,
+            laboratory_instrument_uid: str,
+            lab_instrument_service=None,
+            instrument_service=None,
     ) -> dict:
         """
         Transform a raw ASTM/HL7 message to extracted JSON result using driver mappings.
@@ -559,7 +610,7 @@ class MessageTransformer:
             "error": None,
             "sample_id": None,
             "results": [],
-            "parsed_message": {}
+            "parsed_message": {},
         }
 
         try:
@@ -578,11 +629,13 @@ class MessageTransformer:
             driver = await self.get_driver(
                 laboratory_instrument_uid,
                 lab_instrument_service=lab_instrument_service,
-                instrument_service=instrument_service
+                instrument_service=instrument_service,
             )
 
             if not driver:
-                result["error"] = f"No driver found for laboratory instrument {laboratory_instrument_uid}"
+                result["error"] = (
+                    f"No driver found for laboratory instrument {laboratory_instrument_uid}"
+                )
                 logger.error(result["error"])
                 return result
 
@@ -590,7 +643,9 @@ class MessageTransformer:
             try:
                 parsed_message = self.parse_message(raw_message)
                 result["parsed_message"] = parsed_message
-                logger.debug(f"Successfully parsed message with {len(parsed_message)} segments")
+                logger.debug(
+                    f"Successfully parsed message with {len(parsed_message)} segments"
+                )
             except Exception as parse_error:
                 result["error"] = f"Failed to parse message: {str(parse_error)}"
                 logger.error(result["error"], exc_info=True)
@@ -602,8 +657,10 @@ class MessageTransformer:
                 result["sample_id"] = extracted.get("sample_id")
                 result["results"] = extracted.get("results", [])
                 result["success"] = True
-                logger.info(f"Successfully transformed message: sample_id={result['sample_id']}, "
-                            f"{len(result['results'])} results extracted")
+                logger.info(
+                    f"Successfully transformed message: sample_id={result['sample_id']}, "
+                    f"{len(result['results'])} results extracted"
+                )
             except Exception as extract_error:
                 result["error"] = f"Failed to extract fields: {str(extract_error)}"
                 logger.error(result["error"], exc_info=True)

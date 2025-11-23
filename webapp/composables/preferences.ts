@@ -1,7 +1,6 @@
-import {reactive, toRefs} from 'vue';
+import { reactive, toRefs } from 'vue';
 import useNotifyToast from './alert_toast';
-import {DepartmentType} from '@/types/gql';
-
+import { DepartmentType } from '@/types/gql';
 
 interface Theme {
     variant: 'light' | 'dark';
@@ -20,7 +19,7 @@ interface PreferenceState {
     expandedMenu: boolean;
 }
 
-const {toastError} = useNotifyToast();
+const { toastError } = useNotifyToast();
 
 const state = reactive<PreferenceState>({
     departments: [],
@@ -77,7 +76,7 @@ export default function userPreferenceComposable() {
     function loadPreferredTheme(): void {
         try {
             if ('theme' in localStorage) {
-                const theme = localStorage.getItem('theme') as 'light' | 'dark' ?? 'light';
+                const theme = (localStorage.getItem('theme') as 'light' | 'dark') ?? 'light';
                 state.theme.variant = theme;
                 state.theme.icon = theme === 'light' ? 'sun' : 'moon';
             }

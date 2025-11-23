@@ -15,9 +15,13 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
         self.repository: JobRepository = JobRepository()
         super().__init__(self.repository)
 
-    async def create(self, c: JobCreate | dict, related: list[str] | None = None, commit: bool = True,
-                     session: AsyncSession | None = None):
-
+    async def create(
+        self,
+        c: JobCreate | dict,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ):
         # By default, auto delay by a minute to execute any job
         # labs which don't need background processing can execute jobs instantly without waiting
         next_try = timenow_dt() + timedelta(minutes=1)
@@ -47,7 +51,7 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
                 JobState.FAILED,
                 JobState.RUNNING,
             ],
-            "next_try__gt": timenow_dt()
+            "next_try__gt": timenow_dt(),
         }
         sort_attrs = [
             "-priority",

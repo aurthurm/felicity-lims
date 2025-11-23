@@ -19,7 +19,7 @@ class StreamSubscription:
     @strawberry.subscription(permission_classes=[IsAuthenticated])
     async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
         async with broadcast.subscribe(
-                channel=NotificationChannel.ACTIVITIES
+            channel=NotificationChannel.ACTIVITIES
         ) as subscriber:
             logger.info("Subscribed to activities")
             try:
@@ -38,7 +38,7 @@ class StreamSubscription:
     @strawberry.subscription(permission_classes=[IsAuthenticated])
     async def stream_processes(self) -> AsyncGenerator[ActivityProcessType, None]:  # noqa
         async with broadcast.subscribe(
-                channel=NotificationChannel.PROCESSING
+            channel=NotificationChannel.PROCESSING
         ) as subscriber:
             logger.info("Subscribed to processes")
             try:

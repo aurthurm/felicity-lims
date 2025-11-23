@@ -6,7 +6,7 @@ sms_client = SmsClient(
     url=settings.SMS_API_URL,
     access_token=settings.SMS_TOKEN,
     username=settings.SMS_USERNAME,
-    password=settings.SMS_PASSWORD
+    password=settings.SMS_PASSWORD,
 )
 
-__all__= ['sms_client']
+__all__ = ["sms_client"]

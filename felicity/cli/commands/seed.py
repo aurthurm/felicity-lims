@@ -9,7 +9,7 @@ app = AsyncTyper()
 @app.command()
 async def all() -> None:
     """Seed Requisite setup"""
-    typer.echo(f"Seeding requisite setup...")
+    typer.echo("Seeding requisite setup...")
     await initialize_felicity()
     typer.echo("Done seeding requisite setup:)")
 
@@ -17,6 +17,6 @@ async def all() -> None:
 @app.command()
 async def microbiology() -> None:
     """Seed Requisite setup"""
-    typer.echo(f"Seeding requisite setup...")
+    typer.echo("Seeding requisite setup...")
     await seed_breakpoints()
     typer.echo("Done seeding requisite setup:)")

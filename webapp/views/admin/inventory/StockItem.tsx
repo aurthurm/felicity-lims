@@ -1,14 +1,18 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { AddStockItemDocument, AddStockItemMutation, AddStockItemMutationVariables,
-  EditStockItemDocument, EditStockItemMutation, EditStockItemMutationVariables } from '@/graphql/operations/inventory.mutations';   
+import {
+    AddStockItemDocument,
+    AddStockItemMutation,
+    AddStockItemMutationVariables,
+    EditStockItemDocument,
+    EditStockItemMutation,
+    EditStockItemMutationVariables,
+} from '@/graphql/operations/inventory.mutations';
 import { useInventoryStore } from '@/stores/inventory';
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import { StockItemInputType, StockItemType } from '@/types/gql';
 
-const StockItemDetail = defineAsyncComponent(
-    () => import( './StockItemDetail')
-)
+const StockItemDetail = defineAsyncComponent(() => import('./StockItemDetail'));
 const StockItem = defineComponent({
     name: 'stock-item',
     setup(props, ctx) {
@@ -35,8 +39,11 @@ const StockItem = defineComponent({
 
         function addStockItem(): void {
             const payload = { ...form } as StockItemInputType;
-            withClientMutation<AddStockItemMutation, AddStockItemMutationVariables>(AddStockItemDocument, { payload }, 'createStockItem')
-            .then(result => inventoryStore.addItem(result as StockItemType));
+            withClientMutation<AddStockItemMutation, AddStockItemMutationVariables>(
+                AddStockItemDocument,
+                { payload },
+                'createStockItem'
+            ).then(result => inventoryStore.addItem(result as StockItemType));
         }
 
         function editStockItem(): void {
@@ -46,10 +53,11 @@ const StockItem = defineComponent({
                 hazardUid: form.hazardUid,
                 categoryUid: form.categoryUid,
             } as StockItemInputType;
-            withClientMutation<EditStockItemMutation, EditStockItemMutationVariables>(EditStockItemDocument, { uid: form.uid, payload }, 'updateStockItem')
-            .then(result =>
-                inventoryStore.updateItem(result as StockItemType)
-            );
+            withClientMutation<EditStockItemMutation, EditStockItemMutationVariables>(
+                EditStockItemDocument,
+                { uid: form.uid, payload },
+                'updateStockItem'
+            ).then(result => inventoryStore.updateItem(result as StockItemType));
         }
 
         function FormManager(create: boolean, obj: StockItemType | null): void {
@@ -71,11 +79,11 @@ const StockItem = defineComponent({
 
         // Stock Item Detail
         let openDrawer = ref(false);
-        let stockItem = ref<StockItemType>()
+        let stockItem = ref<StockItemType>();
         const viewStockItem = (item: StockItemType) => {
             stockItem.value = item;
             openDrawer.value = true;
-        }
+        };
 
         return {
             form,
@@ -119,7 +127,10 @@ const StockItem = defineComponent({
                             <tbody class="[&_tr:last-child]:border-0">
                                 {this.stockItems?.map(item => {
                                     return (
-                                        <tr key={item?.uid} class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                        <tr
+                                            key={item?.uid}
+                                            class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                                        >
                                             <td class="p-4 align-middle">{item?.name}</td>
                                             <td class="p-4 align-middle text-primary">{item?.category?.name}</td>
                                             <td class="p-4 align-middle text-primary">{item?.hazard?.name}</td>
@@ -162,7 +173,13 @@ const StockItem = defineComponent({
                         {{
                             header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
                             body: () => (
-                                <form onSubmit={(e) => { e.preventDefault(); this.saveForm(); }} class="space-y-6">
+                                <form
+                                    onSubmit={e => {
+                                        e.preventDefault();
+                                        this.saveForm();
+                                    }}
+                                    class="space-y-6"
+                                >
                                     <div class="space-y-4">
                                         <div class="space-y-2">
                                             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -170,7 +187,7 @@ const StockItem = defineComponent({
                                             </label>
                                             <input
                                                 value={this.form.name}
-                                                onChange={(e) => this.form.name = e.target.value}
+                                                onChange={e => (this.form.name = e.target.value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter item name..."
                                             />
@@ -183,7 +200,7 @@ const StockItem = defineComponent({
                                                 <input
                                                     type="number"
                                                     value={this.form.minimumLevel}
-                                                    onChange={(e) => this.form.minimumLevel = Number(e.target.value)}
+                                                    onChange={e => (this.form.minimumLevel = Number(e.target.value))}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     min="0"
                                                     placeholder="0"
@@ -196,7 +213,7 @@ const StockItem = defineComponent({
                                                 <input
                                                     type="number"
                                                     value={this.form.maximumLevel}
-                                                    onChange={(e) => this.form.maximumLevel = Number(e.target.value)}
+                                                    onChange={e => (this.form.maximumLevel = Number(e.target.value))}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     min="0"
                                                     placeholder="0"
@@ -209,7 +226,7 @@ const StockItem = defineComponent({
                                             </label>
                                             <textarea
                                                 value={this.form.description}
-                                                onChange={(e) => this.form.description = e.target.value}
+                                                onChange={e => (this.form.description = e.target.value)}
                                                 class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter description..."
                                             />
@@ -222,7 +239,7 @@ const StockItem = defineComponent({
                                                 <select
                                                     title="Hazard"
                                                     value={this.form.hazardUid}
-                                                    onChange={(e) => this.form.hazardUid = e.target.value}
+                                                    onChange={e => (this.form.hazardUid = e.target.value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     <option value="">Select a hazard...</option>
@@ -240,7 +257,7 @@ const StockItem = defineComponent({
                                                 <select
                                                     title="Category"
                                                     value={this.form.categoryUid}
-                                                    onChange={(e) => this.form.categoryUid = e.target.value}
+                                                    onChange={e => (this.form.categoryUid = e.target.value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     <option value="">Select a category...</option>
@@ -262,7 +279,7 @@ const StockItem = defineComponent({
                                         </button>
                                     </div>
                                 </form>
-                            )
+                            ),
                         }}
                     </fel-modal>
                 )}
@@ -272,4 +289,4 @@ const StockItem = defineComponent({
 });
 
 export { StockItem };
-export default StockItem
+export default StockItem;

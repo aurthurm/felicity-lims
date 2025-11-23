@@ -2,7 +2,6 @@ import { ENCRYPT_AUTH_KEY, STORAGE_AUTH_KEY } from '@/conf';
 import { AuthenticatedData } from '@/types/gql';
 import { decrypter, decrypterSync, encrypter } from '@/utils';
 
-
 /**
  * Store encrypted auth data in localStorage
  * @param data - Authentication data to store
@@ -73,24 +72,15 @@ const isAuthExpired = (): boolean => {
  */
 const getAuthData = (): AuthenticatedData => {
     try {
-        return  authFromStorageSync();
+        return authFromStorageSync();
     } catch (error) {
         console.error('Failed to get current user:', error);
         throw new Error('Authentication storage failed');
     }
 };
 
-
 const generateRequestId = () => {
     return 'req_' + Math.random().toString(36).substr(2, 9);
-}
-
-export { 
-    authToStorage, 
-    authFromStorage, 
-    authFromStorageSync, 
-    authLogout, 
-    isAuthExpired,
-    getAuthData,
-    generateRequestId
 };
+
+export { authToStorage, authFromStorage, authFromStorageSync, authLogout, isAuthExpired, getAuthData, generateRequestId };

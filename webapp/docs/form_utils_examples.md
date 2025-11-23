@@ -28,38 +28,38 @@ const form = useFormUtils<ShipmentForm>({
         courier: '',
         laboratory: null,
         comment: '',
-        samples: []
+        samples: [],
     },
-    validate: (values) => {
+    validate: values => {
         const errors: Record<string, string> = {};
-        
+
         if (!values.courier) {
             errors.courier = 'Courier is required';
         }
-        
+
         if (!values.laboratory?.uid) {
             errors.laboratory = 'Laboratory is required';
         }
-        
+
         if (values.samples.length === 0) {
             errors.samples = 'At least one sample is required';
         }
-        
+
         if (values.comment && values.comment.length < 10) {
             errors.comment = 'Comment must be at least 10 characters';
         }
-        
+
         return errors;
     },
-    onSubmit: async (values) => {
+    onSubmit: async values => {
         await createShipment(values);
     },
     onSuccess: () => {
         toastSuccess('Shipment created successfully');
     },
-    onError: (error) => {
+    onError: error => {
         toastError(error.message || 'Failed to create shipment');
-    }
+    },
 });
 ```
 
@@ -76,7 +76,7 @@ const form = useFormUtils<ShipmentForm>({
                 v-model="values.courier"
                 type="text"
                 class="form-input"
-                :class="{ 'error': errors.courier && isFieldTouched('courier') }"
+                :class="{ error: errors.courier && isFieldTouched('courier') }"
                 @blur="setFieldTouched('courier')"
             />
             <span v-if="errors.courier && isFieldTouched('courier')" class="error-message">
@@ -91,7 +91,7 @@ const form = useFormUtils<ShipmentForm>({
                 id="laboratory"
                 v-model="values.laboratory"
                 class="form-select"
-                :class="{ 'error': errors.laboratory && isFieldTouched('laboratory') }"
+                :class="{ error: errors.laboratory && isFieldTouched('laboratory') }"
                 @change="setFieldTouched('laboratory')"
             >
                 <option value="">Select Laboratory</option>
@@ -111,7 +111,7 @@ const form = useFormUtils<ShipmentForm>({
                 id="comment"
                 v-model="values.comment"
                 class="form-textarea"
-                :class="{ 'error': errors.comment && isFieldTouched('comment') }"
+                :class="{ error: errors.comment && isFieldTouched('comment') }"
                 @blur="setFieldTouched('comment')"
             ></textarea>
             <span v-if="errors.comment && isFieldTouched('comment')" class="error-message">
@@ -121,11 +121,7 @@ const form = useFormUtils<ShipmentForm>({
 
         <!-- Submit Button -->
         <div class="flex justify-end">
-            <button
-                type="submit"
-                class="btn btn-primary"
-                :disabled="!isValid || isSubmitting"
-            >
+            <button type="submit" class="btn btn-primary" :disabled="!isValid || isSubmitting">
                 {{ isSubmitting ? 'Submitting...' : 'Submit' }}
             </button>
         </div>
@@ -135,15 +131,7 @@ const form = useFormUtils<ShipmentForm>({
 <script setup lang="ts">
 import { useFormUtils } from '@/composables/form_utils';
 
-const {
-    values,
-    errors,
-    isValid,
-    isSubmitting,
-    handleSubmit,
-    setFieldTouched,
-    isFieldTouched
-} = form;
+const { values, errors, isValid, isSubmitting, handleSubmit, setFieldTouched, isFieldTouched } = form;
 </script>
 ```
 
@@ -157,7 +145,7 @@ const debouncedCourierUpdate = form.debounce((value: string) => {
     validateCourierAvailability(value);
 }, 300);
 
-form.watchField('courier', (newValue) => {
+form.watchField('courier', newValue => {
     debouncedCourierUpdate(newValue);
 });
 ```
@@ -170,7 +158,7 @@ const throttledLabUpdate = form.throttle((labId: string) => {
     fetchLabDetails(labId);
 }, 1000);
 
-form.watchField('laboratory', (newValue) => {
+form.watchField('laboratory', newValue => {
     if (newValue?.uid) {
         throttledLabUpdate(newValue.uid);
     }
@@ -205,10 +193,7 @@ const validateField = (field: keyof ShipmentForm) => {
 
 ```typescript
 const resetFormWithConfirmation = async () => {
-    const { isConfirmed } = await swalConfirm(
-        'Are you sure you want to reset the form?',
-        'This will clear all entered data'
-    );
+    const { isConfirmed } = await swalConfirm('Are you sure you want to reset the form?', 'This will clear all entered data');
 
     if (isConfirmed) {
         form.resetForm();
@@ -240,29 +225,33 @@ const handleFileUpload = async (event: Event) => {
 ## Best Practices
 
 1. **Type Safety**
-   - Always define interfaces for your form values
-   - Use TypeScript generics when creating the form
-   - Validate all API responses against your types
+
+    - Always define interfaces for your form values
+    - Use TypeScript generics when creating the form
+    - Validate all API responses against your types
 
 2. **Error Handling**
-   - Show field errors only after they've been touched
-   - Provide clear error messages
-   - Handle both validation and submission errors
+
+    - Show field errors only after they've been touched
+    - Provide clear error messages
+    - Handle both validation and submission errors
 
 3. **Performance**
-   - Use debounce for search inputs
-   - Use throttle for API calls
-   - Avoid unnecessary re-renders
+
+    - Use debounce for search inputs
+    - Use throttle for API calls
+    - Avoid unnecessary re-renders
 
 4. **User Experience**
-   - Show loading states during submissions
-   - Provide feedback for all user actions
-   - Clear error messages when fields are corrected
+
+    - Show loading states during submissions
+    - Provide feedback for all user actions
+    - Clear error messages when fields are corrected
 
 5. **Validation**
-   - Validate on blur for better UX
-   - Provide immediate feedback for critical fields
-   - Use async validation when needed
+    - Validate on blur for better UX
+    - Provide immediate feedback for critical fields
+    - Use async validation when needed
 
 ## CSS Classes
 
@@ -301,10 +290,11 @@ const handleFileUpload = async (event: Event) => {
 ```
 
 This example demonstrates a complete implementation of form handling using the `useFormUtils` composable, including:
-- Type-safe form handling
-- Validation
-- Error handling
-- Field tracking
-- Performance optimization
-- User experience considerations
-- Styling with Tailwind CSS 
+
+-   Type-safe form handling
+-   Validation
+-   Error handling
+-   Field tracking
+-   Performance optimization
+-   User experience considerations
+-   Styling with Tailwind CSS

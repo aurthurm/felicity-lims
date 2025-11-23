@@ -34,9 +34,7 @@ async def submit_results(job_uid: str) -> None:
         await utils.results_submitter(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
         for res in job.data:
-            await task_guard.release(
-                uid=res["uid"], object_type=TrackableObject.RESULT
-            )
+            await task_guard.release(uid=res["uid"], object_type=TrackableObject.RESULT)
         await notification_service.notify(
             "Your results were successfully submitted", user
         )

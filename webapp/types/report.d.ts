@@ -1,4 +1,4 @@
-import { AnalysisType, UserType } from "./gql";
+import { AnalysisType, UserType } from './gql';
 
 export type ReportListingType = {
     uid?: string;
@@ -14,4 +14,4 @@ export type ReportListingType = {
     analyses_uids?: Array<number>;
     sample_states?: Array<string>;
     location?: string;
-}
+};

@@ -24,10 +24,10 @@ Thank you for your interest in contributing to Felicity LIMS! This document prov
 
 We are committed to providing a welcoming and inclusive environment for all contributors. Please be respectful and considerate in all interactions.
 
-- **Be respectful**: Treat all contributors with respect and courtesy
-- **Be inclusive**: Welcome contributors from all backgrounds and experience levels
-- **Be professional**: Maintain a professional tone in all communications
-- **Report issues**: Report inappropriate behavior to [aurthurmusendame@gmail.com](mailto:aurthurmusendame@gmail.com)
+-   **Be respectful**: Treat all contributors with respect and courtesy
+-   **Be inclusive**: Welcome contributors from all backgrounds and experience levels
+-   **Be professional**: Maintain a professional tone in all communications
+-   **Report issues**: Report inappropriate behavior to [aurthurmusendame@gmail.com](mailto:aurthurmusendame@gmail.com)
 
 ---
 
@@ -35,11 +35,11 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 ### Prerequisites
 
-- **Python**: 3.11 or higher
-- **Node.js**: 18 or higher
-- **Git**: Latest version
-- **Docker**: (optional, but recommended for development)
-- **GitHub Account**: For forking and submitting PRs
+-   **Python**: 3.11 or higher
+-   **Node.js**: 18 or higher
+-   **Git**: Latest version
+-   **Docker**: (optional, but recommended for development)
+-   **GitHub Account**: For forking and submitting PRs
 
 ### Fork the Repository
 
@@ -97,12 +97,14 @@ nano .env
 ### 3. Start Development Services
 
 **Option A: Docker Compose (Recommended)**
+
 ```bash
 docker compose -f docker-compose.dev.yml up -d --build
 docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade
 ```
 
 **Option B: Local Development**
+
 ```bash
 # Terminal 1: Backend API
 pnpm server:uv:watch
@@ -175,10 +177,10 @@ git push origin feature/my-feature-description --force-with-lease
 
 ### 5. Create Pull Request
 
-- Go to your fork on GitHub
-- Click **Compare & pull request** button
-- Follow the PR template (see Pull Requests section)
-- Ensure all checks pass
+-   Go to your fork on GitHub
+-   Click **Compare & pull request** button
+-   Follow the PR template (see Pull Requests section)
+-   Ensure all checks pass
 
 ---
 
@@ -226,7 +228,7 @@ def calculate_total(items: list[float], tax_rate: float = 0.1) -> float:
     """
     if any(price < 0 for price in items):
         raise ValueError("Item prices must be non-negative")
-    
+
     subtotal = sum(items)
     return subtotal * (1 + tax_rate)
 ```
@@ -254,43 +256,35 @@ async def fetch_patient(patient_id: str) -> Patient:
 
 #### Naming Conventions
 
-- **Classes**: PascalCase (`SocketLink`, `SampleService`)
-- **Functions/Methods**: snake_case (`process_data`, `get_links`)
-- **Constants**: UPPER_SNAKE_CASE (`MAX_MESSAGE_SIZE`, `TIMEOUT_SECONDS`)
-- **Private methods**: Leading underscore (`_internal_method`)
+-   **Classes**: PascalCase (`SocketLink`, `SampleService`)
+-   **Functions/Methods**: snake_case (`process_data`, `get_links`)
+-   **Constants**: UPPER_SNAKE_CASE (`MAX_MESSAGE_SIZE`, `TIMEOUT_SECONDS`)
+-   **Private methods**: Leading underscore (`_internal_method`)
 
 ### Frontend Code (Vue 3 + TypeScript)
 
 ```typescript
 // ✅ Good - Full type safety
 interface SampleProps {
-  sampleId: string;
-  status: 'pending' | 'processing' | 'completed';
-  onStatusChange: (status: string) => void;
+    sampleId: string;
+    status: 'pending' | 'processing' | 'completed';
+    onStatusChange: (status: string) => void;
 }
 
-const SampleCard: FC<SampleProps> = ({
-  sampleId,
-  status,
-  onStatusChange,
-}) => {
-  const [isLoading, setIsLoading] = useState(false);
+const SampleCard: FC<SampleProps> = ({ sampleId, status, onStatusChange }) => {
+    const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = async () => {
-    setIsLoading(true);
-    try {
-      await updateSampleStatus(sampleId);
-      onStatusChange('updated');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const handleClick = async () => {
+        setIsLoading(true);
+        try {
+            await updateSampleStatus(sampleId);
+            onStatusChange('updated');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  return (
-    <div>
-      {/* Component content */}
-    </div>
-  );
+    return <div>{/* Component content */}</div>;
 };
 ```
 
@@ -328,40 +322,40 @@ Use conventional commits format:
 
 ### Type
 
-- **feat**: A new feature
-- **fix**: A bug fix
-- **docs**: Documentation only
-- **style**: Code style changes (formatting, quotes, etc.)
-- **refactor**: Code refactoring without feature changes
-- **perf**: Performance improvements
-- **test**: Test additions or changes
-- **chore**: Build process, dependencies, etc.
+-   **feat**: A new feature
+-   **fix**: A bug fix
+-   **docs**: Documentation only
+-   **style**: Code style changes (formatting, quotes, etc.)
+-   **refactor**: Code refactoring without feature changes
+-   **perf**: Performance improvements
+-   **test**: Test additions or changes
+-   **chore**: Build process, dependencies, etc.
 
 ### Scope (Optional)
 
-- **iol**: IOL Analyzer module
-- **patient**: Patient management
-- **sample**: Sample management
-- **analysis**: Analysis module
-- **worksheet**: Worksheet management
-- **api**: GraphQL/REST API
-- **frontend**: Vue.js frontend
-- **db**: Database/migrations
-- **docker**: Docker configuration
+-   **iol**: IOL Analyzer module
+-   **patient**: Patient management
+-   **sample**: Sample management
+-   **analysis**: Analysis module
+-   **worksheet**: Worksheet management
+-   **api**: GraphQL/REST API
+-   **frontend**: Vue.js frontend
+-   **db**: Database/migrations
+-   **docker**: Docker configuration
 
 ### Subject
 
-- Use imperative mood: "add" not "added" or "adds"
-- Don't capitalize first letter
-- No period at the end
-- Max 50 characters
+-   Use imperative mood: "add" not "added" or "adds"
+-   Don't capitalize first letter
+-   No period at the end
+-   Max 50 characters
 
 ### Body
 
-- Explain **what** and **why**, not how
-- Wrap at 72 characters
-- Separate from subject with blank line
-- Reference issues: `Fixes #123` or `Relates to #456`
+-   Explain **what** and **why**, not how
+-   Wrap at 72 characters
+-   Separate from subject with blank line
+-   Reference issues: `Fixes #123` or `Relates to #456`
 
 ### Examples
 
@@ -408,65 +402,75 @@ No functional changes, improves maintainability.
 ### Before Creating a PR
 
 1. **Run Tests**
-   ```bash
-   pnpm server:test
-   pnpm webapp:lint
-   ```
+
+    ```bash
+    pnpm server:test
+    pnpm webapp:lint
+    ```
 
 2. **Check Code Quality**
-   ```bash
-   bash ./felicity/scripts/lint.sh
-   bash ./felicity/scripts/format.sh
-   ```
+
+    ```bash
+    bash ./felicity/scripts/lint.sh
+    bash ./felicity/scripts/format.sh
+    ```
 
 3. **Update Documentation**
-   - Update README if needed
-   - Add docstrings
-   - Update CHANGELOG if applicable
+
+    - Update README if needed
+    - Add docstrings
+    - Update CHANGELOG if applicable
 
 4. **Sync with Main**
-   ```bash
-   git fetch upstream
-   git rebase upstream/main
-   ```
+    ```bash
+    git fetch upstream
+    git rebase upstream/main
+    ```
 
 ### PR Template
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
-- [ ] Bug fix (non-breaking change fixing an issue)
-- [ ] New feature (non-breaking change adding functionality)
-- [ ] Breaking change (fix or feature causing existing functionality to change)
-- [ ] Documentation update
+
+-   [ ] Bug fix (non-breaking change fixing an issue)
+-   [ ] New feature (non-breaking change adding functionality)
+-   [ ] Breaking change (fix or feature causing existing functionality to change)
+-   [ ] Documentation update
 
 ## Related Issues
+
 Fixes #123
 Relates to #456
 
 ## Changes Made
-- Change 1
-- Change 2
-- Change 3
+
+-   Change 1
+-   Change 2
+-   Change 3
 
 ## Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] Manual testing completed
-- [ ] Screenshot/video attached (if UI change)
+
+-   [ ] Unit tests added/updated
+-   [ ] Integration tests added/updated
+-   [ ] Manual testing completed
+-   [ ] Screenshot/video attached (if UI change)
 
 ## Checklist
-- [ ] Code follows style guidelines
-- [ ] Documentation updated
-- [ ] Tests added/updated
-- [ ] All tests passing
-- [ ] No new warnings generated
-- [ ] Commits have clear messages
-- [ ] Changes rebased on latest main
+
+-   [ ] Code follows style guidelines
+-   [ ] Documentation updated
+-   [ ] Tests added/updated
+-   [ ] All tests passing
+-   [ ] No new warnings generated
+-   [ ] Commits have clear messages
+-   [ ] Changes rebased on latest main
 
 ## Screenshots/Videos (if applicable)
+
 Attach screenshots or videos demonstrating the change
 ```
 
@@ -484,19 +488,21 @@ refactor(sample): simplify lifecycle management
 ### PR Review Process
 
 1. **Automated Checks**
-   - Tests must pass
-   - Linting must pass
-   - Code coverage maintained
+
+    - Tests must pass
+    - Linting must pass
+    - Code coverage maintained
 
 2. **Code Review**
-   - At least 1 approval required
-   - Maintainers will review changes
-   - Feedback will be provided
+
+    - At least 1 approval required
+    - Maintainers will review changes
+    - Feedback will be provided
 
 3. **Merge**
-   - PRs are squashed and merged to main
-   - Clean commit history maintained
-   - Branch deleted after merge
+    - PRs are squashed and merged to main
+    - Clean commit history maintained
+    - Branch deleted after merge
 
 ---
 
@@ -508,28 +514,35 @@ refactor(sample): simplify lifecycle management
 
 ```markdown
 ## Description
+
 Clear description of the bug
 
 ## Steps to Reproduce
+
 1. Step 1
 2. Step 2
 3. Step 3
 
 ## Expected Behavior
+
 What should happen
 
 ## Actual Behavior
+
 What actually happens
 
 ## Environment
-- OS: [e.g., Ubuntu 22.04]
-- Python Version: 3.11
-- Browser: [if frontend bug]
+
+-   OS: [e.g., Ubuntu 22.04]
+-   Python Version: 3.11
+-   Browser: [if frontend bug]
 
 ## Screenshots
+
 Attach screenshots if applicable
 
 ## Additional Context
+
 Any additional information
 ```
 
@@ -537,21 +550,27 @@ Any additional information
 
 ```markdown
 ## Description
+
 Clear description of the feature
 
 ## Problem Statement
+
 What problem does this solve?
 
 ## Proposed Solution
+
 How should this be implemented?
 
 ## Benefits
+
 Why is this important?
 
 ## Alternative Solutions
+
 Other approaches considered
 
 ## Additional Context
+
 Related issues, references, etc.
 ```
 
@@ -559,16 +578,16 @@ Related issues, references, etc.
 
 Maintainers use labels to organize issues:
 
-- **bug**: Something isn't working
-- **feature**: New functionality
-- **enhancement**: Improvement to existing feature
-- **documentation**: Docs improvements needed
-- **question**: Further information needed
-- **good first issue**: Good for newcomers
-- **help wanted**: Extra attention needed
-- **blocked**: Waiting for something
-- **priority-high**: Important, urgent
-- **priority-low**: Nice to have
+-   **bug**: Something isn't working
+-   **feature**: New functionality
+-   **enhancement**: Improvement to existing feature
+-   **documentation**: Docs improvements needed
+-   **question**: Further information needed
+-   **good first issue**: Good for newcomers
+-   **help wanted**: Extra attention needed
+-   **blocked**: Waiting for something
+-   **priority-high**: Important, urgent
+-   **priority-low**: Nice to have
 
 ---
 
@@ -586,29 +605,31 @@ Example: 4.1.2-beta.1+build.123
 
 ### Version Increments
 
-- **MAJOR** (e.g., 4.0.0 → 5.0.0): Breaking changes
-  - API changes
-  - Database schema changes
-  - Removed features
-  - Major refactoring
+-   **MAJOR** (e.g., 4.0.0 → 5.0.0): Breaking changes
 
-- **MINOR** (e.g., 4.1.0 → 4.2.0): New features (backward compatible)
-  - New protocol support
-  - New modules
-  - New API endpoints
-  - Performance improvements
+    -   API changes
+    -   Database schema changes
+    -   Removed features
+    -   Major refactoring
 
-- **PATCH** (e.g., 4.1.2 → 4.1.3): Bug fixes (backward compatible)
-  - Bug fixes
-  - Security patches
-  - Documentation updates
-  - Minor improvements
+-   **MINOR** (e.g., 4.1.0 → 4.2.0): New features (backward compatible)
+
+    -   New protocol support
+    -   New modules
+    -   New API endpoints
+    -   Performance improvements
+
+-   **PATCH** (e.g., 4.1.2 → 4.1.3): Bug fixes (backward compatible)
+    -   Bug fixes
+    -   Security patches
+    -   Documentation updates
+    -   Minor improvements
 
 ### Pre-release Versions
 
-- `4.1.0-alpha.1`: Alpha release
-- `4.1.0-beta.1`: Beta release
-- `4.1.0-rc.1`: Release candidate
+-   `4.1.0-alpha.1`: Alpha release
+-   `4.1.0-beta.1`: Beta release
+-   `4.1.0-rc.1`: Release candidate
 
 ### Version Bump Strategy
 
@@ -671,7 +692,7 @@ async def test_get_patient_by_uid():
     """Test retrieving a patient by UID."""
     service = PatientService()
     patient = await service.get(uid="test-uid")
-    
+
     assert patient is not None
     assert patient.uid == "test-uid"
 
@@ -684,9 +705,9 @@ async def test_create_patient_with_valid_data():
         "last_name": "Doe",
         "date_of_birth": "1990-01-01"
     }
-    
+
     patient = await service.create(patient_data)
-    
+
     assert patient.first_name == "John"
     assert patient.last_name == "Doe"
 ```
@@ -699,22 +720,22 @@ async def test_patient_workflow():
     """Test complete patient workflow."""
     # Create patient
     patient = await PatientService().create({...})
-    
+
     # Create sample
     sample = await SampleService().create({
         "patient_uid": patient.uid,
         ...
     })
-    
+
     # Verify relationship
     assert sample.patient_uid == patient.uid
 ```
 
 ### Test Coverage Requirements
 
-- **Minimum**: 70% overall coverage
-- **Target**: 80%+ coverage
-- **New code**: 100% coverage required
+-   **Minimum**: 70% overall coverage
+-   **Target**: 80%+ coverage
+-   **New code**: 100% coverage required
 
 ---
 
@@ -727,20 +748,20 @@ All public APIs must have docstrings:
 ```python
 class SampleService(BaseService):
     """Service for managing laboratory samples.
-    
+
     Handles sample lifecycle including creation, analysis,
     results, and storage management.
     """
-    
+
     async def create(self, sample_in: SampleCreate) -> Sample:
         """Create a new sample.
-        
+
         Args:
             sample_in: Sample creation data
-            
+
         Returns:
             Created sample instance
-            
+
         Raises:
             ValueError: If sample data is invalid
             DuplicateError: If sample already exists
@@ -749,11 +770,11 @@ class SampleService(BaseService):
 
 ### Documentation Files
 
-- **README.md**: Project overview, quick start, technology stack
-- **CLAUDE.md**: Architecture and development guidance
-- **CONTRIBUTING.md**: (this file) Contribution guidelines
-- **CHANGELOG.md**: Release notes and changes
-- **docs/**: Additional documentation (if exists)
+-   **README.md**: Project overview, quick start, technology stack
+-   **CLAUDE.md**: Architecture and development guidance
+-   **CONTRIBUTING.md**: (this file) Contribution guidelines
+-   **CHANGELOG.md**: Release notes and changes
+-   **docs/**: Additional documentation (if exists)
 
 ### Updating Documentation
 
@@ -770,26 +791,32 @@ When making changes:
 ## [4.1.0] - 2025-10-27
 
 ### Added
-- New IOL Analyzer ASTM protocol handler (#123)
-- Async-first base class for all links
+
+-   New IOL Analyzer ASTM protocol handler (#123)
+-   Async-first base class for all links
 
 ### Fixed
-- Fixed APScheduler nested event loop issue (#456)
-- Fixed worksheet validation bug
+
+-   Fixed APScheduler nested event loop issue (#456)
+-   Fixed worksheet validation bug
 
 ### Changed
-- Refactored sample lifecycle management
-- Improved database query performance
+
+-   Refactored sample lifecycle management
+-   Improved database query performance
 
 ### Deprecated
-- Old synchronous SocketLink (use SocketLink instead)
+
+-   Old synchronous SocketLink (use SocketLink instead)
 
 ### Removed
-- Serial port support (Phase 1 cleanup)
+
+-   Serial port support (Phase 1 cleanup)
 
 ### Security
-- Added message size limit (10 MB)
-- Implemented message timeout (60 seconds)
+
+-   Added message size limit (10 MB)
+-   Implemented message timeout (60 seconds)
 ```
 
 ---
@@ -799,42 +826,48 @@ When making changes:
 Before submitting your PR, verify:
 
 ### Code Quality
-- [ ] All type hints present
-- [ ] All docstrings present
-- [ ] Code follows style guide
-- [ ] No hardcoded values
-- [ ] No debug prints or logs
-- [ ] Proper error handling
+
+-   [ ] All type hints present
+-   [ ] All docstrings present
+-   [ ] Code follows style guide
+-   [ ] No hardcoded values
+-   [ ] No debug prints or logs
+-   [ ] Proper error handling
 
 ### Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] All tests passing
-- [ ] Coverage maintained/improved
+
+-   [ ] Unit tests added/updated
+-   [ ] Integration tests added/updated
+-   [ ] All tests passing
+-   [ ] Coverage maintained/improved
 
 ### Documentation
-- [ ] Docstrings updated
-- [ ] README updated (if needed)
-- [ ] CHANGELOG updated
-- [ ] Comments added for complex logic
+
+-   [ ] Docstrings updated
+-   [ ] README updated (if needed)
+-   [ ] CHANGELOG updated
+-   [ ] Comments added for complex logic
 
 ### Async/Await (Backend)
-- [ ] All I/O operations are async
-- [ ] No blocking calls in async code
-- [ ] Proper error handling in async code
-- [ ] No nested asyncio.run() calls
+
+-   [ ] All I/O operations are async
+-   [ ] No blocking calls in async code
+-   [ ] Proper error handling in async code
+-   [ ] No nested asyncio.run() calls
 
 ### Database (If applicable)
-- [ ] Migration created
-- [ ] ORM models updated
-- [ ] Tenant context preserved
-- [ ] Data isolation maintained
+
+-   [ ] Migration created
+-   [ ] ORM models updated
+-   [ ] Tenant context preserved
+-   [ ] Data isolation maintained
 
 ### Security (If applicable)
-- [ ] No hardcoded credentials
-- [ ] HIPAA compliance maintained
-- [ ] Multi-tenant isolation verified
-- [ ] Input validation implemented
+
+-   [ ] No hardcoded credentials
+-   [ ] HIPAA compliance maintained
+-   [ ] Multi-tenant isolation verified
+-   [ ] Input validation implemented
 
 ---
 
@@ -842,17 +875,17 @@ Before submitting your PR, verify:
 
 ### Questions?
 
-- **GitHub Discussions**: [Ask a question](https://github.com/beak-insights/felicity-lims/discussions)
-- **Issues**: [Create an issue](https://github.com/beak-insights/felicity-lims/issues)
-- **Email**: [aurthurmusendame@gmail.com](mailto:aurthurmusendame@gmail.com)
+-   **GitHub Discussions**: [Ask a question](https://github.com/beak-insights/felicity-lims/discussions)
+-   **Issues**: [Create an issue](https://github.com/beak-insights/felicity-lims/issues)
+-   **Email**: [aurthurmusendame@gmail.com](mailto:aurthurmusendame@gmail.com)
 
 ### Resources
 
-- **README**: [Project overview](README.md)
-- **CLAUDE.md**: [Architecture guide](CLAUDE.md)
-- **FastAPI Docs**: https://fastapi.tiangolo.com/
-- **SQLAlchemy Docs**: https://docs.sqlalchemy.org/
-- **Vue 3 Docs**: https://vuejs.org/
+-   **README**: [Project overview](README.md)
+-   **CLAUDE.md**: [Architecture guide](CLAUDE.md)
+-   **FastAPI Docs**: https://fastapi.tiangolo.com/
+-   **SQLAlchemy Docs**: https://docs.sqlalchemy.org/
+-   **Vue 3 Docs**: https://vuejs.org/
 
 ---
 
@@ -860,9 +893,9 @@ Before submitting your PR, verify:
 
 Contributors will be recognized in:
 
-- **CHANGELOG.md**: All changes with contributor names
-- **GitHub**: Automatic recognition in PR discussions
-- **README.md**: Major contributors (at maintainer discretion)
+-   **CHANGELOG.md**: All changes with contributor names
+-   **GitHub**: Automatic recognition in PR discussions
+-   **README.md**: Major contributors (at maintainer discretion)
 
 ---
 
@@ -876,7 +909,7 @@ By contributing to Felicity LIMS, you agree that your contributions will be lice
 
 ### Contributing Guidelines Version History
 
-- **v1.0** (2025-10-27): Initial comprehensive contributing guidelines
+-   **v1.0** (2025-10-27): Initial comprehensive contributing guidelines
 
 ---
 

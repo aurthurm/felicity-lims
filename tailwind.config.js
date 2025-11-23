@@ -67,7 +67,7 @@ module.exports = {
                 // Border, input, and ring colors
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))', // Often used for form input borders
-                ring: 'hsl(var(--ring))',   // Used for focus rings
+                ring: 'hsl(var(--ring))', // Used for focus rings
             },
             // Extend border radius
             borderRadius: {

@@ -32,11 +32,15 @@ class LaboratoryRepository(BaseRepository[Laboratory]):
     def __init__(self) -> None:
         super().__init__(Laboratory)
 
-    async def get_laboratories_by_organization(self, organization_uid: str) -> list[Laboratory]:
+    async def get_laboratories_by_organization(
+        self, organization_uid: str
+    ) -> list[Laboratory]:
         """Get all laboratories belonging to a specific organization"""
         return await self.get_all(organization_uid__exact=organization_uid)
 
-    async def get_laboratory_by_name(self, name: str, organization_uid: str = None) -> Laboratory | None:
+    async def get_laboratory_by_name(
+        self, name: str, organization_uid: str = None
+    ) -> Laboratory | None:
         """Get laboratory by name within an organization"""
         filters = {"name__exact": name}
         if organization_uid:

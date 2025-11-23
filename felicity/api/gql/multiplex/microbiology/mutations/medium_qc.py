@@ -3,17 +3,24 @@ import logging
 import strawberry  # noqa
 
 from felicity.api.gql.multiplex.microbiology import AbxMediumType, AbxQCRangeType
-from felicity.apps.multiplex.microbiology.schemas import AbxMediumCreate, AbxMediumUpdate, AbxQCRangeCreate, \
-    AbxQCRangeUpdate
-from felicity.apps.multiplex.microbiology.services import AbxMediumService, AbxQCRangeService
+from felicity.apps.multiplex.microbiology.schemas import (
+    AbxMediumCreate,
+    AbxMediumUpdate,
+    AbxQCRangeCreate,
+    AbxQCRangeUpdate,
+)
+from felicity.apps.multiplex.microbiology.services import (
+    AbxMediumService,
+    AbxQCRangeService,
+)
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-import strawberry
 from typing import List
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.types import OperationError
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # Input Types
@@ -63,10 +70,7 @@ AbxQCRangeResponse = strawberry.union(
 
 # Medium Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_medium(
-        info,
-        payload: AbxMediumInputType
-) -> AbxMediumResponse:
+async def create_abx_medium(info, payload: AbxMediumInputType) -> AbxMediumResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -82,9 +86,7 @@ async def create_abx_medium(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_medium(
-        info,
-        uid: str,
-        payload: AbxMediumInputType
+    info, uid: str, payload: AbxMediumInputType
 ) -> AbxMediumResponse:
     felicity_user = await auth_from_info(info)
     abx_medium = await AbxMediumService().get(uid=uid)
@@ -106,10 +108,7 @@ async def update_abx_medium(
 
 # QC Range Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_qc_range(
-        info,
-        payload: AbxQCRangeInputType
-) -> AbxQCRangeResponse:
+async def create_abx_qc_range(info, payload: AbxQCRangeInputType) -> AbxQCRangeResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -125,9 +124,7 @@ async def create_abx_qc_range(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_qc_range(
-        info,
-        uid: str,
-        payload: AbxQCRangeInputType
+    info, uid: str, payload: AbxQCRangeInputType
 ) -> AbxQCRangeResponse:
     felicity_user = await auth_from_info(info)
 

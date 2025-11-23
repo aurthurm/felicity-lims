@@ -13,7 +13,12 @@ sys.path.insert(0, str(project_root))
 
 def run_test():
     try:
-        from felicity.utils.encryption import encrypt_pii, decrypt_pii, encrypt_phi, decrypt_phi
+        from felicity.utils.encryption import (
+            encrypt_pii,
+            decrypt_pii,
+            encrypt_phi,
+            decrypt_phi,
+        )
 
         print("Testing HIPAA Encryption")
         print("=" * 30)
@@ -45,7 +50,7 @@ def run_test():
         print(f"   Status: {'✅ SUCCESS' if phi_success else '❌ FAILED'}")
 
         # Test edge cases
-        print(f"\n3. Testing edge cases")
+        print("\n3. Testing edge cases")
 
         # None values
         none_encrypted = encrypt_pii(None)
@@ -59,7 +64,9 @@ def run_test():
         # Overall result
         overall_success = pii_success and phi_success
         print(f"\n{'=' * 30}")
-        print(f"Overall Result: {'✅ ALL TESTS PASSED' if overall_success else '❌ SOME TESTS FAILED'}")
+        print(
+            f"Overall Result: {'✅ ALL TESTS PASSED' if overall_success else '❌ SOME TESTS FAILED'}"
+        )
         print(f"{'=' * 30}")
 
         if overall_success:

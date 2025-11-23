@@ -65,7 +65,9 @@ class CQSetWorkFlow:
     async def _guard_submit(samples):
         all_are_awaiting = [s.status == SampleState.AWAITING for s in samples]
         if not all(all_are_awaiting):
-            raise CQSetWorkFlowException(f"Cannot submit this qs set. All samples by the submitted")
+            raise CQSetWorkFlowException(
+                "Cannot submit this qs set. All samples by the submitted"
+            )
 
     async def approve(self, uid, by) -> QCSet:
         qc_set = await self.qc_set_service.get(uid=uid, related=["samples"])
@@ -76,4 +78,6 @@ class CQSetWorkFlow:
     async def _guard_approve(samples):
         all_are_approved = [s.status == SampleState.APPROVED for s in samples]
         if not all(all_are_approved):
-            raise CQSetWorkFlowException(f"Cannot approve this qs set. All samples by the approved")
+            raise CQSetWorkFlowException(
+                "Cannot approve this qs set. All samples by the approved"
+            )

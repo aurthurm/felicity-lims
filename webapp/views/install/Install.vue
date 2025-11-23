@@ -1,12 +1,26 @@
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from "vue";
+import {onBeforeMount, ref, watch} from "vue";
 import axios from "@/composables/axios";
 import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
+import {useAuthStore} from "@/stores/auth";
 import { object, string } from "yup";
 
+const authStore = useAuthStore();
 const router = useRouter();
 const loading = ref(false);
+
+onBeforeMount(() => {
+  if (authStore.auth.isAuthenticated) {
+    router.push({name: "DASHBOARD"});
+  } else {
+    axios.get("setup/installation").then((resp) => {
+      if (resp.data.installed) {
+        router.push({ name: "LOGIN" });
+      }
+    });
+  }
+});
 
 const installSchema = object({
   organisation_name: string().required("Organisation Name is Required"),

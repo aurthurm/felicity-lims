@@ -18,18 +18,23 @@ from felicity.apps.patient.services import IdentificationService, PatientService
 @strawberry.type
 class PatientQuery:
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def patient_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> PatientCursorPage:
         # Use PatientService.paging_filter with HIPAA-compliant search
 
@@ -39,7 +44,7 @@ class PatientQuery:
             before_cursor=before_cursor,
             filters={},
             sort_by=sort_by,
-            text=text  # Pass text as kwarg for HIPAA search
+            text=text,  # Pass text as kwarg for HIPAA search
         )
 
         # Convert PageCursor to PatientCursorPage
@@ -60,31 +65,46 @@ class PatientQuery:
             total_count=page.total_count,
             edges=edges,
             items=page.items,
-            page_info=page_info
+            page_info=page_info,
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def patient_by_uid(self, info, uid: str) -> Optional[PatientType]:
         return await PatientService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def patient_by_patient_id(
-            self, info, patient_id: str
+        self, info, patient_id: str
     ) -> Optional[PatientType]:
         return await PatientService().get(patient_id=patient_id)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def patient_search(self, info, query_string: str) -> List[PatientType]:
         return await PatientService().high_performance_search(
@@ -94,21 +114,31 @@ class PatientQuery:
             phone_mobile=query_string,
             patient_id=query_string,
             client_patient_id=query_string,
-            fuzzy_match=True
+            fuzzy_match=True,
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def identification_all(self, info) -> List[IdentificationType]:
         return await IdentificationService().all()
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def identification_by_uid(self, info, uid: str) -> IdentificationType:
         return await IdentificationService().get(uid=uid)

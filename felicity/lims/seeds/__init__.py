@@ -10,7 +10,12 @@ from .setup_analyses import (
     seed_rejection_reasons,
     seed_sample_types,
 )
-from .setup_instance import seed_clients, seed_geographies, seed_organisation, seed_laboratory
+from .setup_instance import (
+    seed_clients,
+    seed_geographies,
+    seed_organisation,
+    seed_laboratory,
+)
 from .setup_instruments import seed_instrument_categories, seed_lab_instrument
 from .setup_inventory import seed_stock_categories, seed_stock_hazards, seed_stock_units
 from .setup_microbiology import (
@@ -21,18 +26,24 @@ from .setup_microbiology import (
     seed_expert_interpretation_rules,
     seed_qc_ranges,
     seed_organism_serotypes,
-    seed_ast_services
+    seed_ast_services,
 )
 from .setup_person import seed_person
 from .superusers import seed_daemon_user, seed_super_user
 from ...apps.setup.services import LaboratoryService
-from ...core.tenant_context import set_tenant_context, TenantContext, get_current_lab_uid
+from ...core.tenant_context import (
+    set_tenant_context,
+    TenantContext,
+    get_current_lab_uid,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def requisite_setup(org_name: str = "Felicity Labs", lab_name: str = "My First Laboratory") -> bool:
+async def requisite_setup(
+    org_name: str = "Felicity Labs", lab_name: str = "My First Laboratory"
+) -> bool:
     logger.info("Loading requisite setup ...")
 
     await seed_organisation(org_name)

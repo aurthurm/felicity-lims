@@ -1,10 +1,16 @@
 import useApiUtil from '@/composables/api_util';
 import { useShipmentStore } from '@/stores/shipment';
 import useNotifyToast from '@/composables/alert_toast';
-import { ActionShipmentDocument, ActionShipmentMutation, ActionShipmentMutationVariables, ShipmentManageSamplesDocument, ShipmentManageSamplesMutation, ShipmentManageSamplesMutationVariables } from '@/graphql/operations/shipment.mutations';
+import {
+    ActionShipmentDocument,
+    ActionShipmentMutation,
+    ActionShipmentMutationVariables,
+    ShipmentManageSamplesDocument,
+    ShipmentManageSamplesMutation,
+    ShipmentManageSamplesMutationVariables,
+} from '@/graphql/operations/shipment.mutations';
 import { ManifestReportDocument, ManifestReportQuery, ManifestReportQueryVariables } from '@/graphql/operations/shipment.queries';
 import { ReferenceSampleInput } from '@/types/gql';
-
 
 export default function useShipmentComposable() {
     const { withClientMutation, withClientQuery } = useApiUtil();
@@ -12,12 +18,9 @@ export default function useShipmentComposable() {
     const { swalConfirm, toastSuccess, toastError } = useNotifyToast();
 
     // Manage shipment samples
-    const manageSamples = async (shipmentUid: string, samplesMetadata: Array<ReferenceSampleInput>, action: string = "assign") => {
+    const manageSamples = async (shipmentUid: string, samplesMetadata: Array<ReferenceSampleInput>, action: string = 'assign') => {
         try {
-            const confirmed = await swalConfirm(
-                `You want to ${action} selected?`,
-                'Confirm Action'
-            );
+            const confirmed = await swalConfirm(`You want to ${action} selected?`, 'Confirm Action');
 
             if (!confirmed.isConfirmed) return;
 
@@ -25,9 +28,9 @@ export default function useShipmentComposable() {
                 ShipmentManageSamplesDocument,
                 {
                     uid: shipmentUid,
-                    payload: { samples: samplesMetadata, action }
+                    payload: { samples: samplesMetadata, action },
                 },
-                "shipmentManageSamples"
+                'shipmentManageSamples'
             );
 
             shipmentStore.updateShipmentMetadata(result);
@@ -39,19 +42,16 @@ export default function useShipmentComposable() {
     };
 
     // Action shipment (finalise, dispatch, etc.)
-    const actionShipment = async (uid: string, action: string = "finalise") => {
+    const actionShipment = async (uid: string, action: string = 'finalise') => {
         try {
-            const confirmed = await swalConfirm(
-                `You want to ${action} the shipment?`,
-                'Confirm Action'
-            );
+            const confirmed = await swalConfirm(`You want to ${action} the shipment?`, 'Confirm Action');
 
             if (!confirmed.isConfirmed) return;
 
             const result = await withClientMutation<ActionShipmentMutation, ActionShipmentMutationVariables>(
                 ActionShipmentDocument,
                 { uid, action },
-                "actionShipment"
+                'actionShipment'
             );
 
             shipmentStore.updateShipmentMetadata(result);
@@ -65,16 +65,13 @@ export default function useShipmentComposable() {
     // Download manifest report
     const downloadManifest = async (uid: string) => {
         try {
-            const confirmed = await swalConfirm(
-                'You want to download this report',
-                'Confirm Download'
-            );
+            const confirmed = await swalConfirm('You want to download this report', 'Confirm Download');
 
             if (!confirmed.isConfirmed) return;
 
             const resp = await withClientQuery<ManifestReportQuery, ManifestReportQueryVariables>(
-                ManifestReportDocument, 
-                { uid }, 
+                ManifestReportDocument,
+                { uid },
                 'manifestReportDownload'
             );
 
@@ -93,6 +90,6 @@ export default function useShipmentComposable() {
     return {
         manageSamples,
         actionShipment,
-        downloadManifest
+        downloadManifest,
     };
 }

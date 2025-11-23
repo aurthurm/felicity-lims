@@ -50,13 +50,13 @@ class BaseService(Generic[E, C, U]):
             yield session
 
     async def paging_filter(
-            self,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            filters: list[dict] | dict | None = None,
-            sort_by: list[str] | None = None,
-            **kwargs,
+        self,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        filters: list[dict] | dict | None = None,
+        sort_by: list[str] | None = None,
+        **kwargs,
     ):
         """
         Perform paginated filtering of entities.
@@ -100,7 +100,12 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.all(session=session)
 
-    async def get(self, related: list[str] | None = None, session: AsyncSession | None = None, **kwargs) -> E:
+    async def get(
+        self,
+        related: list[str] | None = None,
+        session: AsyncSession | None = None,
+        **kwargs,
+    ) -> E:
         """
         Get a single entity based on given criteria.
 
@@ -114,7 +119,9 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get(related=related, session=session, **kwargs)
 
-    async def get_by_uids(self, uids: list[str], session: AsyncSession | None = None) -> list[E]:
+    async def get_by_uids(
+        self, uids: list[str], session: AsyncSession | None = None
+    ) -> list[E]:
         """
         Get multiple entities by their UIDs.
 
@@ -127,8 +134,13 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.get_by_uids(uids, session=session)
 
-    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None,
-                      session: AsyncSession | None = None, **kwargs) -> list[E]:
+    async def get_all(
+        self,
+        related: list[str] | None = None,
+        sort_attrs: list[str] | None = None,
+        session: AsyncSession | None = None,
+        **kwargs,
+    ) -> list[E]:
         """
         Get all entities matching the given criteria.
 
@@ -141,10 +153,17 @@ class BaseService(Generic[E, C, U]):
         Returns:
             List of matching entities
         """
-        return await self.repository.get_all(related=related, sort_attrs=sort_attrs, session=session, **kwargs)
+        return await self.repository.get_all(
+            related=related, sort_attrs=sort_attrs, session=session, **kwargs
+        )
 
-    async def create(self, c: C | dict, related: list[str] | None = None, commit: bool = True,
-                     session: AsyncSession | None = None) -> E:
+    async def create(
+        self,
+        c: C | dict,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> E:
         """
         Create a new entity.
 
@@ -169,7 +188,7 @@ class BaseService(Generic[E, C, U]):
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
                     "request_id": context.request_id,
-                }
+                },
             )
         created = await self.repository.create(commit=commit, session=session, **data)
         if not related:
@@ -177,8 +196,11 @@ class BaseService(Generic[E, C, U]):
         return await self.get(related=related, uid=created.uid, session=session)
 
     async def bulk_create(
-            self, bulk: list[dict | C], related: list[str] | None = None, commit: bool = True,
-            session: AsyncSession | None = None
+        self,
+        bulk: list[dict | C],
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ) -> list[E]:
         """
         Create multiple entities in bulk.
@@ -202,17 +224,26 @@ class BaseService(Generic[E, C, U]):
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
                     "request_id": context.request_id,
-                }
+                },
             )
 
-        created = await self.repository.bulk_create(bulk=[self._import(b) for b in bulk], commit=commit,
-                                                    session=session)
+        created = await self.repository.bulk_create(
+            bulk=[self._import(b) for b in bulk], commit=commit, session=session
+        )
         if not related:
             return created
-        return [(await self.get(related=related, uid=x.uid, session=session)) for x in created]
+        return [
+            (await self.get(related=related, uid=x.uid, session=session))
+            for x in created
+        ]
 
-    async def save(self, entity: E, related: list[str] | None = None, commit: bool = True,
-                   session: AsyncSession | None = None) -> E:
+    async def save(
+        self,
+        entity: E,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> E:
         """
         Save an entity (create if not exists, update if exists).
 
@@ -235,7 +266,7 @@ class BaseService(Generic[E, C, U]):
                     "entity_uid": entity.uid,
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
-                }
+                },
             )
 
         saved = await self.repository.save(m=entity, commit=commit, session=session)
@@ -243,7 +274,12 @@ class BaseService(Generic[E, C, U]):
             return saved
         return await self.get(related=related, uid=saved.uid, session=session)
 
-    async def save_all(self, entities: list[E], commit: bool = True, session: AsyncSession | None = None) -> list[E]:
+    async def save_all(
+        self,
+        entities: list[E],
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> list[E]:
         """
         Save multiple entities to the database.
 
@@ -264,7 +300,7 @@ class BaseService(Generic[E, C, U]):
                     "count": len(entities),
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
-                }
+                },
             )
         return await self.repository.save_all(entities, commit=commit, session=session)
 
@@ -317,11 +353,11 @@ class BaseService(Generic[E, C, U]):
         return await self.repository.count_where(filters)
 
     async def filter(
-            self,
-            filters: dict | list[dict],
-            sort_attrs: list[str] | None = None,
-            limit: int | None = None,
-            either: bool = False,
+        self,
+        filters: dict | list[dict],
+        sort_attrs: list[str] | None = None,
+        limit: int | None = None,
+        either: bool = False,
     ) -> list[E]:
         """
         Filter entities based on given conditions.
@@ -336,15 +372,16 @@ class BaseService(Generic[E, C, U]):
             List of filtered entities
         """
         return await self.repository.filter(
-            filters=filters,
-            sort_attrs=sort_attrs,
-            limit=limit,
-            either=either
+            filters=filters, sort_attrs=sort_attrs, limit=limit, either=either
         )
 
     async def update(
-            self, uid: str, update: U | dict, related: list[str] | None = None, commit: bool = True,
-            session: AsyncSession | None = None
+        self,
+        uid: str,
+        update: U | dict,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ) -> E:
         """
         Update an existing entity.
@@ -362,13 +399,20 @@ class BaseService(Generic[E, C, U]):
         if "uid" in update:
             del update["uid"]
 
-        updated = await self.repository.update(uid=uid, commit=commit, session=session, **self._import(update))
+        updated = await self.repository.update(
+            uid=uid, commit=commit, session=session, **self._import(update)
+        )
         if not related:
             return updated
         return await self.get(related=related, uid=updated.uid, session=session)
 
-    async def bulk_update_where(self, update_data: list[dict], filters: dict, commit=True,
-                                session: AsyncSession | None = None):
+    async def bulk_update_where(
+        self,
+        update_data: list[dict],
+        filters: dict,
+        commit=True,
+        session: AsyncSession | None = None,
+    ):
         """
         Update multiple entities that match the given filters.
 
@@ -393,12 +437,18 @@ class BaseService(Generic[E, C, U]):
                     "filters": str(filters),
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
-                }
+                },
             )
-        return await self.repository.bulk_update_where(update_data, filters, commit, session)
+        return await self.repository.bulk_update_where(
+            update_data, filters, commit, session
+        )
 
-    async def bulk_update_with_mappings(self, mappings: list[dict], commit: bool = True,
-                                        session: AsyncSession | None = None) -> None:
+    async def bulk_update_with_mappings(
+        self,
+        mappings: list[dict],
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> None:
         """
         Perform bulk updates using a list of mappings.
 
@@ -419,11 +469,15 @@ class BaseService(Generic[E, C, U]):
                     "count": len(mappings),
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
-                }
+                },
             )
-        return await self.repository.bulk_update_with_mappings(mappings, commit=commit, session=session)
+        return await self.repository.bulk_update_with_mappings(
+            mappings, commit=commit, session=session
+        )
 
-    async def delete(self, uid: str, commit: bool = True, session: AsyncSession | None = None) -> None:
+    async def delete(
+        self, uid: str, commit: bool = True, session: AsyncSession | None = None
+    ) -> None:
         """
         Delete an entity by its unique identifier.
 
@@ -445,11 +499,13 @@ class BaseService(Generic[E, C, U]):
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
                     "request_id": context.request_id,
-                }
+                },
             )
         return await self.repository.delete(uid=uid, commit=commit, session=session)
 
-    async def delete_where(self, commit: bool = True, session: AsyncSession | None = None, **kwargs) -> None:
+    async def delete_where(
+        self, commit: bool = True, session: AsyncSession | None = None, **kwargs
+    ) -> None:
         """
         Delete entities that match the given filter conditions.
 
@@ -470,14 +526,19 @@ class BaseService(Generic[E, C, U]):
                     "filters": str(kwargs),
                     "user_uid": context.user_uid,
                     "laboratory_uid": context.laboratory_uid,
-                }
+                },
             )
 
-        return await self.repository.delete_where(commit=commit, session=session, **kwargs)
+        return await self.repository.delete_where(
+            commit=commit, session=session, **kwargs
+        )
 
     async def table_query(
-            self, table: Table, columns: list[str] | None = None,
-            session: AsyncSession | None = None, **kwargs
+        self,
+        table: Table,
+        columns: list[str] | None = None,
+        session: AsyncSession | None = None,
+        **kwargs,
     ):
         """
         Query a specific table with optional column selection and filters.
@@ -496,8 +557,13 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.table_query(table, columns, session, **kwargs)
 
-    async def table_insert(self, table: Table, mappings: list[dict], commit=True,
-                           session: AsyncSession | None = None) -> None:
+    async def table_insert(
+        self,
+        table: Table,
+        mappings: list[dict],
+        commit=True,
+        session: AsyncSession | None = None,
+    ) -> None:
         """
         Insert multiple rows into a specified table.
 
@@ -512,7 +578,9 @@ class BaseService(Generic[E, C, U]):
         """
         return await self.repository.table_insert(table, mappings, commit, session)
 
-    async def table_delete(self, table, commit=True, session: AsyncSession | None = None, **kwargs):
+    async def table_delete(
+        self, table, commit=True, session: AsyncSession | None = None, **kwargs
+    ):
         """
         Delete rows from a specified table based on the given filters.
 

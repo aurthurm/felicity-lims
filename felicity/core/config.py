@@ -11,7 +11,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from felicity.utils.env import getenv_boolean, getenv_value
 
-ROOT_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", '..'))
+ROOT_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ENV_FILE: Path = Path(BASE_DIR, "./../.env")
 load_dotenv(dotenv_path=ENV_FILE)
@@ -27,7 +27,9 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
     SECRET_KEY: str = getenv_value("SECRET_KEY", secrets.token_urlsafe(32))
-    REFRESH_SECRET_KEY: str = getenv_value("REFRESH_SECRET_KEY", secrets.token_urlsafe(32))
+    REFRESH_SECRET_KEY: str = getenv_value(
+        "REFRESH_SECRET_KEY", secrets.token_urlsafe(32)
+    )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 4 * 1  # 4 hours
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 12 * 1  # 1/2 day / 12 hours
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "Felicity LIMS")
@@ -75,7 +77,7 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
-            cls, v: str | None, info: ValidationInfo
+        cls, v: str | None, info: ValidationInfo
     ) -> str:
         if isinstance(v, str):
             return v
@@ -126,7 +128,9 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
-    ENABLE_BACKGROUND_PROCESSING: bool = getenv_boolean("ENABLE_BACKGROUND_PROCESSING", False)
+    ENABLE_BACKGROUND_PROCESSING: bool = getenv_boolean(
+        "ENABLE_BACKGROUND_PROCESSING", False
+    )
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", None)  # xxx:4317
     SENTRY_DSN: str | None = getenv_value("SENTRY_DSN", None)
     RUN_OPEN_TRACING: bool = bool(OTLP_SPAN_EXPORT_URL)
@@ -142,11 +146,11 @@ class Settings(BaseSettings):
     MINIO_SECRET: str = getenv_value("MINIO_SECRET", "felicity")
     # Store jsons to document database
     DOCUMENT_STORAGE: bool = (
-            bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
+        bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
     )
     # Use external storage for objects/blobs
     OBJECT_STORAGE: bool = (
-            bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
+        bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
     )
     # Limit Tables for audit-log: if empty, all will be audited
     AUDITABLE_ENTITIES: list[str] = [
@@ -157,7 +161,7 @@ class Settings(BaseSettings):
         "patient",
     ]
     # Document Editor
-    DEFAULT_DOCUMENT_EDITOR: str = 'umo'  # "umo", "syncfusion"
+    DEFAULT_DOCUMENT_EDITOR: str = "umo"  # "umo", "syncfusion"
     SYNCFUSION_LICENSE: str = getenv_value("SYNCFUSION_LICENSE", "")
     # SMS
     SMS_API_URL: str | None = getenv_value("SMS_API_URL", None)

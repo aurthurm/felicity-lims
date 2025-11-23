@@ -8,23 +8,23 @@ const documentRoutes = [
         },
     },
     {
-      path: ':documentVersionUid',
-      name: 'document-single',
-      component: () => import('@/views/document/_id/Document.vue'),
-      props: true,
-      meta: {
-        requiresAuth: true,
-      },
-      children: [
-        {
-          path: 'editor',
-          name: 'document-editor',
-          component: () => import('@/views/document/_id/DocumentEditor.vue'),
-          meta: {
+        path: ':documentVersionUid',
+        name: 'document-single',
+        component: () => import('@/views/document/_id/Document.vue'),
+        props: true,
+        meta: {
             requiresAuth: true,
-          },
-        }
-      ]
+        },
+        children: [
+            {
+                path: 'editor',
+                name: 'document-editor',
+                component: () => import('@/views/document/_id/DocumentEditor.vue'),
+                meta: {
+                    requiresAuth: true,
+                },
+            },
+        ],
     },
 ];
 

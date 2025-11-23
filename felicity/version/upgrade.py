@@ -13,7 +13,9 @@ from fastapi import HTTPException
 
 class SupervisorSystemUpgrade:
     def __init__(self):
-        self.repo_path = Path("/path/to/felicity", )
+        self.repo_path = Path(
+            "/path/to/felicity",
+        )
         self.backup_dir = Path("/path/to/backups")
         self.db_url = "postgresql://user:pass@localhost/felicity"
         self.alembic_ini_path = "/path/to/alembic.ini"
@@ -30,9 +32,12 @@ class SupervisorSystemUpgrade:
         # Backup database
         db_backup_file = backup_path / "database.sql"
         proc = await asyncio.create_subprocess_exec(
-            "pg_dump", "-f", str(db_backup_file), self.db_url,
+            "pg_dump",
+            "-f",
+            str(db_backup_file),
+            self.db_url,
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
+            stderr=asyncio.subprocess.PIPE,
         )
         await proc.communicate()
 
@@ -47,20 +52,20 @@ class SupervisorSystemUpgrade:
     async def upgrade_database(self):
         config = alembic.config.Config(self.alembic_ini_path)
         with config.get_engine().begin() as connection:
-            config.attributes['connection'] = connection
+            config.attributes["connection"] = connection
             alembic.command.upgrade(config, "head")
 
     async def reload_system(self):
         # Stop the service
-        self.supervisor.supervisor.stopProcess('felicity')
+        self.supervisor.supervisor.stopProcess("felicity")
         # Wait for stop
         await asyncio.sleep(5)
         # Start the service
-        self.supervisor.supervisor.startProcess('felicity')
+        self.supervisor.supervisor.startProcess("felicity")
 
         # Verify status
-        info = self.supervisor.supervisor.getProcessInfo('felicity')
-        if info['statename'] != 'RUNNING':
+        info = self.supervisor.supervisor.getProcessInfo("felicity")
+        if info["statename"] != "RUNNING":
             raise Exception("Failed to restart service")
 
     async def restore_backup(self, backup_path: Path):
@@ -70,9 +75,12 @@ class SupervisorSystemUpgrade:
 
         # Restore database
         proc = await asyncio.create_subprocess_exec(
-            "psql", self.db_url, "-f", str(backup_path / "database.sql"),
+            "psql",
+            self.db_url,
+            "-f",
+            str(backup_path / "database.sql"),
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
+            stderr=asyncio.subprocess.PIPE,
         )
         await proc.communicate()
 
@@ -92,7 +100,7 @@ class SupervisorSystemUpgrade:
                 return {
                     "status": "success",
                     "backup_path": str(backup_path),
-                    "commit_hash": commit_hash
+                    "commit_hash": commit_hash,
                 }
 
             except Exception as e:
@@ -101,7 +109,7 @@ class SupervisorSystemUpgrade:
                     await self.restore_backup(backup_path)
                 raise HTTPException(
                     status_code=500,
-                    detail=f"Upgrade failed: {str(e)}. System restored to backup."
+                    detail=f"Upgrade failed: {str(e)}. System restored to backup.",
                 )
 
 
@@ -122,11 +130,9 @@ password=your_secure_password
 
 
 class DockerSystemUpgrade:
-    def __init__(self,
-                 container_name: str,
-                 repo_path: str,
-                 backup_dir: str,
-                 db_url: str):
+    def __init__(
+        self, container_name: str, repo_path: str, backup_dir: str, db_url: str
+    ):
         self.container_name = container_name
         self.repo_path = Path(repo_path)
         self.backup_dir = Path(backup_dir)
@@ -148,7 +154,7 @@ class DockerSystemUpgrade:
         await self.execute_in_container("alembic upgrade head")
 
     async def create_backup(self) -> Path:
-        container = self.docker_client.containers.get(self.container_name)
+        # container = self.docker_client.containers.get(self.container_name)
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_path = self.backup_dir / f"backup_{timestamp}"
         backup_path.mkdir(parents=True)
@@ -169,14 +175,12 @@ class DockerSystemUpgrade:
             await self.upgrade_database()
             await self.reload_system()
 
-            return {
-                "status": "success",
-                "backup_path": str(backup_path)
-            }
-        except Exception as e:
+            return {"status": "success", "backup_path": str(backup_path)}
+        except Exception:
             if backup_path:
                 await self.restore_backup(backup_path)
             raise
+
 
 #
 #

@@ -4,7 +4,12 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.client.types import ClientType
-from felicity.api.gql.setup.types import CountryType, DistrictType, ProvinceType, LaboratoryType
+from felicity.api.gql.setup.types import (
+    CountryType,
+    DistrictType,
+    ProvinceType,
+    LaboratoryType,
+)
 from felicity.api.gql.types import PageInfo, JSONScalar
 from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import UserType
@@ -78,29 +83,37 @@ class PatientType:
     @strawberry.field
     async def client(self, info) -> ClientType | None:
         _client = self.metadata_snapshot.get("client")
-        if not _client: return None
+        if not _client:
+            return None
         _district = _client.get("district", None)
         _province = _client.get("province", None)
-        _client["district"] = StrawberryMapper[DistrictType]().map(**_district) if _district else None
-        _client["province"] = StrawberryMapper[ProvinceType]().map(**_province) if _province else None
+        _client["district"] = (
+            StrawberryMapper[DistrictType]().map(**_district) if _district else None
+        )
+        _client["province"] = (
+            StrawberryMapper[ProvinceType]().map(**_province) if _province else None
+        )
         return StrawberryMapper[ClientType]().map(exclude=["contacts"], **_client)
 
     @strawberry.field
     async def district(self, info) -> DistrictType | None:
         _district = self.metadata_snapshot.get("district", None)
-        if not _district: return None
+        if not _district:
+            return None
         return StrawberryMapper[DistrictType]().map(**_district)
 
     @strawberry.field
     async def province(self, info) -> ProvinceType | None:
         _province = self.metadata_snapshot.get("province", None)
-        if not _province: return None
+        if not _province:
+            return None
         return StrawberryMapper[ProvinceType]().map(**_province)
 
     @strawberry.field
     async def country(self, info) -> CountryType | None:
         _country = self.metadata_snapshot.get("district", None)
-        if not _country: return None
+        if not _country:
+            return None
         return StrawberryMapper[CountryType]().map(**_country)
 
 

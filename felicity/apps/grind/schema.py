@@ -3,13 +3,20 @@ from datetime import datetime
 from pydantic import ConfigDict
 
 from felicity.apps.common.schemas import BaseAuditModel
-from felicity.apps.grind.enum import PosterCategory, ErrandCategory, LabelCategory, MediaTarget, OccurrenceTarget, \
-    StampCategory
+from felicity.apps.grind.enum import (
+    PosterCategory,
+    ErrandCategory,
+    LabelCategory,
+    MediaTarget,
+    OccurrenceTarget,
+    StampCategory,
+)
 
 
 #
 # GrindScheme Schemas
 #
+
 
 # Shared properties
 class GrindSchemeBase(BaseAuditModel):
@@ -50,6 +57,7 @@ class GrindSchemeInDB(GrindSchemeBaseInDB):
 # GrindBoard Schemas
 #
 
+
 # Shared properties
 class GrindBoardBase(BaseAuditModel):
     title: str | None = None
@@ -86,6 +94,7 @@ class GrindBoardInDB(GrindBoardBaseInDB):
 #
 # GrindPoster Schemas
 #
+
 
 # Shared properties
 class GrindPosterBase(BaseAuditModel):
@@ -126,6 +135,7 @@ class GrindPosterInDB(GrindPosterBaseInDB):
 #
 # GrindErrand Schemas
 #
+
 
 # Shared properties
 class GrindErrandBase(BaseAuditModel):
@@ -172,6 +182,7 @@ class GrindErrandInDB(GrindErrandBaseInDB):
 # GrindErrandDiscussion Schemas
 #
 
+
 # Shared properties
 class GrindErrandDiscussionBase(BaseAuditModel):
     comment: str | None = None
@@ -210,6 +221,7 @@ class GrindErrandDiscussionInDB(GrindErrandDiscussionBaseInDB):
 # GrindLabel Schemas
 #
 
+
 # Shared properties
 class GrindLabelBase(BaseAuditModel):
     title: str | None = None
@@ -246,6 +258,7 @@ class GrindLabelInDB(GrindLabelBaseInDB):
 # GrindStamp Schemas
 #
 
+
 # Shared properties
 class GrindStampBase(BaseAuditModel):
     title: str | None = None
@@ -281,6 +294,7 @@ class GrindStampInDB(GrindStampBaseInDB):
 #
 # GrindMedia Schemas
 #
+
 
 # Shared properties
 class GrindMediaBase(BaseAuditModel):
@@ -326,6 +340,7 @@ class GrindMediaInDB(GrindMediaBaseInDB):
 # GrindMilestone Schemas
 #
 
+
 # Shared properties
 class GrindMilestoneBase(BaseAuditModel):
     errand_uid: str | None = None
@@ -364,6 +379,7 @@ class GrindMilestoneInDB(GrindMilestoneBaseInDB):
 #
 # GrindOccurrence Schemas
 #
+
 
 # Shared properties
 class GrindOccurrenceBase(BaseAuditModel):

@@ -94,7 +94,7 @@ async def impress_samples(sample_meta: list[dict], user):
                         "sample_uid": sample.uid,
                         "impress_meta_uid": report_impress.uid,
                     },
-                    content_type="application/pdf"
+                    content_type="application/pdf",
                 )
 
             # Save the json to mongodb
@@ -111,7 +111,9 @@ async def impress_samples(sample_meta: list[dict], user):
             logger.info(f"sample {sample.sample_id} has been impressed.")
             to_return.append(sample)
 
-            await ActivityStreamService().stream(sample, user, "published", NotificationObject.SAMPLE)
+            await ActivityStreamService().stream(
+                sample, user, "published", NotificationObject.SAMPLE
+            )
         else:
             logger.info(
                 f"sample {sample.sample_id} could not be impressed - status: {sample.status}"

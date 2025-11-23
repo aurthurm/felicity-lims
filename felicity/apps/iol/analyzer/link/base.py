@@ -42,7 +42,9 @@ class AbstractLink(ABC):
         """
         raise NotImplementedError("process is not implemented")
 
-    async def eot_offload(self, instrument_uid: str, messages: Union[str, list]) -> None:
+    async def eot_offload(
+        self, instrument_uid: str, messages: Union[str, list]
+    ) -> None:
         """
         End of Transmission - offload processed messages to storage.
 
@@ -96,10 +98,13 @@ class AbstractLink(ABC):
         logger.info(f"Link: {message}")
         logger.info("-" * 80)
 
-        post_event(EventType.INSTRUMENT_LOG, **{
-            'id': getattr(self, 'uid', 'unknown'),
-            'message': message,
-        })
+        post_event(
+            EventType.INSTRUMENT_LOG,
+            **{
+                "id": getattr(self, "uid", "unknown"),
+                "message": message,
+            },
+        )
 
     @staticmethod
     def decode_message(message: bytes, encoding: str = "utf-8") -> str:
@@ -120,7 +125,7 @@ class AbstractLink(ABC):
         """
         # Try specified encoding if not UTF-16 BOM
         try:
-            if b'\x00' not in message[:4]:
+            if b"\x00" not in message[:4]:
                 return message.decode(encoding)
         except (AttributeError, UnicodeDecodeError):
             pass

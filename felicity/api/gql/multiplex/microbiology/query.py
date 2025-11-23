@@ -1,10 +1,73 @@
+from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 
-from felicity.api.gql.multiplex.microbiology.types import *
+from felicity.api.gql.multiplex.microbiology.types import (
+    AbxASTPanelType,
+    AbxASTResultType,
+    AbxAntibioticCursorPage,
+    AbxAntibioticEdge,
+    AbxAntibioticType,
+    AbxBreakpointTypCursorPage,
+    AbxBreakpointTypEdge,
+    AbxBreakpointTyp,
+    AbxClassType,
+    AbxExpResPhenotypeCursorPage,
+    AbxExpResPhenotypeEdge,
+    AbxExpResPhenotypeType,
+    AbxExpertInterpretationRuleCursorPage,
+    AbxExpertInterpretationRuleEdge,
+    AbxExpertInterpretationRuleType,
+    AbxFamilyType,
+    AbxGenusType,
+    AbxGuidelineType,
+    AbxGuidelineYearType,
+    AbxHostType,
+    AbxKingdomType,
+    AbxMediumType,
+    AbxOrderType,
+    AbxOrganismCursorPage,
+    AbxOrganismType,
+    AbxOrganismResultType,
+    AbxOrganismSerotypeCursorPage,
+    AbxOrganismSerotypeEdge,
+    AbxOrganismSerotypeType,
+    AbxPhylumType,
+    AbxQCRangeCursorPage,
+    AbxQCRangeEdge,
+    AbxQCRangeType,
+    AbxSiteOfInfectionType,
+    AbxTestMethodType,
+    AbxBreakpointTypeTyp,
+)
 from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types.generic import PageInfo
 from felicity.apps.multiplex.microbiology.entities import laboratory_antibiotics
-from felicity.apps.multiplex.microbiology.services import *
+from felicity.apps.multiplex.microbiology.services import (
+    AbxAntibioticService,
+    AbxBreakpointService,
+    AbxBreakpointTypeService,
+    AbxClassService,
+    AbxExpResPhenotypeService,
+    AbxExpertInterpretationRuleService,
+    AbxFamilyService,
+    AbxGenusService,
+    AbxGuidelineService,
+    AbxGuidelineYearService,
+    AbxHostService,
+    AbxKingdomService,
+    AbxMediumService,
+    AbxOrderService,
+    AbxOrganismResultService,
+    AbxOrganismService,
+    AbxOrganismSerotypeService,
+    AbxPhylumService,
+    AbxQCRangeService,
+    AbxASTPanelService,
+    AbxASTResultService,
+    AbxSiteOfInfectionService,
+    AbxTestMethodService,
+)
 from felicity.apps.setup.services import LaboratoryService
 from felicity.core.tenant_context import get_current_lab_uid
 from felicity.utils import has_value_or_is_truthy
@@ -21,23 +84,29 @@ class MicrobiologyQuery:
         return await AbxGuidelineService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_antibiotic_all(self, info,
-                                 text: str,
-                                 page_size: int | None = None,
-                                 after_cursor: str | None = None,
-                                 before_cursor: str | None = None,
-                                 sort_by: list[str] | None = None
-                                 ) -> AbxAntibioticCursorPage:
+    async def abx_antibiotic_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxAntibioticCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "name__ilike", "whonet_abx_code__ilike",
-                "who_code__ilike", "din_code__ilike",
-                "jac_code__ilike", "eucast_code__ilike",
-                "user_code__ilike", "abx_number__ilike",
-                "guidelines___name__ilike"
+                "name__ilike",
+                "whonet_abx_code__ilike",
+                "who_code__ilike",
+                "din_code__ilike",
+                "jac_code__ilike",
+                "eucast_code__ilike",
+                "user_code__ilike",
+                "abx_number__ilike",
+                "guidelines___name__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -63,19 +132,27 @@ class MicrobiologyQuery:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_antibiotic_by_uid(self, info, uid: str) -> Optional[AbxAntibioticType]:
+    async def abx_antibiotic_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxAntibioticType]:
         return await AbxAntibioticService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_laboratory_antibiotics(self, info) -> Optional[List[AbxAntibioticType]]:
+    async def abx_laboratory_antibiotics(
+        self, info
+    ) -> Optional[List[AbxAntibioticType]]:
         lab_id = get_current_lab_uid()
         laboratory = await LaboratoryService().get(uid=lab_id)
         antibiotic_uids = await AbxAntibioticService().repository.table_query(
             table=laboratory_antibiotics,
             columns=["antibiotic_uid"],
-            laboratory_uid=laboratory.uid
+            laboratory_uid=laboratory.uid,
         )
-        return await AbxAntibioticService().get_by_uids(antibiotic_uids) if antibiotic_uids else None
+        return (
+            await AbxAntibioticService().get_by_uids(antibiotic_uids)
+            if antibiotic_uids
+            else None
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def abx_kingdom_all(self, info) -> Optional[List[AbxKingdomType]]:
@@ -126,22 +203,28 @@ class MicrobiologyQuery:
         return await AbxGenusService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_organism_all(self, info,
-                               text: str,
-                               page_size: int | None = None,
-                               after_cursor: str | None = None,
-                               before_cursor: str | None = None,
-                               sort_by: list[str] | None = None
-                               ) -> AbxOrganismCursorPage:
+    async def abx_organism_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxOrganismCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "name__ilike", "whonet_org_code__ilike",
-                "common__ilike", "organism_type__ilike",
-                "subkingdom_code__ilike", "family_code__ilike",
-                "genus_code__ilike", "species_group__ilike"
+                "name__ilike",
+                "whonet_org_code__ilike",
+                "common__ilike",
+                "organism_type__ilike",
+                "subkingdom_code__ilike",
+                "family_code__ilike",
+                "genus_code__ilike",
+                "species_group__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -171,26 +254,35 @@ class MicrobiologyQuery:
         return await AbxOrganismService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_organism_result_all(self, info, analysis_result_uid: str) -> Optional[List[AbxOrganismResultType]]:
-        return await AbxOrganismResultService().get_all(analysis_result_uid=analysis_result_uid)
+    async def abx_organism_result_all(
+        self, info, analysis_result_uid: str
+    ) -> Optional[List[AbxOrganismResultType]]:
+        return await AbxOrganismResultService().get_all(
+            analysis_result_uid=analysis_result_uid
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_organism_serotype_all(self, info,
-                                        text: str,
-                                        page_size: int | None = None,
-                                        after_cursor: str | None = None,
-                                        before_cursor: str | None = None,
-                                        sort_by: list[str] | None = None
-                                        ) -> AbxOrganismSerotypeCursorPage:
+    async def abx_organism_serotype_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxOrganismSerotypeCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "organism___name__ilike", "serotype__ilike",
-                "serogroup__ilike", "subspecies__ilike",
-                "o_antigens__ilike", "h_phase_1__ilike",
-                "h_phase_2__ilike"
+                "organism___name__ilike",
+                "serotype__ilike",
+                "serogroup__ilike",
+                "subspecies__ilike",
+                "o_antigens__ilike",
+                "h_phase_1__ilike",
+                "h_phase_2__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -216,7 +308,9 @@ class MicrobiologyQuery:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_organism_serotype_by_uid(self, info, uid: str) -> Optional[AbxOrganismSerotypeType]:
+    async def abx_organism_serotype_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxOrganismSerotypeType]:
         return await AbxOrganismSerotypeService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -224,15 +318,21 @@ class MicrobiologyQuery:
         return await AbxTestMethodService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_test_method_by_uid(self, info, uid: str) -> Optional[AbxTestMethodType]:
+    async def abx_test_method_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxTestMethodType]:
         return await AbxTestMethodService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_breakpoint_type_all(self, info) -> Optional[List[AbxBreakpointTypeTyp]]:
+    async def abx_breakpoint_type_all(
+        self, info
+    ) -> Optional[List[AbxBreakpointTypeTyp]]:
         return await AbxBreakpointTypeService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_breakpoint_type_by_uid(self, info, uid: str) -> Optional[AbxBreakpointTypeTyp]:
+    async def abx_breakpoint_type_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxBreakpointTypeTyp]:
         return await AbxBreakpointTypeService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -244,35 +344,46 @@ class MicrobiologyQuery:
         return await AbxHostService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_site_of_infection_all(self, info) -> Optional[List[AbxSiteOfInfectionType]]:
+    async def abx_site_of_infection_all(
+        self, info
+    ) -> Optional[List[AbxSiteOfInfectionType]]:
         return await AbxSiteOfInfectionService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_site_of_infection_by_uid(self, info, uid: str) -> Optional[AbxSiteOfInfectionType]:
+    async def abx_site_of_infection_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxSiteOfInfectionType]:
         return await AbxSiteOfInfectionService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_guideline_year_all(self, info) -> Optional[List[AbxGuidelineYearType]]:
+    async def abx_guideline_year_all(
+        self, info
+    ) -> Optional[List[AbxGuidelineYearType]]:
         return await AbxGuidelineYearService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_breakpoint_all(self, info,
-                                 text: str,
-                                 page_size: int | None = None,
-                                 after_cursor: str | None = None,
-                                 before_cursor: str | None = None,
-                                 sort_by: list[str] | None = None
-                                 ) -> AbxBreakpointTypCursorPage:
+    async def abx_breakpoint_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxBreakpointTypCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
                 "guideline_year___code__ilike",
-                "test_method___name__ilike", "potency__ilike",
-                "organism_code__ilike", "breakpoint_type___name__ilike",
-                "host___name__ilike", "site_of_infection___name__ilike",
-                "whonet_abx_code__ilike"
+                "test_method___name__ilike",
+                "potency__ilike",
+                "organism_code__ilike",
+                "breakpoint_type___name__ilike",
+                "host___name__ilike",
+                "site_of_infection___name__ilike",
+                "whonet_abx_code__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -302,20 +413,24 @@ class MicrobiologyQuery:
         return await AbxBreakpointService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_expected_resistance_phenotype_all(self, info,
-                                                    text: str,
-                                                    page_size: int | None = None,
-                                                    after_cursor: str | None = None,
-                                                    before_cursor: str | None = None,
-                                                    sort_by: list[str] | None = None
-                                                    ) -> AbxExpResPhenotypeCursorPage:
+    async def abx_expected_resistance_phenotype_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxExpResPhenotypeCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "guideline___name__ilike", "reference_table__ilike",
-                "organism_code__ilike", "exception_organism_code__ilike",
+                "guideline___name__ilike",
+                "reference_table__ilike",
+                "organism_code__ilike",
+                "exception_organism_code__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -341,25 +456,32 @@ class MicrobiologyQuery:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_expected_resistance_phenotype_by_uid(self, info, uid: str) -> Optional[AbxExpResPhenotypeType]:
+    async def abx_expected_resistance_phenotype_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxExpResPhenotypeType]:
         return await AbxExpResPhenotypeService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_expert_interpretation_rule_all(self, info,
-                                                 text: str,
-                                                 page_size: int | None = None,
-                                                 after_cursor: str | None = None,
-                                                 before_cursor: str | None = None,
-                                                 sort_by: list[str] | None = None
-                                                 ) -> AbxExpertInterpretationRuleCursorPage:
+    async def abx_expert_interpretation_rule_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxExpertInterpretationRuleCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "rule_code__ilike", "description__ilike",
-                "organism_code__ilike", "rule_criteria__ilike",
-                "affected_antibiotics__ilike", "antibiotic_exceptions__ilike",
+                "rule_code__ilike",
+                "description__ilike",
+                "organism_code__ilike",
+                "rule_criteria__ilike",
+                "affected_antibiotics__ilike",
+                "antibiotic_exceptions__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -376,7 +498,9 @@ class MicrobiologyQuery:
         )
 
         total_count: int = page.total_count
-        edges: List[AbxExpertInterpretationRuleEdge[AbxExpertInterpretationRuleType]] = page.edges
+        edges: List[
+            AbxExpertInterpretationRuleEdge[AbxExpertInterpretationRuleType]
+        ] = page.edges
         items: List[AbxExpertInterpretationRuleType] = page.items
         page_info: PageInfo = page.page_info
 
@@ -385,7 +509,9 @@ class MicrobiologyQuery:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_expert_interpretation_rule_by_uid(self, info, uid: str) -> Optional[AbxExpertInterpretationRuleType]:
+    async def abx_expert_interpretation_rule_by_uid(
+        self, info, uid: str
+    ) -> Optional[AbxExpertInterpretationRuleType]:
         return await AbxExpertInterpretationRuleService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -397,21 +523,26 @@ class MicrobiologyQuery:
         return await AbxMediumService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_qc_range_all(self, info,
-                               text: str,
-                               page_size: int | None = None,
-                               after_cursor: str | None = None,
-                               before_cursor: str | None = None,
-                               sort_by: list[str] | None = None
-                               ) -> AbxQCRangeCursorPage:
+    async def abx_qc_range_all(
+        self,
+        info,
+        text: str,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> AbxQCRangeCursorPage:
         filters = []
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "guideline___name__ilike", "medium___name__ilike",
-                "strain__ilike", "reference_table__ilike",
-                "antibiotic__ilike", "method__ilike",
+                "guideline___name__ilike",
+                "medium___name__ilike",
+                "strain__ilike",
+                "reference_table__ilike",
+                "antibiotic__ilike",
+                "method__ilike",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -445,14 +576,16 @@ class MicrobiologyQuery:
         return await AbxASTPanelService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_ast_panel_filter(self, info, organism_uid: str, text: str = "") -> Optional[List[AbxASTPanelType]]:
+    async def abx_ast_panel_filter(
+        self, info, organism_uid: str, text: str = ""
+    ) -> Optional[List[AbxASTPanelType]]:
         return await AbxASTPanelService().repository.filter(
             filters=[
                 {"organisms___uid__exact": organism_uid},
                 {"name__ilike": f"%{text}%"},
-                {"description__ilike": f"%{text}%"}
+                {"description__ilike": f"%{text}%"},
             ],
-            either=True
+            either=True,
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -460,9 +593,17 @@ class MicrobiologyQuery:
         return await AbxASTPanelService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_ast_result_all(self, info, analysis_result_uid: str) -> Optional[List[AbxASTResultType]]:
-        return await AbxASTResultService().get_all(analysis_result_uid=analysis_result_uid)
+    async def abx_ast_result_all(
+        self, info, sample_uid: str
+    ) -> Optional[List[AbxASTResultType]]:
+        return await AbxASTResultService().get_all(
+            analysis_result___sample_uid__exact=sample_uid
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def abx_ast_result_all(self, info, sample_uid: str) -> Optional[List[AbxASTResultType]]:
-        return await AbxASTResultService().get_all(analysis_result___sample_uid__exact=sample_uid)
+    async def abx_ast_results_by_analysis_result(
+        self, info, analysis_result_uid: str
+    ) -> Optional[List[AbxASTResultType]]:
+        return await AbxASTResultService().get_all(
+            analysis_result_uid=analysis_result_uid
+        )

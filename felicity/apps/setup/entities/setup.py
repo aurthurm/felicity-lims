@@ -8,11 +8,10 @@ from felicity.apps.billing.enum import PaymentStatus
 
 class Organization(BaseEntity):
     """Organization entity - single organization per installation"""
+
     __tablename__ = "organization"
 
-    setup_name = Column(
-        String, default="felicity", nullable=False
-    )
+    setup_name = Column(String, default="felicity", nullable=False)
     name = Column(String, nullable=False, unique=True)
     code = Column(String, nullable=True, unique=True)
     timezone = Column(String, nullable=True, default="UTC")
@@ -31,8 +30,12 @@ class Organization(BaseEntity):
     province = relationship("Province", lazy="selectin")
     district_uid = Column(String, ForeignKey("district.uid"))
     district = relationship("District", lazy="selectin")
-    settings = relationship("OrganizationSetting", back_populates="organization", lazy="selectin")
-    laboratories = relationship("Laboratory", back_populates="organization", lazy="selectin")
+    settings = relationship(
+        "OrganizationSetting", back_populates="organization", lazy="selectin"
+    )
+    laboratories = relationship(
+        "Laboratory", back_populates="organization", lazy="selectin"
+    )
 
 
 class OrganizationSetting(BaseEntity):
@@ -88,7 +91,7 @@ class Laboratory(BaseEntity):
         result = {
             "lab_name": self.name,
             "lab_email": self.email,
-            "lab_phone": self.mobile_phone
+            "lab_phone": self.mobile_phone,
         }
         return result
 

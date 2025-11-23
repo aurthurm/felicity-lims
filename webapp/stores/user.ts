@@ -2,7 +2,14 @@ import { defineStore } from 'pinia';
 
 import useApiUtil from '@/composables/api_util';
 import useNotifyToast from '@/composables/alert_toast';
-import { GroupsAndPermissionsDocument, GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables, UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries';
+import {
+    GroupsAndPermissionsDocument,
+    GroupsAndPermissionsQuery,
+    GroupsAndPermissionsQueryVariables,
+    UserAllDocument,
+    UserAllQuery,
+    UserAllQueryVariables,
+} from '@/graphql/operations/_queries';
 import { GroupType, PageInfo, PermissionType, UserCursorPage, UserType } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
@@ -38,12 +45,8 @@ export const useUserStore = defineStore('user', {
         async fetchUsers(params) {
             try {
                 this.fetchingUsers = true;
-                const resp = await withClientQuery<UserAllQuery, UserAllQueryVariables>(
-                    UserAllDocument, 
-                    params, 
-                    'userAll'
-                );
-                
+                const resp = await withClientQuery<UserAllQuery, UserAllQueryVariables>(UserAllDocument, params, 'userAll');
+
                 const cursor = resp as UserCursorPage;
                 this.users = cursor.items?.filter(user => user.email != 'system_daemon@system.daemon') ?? [];
                 this.usersTotalCount = cursor.totalCount;
@@ -57,11 +60,11 @@ export const useUserStore = defineStore('user', {
                 this.fetchingUsers = false;
             }
         },
-        
+
         addUser(payload: UserType): void {
             this.users?.unshift(payload);
         },
-        
+
         updateUser(payload: UserType): void {
             const index = this.users?.findIndex(user => user.uid === payload?.uid);
             if (index && index > -1) this.users[index] = payload;
@@ -71,11 +74,11 @@ export const useUserStore = defineStore('user', {
             try {
                 this.fetchingGroups = true;
                 const resp = await withClientQuery<GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables>(
-                    GroupsAndPermissionsDocument, 
-                    {}, 
+                    GroupsAndPermissionsDocument,
+                    {},
                     undefined
                 );
-                
+
                 if (resp && typeof resp === 'object') {
                     const typedResp = resp as any;
                     this.groups = typedResp.groupAll || [];
@@ -95,16 +98,16 @@ export const useUserStore = defineStore('user', {
                 this.fetchingGroups = false;
             }
         },
-        
+
         addGroup(payload: GroupType): void {
             this.groups?.unshift(payload);
         },
-        
+
         updateGroup(payload: GroupType): void {
             const index = this.groups?.findIndex(group => group.uid === payload?.uid);
             if (index > -1) this.groups[index] = payload;
         },
-        
+
         updateGroupsAndPermissions(payload) {
             let group = payload?.group;
             const index = this.groups?.findIndex(g => g.uid === group?.uid);
@@ -113,7 +116,7 @@ export const useUserStore = defineStore('user', {
                 this.groups[index] = group;
             }
         },
-        
+
         getRoles() {
             const final = new Map();
             for (const role of this.groups) {
@@ -121,9 +124,9 @@ export const useUserStore = defineStore('user', {
             }
             return final;
         },
-        
+
         addUserAuth(payload) {},
-        
+
         updateUserAuth(payload) {},
     },
 });

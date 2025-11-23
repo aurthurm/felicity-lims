@@ -681,6 +681,7 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 # ClinicalData Schemas
 #
 
+
 # Shared properties
 class ClinicalDataBase(BaseAuditModel):
     analysis_request_uid: str | None = None
@@ -723,6 +724,7 @@ class ClinicalDataInDB(ClinicalDataBaseInDB):
 #
 # ClinicalDataCoding Schemas
 #
+
 
 # Shared properties
 class ClinicalDataCodingBase(BaseAuditModel):

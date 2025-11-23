@@ -3,15 +3,34 @@ import logging
 import strawberry
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.multiplex.microbiology import AbxTestMethodType, AbxBreakpointTypeTyp, AbxHostType, \
-    AbxSiteOfInfectionType, AbxBreakpointTyp
+from felicity.api.gql.multiplex.microbiology import (
+    AbxTestMethodType,
+    AbxBreakpointTypeTyp,
+    AbxHostType,
+    AbxSiteOfInfectionType,
+    AbxBreakpointTyp,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.multiplex.microbiology.schemas import AbxTestMethodCreate, AbxTestMethodUpdate, \
-    AbxBreakpointTypeCreate, AbxBreakpointTypeUpdate, AbxHostCreate, AbxHostUpdate, AbxSiteOfInfectionCreate, \
-    AbxSiteOfInfectionUpdate, AbxBreakpointCreate, AbxBreakpointUpdate
-from felicity.apps.multiplex.microbiology.services import AbxTestMethodService, AbxBreakpointTypeService, \
-    AbxHostService, AbxSiteOfInfectionService, AbxBreakpointService
+from felicity.apps.multiplex.microbiology.schemas import (
+    AbxTestMethodCreate,
+    AbxTestMethodUpdate,
+    AbxBreakpointTypeCreate,
+    AbxBreakpointTypeUpdate,
+    AbxHostCreate,
+    AbxHostUpdate,
+    AbxSiteOfInfectionCreate,
+    AbxSiteOfInfectionUpdate,
+    AbxBreakpointCreate,
+    AbxBreakpointUpdate,
+)
+from felicity.apps.multiplex.microbiology.services import (
+    AbxTestMethodService,
+    AbxBreakpointTypeService,
+    AbxHostService,
+    AbxSiteOfInfectionService,
+    AbxBreakpointService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -100,8 +119,7 @@ AbxBreakpointResponse = strawberry.union(
 # Test Method Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_test_method(
-        info,
-        payload: AbxTestMethodInputType
+    info, payload: AbxTestMethodInputType
 ) -> AbxTestMethodResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -118,9 +136,7 @@ async def create_abx_test_method(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_test_method(
-        info,
-        uid: str,
-        payload: AbxTestMethodInputType
+    info, uid: str, payload: AbxTestMethodInputType
 ) -> AbxTestMethodResponse:
     felicity_user = await auth_from_info(info)
     abx_test_method = await AbxTestMethodService().get(uid=uid)
@@ -136,15 +152,16 @@ async def update_abx_test_method(
     setattr(abx_test_method, "updated_by_uid", felicity_user.uid)
 
     method_in = AbxTestMethodUpdate(**abx_test_method.to_dict())
-    abx_test_method = await AbxTestMethodService().update(abx_test_method.uid, method_in)
+    abx_test_method = await AbxTestMethodService().update(
+        abx_test_method.uid, method_in
+    )
     return AbxTestMethodType(**abx_test_method.marshal_simple())
 
 
 # Breakpoint Type Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_breakpoint_type(
-        info,
-        payload: AbxBreakpointTypeInputType
+    info, payload: AbxBreakpointTypeInputType
 ) -> AbxBreakpointTypeResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -161,9 +178,7 @@ async def create_abx_breakpoint_type(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_breakpoint_type(
-        info,
-        uid: str,
-        payload: AbxBreakpointTypeInputType
+    info, uid: str, payload: AbxBreakpointTypeInputType
 ) -> AbxBreakpointTypeResponse:
     felicity_user = await auth_from_info(info)
     abx_breakpoint_type = await AbxBreakpointTypeService().get(uid=uid)
@@ -179,16 +194,15 @@ async def update_abx_breakpoint_type(
     setattr(abx_breakpoint_type, "updated_by_uid", felicity_user.uid)
 
     type_in = AbxBreakpointTypeUpdate(**abx_breakpoint_type.to_dict())
-    abx_breakpoint_type = await AbxBreakpointTypeService().update(abx_breakpoint_type.uid, type_in)
+    abx_breakpoint_type = await AbxBreakpointTypeService().update(
+        abx_breakpoint_type.uid, type_in
+    )
     return AbxBreakpointTypeTyp(**abx_breakpoint_type.marshal_simple())
 
 
 # Host Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_host(
-        info,
-        payload: AbxHostInputType
-) -> AbxHostResponse:
+async def create_abx_host(info, payload: AbxHostInputType) -> AbxHostResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -203,11 +217,7 @@ async def create_abx_host(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def update_abx_host(
-        info,
-        uid: str,
-        payload: AbxHostInputType
-) -> AbxHostResponse:
+async def update_abx_host(info, uid: str, payload: AbxHostInputType) -> AbxHostResponse:
     felicity_user = await auth_from_info(info)
     abx_host = await AbxHostService().get(uid=uid)
 
@@ -229,8 +239,7 @@ async def update_abx_host(
 # Site of Infection Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_site_of_infection(
-        info,
-        payload: AbxSiteOfInfectionInputType
+    info, payload: AbxSiteOfInfectionInputType
 ) -> AbxSiteOfInfectionResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -247,9 +256,7 @@ async def create_abx_site_of_infection(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_site_of_infection(
-        info,
-        uid: str,
-        payload: AbxSiteOfInfectionInputType
+    info, uid: str, payload: AbxSiteOfInfectionInputType
 ) -> AbxSiteOfInfectionResponse:
     felicity_user = await auth_from_info(info)
     abx_site = await AbxSiteOfInfectionService().get(uid=uid)
@@ -272,8 +279,7 @@ async def update_abx_site_of_infection(
 # Breakpoint Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_breakpoint(
-        info,
-        payload: AbxBreakpointInputType
+    info, payload: AbxBreakpointInputType
 ) -> AbxBreakpointResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -290,9 +296,7 @@ async def create_abx_breakpoint(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_breakpoint(
-        info,
-        uid: str,
-        payload: AbxBreakpointInputType
+    info, uid: str, payload: AbxBreakpointInputType
 ) -> AbxBreakpointResponse:
     felicity_user = await auth_from_info(info)
     abx_breakpoint = await AbxBreakpointService().get(uid=uid)
@@ -308,5 +312,7 @@ async def update_abx_breakpoint(
     setattr(abx_breakpoint, "updated_by_uid", felicity_user.uid)
 
     breakpoint_in = AbxBreakpointUpdate(**abx_breakpoint.to_dict())
-    abx_breakpoint = await AbxBreakpointService().update(abx_breakpoint.uid, breakpoint_in)
+    abx_breakpoint = await AbxBreakpointService().update(
+        abx_breakpoint.uid, breakpoint_in
+    )
     return AbxBreakpointTyp(**abx_breakpoint.marshal_simple())

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-class SmsApiException(Exception):
 
+class SmsApiException(Exception):
     def __init__(self, message, code=None, *args):
         super(SmsApiException, self).__init__(message, code, *args)
 
@@ -10,8 +10,8 @@ class SmsApiException(Exception):
 
     @classmethod
     def from_dict(cls, data):
-        message = data.get('message')
-        error = data.get('error')
+        message = data.get("message")
+        error = data.get("error")
 
         return cls(message, error)
 
@@ -33,9 +33,8 @@ class ClientException(SmsApiException):
 
 
 class EndpointException(SmsApiException):
-
     def __init__(self, message, code=None, *args, **kwargs):
         super(EndpointException, self).__init__(message, code, *args)
 
-        self.url = kwargs.get('url')
-        self.http_method = kwargs.get('http_method')
+        self.url = kwargs.get("url")
+        self.http_method = kwargs.get("http_method")

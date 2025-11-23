@@ -73,7 +73,7 @@ async def populate_worksheet_plate(job_uid: str):
             job.uid,
             new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
-                          f"processed sample",
+            f"processed sample",
         )
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
@@ -84,7 +84,7 @@ async def populate_worksheet_plate(job_uid: str):
             job.uid,
             new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} already has "
-                          f"{ws.assigned_count} assigned samples",
+            f"{ws.assigned_count} assigned samples",
         )
         logger.warning(
             f"WorkSheet {ws_uid} already has {ws.assigned_count} assigned samples"
@@ -116,7 +116,7 @@ async def populate_worksheet_plate(job_uid: str):
     if ws.assigned_count == 0:
         position = 1
         for key, sample in enumerate(
-                sorted(samples, key=lambda s: s.uid, reverse=True)
+            sorted(samples, key=lambda s: s.uid, reverse=True)
         ):
             while position in reserved:
                 # skip reserved ?qc positions
@@ -355,7 +355,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
             job.uid,
             new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
-                          f"processed sample",
+            f"processed sample",
         )
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
@@ -378,7 +378,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
     if ws.assigned_count == 0:
         position = 1
         for key, sample in enumerate(
-                sorted(samples, key=lambda s: s.uid, reverse=True)
+            sorted(samples, key=lambda s: s.uid, reverse=True)
         ):
             while position in reserved:
                 # skip reserved ?qc positions

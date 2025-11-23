@@ -44,18 +44,20 @@ def set_keepalive_osx(sock, after_idle_sec, interval_sec, max_fails):
 
 
 def set_keepalive_win(sock, after_idle_sec, interval_sec, max_fails):
-    sock.ioctl(socket.SIO_KEEPALIVE_VALS, (1, after_idle_sec * 1000, interval_sec * 1000))
+    sock.ioctl(
+        socket.SIO_KEEPALIVE_VALS, (1, after_idle_sec * 1000, interval_sec * 1000)
+    )
 
 
 def set_keep_alive(sock, after_idle_sec=60, interval_sec=60, max_fails=5):
     plat = platform.system()
-    if plat == 'Linux':
+    if plat == "Linux":
         return set_keepalive_linux(sock, after_idle_sec, interval_sec, max_fails)
-    if plat == 'Darwin':
+    if plat == "Darwin":
         return set_keepalive_osx(sock, after_idle_sec, interval_sec, max_fails)
-    if plat == 'Windows':
+    if plat == "Windows":
         return set_keepalive_win(sock, after_idle_sec, interval_sec, max_fails)
-    raise RuntimeError('Unsupport platform {}'.format(plat))
+    raise RuntimeError("Unsupport platform {}".format(plat))
 
 
 def u(s):
@@ -65,17 +67,23 @@ def u(s):
 
 
 def f(s, e="utf-8", **kw):
-    return u(s).format(STX=u(ASTMConstants.STX),
-                       ETX=u(ASTMConstants.ETX),
-                       ETB=u(ASTMConstants.ETB),
-                       CR=u(ASTMConstants.CR),
-                       LF=u(ASTMConstants.LF),
-                       CRLF=u(ASTMConstants.CRLF), **kw).encode(e)
+    return (
+        u(s)
+        .format(
+            STX=u(ASTMConstants.STX),
+            ETX=u(ASTMConstants.ETX),
+            ETB=u(ASTMConstants.ETB),
+            CR=u(ASTMConstants.CR),
+            LF=u(ASTMConstants.LF),
+            CRLF=u(ASTMConstants.CRLF),
+            **kw,
+        )
+        .encode(e)
+    )
 
 
 def write_message(message, path, dateformat="%Y-%m-%d_%H:%M:%S", ext=".txt"):
-    """Write ASTM Message to file
-    """
+    """Write ASTM Message to file"""
     path = Path(path)
     if not path.exists():
         # ensure the directory exists
@@ -91,8 +99,7 @@ def write_message(message, path, dateformat="%Y-%m-%d_%H:%M:%S", ext=".txt"):
 
 
 def is_chunked_message(message):
-    """Checks plain message for chunked byte with enhanced validation.
-    """
+    """Checks plain message for chunked byte with enhanced validation."""
     if not isinstance(message, bytes):
         return False
 
@@ -290,7 +297,9 @@ def join(chunks):
     # Extract message content from each chunk (remove STX, frame#, ETX/ETB, checksum, CRLF)
     try:
         msg = b"1" + b"".join(c[2:-5] for c in chunks) + ASTMConstants.ETX
-        return b"".join([ASTMConstants.STX, msg, make_checksum(msg), ASTMConstants.CRLF])
+        return b"".join(
+            [ASTMConstants.STX, msg, make_checksum(msg), ASTMConstants.CRLF]
+        )
     except Exception as e:
         raise ValueError(f"Error joining chunks: {e}")
 
@@ -321,15 +330,18 @@ def split(msg, size):
     idx = 0
     for idx, chunk in enumerate(chunks):
         item = b"".join([str((idx + frame) % 8).encode(), chunk, ASTMConstants.ETB])
-        yield b"".join([ASTMConstants.STX, item, make_checksum(item), ASTMConstants.CRLF])
-    item = b"".join([str((idx + frame + 1) % 8).encode(), last, ASTMConstants.CR, ASTMConstants.ETX])
+        yield b"".join(
+            [ASTMConstants.STX, item, make_checksum(item), ASTMConstants.CRLF]
+        )
+    item = b"".join(
+        [str((idx + frame + 1) % 8).encode(), last, ASTMConstants.CR, ASTMConstants.ETX]
+    )
     yield b"".join([ASTMConstants.STX, item, make_checksum(item), ASTMConstants.CRLF])
 
 
 def make_chunks(s, n):
-    iter_bytes = (s[i:i + 1] for i in range(len(s)))
-    return [b''.join(item)
-            for item in zip_longest(*[iter_bytes] * n, fillvalue=b'')]
+    iter_bytes = (s[i : i + 1] for i in range(len(s)))
+    return [b"".join(item) for item in zip_longest(*[iter_bytes] * n, fillvalue=b"")]
 
 
 class CleanupDict(dict):

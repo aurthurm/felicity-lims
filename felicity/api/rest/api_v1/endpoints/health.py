@@ -22,13 +22,14 @@ START_TIME = datetime.now()
 async def get_health(request: Request) -> dict[str, bool]:
     return {"up": True}
 
+
 @health.get("/system")
 async def system_health(db: AsyncSession = Depends(get_db)):
     # Basic system metrics
     system_data = {
         "cpu_percent": psutil.cpu_percent(),
         "memory_percent": psutil.virtual_memory().percent,
-        "disk_percent": psutil.disk_usage('/').percent,
+        "disk_percent": psutil.disk_usage("/").percent,
         "uptime_seconds": (datetime.now() - START_TIME).total_seconds(),
         "process_count": len(psutil.pids()),
         "network_connections": len(psutil.net_connections()),
@@ -41,18 +42,15 @@ async def system_health(db: AsyncSession = Depends(get_db)):
         db_latency = time.time() - start_time
         system_data["database"] = {
             "status": "healthy",
-            "latency_ms": round(db_latency * 1000, 2)
+            "latency_ms": round(db_latency * 1000, 2),
         }
     except Exception as e:
-        system_data["database"] = {
-            "status": "unhealthy",
-            "error": str(e)
-        }
+        system_data["database"] = {"status": "unhealthy", "error": str(e)}
 
     # API performance metrics
     system_data["api"] = {
         "version": settings.API_V1_STR,
-        "environment": settings.ENVIRONMENT
+        "environment": settings.ENVIRONMENT,
     }
 
     # Flag issues automatically

@@ -20,14 +20,7 @@ export interface FormOptions<T = any> {
 }
 
 export default function useFormUtils<T extends Record<string, any>>(options: FormOptions<T>) {
-    const {
-        initialValues,
-        validate,
-        onSubmit,
-        onChange,
-        onError,
-        onSuccess
-    } = options;
+    const { initialValues, validate, onSubmit, onChange, onError, onSuccess } = options;
 
     // Form state
     const state = ref<FormState<T>>({
@@ -37,7 +30,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
         isDirty: false,
         isSubmitting: false,
         submitCount: 0,
-        lastSubmitted: null
+        lastSubmitted: null,
     });
 
     // Computed properties
@@ -50,7 +43,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
     // Watch for changes in form values
     watch(
         () => state.value.values,
-        (newValues) => {
+        newValues => {
             state.value.isDirty = true;
             onChange?.(newValues as T);
         },
@@ -91,7 +84,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
             isDirty: false,
             isSubmitting: false,
             submitCount: 0,
-            lastSubmitted: null
+            lastSubmitted: null,
         };
     };
 
@@ -140,10 +133,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
     };
 
     // Utility functions
-    const debounce = <F extends (...args: any[]) => any>(
-        fn: F,
-        delay: number
-    ): ((...args: Parameters<F>) => void) => {
+    const debounce = <F extends (...args: any[]) => any>(fn: F, delay: number): ((...args: Parameters<F>) => void) => {
         let timeoutId: ReturnType<typeof setTimeout>;
 
         return (...args: Parameters<F>) => {
@@ -152,10 +142,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
         };
     };
 
-    const throttle = <F extends (...args: any[]) => any>(
-        fn: F,
-        limit: number
-    ): ((...args: Parameters<F>) => void) => {
+    const throttle = <F extends (...args: any[]) => any>(fn: F, limit: number): ((...args: Parameters<F>) => void) => {
         let inThrottle: boolean;
         let lastResult: ReturnType<F>;
 
@@ -170,10 +157,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
     };
 
     // Form field watchers
-    const watchField = <K extends keyof T>(
-        field: K,
-        callback: (value: T[K], oldValue: T[K]) => void
-    ) => {
+    const watchField = <K extends keyof T>(field: K, callback: (value: T[K], oldValue: T[K]) => void) => {
         watch(
             () => state.value.values,
             (newValues, oldValues) => {
@@ -215,6 +199,6 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
         // Utility functions
         debounce,
         throttle,
-        watchField
+        watchField,
     };
-} 
+}

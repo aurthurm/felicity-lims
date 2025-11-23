@@ -251,6 +251,7 @@ class TestBillInvoiceType:
 @strawberry.type
 class KeyMetrics:
     """Key financial metrics for billing overview"""
+
     total_charged: float
     total_paid: float
     outstanding_balance: float
@@ -260,6 +261,7 @@ class KeyMetrics:
 @strawberry.type
 class VolumeMetrics:
     """Volume metrics for bills"""
+
     active_bills: int
     inactive_bills: int
     pending_confirmation: int
@@ -270,6 +272,7 @@ class VolumeMetrics:
 @strawberry.type
 class TransactionMetrics:
     """Transaction metrics"""
+
     successful_transactions: int
     failed_transactions: int
     pending_transactions: int
@@ -279,6 +282,7 @@ class TransactionMetrics:
 @strawberry.type
 class DiscountMetrics:
     """Discount and voucher metrics"""
+
     total_discount_amount: float
     active_vouchers: int
     total_vouchers: int
@@ -289,6 +293,7 @@ class DiscountMetrics:
 @strawberry.type
 class BillingOverviewMetrics:
     """Complete billing overview metrics"""
+
     key_metrics: KeyMetrics
     volume_metrics: VolumeMetrics
     transaction_metrics: TransactionMetrics

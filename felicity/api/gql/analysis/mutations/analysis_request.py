@@ -14,7 +14,8 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import (
     OperationError,
-    OperationSuccess, )
+    OperationSuccess,
+)
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.entities.analysis import (
     sample_analysis,
@@ -30,7 +31,8 @@ from felicity.apps.analysis.services.analysis import (
     ProfileService,
     RejectionReasonService,
     SampleService,
-    SampleTypeService, ClinicalDataService,
+    SampleTypeService,
+    ClinicalDataService,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
@@ -143,12 +145,17 @@ class ManageAnalysisInputType:
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CREATE, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def create_analysis_request(
-        info, payload: AnalysisRequestInputType
+    info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -166,13 +173,21 @@ async def create_analysis_request(
         return OperationError(error="Samples are required")
 
     async with PatientService().repository.async_session() as transaction_session:
-        patient = await PatientService().get(uid=payload.patient_uid, session=transaction_session)
+        patient = await PatientService().get(
+            uid=payload.patient_uid, session=transaction_session
+        )
         if not patient:
-            return OperationError(error=f"Patient with uid {payload.patient_uid} Not found")
+            return OperationError(
+                error=f"Patient with uid {payload.patient_uid} Not found"
+            )
 
-        client = await ClientService().get(uid=payload.client_uid, session=transaction_session)
+        client = await ClientService().get(
+            uid=payload.client_uid, session=transaction_session
+        )
         if not client:
-            return OperationError(error=f"Client with uid {payload.client_uid} Not found")
+            return OperationError(
+                error=f"Client with uid {payload.client_uid} Not found"
+            )
 
         # create the ar
         incoming = {
@@ -185,22 +200,26 @@ async def create_analysis_request(
         }
 
         obj_in = schemas.AnalysisRequestCreate(**incoming)
-        analysis_request = await AnalysisRequestService().create(obj_in, session=transaction_session)
+        analysis_request = await AnalysisRequestService().create(
+            obj_in, session=transaction_session
+        )
 
         # save clinical data only if there's at least one value
         if payload.clinical_data:
             clinical_data = payload.clinical_data
             # Check if there's at least one non-empty value
-            has_data = any([
-                clinical_data.symptoms,
-                clinical_data.symptoms_raw,
-                clinical_data.clinical_indication,
-                clinical_data.pregnancy_status,
-                clinical_data.breast_feeding,
-                clinical_data.vitals,
-                clinical_data.treatment_notes,
-                clinical_data.other_context
-            ])
+            has_data = any(
+                [
+                    clinical_data.symptoms,
+                    clinical_data.symptoms_raw,
+                    clinical_data.clinical_indication,
+                    clinical_data.pregnancy_status,
+                    clinical_data.breast_feeding,
+                    clinical_data.vitals,
+                    clinical_data.treatment_notes,
+                    clinical_data.other_context,
+                ]
+            )
 
             if has_data:
                 c_data_in = ClinicalDataCreate(
@@ -212,9 +231,11 @@ async def create_analysis_request(
                     breast_feeding=clinical_data.breast_feeding,
                     vitals=clinical_data.vitals,
                     treatment_notes=clinical_data.treatment_notes,
-                    other_context=clinical_data.other_context
+                    other_context=clinical_data.other_context,
                 )
-                await ClinicalDataService().create(c_data_in, session=transaction_session)
+                await ClinicalDataService().create(
+                    c_data_in, session=transaction_session
+                )
 
         # 1. create samples
         logger.info(
@@ -223,7 +244,9 @@ async def create_analysis_request(
 
         for s in payload.samples:
             _st_uid = s.sample_type
-            stype = await SampleTypeService().get(uid=_st_uid, session=transaction_session)
+            stype = await SampleTypeService().get(
+                uid=_st_uid, session=transaction_session
+            )
             if not stype:
                 await transaction_session.rollback()
                 return OperationError(
@@ -240,7 +263,7 @@ async def create_analysis_request(
                 "sample_id": None,
                 "priority": payload.priority,
                 "status": SampleState.EXPECTED,
-                "metadata_snapshot": {}
+                "metadata_snapshot": {},
             }
 
             profiles = []
@@ -248,7 +271,9 @@ async def create_analysis_request(
             _profiles_analyses = set()
 
             for p_uid in s.profiles:
-                profile = await ProfileService().get(related=["analyses"], uid=p_uid, session=transaction_session)
+                profile = await ProfileService().get(
+                    related=["analyses"], uid=p_uid, session=transaction_session
+                )
                 if not profile:
                     print(f"failed to retrieve profile information: {p_uid}")
                 profiles.append(profile)
@@ -258,7 +283,9 @@ async def create_analysis_request(
 
             # make sure the selected analyses are not part of the selected profiles
             for a_uid in s.analyses:
-                analysis = await AnalysisService().get(uid=a_uid, session=transaction_session)
+                analysis = await AnalysisService().get(
+                    uid=a_uid, session=transaction_session
+                )
                 if analysis not in _profiles_analyses:
                     analyses.append(analysis)
                     _profiles_analyses.add(analysis)
@@ -272,26 +299,27 @@ async def create_analysis_request(
                 minutes = max(tat_lengths)
                 sample_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
 
-            sample_schema = schemas.SampleCreate(
-                **sample_in
+            sample_schema = schemas.SampleCreate(**sample_in)
+            sample = await SampleService().create(
+                sample_schema, session=transaction_session
             )
-            sample = await SampleService().create(sample_schema, session=transaction_session)
 
             # link sample to provided profiles
             for _prof in profiles:
                 await SampleService().repository.table_insert(
                     table=sample_profile,
                     mappings=[{"sample_uid": sample.uid, "profile_uid": _prof.uid}],
-                    session=transaction_session
+                    session=transaction_session,
                 )
 
             # link sample to provided services
             for _anal in analyses:
-                if _anal.keyword == "felicity_ast_abx_antibiotic": continue
+                if _anal.keyword == "felicity_ast_abx_antibiotic":
+                    continue
                 await SampleService().repository.table_insert(
                     table=sample_analysis,
                     mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
-                    session=transaction_session
+                    session=transaction_session,
                 )
 
             # create and attach result objects for each Analyses
@@ -323,15 +351,21 @@ async def create_analysis_request(
                     )
                 )
             created = await AnalysisResultService().bulk_create(
-                result_schemas, related=["sample", "analysis"], session=transaction_session
+                result_schemas,
+                related=["sample", "analysis"],
+                session=transaction_session,
             )
             for _a in created:
                 if _a.keyword == "felicity_ast_abx_organism":
-                    await AbxOrganismResultService().create(AbxOrganismResultCreate(
-                        analysis_result_uid=_a.uid,
-                        organism_uid=None,
-                        isolate_number=1
-                    ), commit=False, session=transaction_session)
+                    await AbxOrganismResultService().create(
+                        AbxOrganismResultCreate(
+                            analysis_result_uid=_a.uid,
+                            organism_uid=None,
+                            isolate_number=1,
+                        ),
+                        commit=False,
+                        session=transaction_session,
+                    )
 
         # save transactions
         await PatientService().repository.save_transaction(transaction_session)
@@ -368,9 +402,14 @@ async def create_analysis_request(
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CREATE, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
@@ -381,9 +420,13 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     clones = []
     creations = []
     async with SampleService().repository.async_session() as transaction_session:
-        to_clone = await SampleService().get_by_uids(uids=samples, session=transaction_session)
+        to_clone = await SampleService().get_by_uids(
+            uids=samples, session=transaction_session
+        )
         for _, _sample in enumerate(to_clone):
-            clone = await SampleService().clone_afresh(_sample.uid, felicity_user, session=transaction_session)
+            clone = await SampleService().clone_afresh(
+                _sample.uid, felicity_user, session=transaction_session
+            )
 
             if clone:
                 clones.append(clone)
@@ -405,12 +448,13 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                         "sample_uid": clone.uid,
                         "analysis_uid": _service.uid,
                         "status": ResultState.PENDING,
-                        "metadata_snapshot": {}
+                        "metadata_snapshot": {},
                     }
                     a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
                     created = await AnalysisResultService().create(
-                        a_result_schema, related=["sample", "analysis"],
-                        session=transaction_session
+                        a_result_schema,
+                        related=["sample", "analysis"],
+                        session=transaction_session,
                     )
                     creations.append(created)
 
@@ -430,9 +474,14 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CANCEL, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
@@ -441,9 +490,14 @@ async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionRespon
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CANCEL, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
@@ -468,9 +522,14 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CREATE, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def receive_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
@@ -516,12 +575,17 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.REJECT, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.REJECT, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def reject_samples(
-        info, samples: List[SampleRejectInputType]
+    info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -564,12 +628,17 @@ async def reject_samples(
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.PUBLISH, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.PUBLISH, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def publish_samples(
-        info, samples: List[SamplePublishInputType]
+    info, samples: List[SamplePublishInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -596,13 +665,13 @@ async def publish_samples(
     if not settings.ENABLE_BACKGROUND_PROCESSING:
         await impress_results(job.uid)
         impressed = await SampleService().get_by_uids([s.uid for s in samples])
-        return SampleListingType(samples=impressed, message="Samples have been impressed")
+        return SampleListingType(
+            samples=impressed, message="Samples have been impressed"
+        )
 
     if final_publish:
         for sample in final_publish:
-            await task_guard.process(
-                uid=sample.uid, object_type=TrackableObject.SAMPLE
-            )
+            await task_guard.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
 
     # TODO: clean up below - probably no longer necessary - needs checking
     # !important for frontend
@@ -620,9 +689,14 @@ async def publish_samples(
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.PRINT, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.PRINT, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
@@ -645,9 +719,14 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.INVALIDATE, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.INVALIDATE, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
@@ -692,12 +771,13 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
                         "sample_uid": copy.uid,
                         "analysis_uid": _service.uid,
                         "status": ResultState.PENDING,
-                        "metadata_snapshot": {}
+                        "metadata_snapshot": {},
                     }
                     a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
                     created = await AnalysisResultService().create(
-                        a_result_schema, related=["sample", "analysis"],
-                        session=transaction_session
+                        a_result_schema,
+                        related=["sample", "analysis"],
+                        session=transaction_session,
                     )
                     await AnalysisResultService().snapshot([created])
 
@@ -707,12 +787,17 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.ASSIGN, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.ASSIGN, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def samples_apply_template(
-        info, uid: str, analysis_template_uid: str
+    info, uid: str, analysis_template_uid: str
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -762,7 +847,9 @@ async def samples_apply_template(
                     }
                 )
             )
-    created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
+    created = await AnalysisResultService().bulk_create(
+        result_schemas, related=["sample", "analysis"]
+    )
     await AnalysisResultService().snapshot(created)
 
     if sample.status != SampleState.RECEIVED:
@@ -775,12 +862,17 @@ async def samples_apply_template(
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.ASSIGN, FObject.SAMPLE)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.ASSIGN, FObject.SAMPLE),
+            ]
+        )
+    ]
 )
 async def manage_analyses(
-        info, sample_uid: str, payload: ManageAnalysisInputType
+    info, sample_uid: str, payload: ManageAnalysisInputType
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -827,7 +919,9 @@ async def manage_analyses(
                 }
             )
         )
-    created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
+    created = await AnalysisResultService().bulk_create(
+        result_schemas, related=["sample", "analysis"]
+    )
     await AnalysisResultService().snapshot(created)
 
     if sample.status != SampleState.RECEIVED:

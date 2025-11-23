@@ -22,18 +22,18 @@ export const useAuditLogStore = defineStore('auditlog', {
         async fetchAuditLogs(params: GetAuditLogsQueryVariables) {
             this.fetchingAudits = true;
             this.error = null;
-            
+
             try {
                 const result = await withClientQuery<GetAuditLogsQuery, GetAuditLogsQueryVariables>(
-                    GetAuditLogsDocument, 
-                    params, 
+                    GetAuditLogsDocument,
+                    params,
                     'auditLogsFilter'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.auditLogs = result.map(log => {
                         const processedLog = { ...log };
-                        
+
                         // Parse JSON strings if needed
                         if (typeof processedLog.stateAfter === 'string') {
                             try {
@@ -42,7 +42,7 @@ export const useAuditLogStore = defineStore('auditlog', {
                                 console.error('Failed to parse stateAfter JSON:', e);
                             }
                         }
-                        
+
                         if (typeof processedLog.stateBefore === 'string') {
                             try {
                                 processedLog.stateBefore = JSON.parse(processedLog.stateBefore);
@@ -50,7 +50,7 @@ export const useAuditLogStore = defineStore('auditlog', {
                                 console.error('Failed to parse stateBefore JSON:', e);
                             }
                         }
-                        
+
                         if (typeof processedLog.extras === 'string') {
                             try {
                                 processedLog.extras = JSON.parse(processedLog.extras);
@@ -58,7 +58,7 @@ export const useAuditLogStore = defineStore('auditlog', {
                                 console.error('Failed to parse extras JSON:', e);
                             }
                         }
-                        
+
                         return processedLog;
                     });
                 } else {
@@ -71,7 +71,7 @@ export const useAuditLogStore = defineStore('auditlog', {
                 this.fetchingAudits = false;
             }
         },
-        
+
         resetLogs() {
             this.auditLogs = [];
             this.error = null;

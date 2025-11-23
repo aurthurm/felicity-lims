@@ -10,11 +10,11 @@ app = typer.Typer()
 
 @app.command()
 def runserver(
-        host: str = "0.0.0.0",
-        port: int = 8000,
-        workers: int = 1,
-        reload: bool = False,
-        colors: bool = True,
+    host: str = "0.0.0.0",
+    port: int = 8000,
+    workers: int = 1,
+    reload: bool = False,
+    colors: bool = True,
 ) -> None:
     """Felicity LIMS Server"""
     config = Config(
@@ -31,11 +31,11 @@ def runserver(
 
 @app.command()
 def gunicorn(
-        host: str = "0.0.0.0",
-        port: int = 8000,
-        workers: int = 1,
-        reload: bool = False,
-        colors: bool = True,
+    host: str = "0.0.0.0",
+    port: int = 8000,
+    workers: int = 1,
+    reload: bool = False,
+    colors: bool = True,
 ) -> None:
     """Felicity LIMS Server"""
     command = [

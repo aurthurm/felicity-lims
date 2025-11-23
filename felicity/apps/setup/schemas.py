@@ -468,8 +468,10 @@ class DistrictInDB(DistrictBaseInDB):
 
 # Analytics and Reporting
 
+
 class LaboratoryAnalytics(BaseModel):
     """Laboratory analytics and metrics"""
+
     laboratory_uid: str
     laboratory_name: str
     organization_name: Optional[str]
@@ -501,6 +503,7 @@ class LaboratoryAnalytics(BaseModel):
 
 class LaboratoryUserSummary(BaseModel):
     """Summary of users in a laboratory"""
+
     laboratory_uid: str
     laboratory_name: str
     total_users: int
@@ -512,6 +515,7 @@ class LaboratoryUserSummary(BaseModel):
 
 class LaboratoryComplianceCheck(BaseModel):
     """Laboratory compliance check result"""
+
     laboratory_uid: str
     overall_score: float  # 0-100 percentage
     checks_passed: int
@@ -523,6 +527,7 @@ class LaboratoryComplianceCheck(BaseModel):
 
 class ComplianceStandard(BaseModel):
     """Compliance standard definition"""
+
     standard_id: str = Field(..., description="Standard identifier (e.g., ISO-15189)")
     name: str = Field(..., description="Standard name")
     description: Optional[str] = None

@@ -1,5 +1,16 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String, Table, Integer, UniqueConstraint, \
-    event, TEXT
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    LargeBinary,
+    String,
+    Table,
+    Integer,
+    UniqueConstraint,
+    event,
+    TEXT,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -67,7 +78,9 @@ class Instrument(BaseEntity):
         "Method", secondary=method_instrument, back_populates="instruments"
     )
     # JSON driver for mapping ASTM/HL7 message fields to required data
-    driver_mapping = Column(JSONB, nullable=True, default=None)  # Generic driver template
+    driver_mapping = Column(
+        JSONB, nullable=True, default=None
+    )  # Generic driver template
 
 
 class LaboratoryInstrument(MaybeLabScopedEntity):
@@ -105,7 +118,9 @@ class InstrumentInterface(MaybeLabScopedEntity):
     # other
     sync_units = Column(Boolean, default=True)  # sync units from instrument to LIMS
     # JSON driver for mapping ASTM/HL7 message fields (lab-specific override)
-    driver_mapping = Column(JSONB, nullable=True, default=None)  # Lab-specific override of generic driver
+    driver_mapping = Column(
+        JSONB, nullable=True, default=None
+    )  # Lab-specific override of generic driver
 
 
 class InstrumentCalibration(LabScopedEntity):
@@ -226,7 +241,7 @@ class InstrumentRawData(MaybeLabScopedEntity):
     laboratory_instrument_uid = Column(
         String,
         ForeignKey("laboratory_instrument.uid", ondelete="CASCADE"),
-        nullable=True
+        nullable=True,
     )
     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
 
@@ -238,7 +253,7 @@ class InstrumentRawData(MaybeLabScopedEntity):
 
 
 class InstrumentResultExclusions(BaseEntity):
-    __tablename__ = 'instrument_result_exclusions'
+    __tablename__ = "instrument_result_exclusions"
 
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
     instrument = relationship("Instrument", lazy="selectin")
@@ -247,7 +262,7 @@ class InstrumentResultExclusions(BaseEntity):
 
 
 class InstrumentResultTranslation(BaseEntity):
-    __tablename__ = 'instrument_result_translations'
+    __tablename__ = "instrument_result_translations"
 
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
     instrument = relationship("Instrument", lazy="selectin")
@@ -257,14 +272,16 @@ class InstrumentResultTranslation(BaseEntity):
     reason = Column(String(255), nullable=True)
 
     __table_args__ = (
-        UniqueConstraint('original', 'translated', 'keyword', name='uq_result_translation'),
-        {'extend_existing': True},
+        UniqueConstraint(
+            "original", "translated", "keyword", name="uq_result_translation"
+        ),
+        {"extend_existing": True},
     )
 
 
 def before_insert(mapper, connection, target):
     if not target.keyword:
-        target.keyword = ''
+        target.keyword = ""
 
 
-event.listen(InstrumentResultTranslation, 'before_insert', before_insert)
+event.listen(InstrumentResultTranslation, "before_insert", before_insert)

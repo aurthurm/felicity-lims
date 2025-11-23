@@ -106,12 +106,17 @@ class StoreSamplesInputType:
 @strawberry.type
 class StorageMutations:
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def create_store_room(
-            self, info, payload: StoreRoomInputType
+        self, info, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
         felicity_user = await auth_from_info(info)
 
@@ -131,12 +136,17 @@ class StorageMutations:
         return types.StoreRoomType(**store_room.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def update_store_room(
-            self, info, uid: str, payload: StoreRoomInputType
+        self, info, uid: str, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
         felicity_user = await auth_from_info(info)
 
@@ -164,12 +174,17 @@ class StorageMutations:
         return types.StoreRoomType(**store_room.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def create_storage_location(
-            self, info, payload: StorageLocationInputType
+        self, info, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -195,12 +210,17 @@ class StorageMutations:
         return types.StorageLocationType(**storage_location.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def update_storage_location(
-            self, info, uid: str, payload: StorageLocationInputType
+        self, info, uid: str, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -230,12 +250,17 @@ class StorageMutations:
         return types.StorageLocationType(**storage_location.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def create_storage_section(
-            self, info, payload: StorageSectionInputType
+        self, info, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -263,12 +288,17 @@ class StorageMutations:
         return types.StorageSectionType(**storage_section.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def update_storage_section(
-            self, info, uid: str, payload: StorageSectionInputType
+        self, info, uid: str, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
         felicity_user = await auth_from_info(info)
 
@@ -298,12 +328,17 @@ class StorageMutations:
         return types.StorageSectionType(**storage_section.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def create_storage_container(
-            self, info, payload: StorageContainerInputType
+        self, info, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
         felicity_user = await auth_from_info(info)
 
@@ -332,12 +367,17 @@ class StorageMutations:
         )
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.STORAGE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.STORAGE),
+                ]
+            )
+        ]
     )
     async def update_storage_container(
-            self, info, uid: str, payload: StorageContainerInputType
+        self, info, uid: str, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
         felicity_user = await auth_from_info(info)
 
@@ -369,12 +409,17 @@ class StorageMutations:
         )
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.STORE, FObject.SAMPLE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.STORE, FObject.SAMPLE),
+                ]
+            )
+        ]
     )
     async def store_samples(
-            info, payload: List[StoreSamplesInputType]
+        info, payload: List[StoreSamplesInputType]
     ) -> StoreSampleResponse:
         felicity_user = await auth_from_info(info)
 
@@ -422,9 +467,14 @@ class StorageMutations:
         return StoredSamplesType(samples=samples)
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.STORE, FObject.SAMPLE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.STORE, FObject.SAMPLE),
+                ]
+            )
+        ]
     )
     async def recover_samples(info, sample_uids: List[str]) -> StoreSampleResponse:
         if len(sample_uids) == 0:

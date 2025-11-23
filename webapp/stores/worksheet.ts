@@ -4,9 +4,27 @@ import type { AnalysisResultType, WorkSheetTemplateType, WorkSheetType, PageInfo
 
 import useApiUtil from '@/composables/api_util';
 import useNotifyToast from '@/composables/alert_toast';
-import { GetAllWorksheetsDocument, GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables, GetAllWorksheetTemplatesDocument, GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables, GetWorkSheetByUidDocument, GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables } from '@/graphql/operations/worksheet.queries';
-import { UpdateWorkSheetDocument, UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables } from '@/graphql/operations/worksheet.mutations';
-import { GetAnalysesResultsForWsAssignDocument, GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables } from '@/graphql/operations/analyses.queries';
+import {
+    GetAllWorksheetsDocument,
+    GetAllWorksheetsQuery,
+    GetAllWorksheetsQueryVariables,
+    GetAllWorksheetTemplatesDocument,
+    GetAllWorksheetTemplatesQuery,
+    GetAllWorksheetTemplatesQueryVariables,
+    GetWorkSheetByUidDocument,
+    GetWorkSheetByUidQuery,
+    GetWorkSheetByUidQueryVariables,
+} from '@/graphql/operations/worksheet.queries';
+import {
+    UpdateWorkSheetDocument,
+    UpdateWorkSheetMutation,
+    UpdateWorkSheetMutationVariables,
+} from '@/graphql/operations/worksheet.mutations';
+import {
+    GetAnalysesResultsForWsAssignDocument,
+    GetAnalysesResultsForWsAssignQuery,
+    GetAnalysesResultsForWsAssignQueryVariables,
+} from '@/graphql/operations/analyses.queries';
 import { ReservedType } from '@/types/worksheet';
 
 const { withClientQuery, withClientMutation } = useApiUtil();
@@ -57,8 +75,8 @@ export const useWorksheetStore = defineStore('worksheet', {
             try {
                 this.fetchingWorkSheetTemplates = true;
                 const payload = await withClientQuery<GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables>(
-                    GetAllWorksheetTemplatesDocument, 
-                    {}, 
+                    GetAllWorksheetTemplatesDocument,
+                    {},
                     'worksheetTemplateAll'
                 );
 
@@ -109,8 +127,8 @@ export const useWorksheetStore = defineStore('worksheet', {
             try {
                 this.fetchingWorkSheets = true;
                 const payload = await withClientQuery<GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables>(
-                    GetAllWorksheetsDocument, 
-                    params, 
+                    GetAllWorksheetsDocument,
+                    params,
                     undefined
                 );
 
@@ -141,8 +159,8 @@ export const useWorksheetStore = defineStore('worksheet', {
         async fetchWorksheetByUid(worksheetUid: string) {
             try {
                 const payload = await withClientQuery<GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables>(
-                    GetWorkSheetByUidDocument, 
-                    { worksheetUid }, 
+                    GetWorkSheetByUidDocument,
+                    { worksheetUid },
                     'worksheetByUid'
                 );
                 this.workSheet = sortAnalysisResults(payload);
@@ -165,8 +183,8 @@ export const useWorksheetStore = defineStore('worksheet', {
         async updateWorksheet(payload) {
             try {
                 await withClientMutation<UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables>(
-                    UpdateWorkSheetDocument, 
-                    payload, 
+                    UpdateWorkSheetDocument,
+                    payload,
                     'updateWorksheet'
                 );
             } catch (error) {
@@ -210,8 +228,8 @@ export const useWorksheetStore = defineStore('worksheet', {
             try {
                 this.fetchingAnalysisResults = true;
                 const payload = await withClientQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables>(
-                    GetAnalysesResultsForWsAssignDocument, 
-                    params, 
+                    GetAnalysesResultsForWsAssignDocument,
+                    params,
                     undefined
                 );
 

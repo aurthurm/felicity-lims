@@ -8,7 +8,9 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Table, Text, UniqueConstraint,
+    Table,
+    Text,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from sqlalchemy.orm import relationship
@@ -262,7 +264,7 @@ class Analysis(BaseEntity):
             "analysis_name": self.name,
         }
 
-        if self.unit and hasattr(self.unit, 'name'):
+        if self.unit and hasattr(self.unit, "name"):
             try:
                 result.update({"unit": self.unit.name})
             except Exception:
@@ -417,8 +419,12 @@ class AnalysisRequest(LabScopedEntity):
     client_request_id = Column(String, unique=True, nullable=False)
     internal_use = Column(Boolean(), default=False)  # e.g Test Requests
     # Billing
-    is_billed = Column(Boolean(), default=False) # do we have a billing record paid or not
-    is_locked = Column(Boolean(), default=False)  # allow processing based on billing rules
+    is_billed = Column(
+        Boolean(), default=False
+    )  # do we have a billing record paid or not
+    is_locked = Column(
+        Boolean(), default=False
+    )  # allow processing based on billing rules
     # Metadata snapshot
     metadata_snapshot = Column(JSONB, nullable=False)
 
@@ -427,36 +433,48 @@ class AnalysisRequest(LabScopedEntity):
         uselist=False,  # ensure one-to-one
         back_populates="analysis_request",
         cascade="all, delete-orphan",
-        lazy="selectin"
+        lazy="selectin",
     )
 
-    @property
-    def sms_metadata(self) -> dict:
-        result = {
-            "request_id": self.request_id,
-            "client_request_id": self.client_request_id,
-        }
+    # @property
+    # def sms_metadata(self) -> dict:
+    #     result = {
+    #         "request_id": self.request_id,
+    #         "client_request_id": self.client_request_id,
+    #     }
 
 
 class ClinicalData(LabScopedEntity):
     __tablename__ = "clinical_data"
 
-    analysis_request_uid = Column(String, ForeignKey("analysis_request.uid"), nullable=False, unique=True)
-    analysis_request = relationship("AnalysisRequest", back_populates="clinical_data", lazy="selectin")
-    symptoms = Column(ARRAY(String), nullable=True)  # e,g Fever, Cough - keep unencrypted for analytics
+    analysis_request_uid = Column(
+        String, ForeignKey("analysis_request.uid"), nullable=False, unique=True
+    )
+    analysis_request = relationship(
+        "AnalysisRequest", back_populates="clinical_data", lazy="selectin"
+    )
+    symptoms = Column(
+        ARRAY(String), nullable=True
+    )  # e,g Fever, Cough - keep unencrypted for analytics
     # HIPAA: Encrypt detailed clinical information that could identify patients
     symptoms_raw = Column(EncryptedPHI(2000), nullable=True)
-    clinical_indication = Column(EncryptedPHI(2000), nullable=True)  # reason for the lab test
+    clinical_indication = Column(
+        EncryptedPHI(2000), nullable=True
+    )  # reason for the lab test
     pregnancy_status = Column(Boolean, nullable=True)  # Boolean is not identifiable
     breast_feeding = Column(Boolean, nullable=True)  # Boolean is not identifiable
-    vitals = Column(EncryptedPHI(1000), nullable=True)  # e.g., {"bp": "120/80", "temp": 37.2}
+    vitals = Column(
+        EncryptedPHI(1000), nullable=True
+    )  # e.g., {"bp": "120/80", "temp": 37.2}
     treatment_notes = Column(EncryptedPHI(2000), nullable=True)
-    other_context = Column(EncryptedPHI(2000), nullable=True)  # for any extra structured fields
+    other_context = Column(
+        EncryptedPHI(2000), nullable=True
+    )  # for any extra structured fields
     codings = relationship(
         "ClinicalDataCoding",
         back_populates="clinical_data",
         cascade="all, delete-orphan",
-        lazy="selectin"
+        lazy="selectin",
     )
 
 
@@ -466,10 +484,10 @@ class ClinicalDataCoding(LabScopedEntity):
         UniqueConstraint("clinical_data_uid", "coding_standard_uid"),
     )
 
-    clinical_data_uid = Column(
-        String, ForeignKey("clinical_data.uid"), nullable=False
+    clinical_data_uid = Column(String, ForeignKey("clinical_data.uid"), nullable=False)
+    clinical_data = relationship(
+        "ClinicalData", back_populates="codings", lazy="selectin"
     )
-    clinical_data = relationship("ClinicalData", back_populates="codings", lazy="selectin")
 
     coding_standard_uid = Column(
         String, ForeignKey("coding_standard.uid"), nullable=False
@@ -603,12 +621,9 @@ class Sample(LabScopedEntity, BaseMPTT):
 
     @property
     def sms_metadata(self) -> dict:
-        result = {
-            "sample_id": self.sample_id,
-            "date_collected": self.date_collected
-        }
+        result = {"sample_id": self.sample_id, "date_collected": self.date_collected}
 
-        if self.analysis_request and hasattr(self.analysis_request, 'sms_metadata'):
+        if self.analysis_request and hasattr(self.analysis_request, "sms_metadata"):
             try:
                 ar_metadata = self.analysis_request.sms_metadata
                 if ar_metadata:

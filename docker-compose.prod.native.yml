@@ -10,19 +10,19 @@ networks:
 # Named volumes for persistent data storage for services still running in Docker.
 volumes:
   dragonfly_data: # Volume for DragonflyDB data
-  dbgate_data:    # Volume for DbGate configuration and data
+  dbgate_data: # Volume for DbGate configuration and data
   felicity_media: # Volume for application media files (e.g., uploads)
 
 services:
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.2.1 # Pinning image version for stability
+    image: amusendame/felicity-static-nginx:0.2.2 # Pinning image version for stability
     restart: unless-stopped # Always restart unless explicitly stopped
     ports:
-      - "80:80" # Expose Nginx on host port 80
+      - '80:80' # Expose Nginx on host port 80
     environment:
       PROXY_BACKEND: felicity-api # Backend service name for Nginx proxy
-      PROXY_PORT: 8000           # Port of the backend service
+      PROXY_PORT: 8000 # Port of the backend service
       SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
     depends_on:
       - felicity-api # Ensure API is up before Nginx starts
@@ -31,11 +31,11 @@ services:
     logging:
       options:
         max-size: 10m # Limit log file size
-        max-file: 5   # Keep up to 5 log files
+        max-file: 5 # Keep up to 5 log files
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.2.1 # Pinning image version for stability
+    image: amusendame/felicity-lims:api-0.2.2 # Pinning image version for stability
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file
@@ -56,7 +56,7 @@ services:
       MINIO_ACCESS: ${MINIO_ROOT_USER} # Sourced from .env
       MINIO_SECRET: ${MINIO_ROOT_PASSWORD} # Sourced from .env
     ports:
-      - "127.0.0.1:9991:8000" # Expose API on localhost port 9991
+      - '127.0.0.1:9991:8000' # Expose API on localhost port 9991
     volumes:
       - felicity_media:/app/felicity/media # Mount volume for media uploads
     depends_on:
@@ -69,7 +69,7 @@ services:
     networks:
       - felicitynet
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
 
   felicity-dragonfly:
     container_name: felicity-dragonfly
@@ -77,11 +77,11 @@ services:
     restart: unless-stopped
     environment:
       - DFLY_proactor_threads=4 # Configure DragonflyDB threads
-      - DFLY_maxmemory=1G      # Set max memory for DragonflyDB
+      - DFLY_maxmemory=1G # Set max memory for DragonflyDB
     ulimits:
       memlock: -1 # Allow memory locking for performance
     ports:
-      - "127.0.0.1:9992:6379" # Expose DragonflyDB on localhost port 9992
+      - '127.0.0.1:9992:6379' # Expose DragonflyDB on localhost port 9992
     volumes:
       - dragonfly_data:/data # Persist DragonflyDB data to a named volume
     networks:
@@ -92,7 +92,7 @@ services:
     image: dbgate/dbgate:latest # Pinning image version
     restart: always
     ports:
-      - "127.0.0.1:9993:3000" # Expose DbGate on localhost port 9993
+      - '127.0.0.1:9993:3000' # Expose DbGate on localhost port 9993
     volumes:
       - dbgate_data:/root/.dbgate # Persist DbGate configuration
     environment:
@@ -119,7 +119,7 @@ services:
     networks:
       - felicitynet
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
 
   word-processor-server:
     image: syncfusion/word-processor-server:latest # Pinning image version
@@ -128,6 +128,6 @@ services:
       # Syncfusion license key (should ideally be in .env for production)
       SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} # Sourced from .env
     ports:
-      - "127.0.0.1:9994:80" # Expose Word Processor Server on localhost port 9994
+      - '127.0.0.1:9994:80' # Expose Word Processor Server on localhost port 9994
     networks:
       - felicitynet # Connect to the custom network

@@ -68,9 +68,7 @@ async def prepare_for_impress():
 
     await JobService().create(job_schema)
     for sample in samples:
-        await task_guard.process(
-            uid=sample.uid, object_type=TrackableObject.SAMPLE
-        )
+        await task_guard.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
 
 
 async def cleanup_jobs():

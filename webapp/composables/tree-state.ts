@@ -1,6 +1,13 @@
 import { toRefs, reactive, Ref } from 'vue';
-import type { StorageContainerType, StorageSectionType, StoreRoomType, StorageLocationType } from '@/types/gql'
-import type { TreeStateType, TreeNodeType, ActivePathType, ExtStorageLocationType, ExtStorageSectionType, ExtStoreRoomType } from '@/types/storage'
+import type { StorageContainerType, StorageSectionType, StoreRoomType, StorageLocationType } from '@/types/gql';
+import type {
+    TreeStateType,
+    TreeNodeType,
+    ActivePathType,
+    ExtStorageLocationType,
+    ExtStorageSectionType,
+    ExtStoreRoomType,
+} from '@/types/storage';
 
 // Define tag constants
 export const TREE_TAGS = {
@@ -12,8 +19,7 @@ export const TREE_TAGS = {
 } as const;
 
 // Type for tree tags
-export type TreeTag = typeof TREE_TAGS[keyof typeof TREE_TAGS];
-
+export type TreeTag = (typeof TREE_TAGS)[keyof typeof TREE_TAGS];
 
 const state = reactive<TreeStateType>({
     treeData: [],
@@ -33,7 +39,7 @@ export default function useTreeStateComposable() {
     const activeTree = toRefs(state).activeTree;
 
     // Set tree data
-        const setTree = (treeData: StoreRoomType[]): void => {
+    const setTree = (treeData: StoreRoomType[]): void => {
         state.treeData = treeData;
     };
 
@@ -161,9 +167,7 @@ export default function useTreeStateComposable() {
     const newStorageSection = (section: StorageSectionType): void => {
         const roomIndex = state.treeData.findIndex(x => x.uid === section.storageLocation?.storeRoomUid);
         if (roomIndex >= 0) {
-            const locationIndex = state.treeData[roomIndex].children?.findIndex(
-                x => x.uid === section.storageLocationUid
-            ) ?? -1;
+            const locationIndex = state.treeData[roomIndex].children?.findIndex(x => x.uid === section.storageLocationUid) ?? -1;
             if (locationIndex >= 0) {
                 state.treeData[roomIndex].children![locationIndex].children = [
                     ...(state.treeData[roomIndex].children![locationIndex].children ?? []),
@@ -174,24 +178,18 @@ export default function useTreeStateComposable() {
     };
 
     // Add new storage container
-        const newStorageContainer = (container: StorageContainerType): void => {
-        const roomIndex = state.treeData.findIndex(
-            x => x.uid === container.storageSection?.storageLocation?.storeRoomUid
-        );
+    const newStorageContainer = (container: StorageContainerType): void => {
+        const roomIndex = state.treeData.findIndex(x => x.uid === container.storageSection?.storageLocation?.storeRoomUid);
         if (roomIndex >= 0) {
             const locationIndex =
-                state.treeData[roomIndex].children?.findIndex(
-                    x => x.uid === container.storageSection?.storageLocationUid
-                ) ?? -1;
+                state.treeData[roomIndex].children?.findIndex(x => x.uid === container.storageSection?.storageLocationUid) ?? -1;
             if (locationIndex >= 0) {
                 const sectionIndex =
-                    state.treeData[roomIndex].children![locationIndex].children?.findIndex(
-                        x => x.uid === container.storageSectionUid
-                    ) ?? -1;
+                    state.treeData[roomIndex].children![locationIndex].children?.findIndex(x => x.uid === container.storageSectionUid) ??
+                    -1;
                 if (sectionIndex >= 0) {
                     state.treeData[roomIndex].children![locationIndex].children![sectionIndex].children = [
-                        ...(state.treeData[roomIndex].children![locationIndex].children![sectionIndex].children ??
-                            []),
+                        ...(state.treeData[roomIndex].children![locationIndex].children![sectionIndex].children ?? []),
                         { ...container, tag: TREE_TAGS.STORAGE_CONTAINER },
                     ];
                 }

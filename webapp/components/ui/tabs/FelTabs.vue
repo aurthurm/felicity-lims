@@ -1,46 +1,123 @@
 <script setup lang="ts">
 import { ref, computed, watch, KeepAlive } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 interface Tab {
   id: string;
   label: string;
   component: any;
   props?: Record<string, any>;
-  hidden?: boolean;  // Made optional with default false
+  hidden?: boolean;
 }
 
 const props = defineProps<{
   tabs: Tab[];
   initialTab?: string;
+  tabKey?: string;  // ⭐ NEW: query param key (default = "tab")
 }>();
 
-const currentTabId = ref(props.initialTab || props.tabs[0]?.id);
+const route = useRoute();
+const router = useRouter();
 
-const visibleTabs = computed(() => {
-  return props.tabs.filter(tab => !tab.hidden);  // Changed from props.hidden to tab.hidden
-});
+const key = props.tabKey || "tab";   // default behavior preserved
 
-const currentTab = computed(() => {
-  return visibleTabs.value.find(tab => tab.id === currentTabId.value);
-});
+/* ---------------------------------------------
+   1️⃣ Resolve initial active tab
+--------------------------------------------- */
+const resolveInitial = () => {
+  const tabFromUrl = route.query[key] as string | undefined;
 
-const emit = defineEmits<{
-  'tab-change': [string]
-}>();
+  if (tabFromUrl) return tabFromUrl;
+  if (props.initialTab) return props.initialTab;
 
-const setCurrentTab = (tabId: string) => {
-  currentTabId.value = tabId;
-  emit('tab-change', tabId);
+  return props.tabs[0]?.id;
 };
 
-// If current tab becomes hidden, switch to first visible tab
-watch(visibleTabs, (newTabs) => {
-  if (!newTabs.some(tab => tab.id === currentTabId.value) && newTabs.length > 0) {
-    setCurrentTab(newTabs[0].id);
-  }
-}, { immediate: true });
+const currentTabId = ref(resolveInitial());
 
+/* ---------------------------------------------
+   2️⃣ If URL lacks this tabKey but initialTab exists,
+      add it to URL automatically
+--------------------------------------------- */
+if (!route.query[key] && props.initialTab) {
+  router.replace({
+    query: {
+      ...route.query,
+      [key]: props.initialTab
+    }
+  });
+}
+
+/* ---------------------------------------------
+   3️⃣ Visible tabs
+--------------------------------------------- */
+const visibleTabs = computed(() =>
+  props.tabs.filter((t) => !t.hidden)
+);
+
+/* ---------------------------------------------
+   4️⃣ Current tab object
+--------------------------------------------- */
+const currentTab = computed(() =>
+  visibleTabs.value.find((t) => t.id === currentTabId.value)
+);
+
+/* ---------------------------------------------
+   5️⃣ Change tab + update route at this tabKey
+--------------------------------------------- */
+const setCurrentTab = (tabId: string) => {
+  currentTabId.value = tabId;
+
+  router.replace({
+    query: {
+      ...route.query,
+      [key]: tabId
+    }
+  });
+};
+
+/* ---------------------------------------------
+   6️⃣ React when THIS key changes in URL
+--------------------------------------------- */
+watch(
+  () => route.query[key],
+  (newVal) => {
+    if (newVal && newVal !== currentTabId.value) {
+      currentTabId.value = newVal as string;
+    }
+  }
+);
+
+/* ---------------------------------------------
+   7️⃣ If initialTab changes (rare), update unless URL overrides it
+--------------------------------------------- */
+watch(
+  () => props.initialTab,
+  (newVal) => {
+    if (newVal && !route.query[key]) {
+      currentTabId.value = newVal;
+      router.replace({
+        query: { ...route.query, [key]: newVal }
+      });
+    }
+  }
+);
+
+/* ---------------------------------------------
+   8️⃣ If tab becomes hidden, fall back to first visible tab
+--------------------------------------------- */
+watch(
+  visibleTabs,
+  (newTabs) => {
+    if (!newTabs.some((t) => t.id === currentTabId.value) && newTabs.length > 0) {
+      setCurrentTab(newTabs[0].id);
+    }
+  },
+  { immediate: true }
+);
 </script>
+
+
 
 <template>
   <section class="col-span-12">
@@ -62,6 +139,7 @@ watch(visibleTabs, (newTabs) => {
         </a>
       </div>
     </nav>
+
     <div class="mt-4">
       <KeepAlive>
         <component
@@ -74,9 +152,3 @@ watch(visibleTabs, (newTabs) => {
     </div>
   </section>
 </template>
-
-<style scoped>
-.tab-active {
-  @apply border-primary text-primary;
-}
-</style>

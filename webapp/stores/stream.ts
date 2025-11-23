@@ -4,18 +4,21 @@ import { pipe, subscribe } from 'wonka';
 import { useWorksheetStore } from './worksheet';
 import { useSampleStore } from './sample';
 import useAnalyticsComposable from '@/composables/analytics';
-import { GetSystemActivityDocument, GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables } from '@/graphql/operations/stream.subscriptions';
+import {
+    GetSystemActivityDocument,
+    GetSystemActivitySubscription,
+    GetSystemActivitySubscriptionVariables,
+} from '@/graphql/operations/stream.subscriptions';
 import { ActivityStreamType, WorkSheetType, SampleType } from '@/types/gql';
 import { NotificationObjectType } from '@/graphql/schema';
 
-
 type StreamStateType = {
     streams: ActivityStreamType[];
-}
+};
 
 export const useStreamStore = defineStore('stream', {
     state: (): StreamStateType => ({
-        streams: []
+        streams: [],
     }),
     getters: {
         getStreams: (state): ActivityStreamType[] => state.streams,
@@ -59,7 +62,7 @@ export const useStreamStore = defineStore('stream', {
         subscribeToActivityStream(): () => void {
             return pipe(
                 urqlClient.subscription<GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables>(
-                    GetSystemActivityDocument, 
+                    GetSystemActivityDocument,
                     {}
                 ),
                 subscribe(result => {

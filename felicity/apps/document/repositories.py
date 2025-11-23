@@ -1,5 +1,17 @@
 from felicity.apps.abstract import BaseRepository
-from felicity.apps.document.entities import *
+from felicity.apps.document.entities import (
+    DocumentCategory,
+    DocumentTag,
+    Document,
+    DocumentStatus,
+    DocumentFolder,
+    DocumentVersion,
+    DocumentReviewCycle,
+    DocumentReviewStep,
+    DocumentTemplate,
+    DocumentSubscription,
+    DocumentAudit,
+)
 
 
 class DocumentCategoryRepository(BaseRepository[DocumentCategory]):

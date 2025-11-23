@@ -193,12 +193,17 @@ class StockAdjustmentInputType:
 @strawberry.type
 class InventoryMutations:
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def create_stock_item(
-            self, info, payload: StockItemInputType
+        self, info, payload: StockItemInputType
     ) -> StockItemResponse:
         felicity_user = await auth_from_info(info)
 
@@ -228,12 +233,17 @@ class InventoryMutations:
         return types.StockItemType(**stock_item.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def update_stock_item(
-            self, info, uid: str, payload: StockItemInputType
+        self, info, uid: str, payload: StockItemInputType
     ) -> StockItemResponse:
         felicity_user = await auth_from_info(info)
 
@@ -261,12 +271,17 @@ class InventoryMutations:
         return types.StockItemType(**stock_item.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def create_stock_item_variant(
-            self, info, stock_item_uid: str, payload: StockItemVariantInputType
+        self, info, stock_item_uid: str, payload: StockItemVariantInputType
     ) -> StockItemVariantResponse:
         felicity_user = await auth_from_info(info)
 
@@ -289,12 +304,17 @@ class InventoryMutations:
         return types.StockItemVariantType(**stock_item_variant.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def update_stock_item_variant(
-            self, info, uid: str, payload: StockItemVariantInputType
+        self, info, uid: str, payload: StockItemVariantInputType
     ) -> StockItemVariantResponse:
         felicity_user = await auth_from_info(info)
 
@@ -325,7 +345,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_category(
-            self, info, payload: StockCategoryInputType
+        self, info, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
         felicity_user = await auth_from_info(info)
 
@@ -346,7 +366,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_category(
-            self, info, uid: str, payload: StockCategoryInputType
+        self, info, uid: str, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
         felicity_user = await auth_from_info(info)
 
@@ -396,7 +416,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_hazard(
-            self, info, uid: str, payload: HazardInputType
+        self, info, uid: str, payload: HazardInputType
     ) -> HazardResponse:
         felicity_user = await auth_from_info(info)
 
@@ -425,7 +445,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_unit(
-            self, info, payload: StockUnitInputType
+        self, info, payload: StockUnitInputType
     ) -> StockUnitResponse:
         felicity_user = await auth_from_info(info)
 
@@ -446,7 +466,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_unit(
-            self, info, uid: str, payload: StockUnitInputType
+        self, info, uid: str, payload: StockUnitInputType
     ) -> StockUnitResponse:
         felicity_user = await auth_from_info(info)
 
@@ -474,12 +494,17 @@ class InventoryMutations:
         return types.StockUnitType(**stock_unit.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def create_stock_receipt(
-            self, info, payload: StockReceiptInputType
+        self, info, payload: StockReceiptInputType
     ) -> StockItemVariantResponse:
         felicity_user = await auth_from_info(info)
 
@@ -558,12 +583,17 @@ class InventoryMutations:
         return types.StockItemVariantType(**stock_item_variant.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT_ORDER)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT_ORDER),
+                ]
+            )
+        ]
     )
     async def create_stock_order(
-            self, info, payload: StockOrderInputType
+        self, info, payload: StockOrderInputType
     ) -> StockOrderResponse:
         felicity_user = await auth_from_info(info)
 
@@ -597,12 +627,17 @@ class InventoryMutations:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT_ORDER)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT_ORDER),
+                ]
+            )
+        ]
     )
     async def update_stock_order(
-            self, info, uid: str, payload: StockOrderInputType
+        self, info, uid: str, payload: StockOrderInputType
     ) -> StockOrderResponse:
         felicity_user = await auth_from_info(info)
 
@@ -654,9 +689,14 @@ class InventoryMutations:
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT_ORDER)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT_ORDER),
+                ]
+            )
+        ]
     )
     async def submit_stock_order(self, info, uid: str) -> StockOrderResponse:
         await auth_from_info(info)
@@ -673,12 +713,17 @@ class InventoryMutations:
         return types.StockOrderType(**stock_order.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.APPROVE, FObject.PRODUCT_ORDER)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.APPROVE, FObject.PRODUCT_ORDER),
+                ]
+            )
+        ]
     )
     async def approve_stock_order(
-            self, info, uid: str, payload: StockOrderApprovalInputType
+        self, info, uid: str, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
         await auth_from_info(info)
 
@@ -694,12 +739,17 @@ class InventoryMutations:
         return types.StockOrderType(**stock_order.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.ISSUE, FObject.PRODUCT_ORDER)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.ISSUE, FObject.PRODUCT_ORDER),
+                ]
+            )
+        ]
     )
     async def issue_stock_order(
-            self, info, uid: str, payload: List[StockOrderProductLineInputType]
+        self, info, uid: str, payload: List[StockOrderProductLineInputType]
     ) -> StockOrderResponse:
         felicity_user = await auth_from_info(info)
 
@@ -789,9 +839,14 @@ class InventoryMutations:
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def delete_stock_order(self, info, uid: str) -> StockOrderResponse:
         await auth_from_info(info)
@@ -812,12 +867,17 @@ class InventoryMutations:
         return types.StockOrderType(**stock_order.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PRODUCT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PRODUCT),
+                ]
+            )
+        ]
     )
     async def create_stock_adjustment(
-            self, info, payload: StockAdjustmentInputType
+        self, info, payload: StockAdjustmentInputType
     ) -> StockAdjustmentResponse:
         felicity_user = await auth_from_info(info)
 

@@ -9,13 +9,13 @@ networks:
 # Named volumes for persistent data storage for all stateful Docker services.
 volumes:
   dragonfly_data: # Volume for DragonflyDB data
-  dbgate_data:    # Volume for DbGate configuration and data
+  dbgate_data: # Volume for DbGate configuration and data
   felicity_media: # Volume for application media files (e.g., uploads)
-  minio_data:     # Volume for MinIO object storage data
-  postgres_data:  # Volume for PostgreSQL database data
-  mongo_data:     # Volume for MongoDB database data
-  caddy_data:     # Volume for Caddy's managed data (certificates, etc.)
-  caddy_config:   # Volume for Caddy's configuration
+  minio_data: # Volume for MinIO object storage data
+  postgres_data: # Volume for PostgreSQL database data
+  mongo_data: # Volume for MongoDB database data
+  caddy_data: # Volume for Caddy's managed data (certificates, etc.)
+  caddy_config: # Volume for Caddy's configuration
 
 services:
   # Option 1: Nginx as the primary reverse proxy
@@ -26,10 +26,10 @@ services:
     # Uncomment these ports if you want to use Nginx as the primary entry point
     # and comment out Caddy's ports below to avoid conflicts.
     ports:
-      - "80:80" # Expose Nginx on host port 80
+      - '80:80' # Expose Nginx on host port 80
     environment:
       PROXY_BACKEND: felicity-aio # Backend service name for AIO app
-      PROXY_PORT: 8000           # Port of the AIO app
+      PROXY_PORT: 8000 # Port of the AIO app
       SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
     volumes:
       - ./services/nginx/proxy/:/etc/nginx/templates/ # Mount Nginx config for AIO
@@ -50,8 +50,8 @@ services:
     # Uncomment these ports if you want to use Caddy as the primary entry point
     # and comment out Nginx's ports above to avoid conflicts.
     ports:
-      - "80:80" # Expose Caddy on host port 80 (HTTP)
-      - "443:443" # Expose Caddy on host port 443 (HTTPS)
+      - '80:80' # Expose Caddy on host port 80 (HTTP)
+      - '443:443' # Expose Caddy on host port 443 (HTTPS)
     volumes:
       # Mount your Caddyfile for AIO services (ensure this path exists)
       - ./services/caddy/aio/Caddyfile:/etc/caddy/Caddyfile:ro
@@ -59,21 +59,21 @@ services:
       - caddy_config:/config # Caddy's configuration
     environment:
       PROXY_BACKEND: felicity-aio # Backend service name for AIO app
-      PROXY_PORT: 8000           # Port of the AIO app
+      PROXY_PORT: 8000 # Port of the AIO app
       SERVER_HOST: ${SERVER_HOST} # Hostname for Caddy (from .env)
     depends_on:
       - felicity-aio # Ensure AIO app is up before Caddy starts
     networks:
       - felicitynet
     healthcheck: # Health check for Caddy
-      test: ["CMD", "curl", "-f", "http://localhost/health"] # Adjust if Caddy has a specific health endpoint
+      test: [ 'CMD', 'curl', '-f', 'http://localhost/health' ] # Adjust if Caddy has a specific health endpoint
       interval: 10s
       timeout: 5s
       retries: 5
 
   felicity-aio:
     container_name: felicity-aio
-    image: amusendame/felicity-lims:aio-0.2.1 # Pinned image version
+    image: amusendame/felicity-lims:aio-0.2.2 # Pinned image version
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file
@@ -122,7 +122,7 @@ services:
       MINIO_DEFAULT_BUCKET: felicity
     command: minio server /data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live' ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -137,13 +137,13 @@ services:
     ulimits:
       memlock: -1
     ports:
-      - "6379:6379" # Expose DragonflyDB on host port 6379
+      - '6379:6379' # Expose DragonflyDB on host port 6379
     volumes:
       - dragonfly_data:/data # Persistent volume
     networks:
       - felicitynet
     healthcheck:
-      test: ["CMD-SHELL", "dragonfly-cmd ping"]
+      test: [ 'CMD-SHELL', 'dragonfly-cmd ping' ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -165,7 +165,7 @@ services:
     networks:
       - felicitynet
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U felicity"]
+      test: [ 'CMD-SHELL', 'pg_isready -U felicity' ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -184,7 +184,7 @@ services:
     networks:
       - felicitynet
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ 'CMD', 'mongosh', '--eval', "db.adminCommand('ping')" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -227,8 +227,8 @@ services:
     image: syncfusion/word-processor-server:25.1.42 # Pinned image version
     restart: unless-stopped
     environment:
-      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} 
+      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE}
     ports:
-      - "6002:80" # Expose Word Processor Server on host port 6002
+      - '6002:80' # Expose Word Processor Server on host port 6002
     networks:
       - felicitynet

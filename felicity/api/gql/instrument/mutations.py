@@ -14,7 +14,8 @@ from felicity.api.gql.instrument.types import (
     LaboratoryInstrumentType,
     MethodType,
     InstrumentResultExclusionsType,
-    InstrumentResultTranslationType, InstrumentInterfaceType,
+    InstrumentResultTranslationType,
+    InstrumentInterfaceType,
 )
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError, JSONScalar
@@ -36,7 +37,8 @@ from felicity.apps.instrument.services import (
     LaboratoryInstrumentService,
     MethodService,
     InstrumentResultExclusionsService,
-    InstrumentResultTranslationService, InstrumentInterfaceService,
+    InstrumentResultTranslationService,
+    InstrumentInterfaceService,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -206,7 +208,7 @@ class InstrumentResultTranslationInput:
 class InstrumentMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_type(
-            self, info, payload: InstrumentTypeInputType
+        self, info, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
         exists = await InstrumentTypeService().get(name=payload.name)
         if exists:
@@ -224,7 +226,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_type(
-            self, info, uid: str, payload: InstrumentTypeInputType
+        self, info, uid: str, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
         inst_type = await InstrumentTypeService().get(uid=uid)
         if not inst_type:
@@ -246,7 +248,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument(
-            self, info, payload: InstrumentInputType
+        self, info, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
         if not payload.name or not payload.keyword:
             return OperationError(
@@ -275,7 +277,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
         if "keyword" in payload.__dict__:
             taken = await InstrumentService().get(keyword=payload.keyword)
@@ -304,7 +306,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_competence(
-            self, info, payload: InstrumentCompetenceInput
+        self, info, payload: InstrumentCompetenceInput
     ) -> InstrumentCompetenceResponse:  # noqa
         instrument = await InstrumentService().get(keyword=payload.instrument_uid)
         if not instrument:
@@ -320,7 +322,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_competence(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCompetenceResponse:  # noqa
         competence = await InstrumentCompetenceService().get(uid=uid)
         if not competence:
@@ -342,7 +344,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_laboratory_instrument(
-            self, info, payload: LaboratoryInstrumentInputType
+        self, info, payload: LaboratoryInstrumentInputType
     ) -> LaboratoryInstrumentResponse:  # noqa
         instrument = await InstrumentService().get(uid=payload.instrument_uid)
         if not instrument:
@@ -360,7 +362,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_instrument(
-            self, info, uid: str, payload: LaboratoryInstrumentInputType
+        self, info, uid: str, payload: LaboratoryInstrumentInputType
     ) -> LaboratoryInstrumentResponse:  # noqa
         taken = await LaboratoryInstrumentService().get(lab_name=payload.lab_name)
         if taken and taken.uid != uid:
@@ -388,9 +390,8 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_interface(
-            self, info, payload: InstrumentInterfaceInput
+        self, info, payload: InstrumentInterfaceInput
     ) -> InstrumentInterfaceResponse:  # noqa
-
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
@@ -401,7 +402,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_interface(
-            self, info, uid: str, payload: InstrumentInterfaceInput
+        self, info, uid: str, payload: InstrumentInterfaceInput
     ) -> InstrumentInterfaceResponse:  # noqa
         instrument_interface = await InstrumentInterfaceService().get(uid=uid)
         if not instrument_interface:
@@ -418,12 +419,16 @@ class InstrumentMutations:
                     logger.warning(e)
 
         obj_in = schemas.InstrumentInterfaceUpdate(**instrument_interface.to_dict())
-        instrument_interface = await InstrumentInterfaceService().update(instrument_interface.uid, obj_in)
-        return InstrumentInterfaceType(**instrument_interface.marshal_simple(exclude=["laboratory"]))
+        instrument_interface = await InstrumentInterfaceService().update(
+            instrument_interface.uid, obj_in
+        )
+        return InstrumentInterfaceType(
+            **instrument_interface.marshal_simple(exclude=["laboratory"])
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_caliberation(
-            self, info, payload: InstrumentCalibrationInput
+        self, info, payload: InstrumentCalibrationInput
     ) -> InstrumentCalibrationResponse:  # noqa
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
@@ -435,7 +440,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_caliberation(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCalibrationResponse:  # noqa
         caliberation = await InstrumentCalibrationService().get(uid=uid)
         if not caliberation:
@@ -459,7 +464,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_caliberation_certificate(
-            self, info, payload: CalibrationCertificateInput
+        self, info, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
         incoming: dict = dict()
         for k, v in payload.__dict__.items():
@@ -471,7 +476,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_caliberation_certificate(
-            self, info, uid: str, payload: CalibrationCertificateInput
+        self, info, uid: str, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
         certificate = await CalibrationCertificateService().get(uid=uid)
         if not certificate:
@@ -562,8 +567,12 @@ class InstrumentMutations:
 
         # Refresh samples that are affected by the method changes
         async def process_snapshots(analyses):
-            results = await AnalysisResultService().get_all(related=['sample'], analysis_uid__in=analyses)
-            to_snapshot = list(filter(lambda r: r.sample.status == SampleState.RECEIVED, results))
+            results = await AnalysisResultService().get_all(
+                related=["sample"], analysis_uid__in=analyses
+            )
+            to_snapshot = list(
+                filter(lambda r: r.sample.status == SampleState.RECEIVED, results)
+            )
             await AnalysisResultService().snapshot(to_snapshot)
 
         # Add the task to background tasks
@@ -572,7 +581,9 @@ class InstrumentMutations:
         return MethodType(**method.marshal_simple(exclude=["instruments", "analyses"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_method(self, info, uid: str, payload: MethodInputType) -> MethodResponse:  # noqa
+    async def update_method(
+        self, info, uid: str, payload: MethodInputType
+    ) -> MethodResponse:  # noqa
         if "keyword" in payload.__dict__:
             taken = await MethodService().get(keyword=payload.keyword)
             if taken and not (str(uid) == str(taken.uid)):
@@ -648,7 +659,9 @@ class InstrumentMutations:
         for _instr in _added_instruments:
             for _anal in _added_analyses:
                 exists = await AnalysisService().repository.table_query(
-                    table=analysis_instrument, instrument_uid=_instr, analysis_uid=_anal,
+                    table=analysis_instrument,
+                    instrument_uid=_instr,
+                    analysis_uid=_anal,
                 )
                 if not exists:
                     await AnalysisService().repository.table_insert(
@@ -677,7 +690,7 @@ class InstrumentMutations:
             exists = await AnalysisService().repository.table_query(
                 table=analysis_instrument,
                 instrument_uid=_instr,
-                columns=['analysis_uid']
+                columns=["analysis_uid"],
             )
             for relation in exists:
                 if relation not in _sacked_analyses:
@@ -691,7 +704,7 @@ class InstrumentMutations:
             exists = await AnalysisService().repository.table_query(
                 table=analysis_instrument,
                 analysis_uid=_anal,
-                columns=['instrument_uid']
+                columns=["instrument_uid"],
             )
             for relation in exists:
                 if relation not in _sacked_instruments:
@@ -702,8 +715,12 @@ class InstrumentMutations:
 
         # Refresh samples that are affected by the method changes
         async def process_snapshots(analyses):
-            results = await AnalysisResultService().get_all(related=['sample'], analysis_uid__in=analyses)
-            to_snapshot = list(filter(lambda r: r.sample.status == SampleState.RECEIVED, results))
+            results = await AnalysisResultService().get_all(
+                related=["sample"], analysis_uid__in=analyses
+            )
+            to_snapshot = list(
+                filter(lambda r: r.sample.status == SampleState.RECEIVED, results)
+            )
             await AnalysisResultService().snapshot(to_snapshot)
 
         # Add the task to background tasks
@@ -718,7 +735,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_result_exclusions(
-            self, info, payload: InstrumentResultExclusionInput
+        self, info, payload: InstrumentResultExclusionInput
     ) -> InstrumentResultExclusionsResponse:  # noqa
         instrument = await InstrumentService().get(uid=payload.instrument_uid)
         if not instrument:
@@ -734,7 +751,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_result_exclusions(
-            self, info, uid: str, payload: InstrumentResultExclusionInput
+        self, info, uid: str, payload: InstrumentResultExclusionInput
     ) -> InstrumentResultExclusionsResponse:  # noqa
         exclusion = await InstrumentResultExclusionsService().get(uid=uid)
         if not exclusion:
@@ -751,12 +768,14 @@ class InstrumentMutations:
                     logger.warning(e)
 
         obj_in = schemas.InstrumentResultExclusionsUpdate(**exclusion.to_dict())
-        exclusion = await InstrumentResultExclusionsService().update(exclusion.uid, obj_in)
+        exclusion = await InstrumentResultExclusionsService().update(
+            exclusion.uid, obj_in
+        )
         return InstrumentResultExclusionsType(**exclusion.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_result_translation(
-            self, info, payload: InstrumentResultTranslationInput
+        self, info, payload: InstrumentResultTranslationInput
     ) -> InstrumentResultTranslationResponse:  # noqa
         instrument = await InstrumentService().get(uid=payload.instrument_uid)
         if not instrument:
@@ -772,7 +791,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_result_translation(
-            self, info, uid: str, payload: InstrumentResultTranslationInput
+        self, info, uid: str, payload: InstrumentResultTranslationInput
     ) -> InstrumentResultTranslationResponse:  # noqa
         translation = await InstrumentResultTranslationService().get(uid=uid)
         if not translation:
@@ -789,5 +808,7 @@ class InstrumentMutations:
                     logger.warning(e)
 
         obj_in = schemas.InstrumentResultTranslationUpdate(**translation.to_dict())
-        translation = await InstrumentResultTranslationService().update(translation.uid, obj_in)
+        translation = await InstrumentResultTranslationService().update(
+            translation.uid, obj_in
+        )
         return InstrumentResultTranslationType(**translation.marshal_simple())

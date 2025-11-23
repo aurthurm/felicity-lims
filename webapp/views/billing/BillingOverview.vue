@@ -1,12 +1,121 @@
 <template>
   <div class="p-6">
     <div class="mb-6">
-      <h2 class="text-2xl font-semibold text-gray-900 mb-4">Billing Overview</h2>
-      <p class="text-gray-600">Comprehensive overview of billing metrics and statistics</p>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-900 mb-2">Billing Overview</h2>
+          <p class="text-gray-600">Comprehensive overview of billing metrics and statistics</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Date Range Filters -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+      <div class="flex flex-col gap-4">
+        <!-- Preset Period Buttons -->
+        <div class="flex flex-wrap gap-2">
+          <button
+            @click="selectPeriod('this-month')"
+            :class="[
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              selectedPeriod === 'this-month'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ]"
+          >
+            This Month
+          </button>
+          <button
+            @click="selectPeriod('last-month')"
+            :class="[
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              selectedPeriod === 'last-month'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ]"
+          >
+            Last Month
+          </button>
+          <button
+            @click="selectPeriod('this-quarter')"
+            :class="[
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              selectedPeriod === 'this-quarter'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ]"
+          >
+            This Quarter
+          </button>
+          <button
+            @click="selectPeriod('this-year')"
+            :class="[
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              selectedPeriod === 'this-year'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ]"
+          >
+            This Year
+          </button>
+          <button
+            @click="selectPeriod('all-time')"
+            :class="[
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              selectedPeriod === 'all-time'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ]"
+          >
+            All Time
+          </button>
+          <button
+            @click="selectPeriod('custom')"
+            :class="[
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              selectedPeriod === 'custom'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ]"
+          >
+            Custom Range
+          </button>
+        </div>
+
+        <!-- Custom Date Range Picker -->
+        <div v-if="selectedPeriod === 'custom'" class="flex flex-col sm:flex-row gap-4 pt-4 border-t">
+          <div class="flex-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <input
+              v-model="customStartDate"
+              type="date"
+              @change="applyCustomRange"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+            <input
+              v-model="customEndDate"
+              type="date"
+              @change="applyCustomRange"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <!-- Date Range Display -->
+        <div v-if="selectedPeriod === 'all-time'" class="text-xs text-gray-500">
+          Showing metrics for all time
+        </div>
+        <div v-else class="text-xs text-gray-500">
+          From {{ formatDate(dateRange.startDate) }} to {{ formatDate(dateRange.endDate) }}
+        </div>
+      </div>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div v-if="fetching" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-white rounded-lg shadow p-4 animate-pulse">
         <div class="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
         <div class="h-8 bg-gray-200 rounded"></div>
@@ -278,32 +387,115 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { useQuery } from "@urql/vue";
 import { GetBillingOverviewMetricsDocument } from "@/graphql/operations/billing.queries";
 
-const loading = ref(true);
 const metricsData = ref<any>(null);
+const selectedPeriod = ref<string>('this-month');
+const customStartDate = ref<string>('');
+const customEndDate = ref<string>('');
 
-const { data, fetching } = useQuery({
-  query: GetBillingOverviewMetricsDocument,
+interface DateRange {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+const dateRange = computed<DateRange>(() => {
+  // Handle custom date range
+  if (selectedPeriod.value === 'custom') {
+    const startDate = customStartDate.value ? new Date(customStartDate.value) : null;
+    const endDate = customEndDate.value ? new Date(customEndDate.value) : null;
+    return { startDate, endDate };
+  }
+
+  const today = new Date();
+  let startDate: Date | null;
+  let endDate: Date | null = new Date(today);
+
+  switch (selectedPeriod.value) {
+    case 'this-month':
+      startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      break;
+    case 'last-month':
+      startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+      break;
+    case 'this-quarter':
+      const quarter = Math.floor(today.getMonth() / 3);
+      startDate = new Date(today.getFullYear(), quarter * 3, 1);
+      endDate = new Date(today.getFullYear(), (quarter + 1) * 3, 0);
+      break;
+    case 'this-year':
+      startDate = new Date(today.getFullYear(), 0, 1);
+      endDate = new Date(today.getFullYear(), 11, 31);
+      break;
+    default: // 'all-time'
+      return { startDate: null, endDate: null };
+  }
+
+  return { startDate, endDate };
 });
 
-// Watch for changes in data and fetching state
+const { data, fetching, executeQuery } = useQuery({
+  query: GetBillingOverviewMetricsDocument,
+  variables: computed(() => {
+    if (selectedPeriod.value === 'all-time') {
+      return { startDate: null, endDate: null };
+    }
+    return {
+      startDate: dateRange.value.startDate?.toISOString(),
+      endDate: dateRange.value.endDate?.toISOString(),
+    };
+  }),
+});
+
+// Refetch on component mount to ensure fresh data
+onMounted(() => {
+  executeQuery({ requestPolicy: 'network-only' });
+});
+
+// Refetch when date range changes
 watch(
-  () => fetching.value,
-  (isFetching: boolean) => {
-    loading.value = isFetching;
+  () => selectedPeriod.value,
+  () => {
+    executeQuery({ requestPolicy: 'network-only' });
   }
 );
 
+// Watch for changes in data
 watch(
-  () => data.value,
-  (newData: any) => {
-    if (newData?.billingOverviewMetrics) {
-      metricsData.value = newData.billingOverviewMetrics;
-      loading.value = false;
+  () => data.value?.billingOverviewMetrics,
+  (metrics: any) => {
+    if (metrics) {
+      metricsData.value = metrics;
     }
-  }
+  },
+  { deep: true }
 );
+
+// Helper function to format dates
+const formatDate = (date: Date | null): string => {
+  if (!date) return '';
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+
+// Handle period selection
+const selectPeriod = (period: string) => {
+  selectedPeriod.value = period;
+};
+
+// Apply custom date range and fetch metrics
+const applyCustomRange = () => {
+  // Only apply if both dates are selected
+  if (customStartDate.value && customEndDate.value) {
+    executeQuery({ requestPolicy: 'network-only' });
+  }
+};
 </script>

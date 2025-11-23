@@ -96,13 +96,15 @@ async def impress_invoice(test_bill: TestBill):
             metadata={
                 "test_bill_uid": test_bill.uid,
             },
-            content_type="application/pdf"
+            content_type="application/pdf",
         )
 
     # Save the json to mongodb
     if settings.DOCUMENT_STORAGE:
         await MongoService().upsert(
-            collection_name=MongoCollection.INVOICE, uid=test_bill.uid, data=impress_meta
+            collection_name=MongoCollection.INVOICE,
+            uid=test_bill.uid,
+            data=impress_meta,
         )
 
     return pdf

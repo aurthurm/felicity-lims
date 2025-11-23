@@ -10,10 +10,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam, delete
 
 from felicity.apps.abstract.entity import LabScopedEntity, MaybeLabScopedEntity
-from felicity.core.tenant_context import (
-    get_current_lab_uid,
-    get_current_user_uid
-)
+from felicity.core.tenant_context import get_current_lab_uid, get_current_user_uid
 from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session
 
@@ -48,7 +45,7 @@ def apply_nested_loader_options(stmt, model, path):
             next_option = selectinload(getattr(current_model, attr))
             try:
                 current_option = current_option.options(next_option)
-            except Exception as e:
+            except Exception:
                 current_option = next_option
 
         # Update the current model to the next model in the relationship path
@@ -89,7 +86,9 @@ class BaseRepository(Generic[M]):
         else:
             # If no lab context, log warning and return empty result
             # logger.warning(f"No lab context for {self.model.__name__} query")
-            stmt = stmt.where(self.model.laboratory_uid.is_(None))  # Will return no results
+            stmt = stmt.where(
+                self.model.laboratory_uid.is_(None)
+            )  # Will return no results
 
         return stmt
 
@@ -104,7 +103,9 @@ class BaseRepository(Generic[M]):
             if lab_uid:
                 data["laboratory_uid"] = lab_uid
             else:
-                raise ValueError(f"Laboratory context required to create {self.model.__name__}")
+                raise ValueError(
+                    f"Laboratory context required to create {self.model.__name__}"
+                )
 
         if include_audit:
             # Auto-inject user context for audit fields if available
@@ -140,7 +141,9 @@ class BaseRepository(Generic[M]):
     async def save_transaction(self, session: Optional[AsyncSession]):
         await self._commit_or_fail(session)
 
-    async def save(self, m: M, commit=True, session: Optional[AsyncSession] = None) -> M:
+    async def save(
+        self, m: M, commit=True, session: Optional[AsyncSession] = None
+    ) -> M:
         """
         Save a model instance to the database.
 
@@ -166,7 +169,9 @@ class BaseRepository(Generic[M]):
                 await self._commit_or_fail(session)
         return m
 
-    async def save_all(self, items, commit=True, session: Optional[AsyncSession] = None):
+    async def save_all(
+        self, items, commit=True, session: Optional[AsyncSession] = None
+    ):
         """
         Save multiple model instances to the database.
 
@@ -193,7 +198,9 @@ class BaseRepository(Generic[M]):
                 await self._commit_or_fail(session)
             return items
 
-    async def create(self, commit=True, session: Optional[AsyncSession] = None, **kwargs) -> M:
+    async def create(
+        self, commit=True, session: Optional[AsyncSession] = None, **kwargs
+    ) -> M:
         """
         Create a new model instance with the given data.
 
@@ -209,7 +216,9 @@ class BaseRepository(Generic[M]):
         filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled, commit=commit, session=session)
 
-    async def bulk_create(self, bulk: list[dict], commit=True, session: Optional[AsyncSession] = None) -> list[M]:
+    async def bulk_create(
+        self, bulk: list[dict], commit=True, session: Optional[AsyncSession] = None
+    ) -> list[M]:
         """
         Create multiple new model instances with the given data.
 
@@ -228,7 +237,9 @@ class BaseRepository(Generic[M]):
             to_save.append(fill)
         return await self.save_all(to_save, commit=commit, session=session)
 
-    async def update(self, uid: str, commit=True, session: Optional[AsyncSession] = None, **kwargs) -> M:
+    async def update(
+        self, uid: str, commit=True, session: Optional[AsyncSession] = None, **kwargs
+    ) -> M:
         """
         Update an existing model instance.
 
@@ -243,13 +254,20 @@ class BaseRepository(Generic[M]):
         # Get with automatic lab filtering
         item = await self.get(uid=uid)
         if not item:
-            raise ValueError(f"{self.model.__name__} with uid {uid} not found or not accessible")
+            raise ValueError(
+                f"{self.model.__name__} with uid {uid} not found or not accessible"
+            )
 
         filled = self.model.fill(item, **kwargs)
         return await self.save(filled, commit=commit, session=session)
 
-    async def bulk_update_where(self, update_data: list[dict], filters: dict, commit=True,
-                                session: Optional[AsyncSession] = None):
+    async def bulk_update_where(
+        self,
+        update_data: list[dict],
+        filters: dict,
+        commit=True,
+        session: Optional[AsyncSession] = None,
+    ):
         """
         Update multiple model instances that match the given filters.
 
@@ -280,8 +298,9 @@ class BaseRepository(Generic[M]):
                 results = await session.execute(stmt)
             return results.scalars().all()
 
-    async def bulk_update_with_mappings(self, mappings: list, commit=True,
-                                        session: Optional[AsyncSession] = None) -> None:
+    async def bulk_update_with_mappings(
+        self, mappings: list, commit=True, session: Optional[AsyncSession] = None
+    ) -> None:
         """
         Update multiple model instances using a list of mappings.
 
@@ -317,8 +336,13 @@ class BaseRepository(Generic[M]):
                 await session.flush()
                 await self._commit_or_fail(session)
 
-    async def table_insert(self, table: Any, mappings: list[dict], commit=True,
-                           session: Optional[AsyncSession] = None) -> None:
+    async def table_insert(
+        self,
+        table: Any,
+        mappings: list[dict],
+        commit=True,
+        session: Optional[AsyncSession] = None,
+    ) -> None:
         """
         Insert multiple rows into a specified table.
 
@@ -326,8 +350,13 @@ class BaseRepository(Generic[M]):
         :param mappings: A list of dictionaries containing the data to insert.
         """
         stmt = table.insert()
-        if hasattr(table.c, 'laboratory_uid'):
-            mappings = list(map(lambda m: self._inject_tenant_context(m, include_audit=False), mappings))
+        if hasattr(table.c, "laboratory_uid"):
+            mappings = list(
+                map(
+                    lambda m: self._inject_tenant_context(m, include_audit=False),
+                    mappings,
+                )
+            )
 
         if session:
             # Use provided session (part of an existing transaction)
@@ -341,8 +370,12 @@ class BaseRepository(Generic[M]):
                 await self._commit_or_fail(session)
 
     async def table_query(
-            self, table: Table, columns: list[str] | None = None, is_or=False,
-            session: Optional[AsyncSession] = None, **kwargs
+        self,
+        table: Table,
+        columns: list[str] | None = None,
+        is_or=False,
+        session: Optional[AsyncSession] = None,
+        **kwargs,
     ):
         """
         Query a specific table with optional column selection and filters.
@@ -370,9 +403,9 @@ class BaseRepository(Generic[M]):
 
         # Apply lab filtering if table has laboratory_uid column
         if (
-                not 'laboratory_uid' in kwargs
-                and hasattr(table.c, 'laboratory_uid')
-                and (columns is None or 'laboratory_uid' not in columns)
+            "laboratory_uid" not in kwargs
+            and hasattr(table.c, "laboratory_uid")
+            and (columns is None or "laboratory_uid" not in columns)
         ):
             lab_uid = get_current_lab_uid()
             if lab_uid:
@@ -387,7 +420,9 @@ class BaseRepository(Generic[M]):
                 results = await session.execute(stmt)
                 return results.unique().scalars().all()  # , results.keys()
 
-    async def table_delete(self, table, commit=True, session: Optional[AsyncSession] = None, **kwargs):
+    async def table_delete(
+        self, table, commit=True, session: Optional[AsyncSession] = None, **kwargs
+    ):
         """
         Delete rows from a specified table based on the given filters.
 
@@ -402,7 +437,7 @@ class BaseRepository(Generic[M]):
             stmt = stmt.where(table.c[k] == v)
 
         # Apply lab filtering if table has laboratory_uid column
-        if hasattr(table.c, 'laboratory_uid'):
+        if hasattr(table.c, "laboratory_uid"):
             lab_uid = get_current_lab_uid()
             if lab_uid:
                 stmt = stmt.where(table.c.laboratory_uid == lab_uid)
@@ -418,7 +453,12 @@ class BaseRepository(Generic[M]):
                 await session.flush()
                 await self._commit_or_fail(session)
 
-    async def get(self, related: list[str] | None = None, session: Optional[AsyncSession] = None, **kwargs) -> M:
+    async def get(
+        self,
+        related: list[str] | None = None,
+        session: Optional[AsyncSession] = None,
+        **kwargs,
+    ) -> M:
         """
         Get a single model instance based on the given filters.
 
@@ -445,8 +485,13 @@ class BaseRepository(Generic[M]):
                 results = await session.execute(stmt)
                 return results.scalars().first()
 
-    async def get_all(self, related: list[str] | None = None, sort_attrs: list[str] | None = None,
-                      session: Optional[AsyncSession] = None, **kwargs) -> list[M]:
+    async def get_all(
+        self,
+        related: list[str] | None = None,
+        sort_attrs: list[str] | None = None,
+        session: Optional[AsyncSession] = None,
+        **kwargs,
+    ) -> list[M]:
         """
         Get all model instances that match the given filters.
 
@@ -513,7 +558,9 @@ class BaseRepository(Generic[M]):
             results = await session.execute(stmt)
             return results.scalars().all()
 
-    async def get_by_uids(self, uids: List[str], session: Optional[AsyncSession] = None) -> list[M]:
+    async def get_by_uids(
+        self, uids: List[str], session: Optional[AsyncSession] = None
+    ) -> list[M]:
         """
         Get model instances based on a list of unique identifiers.
 
@@ -553,7 +600,9 @@ class BaseRepository(Generic[M]):
         search = results.scalars().all()
         return search
 
-    async def delete(self, uid: str, commit=True, session: Optional[AsyncSession] = None) -> None:
+    async def delete(
+        self, uid: str, commit=True, session: Optional[AsyncSession] = None
+    ) -> None:
         """
         Delete a model instance based on its unique identifier.
 
@@ -565,7 +614,9 @@ class BaseRepository(Generic[M]):
         # First verify entity exists and is accessible
         entity = await self.get(uid=uid, session=session)
         if not entity:
-            raise ValueError(f"{self.model.__name__} with uid {uid} not found or not accessible")
+            raise ValueError(
+                f"{self.model.__name__} with uid {uid} not found or not accessible"
+            )
 
         stmt = delete(self.model).where(self.model.uid == uid)
         stmt = self._apply_lab_filter(stmt)
@@ -580,7 +631,9 @@ class BaseRepository(Generic[M]):
                 await session.flush()
                 await self._commit_or_fail(session)
 
-    async def delete_where(self, commit=True, session: Optional[AsyncSession] = None, **kwargs) -> None:
+    async def delete_where(
+        self, commit=True, session: Optional[AsyncSession] = None, **kwargs
+    ) -> None:
         """
         Delete a model instance based on its provided conditions.
         :param kwargs: The unique identifier of the model to delete.
@@ -650,11 +703,11 @@ class BaseRepository(Generic[M]):
         return list(combined)
 
     async def filter(
-            self,
-            filters: dict | list[dict],
-            sort_attrs: list[str] | None = None,
-            limit: int | None = None,
-            either: bool = False,
+        self,
+        filters: dict | list[dict],
+        sort_attrs: list[str] | None = None,
+        limit: int | None = None,
+        either: bool = False,
     ) -> list[M]:
         """
         Filter model instances based on the given conditions.
@@ -681,13 +734,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def paginate(
-            self,
-            page_size: int | None,
-            after_cursor: str | None,
-            before_cursor: str | None,
-            filters: dict | list[dict] | None,
-            sort_by: list[str] | None,
-            **kwargs,
+        self,
+        page_size: int | None,
+        after_cursor: str | None,
+        before_cursor: str | None,
+        filters: dict | list[dict] | None,
+        sort_by: list[str] | None,
+        **kwargs,
     ) -> PageCursor:
         """
         Paginate model instances based on the given conditions.
@@ -789,10 +842,10 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def build_page_info(
-            start_cursor: str | None = None,
-            end_cursor: str | None = None,
-            has_next_page: bool = False,
-            has_previous_page: bool = False,
+        start_cursor: str | None = None,
+        end_cursor: str | None = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
     ) -> PageInfo:
         """
         Build a PageInfo object with the given parameters.

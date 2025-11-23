@@ -30,7 +30,9 @@ class TaskGuard:
     async def process(self, uid: str, object_type: str):
         if self._has_redis:
             redis = await self.connect()
-            await redis.hset(f"{uid}", "status", "processing")  # Updated for hset instead of hmset
+            await redis.hset(
+                f"{uid}", "status", "processing"
+            )  # Updated for hset instead of hmset
         else:
             self._store[uid] = {"status": "processing"}
 

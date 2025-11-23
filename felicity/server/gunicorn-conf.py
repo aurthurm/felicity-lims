@@ -7,9 +7,7 @@ load_dotenv()
 
 name = "gunicorn config for Felicity LiMS systemd daemon"
 accesslog = "/var/logs/felicity-gunicorn-access.log"
-errorlog = (
-    "/var/logs/felicity-gunicorn-error.log"
-)
+errorlog = "/var/logs/felicity-gunicorn-error.log"
 
 bind = "0.0.0.0:8000"
 

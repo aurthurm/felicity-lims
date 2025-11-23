@@ -8,6 +8,7 @@ from felicity.core.config import settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def delete_file(file_name: str) -> bool:
     file_path = Path(file_name)
     if file_path.is_file():
@@ -24,7 +25,7 @@ def resolve_media_dirs_for(target: str) -> tuple[str, str]:
         full_path (str): Absolute path to the created directory.
         relative_path (str): Path starting from MEDIA_FOLDER (e.g., 'uploads/2025/07/01/')
     """
-    date_path = timenow_dt().strftime('%Y/%m/%d')
+    date_path = timenow_dt().strftime("%Y/%m/%d")
     relative_path = f"{target}/{date_path}/"
     full_path = Path(settings.MEDIA_DIR) / relative_path
     full_path.mkdir(parents=True, exist_ok=True)
@@ -39,16 +40,18 @@ def get_full_path_from_relative(relative_path: str) -> str:
     full_path = Path(settings.MEDIA_DIR) / relative_path
     return str(full_path.resolve())
 
+
 def get_download_path(file_relative_path: str) -> str:
     """
     Given a relative path like 'uploads/2025/07/01/file.jpg',
     returns a download path starting with '<media_folder>/'.
-    
+
     Example:
         input: 'uploads/2025/07/01/file.jpg'
         output: '<media_folder>/uploads/2025/07/01/file.jpg'
     """
     return f"{settings.MEDIA_FOLDER}/{file_relative_path.lstrip('/')}"
+
 
 def create_dir(dir_name: str) -> None:
     path = Path(dir_name)

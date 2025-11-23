@@ -45,26 +45,24 @@ class PatientIdentificationService(
         super().__init__(PatientIdentificationRepository())
 
     async def find_by_identification_value(
-            self,
-            value: str,
-            identification_uid: Optional[str] = None,
-            session: Optional[AsyncSession] = None
+        self,
+        value: str,
+        identification_uid: Optional[str] = None,
+        session: Optional[AsyncSession] = None,
     ) -> Optional[PatientIdentification]:
         """
         HIPAA-compliant search for patient identification by encrypted value.
-        
+
         Args:
             value: The identification value to search for
             identification_uid: Optional specific identification type
             session: Optional database session
-            
+
         Returns:
             Matching patient identification or None
         """
         return await self.repository.find_by_encrypted_value(
-            value=value,
-            identification_uid=identification_uid,
-            session=session
+            value=value, identification_uid=identification_uid, session=session
         )
 
 
@@ -76,14 +74,14 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
     async def search(self, query_string: str | None = None) -> list[Patient]:
         """
         HIPAA-compliant patient search.
-        
+
         For encrypted fields (first_name, last_name, phone_mobile, etc.),
         uses specialized repository methods that decrypt data for searching.
         For non-encrypted fields, uses standard database search.
-        
+
         Args:
             query_string: Search term to match across patient fields
-            
+
         Returns:
             List of matching patients
         """
@@ -106,7 +104,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             last_name=query_string,
             email=query_string,
             phone_mobile=query_string,
-            date_of_birth=query_string
+            date_of_birth=query_string,
         )
 
         # Combine and deduplicate results
@@ -122,19 +120,19 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return unique_results
 
     async def hipaa_compliant_search(
-            self,
-            first_name: Optional[str] = None,
-            last_name: Optional[str] = None,
-            email: Optional[str] = None,
-            phone_mobile: Optional[str] = None,
-            date_of_birth: Optional[str] = None,
-            patient_id: Optional[str] = None,
-            client_patient_id: Optional[str] = None,
-            session: Optional[AsyncSession] = None
+        self,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email: Optional[str] = None,
+        phone_mobile: Optional[str] = None,
+        date_of_birth: Optional[str] = None,
+        patient_id: Optional[str] = None,
+        client_patient_id: Optional[str] = None,
+        session: Optional[AsyncSession] = None,
     ) -> List[Patient]:
         """
         Perform HIPAA-compliant search across patient fields.
-        
+
         Args:
             first_name: Patient first name to search
             last_name: Patient last name to search
@@ -144,7 +142,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             patient_id: Patient ID to search (non-encrypted)
             client_patient_id: Client patient ID to search (non-encrypted)
             session: Optional database session
-            
+
         Returns:
             List of matching patients
         """
@@ -158,7 +156,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 email=email,
                 phone_mobile=phone_mobile,
                 date_of_birth=date_of_birth,
-                session=session
+                session=session,
             )
             all_results.extend(encrypted_results)
 
@@ -169,7 +167,9 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 all_results.append(result)
 
         if client_patient_id:
-            result = await self.get(client_patient_id=client_patient_id, session=session)
+            result = await self.get(
+                client_patient_id=client_patient_id, session=session
+            )
             if result:
                 all_results.append(result)
 
@@ -185,25 +185,25 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return unique_results
 
     async def high_performance_search(
-            self,
-            first_name: Optional[str] = None,
-            last_name: Optional[str] = None,
-            email: Optional[str] = None,
-            phone_mobile: Optional[str] = None,
-            date_of_birth: Optional[str] = None,
-            patient_id: Optional[str] = None,
-            client_patient_id: Optional[str] = None,
-            fuzzy_match: bool = False,
-            session: Optional[AsyncSession] = None,
-            return_uids: bool = False
+        self,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email: Optional[str] = None,
+        phone_mobile: Optional[str] = None,
+        date_of_birth: Optional[str] = None,
+        patient_id: Optional[str] = None,
+        client_patient_id: Optional[str] = None,
+        fuzzy_match: bool = False,
+        session: Optional[AsyncSession] = None,
+        return_uids: bool = False,
     ) -> List[Patient | str]:
         """
         High-performance HIPAA-compliant search using searchable encryption indices.
-        
+
         This method provides much better performance than the standard search methods
         by using pre-computed cryptographic indices instead of loading all patients
         into memory for filtering.
-        
+
         Args:
             first_name: Patient first name to search
             last_name: Patient last name to search
@@ -214,10 +214,10 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             client_patient_id: Client patient ID to search (non-encrypted)
             fuzzy_match: Enable phonetic/fuzzy matching for names
             session: Optional database session
-            
+
         Returns:
             List of matching patients
-            
+
         Note:
             This method requires searchable encryption indices to be maintained.
             Indices are automatically created/updated when patients are created/updated.
@@ -234,7 +234,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 date_of_birth=date_of_birth,
                 fuzzy_match=fuzzy_match,
                 session=session,
-                return_uids=return_uids
+                return_uids=return_uids,
             )
             all_results.extend(encrypted_results)
 
@@ -245,7 +245,9 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 all_results.append(result.uid if return_uids else result)
 
         if client_patient_id:
-            result = await self.get(client_patient_id=client_patient_id, session=session)
+            result = await self.get(
+                client_patient_id=client_patient_id, session=session
+            )
             if result:
                 all_results.append(result.uid if return_uids else result)
 
@@ -277,20 +279,20 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             return {"uid": None, "position": 0}
 
     async def paging_filter(
-            self,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            filters: list[dict] | dict | None = None,
-            sort_by: list[str] | None = None,
-            **kwargs,
+        self,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        filters: list[dict] | dict | None = None,
+        sort_by: list[str] | None = None,
+        **kwargs,
     ) -> PageCursor:
         """
         HIPAA-compliant paginated filtering of patients.
-        
+
         Overrides BaseService.paging_filter to use high-performance search
         when text search is detected in filters.
-        
+
         Args:
             page_size: Number of items per page
             after_cursor: Cursor for fetching next page
@@ -303,7 +305,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
             PageCursor with paginated results
         """
         # Check if this is a text search request
-        search_text = kwargs.get('text')
+        search_text = kwargs.get("text")
         if search_text and search_text.strip():
             # Use HIPAA-compliant search for text queries
             search_results = await self.high_performance_search(
@@ -313,20 +315,22 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 phone_mobile=search_text,
                 patient_id=search_text,
                 client_patient_id=search_text,
-                fuzzy_match=True
+                fuzzy_match=True,
             )
             print(f"search results from hps: {search_results}")
 
             # Apply sorting
             if sort_by:
                 for sort_field in reversed(sort_by):
-                    reverse = sort_field.startswith('-')
-                    field_name = sort_field.lstrip('-')
+                    reverse = sort_field.startswith("-")
+                    field_name = sort_field.lstrip("-")
                     if hasattr(Patient, field_name):
-                        search_results.sort(key=lambda x: getattr(x, field_name, ''), reverse=reverse)
+                        search_results.sort(
+                            key=lambda x: getattr(x, field_name, ""), reverse=reverse
+                        )
             else:
                 # Default sort by patient_id
-                search_results.sort(key=lambda x: x.patient_id or '')
+                search_results.sort(key=lambda x: x.patient_id or "")
 
             total_count = len(search_results)
 
@@ -353,7 +357,7 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 total_count=total_count,
                 edges=edges,
                 items=paginated_results,
-                page_info=page_info
+                page_info=page_info,
             )
         else:
             # For non-text queries, use the standard repository pagination
@@ -363,11 +367,16 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
                 before_cursor=before_cursor,
                 filters=filters,
                 sort_by=sort_by,
-                **kwargs
+                **kwargs,
             )
 
-    def _apply_cursor_pagination(self, results: List[Patient], page_size: int | None,
-                                 after_cursor: str | None, before_cursor: str | None) -> tuple:
+    def _apply_cursor_pagination(
+        self,
+        results: List[Patient],
+        page_size: int | None,
+        after_cursor: str | None,
+        before_cursor: str | None,
+    ) -> tuple:
         """Apply cursor-based pagination to search results."""
         if not results:
             return [], 0, 0
@@ -404,12 +413,17 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return paginated_results, start_idx, end_idx
 
     async def create(
-            self, obj_in: dict | PatientCreate, related: list[str] | None = None,
-            commit: bool = True, session: AsyncSession | None = None
+        self,
+        obj_in: dict | PatientCreate,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ) -> Patient:
         data = self._import(obj_in)
         data["patient_id"] = (
-            await self.id_sequence_service.get_next_number(prefix="P", generic=True, commit=commit, session=session)
+            await self.id_sequence_service.get_next_number(
+                prefix="P", generic=True, commit=commit, session=session
+            )
         )[1]
 
         # Create the patient
@@ -421,24 +435,30 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return patient
 
     async def update(
-            self, uid: str, update: PatientUpdate | dict, related: list[str] | None = None,
-            commit: bool = True, session: AsyncSession | None = None
+        self,
+        uid: str,
+        update: PatientUpdate | dict,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ) -> Patient:
         """
         Update a patient and maintain searchable encryption indices.
-        
+
         Args:
             uid: Patient UID to update
             update: Update data
             related: Related entities to fetch
             commit: Whether to commit the transaction
             session: Optional database session
-            
+
         Returns:
             Updated patient entity
         """
         # Update the patient
-        patient = await super().update(uid, update, related, commit=commit, session=session)
+        patient = await super().update(
+            uid, update, related, commit=commit, session=session
+        )
 
         # Update searchable encryption indices for high-performance searching
         await self.repository.update_search_indices(patient, session=session)
@@ -447,18 +467,34 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
 
     async def snapshot(self, pt: Patient, metadata: dict = {}):
         fields = ["client", "province", "district", "country"]
-        patient = await self.get(related=["province", "district", "country"], uid=pt.uid)
+        patient = await self.get(
+            related=["province", "district", "country"], uid=pt.uid
+        )
         for _field in fields:
             if _field not in metadata:
                 if _field == "client":
-                    client = await ClientService().get(related=["province", "district"], uid=pt.client_uid)
+                    client = await ClientService().get(
+                        related=["province", "district"], uid=pt.client_uid
+                    )
                     metadata[_field] = client.snapshot()
-                    metadata[_field]["province"] = client.province.snapshot() if client.province else None
-                    metadata[_field]["district"] = client.district.snapshot() if client.district else None
+                    metadata[_field]["province"] = (
+                        client.province.snapshot() if client.province else None
+                    )
+                    metadata[_field]["district"] = (
+                        client.district.snapshot() if client.district else None
+                    )
                 if _field == "province":
-                    metadata[_field] = patient.province.snapshot() if patient.province else None
+                    metadata[_field] = (
+                        patient.province.snapshot() if patient.province else None
+                    )
                 if _field == "district":
-                    metadata[_field] = patient.district.snapshot() if patient.district else None
+                    metadata[_field] = (
+                        patient.district.snapshot() if patient.district else None
+                    )
                 if _field == "country":
-                    metadata[_field] = patient.country.snapshot() if patient.country else None
-        return await self.update(pt.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})
+                    metadata[_field] = (
+                        patient.country.snapshot() if patient.country else None
+                    )
+        return await self.update(
+            pt.uid, {"metadata_snapshot": marshaller(metadata, depth=3)}
+        )

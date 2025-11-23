@@ -89,9 +89,11 @@ class StrawberryMapper(Generic[T]):
 
         # Identify methods in the class for exclusion
         methods = {
-            name: method for name, method in type_class.__dict__.items()
-            if inspect.isfunction(method) or inspect.ismethod(method)
-               and not name.startswith('_')
+            name: method
+            for name, method in type_class.__dict__.items()
+            if inspect.isfunction(method)
+            or inspect.ismethod(method)
+            and not name.startswith("_")
         }
         exclude.extend(list(methods.keys()))
 

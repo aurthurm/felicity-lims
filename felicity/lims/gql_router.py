@@ -79,16 +79,16 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
             set_tenant_context(self._tenant_context)
         return await super().handle_request()
 
-    async def _extract_websocket_context(self, payload: Dict) -> Optional[TenantContext]:
+    async def _extract_websocket_context(
+        self, payload: Dict
+    ) -> Optional[TenantContext]:
         """
         Extract tenant context from WebSocket connection payload.
         """
 
         # Initialize context
         tenant_context = TenantContext(
-            request_id=f"ws_{id(self)}",
-            ip_address=None,
-            user_agent=None
+            request_id=f"ws_{id(self)}", ip_address=None, user_agent=None
         )
 
         try:
@@ -110,9 +110,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
 
             # Decode JWT token
             jwt_payload = jwt.decode(
-                token,
-                settings.SECRET_KEY,
-                algorithms=[settings.ALGORITHM]
+                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
             )
 
             # Extract user info from JWT
@@ -125,7 +123,9 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
 
             tenant_context.laboratory_uid = lab_from_payload or lab_from_token
 
-            logger.info(f"Extracted WebSocket context for user {tenant_context.user_uid}")
+            logger.info(
+                f"Extracted WebSocket context for user {tenant_context.user_uid}"
+            )
             return tenant_context
 
         except JWTError as e:
@@ -150,7 +150,7 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
         Handle connection initialization for the legacy GraphQL WS protocol
         """
         payload = message.get("payload") or {}
-        logger.debug(f"Legacy WebSocket connection_init received")
+        logger.debug("Legacy WebSocket connection_init received")
 
         if not isinstance(payload, dict):
             logger.warning("No valid payload in legacy connection_init message")
@@ -168,7 +168,9 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
 
             set_tenant_context(tenant_context)
             self._tenant_context = tenant_context
-            logger.debug(f"Legacy WebSocket authenticated for user: {tenant_context.user_uid}")
+            logger.debug(
+                f"Legacy WebSocket authenticated for user: {tenant_context.user_uid}"
+            )
 
             # Call the parent method to complete the connection initialization
             await super().handle_connection_init(message)
@@ -184,13 +186,13 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
             set_tenant_context(self._tenant_context)
         return await super().handle_request()
 
-    async def _extract_websocket_context(self, payload: Dict) -> Optional[TenantContext]:
+    async def _extract_websocket_context(
+        self, payload: Dict
+    ) -> Optional[TenantContext]:
         """Same context extraction logic as the transport WS handler"""
 
         tenant_context = TenantContext(
-            request_id=f"ws_{id(self)}",
-            ip_address=None,
-            user_agent=None
+            request_id=f"ws_{id(self)}", ip_address=None, user_agent=None
         )
 
         try:
@@ -204,7 +206,9 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
             if not token:
                 return None
 
-            jwt_payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            jwt_payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            )
 
             tenant_context.user_uid = jwt_payload.get("sub")
             tenant_context.organization_uid = jwt_payload.get("organization_uid")

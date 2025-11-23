@@ -1,4 +1,4 @@
-import { NotificationType } from "./gql";
+import { NotificationType } from './gql';
 
 type BaseINotificationType = {
     data: any;
@@ -11,12 +11,13 @@ type BaseINotificationType = {
     showConfirmButton: boolean;
     timer: number;
     timerProgressBar: boolean;
-}
+};
 
-export type AlertType = BaseINotificationType & {}
-export type ToastType = BaseINotificationType & {}
+export type AlertType = BaseINotificationType & {};
+export type ToastType = BaseINotificationType & {};
 
-export type INotificationType = NotificationType & BaseINotificationType & {
-    uid: string;
-    message: string;
-}
+export type INotificationType = NotificationType &
+    BaseINotificationType & {
+        uid: string;
+        message: string;
+    };

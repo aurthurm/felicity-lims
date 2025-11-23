@@ -69,7 +69,9 @@ class InstrumentType:
         return await MethodService().get_all(instruments___uid=self.uid)
 
     @strawberry.field
-    async def laboratory_instruments(self, info) -> Optional[List["LaboratoryInstrumentType"]]:
+    async def laboratory_instruments(
+        self, info
+    ) -> Optional[List["LaboratoryInstrumentType"]]:
         return await LaboratoryInstrumentService().get_all(instrument_uid=self.uid)
 
 

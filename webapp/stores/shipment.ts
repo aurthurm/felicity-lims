@@ -1,21 +1,35 @@
 import { defineStore } from 'pinia';
 import { addListsUnique } from '@/utils';
 
-import  useApiUtil  from '@/composables/api_util';
-import { GetAllReferralLaboratoriesDocument, GetAllReferralLaboratoriesQuery, GetAllReferralLaboratoriesQueryVariables, GetAllShipmentsDocument, GetAllShipmentsQuery, GetAllShipmentsQueryVariables, GetShipmentByUidDocument, GetShipmentByUidQuery, GetShipmentByUidQueryVariables } from '@/graphql/operations/shipment.queries';
+import useApiUtil from '@/composables/api_util';
+import {
+    GetAllReferralLaboratoriesDocument,
+    GetAllReferralLaboratoriesQuery,
+    GetAllReferralLaboratoriesQueryVariables,
+    GetAllShipmentsDocument,
+    GetAllShipmentsQuery,
+    GetAllShipmentsQueryVariables,
+    GetShipmentByUidDocument,
+    GetShipmentByUidQuery,
+    GetShipmentByUidQueryVariables,
+} from '@/graphql/operations/shipment.queries';
 import { UpdateShipmentDocument, UpdateShipmentMutation, UpdateShipmentMutationVariables } from '@/graphql/operations/shipment.mutations';
-import { GetSamplesForShipmentAssignDocument, GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables } from '@/graphql/operations/analyses.queries';
+import {
+    GetSamplesForShipmentAssignDocument,
+    GetSamplesForShipmentAssignQuery,
+    GetSamplesForShipmentAssignQueryVariables,
+} from '@/graphql/operations/analyses.queries';
 import { PageInfo, ReferralLaboratoryType, SampleCursorPage, ShipmentCursorPage, ShipmentType, ShippedSampleType } from '@/types/gql';
 
 const { withClientQuery, withClientMutation } = useApiUtil();
 
 type ExtShipmentsQueryVariables = GetAllShipmentsQueryVariables & {
     filterAction?: boolean;
-}
+};
 
 type ExtSamplesForShipmentAssignQueryVariables = GetSamplesForShipmentAssignQueryVariables & {
     filterAction?: boolean;
-}
+};
 
 type ShipmentStateType = {
     laboratories: ReferralLaboratoryType[];
@@ -29,7 +43,7 @@ type ShipmentStateType = {
     samples: ShippedSampleType[];
     sampleCount: number;
     samplePageInfo?: PageInfo;
-}
+};
 
 export const useShipmentStore = defineStore('shipment', {
     state: (): ShipmentStateType => ({
@@ -49,8 +63,10 @@ export const useShipmentStore = defineStore('shipment', {
         getReferalLaboratories: (state): ReferralLaboratoryType[] => state.laboratories,
         getShipments: (state): ShipmentType[] => state.shipments,
         getShipment: (state): ShipmentType | undefined => state.shipment,
-        getShipmentByUid: (state) => (uid: string): ShipmentType | undefined => 
-            state.shipments.find(ws => ws.uid === uid),
+        getShipmentByUid:
+            state =>
+            (uid: string): ShipmentType | undefined =>
+                state.shipments.find(ws => ws.uid === uid),
         getShipmentCount: (state): number => state.shipmentCount,
         getShipmentPageInfo: (state): PageInfo | undefined => state.shipmentPageInfo,
         getSamples: (state): ShippedSampleType[] => state.samples,
@@ -63,11 +79,11 @@ export const useShipmentStore = defineStore('shipment', {
             try {
                 this.fetchingLaboratories = true;
                 const result = await withClientQuery<GetAllReferralLaboratoriesQuery, GetAllReferralLaboratoriesQueryVariables>(
-                    GetAllReferralLaboratoriesDocument, 
-                    {}, 
+                    GetAllReferralLaboratoriesDocument,
+                    {},
                     'referralLaboratoryAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.laboratories = result;
                 } else {
@@ -101,21 +117,21 @@ export const useShipmentStore = defineStore('shipment', {
             try {
                 this.fetchingShipments = true;
                 const result = await withClientQuery<GetAllShipmentsQuery, GetAllShipmentsQueryVariables>(
-                    GetAllShipmentsDocument, 
-                    params, 
+                    GetAllShipmentsDocument,
+                    params,
                     undefined
                 );
-                
+
                 if (result && typeof result === 'object' && 'shipmentAll' in result) {
                     const page = result.shipmentAll as ShipmentCursorPage;
                     const shipments = page.items || [];
-                    
+
                     if (params.filterAction) {
                         this.shipments = shipments as ShipmentType[];
                     } else {
                         this.shipments = addListsUnique(this.shipments, shipments as ShipmentType[], 'uid');
                     }
-                    
+
                     this.shipmentCount = page.totalCount;
                     this.shipmentPageInfo = page.pageInfo;
                 } else {
@@ -135,11 +151,11 @@ export const useShipmentStore = defineStore('shipment', {
 
             try {
                 const result = await withClientQuery<GetShipmentByUidQuery, GetShipmentByUidQueryVariables>(
-                    GetShipmentByUidDocument, 
-                    { shipmentUid: uid }, 
+                    GetShipmentByUidDocument,
+                    { shipmentUid: uid },
                     'shipmentByUid'
                 );
-                
+
                 if (result && typeof result === 'object') {
                     this.shipment = result as ShipmentType;
                 } else {
@@ -154,7 +170,7 @@ export const useShipmentStore = defineStore('shipment', {
                 console.error('Invalid shipment payload:', payload);
                 return;
             }
-            
+
             payload.shipments.forEach(shipment => {
                 if (shipment?.uid) {
                     this.shipments.unshift(shipment);
@@ -170,11 +186,11 @@ export const useShipmentStore = defineStore('shipment', {
         async updateShipment(payload: UpdateShipmentMutationVariables): Promise<void> {
             try {
                 const result = await withClientMutation<UpdateShipmentMutation, UpdateShipmentMutationVariables>(
-                    UpdateShipmentDocument, 
-                    payload, 
+                    UpdateShipmentDocument,
+                    payload,
                     'updateShipment'
                 );
-                
+
                 if (result && typeof result === 'object') {
                     this.updateShipmentMetadata(result);
                 } else {
@@ -189,10 +205,10 @@ export const useShipmentStore = defineStore('shipment', {
                 console.error('No shipment to update');
                 return;
             }
-            
+
             this.shipment = {
                 ...this.shipment,
-                ...payload
+                ...payload,
             };
         },
         updateShipmentStatus(shipment: { uid: string; state: string }): void {
@@ -200,12 +216,12 @@ export const useShipmentStore = defineStore('shipment', {
                 console.error('Invalid shipment status update:', shipment);
                 return;
             }
-            
+
             const index = this.shipments.findIndex(x => x.uid === shipment.uid);
             if (index > -1) {
                 this.shipments[index].state = shipment.state;
             }
-            
+
             if (this.shipment?.uid === shipment.uid) {
                 this.shipment.state = shipment.state;
             }
@@ -216,25 +232,25 @@ export const useShipmentStore = defineStore('shipment', {
             try {
                 this.fetchingSamples = true;
                 const result = await withClientQuery<GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables>(
-                    GetSamplesForShipmentAssignDocument, 
-                    params, 
+                    GetSamplesForShipmentAssignDocument,
+                    params,
                     undefined
                 );
-                
+
                 if (result && typeof result === 'object' && 'samplesForShipmentAssign' in result) {
                     const page = result.samplesForShipmentAssign as SampleCursorPage;
                     const items = page.items || [];
                     const samples = items.map((s: any) => {
-                        s.analysisResults = s.analysisResults?.filter((r: any) => r.status === "pending");
+                        s.analysisResults = s.analysisResults?.filter((r: any) => r.status === 'pending');
                         return s;
                     });
-                    
+
                     if (params.filterAction) {
                         this.samples = samples as ShippedSampleType[];
                     } else {
                         this.samples = addListsUnique(this.samples, samples as ShippedSampleType[], 'extSampleUid');
                     }
-                    
+
                     this.sampleCount = page.totalCount;
                     this.samplePageInfo = page.pageInfo;
                 } else {
@@ -253,19 +269,19 @@ export const useShipmentStore = defineStore('shipment', {
                 console.error('Invalid samples status update payload:', payload);
                 return;
             }
-            
+
             payload.forEach(result => {
                 if (!result?.uid) {
                     console.error('Invalid sample result:', result);
                     return;
                 }
-                
+
                 this.shipment?.samples?.forEach(sample => {
                     if (sample?.uid === result.uid) {
                         sample.status = result.status;
                     }
                 });
-                
+
                 this.shipment?.shippedSamples?.forEach(shipped => {
                     if (shipped?.sampleUid === result.uid && shipped.sample) {
                         shipped.sample.status = result.status;
@@ -278,13 +294,13 @@ export const useShipmentStore = defineStore('shipment', {
                 console.error('Invalid samples update payload:', payload);
                 return;
             }
-            
+
             payload.forEach(result => {
                 if (!result?.uid) {
                     console.error('Invalid sample result:', result);
                     return;
                 }
-                
+
                 const index = this.samples.findIndex(x => x.sampleUid === result.uid);
                 if (index > -1 && this.samples[index].sample) {
                     this.samples[index].sample = {

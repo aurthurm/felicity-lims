@@ -37,9 +37,14 @@ async def get_instrument(val):
 
 
 @strawberry.field(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.READ, FObject.ANALYTICS),
+            ]
+        )
+    ]
 )
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
     analytics = EntityAnalyticsInit(Sample)

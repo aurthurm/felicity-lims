@@ -4,12 +4,24 @@ import { useRouter } from 'vue-router';
 import { AuthenticatedData, LaboratoryType, UserType } from '@/types/gql';
 import { STORAGE_AUTH_KEY } from '@/conf';
 import {
-    AuthenticateUserDocument, AuthenticateUserMutation, AuthenticateUserMutationVariables,
-    TokenRefreshDocument, TokenRefreshMutation, TokenRefreshMutationVariables,
-    RequestPassResetDocument, RequestPassResetMutation, RequestPassResetMutationVariables,
-    PasswordResetDocument, PasswordResetMutation, PasswordResetMutationVariables,
-    ValidatePassResetTokenDocument, ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables,
-    SwitchActiveLaboratoryDocument, SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables,
+    AuthenticateUserDocument,
+    AuthenticateUserMutation,
+    AuthenticateUserMutationVariables,
+    TokenRefreshDocument,
+    TokenRefreshMutation,
+    TokenRefreshMutationVariables,
+    RequestPassResetDocument,
+    RequestPassResetMutation,
+    RequestPassResetMutationVariables,
+    PasswordResetDocument,
+    PasswordResetMutation,
+    PasswordResetMutationVariables,
+    ValidatePassResetTokenDocument,
+    ValidatePassResetTokenMutation,
+    ValidatePassResetTokenMutationVariables,
+    SwitchActiveLaboratoryDocument,
+    SwitchActiveLaboratoryMutation,
+    SwitchActiveLaboratoryMutationVariables,
 } from '@/graphql/operations/_mutations';
 import useApiUtil from '@/composables/api_util';
 import jwtDecode from 'jwt-decode';
@@ -94,11 +106,14 @@ interface IAuthAnalytics {
     lastLoginAt: Date | null;
     averageSessionDuration: number;
     mostUsedLaboratory: string | null;
-    laboratoryUsageStats: Record<string, {
-        count: number;
-        totalDuration: number;
-        lastAccess: Date;
-    }>;
+    laboratoryUsageStats: Record<
+        string,
+        {
+            count: number;
+            totalDuration: number;
+            lastAccess: Date;
+        }
+    >;
     securityEvents: Array<{
         type: 'login' | 'logout' | 'password_change' | 'failed_login' | 'token_refresh' | 'laboratory_switch';
         timestamp: Date;
@@ -116,7 +131,7 @@ interface IEnhancedAuth {
     isAuthenticated: boolean;
     processing: boolean;
     refreshTokenTimeout: any;
-    
+
     // Password reset
     forgotPassword: boolean;
     receivedToken: boolean;
@@ -124,27 +139,27 @@ interface IEnhancedAuth {
         canReset: boolean;
         username?: string;
     };
-    
+
     // Laboratory context
     laboratoryContext: ILaboratoryContext;
-    
+
     // User preferences and settings
     userPreferences: IUserPreferences;
     securitySettings: ISecuritySettings;
-    
+
     // Session management
     sessionInfo: ISessionInfo | null;
     activeSessions: ISessionInfo[];
-    
+
     // Authentication analytics
     analytics: IAuthAnalytics;
-    
+
     // Advanced features
     biometricEnabled: boolean;
     rememberMe: boolean;
     autoSwitchLaboratory: boolean;
     offlineMode: boolean;
-    
+
     // Error handling
     lastError: string | null;
     errorHistory: Array<{
@@ -152,7 +167,7 @@ interface IEnhancedAuth {
         timestamp: Date;
         context: string;
     }>;
-    
+
     // Performance monitoring
     performanceMetrics: {
         authenticationTime: number;
@@ -167,7 +182,7 @@ const STORAGE_ANALYTICS_KEY = 'felicity_auth_analytics';
 
 export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const router = useRouter();
-    
+
     // Default configurations
     const defaultPreferences: IUserPreferences = {
         theme: 'system',
@@ -221,7 +236,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
         isAuthenticated: false,
         processing: false,
         refreshTokenTimeout: undefined,
-        
+
         // Password reset
         forgotPassword: false,
         receivedToken: false,
@@ -229,7 +244,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             canReset: false,
             username: '',
         },
-        
+
         // Laboratory context
         laboratoryContext: {
             activeLaboratory: null,
@@ -241,28 +256,28 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             lastSwitchAt: null,
             contextPermissions: {},
         },
-        
+
         // User preferences and settings
         userPreferences: { ...defaultPreferences },
         securitySettings: { ...defaultSecuritySettings },
-        
+
         // Session management
         sessionInfo: null,
         activeSessions: [],
-        
+
         // Authentication analytics
         analytics: { ...defaultAnalytics },
-        
+
         // Advanced features
         biometricEnabled: false,
         rememberMe: false,
         autoSwitchLaboratory: false,
         offlineMode: false,
-        
+
         // Error handling
         lastError: null,
         errorHistory: [],
-        
+
         // Performance monitoring
         performanceMetrics: {
             authenticationTime: 0,
@@ -288,7 +303,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const sessionTimeRemaining = computed(() => {
         if (!auth.value.sessionInfo) return 0;
-        
+
         const elapsed = Date.now() - auth.value.sessionInfo.lastActivity.getTime();
         const remaining = auth.value.securitySettings.sessionTimeout - elapsed;
         return Math.max(0, remaining);
@@ -300,7 +315,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const tokenExpiresAt = computed(() => {
         if (!auth.value.token) return null;
-        
+
         try {
             const decoded: any = jwtDecode(auth.value.token);
             return new Date(decoded.exp * 1000);
@@ -311,7 +326,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const isTokenExpiring = computed(() => {
         if (!tokenExpiresAt.value) return false;
-        
+
         const timeUntilExpiry = tokenExpiresAt.value.getTime() - Date.now();
         return timeUntilExpiry < 10 * 60 * 1000; // 10 minutes warning
     });
@@ -339,25 +354,24 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const logout = async (reason = 'user_initiated') => {
         const startTime = performance.now();
-        
+
         try {
             // Record logout event
             await recordSecurityEvent('logout', { reason }, 'low');
-            
+
             // Update session analytics
             if (auth.value.sessionInfo) {
                 const sessionDuration = Date.now() - auth.value.sessionInfo.startTime.getTime();
                 updateAnalytics({ sessionDuration });
             }
-            
+
             // Clear all auth data
             reset();
-            
+
             // Redirect to login if needed
             if (router.currentRoute.value.meta?.requiresAuth) {
                 await router.push('/auth/login');
             }
-            
         } catch (error) {
             console.error('Logout error:', error);
             reset(); // Force reset even if analytics fail
@@ -372,40 +386,38 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             console.error('No refresh token available');
             return false;
         }
-        
+
         if (auth.value.processing) {
             console.warn('Token refresh already in progress');
             return false;
         }
-        
+
         const startTime = performance.now();
         auth.value.processing = true;
-        
+
         try {
             const res = await withClientMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(
                 TokenRefreshDocument,
                 { refreshToken: auth.value.refresh },
                 'refresh'
             );
-            
+
             if (!res) {
                 console.warn('Token refresh returned no data');
                 return false;
             }
-            
+
             await persistAuth(res);
             await recordSecurityEvent('token_refresh', { success: true }, 'low');
-            
+
             return true;
-            
         } catch (err) {
             console.error('Token refresh failed:', err);
             await recordSecurityEvent('token_refresh', { success: false, error: String(err) }, 'medium');
-            
+
             // If refresh fails, logout user
             await logout('token_refresh_failed');
             return false;
-            
         } finally {
             auth.value.processing = false;
             auth.value.performanceMetrics.tokenRefreshTime = performance.now() - startTime;
@@ -414,34 +426,33 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const startRefreshTokenTimer = () => {
         if (!auth.value.token) return;
-        
+
         try {
             stopRefreshTokenTimer();
-            
+
             const decodedToken: any = jwtDecode(auth.value.token);
             if (!decodedToken || !decodedToken.exp) {
                 console.error('Invalid token format');
                 return;
             }
-            
+
             const expiresAt = new Date(decodedToken.exp * 1000);
             const now = new Date();
             const timeUntilExpiry = expiresAt.getTime() - now.getTime();
-            
+
             // Refresh 5 minutes before expiry
             const refreshTime = 5 * 60 * 1000;
             const timeout = Math.max(0, timeUntilExpiry - refreshTime);
-            
+
             if (timeout <= 0) {
                 console.warn('Token is expired or about to expire, refreshing immediately');
                 refreshToken();
                 return;
             }
-            
+
             console.log(`Setting refresh token timer for ${new Date(now.getTime() + timeout).toLocaleTimeString()}`);
-            
+
             auth.value.refreshTokenTimeout = setTimeout(refreshToken, timeout);
-            
         } catch (error) {
             console.error('Failed to start refresh token timer:', error);
         }
@@ -452,51 +463,57 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
         const startTime = performance.now();
         auth.value.processing = true;
         auth.value.lastError = null;
-        
+
         try {
             const res = await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(
                 AuthenticateUserDocument,
                 payload,
                 'authenticateUser'
             );
-            
+
             if (!res) {
                 throw new Error('Authentication returned no data');
             }
-            
+
             await persistAuth(res);
-            
+
             // Initialize session info
             initializeSession();
-            
+
             // Record successful login
-            await recordSecurityEvent('login', { 
-                username: payload.username,
-                success: true 
-            }, 'low');
-            
+            await recordSecurityEvent(
+                'login',
+                {
+                    username: payload.username,
+                    success: true,
+                },
+                'low'
+            );
+
             // Update analytics
-            updateAnalytics({ 
+            updateAnalytics({
                 loginCount: auth.value.analytics.loginCount + 1,
-                lastLoginAt: new Date()
+                lastLoginAt: new Date(),
             });
-            
+
             return true;
-            
         } catch (err) {
             const errorMessage = String(err);
             auth.value.lastError = errorMessage;
-            
+
             // Record failed login
-            await recordSecurityEvent('login', { 
-                username: payload.username,
-                success: false,
-                error: errorMessage
-            }, 'medium');
-            
+            await recordSecurityEvent(
+                'login',
+                {
+                    username: payload.username,
+                    success: false,
+                    error: errorMessage,
+                },
+                'medium'
+            );
+
             console.error('Authentication failed:', err);
             return false;
-            
         } finally {
             auth.value.processing = false;
             auth.value.performanceMetrics.authenticationTime = performance.now() - startTime;
@@ -509,79 +526,84 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             console.warn('Laboratory switch already in progress');
             return false;
         }
-        
+
         const startTime = performance.now();
         auth.value.laboratoryContext.switchingInProgress = true;
-        
+
         try {
             const res = await withClientMutation<SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables>(
                 SwitchActiveLaboratoryDocument,
                 { laboratoryUid },
                 'switchActiveLaboratory'
             );
-            
+
             if (!res) {
                 throw new Error('Laboratory switch returned no data');
             }
-            
+
             // Update auth state with new laboratory context
             await persistAuth(res);
-            
+
             // Record laboratory switch
             const previousLab = auth.value.laboratoryContext.activeLaboratory;
             const newLab = auth.value.laboratoryContext.availableLaboratories.find(lab => lab.uid === laboratoryUid);
-            
+
             if (newLab) {
                 // Update laboratory context
                 auth.value.laboratoryContext.activeLaboratory = newLab;
                 auth.value.laboratoryContext.lastSwitchAt = new Date();
-                
+
                 // Update history
                 if (previousLab) {
                     const historyEntry = {
                         laboratory: previousLab,
                         accessedAt: new Date(),
-                        duration: auth.value.laboratoryContext.lastSwitchAt 
-                            ? Date.now() - auth.value.laboratoryContext.lastSwitchAt.getTime() 
-                            : 0
+                        duration: auth.value.laboratoryContext.lastSwitchAt
+                            ? Date.now() - auth.value.laboratoryContext.lastSwitchAt.getTime()
+                            : 0,
                     };
                     auth.value.laboratoryContext.laboratoryHistory.unshift(historyEntry);
-                    
+
                     // Keep only last 10 entries
                     if (auth.value.laboratoryContext.laboratoryHistory.length > 10) {
-                        auth.value.laboratoryContext.laboratoryHistory = 
-                            auth.value.laboratoryContext.laboratoryHistory.slice(0, 10);
+                        auth.value.laboratoryContext.laboratoryHistory = auth.value.laboratoryContext.laboratoryHistory.slice(0, 10);
                     }
                 }
-                
+
                 // Update recent laboratories
                 updateRecentLaboratories(newLab);
-                
+
                 // Update usage statistics
                 updateLaboratoryUsageStats(laboratoryUid);
-                
+
                 // Record security event
-                await recordSecurityEvent('laboratory_switch', {
-                    previousLaboratory: previousLab?.uid,
-                    newLaboratory: laboratoryUid,
-                    laboratoryName: newLab.name
-                }, 'low');
+                await recordSecurityEvent(
+                    'laboratory_switch',
+                    {
+                        previousLaboratory: previousLab?.uid,
+                        newLaboratory: laboratoryUid,
+                        laboratoryName: newLab.name,
+                    },
+                    'low'
+                );
             }
-            
+
             return true;
-            
         } catch (err) {
             console.error('Laboratory switch failed:', err);
             auth.value.lastError = String(err);
-            
-            await recordSecurityEvent('laboratory_switch', {
-                laboratoryUid,
-                success: false,
-                error: String(err)
-            }, 'medium');
-            
+
+            await recordSecurityEvent(
+                'laboratory_switch',
+                {
+                    laboratoryUid,
+                    success: false,
+                    error: String(err),
+                },
+                'medium'
+            );
+
             return false;
-            
         } finally {
             auth.value.laboratoryContext.switchingInProgress = false;
             auth.value.performanceMetrics.laboratorySwitchTime = performance.now() - startTime;
@@ -600,13 +622,13 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const updateRecentLaboratories = (laboratory: LaboratoryType) => {
         const recent = auth.value.laboratoryContext.recentLaboratories;
         const existingIndex = recent.findIndex(lab => lab.uid === laboratory.uid);
-        
+
         if (existingIndex > -1) {
             recent.splice(existingIndex, 1);
         }
-        
+
         recent.unshift(laboratory);
-        
+
         // Keep only last 5 recent laboratories
         if (recent.length > 5) {
             auth.value.laboratoryContext.recentLaboratories = recent.slice(0, 5);
@@ -620,32 +642,31 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             .slice(0, 3)
             .map(([uid]) => auth.value.laboratoryContext.availableLaboratories.find(lab => lab.uid === uid))
             .filter(Boolean) as LaboratoryType[];
-        
+
         auth.value.laboratoryContext.frequentLaboratories = frequent;
     };
 
     const updateLaboratoryUsageStats = (laboratoryUid: string) => {
         const stats = auth.value.analytics.laboratoryUsageStats;
-        
+
         if (!stats[laboratoryUid]) {
             stats[laboratoryUid] = {
                 count: 0,
                 totalDuration: 0,
-                lastAccess: new Date()
+                lastAccess: new Date(),
             };
         }
-        
+
         stats[laboratoryUid].count += 1;
         stats[laboratoryUid].lastAccess = new Date();
-        
+
         // Update most used laboratory
-        const mostUsed = Object.entries(stats)
-            .sort(([, a], [, b]) => b.count - a.count)[0];
-        
+        const mostUsed = Object.entries(stats).sort(([, a], [, b]) => b.count - a.count)[0];
+
         if (mostUsed) {
             auth.value.analytics.mostUsedLaboratory = mostUsed[0];
         }
-        
+
         updateFrequentLaboratories();
     };
 
@@ -653,7 +674,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const initializeSession = () => {
         const sessionId = crypto.randomUUID();
         const now = new Date();
-        
+
         auth.value.sessionInfo = {
             sessionId,
             startTime: now,
@@ -664,10 +685,10 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 platform: navigator.platform,
                 browser: getBrowserInfo().name,
                 version: getBrowserInfo().version,
-                isMobile: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)
-            }
+                isMobile: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent),
+            },
         };
-        
+
         // Start session timeout monitoring
         startSessionTimeoutMonitoring();
     };
@@ -680,13 +701,13 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const startSessionTimeoutMonitoring = () => {
         const checkInterval = 60000; // Check every minute
-        
+
         const timeoutCheck = setInterval(() => {
             if (!auth.value.isAuthenticated) {
                 clearInterval(timeoutCheck);
                 return;
             }
-            
+
             if (sessionTimeRemaining.value <= 0) {
                 clearInterval(timeoutCheck);
                 logout('session_timeout');
@@ -757,18 +778,18 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             type,
             timestamp: new Date(),
             details,
-            severity
+            severity,
         };
-        
+
         auth.value.analytics.securityEvents.unshift(event);
-        
+
         // Keep only last 50 events
         if (auth.value.analytics.securityEvents.length > 50) {
             auth.value.analytics.securityEvents = auth.value.analytics.securityEvents.slice(0, 50);
         }
-        
+
         saveAnalytics();
-        
+
         // Trigger alerts for high severity events
         if (severity === 'high') {
             console.warn('High severity security event:', event);
@@ -808,7 +829,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             loadUserPreferences();
             loadSecuritySettings();
             loadAnalytics();
-            
+
             if (storedAuth?.token && storedAuth?.user) {
                 auth.value = {
                     ...auth.value,
@@ -816,14 +837,14 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                     isAuthenticated: true,
                     processing: false,
                 };
-                
+
                 // Initialize laboratory context
                 if (storedAuth.user?.laboratories) {
                     auth.value.laboratoryContext.availableLaboratories = storedAuth.user.laboratories;
                     auth.value.laboratoryContext.activeLaboratory = storedAuth.user.activeLaboratory || null;
                     updateFrequentLaboratories();
                 }
-                
+
                 initializeSession();
                 startRefreshTokenTimer();
             } else {
@@ -844,14 +865,13 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 isAuthenticated: true,
                 processing: false,
             };
-            
+
             // Update laboratory context if user data includes laboratories
             if (data.user?.laboratories) {
                 auth.value.laboratoryContext.availableLaboratories = data.user.laboratories;
                 auth.value.laboratoryContext.activeLaboratory = data.user.activeLaboratory || null;
                 updateFrequentLaboratories();
             }
-            
         } catch (error) {
             console.error('Failed to persist auth data:', error);
             reset();
@@ -863,7 +883,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
         const userAgent = navigator.userAgent;
         let name = 'Unknown';
         let version = 'Unknown';
-        
+
         if (userAgent.includes('Chrome')) {
             name = 'Chrome';
             version = userAgent.match(/Chrome\/(\d+)/)?.[1] || 'Unknown';
@@ -877,7 +897,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             name = 'Edge';
             version = userAgent.match(/Edge\/(\d+)/)?.[1] || 'Unknown';
         }
-        
+
         return { name, version };
     };
 
@@ -898,10 +918,9 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 { email },
                 'requestPasswordReset'
             );
-            
+
             setReceivedResetToken(true);
             await recordSecurityEvent('password_reset_request', { email }, 'medium');
-            
         } catch (err) {
             console.error('Password reset request failed:', err);
             auth.value.lastError = String(err);
@@ -918,12 +937,11 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 { token },
                 'validatePasswordResetToken'
             );
-            
+
             auth.value.resetData = {
                 canReset: !!res?.username,
-                username: res?.username
+                username: res?.username,
             };
-            
         } catch (err) {
             console.error('Token validation failed:', err);
             auth.value.lastError = String(err);
@@ -945,18 +963,17 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 {
                     userUid: auth.value.resetData.username,
                     password,
-                    passwordc
+                    passwordc,
                 },
                 'resetPassword'
             );
-            
+
             setForgotPassword(false);
             await recordSecurityEvent('password_change', { method: 'reset' }, 'medium');
-            
+
             // Update security settings
             auth.value.securitySettings.lastPasswordChange = new Date();
             saveSecuritySettings();
-            
         } catch (err) {
             console.error('Password reset failed:', err);
             auth.value.lastError = String(err);
@@ -969,28 +986,34 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     initializeFromStorage();
 
     // Watch for auth state changes
-    watch(() => auth.value, (authValue, oldValue) => {
-        if ((authValue?.token !== oldValue?.token || authValue?.user !== oldValue?.user) && 
-            authValue?.user && authValue?.token) {
-            try {
-                authToStorage(authValue as AuthenticatedData);
-                updateSessionActivity();
-            } catch (error) {
-                console.error('Failed to persist auth state:', error);
-                reset();
+    watch(
+        () => auth.value,
+        (authValue, oldValue) => {
+            if ((authValue?.token !== oldValue?.token || authValue?.user !== oldValue?.user) && authValue?.user && authValue?.token) {
+                try {
+                    authToStorage(authValue as AuthenticatedData);
+                    updateSessionActivity();
+                } catch (error) {
+                    console.error('Failed to persist auth state:', error);
+                    reset();
+                }
             }
-        }
-    }, { deep: true });
+        },
+        { deep: true }
+    );
 
     // Watch for route changes to update session activity
-    watch(() => router.currentRoute.value.path, () => {
-        updateSessionActivity();
-    });
+    watch(
+        () => router.currentRoute.value.path,
+        () => {
+            updateSessionActivity();
+        }
+    );
 
     return {
         // State
         auth: computed(() => auth.value),
-        
+
         // Computed properties
         isLabContextRequired,
         hasMultipleLaboratories,
@@ -999,29 +1022,29 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
         isSessionExpiring,
         tokenExpiresAt,
         isTokenExpiring,
-        
+
         // Core authentication methods
         authenticate,
         logout,
         reset,
         persistAuth,
         refreshToken,
-        
+
         // Laboratory context methods
         switchActiveLaboratory,
         refreshLaboratories,
-        
+
         // Session management
         updateSessionActivity,
-        
+
         // User preferences
         updateUserPreferences,
         updateSecuritySettings,
-        
+
         // Analytics
         recordSecurityEvent,
         updateAnalytics,
-        
+
         // Password reset methods
         setForgotPassword,
         setReceivedResetToken,

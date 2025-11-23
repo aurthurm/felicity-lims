@@ -18,7 +18,7 @@ from felicity.core.tenant_context import (
     get_tenant_context,
     TenantContext,
     require_lab_context,
-    require_user_context
+    require_user_context,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -47,13 +47,13 @@ async def _get_user(token: str):
 
 
 async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User | None:
     return await _get_user(token)
 
 
 async def get_current_active_user(
-        token: Annotated[str, Depends(oauth2_scheme)],
+    token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User | None:
     current_user = await _get_user(token)
     if not current_user or not current_user.is_active:
@@ -87,7 +87,7 @@ def get_current_tenant_context() -> TenantContext:
     if not context:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tenant context available"
+            detail="No tenant context available",
         )
     return context
 
@@ -98,8 +98,7 @@ def require_authenticated_user() -> str:
         return require_user_context()
     except ValueError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required"
         )
 
 
@@ -110,7 +109,7 @@ def require_lab_context_dep() -> str:
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Laboratory context required. Please select a laboratory."
+            detail="Laboratory context required. Please select a laboratory.",
         )
 
 
@@ -119,16 +118,14 @@ async def get_current_user_from_context() -> User:
     context = get_tenant_context()
     if not context or not context.user_uid:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required"
         )
 
     user_service = UserService()
     user = await user_service.get(uid=context.user_uid)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
         )
 
     return user

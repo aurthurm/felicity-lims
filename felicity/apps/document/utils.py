@@ -25,7 +25,9 @@ def get_compressed_thumbnail_base64(pdf_bytes, thumbnail_size=(200, 500), qualit
         img.thumbnail(thumbnail_size)  # Resize image to thumbnail
 
         img_bytes = io.BytesIO()
-        img.save(img_bytes, format="JPEG", quality=quality, optimize=True)  # ,   # Heavily compressed JPEG
+        img.save(
+            img_bytes, format="JPEG", quality=quality, optimize=True
+        )  # ,   # Heavily compressed JPEG
         img_base64 = base64.b64encode(img_bytes.getvalue()).decode("utf-8")
         return img_base64
 
@@ -33,7 +35,7 @@ def get_compressed_thumbnail_base64(pdf_bytes, thumbnail_size=(200, 500), qualit
 
 
 def get_thumbnail(html_content):
-    html = f'''
+    html = f"""
     <html>
       <head>
           <title>Thumbnail</title>
@@ -42,6 +44,6 @@ def get_thumbnail(html_content):
         {html_content}
       </body>
     </html>
-    '''
+    """
     pdf_bytes = convert_html_to_pdf_bytes(html)
     return get_compressed_thumbnail_base64(pdf_bytes)

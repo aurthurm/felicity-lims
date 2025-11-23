@@ -1,62 +1,137 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.multiplex.microbiology.entities import (
-    AbxGuideline, AbxAntibioticGuideline, AbxAntibiotic,
-    AbxKingdom, AbxPhylum, AbxClass, AbxOrder, AbxFamily, AbxGenus, AbxOrganism, AbxOrganismSerotype, AbxTestMethod,
-    AbxBreakpointType, AbxHost, AbxSiteOfInfection, AbxBreakpoint, AbxExpResPhenotype,
-    AbxExpertInterpretationRule, AbxMedium, AbxQCRange, AbxASTPanel, AbxOrganismResult, AbxASTResult, AbxGuidelineYear
+    AbxGuideline,
+    AbxAntibioticGuideline,
+    AbxAntibiotic,
+    AbxKingdom,
+    AbxPhylum,
+    AbxClass,
+    AbxOrder,
+    AbxFamily,
+    AbxGenus,
+    AbxOrganism,
+    AbxOrganismSerotype,
+    AbxTestMethod,
+    AbxBreakpointType,
+    AbxHost,
+    AbxSiteOfInfection,
+    AbxBreakpoint,
+    AbxExpResPhenotype,
+    AbxExpertInterpretationRule,
+    AbxMedium,
+    AbxQCRange,
+    AbxASTPanel,
+    AbxOrganismResult,
+    AbxASTResult,
+    AbxGuidelineYear,
 )
 from felicity.apps.multiplex.microbiology.repository import (
-    AbxGuidelineRepository, AbxAntibioticGuidelineRepository, AbxAntibioticRepository,
-    AbxKingdomRepository, AbxPhylumRepository, AbxClassRepository, AbxOrderRepository,
-    AbxFamilyRepository, AbxGenusRepository, AbxOrganismRepository, AbxOrganismSerotypeRepository,
-    AbxTestMethodRepository, AbxBreakpointTypeRepository, AbxHostRepository, AbxSiteOfInfectionRepository,
-    AbxBreakpointRepository, AbxExpResPhenotypeRepository,
-    AbxExpertInterpretationRuleRepository, AbxMediumRepository, AbxQCRangeRepository, AbxASTPanelRepository,
-    AbxOrganismResultRepository, AbxASTResultRepository, AbxGuidelineYearRepository
+    AbxGuidelineRepository,
+    AbxAntibioticGuidelineRepository,
+    AbxAntibioticRepository,
+    AbxKingdomRepository,
+    AbxPhylumRepository,
+    AbxClassRepository,
+    AbxOrderRepository,
+    AbxFamilyRepository,
+    AbxGenusRepository,
+    AbxOrganismRepository,
+    AbxOrganismSerotypeRepository,
+    AbxTestMethodRepository,
+    AbxBreakpointTypeRepository,
+    AbxHostRepository,
+    AbxSiteOfInfectionRepository,
+    AbxBreakpointRepository,
+    AbxExpResPhenotypeRepository,
+    AbxExpertInterpretationRuleRepository,
+    AbxMediumRepository,
+    AbxQCRangeRepository,
+    AbxASTPanelRepository,
+    AbxOrganismResultRepository,
+    AbxASTResultRepository,
+    AbxGuidelineYearRepository,
 )
 
 from felicity.apps.multiplex.microbiology.schemas import (
-    AbxGuidelineCreate, AbxGuidelineUpdate,
-    AbxAntibioticGuidelineCreate, AbxAntibioticGuidelineUpdate,
-    AbxAntibioticCreate, AbxAntibioticUpdate,
-    AbxKingdomCreate, AbxKingdomUpdate,
-    AbxPhylumCreate, AbxPhylumUpdate,
-    AbxClassCreate, AbxClassUpdate,
-    AbxOrderCreate, AbxOrderUpdate,
-    AbxFamilyCreate, AbxFamilyUpdate,
-    AbxGenusCreate, AbxGenusUpdate,
-    AbxOrganismCreate, AbxOrganismUpdate,
-    AbxOrganismSerotypeCreate, AbxOrganismSerotypeUpdate,
-    AbxTestMethodCreate, AbxTestMethodUpdate,
-    AbxBreakpointTypeCreate, AbxBreakpointTypeUpdate,
-    AbxHostCreate, AbxHostUpdate,
-    AbxSiteOfInfectionCreate, AbxSiteOfInfectionUpdate,
-    AbxBreakpointCreate, AbxBreakpointUpdate,
-    AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate,
-    AbxExpertInterpretationRuleCreate, AbxExpertInterpretationRuleUpdate,
-    AbxMediumCreate, AbxMediumUpdate,
-    AbxQCRangeCreate, AbxQCRangeUpdate,
-    AbxASTPanelCreate, AbxASTPanelUpdate, AbxOrganismResultCreate, AbxOrganismResultUpdate, AbxASTResultCreate,
-    AbxASTResultUpdate, AbxGuidelineYearCreate, AbxGuidelineYearUpdate, )
+    AbxGuidelineCreate,
+    AbxGuidelineUpdate,
+    AbxAntibioticGuidelineCreate,
+    AbxAntibioticGuidelineUpdate,
+    AbxAntibioticCreate,
+    AbxAntibioticUpdate,
+    AbxKingdomCreate,
+    AbxKingdomUpdate,
+    AbxPhylumCreate,
+    AbxPhylumUpdate,
+    AbxClassCreate,
+    AbxClassUpdate,
+    AbxOrderCreate,
+    AbxOrderUpdate,
+    AbxFamilyCreate,
+    AbxFamilyUpdate,
+    AbxGenusCreate,
+    AbxGenusUpdate,
+    AbxOrganismCreate,
+    AbxOrganismUpdate,
+    AbxOrganismSerotypeCreate,
+    AbxOrganismSerotypeUpdate,
+    AbxTestMethodCreate,
+    AbxTestMethodUpdate,
+    AbxBreakpointTypeCreate,
+    AbxBreakpointTypeUpdate,
+    AbxHostCreate,
+    AbxHostUpdate,
+    AbxSiteOfInfectionCreate,
+    AbxSiteOfInfectionUpdate,
+    AbxBreakpointCreate,
+    AbxBreakpointUpdate,
+    AbxExpResPhenotypeCreate,
+    AbxExpResPhenotypeUpdate,
+    AbxExpertInterpretationRuleCreate,
+    AbxExpertInterpretationRuleUpdate,
+    AbxMediumCreate,
+    AbxMediumUpdate,
+    AbxQCRangeCreate,
+    AbxQCRangeUpdate,
+    AbxASTPanelCreate,
+    AbxASTPanelUpdate,
+    AbxOrganismResultCreate,
+    AbxOrganismResultUpdate,
+    AbxASTResultCreate,
+    AbxASTResultUpdate,
+    AbxGuidelineYearCreate,
+    AbxGuidelineYearUpdate,
+)
 
 
-class AbxGuidelineService(BaseService[AbxGuideline, AbxGuidelineCreate, AbxGuidelineUpdate]):
+class AbxGuidelineService(
+    BaseService[AbxGuideline, AbxGuidelineCreate, AbxGuidelineUpdate]
+):
     def __init__(self):
         super().__init__(AbxGuidelineRepository())
 
 
-class AbxGuidelineYearService(BaseService[AbxGuidelineYear, AbxGuidelineYearCreate, AbxGuidelineYearUpdate]):
+class AbxGuidelineYearService(
+    BaseService[AbxGuidelineYear, AbxGuidelineYearCreate, AbxGuidelineYearUpdate]
+):
     def __init__(self):
         super().__init__(AbxGuidelineYearRepository())
 
 
 class AbxAntibioticGuidelineService(
-    BaseService[AbxAntibioticGuideline, AbxAntibioticGuidelineCreate, AbxAntibioticGuidelineUpdate]):
+    BaseService[
+        AbxAntibioticGuideline,
+        AbxAntibioticGuidelineCreate,
+        AbxAntibioticGuidelineUpdate,
+    ]
+):
     def __init__(self):
         super().__init__(AbxAntibioticGuidelineRepository())
 
 
-class AbxAntibioticService(BaseService[AbxAntibiotic, AbxAntibioticCreate, AbxAntibioticUpdate]):
+class AbxAntibioticService(
+    BaseService[AbxAntibiotic, AbxAntibioticCreate, AbxAntibioticUpdate]
+):
     def __init__(self):
         super().__init__(AbxAntibioticRepository())
 
@@ -91,23 +166,32 @@ class AbxGenusService(BaseService[AbxGenus, AbxGenusCreate, AbxGenusUpdate]):
         super().__init__(AbxGenusRepository())
 
 
-class AbxOrganismService(BaseService[AbxOrganism, AbxOrganismCreate, AbxOrganismUpdate]):
+class AbxOrganismService(
+    BaseService[AbxOrganism, AbxOrganismCreate, AbxOrganismUpdate]
+):
     def __init__(self):
         super().__init__(AbxOrganismRepository())
 
 
 class AbxOrganismSerotypeService(
-    BaseService[AbxOrganismSerotype, AbxOrganismSerotypeCreate, AbxOrganismSerotypeUpdate]):
+    BaseService[
+        AbxOrganismSerotype, AbxOrganismSerotypeCreate, AbxOrganismSerotypeUpdate
+    ]
+):
     def __init__(self):
         super().__init__(AbxOrganismSerotypeRepository())
 
 
-class AbxTestMethodService(BaseService[AbxTestMethod, AbxTestMethodCreate, AbxTestMethodUpdate]):
+class AbxTestMethodService(
+    BaseService[AbxTestMethod, AbxTestMethodCreate, AbxTestMethodUpdate]
+):
     def __init__(self):
         super().__init__(AbxTestMethodRepository())
 
 
-class AbxBreakpointTypeService(BaseService[AbxBreakpointType, AbxBreakpointTypeCreate, AbxBreakpointTypeUpdate]):
+class AbxBreakpointTypeService(
+    BaseService[AbxBreakpointType, AbxBreakpointTypeCreate, AbxBreakpointTypeUpdate]
+):
     def __init__(self):
         super().__init__(AbxBreakpointTypeRepository())
 
@@ -117,23 +201,34 @@ class AbxHostService(BaseService[AbxHost, AbxHostCreate, AbxHostUpdate]):
         super().__init__(AbxHostRepository())
 
 
-class AbxSiteOfInfectionService(BaseService[AbxSiteOfInfection, AbxSiteOfInfectionCreate, AbxSiteOfInfectionUpdate]):
+class AbxSiteOfInfectionService(
+    BaseService[AbxSiteOfInfection, AbxSiteOfInfectionCreate, AbxSiteOfInfectionUpdate]
+):
     def __init__(self):
         super().__init__(AbxSiteOfInfectionRepository())
 
 
-class AbxBreakpointService(BaseService[AbxBreakpoint, AbxBreakpointCreate, AbxBreakpointUpdate]):
+class AbxBreakpointService(
+    BaseService[AbxBreakpoint, AbxBreakpointCreate, AbxBreakpointUpdate]
+):
     def __init__(self):
         super().__init__(AbxBreakpointRepository())
 
 
-class AbxExpResPhenotypeService(BaseService[AbxExpResPhenotype, AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate]):
+class AbxExpResPhenotypeService(
+    BaseService[AbxExpResPhenotype, AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate]
+):
     def __init__(self):
         super().__init__(AbxExpResPhenotypeRepository())
 
 
 class AbxExpertInterpretationRuleService(
-    BaseService[AbxExpertInterpretationRule, AbxExpertInterpretationRuleCreate, AbxExpertInterpretationRuleUpdate]):
+    BaseService[
+        AbxExpertInterpretationRule,
+        AbxExpertInterpretationRuleCreate,
+        AbxExpertInterpretationRuleUpdate,
+    ]
+):
     def __init__(self):
         super().__init__(AbxExpertInterpretationRuleRepository())
 
@@ -148,16 +243,22 @@ class AbxQCRangeService(BaseService[AbxQCRange, AbxQCRangeCreate, AbxQCRangeUpda
         super().__init__(AbxQCRangeRepository())
 
 
-class AbxASTPanelService(BaseService[AbxASTPanel, AbxASTPanelCreate, AbxASTPanelUpdate]):
+class AbxASTPanelService(
+    BaseService[AbxASTPanel, AbxASTPanelCreate, AbxASTPanelUpdate]
+):
     def __init__(self):
         super().__init__(AbxASTPanelRepository())
 
 
-class AbxASTResultService(BaseService[AbxASTResult, AbxASTResultCreate, AbxASTResultUpdate]):
+class AbxASTResultService(
+    BaseService[AbxASTResult, AbxASTResultCreate, AbxASTResultUpdate]
+):
     def __init__(self):
         super().__init__(AbxASTResultRepository())
 
 
-class AbxOrganismResultService(BaseService[AbxOrganismResult, AbxOrganismResultCreate, AbxOrganismResultUpdate]):
+class AbxOrganismResultService(
+    BaseService[AbxOrganismResult, AbxOrganismResultCreate, AbxOrganismResultUpdate]
+):
     def __init__(self):
         super().__init__(AbxOrganismResultRepository())

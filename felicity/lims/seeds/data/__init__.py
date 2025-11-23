@@ -39,7 +39,9 @@ def load_whonet_dataframes() -> dict:
         "QCRanges",
         "Serotype",
     ]:
-        data[_f] = pd.read_csv(f"{settings.SEEDS_DIR}/whonet/{_f}.txt", delimiter="\t", low_memory=False)
+        data[_f] = pd.read_csv(
+            f"{settings.SEEDS_DIR}/whonet/{_f}.txt", delimiter="\t", low_memory=False
+        )
     return data
 
 

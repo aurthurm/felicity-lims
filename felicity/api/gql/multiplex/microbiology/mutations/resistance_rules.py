@@ -1,17 +1,24 @@
 import logging
 
 import strawberry  # noqa
-import strawberry
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.multiplex.microbiology import AbxExpResPhenotypeType, \
-    AbxExpertInterpretationRuleType
+from felicity.api.gql.multiplex.microbiology import (
+    AbxExpResPhenotypeType,
+    AbxExpertInterpretationRuleType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.multiplex.microbiology.schemas import AbxExpResPhenotypeCreate, AbxExpResPhenotypeUpdate, \
-    AbxExpertInterpretationRuleCreate, \
-    AbxExpertInterpretationRuleUpdate
-from felicity.apps.multiplex.microbiology.services import AbxExpResPhenotypeService, AbxExpertInterpretationRuleService
+from felicity.apps.multiplex.microbiology.schemas import (
+    AbxExpResPhenotypeCreate,
+    AbxExpResPhenotypeUpdate,
+    AbxExpertInterpretationRuleCreate,
+    AbxExpertInterpretationRuleUpdate,
+)
+from felicity.apps.multiplex.microbiology.services import (
+    AbxExpResPhenotypeService,
+    AbxExpertInterpretationRuleService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,8 +72,7 @@ AbxExpResPhenotypeResponse = strawberry.union(
 # Expected Resistance Phenotype Mutations
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_exp_res_phenotype(
-        info,
-        payload: AbxExpResPhenotypeInputType
+    info, payload: AbxExpResPhenotypeInputType
 ) -> AbxExpResPhenotypeResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -83,9 +89,7 @@ async def create_abx_exp_res_phenotype(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_exp_res_phenotype(
-        info,
-        uid: str,
-        payload: AbxExpResPhenotypeInputType
+    info, uid: str, payload: AbxExpResPhenotypeInputType
 ) -> AbxExpResPhenotypeResponse:
     felicity_user = await auth_from_info(info)
 
@@ -108,8 +112,7 @@ async def update_abx_exp_res_phenotype(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_expert_interpretation_rule(
-        info,
-        payload: AbxExpertInterpretationRuleInputType
+    info, payload: AbxExpertInterpretationRuleInputType
 ) -> AbxExpertInterpretationRuleResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -126,9 +129,7 @@ async def create_abx_expert_interpretation_rule(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_expert_interpretation_rule(
-        info,
-        uid: str,
-        payload: AbxExpertInterpretationRuleInputType
+    info, uid: str, payload: AbxExpertInterpretationRuleInputType
 ) -> AbxExpertInterpretationRuleResponse:
     felicity_user = await auth_from_info(info)
     expert_rule = await AbxExpertInterpretationRuleService().get(uid=uid)

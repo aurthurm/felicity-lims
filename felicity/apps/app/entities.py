@@ -8,8 +8,9 @@ Base = declarative_base()
 
 class APPActivityLog(BaseEntity):
     """Model for logging APP activity"""
-    __tablename__ = 'app_activity_logs'
-    __repr_fields__ = ('token_identifier',)
+
+    __tablename__ = "app_activity_logs"
+    __repr_fields__ = ("token_identifier",)
 
     token_identifier = Column(String(255), nullable=False)
     user_uid = Column(String(39), nullable=True)

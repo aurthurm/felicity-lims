@@ -4,17 +4,31 @@ from typing import Optional, List
 import strawberry
 from strawberry.file_uploads import Upload
 
-from felicity.apps.grind.enum import PosterCategory, ErrandCategory, StampCategory, LabelCategory, MediaTarget
+from felicity.apps.grind.enum import (
+    PosterCategory,
+    ErrandCategory,
+    StampCategory,
+    LabelCategory,
+    MediaTarget,
+)
 
 
 @strawberry.input
 class GrindCreateSchemeInput:
     title: str = strawberry.field(description="Scheme Title")
-    description: Optional[str] = strawberry.field(description="Scheme Description", default=None)
+    description: Optional[str] = strawberry.field(
+        description="Scheme Description", default=None
+    )
     assignee: Optional[str] = strawberry.field(description="Assigned to", default=None)
-    members: Optional[List[str]] = strawberry.field(description="Scheme Members", default_factory=list)
-    start_date: Optional[datetime] = strawberry.field(description="Start Date", default=None)
-    end_date: Optional[datetime] = strawberry.field(description="End Date", default=None)
+    members: Optional[List[str]] = strawberry.field(
+        description="Scheme Members", default_factory=list
+    )
+    start_date: Optional[datetime] = strawberry.field(
+        description="Start Date", default=None
+    )
+    end_date: Optional[datetime] = strawberry.field(
+        description="End Date", default=None
+    )
 
 
 @strawberry.input
@@ -31,7 +45,9 @@ class GrindCreateStampInput:
 @strawberry.input
 class GrindUpdateStampInput(GrindCreateStampInput):
     title: Optional[str] = strawberry.field(description="Stamp title", default=None)
-    category: Optional[str] = strawberry.field(description="Stamp category", default=None)
+    category: Optional[str] = strawberry.field(
+        description="Stamp category", default=None
+    )
 
 
 @strawberry.input
@@ -55,44 +71,39 @@ class GrindCreatePosterInput:
     members: Optional[List[str]] = strawberry.field(
         description="Poster Members", default_factory=list
     )
-    status: Optional[str] = strawberry.field(
-        description="Poster status", default=None
-    )
+    status: Optional[str] = strawberry.field(description="Poster status", default=None)
 
 
 @strawberry.input
-class GrindUpdatePosterInput(GrindCreatePosterInput):
-    ...
+class GrindUpdatePosterInput(GrindCreatePosterInput): ...
 
 
 @strawberry.input
 class GrindCreateMilestoneInput:
     errandUid: str = strawberry.field(description="Milestone Errand")
     title: Optional[str] = strawberry.field(description="Milestone Title", default=None)
-    description: Optional[str] = strawberry.field(description="Milestone Description", default=None)
+    description: Optional[str] = strawberry.field(
+        description="Milestone Description", default=None
+    )
     complete: Optional[bool] = strawberry.field(description="Status", default=None)
-    assigneeUid: Optional[str] = strawberry.field(description="Assigned to", default=None)
+    assigneeUid: Optional[str] = strawberry.field(
+        description="Assigned to", default=None
+    )
 
 
 @strawberry.input
-class GrindUpdateMilestoneInput(GrindCreateMilestoneInput):
-    ...
+class GrindUpdateMilestoneInput(GrindCreateMilestoneInput): ...
 
 
 @strawberry.input
 class GrindCreateMediaInput:
-    target: MediaTarget = strawberry.field(
-        description="Media target", default=None
-    )
-    target_uid: str = strawberry.field(
-        description="Media Target ID", default=None
-    )
+    target: MediaTarget = strawberry.field(description="Media target", default=None)
+    target_uid: str = strawberry.field(description="Media Target ID", default=None)
     file: Upload
 
 
 @strawberry.input
-class GrindUpdateMediaInput(GrindCreateMediaInput):
-    ...
+class GrindUpdateMediaInput(GrindCreateMediaInput): ...
 
 
 @strawberry.input
@@ -105,7 +116,9 @@ class GrindCreateLabelInput:
 @strawberry.input
 class GrindUpdateLabelInput(GrindCreateLabelInput):
     title: Optional[str] = strawberry.field(description="Label title", default=None)
-    category: Optional[str] = strawberry.field(description="Label category", default=None)
+    category: Optional[str] = strawberry.field(
+        description="Label category", default=None
+    )
 
 
 @strawberry.input
@@ -113,9 +126,7 @@ class GrindCreateErrandInput:
     category: Optional[ErrandCategory] = strawberry.field(
         description="Errand Category", default=None
     )
-    title: Optional[str] = strawberry.field(
-        description="Errand Title", default=None
-    )
+    title: Optional[str] = strawberry.field(description="Errand Title", default=None)
     description: Optional[str] = strawberry.field(
         description="Errand Description", default=None
     )
@@ -152,20 +163,20 @@ class GrindCreateErrandInput:
 
 
 @strawberry.input
-class GrindUpdateErrandInput(GrindCreateErrandInput):
-    ...
+class GrindUpdateErrandInput(GrindCreateErrandInput): ...
 
 
 @strawberry.input
 class GrindCreateErrandDiscussionInput:
     comment: str = strawberry.field(description="Comment")
     errand_uid: str = strawberry.field(description="Errand uid")
-    parent_uid: Optional[str] = strawberry.field(description="Parent comment uid", default=None)
+    parent_uid: Optional[str] = strawberry.field(
+        description="Parent comment uid", default=None
+    )
 
 
 @strawberry.input
-class GrindUpdateErrandDiscussionInput(GrindCreateErrandDiscussionInput):
-    ...
+class GrindUpdateErrandDiscussionInput(GrindCreateErrandDiscussionInput): ...
 
 
 @strawberry.input

@@ -1,14 +1,6 @@
 import logging
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    Table
-)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -92,12 +84,9 @@ class AnalysisResult(LabScopedEntity, BaseMPTT):
 
     @property
     def sms_metadata(self) -> dict:
-        result = {
-            "result": self.result,
-            "date_collected": self.date_collected
-        }
+        result = {"result": self.result, "date_collected": self.date_collected}
 
-        if self.analysis and hasattr(self.analysis, 'sms_metadata'):
+        if self.analysis and hasattr(self.analysis, "sms_metadata"):
             try:
                 an_metadata = self.analysis.sms_metadata
                 if an_metadata:
@@ -117,5 +106,7 @@ class ResultMutation(LabScopedEntity):
     # HIPAA: Encrypt mutation tracking data as it contains PHI history
     before = Column(EncryptedPHI(1000), nullable=False)
     after = Column(EncryptedPHI(1000), nullable=False)
-    mutation = Column(String, nullable=False)  # Keep mutation type unencrypted for audit
+    mutation = Column(
+        String, nullable=False
+    )  # Keep mutation type unencrypted for audit
     date = Column(DateTime, nullable=True)

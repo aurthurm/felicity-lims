@@ -1,6 +1,10 @@
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
-import { ImpressBillingReportDocument, ImpressBillingReportQuery, ImpressBillingReportQueryVariables } from '@/graphql/operations/billing.queries';
+import {
+    ImpressBillingReportDocument,
+    ImpressBillingReportQuery,
+    ImpressBillingReportQueryVariables,
+} from '@/graphql/operations/billing.queries';
 
 export default function useBillComposable() {
     const { withClientQuery } = useApiUtil();
@@ -9,16 +13,13 @@ export default function useBillComposable() {
     // download Invoice
     const downloadInvoice = async (billUid: string): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to download this invoice',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to download this invoice', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientQuery<ImpressBillingReportQuery, ImpressBillingReportQueryVariables>(
-                    ImpressBillingReportDocument, 
-                    { billUid }, 
-                    'billInvoiceCreate', 
+                    ImpressBillingReportDocument,
+                    { billUid },
+                    'billInvoiceCreate',
                     'network-only'
                 );
 

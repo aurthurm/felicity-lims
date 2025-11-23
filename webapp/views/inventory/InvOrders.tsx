@@ -3,31 +3,39 @@ import { useInventoryStore } from '@/stores/inventory';
 import { useSetupStore } from '@/stores/setup';
 import { StockOrderProductType, StockOrderType } from '@/types/gql';
 import { ExtStockOrderProductType } from '@/types/ext';
-import  useApiUtil  from '@/composables/api_util';
-import { GetAllStockOrderProductsDocument, GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables } from '@/graphql/operations/inventory.queries';
-import { EditStockOrderDocument, EditStockOrderMutation, EditStockOrderMutationVariables,
-    IssueStockOrderDocument, IssueStockOrderMutation, IssueStockOrderMutationVariables,
-    SubmitStockOrderDocument, SubmitStockOrderMutation, SubmitStockOrderMutationVariables } from '@/graphql/operations/inventory.mutations';
-import * as shield from "@/guards";
+import useApiUtil from '@/composables/api_util';
+import {
+    GetAllStockOrderProductsDocument,
+    GetAllStockOrderProductsQuery,
+    GetAllStockOrderProductsQueryVariables,
+} from '@/graphql/operations/inventory.queries';
+import {
+    EditStockOrderDocument,
+    EditStockOrderMutation,
+    EditStockOrderMutationVariables,
+    IssueStockOrderDocument,
+    IssueStockOrderMutation,
+    IssueStockOrderMutationVariables,
+    SubmitStockOrderDocument,
+    SubmitStockOrderMutation,
+    SubmitStockOrderMutationVariables,
+} from '@/graphql/operations/inventory.mutations';
+import * as shield from '@/guards';
 
-const Drawer = defineAsyncComponent(
-    () => import('@/components/ui/FelDrawer.vue')
-)
-const DataTable = defineAsyncComponent(
-    () => import('@/components/ui/datatable/FelDataTable.vue')
-)
+const Drawer = defineAsyncComponent(() => import('@/components/ui/FelDrawer.vue'));
+const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
 
 const InventoryOrders = defineComponent({
     name: 'stock-orders',
     setup(props, ctx) {
         const { withClientQuery, withClientMutation } = useApiUtil();
-        const setupStore = useSetupStore()
+        const setupStore = useSetupStore();
         const inventoryStore = useInventoryStore();
         inventoryStore.fetchStockOrders({
             first: 50,
             after: '',
             text: '',
-            status: "preparation",
+            status: 'preparation',
             sortBy: ['-uid'],
         });
 
@@ -35,15 +43,20 @@ const InventoryOrders = defineComponent({
         const slectedStockOrder = reactive({
             order: {} as StockOrderType,
             products: [] as ExtStockOrderProductType[],
-            departmentUid: "",
+            departmentUid: '',
         });
 
         const getOrderProducts = async (stockOrderUid: string) => {
-            await withClientQuery<GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables>(GetAllStockOrderProductsDocument, { stockOrderUid }, 'stockOrderProductAll')
-            .then(products => {
-                    slectedStockOrder.products = (products as StockOrderProductType[])?.map(op => ({ ...op, issue: op.quantity })) as ExtStockOrderProductType[];
-                }
-            );
+            await withClientQuery<GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables>(
+                GetAllStockOrderProductsDocument,
+                { stockOrderUid },
+                'stockOrderProductAll'
+            ).then(products => {
+                slectedStockOrder.products = (products as StockOrderProductType[])?.map(op => ({
+                    ...op,
+                    issue: op.quantity,
+                })) as ExtStockOrderProductType[];
+            });
         };
 
         const tableColumns = ref([
@@ -95,7 +108,7 @@ const InventoryOrders = defineComponent({
                     return h(
                         'span',
                         {
-                            innerHTML: `${order?.orderBy?.firstName ?? "---"} ${order?.orderBy?.lastName ?? ""}`,
+                            innerHTML: `${order?.orderBy?.firstName ?? '---'} ${order?.orderBy?.lastName ?? ''}`,
                         },
                         []
                     );
@@ -169,7 +182,8 @@ const InventoryOrders = defineComponent({
                         remarks: 'issue stock',
                     });
                 }
-                withClientMutation<IssueStockOrderMutation, IssueStockOrderMutationVariables>(IssueStockOrderDocument,
+                withClientMutation<IssueStockOrderMutation, IssueStockOrderMutationVariables>(
+                    IssueStockOrderDocument,
                     {
                         uid: slectedStockOrder?.order?.uid,
                         payload,
@@ -195,12 +209,13 @@ const InventoryOrders = defineComponent({
                     });
                 }
 
-                withClientMutation<EditStockOrderMutation, EditStockOrderMutationVariables>(EditStockOrderDocument,
+                withClientMutation<EditStockOrderMutation, EditStockOrderMutationVariables>(
+                    EditStockOrderDocument,
                     {
                         uid: slectedStockOrder.order.uid,
                         payload: {
                             orderProducts: product_lines,
-                            departmentUid: slectedStockOrder.departmentUid
+                            departmentUid: slectedStockOrder.departmentUid,
                         },
                     },
                     'updateStockOrder'
@@ -210,7 +225,8 @@ const InventoryOrders = defineComponent({
                 });
             },
             submitOrder: () => {
-                withClientMutation<SubmitStockOrderMutation, SubmitStockOrderMutationVariables>(SubmitStockOrderDocument,
+                withClientMutation<SubmitStockOrderMutation, SubmitStockOrderMutationVariables>(
+                    SubmitStockOrderDocument,
                     {
                         uid: slectedStockOrder.order.uid,
                     },
@@ -247,8 +263,7 @@ const InventoryOrders = defineComponent({
                     onOnPaginate={x => this.showMoreStockOrders(x)}
                 ></DataTable>
                 {/* Drawer */}
-                <fel-drawer contentWidth="w-1/2"
-                show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                <fel-drawer contentWidth="w-1/2" show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => `Order: ${this.slectedStockOrder?.order.orderNumber}`,
                         body: () => (
@@ -260,7 +275,9 @@ const InventoryOrders = defineComponent({
                                         <label class="flex justify-between items-center gap-4 mb-4">
                                             <span class="text-foreground">Department</span>
                                             <select class="form-select block w-full mt-1" v-model={this.slectedStockOrder.departmentUid}>
-                                                {this.setupStore.departments.map(department => (<option value={department.uid}>{department.name}</option>))}
+                                                {this.setupStore.departments.map(department => (
+                                                    <option value={department.uid}>{department.name}</option>
+                                                ))}
                                             </select>
                                         </label>
                                         <hr />
@@ -288,15 +305,17 @@ const InventoryOrders = defineComponent({
                                                                     <p>{item?.product?.name}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{item?.stockLot?.lotNumber} ({item?.stockLot?.quantity})</p>
+                                                                    <p>
+                                                                        {item?.stockLot?.lotNumber} ({item?.stockLot?.quantity})
+                                                                    </p>
                                                                 </td>
                                                                 <td class="px-1 py-1">
                                                                     <input
-                                                                            class="form-input"
-                                                                            type="number"
-                                                                            v-model={item.quantity}
-                                                                            placeholder={''}
-                                                                        />
+                                                                        class="form-input"
+                                                                        type="number"
+                                                                        v-model={item.quantity}
+                                                                        placeholder={''}
+                                                                    />
                                                                 </td>
                                                                 <td class="px-1 whitespace-no-wrap">
                                                                     <button
@@ -315,7 +334,10 @@ const InventoryOrders = defineComponent({
                                         </div>
                                         <hr />
                                         <div class="my-2">
-                                            <p class="italic text-destructive text-xs">If you made any changes here please update order first before finalising else your changes wont be saved</p>
+                                            <p class="italic text-destructive text-xs">
+                                                If you made any changes here please update order first before finalising else your changes
+                                                wont be saved
+                                            </p>
                                         </div>
                                         <hr />
                                         <div class="flex justify-start gap-x-4">
@@ -436,9 +458,7 @@ const InventoryOrders = defineComponent({
                                                                 <td>
                                                                     <p>{orderProduct?.product?.name}</p>
                                                                 </td>
-                                                                <td>
-                                                                    {/* <p>{orderProduct?.product?.remaining}</p> */}
-                                                                </td>
+                                                                <td>{/* <p>{orderProduct?.product?.remaining}</p> */}</td>
                                                                 <td>
                                                                     <p>{orderProduct.quantity}</p>
                                                                 </td>
@@ -462,4 +482,4 @@ const InventoryOrders = defineComponent({
 });
 
 export { InventoryOrders };
-export default InventoryOrders
+export default InventoryOrders;

@@ -2,8 +2,29 @@ import { defineStore } from 'pinia';
 
 import useApiUtil from '@/composables/api_util';
 import useTreeStateComposable from '@/composables/tree-state';
-import { GetAllStorageContainersDocument, GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables, GetAllStorageLocationsDocument, GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables, GetAllStorageSectionsDocument, GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables, GetAllStoreRoomsDocument, GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables, GetSrorageContainerByUidDocument, GetStoreRoomsTreeDocument, GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables } from '@/graphql/operations/storage.queries';
-import { GetSamplesByStorageContainerUidDocument, GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables } from '@/graphql/operations/analyses.queries';
+import {
+    GetAllStorageContainersDocument,
+    GetAllStorageContainersQuery,
+    GetAllStorageContainersQueryVariables,
+    GetAllStorageLocationsDocument,
+    GetAllStorageLocationsQuery,
+    GetAllStorageLocationsQueryVariables,
+    GetAllStorageSectionsDocument,
+    GetAllStorageSectionsQuery,
+    GetAllStorageSectionsQueryVariables,
+    GetAllStoreRoomsDocument,
+    GetAllStoreRoomsQuery,
+    GetAllStoreRoomsQueryVariables,
+    GetSrorageContainerByUidDocument,
+    GetStoreRoomsTreeDocument,
+    GetStoreRoomsTreeQuery,
+    GetStoreRoomsTreeQueryVariables,
+} from '@/graphql/operations/storage.queries';
+import {
+    GetSamplesByStorageContainerUidDocument,
+    GetSamplesByStorageContainerUidQuery,
+    GetSamplesByStorageContainerUidQueryVariables,
+} from '@/graphql/operations/analyses.queries';
 import { GetSrorageContainerByUidQuery, GetSrorageContainerByUidQueryVariables } from '@/types/gqlops';
 import { StoreRoomType, StorageLocationType, StorageSectionType, StorageContainerType } from '@/types/gql';
 
@@ -56,11 +77,11 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingTree = true;
                 const result = await withClientQuery<GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables>(
-                    GetStoreRoomsTreeDocument, 
-                    {}, 
+                    GetStoreRoomsTreeDocument,
+                    {},
                     'storeRoomAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.tree = result as StoreRoomType[];
                     setTree(result as StoreRoomType[]);
@@ -79,11 +100,11 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingStoreRooms = true;
                 const result = await withClientQuery<GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables>(
-                    GetAllStoreRoomsDocument, 
-                    {}, 
+                    GetAllStoreRoomsDocument,
+                    {},
                     'storeRoomAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.storeRooms = result as StoreRoomType[];
                 } else {
@@ -125,11 +146,11 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingStorageLocations = true;
                 const result = await withClientQuery<GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables>(
-                    GetAllStorageLocationsDocument, 
-                    { storeRoomUid }, 
+                    GetAllStorageLocationsDocument,
+                    { storeRoomUid },
                     'storageLocations'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.storageLocations = result as StorageLocationType[];
                 } else {
@@ -171,11 +192,11 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingStorageSections = true;
                 const result = await withClientQuery<GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables>(
-                    GetAllStorageSectionsDocument, 
-                    { storageLocationUid }, 
+                    GetAllStorageSectionsDocument,
+                    { storageLocationUid },
                     'storageSections'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.storageSections = result as StorageSectionType[];
                 } else {
@@ -217,11 +238,11 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingStorageContainers = true;
                 const result = await withClientQuery<GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables>(
-                    GetAllStorageContainersDocument, 
-                    { storageSectionUid }, 
+                    GetAllStorageContainersDocument,
+                    { storageSectionUid },
                     'storageContainers'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.storageContainers = result as StorageContainerType[];
                 } else {
@@ -262,12 +283,12 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingStorageContainer = true;
                 const result = await withClientQuery<GetSrorageContainerByUidQuery, GetSrorageContainerByUidQueryVariables>(
-                    GetSrorageContainerByUidDocument, 
-                    { uid }, 
-                    'storageContainerByUid', 
+                    GetSrorageContainerByUidDocument,
+                    { uid },
+                    'storageContainerByUid',
                     'network-only'
                 );
-                
+
                 if (result) {
                     this.storageContainer = result as StorageContainerType;
                     await this.fetchStorageContainerSamples(uid);
@@ -294,12 +315,12 @@ export const useStorageStore = defineStore('storage', {
             try {
                 this.fetchingStorageContainerSamples = true;
                 const result = await withClientQuery<GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables>(
-                    GetSamplesByStorageContainerUidDocument, 
-                    { uid }, 
-                    'samplesByStorageContainerUid', 
+                    GetSamplesByStorageContainerUidDocument,
+                    { uid },
+                    'samplesByStorageContainerUid',
                     'network-only'
                 );
-                
+
                 if (this.storageContainer && result) {
                     // Use type assertion to handle the samples property
                     (this.storageContainer as any).samples = result;

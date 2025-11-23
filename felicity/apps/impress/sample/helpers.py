@@ -12,13 +12,17 @@ def _to_user(user: dict) -> str:
     first_name = get_from_nested(user, "first_name")
     last_name = get_from_nested(user, "last_name")
     user_name = get_from_nested(user, "user_name")
-    if first_name: return f"{first_name} {last_name}"
+    if first_name:
+        return f"{first_name} {last_name}"
     return user_name
 
 
-async def get_report_user(sample: dict, field: str = "submitted_by", results: list | None = None) -> str:
+async def get_report_user(
+    sample: dict, field: str = "submitted_by", results: list | None = None
+) -> str:
     user = get_from_nested(sample, field)
-    if user and isinstance(user, dict): return _to_user(user)
+    if user and isinstance(user, dict):
+        return _to_user(user)
     # last resort get from results
     if results:
         if field == "verified_by":
@@ -28,4 +32,4 @@ async def get_report_user(sample: dict, field: str = "submitted_by", results: li
         else:
             user = get_from_nested(results[0], field)
         return _to_user(user)
-    raise Exception(f"Failed to acquire report user")
+    raise Exception("Failed to acquire report user")

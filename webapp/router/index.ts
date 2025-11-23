@@ -198,7 +198,7 @@ const routes: RouteRecordRaw[] = [
     },
 ];
 
-const historyX = createWebHistory('/'); 
+const historyX = createWebHistory('/');
 const history = createWebHashHistory();
 const router = createRouter({
     history,
@@ -207,6 +207,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
     const authStore = useAuthStore();
+
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!isTokenValid(authStore.auth.token!)) {
             return { name: guards.pages.LOGIN };
@@ -217,7 +218,6 @@ router.beforeEach(async (to, from) => {
         }
     } else {
         if (to.path === '/auth') {
-            
             if (isTokenValid(authStore.auth.token!)) {
                 return { name: guards.pages.DASHBOARD };
             }
@@ -225,7 +225,7 @@ router.beforeEach(async (to, from) => {
     }
 });
 
-const exemptions = ["print-barcodes"]
+const exemptions = ['print-barcodes'];
 
 function hasAccess(page: any) {
     switch (page) {

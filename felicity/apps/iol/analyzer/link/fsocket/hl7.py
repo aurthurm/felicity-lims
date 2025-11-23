@@ -47,7 +47,7 @@ class HL7ProtocolHandler:
         self.establishment = False
 
         # Message assembly
-        self._buffer = b''
+        self._buffer = b""
         self._received_messages: List[bytes] = []
 
         # Response tracking
@@ -58,7 +58,7 @@ class HL7ProtocolHandler:
         """Reset protocol state for new session"""
         self.in_transfer_state = False
         self.establishment = False
-        self._buffer = b''
+        self._buffer = b""
         self._received_messages = []
         self.response = None
         self.msg_id = None
@@ -78,7 +78,7 @@ class HL7ProtocolHandler:
         Returns: Dictionary with separator characters
         """
         try:
-            message_str = message.decode('latin-1', errors='replace')
+            message_str = message.decode("latin-1", errors="replace")
 
             if message_str.startswith("MSH"):
                 if len(message_str) >= 4:
@@ -125,7 +125,7 @@ class HL7ProtocolHandler:
         Returns: Message ID string or None
         """
         try:
-            message_str = message.decode('latin-1', errors='replace')
+            message_str = message.decode("latin-1", errors="replace")
 
             if not message_str.startswith("MSH"):
                 return None
@@ -135,13 +135,17 @@ class HL7ProtocolHandler:
 
             if len(fields) > 9:
                 msg_id = fields[9]
-                logger.info(f"HL7 {self.instrument_name}: Extracted message ID: {msg_id}")
+                logger.info(
+                    f"HL7 {self.instrument_name}: Extracted message ID: {msg_id}"
+                )
                 return msg_id
 
             return None
 
         except Exception as e:
-            logger.error(f"HL7 {self.instrument_name}: Error extracting message ID: {e}")
+            logger.error(
+                f"HL7 {self.instrument_name}: Error extracting message ID: {e}"
+            )
             return None
 
     def _generate_ack(self, message: bytes) -> bytes:
@@ -171,9 +175,11 @@ class HL7ProtocolHandler:
             )
 
             # Wrap in MLLP framing
-            framed = HL7_SB + ack_message.encode('latin-1') + HL7_EB + HL7_CR
+            framed = HL7_SB + ack_message.encode("latin-1") + HL7_EB + HL7_CR
 
-            logger.info(f"HL7 {self.instrument_name}: Generated ACK for message {msg_id}")
+            logger.info(
+                f"HL7 {self.instrument_name}: Generated ACK for message {msg_id}"
+            )
 
             return framed
 
@@ -216,8 +222,10 @@ class HL7ProtocolHandler:
             # Extract and log message ID
             self.msg_id = self._extract_message_id(clean_message)
 
-            logger.info(f"HL7 {self.instrument_name}: Received message "
-                       f"(ID: {self.msg_id}, size: {len(clean_message)} bytes)")
+            logger.info(
+                f"HL7 {self.instrument_name}: Received message "
+                f"(ID: {self.msg_id}, size: {len(clean_message)} bytes)"
+            )
 
             # Store message
             self._received_messages.append(clean_message)
@@ -250,7 +258,7 @@ class HL7ProtocolHandler:
         # Check for message start (MLLP Start Block)
         if HL7_SB in data:
             await self.handle_message_start()
-            self._buffer = b''
+            self._buffer = b""
             # Don't return yet - may have more data
 
         # If we're in transfer state, look for complete messages
@@ -292,4 +300,4 @@ class HL7ProtocolHandler:
 
     def clear_buffer(self):
         """Clear the buffer"""
-        self._buffer = b''
+        self._buffer = b""

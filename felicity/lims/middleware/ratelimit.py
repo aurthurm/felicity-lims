@@ -32,24 +32,24 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
 
     def __init__(
-            self,
-            app: ASGIApp,
-            redis_client: Redis = None,
-            # Traditional IP-based limits
-            ip_minute_limit: int = 100,
-            ip_hour_limit: int = 2000,
-            # 🆕 User-based limits
-            user_minute_limit: int = 200,
-            user_hour_limit: int = 5000,
-            # 🆕 Lab-based limits (per lab)
-            lab_minute_limit: int = 1000,
-            lab_hour_limit: int = 20000,
-            # 🆕 Organization-based limits (across all labs)
-            org_hour_limit: int = 50000,
-            org_day_limit: int = 500000,
-            # 🆕 Admin user overrides
-            admin_multiplier: float = 3.0,
-            exclude_paths: List[str] = None
+        self,
+        app: ASGIApp,
+        redis_client: Redis = None,
+        # Traditional IP-based limits
+        ip_minute_limit: int = 100,
+        ip_hour_limit: int = 2000,
+        # 🆕 User-based limits
+        user_minute_limit: int = 200,
+        user_hour_limit: int = 5000,
+        # 🆕 Lab-based limits (per lab)
+        lab_minute_limit: int = 1000,
+        lab_hour_limit: int = 20000,
+        # 🆕 Organization-based limits (across all labs)
+        org_hour_limit: int = 50000,
+        org_day_limit: int = 500000,
+        # 🆕 Admin user overrides
+        admin_multiplier: float = 3.0,
+        exclude_paths: List[str] = None,
     ):
         super().__init__(app)
         self.redis_client = redis_client
@@ -69,7 +69,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         # 🆕 Special user handling
         self.admin_multiplier = admin_multiplier
 
-        self.exclude_paths = exclude_paths or ["/docs", "/redoc", "/openapi.json", "/health"]
+        self.exclude_paths = exclude_paths or [
+            "/docs",
+            "/redoc",
+            "/openapi.json",
+            "/health",
+        ]
 
     async def dispatch(self, request: Request, call_next):
         # Skip rate limiting for excluded paths
@@ -97,7 +102,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 return Response(
                     content=check_result["message"],
                     status_code=HTTP_429_TOO_MANY_REQUESTS,
-                    headers=check_result["headers"]
+                    headers=check_result["headers"],
                 )
 
         # Process the request
@@ -109,7 +114,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         return response
 
     async def _perform_comprehensive_rate_limiting(
-            self, client_ip: str, tenant_context, request: Request
+        self, client_ip: str, tenant_context, request: Request
     ) -> List[Dict]:
         """
         Perform multi-layered rate limiting:
@@ -168,14 +173,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 return {
                     "exceeded": True,
                     "message": f"IP rate limit exceeded: {minute_count}/{self.ip_minute_limit} requests per minute",
-                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "IP-Minute"}
+                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "IP-Minute"},
                 }
 
             if hour_count >= self.ip_hour_limit:
                 return {
                     "exceeded": True,
                     "message": f"IP rate limit exceeded: {hour_count}/{self.ip_hour_limit} requests per hour",
-                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "IP-Hour"}
+                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "IP-Hour"},
                 }
 
             # Increment counters
@@ -194,8 +199,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         is_admin = await self._is_admin_user(user_uid)
 
         # 🆕 Apply admin multiplier
-        user_minute_limit = int(self.user_minute_limit * self.admin_multiplier) if is_admin else self.user_minute_limit
-        user_hour_limit = int(self.user_hour_limit * self.admin_multiplier) if is_admin else self.user_hour_limit
+        user_minute_limit = (
+            int(self.user_minute_limit * self.admin_multiplier)
+            if is_admin
+            else self.user_minute_limit
+        )
+        user_hour_limit = (
+            int(self.user_hour_limit * self.admin_multiplier)
+            if is_admin
+            else self.user_hour_limit
+        )
 
         minute_key = f"ratelimit:user:{user_uid}:minute"
         hour_key = f"ratelimit:user:{user_uid}:hour"
@@ -213,14 +226,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 return {
                     "exceeded": True,
                     "message": f"User rate limit exceeded: {minute_count}/{user_minute_limit} requests per minute",
-                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "User-Minute"}
+                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "User-Minute"},
                 }
 
             if hour_count >= user_hour_limit:
                 return {
                     "exceeded": True,
                     "message": f"User rate limit exceeded: {hour_count}/{user_hour_limit} requests per hour",
-                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "User-Hour"}
+                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "User-Hour"},
                 }
 
             # Increment counters
@@ -234,7 +247,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             "exceeded": False,
             "user_minute": minute_count,
             "user_hour": hour_count,
-            "is_admin": is_admin
+            "is_admin": is_admin,
         }
 
     async def _check_lab_rate_limit(self, lab_uid: str) -> Dict:
@@ -256,14 +269,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 return {
                     "exceeded": True,
                     "message": f"Laboratory rate limit exceeded: {minute_count}/{self.lab_minute_limit} requests per minute",
-                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "Lab-Minute"}
+                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "Lab-Minute"},
                 }
 
             if hour_count >= self.lab_hour_limit:
                 return {
                     "exceeded": True,
                     "message": f"Laboratory rate limit exceeded: {hour_count}/{self.lab_hour_limit} requests per hour",
-                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "Lab-Hour"}
+                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "Lab-Hour"},
                 }
 
             # Increment counters
@@ -294,14 +307,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 return {
                     "exceeded": True,
                     "message": f"Organization rate limit exceeded: {hour_count}/{self.org_hour_limit} requests per hour",
-                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "Org-Hour"}
+                    "headers": {"Retry-After": "3600", "X-RateLimit-Type": "Org-Hour"},
                 }
 
             if day_count >= self.org_day_limit:
                 return {
                     "exceeded": True,
                     "message": f"Organization rate limit exceeded: {day_count}/{self.org_day_limit} requests per day",
-                    "headers": {"Retry-After": "86400", "X-RateLimit-Type": "Org-Day"}
+                    "headers": {"Retry-After": "86400", "X-RateLimit-Type": "Org-Day"},
                 }
 
             # Increment counters
@@ -337,11 +350,13 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         return False
 
-    async def _add_rate_limit_headers(self, response: Response, client_ip: str, tenant_context):
+    async def _add_rate_limit_headers(
+        self, response: Response, client_ip: str, tenant_context
+    ):
         """🆕 Add comprehensive rate limit headers"""
 
         # Get current counts for headers
-        headers_data = {}
+        # headers_data = {}
 
         # IP-based headers
         ip_minute_key = f"ratelimit:ip:{client_ip}:minute"
@@ -357,9 +372,13 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
             # Traditional IP headers
             response.headers["X-RateLimit-IP-Limit-Minute"] = str(self.ip_minute_limit)
-            response.headers["X-RateLimit-IP-Remaining-Minute"] = str(max(0, self.ip_minute_limit - ip_minute_count))
+            response.headers["X-RateLimit-IP-Remaining-Minute"] = str(
+                max(0, self.ip_minute_limit - ip_minute_count)
+            )
             response.headers["X-RateLimit-IP-Limit-Hour"] = str(self.ip_hour_limit)
-            response.headers["X-RateLimit-IP-Remaining-Hour"] = str(max(0, self.ip_hour_limit - ip_hour_count))
+            response.headers["X-RateLimit-IP-Remaining-Hour"] = str(
+                max(0, self.ip_hour_limit - ip_hour_count)
+            )
 
         # 🆕 Tenant-aware headers
         if tenant_context:
@@ -375,12 +394,18 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     user_minute_count = int(user_results[0]) if user_results[0] else 0
                     user_hour_count = int(user_results[1]) if user_results[1] else 0
 
-                    response.headers["X-RateLimit-User-Limit-Minute"] = str(self.user_minute_limit)
+                    response.headers["X-RateLimit-User-Limit-Minute"] = str(
+                        self.user_minute_limit
+                    )
                     response.headers["X-RateLimit-User-Remaining-Minute"] = str(
-                        max(0, self.user_minute_limit - user_minute_count))
-                    response.headers["X-RateLimit-User-Limit-Hour"] = str(self.user_hour_limit)
+                        max(0, self.user_minute_limit - user_minute_count)
+                    )
+                    response.headers["X-RateLimit-User-Limit-Hour"] = str(
+                        self.user_hour_limit
+                    )
                     response.headers["X-RateLimit-User-Remaining-Hour"] = str(
-                        max(0, self.user_hour_limit - user_hour_count))
+                        max(0, self.user_hour_limit - user_hour_count)
+                    )
 
             if tenant_context.laboratory_uid:
                 response.headers["X-RateLimit-Lab-ID"] = tenant_context.laboratory_uid

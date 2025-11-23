@@ -43,10 +43,10 @@ class UserQuery:
             else:
                 # No users in this lab, return empty result
                 return UserCursorPage(
-                    total_count=0, 
-                    edges=[], 
-                    items=[], 
-                    page_info=PageInfo(has_next_page=False, has_previous_page=False)
+                    total_count=0,
+                    edges=[],
+                    items=[],
+                    page_info=PageInfo(has_next_page=False, has_previous_page=False),
                 )
 
         _or_ = dict()
@@ -91,7 +91,9 @@ class UserQuery:
         return await UserService().get_by_email(email=email)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def group_all(self, info, laboratory_uid: str | None = None) -> List[GroupType]:
+    async def group_all(
+        self, info, laboratory_uid: str | None = None
+    ) -> List[GroupType]:
         """Get all groups, optionally filtered by laboratory"""
         return await GroupService().get_groups_by_laboratory(laboratory_uid)
 
@@ -100,12 +102,16 @@ class UserQuery:
         return await GroupService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def groups_by_laboratory(self, info, laboratory_uid: str | None = None) -> List[GroupType]:
+    async def groups_by_laboratory(
+        self, info, laboratory_uid: str | None = None
+    ) -> List[GroupType]:
         """Get groups for a specific laboratory or global groups"""
         return await GroupService().get_groups_by_laboratory(laboratory_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def group_by_name(self, info, name: str, laboratory_uid: str | None = None) -> Optional[GroupType]:
+    async def group_by_name(
+        self, info, name: str, laboratory_uid: str | None = None
+    ) -> Optional[GroupType]:
         """Get group by name within laboratory scope"""
         return await GroupService().get_group_by_name(name, laboratory_uid)
 
@@ -121,7 +127,9 @@ class UserQuery:
         self, info, permission_uid: str, laboratory_uid: str | None = None
     ) -> List[GroupType]:
         """Get all groups that have a specific permission"""
-        return await GroupService().get_groups_with_permission(permission_uid, laboratory_uid)
+        return await GroupService().get_groups_with_permission(
+            permission_uid, laboratory_uid
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_all(self, info) -> List[PermissionType]:
@@ -146,15 +154,21 @@ class UserQuery:
         self, info, action: str, target: str
     ) -> List[PermissionType]:
         """Get permissions by action and target"""
-        return await PermissionService().get_permissions_by_action_target(action, target)
+        return await PermissionService().get_permissions_by_action_target(
+            action, target
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def permission_search(self, info, text: str, limit: int = 10) -> List[PermissionType]:
+    async def permission_search(
+        self, info, text: str, limit: int = 10
+    ) -> List[PermissionType]:
         """Search permissions by text"""
         return await PermissionService().search_permissions(text, limit)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def permission_usage_summary(self, info, permission_uid: str) -> PermissionUsageSummaryType:
+    async def permission_usage_summary(
+        self, info, permission_uid: str
+    ) -> PermissionUsageSummaryType:
         """Get summary of groups and users that have this permission"""
         summary = await PermissionService().get_permission_usage_summary(permission_uid)
         return PermissionUsageSummaryType(**summary)
@@ -183,7 +197,9 @@ class UserQuery:
         return await UserService().search_users(text, laboratory_uid, limit)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def user_by_email_or_username(self, info, identifier: str) -> Optional[UserType]:
+    async def user_by_email_or_username(
+        self, info, identifier: str
+    ) -> Optional[UserType]:
         """Get user by email or username"""
         return await UserService().get_user_by_email_or_username(identifier)
 

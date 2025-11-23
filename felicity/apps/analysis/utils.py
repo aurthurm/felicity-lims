@@ -65,7 +65,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
     user_service = UserService()
 
     verifier_uids = await ar_service.repository.table_query(
-        table=result_verification, result_uid=result_uid, columns=['user_uid']
+        table=result_verification, result_uid=result_uid, columns=["user_uid"]
     )
     if not verifier_uids:
         return None
@@ -74,7 +74,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
 
 
 async def sample_search(
-        status: str | None = None, text: str | None = None, client_uid: str | None = None
+    status: str | None = None, text: str | None = None, client_uid: str | None = None
 ) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
@@ -107,7 +107,7 @@ async def sample_search(
 
 
 async def retest_from_result_uids(
-        uids: list[str], user: User
+    uids: list[str], user: User
 ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
     analysis_result_wf = AnalysisResultWorkFlow()
@@ -130,7 +130,7 @@ async def retest_from_result_uids(
 
 
 async def results_submitter(
-        analysis_results: List[dict], submitter: User
+    analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
     sample_wf = SampleWorkFlow()
     worksheet_wf = WorkSheetWorkFlow()
@@ -150,7 +150,9 @@ async def results_submitter(
         if a_result.analysis.keyword != "felicity_ast_abx_organism":
             # try to submit sample
             try:
-                sample = await sample_wf.submit(a_result.sample_uid, submitted_by=submitter)
+                sample = await sample_wf.submit(
+                    a_result.sample_uid, submitted_by=submitter
+                )
                 if sample.qc_set_uid:
                     await qc_set_workflow.submit(sample.qc_set_uid, submitter)
             except Exception as e:
@@ -160,9 +162,13 @@ async def results_submitter(
             # try to submit associated worksheet
             if a_result.worksheet_uid:
                 try:
-                    await worksheet_wf.submit(a_result.worksheet_uid, submitter=submitter)
+                    await worksheet_wf.submit(
+                        a_result.worksheet_uid, submitter=submitter
+                    )
                 except Exception as e:
-                    await worksheet_wf.revert(a_result.worksheet_uid, by_uid=submitter.uid)
+                    await worksheet_wf.revert(
+                        a_result.worksheet_uid, by_uid=submitter.uid
+                    )
                     logger.warning(e)
 
         return_results.append(a_result)
@@ -197,7 +203,9 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
                 if sample_verified and sample.qc_set_uid:
                     await qc_set_workflow.approve(sample.qc_set_uid, user)
                     # auto publish QC samples without report generation
-                    await sample_service.change_status(a_result.sample_uid, SampleState.PUBLISHED, user)
+                    await sample_service.change_status(
+                        a_result.sample_uid, SampleState.PUBLISHED, user
+                    )
             except Exception as e:
                 await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
                 logger.warning(e)
@@ -264,8 +272,8 @@ async def result_mutator(result: AnalysisResult) -> None:
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.get("instrument_uid") == result.laboratory_instrument_uid
-                    and cf.get("method_uid") == result.method_uid
+                cf.get("instrument_uid") == result.laboratory_instrument_uid
+                and cf.get("method_uid") == result.method_uid
             ):
                 await result_mutation_service.create(
                     c={

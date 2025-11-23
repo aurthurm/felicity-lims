@@ -10,24 +10,24 @@ networks:
 # These volumes are managed by Docker and are the recommended way to persist data.
 volumes:
   dragonfly_data: # Volume for DragonflyDB data
-  dbgate_data:    # Volume for DbGate configuration and data
+  dbgate_data: # Volume for DbGate configuration and data
   felicity_media: # Volume for application media files (e.g., uploads)
-  minio_data:     # Volume for MinIO object storage data
-  postgres_data:  # Volume for PostgreSQL database data
-  mongo_data:     # Volume for MongoDB database data
+  minio_data: # Volume for MinIO object storage data
+  postgres_data: # Volume for PostgreSQL database data
+  mongo_data: # Volume for MongoDB database data
 
 services:
   felicity-static-nginx:
     container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.2.1 # Pinning image version for stability
+    image: amusendame/felicity-static-nginx:0.2.2 # Pinning image version for stability
     restart: unless-stopped # Always restart unless explicitly stopped
     ports:
-      - "80:80" # Expose Nginx on host port 80
+      - '80:80' # Expose Nginx on host port 80
     env_file:
       - .env # Load PostgreSQL credentials from .env file
     environment:
       PROXY_BACKEND: felicity-api # Backend service name for Nginx proxy
-      PROXY_PORT: 8000           # Port of the backend service
+      PROXY_PORT: 8000 # Port of the backend service
       SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
     depends_on:
       - felicity-api # Ensure API is up before Nginx starts
@@ -36,11 +36,11 @@ services:
     logging:
       options:
         max-size: 10m # Limit log file size
-        max-file: 5   # Keep up to 5 log files
+        max-file: 5 # Keep up to 5 log files
 
   felicity-api:
     container_name: felicity-api
-    image: amusendame/felicity-lims:api-0.2.1 # Pinning image version for stability
+    image: amusendame/felicity-lims:api-0.2.2 # Pinning image version for stability
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file
@@ -57,7 +57,7 @@ services:
       MINIO_ACCESS: ${MINIO_ROOT_USER} # Sourced from .env
       MINIO_SECRET: ${MINIO_ROOT_PASSWORD} # Sourced from .env
     ports:
-      - "127.0.0.1:9991:8000" # Expose API on localhost port 9991
+      - '127.0.0.1:9991:8000' # Expose API on localhost port 9991
     networks:
       - felicitynet
     volumes:
@@ -93,7 +93,7 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: minio server /data --console-address ":9001" # Start MinIO server with console
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live' ]
       interval: 30s
       timeout: 20s
       retries: 3
@@ -106,11 +106,11 @@ services:
       - .env # Load PostgreSQL credentials from .env file
     environment:
       - DFLY_proactor_threads=4 # Configure DragonflyDB threads
-      - DFLY_maxmemory=1G      # Set max memory for DragonflyDB
+      - DFLY_maxmemory=1G # Set max memory for DragonflyDB
     ulimits:
       memlock: -1 # Allow memory locking for performance
     ports:
-      - "127.0.0.1:9994:6379" # Expose DragonflyDB on localhost port 9994
+      - '127.0.0.1:9994:6379' # Expose DragonflyDB on localhost port 9994
     volumes:
       - dragonfly_data:/data # Persist DragonflyDB data to a named volume
     networks:
@@ -130,15 +130,15 @@ services:
       # IMPORTANT: For production, 'md5' or 'scram-sha-256' is recommended for security.
       POSTGRES_HOST_AUTH_METHOD: md5
       shared_buffers: 256MB # Example PostgreSQL configuration
-      max_connections: 100  # Example PostgreSQL configuration
+      max_connections: 100 # Example PostgreSQL configuration
     volumes:
       - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data to a named volume
     ports:
-      - "127.0.0.1:9995:5432" # Expose PostgreSQL on localhost port 9995 (internal 5432)
+      - '127.0.0.1:9995:5432' # Expose PostgreSQL on localhost port 9995 (internal 5432)
     networks:
       - felicitynet
     healthcheck: # Health check to ensure PostgreSQL is ready
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      test: [ 'CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}' ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -165,7 +165,7 @@ services:
     image: dbgate/dbgate:latest # Pinning image version
     restart: always
     ports:
-      - "127.0.0.1:9997:3000" # Expose DbGate on localhost port 9997
+      - '127.0.0.1:9997:3000' # Expose DbGate on localhost port 9997
     volumes:
       - dbgate_data:/root/.dbgate # Persist DbGate configuration
     env_file:
@@ -205,6 +205,6 @@ services:
       # Syncfusion license key (should ideally be in .env for production)
       SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} # Sourced from .env
     ports:
-      - "127.0.0.1:9998:80" # Expose Word Processor Server on localhost port 9998
+      - '127.0.0.1:9998:80' # Expose Word Processor Server on localhost port 9998
     networks:
       - felicitynet # Connect to the custom network

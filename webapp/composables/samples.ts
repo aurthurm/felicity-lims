@@ -1,5 +1,5 @@
-import {computed, reactive, toRefs} from 'vue';
-import {useSampleStore} from '@/stores/sample';
+import { computed, reactive, toRefs } from 'vue';
+import { useSampleStore } from '@/stores/sample';
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
 import {
@@ -29,7 +29,7 @@ import {
     RejectSamplesMutationVariables,
     VerifySamplesDocument,
     VerifySamplesMutation,
-    VerifySamplesMutationVariables
+    VerifySamplesMutationVariables,
 } from '@/graphql/operations/analyses.mutations';
 import {
     RecoverSamplesDocument,
@@ -37,7 +37,7 @@ import {
     RecoverSamplesMutationVariables,
     StoreSamplesDocument,
     StoreSamplesMutation,
-    StoreSamplesMutationVariables
+    StoreSamplesMutationVariables,
 } from '@/graphql/operations/storage.mutations';
 import {
     BarcodeSamplesDocument,
@@ -48,22 +48,14 @@ import {
     ImpressSampleReportQueryVariables,
     ImpressSampleReportsDocument,
     ImpressSampleReportsQuery,
-    ImpressSampleReportsQueryVariables
+    ImpressSampleReportsQueryVariables,
 } from '@/graphql/operations/analyses.queries';
-import {
-    Maybe,
-    SampleListingType,
-    SamplePublishInputType,
-    SampleRejectInputType,
-    SampleType,
-    StoreSamplesInputType
-} from '@/types/gql';
-
+import { Maybe, SampleListingType, SamplePublishInputType, SampleRejectInputType, SampleType, StoreSamplesInputType } from '@/types/gql';
 
 export default function useSampleComposable() {
     const sampleStore = useSampleStore();
-    const {withClientMutation, withClientQuery} = useApiUtil();
-    const {toastSuccess, toastError, toastInfo, swalConfirm} = useNotifyToast();
+    const { withClientMutation, withClientQuery } = useApiUtil();
+    const { toastSuccess, toastError, toastInfo, swalConfirm } = useNotifyToast();
 
     const state = reactive({
         samples: computed(() => sampleStore.getSamples),
@@ -82,15 +74,12 @@ export default function useSampleComposable() {
     // CANCEL_SAMPLES
     const cancelSamples = async (uids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to cancel these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to cancel these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<CancelSamplesMutation, CancelSamplesMutationVariables>(
                     CancelSamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'cancelSamples'
                 );
 
@@ -111,15 +100,12 @@ export default function useSampleComposable() {
     // CLONE_SAMPLES
     const cloneSamples = async (uids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to clone these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to clone these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(
                     CloneSamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'cloneSamples'
                 );
 
@@ -136,15 +122,12 @@ export default function useSampleComposable() {
     // REINSTATE_SAMPLES
     const reInstateSamples = async (uids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to reinstate samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to reinstate samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReInstateSamplesMutation, ReInstateSamplesMutationVariables>(
                     ReInstateSamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'reInstateSamples'
                 );
 
@@ -165,15 +148,12 @@ export default function useSampleComposable() {
     // RECEIVE_SAMPLES
     const receiveSamples = async (uids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to receive samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to receive samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReceiveSamplesMutation, ReceiveSamplesMutationVariables>(
                     ReceiveSamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'receiveSamples'
                 );
 
@@ -194,15 +174,12 @@ export default function useSampleComposable() {
     // RECOVER_SAMPLES
     const recoverSamples = async (sampleUids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to recover these samples from storage',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to recover these samples from storage', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<RecoverSamplesMutation, RecoverSamplesMutationVariables>(
                     RecoverSamplesDocument,
-                    {sampleUids},
+                    { sampleUids },
                     'recoverSamples'
                 );
 
@@ -222,15 +199,12 @@ export default function useSampleComposable() {
     // PUBLISH_SAMPLES
     const publishSamples = async (samples: Array<SamplePublishInputType>): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to publish samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to publish samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response: SampleListingType = await withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(
                     PublishSamplesDocument,
-                    {samples},
+                    { samples },
                     'publishSamples'
                 );
 
@@ -251,16 +225,13 @@ export default function useSampleComposable() {
     const downloadSamplesImpress = async (sampleIds: string[]): Promise<void> => {
         console.log('Downloading Impress reports for samples:', sampleIds);
         try {
-            const result = await swalConfirm(
-                'You want to download PDFs',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to download PDFs', 'Are you sure?');
 
             if (result.isConfirmed) {
                 console.log('impressReportsDownload:', sampleIds);
                 const response = await withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(
                     ImpressSampleReportsDocument,
-                    {sampleIds},
+                    { sampleIds },
                     'impressReportsDownload'
                 );
 
@@ -280,15 +251,12 @@ export default function useSampleComposable() {
     // DOWNLOAD_IMPRESS
     const downloadImpress = async (impressUid: string): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to download this report',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to download this report', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables>(
                     ImpressSampleReportDocument,
-                    {impressUid},
+                    { impressUid },
                     'impressReportDownload'
                 );
 
@@ -305,11 +273,11 @@ export default function useSampleComposable() {
         }
     };
 
-    const barcodeSamples = async (sampleUids: string[]): Promise<"Query" | Maybe<never[]> | undefined> => {
+    const barcodeSamples = async (sampleUids: string[]): Promise<'Query' | Maybe<never[]> | undefined> => {
         try {
             const response = await withClientQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables>(
                 BarcodeSamplesDocument,
-                {sampleUids},
+                { sampleUids },
                 'barcodeSamples'
             );
             return response || [];
@@ -322,15 +290,12 @@ export default function useSampleComposable() {
     // PRINT_SAMPLES
     const printSamples = async (uids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to print these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to print these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<PrintSamplesMutation, PrintSamplesMutationVariables>(
                     PrintSamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'printSamples'
                 );
 
@@ -346,15 +311,12 @@ export default function useSampleComposable() {
     // VERIFY_SAMPLES
     const verifySamples = async (uids: string[]): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to verify these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to verify these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<VerifySamplesMutation, VerifySamplesMutationVariables>(
                     VerifySamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'verifySamples'
                 );
 
@@ -375,15 +337,12 @@ export default function useSampleComposable() {
     // REJECT_SAMPLES
     const rejectSamples = async (samples: Array<SampleRejectInputType>): Promise<void> => {
         try {
-            const result = await swalConfirm(
-                'You want to reject these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to reject these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<RejectSamplesMutation, RejectSamplesMutationVariables>(
                     RejectSamplesDocument,
-                    {samples},
+                    { samples },
                     'rejectSamples'
                 );
 
@@ -399,15 +358,12 @@ export default function useSampleComposable() {
     // INVALIDATE_SAMPLES
     const invalidateSamples = async (uids: string[]): Promise<Array<SampleType>> => {
         try {
-            const result = await swalConfirm(
-                'You want to invalidate these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to invalidate these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<InvalidateSamplesMutation, InvalidateSamplesMutationVariables>(
                     InvalidateSamplesDocument,
-                    {samples: uids},
+                    { samples: uids },
                     'invalidateSamples'
                 );
 
@@ -431,15 +387,12 @@ export default function useSampleComposable() {
     // STORE_SAMPLES
     const storeSamples = async (params: Array<StoreSamplesInputType>): Promise<Array<SampleType>> => {
         try {
-            const result = await swalConfirm(
-                'You want to store these samples',
-                'Are you sure?'
-            );
+            const result = await swalConfirm('You want to store these samples', 'Are you sure?');
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<StoreSamplesMutation, StoreSamplesMutationVariables>(
                     StoreSamplesDocument,
-                    {payload: params},
+                    { payload: params },
                     'storeSamples'
                 );
 
@@ -471,6 +424,6 @@ export default function useSampleComposable() {
         verifySamples,
         rejectSamples,
         invalidateSamples,
-        storeSamples
+        storeSamples,
     };
-}   
+}

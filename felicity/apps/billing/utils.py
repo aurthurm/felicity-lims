@@ -7,7 +7,12 @@ from felicity.apps.billing.entities import (
     VoucherCode,
     test_bill_item,
 )
-from felicity.apps.billing.enum import DiscountType, DiscountValueType, TransactionKind, PaymentStatus
+from felicity.apps.billing.enum import (
+    DiscountType,
+    DiscountValueType,
+    TransactionKind,
+    PaymentStatus,
+)
 from felicity.apps.billing.exceptions import (
     CustomerAlreadyUsedVoucherException,
     InactiveTestBillException,
@@ -45,11 +50,12 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
     async with ProfilePriceService().repository.async_session() as transaction_session:
         analysis_request = await AnalysisRequestService().get(
             uid=analysis_request_uid,
-            related=['samples', 'samples.profiles', 'samples.analyses'],
-            session=transaction_session
+            related=["samples", "samples.profiles", "samples.analyses"],
+            session=transaction_session,
         )
-        lab_settings = await LaboratorySettingService().get(laboratory_uid=analysis_request.laboratory_uid,
-                                                            session=transaction_session)
+        lab_settings = await LaboratorySettingService().get(
+            laboratory_uid=analysis_request.laboratory_uid, session=transaction_session
+        )
 
         if not lab_settings.allow_billing:
             logger.info("Billing is not allowed")
@@ -73,7 +79,9 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
             for _an in sample.analyses:
                 analysis_uids.append(_an.uid)
 
-        profiles_prices = await ProfilePriceService().get_all(profile_uid__in=profile_uids, session=transaction_session)
+        profiles_prices = await ProfilePriceService().get_all(
+            profile_uid__in=profile_uids, session=transaction_session
+        )
         analysis_prices = await AnalysisPriceService().get_all(
             analysis_uid__in=analysis_uids, session=transaction_session
         )
@@ -93,7 +101,7 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
                 start_date__le=today,
                 end_date__ge=today,
                 is_active=True,
-                session=transaction_session
+                session=transaction_session,
             )
 
             discount = {}
@@ -130,7 +138,7 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
                 start_date__le=today,
                 end_date__ge=today,
                 is_active=True,
-                session=transaction_session
+                session=transaction_session,
             )
 
             discount = {}
@@ -181,7 +189,7 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
             test_bill_item,
             [{"test_bill_uid": bill.uid, "analysis_request_uid": analysis_request.uid}],
             commit=False,
-            session=transaction_session
+            session=transaction_session,
         )
 
         # apply discounts
@@ -193,17 +201,23 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
                     **t_in,
                     test_bill_uid=bill.uid,
                 ),
-                session=transaction_session
+                session=transaction_session,
             )
             # apply sale discounts from the transaction
-            bill_update_in = TestBillUpdate(total_paid=bill.total_paid + transaction.amount)
-            await TestBillService().update(bill.uid, bill_update_in, session=transaction_session)
+            bill_update_in = TestBillUpdate(
+                total_paid=bill.total_paid + transaction.amount
+            )
+            await TestBillService().update(
+                bill.uid, bill_update_in, session=transaction_session
+            )
             # update transaction
             tra_update_in = TestBillTransactionUpdate(
                 processed=True,
                 is_success=True,
             )
-            await TestBillTransactionService().update(transaction.uid, tra_update_in, session=transaction_session)
+            await TestBillTransactionService().update(
+                transaction.uid, tra_update_in, session=transaction_session
+            )
 
         # set analysis_request as billed and set service locking
         is_billed = True
@@ -212,7 +226,9 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
             if lab_settings.min_payment_status == PaymentStatus.UNPAID:
                 is_locked = False
             elif lab_settings.min_payment_status == PaymentStatus.PARTIAL:
-                if bill.total_paid < (lab_settings.partial_percentage * bill.total_charged):
+                if bill.total_paid < (
+                    lab_settings.partial_percentage * bill.total_charged
+                ):
                     is_locked = True
                 else:
                     is_locked = False
@@ -224,26 +240,32 @@ async def bill_order(analysis_request_uid: str, auto_bill=False):
 
         analysis_request.is_billed = is_billed
         analysis_request.is_locked = is_locked
-        await AnalysisRequestService().save(analysis_request, commit=False, session=transaction_session)
+        await AnalysisRequestService().save(
+            analysis_request, commit=False, session=transaction_session
+        )
 
         # Save transaction
         await ProfilePriceService().repository.save_transaction(transaction_session)
 
     logger.info("invoicing...")
-    bill = await TestBillService().get(uid=bill.uid, related=['patient'])
+    bill = await TestBillService().get(uid=bill.uid, related=["patient"])
     await impress_invoice(bill)
 
 
 async def apply_voucher(
-        voucher_code: str, test_bill_uid: str, customer_uid: str
+    voucher_code: str, test_bill_uid: str, customer_uid: str
 ) -> TestBill:
     today = timenow_dt()
     with TestBillService().repository.async_session() as transaction_session:
-        bill = await TestBillService().get(uid=test_bill_uid, session=transaction_session)
+        bill = await TestBillService().get(
+            uid=test_bill_uid, session=transaction_session
+        )
         if not bill.is_active:
             raise InactiveTestBillException()
 
-        code: VoucherCode = await VoucherCodeService().get(code=voucher_code, session=transaction_session)
+        code: VoucherCode = await VoucherCodeService().get(
+            code=voucher_code, session=transaction_session
+        )
 
         if not code:
             raise InvalidVoucherCodeException()
@@ -254,7 +276,9 @@ async def apply_voucher(
         if code.used > code.usage_limit:
             raise VoucherCodeLimitExceededException()
 
-        voucher: Voucher = await VoucherService().get(uid=code.voucher_uid, session=transaction_session)
+        voucher: Voucher = await VoucherService().get(
+            uid=code.voucher_uid, session=transaction_session
+        )
         if voucher.used > voucher.usage_limit:
             raise VoucherLimitExceededException()
 
@@ -262,7 +286,9 @@ async def apply_voucher(
             raise VoucherLimitExceededException()
 
         voucher_customer = await VoucherCustomerService().get(
-            patient_uid=customer_uid, voucher_code_uid=code.uid, session=transaction_session
+            patient_uid=customer_uid,
+            voucher_code_uid=code.uid,
+            session=transaction_session,
         )
         if voucher_customer and voucher.once_per_customer:
             raise CustomerAlreadyUsedVoucherException()
@@ -283,7 +309,7 @@ async def apply_voucher(
             # start_date__le=today,
             # end_date__ge=today,
             # is_active=True,
-            session=transaction_session
+            session=transaction_session,
         )
         analyses_discounts = await AnalysisDiscountService().get_all(
             analysis_uid__in=analyses_uids,
@@ -292,7 +318,7 @@ async def apply_voucher(
             # start_date__le=today,
             # end_date__ge=today,
             # is_active=True,
-            session=transaction_session
+            session=transaction_session,
         )
         if not analyses_discounts and not profiles_discounts:
             raise InvalidVoucherCodeException()
@@ -302,7 +328,9 @@ async def apply_voucher(
         for p_disc in profiles_discounts:
             amount = p_disc.value_amount
             if p_disc.value_type == DiscountValueType.PERCENTAGE:
-                p_price = await ProfilePriceService().get(profile_uid=p_disc.profile_uid, session=transaction_session)
+                p_price = await ProfilePriceService().get(
+                    profile_uid=p_disc.profile_uid, session=transaction_session
+                )
                 amount = float(p_disc.value_percent) * float(p_price.amount)
                 amount = round(amount, 2)
 
@@ -320,8 +348,9 @@ async def apply_voucher(
         for a_disc in analyses_discounts:
             amount = a_disc.value_amount
             if a_disc.value_type == DiscountValueType.PERCENTAGE:
-                a_price = await AnalysisPriceService().get(analysis_uid=a_disc.analysis_uid,
-                                                           session=transaction_session)
+                a_price = await AnalysisPriceService().get(
+                    analysis_uid=a_disc.analysis_uid, session=transaction_session
+                )
                 amount = float(a_disc.value_percent) * float(a_price.amount)
                 amount = round(amount, 2)
 
@@ -347,24 +376,34 @@ async def apply_voucher(
         in_trans = prof_in_trans + anal_in_trans
 
         for tras_in in in_trans:
-            transaction = await TestBillTransactionService().create(tras_in, session=transaction_session)
+            transaction = await TestBillTransactionService().create(
+                tras_in, session=transaction_session
+            )
             # apply sale discounts from the transaction
-            bill_update_in = TestBillUpdate(total_paid=bill.total_paid + transaction.amount)
-            bill = await TestBillService().update(bill.uid, bill_update_in, session=transaction_session)
+            bill_update_in = TestBillUpdate(
+                total_paid=bill.total_paid + transaction.amount
+            )
+            bill = await TestBillService().update(
+                bill.uid, bill_update_in, session=transaction_session
+            )
             # update transaction
             tra_update_in = TestBillTransactionUpdate(
                 processed=True,
                 is_success=True,
             )
             await TestBillTransactionService().update(
-                transaction.uid, tra_update_in, commit=False, session=transaction_session
+                transaction.uid,
+                tra_update_in,
+                commit=False,
+                session=transaction_session,
             )
 
         # add voucher customer
         if not voucher_customer:
             await VoucherCustomerService().create(
                 {"patient_uid": customer_uid, "voucher_code_uid": code.uid},
-                commit=False, session=transaction_session
+                commit=False,
+                session=transaction_session,
             )
         # save transaction
         await TestBillService().repository.save_transaction(transaction_session)

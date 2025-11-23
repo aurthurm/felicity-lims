@@ -24,12 +24,12 @@ class EntityAnalyticsInit(Generic[ModelType]):
         self.alias = model.__tablename__ + "_tbl"
 
     async def get_line_listing(
-            self,
-            period_start: str | datetime,
-            period_end: str | datetime,
-            sample_states: list[str],
-            date_column: str,
-            analysis_uids: List[str],
+        self,
+        period_start: str | datetime,
+        period_end: str | datetime,
+        sample_states: list[str],
+        date_column: str,
+        analysis_uids: List[str],
     ) -> tuple[list[str], list[Any]]:
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
@@ -117,8 +117,8 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if current_lab_uid and hasattr(self.model, "laboratory_uid"):
             stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
 
-        async with async_session() as session:
-            result = await session.execute(stmt.limit(10))
+        # async with async_session() as session:
+        #     result = await session.execute(stmt.limit(10))
 
         # If you want scalars:
         # rows = result.scalars().all()
@@ -126,11 +126,11 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return None, None
 
     async def get_counts_group_by(
-            self,
-            group_by: str,
-            start: Optional[Tuple[str, str]] = None,
-            end: Optional[Tuple[str, str]] = None,
-            group_in: list[str] | None = None,
+        self,
+        group_by: str,
+        start: Optional[Tuple[str, str]] = None,
+        end: Optional[Tuple[str, str]] = None,
+        group_in: list[str] | None = None,
     ):
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
@@ -178,10 +178,12 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return result.all()
 
     async def count_analyses_retests(
-            self, start: Tuple[str, str], end: Tuple[str, str]
+        self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         retest_col = getattr(self.model, "retest")
-        stmt = select(func.count(self.model.uid).label("total")).filter(retest_col.is_(True))
+        stmt = select(func.count(self.model.uid).label("total")).filter(
+            retest_col.is_(True)
+        )
 
         # Start date filter
         if start and start[1]:
@@ -214,7 +216,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return result.all()
 
     async def get_sample_process_performance(
-            self, start: Tuple[str, str], end: Tuple[str, str]
+        self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -238,12 +240,16 @@ class EntityAnalyticsInit(Generic[ModelType]):
                 raise AttributeError(f"Model has no attr {col_name}")
 
         if self.table != "sample":
-            logger.warning("analysis_process_performance must have sample as root table")
-            raise Exception("analysis_process_performance must have sample as root table")
+            logger.warning(
+                "analysis_process_performance must have sample as root table"
+            )
+            raise Exception(
+                "analysis_process_performance must have sample as root table"
+            )
 
         # Tenant/lab context
         current_lab_uid = get_current_lab_uid()
-        lab_filter_sql = f"AND laboratory_uid = :lab_uid" if current_lab_uid else ""
+        lab_filter_sql = "AND laboratory_uid = :lab_uid" if current_lab_uid else ""
 
         raw_sql = f"""
             SELECT 
@@ -281,7 +287,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return result.all()
 
     async def get_analysis_process_performance(
-            self, start: Tuple[str, str], end: Tuple[str, str]
+        self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -305,12 +311,18 @@ class EntityAnalyticsInit(Generic[ModelType]):
                 raise AttributeError(f"Model has no attr {col_name}")
 
         if self.table != "sample":
-            logger.warning("analysis_process_performance must have sample as root table")
-            raise Exception("analysis_process_performance must have sample as root table")
+            logger.warning(
+                "analysis_process_performance must have sample as root table"
+            )
+            raise Exception(
+                "analysis_process_performance must have sample as root table"
+            )
 
         # Tenant / lab context
         current_lab_uid = get_current_lab_uid()
-        lab_filter_sql = f"AND {self.alias}.laboratory_uid = :lab_uid" if current_lab_uid else ""
+        lab_filter_sql = (
+            f"AND {self.alias}.laboratory_uid = :lab_uid" if current_lab_uid else ""
+        )
 
         raw_sql = f"""
             SELECT 

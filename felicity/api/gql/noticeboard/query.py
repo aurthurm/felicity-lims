@@ -13,17 +13,27 @@ from felicity.core.dtz import timenow_dt
 @strawberry.type
 class NoticeQuery:
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.NOTICE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.NOTICE),
+                ]
+            )
+        ]
     )
     async def notice_by_uid(self, info, uid: str) -> Optional[NoticeType]:
         return await NoticeService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.ANALYTICS),
+                ]
+            )
+        ]
     )
     async def notices_by_creator(self, info, uid: str) -> Optional[List[NoticeType]]:
         return await NoticeService().get_all(
@@ -31,15 +41,20 @@ class NoticeQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.ANALYTICS)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.ANALYTICS),
+                ]
+            )
+        ]
     )
     async def notice_filter(
-            self,
-            info,
-            group_uid: str | None,
-            department_uid: str | None,
+        self,
+        info,
+        group_uid: str | None,
+        department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
 

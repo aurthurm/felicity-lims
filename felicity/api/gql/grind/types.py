@@ -34,12 +34,14 @@ class GrindSchemeType:
     @strawberry.field
     async def members(self, info) -> List["UserType"]:
         from felicity.apps.grind.services import GrindSchemeService
+
         scheme = await GrindSchemeService().get(uid=self.uid, related=["members"])
         return scheme.members if scheme else []
 
     @strawberry.field
     async def boards(self, info) -> List["GrindBoardType"]:
         from felicity.apps.grind.services import GrindBoardService
+
         return await GrindBoardService().get_all(scheme_uid=self.uid)
 
 
@@ -77,6 +79,7 @@ class GrindBoardType:
     @strawberry.field
     async def posters(self, info) -> List["GrindPosterType"]:
         from felicity.apps.grind.services import GrindPosterService
+
         return await GrindPosterService().get_all(board_uid=self.uid)
 
 
@@ -118,18 +121,21 @@ class GrindPosterType:
     @strawberry.field
     async def members(self, info) -> List[UserType]:
         from felicity.apps.grind.services import GrindPosterService
+
         poster = await GrindPosterService().get(uid=self.uid)
         return poster.members if poster else []
 
     @strawberry.field
     async def stamps(self, info) -> List["GrindStampType"]:
         from felicity.apps.grind.services import GrindPosterService
+
         poster = await GrindPosterService().get(uid=self.uid, related=["stamps"])
         return poster.stamps if poster else []
 
     @strawberry.field
     async def errands(self, info) -> List["GrindErrandType"]:
         from felicity.apps.grind.services import GrindErrandService
+
         return await GrindErrandService().get_all(poster_uid=self.uid)
 
 
@@ -208,23 +214,27 @@ class GrindErrandType:
     @strawberry.field
     async def members(self, info) -> List[UserType]:
         from felicity.apps.grind.services import GrindErrandService
+
         errand = await GrindErrandService().get(uid=self.uid, related=["members"])
         return errand.members if errand else []
 
     @strawberry.field
     async def stamps(self, info) -> List[GrindStampType]:
         from felicity.apps.grind.services import GrindErrandService
+
         errand = await GrindErrandService().get(uid=self.uid, related=["stamps"])
         return errand.stamps if errand else []
 
     @strawberry.field
     async def milestones(self, info) -> List["GrindMilestoneType"]:
         from felicity.apps.grind.services import GrindMilestoneService
+
         return await GrindMilestoneService().get_all(errand_uid=self.uid)
 
     @strawberry.field
     async def milestones_at(self, info) -> float:
         from felicity.apps.grind.services import GrindMilestoneService
+
         milestones = await GrindMilestoneService().get_all(errand_uid=self.uid)
         complete = list(filter(lambda x: x.complete, milestones))
         return round((len(complete) / len(milestones) * 100), 2) if milestones else 0
@@ -232,12 +242,18 @@ class GrindErrandType:
     @strawberry.field
     async def occurrences(self, info) -> List["GrindOccurrenceType"]:
         from felicity.apps.grind.services import GrindOccurrenceService
-        return await GrindOccurrenceService().get_all(target=OccurrenceTarget.ERRAND.value, target_uid=self.uid)
+
+        return await GrindOccurrenceService().get_all(
+            target=OccurrenceTarget.ERRAND.value, target_uid=self.uid
+        )
 
     @strawberry.field
     async def media(self, info) -> List["GrindMediaType"]:
         from felicity.apps.grind.services import GrindMediaService
-        return await GrindMediaService().get_all(target=MediaTarget.ERRAND.value, target_uid=self.uid)
+
+        return await GrindMediaService().get_all(
+            target=MediaTarget.ERRAND.value, target_uid=self.uid
+        )
 
 
 @strawberry.type
@@ -274,15 +290,19 @@ class GrindErrandDiscussionType:
     @strawberry.field
     async def subdiscussions(self) -> List["GrindErrandDiscussionType"]:
         from felicity.apps.grind.services import GrindErrandDiscussionService
+
         return await GrindErrandDiscussionService().get_all(parent_uid=self.uid)
 
     @strawberry.field
     async def can_edit(self, info) -> bool:
         felicity_user = await auth_from_info(info)
         from felicity.apps.grind.services import GrindErrandDiscussionService
-        if felicity_user and felicity_user.uid != self.created_by_uid: return False
+
+        if felicity_user and felicity_user.uid != self.created_by_uid:
+            return False
         subs = await GrindErrandDiscussionService().get_all(parent_uid=self.uid)
-        if subs: return False
+        if subs:
+            return False
         return True
 
 
@@ -391,7 +411,10 @@ class GrindMilestoneType:
     @strawberry.field
     async def occurrences(self, info) -> List["GrindOccurrenceType"]:
         from felicity.apps.grind.services import GrindOccurrenceService
-        return await GrindOccurrenceService().get_all(target=OccurrenceTarget.MILESTONE.value, target_uid=self.uid)
+
+        return await GrindOccurrenceService().get_all(
+            target=OccurrenceTarget.MILESTONE.value, target_uid=self.uid
+        )
 
 
 @strawberry.type
@@ -466,6 +489,6 @@ class FileResponseType:
             uid=uid,
             filename=filename,
             mimetype=mimetype,
-            content=base64.b64encode(binary_content).decode('utf-8'),
-            size=len(binary_content)
+            content=base64.b64encode(binary_content).decode("utf-8"),
+            size=len(binary_content),
         )

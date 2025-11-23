@@ -287,8 +287,8 @@ query getOrdersByBillUid($uid: String!) {
     }
 }
 
-query getBillingOverviewMetrics {
-    billingOverviewMetrics {
+query getBillingOverviewMetrics($startDate: DateTime, $endDate: DateTime) {
+    billingOverviewMetrics(startDate: $startDate, endDate: $endDate) {
         keyMetrics {
             totalCharged
             totalPaid

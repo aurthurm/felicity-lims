@@ -27,13 +27,13 @@ from felicity.utils import has_value_or_is_truthy
 @strawberry.type
 class DocumentQuery:
     async def document_category_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentCategoryCursorPage:
         filters = {}
 
@@ -63,27 +63,39 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_category_by_uid(self, info, uid: str) -> Optional[types.DocumentCategoryType]:
+    async def document_category_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentCategoryType]:
         return await DocumentCategoryService().get(uid=uid)
 
     # Document Tag Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_tag_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentTagCursorPage:
         filters = {}
 
@@ -113,28 +125,40 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_tag_by_uid(self, info, uid: str) -> Optional[types.DocumentTagType]:
+    async def document_tag_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentTagType]:
         return await DocumentTagService().get(uid=uid)
 
     # Document Folder Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_folder_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            parent_uid: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        parent_uid: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentFolderCursorPage:
         filters = {}
 
@@ -167,36 +191,53 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_folder_by_uid(self, info, uid: str) -> Optional[types.DocumentFolderType]:
+    async def document_folder_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentFolderType]:
         return await DocumentFolderService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_root_folders(self, info) -> List[types.DocumentFolderType]:
         return await DocumentFolderService().get_all(parent_uid=None)
 
     # Document Template Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_template_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            category_uid: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        category_uid: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentTemplateCursorPage:
         filters = {}
 
@@ -229,34 +270,46 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_template_by_uid(self, info, uid: str) -> Optional[types.DocumentTemplateType]:
+    async def document_template_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentTemplateType]:
         return await DocumentTemplateService().get(uid=uid)
 
     # Main Document Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            folder_uid: str | None = None,
-            category_uid: str | None = None,
-            department_uid: str | None = None,
-            tag_uid: str | None = None,
-            status: str | None = None,
-            author_uid: str | None = None,
-            reader_uid: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        folder_uid: str | None = None,
+        category_uid: str | None = None,
+        department_uid: str | None = None,
+        tag_uid: str | None = None,
+        status: str | None = None,
+        author_uid: str | None = None,
+        reader_uid: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentCursorPage:
         filters = {}
 
@@ -307,35 +360,52 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_by_uid(self, info, uid: str) -> Optional[types.DocumentType]:
         return await DocumentService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_by_document_id(self, info, document_id: str) -> Optional[types.DocumentType]:
+    async def document_by_document_id(
+        self, info, document_id: str
+    ) -> Optional[types.DocumentType]:
         return await DocumentService().get(document_id=document_id)
 
     # Document Version Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_version_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            document_uid: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        document_uid: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentVersionCursorPage:
         filters = {}
 
@@ -360,36 +430,55 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_version_by_uid(self, info, uid: str) -> Optional[types.DocumentVersionType]:
+    async def document_version_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentVersionType]:
         return await DocumentVersionService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_versions_by_document(self, info, document_uid: str) -> List[types.DocumentVersionType]:
+    async def document_versions_by_document(
+        self, info, document_uid: str
+    ) -> List[types.DocumentVersionType]:
         return await DocumentVersionService().get_all(document_uid=document_uid)
 
     # Document Status Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_status_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            document_uid: str | None = None,
-            status: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        document_uid: str | None = None,
+        status: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentStatusCursorPage:
         filters = {}
 
@@ -417,37 +506,56 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_status_by_uid(self, info, uid: str) -> Optional[types.DocumentStatusType]:
+    async def document_status_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentStatusType]:
         return await DocumentStatusService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_statuses_by_document(self, info, document_uid: str) -> List[types.DocumentStatusType]:
+    async def document_statuses_by_document(
+        self, info, document_uid: str
+    ) -> List[types.DocumentStatusType]:
         return await DocumentStatusService().get_all(document_uid=document_uid)
 
     # Document Review Cycle Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_review_cycle_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            document_uid: str | None = None,
-            status: str | None = None,
-            initiated_by_uid: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        document_uid: str | None = None,
+        status: str | None = None,
+        initiated_by_uid: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentReviewCycleCursorPage:
         filters = {}
 
@@ -469,7 +577,9 @@ class DocumentQuery:
         )
 
         total_count: int = page.total_count
-        edges: List[types.DocumentReviewCycleEdge[types.DocumentReviewCycleType]] = page.edges
+        edges: List[types.DocumentReviewCycleEdge[types.DocumentReviewCycleType]] = (
+            page.edges
+        )
         items: List[types.DocumentReviewCycleType] = page.items
         page_info: PageInfo = page.page_info
 
@@ -478,37 +588,56 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_review_cycle_by_uid(self, info, uid: str) -> Optional[types.DocumentReviewCycleType]:
+    async def document_review_cycle_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentReviewCycleType]:
         return await DocumentReviewCycleService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_review_cycles_by_document(self, info, document_uid: str) -> List[types.DocumentReviewCycleType]:
+    async def document_review_cycles_by_document(
+        self, info, document_uid: str
+    ) -> List[types.DocumentReviewCycleType]:
         return await DocumentReviewCycleService().get_all(document_uid=document_uid)
 
     # Document Review Step Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_review_step_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            review_cycle_uid: str | None = None,
-            reviewer_uid: str | None = None,
-            status: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        review_cycle_uid: str | None = None,
+        reviewer_uid: str | None = None,
+        status: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentReviewStepCursorPage:
         filters = {}
 
@@ -530,7 +659,9 @@ class DocumentQuery:
         )
 
         total_count: int = page.total_count
-        edges: List[types.DocumentReviewStepEdge[types.DocumentReviewStepType]] = page.edges
+        edges: List[types.DocumentReviewStepEdge[types.DocumentReviewStepType]] = (
+            page.edges
+        )
         items: List[types.DocumentReviewStepType] = page.items
         page_info: PageInfo = page.page_info
 
@@ -539,45 +670,73 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_review_step_by_uid(self, info, uid: str) -> Optional[types.DocumentReviewStepType]:
+    async def document_review_step_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentReviewStepType]:
         return await DocumentReviewStepService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_review_steps_by_cycle(self, info, review_cycle_uid: str) -> List[types.DocumentReviewStepType]:
-        return await DocumentReviewStepService().get_all(review_cycle_uid=review_cycle_uid)
+    async def document_review_steps_by_cycle(
+        self, info, review_cycle_uid: str
+    ) -> List[types.DocumentReviewStepType]:
+        return await DocumentReviewStepService().get_all(
+            review_cycle_uid=review_cycle_uid
+        )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_review_steps_by_reviewer(self, info, reviewer_uid: str) -> List[types.DocumentReviewStepType]:
+    async def document_review_steps_by_reviewer(
+        self, info, reviewer_uid: str
+    ) -> List[types.DocumentReviewStepType]:
         return await DocumentReviewStepService().get_all(reviewer_uid=reviewer_uid)
 
     # Document Subscription Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_subscription_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            document_uid: str | None = None,
-            user_uid: str | None = None,
-            subscription_type: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        document_uid: str | None = None,
+        user_uid: str | None = None,
+        subscription_type: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentSubscriptionCursorPage:
         filters = {}
 
@@ -599,7 +758,9 @@ class DocumentQuery:
         )
 
         total_count: int = page.total_count
-        edges: List[types.DocumentSubscriptionEdge[types.DocumentSubscriptionType]] = page.edges
+        edges: List[types.DocumentSubscriptionEdge[types.DocumentSubscriptionType]] = (
+            page.edges
+        )
         items: List[types.DocumentSubscriptionType] = page.items
         page_info: PageInfo = page.page_info
 
@@ -608,45 +769,71 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_subscription_by_uid(self, info, uid: str) -> Optional[types.DocumentSubscriptionType]:
+    async def document_subscription_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentSubscriptionType]:
         return await DocumentSubscriptionService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_subscriptions_by_document(self, info, document_uid: str) -> List[types.DocumentSubscriptionType]:
+    async def document_subscriptions_by_document(
+        self, info, document_uid: str
+    ) -> List[types.DocumentSubscriptionType]:
         return await DocumentSubscriptionService().get_all(document_uid=document_uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_subscriptions_by_user(self, info, user_uid: str) -> List[types.DocumentSubscriptionType]:
+    async def document_subscriptions_by_user(
+        self, info, user_uid: str
+    ) -> List[types.DocumentSubscriptionType]:
         return await DocumentSubscriptionService().get_all(user_uid=user_uid)
 
     # Document Audit Queries
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
     async def document_audit_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            document_uid: str | None = None,
-            user_uid: str | None = None,
-            action: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        document_uid: str | None = None,
+        user_uid: str | None = None,
+        action: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> types.DocumentAuditCursorPage:
         filters = {}
 
@@ -677,17 +864,31 @@ class DocumentQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_audit_by_uid(self, info, uid: str) -> Optional[types.DocumentAuditType]:
+    async def document_audit_by_uid(
+        self, info, uid: str
+    ) -> Optional[types.DocumentAuditType]:
         return await DocumentAuditService().get(uid=uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.DOCUMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.DOCUMENT),
+                ]
+            )
+        ]
     )
-    async def document_audits_by_document(self, info, document_uid: str) -> List[types.DocumentAuditType]:
+    async def document_audits_by_document(
+        self, info, document_uid: str
+    ) -> List[types.DocumentAuditType]:
         return await DocumentAuditService().get_all(document_uid=document_uid)

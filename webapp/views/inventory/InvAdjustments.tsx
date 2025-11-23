@@ -1,13 +1,10 @@
 import { defineAsyncComponent, defineComponent, ref, h } from 'vue';
 import { useInventoryStore } from '@/stores/inventory';
-const DataTable = defineAsyncComponent(
-    () => import('@/components/ui/datatable/FelDataTable.vue')
-)
+const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
 
 const InventoryAdjustments = defineComponent({
     name: 'stock-adjustments',
     setup(props, ctx) {
-
         const inventoryStore = useInventoryStore();
         inventoryStore.fetchAdjustments({
             first: 50,
@@ -78,7 +75,7 @@ const InventoryAdjustments = defineComponent({
                     return h(
                         'span',
                         {
-                            innerHTML: `${adjustment?.adjustmentBy?.firstName ?? "---"} ${adjustment?.adjustmentBy?.lastName ?? ""}`,
+                            innerHTML: `${adjustment?.adjustmentBy?.firstName ?? '---'} ${adjustment?.adjustmentBy?.lastName ?? ''}`,
                         },
                         []
                     );
@@ -88,7 +85,7 @@ const InventoryAdjustments = defineComponent({
 
         return {
             tableColumns,
-            inventoryStore
+            inventoryStore,
         };
     },
     render() {
@@ -120,4 +117,4 @@ const InventoryAdjustments = defineComponent({
 });
 
 export { InventoryAdjustments };
-export default InventoryAdjustments
+export default InventoryAdjustments;

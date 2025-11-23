@@ -2,7 +2,7 @@ import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 import tsConfigPaths from 'vite-tsconfig-paths';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import path from 'path'
+import path from 'path';
 // import { fileURLToPath, URL } from 'url';
 
 /**
@@ -10,9 +10,7 @@ import path from 'path'
  * @type {import('vite').UserConfig}
  */
 export default defineConfig({
-    plugins: [
-        tsConfigPaths(), vue(), vueJsx()
-    ],
+    plugins: [tsConfigPaths(), vue(), vueJsx()],
     build: {
         target: 'esnext',
         // rollupOptions: {
@@ -27,17 +25,14 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "./webapp")
+            '@': path.resolve(__dirname, './webapp'),
             // '@': fileURLToPath(new URL('./webapp', import.meta.url))
             // "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "webapp"),
         },
     },
     css: {
         postcss: {
-          plugins: [
-            require('tailwindcss'),
-            require('autoprefixer'),
-          ],
+            plugins: [require('tailwindcss'), require('autoprefixer')],
         },
     },
 });

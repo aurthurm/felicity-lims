@@ -25,5 +25,7 @@ async def updates(response: Response) -> Any:
     """
     Check is there are new updates to this version
     """
-    response.headers["Cache-Control"] = f"max-age={int(_cache_duration.total_seconds())}"
+    response.headers["Cache-Control"] = (
+        f"max-age={int(_cache_duration.total_seconds())}"
+    )
     return await felicity_version.check_github_version()

@@ -95,12 +95,17 @@ ShipmentResponse = strawberry.union(
 @strawberry.type
 class ShipmentMutations:
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def create_shipment(
-            self, info, payload: ShipmentInputType
+        self, info, payload: ShipmentInputType
     ) -> ShipmentsResponse:
         felicity_user = await auth_from_info(info)
 
@@ -138,12 +143,17 @@ class ShipmentMutations:
         )
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def update_shipment(
-            self, info, uid: str, payload: ShipmentUpdateInputType
+        self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
         await auth_from_info(info)
 
@@ -209,12 +219,17 @@ class ShipmentMutations:
         return ShipmentType(**shipment.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.SHIPMENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.SHIPMENT),
+                ]
+            )
+        ]
     )
     async def shipment_manage_samples(
-            self, info, uid: str, payload: ShipmentManageSamplesInput
+        self, info, uid: str, payload: ShipmentManageSamplesInput
     ) -> ShipmentResponse:
         felicity_user = await auth_from_info(info)
 
@@ -253,7 +268,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_referral_laboratory(
-            info, payload: ReferralLaboratoryInputType
+        info, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
         felicity_user = await auth_from_info(info)
 
@@ -281,7 +296,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_referral_laboratory(
-            info, uid: str, payload: ReferralLaboratoryInputType
+        info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
         await auth_from_info(info)
 

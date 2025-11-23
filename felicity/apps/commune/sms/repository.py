@@ -1,5 +1,3 @@
-from sqlalchemy import or_
-
 from felicity.apps.abstract import BaseRepository
 from felicity.apps.commune.sms.entities import SmsMessage, SmsTemplate
 

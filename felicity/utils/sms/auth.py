@@ -6,6 +6,5 @@ class TokenAuth(Auth):
         self.access_token = access_token
 
     def auth_flow(self, request):
-        request.headers['Authorization'] =  'Bearer %s' % self.access_token
+        request.headers["Authorization"] = "Bearer %s" % self.access_token
         yield request
-

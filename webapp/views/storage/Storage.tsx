@@ -1,26 +1,47 @@
 import { defineComponent, computed, reactive, toRefs, ref, watch, defineAsyncComponent } from 'vue';
 import useTreeStateComposable from '@/composables/tree-state';
-import { StorageContainerInputType, StorageContainerType, StorageLocationInputType, StorageLocationType, StorageSectionInputType, StorageSectionType, StoreRoomInputType, StoreRoomType } from '@/types/gql';
 import {
-    AddStoreRoomDocument, AddStoreRoomMutationVariables, AddStoreRoomMutation,             
-    EditStoreRoomDocument, EditStoreRoomMutationVariables, EditStoreRoomMutation,
-    AddStorageLocationDocument, AddStorageLocationMutationVariables, AddStorageLocationMutation,
-    EditStorageLocationDocument, EditStorageLocationMutationVariables, EditStorageLocationMutation,
-    AddStorageSectionDocument, AddStorageSectionMutationVariables, AddStorageSectionMutation,
-    EditStorageSectionDocument, EditStorageSectionMutationVariables, EditStorageSectionMutation,
-    AddStorageContainerDocument, AddStorageContainerMutationVariables, AddStorageContainerMutation,
-    EditStorageContainerDocument, EditStorageContainerMutationVariables, EditStorageContainerMutation
+    StorageContainerInputType,
+    StorageContainerType,
+    StorageLocationInputType,
+    StorageLocationType,
+    StorageSectionInputType,
+    StorageSectionType,
+    StoreRoomInputType,
+    StoreRoomType,
+} from '@/types/gql';
+import {
+    AddStoreRoomDocument,
+    AddStoreRoomMutationVariables,
+    AddStoreRoomMutation,
+    EditStoreRoomDocument,
+    EditStoreRoomMutationVariables,
+    EditStoreRoomMutation,
+    AddStorageLocationDocument,
+    AddStorageLocationMutationVariables,
+    AddStorageLocationMutation,
+    EditStorageLocationDocument,
+    EditStorageLocationMutationVariables,
+    EditStorageLocationMutation,
+    AddStorageSectionDocument,
+    AddStorageSectionMutationVariables,
+    AddStorageSectionMutation,
+    EditStorageSectionDocument,
+    EditStorageSectionMutationVariables,
+    EditStorageSectionMutation,
+    AddStorageContainerDocument,
+    AddStorageContainerMutationVariables,
+    AddStorageContainerMutation,
+    EditStorageContainerDocument,
+    EditStorageContainerMutationVariables,
+    EditStorageContainerMutation,
 } from '@/graphql/operations/storage.mutations';
 import { useStorageStore } from '@/stores/storage';
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import { useRouter } from 'vue-router';
 
-const ContainerView = defineAsyncComponent(
-    () => import('./ContainerView')
-)
-const TreeItem = defineAsyncComponent(
-    () => import('@/components/storage/FelTreeItem.vue')
-)
+const ContainerView = defineAsyncComponent(() => import('./ContainerView'));
+const TreeItem = defineAsyncComponent(() => import('@/components/storage/FelTreeItem.vue'));
 
 const StorageHome = defineComponent({
     name: 'storage-home',
@@ -307,9 +328,9 @@ const StorageHome = defineComponent({
                         Add Store Room
                     </button>
                 </fel-heading>
-                
+
                 <div class="grid grid-cols-12 gap-6 min-h-full bg-background p-6">
-                    <div class="col-span-2 space-y-4">                  
+                    <div class="col-span-2 space-y-4">
                         <ul class="space-y-2">
                             {this.treeData.map(_tree => (
                                 <TreeItem tree={_tree} />
@@ -349,7 +370,7 @@ const StorageHome = defineComponent({
                             </div>
                             <div class="border-t border-border" />
                         </div>
-                    )} 
+                    )}
                 </div>
 
                 {/* Store Room Form Modal */}
@@ -577,4 +598,4 @@ const StorageHome = defineComponent({
 });
 
 export { StorageHome };
-export default StorageHome
+export default StorageHome;

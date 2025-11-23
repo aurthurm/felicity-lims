@@ -1,9 +1,17 @@
 import { defineStore } from 'pinia';
-import { 
-    GetAllClientsDocument, GetAllClientsQuery, GetAllClientsQueryVariables,
-    SearchClientsDocument, SearchClientsQuery, SearchClientsQueryVariables,
-    GetClientContactsByClientUidDocument, GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables,
-    GetClientByUidDocument, GetClientByUidQuery, GetClientByUidQueryVariables
+import {
+    GetAllClientsDocument,
+    GetAllClientsQuery,
+    GetAllClientsQueryVariables,
+    SearchClientsDocument,
+    SearchClientsQuery,
+    SearchClientsQueryVariables,
+    GetClientContactsByClientUidDocument,
+    GetClientContactsByClientUidQuery,
+    GetClientContactsByClientUidQueryVariables,
+    GetClientByUidDocument,
+    GetClientByUidQuery,
+    GetClientByUidQueryVariables,
 } from '@/graphql/operations/clients.queries';
 import { addListsUnique } from '@/utils';
 import { ClientType, ClientContactType, PageInfo } from '@/types/gql';
@@ -30,7 +38,7 @@ const defaultPageInfo: PageInfo = {
     hasNextPage: false,
     hasPreviousPage: false,
     startCursor: null,
-    endCursor: null
+    endCursor: null,
 };
 
 export const useClientStore = defineStore('client', {
@@ -50,8 +58,10 @@ export const useClientStore = defineStore('client', {
         getClientContacts: (state): ClientContactType[] => state.clientContacts,
         getClients: (state): ClientType[] => state.clients,
         getClient: (state): ClientType | undefined => state.client,
-        getClientByName: (state) => (name: string): ClientType | undefined => 
-            state.clients?.find(cl => cl.name === name),
+        getClientByName:
+            state =>
+            (name: string): ClientType | undefined =>
+                state.clients?.find(cl => cl.name === name),
         getClientCount: (state): number | undefined => state.clientCount,
         getClientPageInfo: (state): PageInfo | undefined => state.clientPageInfo,
     },
@@ -60,15 +70,15 @@ export const useClientStore = defineStore('client', {
             try {
                 this.fetchingClients = true;
                 const result = await withClientQuery<GetAllClientsQuery, GetAllClientsQueryVariables>(
-                    GetAllClientsDocument, 
-                    params, 
+                    GetAllClientsDocument,
+                    params,
                     undefined
                 );
-                
+
                 if (result && typeof result === 'object' && 'clientAll' in result) {
                     const page = result.clientAll as any;
                     const clients = page.items || [];
-                    
+
                     if (params.filterAction) {
                         this.clients = [];
                         this.clients = clients as ClientType[];
@@ -87,16 +97,16 @@ export const useClientStore = defineStore('client', {
                 this.fetchingClients = false;
             }
         },
-        
+
         async searchClients(queryString: string): Promise<void> {
             try {
                 this.fetchingClients = true;
                 const result = await withClientQuery<SearchClientsQuery, SearchClientsQueryVariables>(
-                    SearchClientsDocument, 
-                    { queryString }, 
+                    SearchClientsDocument,
+                    { queryString },
                     'clientSearch'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     // Use type assertion for the search results
                     this.clients = result as unknown as ClientType[];
@@ -109,25 +119,25 @@ export const useClientStore = defineStore('client', {
                 this.fetchingClients = false;
             }
         },
-        
+
         async fetchClientByUid(uid: string): Promise<void> {
             if (!uid) {
                 console.error('Invalid client UID provided to fetchClientByUid');
                 return;
             }
-            
+
             try {
                 this.fetchingClient = true;
                 const result = await withClientQuery<GetClientByUidQuery, GetClientByUidQueryVariables>(
-                    GetClientByUidDocument, 
-                    { uid }, 
+                    GetClientByUidDocument,
+                    { uid },
                     'clientByUid'
                 );
-                
+
                 if (result && typeof result === 'object') {
                     // Use type assertion for the client result
                     this.client = result as unknown as ClientType;
-                    
+
                     // Add district to location store if available
                     if (result.district) {
                         useLocationStore().addDistrict(result.district);
@@ -141,22 +151,22 @@ export const useClientStore = defineStore('client', {
                 this.fetchingClient = false;
             }
         },
-        
+
         addClient(payload: ClientType): void {
             if (!payload?.uid) {
                 console.error('Invalid client payload:', payload);
                 return;
             }
-            
+
             this.clients?.unshift(payload);
         },
-        
+
         updateClient(payload: ClientType): void {
             if (!payload?.uid) {
                 console.error('Invalid client payload:', payload);
                 return;
             }
-            
+
             this.clients = this.clients?.map(item => (item.uid === payload.uid ? payload : item));
             this.client = { ...this.client, ...payload };
         },
@@ -166,15 +176,15 @@ export const useClientStore = defineStore('client', {
                 console.error('Invalid client UID provided to fetchClientContacts');
                 return;
             }
-            
+
             try {
                 this.fetchingClientContacts = true;
                 const result = await withClientQuery<GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables>(
-                    GetClientContactsByClientUidDocument, 
-                    { clientUid }, 
+                    GetClientContactsByClientUidDocument,
+                    { clientUid },
                     'clientContactByClientUid'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     // Use type assertion for the client contacts
                     this.clientContacts = result as unknown as ClientContactType[];
@@ -187,32 +197,32 @@ export const useClientStore = defineStore('client', {
                 this.fetchingClientContacts = false;
             }
         },
-        
+
         addClientContact(payload: ClientContactType): void {
             if (!payload?.uid) {
                 console.error('Invalid client contact payload:', payload);
                 return;
             }
-            
+
             this.clientContacts?.unshift(payload);
         },
-        
+
         updateClientContact(payload: ClientContactType): void {
             if (!payload?.uid) {
                 console.error('Invalid client contact payload:', payload);
                 return;
             }
-            
+
             this.clientContacts = this.clientContacts?.map(item => (item.uid === payload.uid ? payload : item));
         },
-        
+
         deleteClientContact(uid: string): void {
             if (!uid) {
                 console.error('Invalid client contact UID provided to deleteClientContact');
                 return;
             }
-            
-            this.clientContacts = this.clientContacts?.filter(item => (item.uid !== uid));
-        }
+
+            this.clientContacts = this.clientContacts?.filter(item => item.uid !== uid);
+        },
     },
 });

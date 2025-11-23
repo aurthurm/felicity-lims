@@ -12,11 +12,11 @@ def handle_ast_user_interpreted(result: str) -> dict | None:
 
     result_value = result.strip().lower()
     if result_value.startswith("r") or result_value == "r":
-        return {'interpreted': "R", "breakpoint_uid": None, "user_provided": True}
+        return {"interpreted": "R", "breakpoint_uid": None, "user_provided": True}
     if result_value.startswith("s") or result_value == "s":
-        return {'interpreted': "S", "breakpoint_uid": None, "user_provided": True}
+        return {"interpreted": "S", "breakpoint_uid": None, "user_provided": True}
     if result_value.startswith("i") or result_value == "i":
-        return {'interpreted': "I", "breakpoint_uid": None, "user_provided": True}
+        return {"interpreted": "I", "breakpoint_uid": None, "user_provided": True}
 
     return None
 
@@ -44,7 +44,11 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
         if break_point.s:
             try:
                 if result_value >= float(break_point.s):
-                    return {'interpreted': "S", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "S",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert s breakpoint value to float: {e}")
 
@@ -52,16 +56,24 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
         if break_point.r:
             try:
                 if result_value <= float(break_point.r):
-                    return {'interpreted': "R", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "R",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert r breakpoint value to float: {e}")
 
         # Check for Intermediate (I) if S and R don't match or are not provided
-        if break_point.i and '-' in break_point.i:
+        if break_point.i and "-" in break_point.i:
             try:
-                i_min, i_max = map(float, break_point.i.split('-'))
+                i_min, i_max = map(float, break_point.i.split("-"))
                 if i_min <= result_value <= i_max:
-                    return {'interpreted': "I", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "I",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert i breakpoint value to float: {e}")
 
@@ -69,7 +81,11 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
         if break_point.s and break_point.r:
             try:
                 if float(break_point.r) < result_value < float(break_point.s):
-                    return {'interpreted': "I", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "I",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert s/r breakpoint values to float: {e}")
 
@@ -78,7 +94,11 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
         if break_point.s:
             try:
                 if result_value <= float(break_point.s):
-                    return {'interpreted': "S", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "S",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert s breakpoint value to float: {e}")
 
@@ -86,15 +106,23 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
         if break_point.r:
             try:
                 if result_value >= float(break_point.r):
-                    return {'interpreted': "R", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "R",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert r breakpoint value to float: {e}")
 
         # Check for Intermediate (I) next
-        if break_point.i and '-' not in break_point.i:
+        if break_point.i and "-" not in break_point.i:
             try:
                 if result_value == float(break_point.i):
-                    return {'interpreted': "I", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "I",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert r breakpoint value to float: {e}")
 
@@ -102,7 +130,11 @@ def interpret_ast(break_point: AbxBreakpoint, ast_result: AbxASTResult) -> dict 
         if break_point.s and break_point.r:
             try:
                 if float(break_point.s) < result_value < float(break_point.r):
-                    return {'interpreted': "I", "breakpoint_uid": break_point.uid, "user_provided": False}
+                    return {
+                        "interpreted": "I",
+                        "breakpoint_uid": break_point.uid,
+                        "user_provided": False,
+                    }
             except (ValueError, TypeError) as e:
                 logger.error(f"failed to convert s/r breakpoint values to float: {e}")
 

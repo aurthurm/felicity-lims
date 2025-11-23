@@ -19,7 +19,9 @@ from felicity.apps.analysis.entities.analysis import (
     ResultOption,
     Sample,
     SampleType,
-    SampleTypeCoding, ClinicalData, ClinicalDataCoding,
+    SampleTypeCoding,
+    ClinicalData,
+    ClinicalDataCoding,
 )
 
 
@@ -123,10 +125,10 @@ class SampleRepository(BaseRepository[Sample]):
         super().__init__(Sample)
 
     async def search(
-            self,
-            status: str | None = None,
-            text: str | None = None,
-            client_uid: str | None = None,
+        self,
+        status: str | None = None,
+        text: str | None = None,
+        client_uid: str | None = None,
     ) -> list[Sample]:
         """No pagination"""
         filters = []

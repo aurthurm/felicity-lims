@@ -182,5 +182,3 @@ def extract_template_variables(template_text: str) -> list[str]:
     pattern = r"\{([a-zA-Z0-9_\.]+)\}"
     matches = re.findall(pattern, template_text)
     return matches
-
-

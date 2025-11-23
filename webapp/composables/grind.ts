@@ -1,8 +1,20 @@
 import useApiUtil from '@/composables/api_util';
 import useNotifyToast from './alert_toast';
-import { AddGrindErrandDiscussionDocument, AddGrindErrandDiscussionMutation, AddGrindErrandDiscussionMutationVariables } from '@/graphql/operations/grind.mutations';
-import { EditGrindErrandDiscussionDocument, EditGrindErrandDiscussionMutation, EditGrindErrandDiscussionMutationVariables } from '@/graphql/operations/grind.mutations';
-import { GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables, GetGrindErrandDiscussionsDocument } from '@/graphql/operations/grind.queries';
+import {
+    AddGrindErrandDiscussionDocument,
+    AddGrindErrandDiscussionMutation,
+    AddGrindErrandDiscussionMutationVariables,
+} from '@/graphql/operations/grind.mutations';
+import {
+    EditGrindErrandDiscussionDocument,
+    EditGrindErrandDiscussionMutation,
+    EditGrindErrandDiscussionMutationVariables,
+} from '@/graphql/operations/grind.mutations';
+import {
+    GetGrindErrandDiscussionsQuery,
+    GetGrindErrandDiscussionsQueryVariables,
+    GetGrindErrandDiscussionsDocument,
+} from '@/graphql/operations/grind.queries';
 import type { GrindErrandDiscussionType } from '@/types/gql';
 
 export function useCommentComposable() {
@@ -12,9 +24,9 @@ export function useCommentComposable() {
     const getDiscussions = async (errandUid: string): Promise<GrindErrandDiscussionType[]> => {
         try {
             const result = await withClientQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables>(
-                GetGrindErrandDiscussionsDocument, 
-                { errandUid }, 
-                "grindErrandDiscussions"
+                GetGrindErrandDiscussionsDocument,
+                { errandUid },
+                'grindErrandDiscussions'
             );
             return result ? (result as GrindErrandDiscussionType[]) : [];
         } catch (error) {
@@ -23,18 +35,14 @@ export function useCommentComposable() {
         }
     };
 
-    const addDiscussion = async (
-        comment: string, 
-        errandUid: string, 
-        parentUid?: string
-    ): Promise<boolean> => {
+    const addDiscussion = async (comment: string, errandUid: string, parentUid?: string): Promise<boolean> => {
         try {
             const response = await withClientMutation<AddGrindErrandDiscussionMutation, AddGrindErrandDiscussionMutationVariables>(
                 AddGrindErrandDiscussionDocument,
-                { 
-                    payload: { comment, errandUid, parentUid } 
+                {
+                    payload: { comment, errandUid, parentUid },
                 },
-                "createGrindErrandDiscussion"
+                'createGrindErrandDiscussion'
             );
 
             if (response) {
@@ -48,18 +56,15 @@ export function useCommentComposable() {
         }
     };
 
-    const updateDiscussion = async (
-        uid: string,
-        errandUid: string,
-        comment: string
-    ): Promise<boolean> => {
+    const updateDiscussion = async (uid: string, errandUid: string, comment: string): Promise<boolean> => {
         try {
             const response = await withClientMutation<EditGrindErrandDiscussionMutation, EditGrindErrandDiscussionMutationVariables>(
                 EditGrindErrandDiscussionDocument,
-                { 
-                    uid, payload: { errandUid, comment } 
+                {
+                    uid,
+                    payload: { errandUid, comment },
                 },
-                "updateGrindErrandDiscussion"
+                'updateGrindErrandDiscussion'
             );
 
             if (response) {
@@ -92,7 +97,7 @@ export function useCommentComposable() {
         updateDiscussion,
         getTopLevelComments,
         getReplies,
-        isFirstLevelReply
+        isFirstLevelReply,
     };
 }
 

@@ -129,19 +129,24 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
                 sample_type_uid=qc_sample_type.uid,
                 internal_use=True,
                 status=SampleState.RECEIVED,
-                metadata_snapshot={}
+                metadata_snapshot={},
             )
-            sample = await SampleService().create(s_in, related=["analyses", "profiles"])
+            sample = await SampleService().create(
+                s_in, related=["analyses", "profiles"]
+            )
             sample.analyses = analyses
             sample.profiles = profiles
             sample.qc_set_uid = qc_set.uid
             sample.qc_level_uid = level.uid
             sample = await SampleService().save(sample)
-            await SampleService().snapshot(sample, {
-                "sample_type": qc_sample_type.snapshot(),
-                "profiles": [p.snapshot() for p in profiles],
-                "analyses": [a.snapshot() for a in analyses]
-            })
+            await SampleService().snapshot(
+                sample,
+                {
+                    "sample_type": qc_sample_type.snapshot(),
+                    "profiles": [p.snapshot() for p in profiles],
+                    "analyses": [a.snapshot() for a in analyses],
+                },
+            )
 
             # Attach Analysis result for each Analyses
             for _service in _profiles_analyses:
@@ -149,7 +154,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
                     "sample_uid": sample.uid,
                     "analysis_uid": _service.uid,
                     "status": ResultState.PENDING,
-                    "metadata_snapshot": {}
+                    "metadata_snapshot": {},
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
                 _ar = await AnalysisResultService().create(a_result_schema)
@@ -240,7 +245,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-        info, uid: str, payload: QCTemplateInputType
+    info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
     await auth_from_info(info)
 
@@ -258,7 +263,9 @@ async def update_QC_template(
                 pass
 
     qc_in = schemas.QCTemplateUpdate(**qc_template.to_dict())
-    qc_template = await QCTemplateService().update(qc_template.uid, qc_in, related=["qc_levels"])
+    qc_template = await QCTemplateService().update(
+        qc_template.uid, qc_in, related=["qc_levels"]
+    )
 
     if payload.levels:
         qc_template.qc_levels.clear()

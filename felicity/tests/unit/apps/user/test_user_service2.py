@@ -84,6 +84,7 @@ async def test_add_user_password_policy_weak(user_service, mocker, user_data):
             )
         )
 
+
 # @pytest.mark.asyncio
 # async def test_add_user_password_mismatch(user_service, mocker, user_data):
 #     mocker.patch.object(user_service.repository, "get", return_value=None)

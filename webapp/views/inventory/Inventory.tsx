@@ -1,18 +1,14 @@
 import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
 import { AddStockOrderDocument, AddStockOrderMutation, AddStockOrderMutationVariables } from '@/graphql/operations/inventory.mutations';
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import { useInventoryStore } from '@/stores/inventory';
 import { useStorageStore } from '@/stores/storage';
 import { useSetupStore } from '@/stores/setup';
 import { useUserStore } from '@/stores/user';
 
-const InventoryAdjustments = defineAsyncComponent(() => import('./InvAdjustments'))
-const InventoryListing = defineAsyncComponent(
-    () => import('./InvListing')
-)
-const InventoryOrders = defineAsyncComponent(
-    () => import('./InvOrders')
-)
+const InventoryAdjustments = defineAsyncComponent(() => import('./InvAdjustments'));
+const InventoryListing = defineAsyncComponent(() => import('./InvListing'));
+const InventoryOrders = defineAsyncComponent(() => import('./InvOrders'));
 
 const InventoryHome = defineComponent({
     name: 'inventory-home',
@@ -42,20 +38,20 @@ const InventoryHome = defineComponent({
 
         const tabs = computed(() => [
             {
-              id: "orders",
-              label: "orders",
-              component: <InventoryOrders />,
+                id: 'orders',
+                label: 'orders',
+                component: <InventoryOrders />,
             },
             {
-              id: "products",
-              label: "products",
-              component: <InventoryListing />
+                id: 'products',
+                label: 'products',
+                component: <InventoryListing />,
             },
             {
-              id: "ledger",
-              label: "ledger",
-              component: <InventoryAdjustments />
-            }
+                id: 'ledger',
+                label: 'ledger',
+                component: <InventoryAdjustments />,
+            },
         ]);
 
         return {
@@ -65,7 +61,8 @@ const InventoryHome = defineComponent({
             inventoryStore,
             createOrder: () => {
                 const basket = inventoryStore.getBasket;
-                withClientMutation<AddStockOrderMutation, AddStockOrderMutationVariables>(AddStockOrderDocument,
+                withClientMutation<AddStockOrderMutation, AddStockOrderMutationVariables>(
+                    AddStockOrderDocument,
                     {
                         payload: {
                             orderProducts: basket.map(order => ({
@@ -93,11 +90,7 @@ const InventoryHome = defineComponent({
 
                 <fel-tabs tabs={this.tabs} initial-tab="listing" class="rounded-lg" />
 
-                <fel-drawer
-                    v-model={this.viewBasket}
-                    title="Order Basket"
-                    class="w-96"
-                >
+                <fel-drawer v-model={this.viewBasket} title="Order Basket" class="w-96">
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-medium text-foreground">Products</h3>
@@ -119,14 +112,10 @@ const InventoryHome = defineComponent({
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-border bg-background">
-                                    {this.basket.map((item) => (
+                                    {this.basket.map(item => (
                                         <tr key={item.product.uid}>
-                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
-                                                {item.product.name}
-                                            </td>
-                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-foreground">
-                                                {item.quantity}
-                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{item.product.name}</td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-foreground">{item.quantity}</td>
                                             <td class="whitespace-nowrap px-3 py-4 text-sm text-right">
                                                 <button
                                                     class="text-destructive hover:text-destructive/80 transition-colors duration-200"
@@ -148,4 +137,4 @@ const InventoryHome = defineComponent({
 });
 
 export { InventoryHome };
-export default InventoryHome
+export default InventoryHome;

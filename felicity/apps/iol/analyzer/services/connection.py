@@ -66,14 +66,16 @@ class ConnectionService:
         Raises:
             ValueError: If connection type is not TCP/IP
         """
-        _config = InstrumentConfig(**{
-            'uid': iinterface.uid,
-            'name': iinterface.laboratory_instrument.lab_name,
-            'host': iinterface.host,
-            'port': iinterface.port,
-            'socket_type': iinterface.socket_type,
-            'protocol_type': iinterface.protocol_type,
-            'is_active': iinterface.is_active,
-        })
+        _config = InstrumentConfig(
+            **{
+                "uid": iinterface.uid,
+                "name": iinterface.laboratory_instrument.lab_name,
+                "host": iinterface.host,
+                "port": iinterface.port,
+                "socket_type": iinterface.socket_type,
+                "protocol_type": iinterface.protocol_type,
+                "is_active": iinterface.is_active,
+            }
+        )
 
         return SocketLink(_config)

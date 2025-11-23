@@ -21,6 +21,7 @@ from .setup import (
 setup_types = [
     OrganizationSettingType,
     OrganizationType,
+    LaboratoryCursorPage,
     LaboratoryType,
     LaboratoryEdge,
     LaboratorySettingType,

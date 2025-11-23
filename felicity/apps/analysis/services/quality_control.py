@@ -41,7 +41,9 @@ class QCSetService(BaseService[QCSet, QCSetCreate, QCSetUpdate]):
         qc_set = await self.get(uid=uid, related=["samples"])
         # Cancel samples sequentially
         for sample in qc_set.samples:
-            await self.sample_service.re_instate(sample.uid, re_instated_by=re_instated_by)
+            await self.sample_service.re_instate(
+                sample.uid, re_instated_by=re_instated_by
+            )
         return qc_set
 
     async def submit(self, uid: str, submitted_by) -> QCSet:

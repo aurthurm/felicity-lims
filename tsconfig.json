@@ -26,10 +26,6 @@
         }
     },
     "exclude": ["node_modules"],
-    "include": [
-        "./**/*.ts",
-        "./**/*.tsx",
-        "./webapp/**/*.vue",
-    ],
+    "include": ["./**/*.ts", "./**/*.tsx", "./webapp/**/*.vue"],
     "types": ["vue-sweetalert2", "vite/client"]
 }

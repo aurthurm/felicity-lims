@@ -1,9 +1,15 @@
 import { defineAsyncComponent, defineComponent, PropType, toRefs, watch } from 'vue';
 import { ref, reactive } from 'vue';
-import { AddStockItemVariantDocument, AddStockItemVariantMutation, AddStockItemVariantMutationVariables,
-  EditStockItemVariantDocument, EditStockItemVariantMutation, EditStockItemVariantMutationVariables } from '@/graphql/operations/inventory.mutations';
+import {
+    AddStockItemVariantDocument,
+    AddStockItemVariantMutation,
+    AddStockItemVariantMutationVariables,
+    EditStockItemVariantDocument,
+    EditStockItemVariantMutation,
+    EditStockItemVariantMutationVariables,
+} from '@/graphql/operations/inventory.mutations';
 import { useInventoryStore } from '@/stores/inventory';
-import  useApiUtil  from '@/composables/api_util';
+import useApiUtil from '@/composables/api_util';
 import { StockItemVariantType, StockItemType, StockItemVariantInputType } from '@/types/gql';
 
 const StockItemDetail = defineComponent({
@@ -19,11 +25,14 @@ const StockItemDetail = defineComponent({
         const { withClientMutation } = useApiUtil();
 
         // Watch for changes in the stockItem prop to fetch variants
-        watch(() => props.stockItem?.uid, async (newUid, old) => {
-            if (newUid) {
-                await inventoryStore.fetchItemVariants(newUid);
+        watch(
+            () => props.stockItem?.uid,
+            async (newUid, old) => {
+                if (newUid) {
+                    await inventoryStore.fetchItemVariants(newUid);
+                }
             }
-        });
+        );
 
         let showModal = ref(false);
         let formTitle = ref('');
@@ -32,8 +41,11 @@ const StockItemDetail = defineComponent({
 
         function addStockItemVariant(): void {
             const payload = { ...form } as StockItemVariantInputType;
-            withClientMutation<AddStockItemVariantMutation, AddStockItemVariantMutationVariables>(AddStockItemVariantDocument, { stockItemUid: stockItem?.value?.uid!, payload }, 'createStockItemVariant')
-            .then(result => inventoryStore.addItemVariant(result));
+            withClientMutation<AddStockItemVariantMutation, AddStockItemVariantMutationVariables>(
+                AddStockItemVariantDocument,
+                { stockItemUid: stockItem?.value?.uid!, payload },
+                'createStockItemVariant'
+            ).then(result => inventoryStore.addItemVariant(result));
         }
 
         function editStockItemVariant(): void {
@@ -43,8 +55,11 @@ const StockItemDetail = defineComponent({
                 minimumLevel: form.minimumLevel,
                 maximumLevel: form.maximumLevel,
             } as StockItemVariantInputType;
-            withClientMutation<EditStockItemVariantMutation, EditStockItemVariantMutationVariables>(EditStockItemVariantDocument, { uid: form.uid, payload }, 'updateStockItemVariant')
-            .then(result => inventoryStore.updateItemVariant(result));
+            withClientMutation<EditStockItemVariantMutation, EditStockItemVariantMutationVariables>(
+                EditStockItemVariantDocument,
+                { uid: form.uid, payload },
+                'updateStockItemVariant'
+            ).then(result => inventoryStore.updateItemVariant(result));
         }
 
         function FormManager(create: boolean, obj: StockItemVariantType | null): void {
@@ -70,7 +85,7 @@ const StockItemDetail = defineComponent({
             saveForm,
             showModal,
             formTitle,
-            stockItem
+            stockItem,
         };
     },
     render() {
@@ -104,7 +119,10 @@ const StockItemDetail = defineComponent({
                             <tbody class="[&_tr:last-child]:border-0">
                                 {this.stockItem?.variants?.map(variant => {
                                     return (
-                                        <tr key={variant?.uid} class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                        <tr
+                                            key={variant?.uid}
+                                            class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                                        >
                                             <td class="p-4 align-middle">{variant?.name}</td>
                                             <td class="p-4 align-middle text-primary">{variant?.description}</td>
                                             <td class="p-4 align-middle text-right">
@@ -127,12 +145,16 @@ const StockItemDetail = defineComponent({
                 {this.showModal ? (
                     <fel-modal onClose={() => (this.showModal = false)}>
                         {{
-                            header: () => (
-                                <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>
-                            ),
+                            header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
                             body: () => {
                                 return (
-                                    <form onSubmit={(e) => { e.preventDefault(); this.saveForm(); }} class="space-y-6">
+                                    <form
+                                        onSubmit={e => {
+                                            e.preventDefault();
+                                            this.saveForm();
+                                        }}
+                                        class="space-y-6"
+                                    >
                                         <div class="space-y-4">
                                             <div class="space-y-2">
                                                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -140,7 +162,7 @@ const StockItemDetail = defineComponent({
                                                 </label>
                                                 <input
                                                     value={this.form.name}
-                                                    onChange={(e) => this.form.name = e.target.value}
+                                                    onChange={e => (this.form.name = e.target.value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     placeholder="Enter variant name..."
                                                 />
@@ -151,7 +173,7 @@ const StockItemDetail = defineComponent({
                                                 </label>
                                                 <textarea
                                                     value={this.form.description}
-                                                    onChange={(e) => this.form.description = e.target.value}
+                                                    onChange={e => (this.form.description = e.target.value)}
                                                     class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     placeholder="Enter description..."
                                                 />
@@ -164,7 +186,7 @@ const StockItemDetail = defineComponent({
                                                     <input
                                                         type="number"
                                                         value={this.form.minimumLevel}
-                                                        onChange={(e) => this.form.minimumLevel = Number(e.target.value)}
+                                                        onChange={e => (this.form.minimumLevel = Number(e.target.value))}
                                                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                         min="0"
                                                         placeholder="0"
@@ -177,7 +199,7 @@ const StockItemDetail = defineComponent({
                                                     <input
                                                         type="number"
                                                         value={this.form.maximumLevel}
-                                                        onChange={(e) => this.form.maximumLevel = Number(e.target.value)}
+                                                        onChange={e => (this.form.maximumLevel = Number(e.target.value))}
                                                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                         min="0"
                                                         placeholder="0"
@@ -205,4 +227,4 @@ const StockItemDetail = defineComponent({
 });
 
 export { StockItemDetail };
-export default StockItemDetail
+export default StockItemDetail;

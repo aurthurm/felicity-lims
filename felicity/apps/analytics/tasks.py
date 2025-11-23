@@ -94,9 +94,10 @@ async def generate_report(job_uid: str) -> bool:
         },
         report.created_by,
         "generated",
-        NotificationObject.REPORT
+        NotificationObject.REPORT,
     )
     return True
+
 
 # # Convert DataFrame to a buffer (StringIO)
 # buffer = StringIO()

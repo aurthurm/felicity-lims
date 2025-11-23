@@ -5,4 +5,4 @@ export type ReservedType = {
     col: number;
     name: string;
     sampleUid: string;
-}
+};

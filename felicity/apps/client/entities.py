@@ -71,9 +71,7 @@ class ClientContact(AbstractBaseUser):
         lazy="selectin",
     )
     # overrides to allow easy seeding
-    email = Column(
-        String, unique=True, index=True, nullable=False, default=uuid4().hex
-    )
+    email = Column(String, unique=True, index=True, nullable=False, default=uuid4().hex)
     user_name = Column(
         String, unique=True, index=True, nullable=False, default=uuid4().hex
     )
@@ -87,7 +85,7 @@ class ClientContact(AbstractBaseUser):
     def sms_metadata(self) -> dict:
         result = {"contact_name": self.full_name}
 
-        if self.client and hasattr(self.client, 'sms_metadata'):
+        if self.client and hasattr(self.client, "sms_metadata"):
             try:
                 client_metadata = self.client.sms_metadata
                 if client_metadata:

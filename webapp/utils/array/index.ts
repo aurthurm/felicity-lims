@@ -16,8 +16,7 @@ export const parseEdgeNodeToList = (payload: any): any[] => {
  * @param key - Key to compare
  * @returns Deduplicated array
  */
-export const deDuplicateArrayBy = <T>(arr: T[], key: keyof T): T[] => 
-    [...new Map(arr.map(item => [item[key], item])).values()];
+export const deDuplicateArrayBy = <T>(arr: T[], key: keyof T): T[] => [...new Map(arr.map(item => [item[key], item])).values()];
 
 /**
  * Combine two arrays and remove duplicates based on a key
@@ -55,9 +54,9 @@ export const mapOrder = <T>(array: T[], order: any[], key: keyof T): T[] => {
  * @returns Array of storage slot mappings
  */
 export const storageSlotMapper = (
-    colNum: number, 
-    rowNum: number, 
-    isColumn: boolean, 
+    colNum: number,
+    rowNum: number,
+    isColumn: boolean,
     byRow: boolean
 ): Array<{ storageSlot: string; storageSlotIndex: number }> => {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -95,4 +94,4 @@ export const storageSlotMapper = (
     }
 
     return data;
-}; 
+};

@@ -35,9 +35,7 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
 
         # Initialize context
         context = TenantContext(
-            request_id=request_id,
-            ip_address=ip_address,
-            user_agent=user_agent
+            request_id=request_id, ip_address=ip_address, user_agent=user_agent
         )
 
         try:
@@ -77,9 +75,7 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         try:
             # Decode JWT token
             payload = jwt.decode(
-                token,
-                settings.SECRET_KEY,
-                algorithms=[settings.ALGORITHM]
+                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
             )
 
             # Extract user info
@@ -120,25 +116,23 @@ class RequireTenantMiddleware(BaseHTTPMiddleware):
 
         # Check if this is a protected path
         is_protected = any(
-            request.url.path.startswith(path)
-            for path in self.protected_paths
+            request.url.path.startswith(path) for path in self.protected_paths
         )
 
         if is_protected:
             from felicity.core.tenant_context import get_tenant_context
+
             context = get_tenant_context()
 
             # Allow unauthenticated access to auth endpoints
             auth_endpoints = ["/auth", "/login", "/register"]
             is_auth_endpoint = any(
-                endpoint in request.url.path
-                for endpoint in auth_endpoints
+                endpoint in request.url.path for endpoint in auth_endpoints
             )
 
             if not is_auth_endpoint and (not context or not context.is_authenticated):
                 return JSONResponse(
-                    status_code=401,
-                    content={"detail": "Authentication required"}
+                    status_code=401, content={"detail": "Authentication required"}
                 )
 
         return await call_next(request)

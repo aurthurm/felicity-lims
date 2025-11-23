@@ -51,6 +51,7 @@ class SmsTemplateInDB(SmsTemplateBaseInDB):
 # SmsMessage Schemas
 #
 
+
 # Shared properties
 class SmsMessageBase(BaseAuditModel):
     template_uid: str | None
@@ -86,4 +87,3 @@ class SmsMessage(SmsMessageBaseInDB):
 # Properties stored in DB
 class SmsMessageInDB(SmsMessageBaseInDB):
     pass
-

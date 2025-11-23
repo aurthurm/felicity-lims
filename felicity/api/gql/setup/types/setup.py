@@ -4,7 +4,10 @@ import strawberry  # noqa
 
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.setup.services import LaboratorySettingService, OrganizationSettingService
+from felicity.apps.setup.services import (
+    LaboratorySettingService,
+    OrganizationSettingService,
+)
 from felicity.apps.billing.enum import PaymentStatus
 
 
@@ -230,9 +233,9 @@ class LaboratoryType:
     @strawberry.field
     async def settings(self, info) -> Optional["LaboratorySettingType"]:
         print(f"lab uid == {self.uid}")
-        l = await LaboratorySettingService().get(laboratory_uid=self.uid)
-        print(f"lab  == {l}")
-        return l
+        lab_setting = await LaboratorySettingService().get(laboratory_uid=self.uid)
+        print(f"lab  == {lab_setting}")
+        return lab_setting
 
 
 @strawberry.type

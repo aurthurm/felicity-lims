@@ -63,15 +63,20 @@ AnalysisResultOperationResponse = strawberry.union(
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.SUBMIT, FObject.RESULT)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.SUBMIT, FObject.RESULT),
+            ]
+        )
+    ]
 )
 async def submit_analysis_results(
-        info,
-        analysis_results: List[ARResultInputType],
-        source_object: str,
-        source_object_uid: str,
+    info,
+    analysis_results: List[ARResultInputType],
+    source_object: str,
+    source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -94,16 +99,15 @@ async def submit_analysis_results(
     job = await JobService().create(job_schema)
     if not settings.ENABLE_BACKGROUND_PROCESSING:
         await submit_results(job.uid)
-        returns = await AnalysisResultService().get_by_uids([r.uid for r in analysis_results])
+        returns = await AnalysisResultService().get_by_uids(
+            [r.uid for r in analysis_results]
+        )
         return ResultOperationType(
-            results=returns,
-            is_background=settings.ENABLE_BACKGROUND_PROCESSING
+            results=returns, is_background=settings.ENABLE_BACKGROUND_PROCESSING
         )
 
     for _ar in an_results:
-        await task_guard.process(
-            uid=_ar["uid"], object_type=TrackableObject.RESULT
-        )
+        await task_guard.process(uid=_ar["uid"], object_type=TrackableObject.RESULT)
 
     if source_object == "worksheet" and source_object_uid:
         await task_guard.process(
@@ -116,13 +120,13 @@ async def submit_analysis_results(
 
     return ResultOperationType(
         message="Your results are being submitted in the background.",
-        is_background=settings.ENABLE_BACKGROUND_PROCESSING
+        is_background=settings.ENABLE_BACKGROUND_PROCESSING,
     )
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifyAnalysisResult])
 async def verify_analysis_results(
-        info, analyses: list[str], source_object: str, source_object_uid: str
+    info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -144,8 +148,7 @@ async def verify_analysis_results(
         await verify_results(job.uid)
         returns = await AnalysisResultService().get_by_uids(analyses)
         return ResultOperationType(
-            results=returns,
-            is_background=settings.ENABLE_BACKGROUND_PROCESSING
+            results=returns, is_background=settings.ENABLE_BACKGROUND_PROCESSING
         )
 
     for uid in analyses:
@@ -163,14 +166,19 @@ async def verify_analysis_results(
 
     return ResultOperationType(
         message="Your results are being verified in the background.",
-        is_background=settings.ENABLE_BACKGROUND_PROCESSING
+        is_background=settings.ENABLE_BACKGROUND_PROCESSING,
     )
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.RESULT)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.UPDATE, FObject.RESULT),
+            ]
+        )
+    ]
 )
 async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
@@ -211,9 +219,14 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.RETEST, FObject.RESULT)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.RETEST, FObject.RESULT),
+            ]
+        )
+    ]
 )
 async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
@@ -237,9 +250,14 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.RESULT)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CANCEL, FObject.RESULT),
+            ]
+        )
+    ]
 )
 async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
@@ -272,12 +290,17 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 
 
 @strawberry.mutation(
-    extensions=[PermissionExtension(
-        permissions=[IsAuthenticated(), HasPermission(FAction.CANCEL, FObject.RESULT)]
-    )]
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CANCEL, FObject.RESULT),
+            ]
+        )
+    ]
 )
 async def re_instate_analysis_results(
-        info, analyses: list[str]
+    info, analyses: list[str]
 ) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 

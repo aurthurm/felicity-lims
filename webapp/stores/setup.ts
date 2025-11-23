@@ -1,10 +1,57 @@
 import { defineStore } from 'pinia';
 
-import  useApiUtil  from '@/composables/api_util';
-import { GetAllDepartmentsDocument, GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables, GetAllLaboratoriesDocument, GetAllLaboratoriesQuery, GetAllLaboratoriesQueryVariables, GetLaboratoryDocument, GetLaboratoryQuery, GetLaboratoryQueryVariables, GetOrganizationQueryVariables, GetOrganizationQuery, GetOrganizationDocument } from '@/graphql/operations/_queries';
-import { GetAllInstrumentsDocument, GetAllInstrumentsQuery, GetAllInstrumentTypesDocument, GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables, GetAllLaboratoryInstrumentsDocument, GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables, GetAllManufacturersDocument, GetAllManufacturersQuery, GetAllManufacturersQueryVariables, GetAllMethodsDocument, GetAllMethodsQuery, GetAllMethodsQueryVariables, GetAllSuppliersDocument, GetAllSuppliersQuery, GetAllUnitsDocument, GetAllUnitsQuery, GetAllUnitsQueryVariables } from '@/graphql/operations/instrument.queries';
+import useApiUtil from '@/composables/api_util';
+import {
+    GetAllDepartmentsDocument,
+    GetAllDepartmentsQuery,
+    GetAllDepartmentsQueryVariables,
+    GetAllLaboratoriesDocument,
+    GetAllLaboratoriesQuery,
+    GetAllLaboratoriesQueryVariables,
+    GetLaboratoryDocument,
+    GetLaboratoryQuery,
+    GetLaboratoryQueryVariables,
+    GetOrganizationQueryVariables,
+    GetOrganizationQuery,
+    GetOrganizationDocument,
+} from '@/graphql/operations/_queries';
+import {
+    GetAllInstrumentsDocument,
+    GetAllInstrumentsQuery,
+    GetAllInstrumentTypesDocument,
+    GetAllInstrumentTypesQuery,
+    GetAllInstrumentTypesQueryVariables,
+    GetAllLaboratoryInstrumentsDocument,
+    GetAllLaboratoryInstrumentsQuery,
+    GetAllLaboratoryInstrumentsQueryVariables,
+    GetAllManufacturersDocument,
+    GetAllManufacturersQuery,
+    GetAllManufacturersQueryVariables,
+    GetAllMethodsDocument,
+    GetAllMethodsQuery,
+    GetAllMethodsQueryVariables,
+    GetAllSuppliersDocument,
+    GetAllSuppliersQuery,
+    GetAllUnitsDocument,
+    GetAllUnitsQuery,
+    GetAllUnitsQueryVariables,
+} from '@/graphql/operations/instrument.queries';
 import { GetAllSampleTypesQueryVariables } from '@/graphql/operations/analyses.queries';
-import { DepartmentType, InstrumentType, LaboratoryInstrumentType, LaboratorySettingType, ManufacturerType, MethodType, SupplierType, UnitType, LaboratoryType, InstrumentTypeType, LaboratoryCursorPage, OrganizationType, OrganizationSettingType } from '@/types/gql';
+import {
+    DepartmentType,
+    InstrumentType,
+    LaboratoryInstrumentType,
+    LaboratorySettingType,
+    ManufacturerType,
+    MethodType,
+    SupplierType,
+    UnitType,
+    LaboratoryType,
+    InstrumentTypeType,
+    LaboratoryCursorPage,
+    OrganizationType,
+    OrganizationSettingType,
+} from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
 
@@ -73,11 +120,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingDepartments = true;
                 const result = await withClientQuery<GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables>(
-                    GetAllDepartmentsDocument, 
-                    params, 
+                    GetAllDepartmentsDocument,
+                    params,
                     'departmentAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.departments = result;
                 } else {
@@ -111,11 +158,11 @@ export const useSetupStore = defineStore('setup', {
         async fetchOrganization(): Promise<void> {
             try {
                 const result = await withClientQuery<GetOrganizationQuery, GetOrganizationQueryVariables>(
-                    GetOrganizationDocument, 
-                    {}, 
+                    GetOrganizationDocument,
+                    {},
                     'organization'
                 );
-                
+
                 if (result && typeof result === 'object') {
                     this.organization = result as OrganizationType;
                 } else {
@@ -134,12 +181,12 @@ export const useSetupStore = defineStore('setup', {
         },
         async fetchLaboratories(): Promise<void> {
             try {
-                const result: LaboratoryCursorPage = await withClientQuery<GetAllLaboratoriesQuery, GetAllLaboratoriesQueryVariables>(
-                    GetAllLaboratoriesDocument, 
-                    {}, 
+                const result: LaboratoryCursorPage = (await withClientQuery<GetAllLaboratoriesQuery, GetAllLaboratoriesQueryVariables>(
+                    GetAllLaboratoriesDocument,
+                    {},
                     'laboratoryAll'
-                ) as LaboratoryCursorPage;
-                
+                )) as LaboratoryCursorPage;
+
                 if (result?.items && result && Array.isArray(result?.items)) {
                     this.laboratories = result?.items as LaboratoryType[];
                 } else {
@@ -152,11 +199,11 @@ export const useSetupStore = defineStore('setup', {
         async fetchLaboratory(): Promise<void> {
             try {
                 const result = await withClientQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>(
-                    GetLaboratoryDocument, 
-                    {}, 
+                    GetLaboratoryDocument,
+                    {},
                     'laboratory'
                 );
-                
+
                 if (result && typeof result === 'object') {
                     this.laboratory = result as LaboratoryType;
                 } else {
@@ -173,19 +220,18 @@ export const useSetupStore = defineStore('setup', {
             }
             this.laboratories.unshift(payload);
         },
-        updateLaboratory(payload: LaboratoryType, listing=false): void {
+        updateLaboratory(payload: LaboratoryType, listing = false): void {
             if (!payload?.uid) {
                 console.error('Invalid laboratory payload:', payload);
                 return;
             }
-            if(listing) {
+            if (listing) {
                 const index = this.laboratories.findIndex(item => item.uid === payload.uid);
                 if (index > -1) {
-                    this.laboratories[index] = {...this.laboratories[index], ...payload} as LaboratoryType;
+                    this.laboratories[index] = { ...this.laboratories[index], ...payload } as LaboratoryType;
                 }
             } else {
                 this.laboratory = payload;
-
             }
         },
 
@@ -212,11 +258,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingSuppliers = true;
                 const result = await withClientQuery<GetAllSuppliersQuery, GetAllSampleTypesQueryVariables>(
-                    GetAllSuppliersDocument, 
-                    {}, 
+                    GetAllSuppliersDocument,
+                    {},
                     'supplierAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.suppliers = result;
                 } else {
@@ -251,11 +297,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingManufacturers = true;
                 const result = await withClientQuery<GetAllManufacturersQuery, GetAllManufacturersQueryVariables>(
-                    GetAllManufacturersDocument, 
-                    {}, 
+                    GetAllManufacturersDocument,
+                    {},
                     'manufacturerAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.manufacturers = result;
                 } else {
@@ -290,11 +336,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingInstrumentTypes = true;
                 const result = await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(
-                    GetAllInstrumentTypesDocument, 
-                    {}, 
+                    GetAllInstrumentTypesDocument,
+                    {},
                     'instrumentTypeAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.instrumentTypes = result.items || [];
                 } else {
@@ -329,11 +375,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingInstruments = true;
                 const result = await withClientQuery<GetAllInstrumentsQuery, GetAllDepartmentsQueryVariables>(
-                    GetAllInstrumentsDocument, 
-                    {}, 
+                    GetAllInstrumentsDocument,
+                    {},
                     'instrumentAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.instruments = result.items || [];
                 } else {
@@ -368,11 +414,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingInstruments = true;
                 const result = await withClientQuery<GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables>(
-                    GetAllLaboratoryInstrumentsDocument, 
-                    {}, 
+                    GetAllLaboratoryInstrumentsDocument,
+                    {},
                     'laboratoryInstrumentAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.laboratoryInstruments = result.items || [];
                 } else {
@@ -407,11 +453,11 @@ export const useSetupStore = defineStore('setup', {
             try {
                 this.fetchingMethods = true;
                 const result = await withClientQuery<GetAllMethodsQuery, GetAllMethodsQueryVariables>(
-                    GetAllMethodsDocument, 
-                    {}, 
+                    GetAllMethodsDocument,
+                    {},
                     'methodAll'
                 );
-                
+
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.methods = result.items || [];
                 } else {
@@ -445,12 +491,8 @@ export const useSetupStore = defineStore('setup', {
         async fetchUnits(): Promise<void> {
             try {
                 this.fetchingUnits = true;
-                const result = await withClientQuery<GetAllUnitsQuery, GetAllUnitsQueryVariables>(
-                    GetAllUnitsDocument, 
-                    {}, 
-                    'unitAll'
-                );
-                
+                const result = await withClientQuery<GetAllUnitsQuery, GetAllUnitsQueryVariables>(GetAllUnitsDocument, {}, 'unitAll');
+
                 if (result && Array.isArray(result)) {
                     this.units = result;
                 } else {

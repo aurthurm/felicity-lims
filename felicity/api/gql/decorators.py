@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 def require_authentication(func: Callable) -> Callable:
     """
     Decorator to require user authentication in GraphQL resolvers.
-    
+
     Usage:
     @strawberry.mutation
     @require_authentication
@@ -44,7 +44,7 @@ def require_authentication(func: Callable) -> Callable:
 def require_lab_context_gql(func: Callable) -> Callable:
     """
     Decorator to require laboratory context in GraphQL resolvers.
-    
+
     Usage:
     @strawberry.query
     @require_authentication
@@ -60,7 +60,9 @@ def require_lab_context_gql(func: Callable) -> Callable:
             logger.debug(f"Lab context {lab_uid} for {func.__name__}")
             return await func(*args, **kwargs)
         except ValueError as e:
-            raise Exception(f"Laboratory context required: {str(e)}. Please select a laboratory.")
+            raise Exception(
+                f"Laboratory context required: {str(e)}. Please select a laboratory."
+            )
 
     return wrapper
 
@@ -68,7 +70,7 @@ def require_lab_context_gql(func: Callable) -> Callable:
 def require_tenant_context(func: Callable) -> Callable:
     """
     Decorator to require both user authentication and lab context.
-    
+
     Usage:
     @strawberry.mutation
     @require_tenant_context
@@ -81,7 +83,9 @@ def require_tenant_context(func: Callable) -> Callable:
         try:
             user_uid = require_user_context()
             lab_uid = require_lab_context()
-            logger.debug(f"Full tenant context - User: {user_uid}, Lab: {lab_uid} for {func.__name__}")
+            logger.debug(
+                f"Full tenant context - User: {user_uid}, Lab: {lab_uid} for {func.__name__}"
+            )
             return await func(*args, **kwargs)
         except ValueError as e:
             raise Exception(f"Tenant context required: {str(e)}")
@@ -92,7 +96,7 @@ def require_tenant_context(func: Callable) -> Callable:
 def audit_action(action_name: str):
     """
     Decorator to add custom audit action names to GraphQL operations.
-    
+
     Usage:
     @strawberry.mutation
     @require_tenant_context
@@ -114,7 +118,7 @@ def audit_action(action_name: str):
                         "user_uid": context.user_uid,
                         "laboratory_uid": context.laboratory_uid,
                         "request_id": context.request_id,
-                    }
+                    },
                 )
             return await func(*args, **kwargs)
 
@@ -126,7 +130,7 @@ def audit_action(action_name: str):
 def admin_only(func: Callable) -> Callable:
     """
     Decorator for admin-only operations that can work across labs.
-    
+
     Usage:
     @strawberry.query
     @require_authentication
@@ -149,7 +153,7 @@ def admin_only(func: Callable) -> Callable:
                 "audit_action": f"ADMIN_{func.__name__.upper()}",
                 "user_uid": user_uid,
                 "organization_uid": context.organization_uid if context else None,
-            }
+            },
         )
 
         return await func(*args, **kwargs)
@@ -160,7 +164,7 @@ def admin_only(func: Callable) -> Callable:
 def log_resolver_access(func: Callable) -> Callable:
     """
     Decorator to log all access to GraphQL resolvers with tenant context.
-    
+
     Usage:
     @strawberry.query
     @log_resolver_access
@@ -179,7 +183,7 @@ def log_resolver_access(func: Callable) -> Callable:
                 "laboratory_uid": context.laboratory_uid if context else None,
                 "organization_uid": context.organization_uid if context else None,
                 "request_id": context.request_id if context else None,
-            }
+            },
         )
         return await func(*args, **kwargs)
 

@@ -14,14 +14,14 @@ const schemeRoutes = [
         meta: {
             requiresAuth: true,
         },
-        children:[
+        children: [
             {
                 path: '',
                 name: 'scheme-detail',
                 component: () => import('@/views/grind/_id/Scheme.vue'),
                 meta: {
                     requiresAuth: true,
-                }
+                },
             },
             {
                 path: 'board/:boardUid/errand/:errandUid',
@@ -29,7 +29,7 @@ const schemeRoutes = [
                 component: () => import('@/views/grind/_id/ErrandDetail.vue'),
                 meta: {
                     requiresAuth: true,
-                }
+                },
             },
         ],
     },

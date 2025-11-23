@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from "vue";
+import { defineAsyncComponent, onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
 import { PatientType } from "@/types/gql";
@@ -15,7 +15,10 @@ const route = useRoute();
 const patientStore = usePatientStore();
 
 let showModal = ref<boolean>(false);
-patientStore.fetchPatientByUid(route.params.patientUid as string);
+
+onBeforeMount(async () => {
+  await patientStore.fetchPatientByUid(route.params.patientUid as string);
+});
 
 const updatePatient = (res: PatientType) => {
   patientStore.updatePatient(res);

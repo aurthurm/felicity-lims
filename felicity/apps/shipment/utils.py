@@ -410,9 +410,7 @@ async def add_sh_receive_task(shipment_uid: str, actor_uid):
         data=None,
     )
     await job_service.create(job_schema)
-    await task_guard.process(
-        uid=shipment.uid, object_type=TrackableObject.SHIPMENT
-    )
+    await task_guard.process(uid=shipment.uid, object_type=TrackableObject.SHIPMENT)
     return shipment
 
 

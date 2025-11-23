@@ -23,7 +23,11 @@ from felicity.apps.analysis.entities.analysis import (
     ResultOption,
     Sample,
     SampleType,
-    SampleTypeCoding, sample_profile, sample_analysis, ClinicalData, ClinicalDataCoding,
+    SampleTypeCoding,
+    sample_profile,
+    sample_analysis,
+    ClinicalData,
+    ClinicalDataCoding,
 )
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.analysis import (
@@ -44,7 +48,9 @@ from felicity.apps.analysis.repository.analysis import (
     ResultOptionRepository,
     SampleRepository,
     SampleTypeCodingRepository,
-    SampleTypeRepository, ClinicalDataRepository, ClinicalDataCodingRepository,
+    SampleTypeRepository,
+    ClinicalDataRepository,
+    ClinicalDataCodingRepository,
 )
 from felicity.apps.analysis.schemas import (
     AnalysisCategoryCreate,
@@ -82,7 +88,11 @@ from felicity.apps.analysis.schemas import (
     SampleTypeCodingUpdate,
     SampleTypeCreate,
     SampleTypeUpdate,
-    SampleUpdate, ClinicalDataCreate, ClinicalDataUpdate, ClinicalDataCodingCreate, ClinicalDataCodingUpdate,
+    SampleUpdate,
+    ClinicalDataCreate,
+    ClinicalDataUpdate,
+    ClinicalDataCodingCreate,
+    ClinicalDataCodingUpdate,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.client.services import ClientService, ClientContactService
@@ -239,14 +249,21 @@ class AnalysisRequestService(
         super().__init__(AnalysisRequestRepository())
 
     async def create(
-            self, obj_in: dict | AnalysisRequestCreate, related: list[str] | None = None,
-            commit: bool = True, session: AsyncSession | None = None
+        self,
+        obj_in: dict | AnalysisRequestCreate,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ):
         data = self._import(obj_in)
         data["request_id"] = (
-            await self.id_sequence_service.get_next_number(prefix="AR", commit=commit, session=session)
+            await self.id_sequence_service.get_next_number(
+                prefix="AR", commit=commit, session=session
+            )
         )[1]
-        return await super().create(c=data, related=related, commit=commit, session=session)
+        return await super().create(
+            c=data, related=related, commit=commit, session=session
+        )
 
     async def snapshot(self, ar: AnalysisRequest, metadata: dict = None):
         fields = ["client"]
@@ -257,14 +274,24 @@ class AnalysisRequestService(
         for _field in fields:
             if _field not in metadata:
                 if _field == "client":
-                    client = await ClientService().get(related=["province", "district"], uid=ar.client_uid)
-                    contacts = await ClientContactService().get_all(client_uid=ar.client_uid)
+                    client = await ClientService().get(
+                        related=["province", "district"], uid=ar.client_uid
+                    )
+                    contacts = await ClientContactService().get_all(
+                        client_uid=ar.client_uid
+                    )
                     metadata[_field] = client.snapshot()
-                    metadata[_field]["province"] = client.province.snapshot() if client.province else None
-                    metadata[_field]["district"] = client.district.snapshot() if client.district else None
+                    metadata[_field]["province"] = (
+                        client.province.snapshot() if client.province else None
+                    )
+                    metadata[_field]["district"] = (
+                        client.district.snapshot() if client.district else None
+                    )
                     metadata[_field]["contacts"] = [cc.snapshot() for cc in contacts]
                 # TODO: also handle snapshot of _field == "clinical_data"
-        return await self.update(ar.uid, {"metadata_snapshot": marshaller(metadata, depth=3)})
+        return await self.update(
+            ar.uid, {"metadata_snapshot": marshaller(metadata, depth=3)}
+        )
 
 
 class ClinicalDataService(
@@ -394,7 +421,13 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         analysis, referred = await self.get_referred_analyses(uid)
         return len(analysis) != len(referred) and len(referred) > 0
 
-    async def receive(self, uid: str, received_by, commit: bool = True, session: AsyncSession | None = None) -> Sample:
+    async def receive(
+        self,
+        uid: str,
+        received_by,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> Sample:
         sample = await self.get(uid=uid)
         sample.status = SampleState.RECEIVED
         sample.received_by_uid = received_by.uid
@@ -428,7 +461,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             )
 
         # Log the cancellation action
-        await self.streamer_service.stream(sample, cancelled_by, "cancelled", NotificationObject.SAMPLE)
+        await self.streamer_service.stream(
+            sample, cancelled_by, "cancelled", NotificationObject.SAMPLE
+        )
 
         return sample
 
@@ -472,7 +507,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         saved = await super().save(sample)
 
         # Log the submission action
-        await self.streamer_service.stream(saved, submitted_by, "submitted", NotificationObject.SAMPLE)
+        await self.streamer_service.stream(
+            saved, submitted_by, "submitted", NotificationObject.SAMPLE
+        )
 
         return saved
 
@@ -509,7 +546,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-                filter(lambda an: an.status in [ResultState.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
@@ -529,7 +566,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             saved = await super().save(sample)
 
             # Log the verification action
-            await self.streamer_service.stream(saved, verified_by, "approved", NotificationObject.SAMPLE)
+            await self.streamer_service.stream(
+                saved, verified_by, "approved", NotificationObject.SAMPLE
+            )
 
             return True, saved
 
@@ -547,7 +586,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         )
         # fire a published event
         if not published.internal_use:
-            post_event('sample-published', uid=uid)
+            post_event("sample-published", uid=uid)
         return published
 
     async def print(self, uid: str, printed_by):
@@ -557,13 +596,22 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.date_printed = timenow_dt()
         sample.updated_by_uid = printed_by.uid  # noqa
         printed = await super().save(sample)
-        await self.streamer_service.stream(printed, printed_by, "printed", NotificationObject.SAMPLE)
+        await self.streamer_service.stream(
+            printed, printed_by, "printed", NotificationObject.SAMPLE
+        )
         return printed
 
-    async def invalidate(self, uid: str, invalidated_by, commit: bool = True, session: AsyncSession | None = None) -> \
-            tuple[Sample, Sample]:
+    async def invalidate(
+        self,
+        uid: str,
+        invalidated_by,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> tuple[Sample, Sample]:
         sample = await self.get(uid=uid, session=session)
-        copy = await self.duplicate_unique(uid, invalidated_by, commit=commit, session=session)
+        copy = await self.duplicate_unique(
+            uid, invalidated_by, commit=commit, session=session
+        )
         sample.status = SampleState.INVALIDATED
         sample.invalidated_by_uid = invalidated_by.uid
         invalidated = await super().save(sample, commit=commit, session=session)
@@ -578,7 +626,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.received_by_uid = rejected_by.uid
         sample.updated_by_uid = rejected_by.uid  # noqa
         rejected = await super().save(sample)
-        await self.streamer_service.stream(rejected, rejected_by, "rejected", NotificationObject.SAMPLE)
+        await self.streamer_service.stream(
+            rejected, rejected_by, "rejected", NotificationObject.SAMPLE
+        )
         return rejected
 
     async def store(self, uid: str, stored_by):
@@ -587,7 +637,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         sample.stored_by = stored_by.uid
         sample.updated_by_uid = stored_by.uid  # noqa
         stored = await super().save(sample)
-        await self.streamer_service.stream(stored, stored_by, "stored", NotificationObject.SAMPLE)
+        await self.streamer_service.stream(
+            stored, stored_by, "stored", NotificationObject.SAMPLE
+        )
         return stored
 
     async def recover(self, uid: str):
@@ -601,18 +653,31 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return recovered
 
     async def create(
-            self, obj_in: dict | SampleCreate, related: list[str] | None = None,
-            commit: bool = True, session: AsyncSession | None = None
+        self,
+        obj_in: dict | SampleCreate,
+        related: list[str] | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
     ):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
         # data["sample_id"] = (await self.id_sequencer_service.get_next_number(sample_type.abbr))[1]
         data["sample_id"] = (
-            await self.id_sequencer_service.get_next_number(prefix="S", generic=True, commit=commit, session=session)
+            await self.id_sequencer_service.get_next_number(
+                prefix="S", generic=True, commit=commit, session=session
+            )
         )[1]
-        return await super().create(c=data, related=related, commit=commit, session=session)
+        return await super().create(
+            c=data, related=related, commit=commit, session=session
+        )
 
-    async def duplicate_unique(self, uid: str, duplicator, commit: bool = True, session: AsyncSession | None = None):
+    async def duplicate_unique(
+        self,
+        uid: str,
+        duplicator,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ):
         sample = await self.get(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique(sample)
@@ -626,8 +691,12 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["created_by_uid"] = duplicator.uid
         return await super().create(data, commit=commit, session=session)
 
-    async def clone_afresh(self, uid: str, cloner, commit: bool = True, session: AsyncSession | None = None):
-        sample = await self.get(related=["profiles", "analyses"], uid=uid, session=session)
+    async def clone_afresh(
+        self, uid: str, cloner, commit: bool = True, session: AsyncSession | None = None
+    ):
+        sample = await self.get(
+            related=["profiles", "analyses"], uid=uid, session=session
+        )
         data = sample.to_dict(nested=False)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
@@ -666,9 +735,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
             elif _field == "profiles":
                 profile_uids = await profile_service.repository.table_query(
-                    table=sample_profile,
-                    columns=["profile_uid"],
-                    sample_uid=sample.uid
+                    table=sample_profile, columns=["profile_uid"], sample_uid=sample.uid
                 )
                 if profile_uids:
                     # Assuming profile_uids is a list of dicts or tuples
@@ -680,7 +747,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
                 anal_uids = await analysis_service.repository.table_query(
                     table=sample_analysis,
                     columns=["analysis_uid"],
-                    sample_uid=sample.uid
+                    sample_uid=sample.uid,
                 )
                 if anal_uids:
                     analyses = await analysis_service.get_by_uids(uids=anal_uids)

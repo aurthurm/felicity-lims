@@ -1,6 +1,6 @@
-import {ExtAnalysisResultType} from '@/types/result';
-import {useSampleStore} from '@/stores/sample';
-import {useWorksheetStore} from '@/stores/worksheet';
+import { ExtAnalysisResultType } from '@/types/result';
+import { useSampleStore } from '@/stores/sample';
+import { useWorksheetStore } from '@/stores/worksheet';
 
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
@@ -22,16 +22,16 @@ import {
     SubmitAnalysisResultsMutationVariables,
     VerifyAnalysisResultsDocument,
     VerifyAnalysisResultsMutation,
-    VerifyAnalysisResultsMutationVariables
+    VerifyAnalysisResultsMutationVariables,
 } from '@/graphql/operations/analyses.mutations';
-import {ArResultInputType, ResultOperationType} from '@/types/gql';
+import { ArResultInputType, ResultOperationType } from '@/types/gql';
 import { NotificationObjectType } from '@/graphql/schema';
 
 export default function useAnalysisComposable() {
     const sampleStore = useSampleStore();
     const worksheetStore = useWorksheetStore();
-    const {withClientMutation} = useApiUtil();
-    const {toastSuccess, toastError, swalConfirm} = useNotifyToast();
+    const { withClientMutation } = useApiUtil();
+    const { toastSuccess, toastError, swalConfirm } = useNotifyToast();
 
     // Cancel Analyses
     const cancelResults = async (uids: string[]) => {
@@ -44,7 +44,7 @@ export default function useAnalysisComposable() {
             if (result.isConfirmed) {
                 const response = await withClientMutation<CancelAnalysisResultsMutation, CancelAnalysisResultsMutationVariables>(
                     CancelAnalysisResultsDocument,
-                    {analyses: uids},
+                    { analyses: uids },
                     'cancelAnalysisResults'
                 );
 
@@ -70,7 +70,7 @@ export default function useAnalysisComposable() {
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReInstateAnalysisResultsMutation, ReInstateAnalysisResultsMutationVariables>(
                     ReInstateAnalysisResultsDocument,
-                    {analyses: uids},
+                    { analyses: uids },
                     'reInstateAnalysisResults'
                 );
 
@@ -93,10 +93,7 @@ export default function useAnalysisComposable() {
         }
 
         try {
-            const confirmResult = await swalConfirm(
-                'Are you sure you want to submit this result?',
-                'Submit Result'
-            );
+            const confirmResult = await swalConfirm('Are you sure you want to submit this result?', 'Submit Result');
 
             if (!confirmResult.isConfirmed) return;
 
@@ -106,36 +103,44 @@ export default function useAnalysisComposable() {
                 uid: result.uid || '',
                 result: result.result || '',
                 laboratoryInstrumentUid: result.laboratoryInstrumentUid || '',
-                methodUid: result.methodUid || ''
+                methodUid: result.methodUid || '',
             };
 
-            const response: ResultOperationType = await withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
+            const response: ResultOperationType = await withClientMutation<
+                SubmitAnalysisResultsMutation,
+                SubmitAnalysisResultsMutationVariables
+            >(
                 SubmitAnalysisResultsDocument,
                 {
                     analysisResults: [analysisResult],
                     sourceObject: 'sample',
-                    sourceObjectUid: result.sampleUid || ''
+                    sourceObjectUid: result.sampleUid || '',
                 },
                 'submitAnalysisResults'
             );
 
             // results submitting is in the background
             if (response?.isBackground) {
-                sampleStore.backgroundProcessing([{uid: result.uid, result: result.result}], "", 'submitting');
-                worksheetStore.backgroundProcessing([{
-                    uid: result.uid,
-                    result: result.result
-                }], undefined, 'submitting');
+                sampleStore.backgroundProcessing([{ uid: result.uid, result: result.result }], '', 'submitting');
+                worksheetStore.backgroundProcessing(
+                    [
+                        {
+                            uid: result.uid,
+                            result: result.result,
+                        },
+                    ],
+                    undefined,
+                    'submitting'
+                );
             } else {
                 // results submission was instant and has finished
                 sampleStore.updateAnalysesResults(response.results ?? []);
                 worksheetStore.updateAnalysesResults(response.results ?? []);
             }
-            
+
             if (response?.message) {
                 toastSuccess(response.message);
             }
-
         } catch (error) {
             toastError(`Failed to submit result: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
@@ -150,15 +155,18 @@ export default function useAnalysisComposable() {
             );
 
             if (result.isConfirmed) {
-                const response: ResultOperationType = await withClientMutation<SubmitAnalysisResultsMutation, SubmitAnalysisResultsMutationVariables>(
-                    SubmitAnalysisResultsDocument,
-                    {analysisResults: results, sourceObject, sourceObjectUid},
-                    'submitAnalysisResults'
-                );
+                const response: ResultOperationType = await withClientMutation<
+                    SubmitAnalysisResultsMutation,
+                    SubmitAnalysisResultsMutationVariables
+                >(SubmitAnalysisResultsDocument, { analysisResults: results, sourceObject, sourceObjectUid }, 'submitAnalysisResults');
 
                 // results submitting is in the background
                 if (response?.isBackground) {
-                    sampleStore.backgroundProcessing(results, sourceObject === NotificationObjectType.Sample ? sourceObjectUid : "", 'submitting');
+                    sampleStore.backgroundProcessing(
+                        results,
+                        sourceObject === NotificationObjectType.Sample ? sourceObjectUid : '',
+                        'submitting'
+                    );
                     worksheetStore.backgroundProcessing(
                         results,
                         sourceObject === NotificationObjectType.Worksheet ? sourceObjectUid : undefined,
@@ -191,15 +199,14 @@ export default function useAnalysisComposable() {
             );
 
             if (result.isConfirmed) {
-                const response: ResultOperationType = await withClientMutation<VerifyAnalysisResultsMutation, VerifyAnalysisResultsMutationVariables>(
-                    VerifyAnalysisResultsDocument,
-                    {analyses: uids, sourceObject, sourceObjectUid},
-                    'verifyAnalysisResults'
-                );
+                const response: ResultOperationType = await withClientMutation<
+                    VerifyAnalysisResultsMutation,
+                    VerifyAnalysisResultsMutationVariables
+                >(VerifyAnalysisResultsDocument, { analyses: uids, sourceObject, sourceObjectUid }, 'verifyAnalysisResults');
 
                 if (response?.isBackground) {
-                    const data = uids.map(item => ({uid: item}));
-                    sampleStore.backgroundProcessing(data, sourceObject === 'sample' ? sourceObjectUid : "", 'approving');
+                    const data = uids.map(item => ({ uid: item }));
+                    sampleStore.backgroundProcessing(data, sourceObject === 'sample' ? sourceObjectUid : '', 'approving');
                     worksheetStore.backgroundProcessing(data, sourceObject === 'worksheet' ? sourceObjectUid : undefined, 'approving');
                 } else {
                     if (sourceObject == 'sample') {
@@ -230,7 +237,7 @@ export default function useAnalysisComposable() {
             if (result.isConfirmed) {
                 const response = await withClientMutation<RetractAnalysisResultsMutation, RetractAnalysisResultsMutationVariables>(
                     RetractAnalysisResultsDocument,
-                    {analyses: uids},
+                    { analyses: uids },
                     'retractAnalysisResults'
                 );
 
@@ -256,7 +263,7 @@ export default function useAnalysisComposable() {
             if (result.isConfirmed) {
                 const response = await withClientMutation<RetestAnalysisResultsMutation, RetestAnalysisResultsMutationVariables>(
                     RetestAnalysisResultsDocument,
-                    {analyses: uids},
+                    { analyses: uids },
                     'retestAnalysisResults'
                 );
 

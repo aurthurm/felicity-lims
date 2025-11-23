@@ -7,7 +7,9 @@ from felicity.apps.app.schemas import APPActivityLogCreate, APPActivityLogUpdate
 from felicity.apps.setup.caches import get_system_daemon
 
 
-class APPActivityLogService(BaseService[APPActivityLog, APPActivityLogCreate, APPActivityLogUpdate]):
+class APPActivityLogService(
+    BaseService[APPActivityLog, APPActivityLogCreate, APPActivityLogUpdate]
+):
     def __init__(self) -> None:
         super().__init__(APPActivityLogRepository())
 
@@ -17,7 +19,9 @@ class APPActivityLogService(BaseService[APPActivityLog, APPActivityLogCreate, AP
             created_at__le=datetime.now(timezone.utc) - timedelta(days=30)
         )
 
-    async def create(self, c: APPActivityLogCreate | dict, related: list[str] | None = None):
+    async def create(
+        self, c: APPActivityLogCreate | dict, related: list[str] | None = None
+    ):
         system_daemon = await get_system_daemon()
         if isinstance(c, dict):
             c["created_by_uid"] = system_daemon.uid

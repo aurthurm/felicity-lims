@@ -14,15 +14,19 @@ export const email = (value: string): boolean | string => {
     return emailRegex.test(value) || 'Invalid email address';
 };
 
-export const minLength = (min: number) => (value: string): boolean | string => {
-    if (!value) return true; // Allow empty values unless combined with required
-    return value.length >= min || `Must be at least ${min} characters`;
-};
+export const minLength =
+    (min: number) =>
+    (value: string): boolean | string => {
+        if (!value) return true; // Allow empty values unless combined with required
+        return value.length >= min || `Must be at least ${min} characters`;
+    };
 
-export const maxLength = (max: number) => (value: string): boolean | string => {
-    if (!value) return true;
-    return value.length <= max || `Must not exceed ${max} characters`;
-};
+export const maxLength =
+    (max: number) =>
+    (value: string): boolean | string => {
+        if (!value) return true;
+        return value.length <= max || `Must not exceed ${max} characters`;
+    };
 
 export const numeric = (value: string): boolean | string => {
     if (!value) return true;
@@ -45,7 +49,6 @@ export const url = (value: string): boolean | string => {
     }
 };
 
-
 // Form validation composable
 export default function useFormValidation() {
     const errors = ref<Record<string, string>>({});
@@ -53,7 +56,7 @@ export default function useFormValidation() {
 
     const validate = (rules: Record<string, Function[]>, values: Record<string, any>): boolean => {
         errors.value = {};
-        
+
         for (const [field, fieldRules] of Object.entries(rules)) {
             for (const rule of fieldRules) {
                 const result = rule(values[field]);

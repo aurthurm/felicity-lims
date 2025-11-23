@@ -69,9 +69,14 @@ IdentificationResponse = strawberry.union(
 @strawberry.type
 class PatientMutations:
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def create_identification(info, name: str) -> IdentificationResponse:
         felicity_user = await auth_from_info(info)
@@ -96,12 +101,17 @@ class PatientMutations:
         return IdentificationType(**identification.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def update_identification(
-            info, uid: str, name: str
+        info, uid: str, name: str
     ) -> IdentificationResponse:
         await auth_from_info(info)
 
@@ -119,18 +129,23 @@ class PatientMutations:
         return IdentificationType(**identification.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
         felicity_user = await auth_from_info(info)
 
         if (
-                not payload.client_patient_id
-                or not payload.first_name
-                or not payload.last_name
-                or not payload.client_uid
+            not payload.client_patient_id
+            or not payload.first_name
+            or not payload.last_name
+            or not payload.client_uid
         ):
             return OperationError(
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
@@ -144,7 +159,9 @@ class PatientMutations:
                 return OperationError(error="Client Patient Id already in use")
 
             client = await ClientService().get(
-                related=["province", "district"], uid=payload.client_uid, session=tr_session
+                related=["province", "district"],
+                uid=payload.client_uid,
+                session=tr_session,
             )
             if not client:
                 return OperationError(
@@ -168,24 +185,35 @@ class PatientMutations:
                     identification_uid=p_id.identification_uid,
                     value=p_id.value,
                 )
-                await PatientIdentificationService().create(pid_in, commit=False, session=tr_session)
+                await PatientIdentificationService().create(
+                    pid_in, commit=False, session=tr_session
+                )
 
             # save transactions
             await PatientService().repository.save_transaction(tr_session)
 
         metadata = {"client": client.snapshot()}
-        metadata["client"]["province"] = client.province.snapshot() if client.province else {}
-        metadata["client"]["district"] = client.district.snapshot() if client.district else {}
+        metadata["client"]["province"] = (
+            client.province.snapshot() if client.province else {}
+        )
+        metadata["client"]["district"] = (
+            client.district.snapshot() if client.district else {}
+        )
         patient = await PatientService().snapshot(patient, metadata)
         return StrawberryMapper[PatientType]().map(**patient.marshal_simple())
 
     @strawberry.mutation(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.PATIENT)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.PATIENT),
+                ]
+            )
+        ]
     )
     async def update_patient(
-            self, info, uid: str, payload: PatientInputType
+        self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
         felicity_user = await auth_from_info(info)
 

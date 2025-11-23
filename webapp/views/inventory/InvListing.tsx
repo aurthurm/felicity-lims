@@ -1,20 +1,18 @@
 import { computed, watch, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '@/stores/inventory';
 import { StockLotType, StockItemVariantType } from '@/types/gql';
-import  useApiUtil  from '@/composables/api_util';
-import { AddStockAdjustmentDocument, AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables } from '@/graphql/operations/inventory.mutations';
+import useApiUtil from '@/composables/api_util';
+import {
+    AddStockAdjustmentDocument,
+    AddStockAdjustmentMutation,
+    AddStockAdjustmentMutationVariables,
+} from '@/graphql/operations/inventory.mutations';
 import { GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables } from '@/graphql/operations/inventory.queries';
 import { parseDate } from '@/utils';
 
-const DataTable = defineAsyncComponent(
-    () => import('@/components/ui/datatable/FelDataTable.vue')
-)
-const StockReceiveForm = defineAsyncComponent(
-    () => import('./StockReceiveForm.vue')
-)
-const ProductDetail = defineAsyncComponent(
-    () => import('./ProductDetail')
-)
+const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
+const StockReceiveForm = defineAsyncComponent(() => import('./StockReceiveForm.vue'));
+const ProductDetail = defineAsyncComponent(() => import('./ProductDetail'));
 
 const InventoryListing = defineComponent({
     name: 'stock-listing',
@@ -31,25 +29,30 @@ const InventoryListing = defineComponent({
         const choiceProduct = reactive({
             product: {} as StockItemVariantType,
             quantity: 0,
-            stockLotUid: "",
-            type: "",
-            remarks: ""
+            stockLotUid: '',
+            type: '',
+            remarks: '',
         });
         const openAddProduct = ref(false);
 
         const stockLots = ref([] as StockLotType[]);
         const fetchLots = (productUid: string) => {
-            withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid }, 'stockLots').then(result => {
-                stockLots.value = result as StockLotType[];
-            })
-        }
+            withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid }, 'stockLots').then(
+                result => {
+                    stockLots.value = result as StockLotType[];
+                }
+            );
+        };
 
-        watch(() => choiceProduct.product?.uid, (itemUid, _) => (itemUid && fetchLots(itemUid)))
-        
+        watch(
+            () => choiceProduct.product?.uid,
+            (itemUid, _) => itemUid && fetchLots(itemUid)
+        );
+
         const openAdjustProduct = ref(false);
         const openProductDetail = ref(false);
         const productDetailItem = ref({} as StockItemVariantType);
-        
+
         const tableColumns = ref([
             {
                 name: 'UID',
@@ -202,19 +205,19 @@ const InventoryListing = defineComponent({
                 // choiceProduct.quantity = value;
             },
             adjustStock: () => {
-                withClientMutation<AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables>(AddStockAdjustmentDocument,
+                withClientMutation<AddStockAdjustmentMutation, AddStockAdjustmentMutationVariables>(
+                    AddStockAdjustmentDocument,
                     {
-                      payload: {
-                        productUid: choiceProduct.product.uid,
-                        stockLotUid: choiceProduct.stockLotUid,
-                        adjustmentType: choiceProduct.type,
-                        adjust: choiceProduct.quantity,
-                        remarks: choiceProduct.remarks
-                      }
+                        payload: {
+                            productUid: choiceProduct.product.uid,
+                            stockLotUid: choiceProduct.stockLotUid,
+                            adjustmentType: choiceProduct.type,
+                            adjust: choiceProduct.quantity,
+                            remarks: choiceProduct.remarks,
+                        },
                     },
                     'createStockAdjustment'
-                ).then(result => {
-                });
+                ).then(result => {});
             },
         };
     },
@@ -266,21 +269,27 @@ const InventoryListing = defineComponent({
                 {this.openAddProduct && (
                     <fel-modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
                         {{
-                            header: () => <h3 class="text-lg font-medium text-foreground">{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
+                            header: () => (
+                                <h3 class="text-lg font-medium text-foreground">
+                                    {this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})
+                                </h3>
+                            ),
                             body: () => {
                                 return (
                                     <form action="post" class="space-y-4 p-4">
                                         <div class="space-y-2">
                                             <label class="block text-sm font-medium text-foreground">Product Lot</label>
-                                            <select 
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+                                            <select
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
                                                 v-model={this.choiceProduct.stockLotUid}
                                                 aria-label="Product Lot"
                                             >
                                                 <option value=""></option>
-                                                {this.stockLots?.map((lot: StockLotType) => (<option key={lot.uid} value={lot.uid}>
-                                                    {lot.lotNumber} ({lot.quantity}) [{parseDate(lot.expiryDate, false)}]
-                                                </option>))}
+                                                {this.stockLots?.map((lot: StockLotType) => (
+                                                    <option key={lot.uid} value={lot.uid}>
+                                                        {lot.lotNumber} ({lot.quantity}) [{parseDate(lot.expiryDate, false)}]
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                         <div class="space-y-2">
@@ -305,7 +314,8 @@ const InventoryListing = defineComponent({
                                                 this.openAddProduct = false;
                                             }}
                                             class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            disabled={!this.choiceProduct.stockLotUid}>
+                                            disabled={!this.choiceProduct.stockLotUid}
+                                        >
                                             Add to basket
                                         </button>
                                     </form>
@@ -318,25 +328,33 @@ const InventoryListing = defineComponent({
                 {this.openAdjustProduct && (
                     <fel-modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
                         {{
-                            header: () => <h3 class="text-lg font-medium text-foreground">{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
+                            header: () => (
+                                <h3 class="text-lg font-medium text-foreground">
+                                    {this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})
+                                </h3>
+                            ),
                             body: () => {
                                 return (
                                     <form action="post" class="space-y-4 p-4">
                                         <div class="space-y-2">
                                             <label class="block text-sm font-medium text-foreground">Product Lot</label>
-                                            <select 
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+                                            <select
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
                                                 v-model={this.choiceProduct.stockLotUid}
                                                 aria-label="Product Lot"
                                             >
                                                 <option value=""></option>
-                                                {this.stockLots?.map((lot: StockLotType) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
+                                                {this.stockLots?.map((lot: StockLotType) => (
+                                                    <option key={lot.uid} value={lot.uid}>
+                                                        {lot.lotNumber}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                         <div class="space-y-2">
                                             <label class="block text-sm font-medium text-foreground">Adjustment Type</label>
-                                            <select 
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200" 
+                                            <select
+                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
                                                 v-model={this.choiceProduct.type}
                                                 aria-label="Adjustment Type"
                                             >
@@ -368,11 +386,12 @@ const InventoryListing = defineComponent({
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                this.adjustStock()
+                                                this.adjustStock();
                                                 this.openAdjustProduct = false;
                                             }}
                                             class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            disabled={!this.choiceProduct.stockLotUid}>
+                                            disabled={!this.choiceProduct.stockLotUid}
+                                        >
                                             Adjust
                                         </button>
                                     </form>
@@ -386,5 +405,4 @@ const InventoryListing = defineComponent({
     },
 });
 export { InventoryListing };
-export default InventoryListing
-
+export default InventoryListing;

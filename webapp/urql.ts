@@ -1,11 +1,4 @@
-import {
-    createClient,
-    cacheExchange,
-    fetchExchange,
-    errorExchange,
-    subscriptionExchange,
-    Exchange,
-} from '@urql/vue';
+import { createClient, cacheExchange, fetchExchange, errorExchange, subscriptionExchange, Exchange } from '@urql/vue';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { createClient as createWSClient, SubscribePayload } from 'graphql-ws';
 import { pipe, tap } from 'wonka';
@@ -67,28 +60,28 @@ export const urqlClient = createClient({
         errorExchange({
             onError: (error, operation) => {
                 const { graphQLErrors, networkError } = error;
-              
+
                 if (graphQLErrors?.length) {
-                  for (const err of graphQLErrors) {
-                    switch (err.extensions?.code) {
-                      case 'FORBIDDEN':
-                      case 'UNAUTHENTICATED':
-                        toastError('Session expired, logging out...');
-                        authLogout();
-                        break;
-                      case 'BAD_USER_INPUT':
-                        toastError(err.message);
-                        break;
-                      default:
-                        toastError('Server error: ' + err.message);
+                    for (const err of graphQLErrors) {
+                        switch (err.extensions?.code) {
+                            case 'FORBIDDEN':
+                            case 'UNAUTHENTICATED':
+                                toastError('Session expired, logging out...');
+                                authLogout();
+                                break;
+                            case 'BAD_USER_INPUT':
+                                toastError(err.message);
+                                break;
+                            default:
+                                toastError('Server error: ' + err.message);
+                        }
                     }
-                  }
                 }
-              
+
                 if (networkError) {
-                  toastError('Network error: ' + networkError.message);
+                    toastError('Network error: ' + networkError.message);
                 }
-            }
+            },
         }),
         resultInterceptorExchange,
         fetchExchange,
@@ -97,19 +90,16 @@ export const urqlClient = createClient({
         // }),
         subscriptionExchange({
             forwardSubscription(operation) {
-              return {
-                subscribe: (sink) => {
-                  const dispose = wsClient.subscribe(
-                    operation as SubscribePayload, 
-                    sink,
-                  );
-                  return {
-                    unsubscribe: dispose,
-                  };
-                },
-              };
+                return {
+                    subscribe: sink => {
+                        const dispose = wsClient.subscribe(operation as SubscribePayload, sink);
+                        return {
+                            unsubscribe: dispose,
+                        };
+                    },
+                };
             },
-          }),
+        }),
     ],
     fetchOptions: () => {
         const authData = getAuthData();

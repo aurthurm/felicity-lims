@@ -11,37 +11,36 @@ This module provides tenant-aware context management that tracks:
 import contextvars
 from dataclasses import dataclass
 from typing import Optional
-from uuid import UUID
 
 
 @dataclass
 class TenantContext:
     """Container for tenant-specific context information"""
-    
+
     user_uid: Optional[str] = None
     organization_uid: Optional[str] = None
     laboratory_uid: Optional[str] = None
-    
+
     # Additional context for audit trails
     request_id: Optional[str] = None
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
-    
+
     @property
     def is_authenticated(self) -> bool:
         """Check if user is authenticated"""
         return self.user_uid is not None
-    
+
     @property
     def is_lab_context(self) -> bool:
         """Check if laboratory context is set"""
         return self.laboratory_uid is not None
-    
+
     @property
     def is_org_context(self) -> bool:
         """Check if organization context is set"""
         return self.organization_uid is not None
-    
+
     def to_dict(self) -> dict:
         """Convert to dictionary for logging/audit"""
         return {
@@ -110,16 +109,16 @@ def require_user_context() -> str:
 
 class TenantContextManager:
     """Context manager for temporary tenant context"""
-    
+
     def __init__(self, context: TenantContext):
         self.context = context
         self.previous_context = None
-    
+
     def __enter__(self):
         self.previous_context = get_tenant_context()
         set_tenant_context(self.context)
         return self.context
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         set_tenant_context(self.previous_context)
 
@@ -129,6 +128,6 @@ def with_tenant_context(user_uid: str, organization_uid: str, laboratory_uid: st
     context = TenantContext(
         user_uid=user_uid,
         organization_uid=organization_uid,
-        laboratory_uid=laboratory_uid
+        laboratory_uid=laboratory_uid,
     )
     return TenantContextManager(context)

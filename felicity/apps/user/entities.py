@@ -51,7 +51,7 @@ class User(AbstractBaseUser):
         lazy="selectin",
         uselist=False,
         cascade="all, delete-orphan",
-        foreign_keys="[UserPreference.user_uid]"
+        foreign_keys="[UserPreference.user_uid]",
     )
 
     groups = relationship(
@@ -102,10 +102,7 @@ class UserPreference(MaybeLabScopedEntity):
 
     user_uid = Column(String, ForeignKey("user.uid", ondelete="CASCADE"), unique=True)
     user: Mapped["User"] = relationship(
-        "User",
-        back_populates="preference",
-        foreign_keys=[user_uid],
-        single_parent=True
+        "User", back_populates="preference", foreign_keys=[user_uid], single_parent=True
     )
 
     expanded_menu = Column(Boolean(), default=False)

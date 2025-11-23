@@ -2,7 +2,20 @@ import { defineStore } from 'pinia';
 import { addListsUnique } from '@/utils';
 
 import useApiUtil from '@/composables/api_util';
-import { GetAllPatientsDocument, GetAllPatientsQuery, GetAllPatientsQueryVariables, GetPatientByUidDocument, GetPatientByUidQuery, GetPatientByUidQueryVariables, IdentificationTypesDocument, IdentificationTypesQuery, IdentificationTypesQueryVariables, SearchPatientsDocument, SearchPatientsQuery, SearchPatientsQueryVariables } from '@/graphql/operations/patient.queries';
+import {
+    GetAllPatientsDocument,
+    GetAllPatientsQuery,
+    GetAllPatientsQueryVariables,
+    GetPatientByUidDocument,
+    GetPatientByUidQuery,
+    GetPatientByUidQueryVariables,
+    IdentificationTypesDocument,
+    IdentificationTypesQuery,
+    IdentificationTypesQueryVariables,
+    SearchPatientsDocument,
+    SearchPatientsQuery,
+    SearchPatientsQueryVariables,
+} from '@/graphql/operations/patient.queries';
 import { IdentificationType, PatientType, PageInfo } from '@/types/gql';
 
 const { withClientQuery } = useApiUtil();
@@ -33,7 +46,10 @@ export const usePatientStore = defineStore('patient', {
         getPatients: (state): PatientType[] => state.patients,
         getIdentifications: (state): IdentificationType[] => state.identifications,
         getSearchQuery: (state): string => state.searchQuery,
-        getPatientByUid: (state) => (uid: string): PatientType | undefined => state.patients?.find(p => p.uid === uid),
+        getPatientByUid:
+            state =>
+            (uid: string): PatientType | undefined =>
+                state.patients?.find(p => p.uid === uid),
         getPatient: (state): PatientType | undefined => state.patient,
         getPatientCount: (state): number | undefined => state.patientCount,
         getPatientPageInfo: (state): PageInfo | undefined => state.patientPageInfo,
@@ -43,11 +59,11 @@ export const usePatientStore = defineStore('patient', {
         async fetchIdentifications(): Promise<void> {
             try {
                 const result = await withClientQuery<IdentificationTypesQuery, IdentificationTypesQueryVariables>(
-                    IdentificationTypesDocument, 
-                    {}, 
+                    IdentificationTypesDocument,
+                    {},
                     'identificationAll'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.identifications = result as IdentificationType[];
                 } else {
@@ -57,22 +73,22 @@ export const usePatientStore = defineStore('patient', {
                 console.error('Error fetching identifications:', error);
             }
         },
-        
+
         addIdentification(payload: IdentificationType): void {
             if (!payload?.uid) {
                 console.error('Invalid identification payload:', payload);
                 return;
             }
-            
+
             this.identifications.unshift(payload);
         },
-        
+
         updateIdentification(payload: IdentificationType): void {
             if (!payload?.uid) {
                 console.error('Invalid identification payload:', payload);
                 return;
             }
-            
+
             const index = this.identifications.findIndex(pt => pt.uid === payload.uid);
             if (index > -1) {
                 this.identifications[index] = {
@@ -87,16 +103,16 @@ export const usePatientStore = defineStore('patient', {
             try {
                 this.fetchingPatients = true;
                 const result = await withClientQuery<GetAllPatientsQuery, GetAllPatientsQueryVariables>(
-                    GetAllPatientsDocument, 
-                    { ...params, sortBy: ['-uid'] }, 
+                    GetAllPatientsDocument,
+                    { ...params, sortBy: ['-uid'] },
                     undefined
                 );
-                
+
                 if (result && typeof result === 'object' && 'patientAll' in result) {
-                    const page = result.patientAll as { 
-                        items?: PatientType[]; 
-                        totalCount?: number; 
-                        pageInfo?: PageInfo 
+                    const page = result.patientAll as {
+                        items?: PatientType[];
+                        totalCount?: number;
+                        pageInfo?: PageInfo;
                     };
                     const patients = page.items || [];
 
@@ -118,46 +134,46 @@ export const usePatientStore = defineStore('patient', {
                 this.fetchingPatients = false;
             }
         },
-        
+
         addPatient(payload: PatientType): void {
             if (!payload?.uid) {
                 console.error('Invalid patient payload:', payload);
                 return;
             }
-            
+
             this.patients.unshift(payload);
         },
-        
+
         updatePatient(payload: PatientType): void {
             if (!payload?.uid) {
                 console.error('Invalid patient payload:', payload);
                 return;
             }
-            
+
             const index = this.patients.findIndex(pt => pt.uid === payload.uid);
             if (index > -1) {
                 this.patients[index] = { ...this.patients[index], ...payload };
             }
-            
+
             if (this.patient?.uid === payload.uid) {
                 this.patient = { ...this.patient, ...payload };
             }
         },
-        
+
         async fetchPatientByUid(uid: string): Promise<void> {
             if (!uid) {
                 console.error('Invalid UID provided to fetchPatientByUid');
                 return;
             }
-            
+
             try {
                 this.fetchingPatient = true;
                 const result = await withClientQuery<GetPatientByUidQuery, GetPatientByUidQueryVariables>(
-                    GetPatientByUidDocument, 
-                    { uid }, 
+                    GetPatientByUidDocument,
+                    { uid },
                     'patientByUid'
                 );
-                
+
                 if (result && typeof result === 'object') {
                     this.patient = result as PatientType;
                 } else {
@@ -169,34 +185,34 @@ export const usePatientStore = defineStore('patient', {
                 this.fetchingPatient = false;
             }
         },
-        
+
         async setPatient(payload: PatientType): Promise<void> {
             if (!payload?.uid) {
                 console.error('Invalid patient payload:', payload);
                 return;
             }
-            
+
             this.patient = payload;
         },
-        
+
         async resetPatient(): Promise<void> {
             this.patient = undefined;
         },
-        
+
         async searchPatients(queryString: string): Promise<void> {
             if (!queryString) {
                 console.error('Invalid query string provided to searchPatients');
                 return;
             }
-            
+
             try {
                 this.searchQuery = queryString;
                 const result = await withClientQuery<SearchPatientsQuery, SearchPatientsQueryVariables>(
-                    SearchPatientsDocument, 
-                    { queryString }, 
+                    SearchPatientsDocument,
+                    { queryString },
                     'patientSearch'
                 );
-                
+
                 if (result && Array.isArray(result)) {
                     this.patients = result as PatientType[];
                 } else {
@@ -206,7 +222,7 @@ export const usePatientStore = defineStore('patient', {
                 console.error('Error searching patients:', error);
             }
         },
-        
+
         clearSearchQuery(): void {
             this.searchQuery = '';
         },

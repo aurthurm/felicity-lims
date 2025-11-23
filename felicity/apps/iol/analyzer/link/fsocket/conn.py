@@ -19,7 +19,10 @@ from typing import Optional, Union
 from felicity.apps.iol.analyzer.conf import EventType
 from felicity.apps.iol.analyzer.link.base import AbstractLink
 from felicity.apps.iol.analyzer.link.conf import (
-    SocketType, ProtocolType, ConnectionStatus, TransmissionStatus
+    SocketType,
+    ProtocolType,
+    ConnectionStatus,
+    TransmissionStatus,
 )
 from felicity.apps.iol.analyzer.link.fsocket.astm import ASTMProtocolHandler
 from felicity.apps.iol.analyzer.link.fsocket.hl7 import HL7ProtocolHandler
@@ -99,7 +102,9 @@ class SocketLink(AbstractLink):
             trials: Number of reconnection attempts (not used in async, for compatibility)
         """
         if not self.is_active:
-            logger.info(f"SocketLink {self.name}: Instrument deactivated, cannot start server")
+            logger.info(
+                f"SocketLink {self.name}: Instrument deactivated, cannot start server"
+            )
             return
 
         try:
@@ -111,9 +116,11 @@ class SocketLink(AbstractLink):
         except Exception as e:
             logger.error(f"SocketLink {self.name}: Error starting server: {e}")
             if self.emit_events:
-                post_event(EventType.INSTRUMENT_STREAM,
-                           id=self.uid,
-                           connection=ConnectionStatus.DISCONNECTED)
+                post_event(
+                    EventType.INSTRUMENT_STREAM,
+                    id=self.uid,
+                    connection=ConnectionStatus.DISCONNECTED,
+                )
 
     async def _start_server_mode(self):
         """
@@ -121,14 +128,14 @@ class SocketLink(AbstractLink):
 
         Creates async server that handles multiple concurrent client connections.
         """
-        logger.info(f"SocketLink {self.name}: Starting server mode on {self.host}:{self.port}")
+        logger.info(
+            f"SocketLink {self.name}: Starting server mode on {self.host}:{self.port}"
+        )
 
         try:
             # Create async server
             self.server = await asyncio.start_server(
-                self._handle_client,
-                self.host or '0.0.0.0',
-                self.port
+                self._handle_client, self.host or "0.0.0.0", self.port
             )
 
             # Get server socket for keepalive
@@ -136,11 +143,15 @@ class SocketLink(AbstractLink):
                 set_keep_alive(sock, self.keep_alive_interval)
 
             if self.emit_events:
-                post_event(EventType.INSTRUMENT_STREAM,
-                           id=self.uid,
-                           connection=ConnectionStatus.CONNECTED)
+                post_event(
+                    EventType.INSTRUMENT_STREAM,
+                    id=self.uid,
+                    connection=ConnectionStatus.CONNECTED,
+                )
 
-            logger.info(f"SocketLink {self.name}: Server listening on {self.host}:{self.port}")
+            logger.info(
+                f"SocketLink {self.name}: Server listening on {self.host}:{self.port}"
+            )
 
             # Serve forever
             async with self.server:
@@ -156,7 +167,9 @@ class SocketLink(AbstractLink):
         except Exception as e:
             logger.error(f"SocketLink {self.name}: Server error: {e}")
 
-    async def _handle_client(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+    async def _handle_client(
+        self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
+    ):
         """
         Handle individual client connection (server mode).
 
@@ -164,19 +177,21 @@ class SocketLink(AbstractLink):
             reader: Async stream reader
             writer: Async stream writer
         """
-        addr = writer.get_extra_info('peername')
+        addr = writer.get_extra_info("peername")
         logger.info(f"SocketLink {self.name}: Client connected from {addr}")
 
         # Set keepalive on the client socket
-        sock = writer.get_extra_info('socket')
+        sock = writer.get_extra_info("socket")
         if sock:
             set_keep_alive(sock, self.keep_alive_interval)
 
         if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM,
-                       id=self.uid,
-                       connection=ConnectionStatus.CONNECTED,
-                       transmission=TransmissionStatus.STARTED)
+            post_event(
+                EventType.INSTRUMENT_STREAM,
+                id=self.uid,
+                connection=ConnectionStatus.CONNECTED,
+                transmission=TransmissionStatus.STARTED,
+            )
 
         try:
             self._open_session()
@@ -185,8 +200,7 @@ class SocketLink(AbstractLink):
                 try:
                     # Read data with timeout
                     data = await asyncio.wait_for(
-                        reader.read(RECV_BUFFER),
-                        timeout=self.socket_timeout
+                        reader.read(RECV_BUFFER), timeout=self.socket_timeout
                     )
 
                 except asyncio.TimeoutError:
@@ -247,9 +261,11 @@ class SocketLink(AbstractLink):
             self._close_session()
 
             if self.emit_events:
-                post_event(EventType.INSTRUMENT_STREAM,
-                           id=self.uid,
-                           connection=ConnectionStatus.DISCONNECTED)
+                post_event(
+                    EventType.INSTRUMENT_STREAM,
+                    id=self.uid,
+                    connection=ConnectionStatus.DISCONNECTED,
+                )
 
     async def _start_client_mode(self):
         """
@@ -257,7 +273,9 @@ class SocketLink(AbstractLink):
 
         Maintains persistent connection and processes incoming data.
         """
-        logger.info(f"SocketLink {self.name}: Starting client mode, connecting to {self.host}:{self.port}")
+        logger.info(
+            f"SocketLink {self.name}: Starting client mode, connecting to {self.host}:{self.port}"
+        )
 
         reconnect_count = 0
 
@@ -266,22 +284,26 @@ class SocketLink(AbstractLink):
                 # Connect to server
                 reader, writer = await asyncio.wait_for(
                     asyncio.open_connection(self.host, self.port),
-                    timeout=CONNECT_TIMEOUT
+                    timeout=CONNECT_TIMEOUT,
                 )
 
-                logger.info(f"SocketLink {self.name}: Connected to {self.host}:{self.port}")
+                logger.info(
+                    f"SocketLink {self.name}: Connected to {self.host}:{self.port}"
+                )
 
                 if self.emit_events:
-                    post_event(EventType.INSTRUMENT_STREAM,
-                               id=self.uid,
-                               connection=ConnectionStatus.CONNECTED)
+                    post_event(
+                        EventType.INSTRUMENT_STREAM,
+                        id=self.uid,
+                        connection=ConnectionStatus.CONNECTED,
+                    )
 
                 reconnect_count = 0  # Reset on successful connection
                 self._open_session()
 
                 try:
                     # Set keepalive
-                    sock = writer.get_extra_info('socket')
+                    sock = writer.get_extra_info("socket")
                     if sock:
                         set_keep_alive(sock, self.keep_alive_interval)
 
@@ -289,8 +311,7 @@ class SocketLink(AbstractLink):
                     while True:
                         try:
                             data = await asyncio.wait_for(
-                                reader.read(RECV_BUFFER),
-                                timeout=self.socket_timeout
+                                reader.read(RECV_BUFFER), timeout=self.socket_timeout
                             )
 
                         except asyncio.TimeoutError:
@@ -298,7 +319,9 @@ class SocketLink(AbstractLink):
                             break
 
                         if not data:
-                            logger.info(f"SocketLink {self.name}: Server closed connection")
+                            logger.info(
+                                f"SocketLink {self.name}: Server closed connection"
+                            )
                             break
 
                         # Check timeout
@@ -312,7 +335,9 @@ class SocketLink(AbstractLink):
 
                         # Check size
                         if self._check_message_size(len(data)):
-                            logger.error(f"SocketLink {self.name}: Message size limit exceeded")
+                            logger.error(
+                                f"SocketLink {self.name}: Message size limit exceeded"
+                            )
                             response = self._encode_response("NACK")
                             writer.write(response)
                             await writer.drain()
@@ -355,13 +380,16 @@ class SocketLink(AbstractLink):
 
             if reconnect_count < MAX_RECONNECT_ATTEMPTS and self.auto_reconnect:
                 logger.info(
-                    f"SocketLink {self.name}: Reconnecting... (attempt {reconnect_count}/{MAX_RECONNECT_ATTEMPTS})")
+                    f"SocketLink {self.name}: Reconnecting... (attempt {reconnect_count}/{MAX_RECONNECT_ATTEMPTS})"
+                )
                 await asyncio.sleep(RECONNECT_DELAY)
 
         if self.emit_events:
-            post_event(EventType.INSTRUMENT_STREAM,
-                       id=self.uid,
-                       connection=ConnectionStatus.DISCONNECTED)
+            post_event(
+                EventType.INSTRUMENT_STREAM,
+                id=self.uid,
+                connection=ConnectionStatus.DISCONNECTED,
+            )
 
     def _open_session(self):
         """Initialize session state"""
@@ -384,15 +412,19 @@ class SocketLink(AbstractLink):
 
         elapsed = (datetime.now() - self._session_start_time).total_seconds()
         if elapsed > MESSAGE_TIMEOUT_SECONDS:
-            logger.warning(f"SocketLink {self.name}: Message timeout after {elapsed:.1f}s")
+            logger.warning(
+                f"SocketLink {self.name}: Message timeout after {elapsed:.1f}s"
+            )
             return True
         return False
 
     def _check_message_size(self, new_size: int) -> bool:
         """Check if message size exceeds limit"""
         if self._total_message_size + new_size > MAX_MESSAGE_SIZE:
-            logger.error(f"SocketLink {self.name}: Message size limit exceeded "
-                         f"(current: {self._total_message_size}, new: {new_size}, limit: {MAX_MESSAGE_SIZE})")
+            logger.error(
+                f"SocketLink {self.name}: Message size limit exceeded "
+                f"(current: {self._total_message_size}, new: {new_size}, limit: {MAX_MESSAGE_SIZE})"
+            )
             return True
         return False
 
@@ -414,7 +446,9 @@ class SocketLink(AbstractLink):
         if self.protocol_type is None and not self._protocol_detected:
             self._detected_protocol = self._detect_protocol(data)
             self._protocol_detected = True
-            logger.info(f"SocketLink {self.name}: Detected protocol: {self._detected_protocol}")
+            logger.info(
+                f"SocketLink {self.name}: Detected protocol: {self._detected_protocol}"
+            )
 
         # Route to appropriate handler
         protocol = self.protocol_type or self._detected_protocol
@@ -424,7 +458,9 @@ class SocketLink(AbstractLink):
         elif protocol == ProtocolType.HL7:
             return await self.hl7_handler.process_data(data)
         else:
-            logger.warning(f"SocketLink {self.name}: Unknown protocol, defaulting to ASTM")
+            logger.warning(
+                f"SocketLink {self.name}: Unknown protocol, defaulting to ASTM"
+            )
             return await self.astm_handler.process_data(data)
 
     def _detect_protocol(self, data: bytes) -> ProtocolType:
@@ -436,11 +472,11 @@ class SocketLink(AbstractLink):
 
         Returns: Detected ProtocolType
         """
-        if data.startswith(b'\x0B'):  # HL7_SB
+        if data.startswith(b"\x0b"):  # HL7_SB
             return ProtocolType.HL7
-        elif data.startswith(b'\x05'):  # ENQ
+        elif data.startswith(b"\x05"):  # ENQ
             return ProtocolType.ASTM
-        elif data.startswith(b'\x02'):  # STX
+        elif data.startswith(b"\x02"):  # STX
             return ProtocolType.ASTM
         else:
             return ProtocolType.ASTM  # Default
@@ -455,12 +491,14 @@ class SocketLink(AbstractLink):
         Returns: Encoded response bytes
         """
         if response == "ACK":
-            return b'\x06'  # ACK character
+            return b"\x06"  # ACK character
         elif response == "NACK":
-            return b'\x15'  # NAK character
+            return b"\x15"  # NAK character
         else:
-            return b''
+            return b""
 
     def __repr__(self):
-        return (f"SocketLink(uid={self.uid}, name={self.name}, "
-                f"host={self.host}, port={self.port}, type={self.socket_type})")
+        return (
+            f"SocketLink(uid={self.uid}, name={self.name}, "
+            f"host={self.host}, port={self.port}, type={self.socket_type})"
+        )

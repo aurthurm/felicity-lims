@@ -55,7 +55,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     await broadcast.disconnect()
     if redis_client:
         await redis_client.close()  # closes connections
-        await redis_client.connection_pool.disconnect()  # ensures the pool is cleaned up
+        await (
+            redis_client.connection_pool.disconnect()
+        )  # ensures the pool is cleaned up
 
 
 def register_middlewares(app: FastAPI) -> None:
@@ -77,7 +79,7 @@ def register_middlewares(app: FastAPI) -> None:
             redis_client=redis_client,
             minute_limit=settings.RATE_LIMIT_PER_MINUTE,
             hour_limit=settings.RATE_LIMIT_PER_HOUR,
-            exclude_paths=["/docs", "/redoc", "/openapi.json"]
+            exclude_paths=["/docs", "/redoc", "/openapi.json"],
         )
 
 
@@ -86,7 +88,10 @@ def register_rate_limit(app: FastAPI) -> None:
     if settings.RATE_LIMIT:
         limiter = Limiter(
             key_func=get_remote_address,
-            default_limits=[f"{settings.RATE_LIMIT_PER_MINUTE}/minute", f"{settings.RATE_LIMIT_PER_HOUR}/hour"]
+            default_limits=[
+                f"{settings.RATE_LIMIT_PER_MINUTE}/minute",
+                f"{settings.RATE_LIMIT_PER_HOUR}/hour",
+            ],
         )
         app.state.limiter = limiter  # noqa
         app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # noqa
@@ -143,7 +148,7 @@ def register_tracer(app: FastAPI) -> None:
         trace_provider.add_span_processor(span_processor)
 
         # Now you can get a tracer and create spans
-        tracer = trace.get_tracer(__name__)
+        tracer = trace.get_tracer(__name__)  # noqa F841
         #
         FastAPIInstrumentor.instrument_app(app)
         SQLAlchemyInstrumentor().instrument(

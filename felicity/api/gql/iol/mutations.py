@@ -29,27 +29,30 @@ AnalyzerExtractedMessageResponse = strawberry.union(
 class IOLMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def parse_analyser_message(
-            self, info, message: str
+        self, info, message: str
     ) -> AnalyzerParsedMessageResponse:
         msg, sep = MessageTransformer().parse_message(message)
-        return AnalyzerParsedMessageType(
-            message=msg,
-            seperators=sep
-        )
+        return AnalyzerParsedMessageType(message=msg, seperators=sep)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def extract_analyser_message(
-            self, info, message: str, driver: JSONScalar
+        self, info, message: str, driver: JSONScalar
     ) -> AnalyzerExtractedMessageResponse:
         # Parse driver if it's a string (from JSON)
         import json
+
         if isinstance(driver, str):
             try:
                 driver = json.loads(driver)
             except (json.JSONDecodeError, TypeError):
                 logger.error(f"Failed to parse driver JSON: {driver}")
                 return AnalyzerExtractedMessageType(
-                    message={"sample_id": None, "instrument": None, "results": [], "error": "Invalid driver format"}
+                    message={
+                        "sample_id": None,
+                        "instrument": None,
+                        "results": [],
+                        "error": "Invalid driver format",
+                    }
                 )
         return AnalyzerExtractedMessageType(
             message=MessageTransformer().extract_fields(message=message, driver=driver)

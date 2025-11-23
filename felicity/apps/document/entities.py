@@ -7,13 +7,13 @@ from felicity.core.config import settings
 
 
 class DocumentCategory(LabScopedEntity):
-    __tablename__ = 'document_category'
+    __tablename__ = "document_category"
 
     name = Column(String)
 
 
 class DocumentTag(LabScopedEntity):
-    __tablename__ = 'document_tag'
+    __tablename__ = "document_tag"
 
     name = Column(String)
 
@@ -21,54 +21,58 @@ class DocumentTag(LabScopedEntity):
 document_tagged = Table(
     "document_tagged",
     BaseEntity.metadata,
-    Column("document_uid", ForeignKey('document.uid'), primary_key=True),
-    Column("document_tag_uid", ForeignKey('document_tag.uid'), primary_key=True),
+    Column("document_uid", ForeignKey("document.uid"), primary_key=True),
+    Column("document_tag_uid", ForeignKey("document_tag.uid"), primary_key=True),
 )
 
 document_author = Table(
     "document_author",
     BaseEntity.metadata,
-    Column("document_uid", ForeignKey('document.uid'), primary_key=True),
-    Column("user_uid", ForeignKey('user.uid'), primary_key=True),
+    Column("document_uid", ForeignKey("document.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 document_reader = Table(
     "document_reader",
     BaseEntity.metadata,
-    Column("document_uid", ForeignKey('document.uid'), primary_key=True),
-    Column("user_uid", ForeignKey('user.uid'), primary_key=True),
+    Column("document_uid", ForeignKey("document.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 document_relation = Table(
     "document_relation",
     BaseEntity.metadata,
-    Column("source_document_uid", ForeignKey('document.uid'), primary_key=True),
-    Column("target_document_uid", ForeignKey('document.uid'), primary_key=True),
-    Column("relation_type", String)  # "references", "supersedes", "complements", etc.
+    Column("source_document_uid", ForeignKey("document.uid"), primary_key=True),
+    Column("target_document_uid", ForeignKey("document.uid"), primary_key=True),
+    Column("relation_type", String),  # "references", "supersedes", "complements", etc.
 )
 
 
 class Document(LabScopedEntity):
-    __tablename__ = 'document'
+    __tablename__ = "document"
 
     name = Column(String)
     subtitle = Column(String, nullable=True)
-    document_id = Column(String, unique=True)  # Unique identifier for document reference
-    folder_uid = Column(String, ForeignKey('document_folder.uid'), nullable=True)
+    document_id = Column(
+        String, unique=True
+    )  # Unique identifier for document reference
+    folder_uid = Column(String, ForeignKey("document_folder.uid"), nullable=True)
     folder = relationship("DocumentFolder", back_populates="documents")
-    tags = relationship(DocumentTag, secondary=document_tagged, backref="documents", lazy="selectin")
+    tags = relationship(
+        DocumentTag, secondary=document_tagged, backref="documents", lazy="selectin"
+    )
     authors = relationship("User", secondary=document_author, lazy="selectin")
     readers = relationship("User", secondary=document_reader, lazy="selectin")
-    department_uid = Column(String, ForeignKey('department.uid'), nullable=True)
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
-    category_uid = Column(String, ForeignKey('document_category.uid'), nullable=True)
+    category_uid = Column(String, ForeignKey("document_category.uid"), nullable=True)
     category = relationship(DocumentCategory, lazy="selectin")
-    template_uid = Column(String, ForeignKey('document_template.uid'), nullable=True)
+    template_uid = Column(String, ForeignKey("document_template.uid"), nullable=True)
     template = relationship("DocumentTemplate")
 
     # Access tracking
     last_accessed = Column(DateTime, nullable=True)
-    last_accessed_by_uid = Column(String, ForeignKey('user.uid'), nullable=True)
+    last_accessed_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     last_accessed_by = relationship("User", foreign_keys=[last_accessed_by_uid])
 
     # Related documents
@@ -77,7 +81,7 @@ class Document(LabScopedEntity):
         secondary=document_relation,
         primaryjoin="Document.uid==document_relation.c.source_document_uid",
         secondaryjoin="Document.uid==document_relation.c.target_document_uid",
-        backref="related_from"
+        backref="related_from",
     )
 
     @property
@@ -102,30 +106,32 @@ class Document(LabScopedEntity):
 
 
 class DocumentStatus(LabScopedEntity):
-    __tablename__ = 'document_status'
+    __tablename__ = "document_status"
 
-    document_uid = Column(String, ForeignKey('document.uid'))
+    document_uid = Column(String, ForeignKey("document.uid"))
     document = relationship("Document", backref="statuses")
     status = Column(Enum(DocumentState), default=DocumentState.DRAFT)
     date = Column(DateTime)
-    user_uid = Column(String, ForeignKey('user.uid'))
+    user_uid = Column(String, ForeignKey("user.uid"))
     user = relationship("User", foreign_keys=[user_uid])
 
 
 class DocumentFolder(LabScopedEntity):
-    __tablename__ = 'document_folder'
+    __tablename__ = "document_folder"
 
     name = Column(String)
     description = Column(String, nullable=True)
-    parent_uid = Column(String, ForeignKey('document_folder.uid'), nullable=True)
-    parent = relationship("DocumentFolder", remote_side="DocumentFolder.uid", backref="subfolders")
+    parent_uid = Column(String, ForeignKey("document_folder.uid"), nullable=True)
+    parent = relationship(
+        "DocumentFolder", remote_side="DocumentFolder.uid", backref="subfolders"
+    )
     documents = relationship("Document", back_populates="folder")
 
 
 class DocumentVersion(LabScopedEntity):
-    __tablename__ = 'document_version'
+    __tablename__ = "document_version"
 
-    document_uid = Column(String, ForeignKey('document.uid'))
+    document_uid = Column(String, ForeignKey("document.uid"))
     document = relationship("Document", backref="versions", lazy="selectin")
     version_number = Column(String)  # e.g., "1.0", "1.1", etc.
     content = Column(Text)
@@ -135,23 +141,23 @@ class DocumentVersion(LabScopedEntity):
 
 
 class DocumentReviewCycle(LabScopedEntity):
-    __tablename__ = 'document_review_cycle'
+    __tablename__ = "document_review_cycle"
 
-    document_uid = Column(String, ForeignKey('document.uid'))
+    document_uid = Column(String, ForeignKey("document.uid"))
     document = relationship("Document", backref="review_cycles")
     start_date = Column(DateTime)
     end_date = Column(DateTime, nullable=True)
-    initiated_by_uid = Column(String, ForeignKey('user.uid'))
+    initiated_by_uid = Column(String, ForeignKey("user.uid"))
     initiated_by = relationship("User", foreign_keys=[initiated_by_uid])
     status = Column(String)  # "in_progress", "completed", "cancelled"
 
 
 class DocumentReviewStep(LabScopedEntity):
-    __tablename__ = 'document_review_step'
+    __tablename__ = "document_review_step"
 
-    review_cycle_uid = Column(String, ForeignKey('document_review_cycle.uid'))
+    review_cycle_uid = Column(String, ForeignKey("document_review_cycle.uid"))
     review_cycle = relationship("DocumentReviewCycle", backref="steps")
-    reviewer_uid = Column(String, ForeignKey('user.uid'))
+    reviewer_uid = Column(String, ForeignKey("user.uid"))
     reviewer = relationship("User", foreign_keys=[reviewer_uid])
     sequence = Column(Integer)  # Order of review
     status = Column(String)  # "pending", "approved", "rejected"
@@ -160,32 +166,34 @@ class DocumentReviewStep(LabScopedEntity):
 
 
 class DocumentTemplate(LabScopedEntity):
-    __tablename__ = 'document_template'
+    __tablename__ = "document_template"
 
     name = Column(String)
     description = Column(String, nullable=True)
     content = Column(Text)
-    category_uid = Column(String, ForeignKey('document_category.uid'), nullable=True)
+    category_uid = Column(String, ForeignKey("document_category.uid"), nullable=True)
     category = relationship(DocumentCategory)
 
 
 class DocumentSubscription(LabScopedEntity):
-    __tablename__ = 'document_subscription'
+    __tablename__ = "document_subscription"
 
-    document_uid = Column(String, ForeignKey('document.uid'))
+    document_uid = Column(String, ForeignKey("document.uid"))
     document = relationship("Document", backref="subscriptions")
-    user_uid = Column(String, ForeignKey('user.uid'))
+    user_uid = Column(String, ForeignKey("user.uid"))
     user = relationship("User", foreign_keys=[user_uid])
-    subscription_type = Column(String)  # "all_changes", "status_changes", "review_requests"
+    subscription_type = Column(
+        String
+    )  # "all_changes", "status_changes", "review_requests"
 
 
 class DocumentAudit(LabScopedEntity):
-    __tablename__ = 'document_audit'
+    __tablename__ = "document_audit"
 
-    document_uid = Column(String, ForeignKey('document.uid'))
+    document_uid = Column(String, ForeignKey("document.uid"))
     document = relationship("Document", backref="audit_records")
     action = Column(String)  # "viewed", "downloaded", "printed", etc.
     date = Column(DateTime)
-    user_uid = Column(String, ForeignKey('user.uid'))
+    user_uid = Column(String, ForeignKey("user.uid"))
     user = relationship("User", foreign_keys=[user_uid])
     ip_address = Column(String, nullable=True)

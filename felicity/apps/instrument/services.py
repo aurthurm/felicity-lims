@@ -7,7 +7,11 @@ from felicity.apps.instrument.entities import (
     InstrumentCompetence,
     InstrumentType,
     LaboratoryInstrument,
-    Method, InstrumentRawData, InstrumentResultExclusions, InstrumentResultTranslation, InstrumentInterface,
+    Method,
+    InstrumentRawData,
+    InstrumentResultExclusions,
+    InstrumentResultTranslation,
+    InstrumentInterface,
 )
 from felicity.apps.instrument.repository import (
     CalibrationCertificateRepository,
@@ -16,8 +20,11 @@ from felicity.apps.instrument.repository import (
     InstrumentRepository,
     InstrumentTypeRepository,
     LaboratoryInstrumentRepository,
-    MethodRepository, InstrumentRawDataRepository, InstrumentResultExclusionsRepository,
-    InstrumentResultTranslationRepository, InstrumentInterfaceRepository,
+    MethodRepository,
+    InstrumentRawDataRepository,
+    InstrumentResultExclusionsRepository,
+    InstrumentResultTranslationRepository,
+    InstrumentInterfaceRepository,
 )
 from felicity.apps.instrument.schemas import (
     CalibrationCertificateCreate,
@@ -33,9 +40,15 @@ from felicity.apps.instrument.schemas import (
     LaboratoryInstrumentCreate,
     LaboratoryInstrumentUpdate,
     MethodCreate,
-    MethodUpdate, InstrumentRawDataCreate, InstrumentRawDataUpdate, InstrumentResultExclusionsCreate,
-    InstrumentResultExclusionsUpdate, InstrumentResultTranslationCreate, InstrumentResultTranslationUpdate,
-    InstrumentInterfaceCreate, InstrumentInterfaceUpdate,
+    MethodUpdate,
+    InstrumentRawDataCreate,
+    InstrumentRawDataUpdate,
+    InstrumentResultExclusionsCreate,
+    InstrumentResultExclusionsUpdate,
+    InstrumentResultTranslationCreate,
+    InstrumentResultTranslationUpdate,
+    InstrumentInterfaceCreate,
+    InstrumentInterfaceUpdate,
 )
 
 
@@ -43,7 +56,7 @@ class MethodService(
     BaseService[Method, MethodCreate, MethodUpdate],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(MethodRepository())
 
@@ -52,7 +65,7 @@ class InstrumentTypeService(
     BaseService[InstrumentType, InstrumentTypeCreate, InstrumentTypeUpdate],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentTypeRepository())
 
@@ -61,7 +74,7 @@ class InstrumentService(
     BaseService[Instrument, InstrumentCreate, InstrumentUpdate],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentRepository())
 
@@ -72,7 +85,7 @@ class LaboratoryInstrumentService(
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(LaboratoryInstrumentRepository())
 
@@ -83,13 +96,13 @@ class InstrumentCalibrationService(
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         self.id_service = IdSequenceService()
         super().__init__(InstrumentCalibrationRepository())
 
     async def create(
-            self, obj_in: dict | InstrumentCalibrationCreate
+        self, obj_in: dict | InstrumentCalibrationCreate
     ) -> InstrumentCalibration:
         data = self._import(obj_in)
         data["calibration_id"] = (await self.id_service.get_next_number("ICAL"))[1]
@@ -104,7 +117,7 @@ class CalibrationCertificateService(
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(CalibrationCertificateRepository())
 
@@ -115,7 +128,7 @@ class InstrumentCompetenceService(
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentCompetenceRepository())
 
@@ -126,39 +139,41 @@ class InstrumentInterfaceService(
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentInterfaceRepository())
 
 
 class InstrumentRawDataService(
-    BaseService[
-        InstrumentRawData, InstrumentRawDataCreate, InstrumentRawDataUpdate
-    ],
+    BaseService[InstrumentRawData, InstrumentRawDataCreate, InstrumentRawDataUpdate],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentRawDataRepository())
 
 
 class InstrumentResultExclusionsService(
     BaseService[
-        InstrumentResultExclusions, InstrumentResultExclusionsCreate, InstrumentResultExclusionsUpdate
+        InstrumentResultExclusions,
+        InstrumentResultExclusionsCreate,
+        InstrumentResultExclusionsUpdate,
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentResultExclusionsRepository())
 
 
 class InstrumentResultTranslationService(
     BaseService[
-        InstrumentResultTranslation, InstrumentResultTranslationCreate, InstrumentResultTranslationUpdate
+        InstrumentResultTranslation,
+        InstrumentResultTranslationCreate,
+        InstrumentResultTranslationUpdate,
     ],
 ):
     def __init__(
-            self,
+        self,
     ):
         super().__init__(InstrumentResultTranslationRepository())

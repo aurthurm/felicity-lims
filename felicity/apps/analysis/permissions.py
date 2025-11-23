@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 async def check_sample_verification(
-        samples: List[Union[str, Sample]], verifier: "User"
+    samples: List[Union[str, Sample]], verifier: "User"
 ) -> tuple[list[Sample] | None, list[Sample] | None, str, str]:
     """
     splits samples into allowed and restricted samples.
@@ -57,7 +57,7 @@ async def check_sample_verification(
 
 
 async def check_result_verification(
-        results: List[Union[str, AnalysisResult]], verifier: "User"
+    results: List[Union[str, AnalysisResult]], verifier: "User"
 ) -> tuple[list[AnalysisResult] | None, list[AnalysisResult] | None, str, str]:
     """
     splits results into allowed and restricted results.

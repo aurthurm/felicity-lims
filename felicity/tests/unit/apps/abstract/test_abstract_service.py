@@ -106,9 +106,7 @@ async def test_get_related(test_service):
     test_service.repository.get = AsyncMock(return_value=mock_entity)
     result = await test_service.get(related=["related1"], uid="1")
     assert result == mock_entity
-    test_service.repository.get.assert_awaited_once_with(
-        related=["related1"], uid="1"
-    )
+    test_service.repository.get.assert_awaited_once_with(related=["related1"], uid="1")
 
 
 @pytest.mark.asyncio

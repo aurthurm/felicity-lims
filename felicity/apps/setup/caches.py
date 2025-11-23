@@ -12,7 +12,9 @@ from felicity.core.tenant_context import get_current_lab_uid
 
 
 @AsyncLRU(maxsize=128)
-async def get_laboratory(lab_uid: str = None, session: Optional[AsyncSession] = None) -> Laboratory:
+async def get_laboratory(
+    lab_uid: str = None, session: Optional[AsyncSession] = None
+) -> Laboratory:
     if not lab_uid:
         lab_uid = get_current_lab_uid()
     lab = await LaboratoryService().get(uid=lab_uid, session=session)
@@ -20,11 +22,15 @@ async def get_laboratory(lab_uid: str = None, session: Optional[AsyncSession] = 
 
 
 @AsyncLRU(maxsize=128)
-async def get_laboratory_setting(lab_uid: str = None, session: Optional[AsyncSession] = None) -> tuple[Laboratory, LaboratorySetting]:
+async def get_laboratory_setting(
+    lab_uid: str = None, session: Optional[AsyncSession] = None
+) -> tuple[Laboratory, LaboratorySetting]:
     if not lab_uid:
         lab_uid = get_current_lab_uid()
     lab = await LaboratoryService().get(uid=lab_uid, session=session)
-    setting = await LaboratorySettingService().get(laboratory_uid=lab.uid, session=session)
+    setting = await LaboratorySettingService().get(
+        laboratory_uid=lab.uid, session=session
+    )
     return lab, setting
 
 

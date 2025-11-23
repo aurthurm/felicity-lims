@@ -30,12 +30,12 @@ class MinioClient:
             self.client.make_bucket(bucket)
 
     def put_object(
-            self,
-            bucket: MinioBucket,
-            object_name: str,
-            data,
-            metadata,
-            content_type="application/pdf"
+        self,
+        bucket: MinioBucket,
+        object_name: str,
+        data,
+        metadata,
+        content_type="application/pdf",
     ):
         logger.info(f"minio -- put {bucket} object --")
         self.make_bucket(bucket)

@@ -38,7 +38,9 @@ SmsTemplateResponse = strawberry.union(
 class CommuneMutations:
     # Document Category Mutations
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_sms_template(self, info, payload: SmsTemplateInputType) -> SmsTemplateResponse:
+    async def create_sms_template(
+        self, info, payload: SmsTemplateInputType
+    ) -> SmsTemplateResponse:
         felicity_user = await auth_from_info(info)
 
         exists = await SmsTemplateService().get(name=payload.name)
@@ -58,7 +60,7 @@ class CommuneMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_sms_template(
-            self, info, uid: str, payload: SmsTemplateInputType
+        self, info, uid: str, payload: SmsTemplateInputType
     ) -> SmsTemplateResponse:
         felicity_user = await auth_from_info(info)
 

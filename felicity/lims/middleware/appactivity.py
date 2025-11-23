@@ -14,18 +14,16 @@ from felicity.core.tenant_context import get_tenant_context
 
 class APIActivityLogMiddleware(BaseHTTPMiddleware):
     def __init__(
-            self,
-            app: ASGIApp,
-            auth_header: str = "Authorization",
-            graphql_path: str = "/felicity-gql"
+        self,
+        app: ASGIApp,
+        auth_header: str = "Authorization",
+        graphql_path: str = "/felicity-gql",
     ):
         super().__init__(app)
         self.auth_header = auth_header
         self.graphql_path = graphql_path
 
-    async def dispatch(
-            self, request: Request, call_next: Callable
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Store request start time
         start_time = time.time()
 
@@ -50,7 +48,7 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
             # Store original body for later reuse
             request._body = request_body_bytes
             if request_body_bytes:
-                request_body = request_body_bytes.decode('utf-8')
+                request_body = request_body_bytes.decode("utf-8")
 
                 # Parse GraphQL specific data if this is a GraphQL endpoint
                 if is_graphql and request.method == "POST":
@@ -59,7 +57,7 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                         graphql_operation = {
                             "query": graphql_data.get("query", ""),
                             "operationName": graphql_data.get("operationName", ""),
-                            "variables": graphql_data.get("variables", {})
+                            "variables": graphql_data.get("variables", {}),
                         }
                     except json.JSONDecodeError:
                         print("Failed to parse GraphQL request body as JSON")
@@ -80,18 +78,17 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
         # Get response body
         response_body = None
-        graphql_response = None
         original_response_body = b""
 
         # Create a new response to capture the response body
         try:
             # Check if response has body_iterator attribute
-            if hasattr(response, 'body_iterator'):
+            if hasattr(response, "body_iterator"):
                 async for chunk in response.body_iterator:
                     original_response_body += chunk
 
                 if original_response_body:
-                    response_body = original_response_body.decode('utf-8')
+                    response_body = original_response_body.decode("utf-8")
 
                     # Parse GraphQL response if applicable
                     if is_graphql:
@@ -102,10 +99,12 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                     content=original_response_body,
                     status_code=response.status_code,
                     headers=dict(response.headers),
-                    media_type=response.media_type
+                    media_type=response.media_type,
                 )
             else:
-                print(f"Response does not have body_iterator attribute: {type(response)}")
+                print(
+                    f"Response does not have body_iterator attribute: {type(response)}"
+                )
         except Exception as e:
             print(f"Error reading response body: {e}")
             # In case of an error capturing the body, return the original response
@@ -125,12 +124,12 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
                 # More detailed detection of auth requests
                 is_auth_request = (
-                        operation_name in ["AuthenticateUser", "Login", "SignIn"] or
-                        "password" in variables or
-                        "authenticateUser" in query or
-                        "login" in query or
-                        "signIn" in query or
-                        "password" in query
+                    operation_name in ["AuthenticateUser", "Login", "SignIn"]
+                    or "password" in variables
+                    or "authenticateUser" in query
+                    or "login" in query
+                    or "signIn" in query
+                    or "password" in query
                 )
 
                 # Redact sensitive information for auth requests
@@ -138,40 +137,72 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                     # Create a safe copy with redacted credentials
                     safe_variables = {}
                     for key, value in variables.items():
-                        if key.lower() in ["password", "token", "secret", "key", "credential"]:
+                        if key.lower() in [
+                            "password",
+                            "token",
+                            "secret",
+                            "key",
+                            "credential",
+                        ]:
                             safe_variables[key] = "********"
                         else:
                             safe_variables[key] = value
 
                     # Format the GraphQL operation with redacted variables
-                    enhanced_body = json.dumps({
-                        "operationType": self._detect_operation_type(graphql_operation.get("query", "")),
-                        "operationName": operation_name,
-                        "query": "[REDACTED FOR SECURITY]",
-                        "variables": safe_variables,
-                        # 🆕 TENANT CONTEXT
-                        "tenantContext": {
-                            "user_uid": tenant_context.user_uid if tenant_context else None,
-                            "laboratory_uid": tenant_context.laboratory_uid if tenant_context else None,
-                            "organization_uid": tenant_context.organization_uid if tenant_context else None,
-                            "request_id": tenant_context.request_id if tenant_context else None,
-                        }
-                    }, indent=2)
+                    enhanced_body = json.dumps(
+                        {
+                            "operationType": self._detect_operation_type(
+                                graphql_operation.get("query", "")
+                            ),
+                            "operationName": operation_name,
+                            "query": "[REDACTED FOR SECURITY]",
+                            "variables": safe_variables,
+                            # 🆕 TENANT CONTEXT
+                            "tenantContext": {
+                                "user_uid": tenant_context.user_uid
+                                if tenant_context
+                                else None,
+                                "laboratory_uid": tenant_context.laboratory_uid
+                                if tenant_context
+                                else None,
+                                "organization_uid": tenant_context.organization_uid
+                                if tenant_context
+                                else None,
+                                "request_id": tenant_context.request_id
+                                if tenant_context
+                                else None,
+                            },
+                        },
+                        indent=2,
+                    )
                 else:
                     # Format the GraphQL operation in a more readable way for non-auth requests
-                    enhanced_body = json.dumps({
-                        "operationType": self._detect_operation_type(graphql_operation.get("query", "")),
-                        "operationName": operation_name,
-                        "query": graphql_operation.get("query", ""),
-                        "variables": variables,
-                        # 🆕 TENANT CONTEXT
-                        "tenantContext": {
-                            "user_uid": tenant_context.user_uid if tenant_context else None,
-                            "laboratory_uid": tenant_context.laboratory_uid if tenant_context else None,
-                            "organization_uid": tenant_context.organization_uid if tenant_context else None,
-                            "request_id": tenant_context.request_id if tenant_context else None,
-                        }
-                    }, indent=2)
+                    enhanced_body = json.dumps(
+                        {
+                            "operationType": self._detect_operation_type(
+                                graphql_operation.get("query", "")
+                            ),
+                            "operationName": operation_name,
+                            "query": graphql_operation.get("query", ""),
+                            "variables": variables,
+                            # 🆕 TENANT CONTEXT
+                            "tenantContext": {
+                                "user_uid": tenant_context.user_uid
+                                if tenant_context
+                                else None,
+                                "laboratory_uid": tenant_context.laboratory_uid
+                                if tenant_context
+                                else None,
+                                "organization_uid": tenant_context.organization_uid
+                                if tenant_context
+                                else None,
+                                "request_id": tenant_context.request_id
+                                if tenant_context
+                                else None,
+                            },
+                        },
+                        indent=2,
+                    )
 
             # Process response body to redact sensitive information
             if is_graphql and enhanced_response:
@@ -184,8 +215,16 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                         def redact_sensitive(obj):
                             if isinstance(obj, dict):
                                 for key in list(obj.keys()):
-                                    if key.lower() in ["token", "refresh", "password", "secret", "key", "credential",
-                                                       "accesstoken", "refreshtoken"]:
+                                    if key.lower() in [
+                                        "token",
+                                        "refresh",
+                                        "password",
+                                        "secret",
+                                        "key",
+                                        "credential",
+                                        "accesstoken",
+                                        "refreshtoken",
+                                    ]:
                                         obj[key] = "[REDACTED]"
                                     else:
                                         obj[key] = redact_sensitive(obj[key])
@@ -195,7 +234,7 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
                         redacted_response = redact_sensitive(response_json)
                         enhanced_response = json.dumps(redacted_response)
-                except:
+                except Exception:
                     # If anything fails, just use the response as is
                     pass
 
@@ -220,14 +259,22 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                 # Don't log full headers as they may contain auth data
                 headers=self._redact_sensitive_headers(request.headers),
                 body=enhanced_body if enhanced_body else "No body",
-                response_body=enhanced_response if enhanced_response else "No response body",
-                response_code=int(response.status_code) if response and response.status_code else 0,
+                response_body=enhanced_response
+                if enhanced_response
+                else "No response body",
+                response_code=int(response.status_code)
+                if response and response.status_code
+                else 0,
                 ip_address=request.client.host if request.client else None,
                 user_agent=request.headers.get("user-agent"),
                 duration=duration,
                 user_uid=tenant_context.user_uid if tenant_context else None,
-                laboratory_uid=tenant_context.laboratory_uid if tenant_context else None,
-                organization_uid=tenant_context.organization_uid if tenant_context else None,
+                laboratory_uid=tenant_context.laboratory_uid
+                if tenant_context
+                else None,
+                organization_uid=tenant_context.organization_uid
+                if tenant_context
+                else None,
                 request_id=tenant_context.request_id if tenant_context else None,
             )
             # Add try/except specifically around the service call
@@ -236,11 +283,13 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
                 # Additional tenant-aware logging
                 if tenant_context:
-                    print(f"📊 Activity Log - User: {tenant_context.user_uid}, "
-                          f"Lab: {tenant_context.laboratory_uid}, "
-                          f"Path: {log_path}, "
-                          f"Status: {response.status_code}, "
-                          f"Duration: {duration:.3f}s")
+                    print(
+                        f"📊 Activity Log - User: {tenant_context.user_uid}, "
+                        f"Lab: {tenant_context.laboratory_uid}, "
+                        f"Path: {log_path}, "
+                        f"Status: {response.status_code}, "
+                        f"Duration: {duration:.3f}s"
+                    )
 
             except Exception as e:
                 print(f"Error creating log entry: {e}")
@@ -271,8 +320,14 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
         # List of headers that might contain sensitive information
         sensitive_headers = [
-            "authorization", "x-api-key", "api-key", "x-auth-token",
-            "cookie", "set-cookie", "jwt", "token"
+            "authorization",
+            "x-api-key",
+            "api-key",
+            "x-auth-token",
+            "cookie",
+            "set-cookie",
+            "jwt",
+            "token",
         ]
 
         # Redact sensitive headers

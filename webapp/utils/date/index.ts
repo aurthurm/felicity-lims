@@ -9,11 +9,9 @@ import dayjs from 'dayjs';
 export const parseDate = (date: any, withTime = true): string => {
     const dt = dayjs(date);
     if (dt.isValid()) {
-        return withTime 
-            ? dt.format('D MMMM YYYY, h:mm:ss a')
-            : dt.format('D MMMM YYYY');
+        return withTime ? dt.format('D MMMM YYYY, h:mm:ss a') : dt.format('D MMMM YYYY');
     }
-    return date ?? "---";
+    return date ?? '---';
 };
 
 /**
@@ -27,7 +25,7 @@ export const formatDate = (str: any, format: string): string => {
     if (dt.isValid()) {
         return dt.format(format);
     }
-    return str ?? "---";
+    return str ?? '---';
 };
 
 /**
@@ -36,5 +34,4 @@ export const formatDate = (str: any, format: string): string => {
  * @param second - Second date
  * @returns Number of days between dates
  */
-export const subtractDates = (first: any, second: any): number => 
-    Math.floor(Math.abs(first - second) / (1000 * 60 * 60 * 24)); 
+export const subtractDates = (first: any, second: any): number => Math.floor(Math.abs(first - second) / (1000 * 60 * 60 * 24));

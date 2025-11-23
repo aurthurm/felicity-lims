@@ -56,9 +56,12 @@ class HasPermission(BasePermission):
     """
     Permission class for checking if a user has permission to perform actions on objects.
     """
+
     error_extensions = {"code": "UNAUTHORIZED"}
 
-    def __init__(self, action: FAction, target: FObject, message_action: str | None = None):
+    def __init__(
+        self, action: FAction, target: FObject, message_action: str | None = None
+    ):
         super().__init__()
         self.action = message_action if message_action else action
         self.target = target
@@ -66,8 +69,10 @@ class HasPermission(BasePermission):
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
-        if not user: return False
-        if not user.is_active:  return False
+        if not user:
+            return False
+        if not user.is_active:
+            return False
         return await has_perm(user.uid, self.action, self.target)
 
 
@@ -75,6 +80,7 @@ class HasGroup(BasePermission):
     """
     Permission class for checking if a user belongs to a given group.
     """
+
     error_extensions = {"code": "UNAUTHORIZED"}
 
     def __init__(self, group: FGroup):
@@ -84,6 +90,8 @@ class HasGroup(BasePermission):
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
-        if not user: return False
-        if not user.is_active:  return False
+        if not user:
+            return False
+        if not user.is_active:
+            return False
         return await has_group(user.uid, self.group)

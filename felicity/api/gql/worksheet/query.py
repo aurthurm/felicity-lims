@@ -24,19 +24,24 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class WorkSheetQuery:
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            status: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        status: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> WorkSheetCursorPage:
         filters = []
 
@@ -76,53 +81,83 @@ class WorkSheetQuery:
         )
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_by_analyst(self, info, analyst_uid: str) -> List[WorkSheetType]:
         return await WorkSheetService().get_all(analyst_uid=analyst_uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_by_uid(self, info, worksheet_uid: str) -> WorkSheetType:
         return await WorkSheetService().get(uid=worksheet_uid)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_by_id(self, info, worksheet_id: str) -> WorkSheetType:
         return await WorkSheetService().get(worksheet_id=worksheet_id)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_by_status(
-            self, info, worksheet_status: str
+        self, info, worksheet_status: str
     ) -> List[WorkSheetType]:
         return await WorkSheetService().get_all(status__exact=worksheet_status)
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_template_all(self, info) -> List[WorkSheetTemplateType]:
         return await WorkSheetTemplateService().all()
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.WORKSHEET)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.WORKSHEET),
+                ]
+            )
+        ]
     )
     async def worksheet_template_by_uid(
-            self, info, worksheet_uid: str
+        self, info, worksheet_uid: str
     ) -> List[WorkSheetType]:
         return await WorkSheetService().get_all(uid=worksheet_uid)

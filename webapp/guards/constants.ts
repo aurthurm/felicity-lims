@@ -5,7 +5,7 @@ const objects = {
     RESULT: 'RESULT',
     WORKSHEET: 'WORKSHEET',
     PRODUCT: 'PRODUCT',
-    SHIPMENT: "SHIPMENT"
+    SHIPMENT: 'SHIPMENT',
 };
 
 // Actions that can be effected on objects

@@ -10,7 +10,9 @@ from felicity.apps.setup.services import (
     DistrictService,
     LaboratoryService,
     LaboratorySettingService,
-    ProvinceService, OrganizationService, OrganizationSettingService,
+    ProvinceService,
+    OrganizationService,
+    OrganizationSettingService,
 )
 from felicity.core.config import get_settings
 from .data import get_seeds
@@ -146,7 +148,9 @@ async def seed_organisation(name: str | None = None) -> Organization | None:
         organisation = await organization_service.create(lab_in)
 
     # Add Settings Page
-    org_settings = await organization_setting_service.get(organization_uid=organisation.uid)
+    org_settings = await organization_setting_service.get(
+        organization_uid=organisation.uid
+    )
     if not org_settings:
         setting_in = schemas.OrganizationSettingCreate(
             organization_uid=organisation.uid,
@@ -205,7 +209,9 @@ async def seed_laboratory(name: str) -> Laboratory | None:
                     await department_service.create(d_in)
 
         # Add Settings Page
-        lab_settings = await laboratory_setting_service.get(laboratory_uid=laboratory.uid)
+        lab_settings = await laboratory_setting_service.get(
+            laboratory_uid=laboratory.uid
+        )
         if not lab_settings:
             setting_in = schemas.LaboratorySettingCreate(
                 laboratory_uid=laboratory.uid,

@@ -14,7 +14,12 @@ from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.user.schemas import User
-from felicity.utils.dirs import delete_file, get_download_path, get_full_path_from_relative, resolve_media_dirs_for
+from felicity.utils.dirs import (
+    delete_file,
+    get_download_path,
+    get_full_path_from_relative,
+    resolve_media_dirs_for,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,8 +29,8 @@ reports = APIRouter(tags=["reports"], prefix="/reports")
 
 @reports.get("")
 async def read_reports(
-        report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
-        current_user: Annotated[User, Depends(get_current_user)],
+    report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
     Retrieve previously generated csv reports with download links.
@@ -46,11 +51,11 @@ async def read_reports(
 
 @reports.post("", response_model=an_schema.ReportMeta)
 async def request_report_generation(
-        request_in: an_schema.ReportRequest,
-        report_service: Annotated[ReportMetaService, Depends(ReportMetaService)],
-        analysis_service: Annotated[AnalysisService, Depends(AnalysisService)],
-        job_service: Annotated[JobService, Depends(JobService)],
-        current_user: Annotated[User, Depends(get_current_user)],
+    request_in: an_schema.ReportRequest,
+    report_service: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    analysis_service: Annotated[AnalysisService, Depends(AnalysisService)],
+    job_service: Annotated[JobService, Depends(JobService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
     """
     Generate Reports.
@@ -69,11 +74,13 @@ async def request_report_generation(
         status=ReportState.PENDING,
         created_by_uid=current_user.uid,
         updated_by_uid=current_user.uid,
-        analyses=analyses if analyses else []
+        analyses=analyses if analyses else [],
     )
     data = report_in.model_dump(exclude_unset=True)
-    data['analyses'] = analyses
-    report = await report_service.create(data, related=['analyses', 'created_by', 'updated_by'])
+    data["analyses"] = analyses
+    report = await report_service.create(
+        data, related=["analyses", "created_by", "updated_by"]
+    )
     # Add a job
     job_schema = job_schemas.JobCreate(
         action=JobAction.GENERATE_REPORT,
@@ -89,13 +96,15 @@ async def request_report_generation(
 
 @reports.delete("/{report_uid}")
 async def delete_report(
-        report_uid: str,
-        report_service: Annotated[ReportMetaService, Depends(ReportMetaService)],
-        current_user: Annotated[User, Depends(get_current_user)],
+    report_uid: str,
+    report_service: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     report = await report_service.get(uid=report_uid)
 
-    _file_path = get_full_path_from_relative(report.location) if report.location else None
+    _file_path = (
+        get_full_path_from_relative(report.location) if report.location else None
+    )
     try:
         delete_file(_file_path)
         message = f"File {report.location} deleted successfully."
@@ -105,8 +114,7 @@ async def delete_report(
 
     # TODO: use a single sessibon transaction to delete from the 2 tables
     await report_service.repository.table_delete(
-        analysis_reports,
-        report_uid=report.uid
+        analysis_reports, report_uid=report.uid
     )
     await report_service.delete(report.uid)
     return {"uid": report_uid, "message": message}

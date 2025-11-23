@@ -2,12 +2,8 @@ import React from 'react';
 import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
 import { useStorageStore } from '@/stores/storage';
 
-const ContainerColumn = defineAsyncComponent(
-    () => import("./ContainerColumn")
-)
-const ContainerGrid = defineAsyncComponent(
-    () => import("./ContainerGrid")
-)
+const ContainerColumn = defineAsyncComponent(() => import('./ContainerColumn'));
+const ContainerGrid = defineAsyncComponent(() => import('./ContainerGrid'));
 
 const ContainerView = defineComponent({
     name: 'contaner-view',
@@ -74,11 +70,11 @@ const ContainerView = defineComponent({
                                                 'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
                                                 isSelected
                                                     ? 'bg-primary text-primary-foreground'
-                                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                                             ]}
                                             onClick={() => (this.currentTab = tab)}
                                             role="tab"
-                                            aria-selected={isSelected ? "true" : "false"}
+                                            aria-selected={isSelected ? 'true' : 'false'}
                                             aria-controls={`${tab}-panel`}
                                         >
                                             {tab}
@@ -99,4 +95,4 @@ const ContainerView = defineComponent({
 });
 
 export { ContainerView };
-export default ContainerView
+export default ContainerView;

@@ -3,11 +3,11 @@ from enum import Enum
 
 
 def _marshall_object(
-        obj,
-        path: list[str] | None = None,
-        memoize: dict | None = None,
-        exclude: list[str] | None = None,
-        depth: int = 2,
+    obj,
+    path: list[str] | None = None,
+    memoize: dict | None = None,
+    exclude: list[str] | None = None,
+    depth: int = 2,
 ) -> dict | str:
     """
     Custom marshaller function to convert objects to dictionaries or strings with proper handling for
@@ -62,11 +62,11 @@ def _marshall_object(
 
 
 def marshaller(
-        obj,
-        path: list[str] | None = None,
-        memoize: dict | None = None,
-        exclude: list[str] | None = None,
-        depth: int = 2,
+    obj,
+    path: list[str] | None = None,
+    memoize: dict | None = None,
+    exclude: list[str] | None = None,
+    depth: int = 2,
 ) -> dict:
     # if isinstance(obj, str):
     #     return obj

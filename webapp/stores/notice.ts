@@ -4,7 +4,11 @@ import { subtractDates } from '@/utils';
 
 import useApiUtil from '@/composables/api_util';
 import useNotifyToast from '@/composables/alert_toast';
-import { GetNoticesByCreatorUidDocument, GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables } from '@/graphql/operations/notice.queries';
+import {
+    GetNoticesByCreatorUidDocument,
+    GetNoticesByCreatorUidQuery,
+    GetNoticesByCreatorUidQueryVariables,
+} from '@/graphql/operations/notice.queries';
 
 const { withClientQuery } = useApiUtil();
 const { toastError } = useNotifyToast();
@@ -34,15 +38,17 @@ export const useNoticeStore = defineStore('notice', {
             try {
                 this.fetchingNotices = true;
                 const payload = await withClientQuery<GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables>(
-                    GetNoticesByCreatorUidDocument, 
-                    { uid }, 
+                    GetNoticesByCreatorUidDocument,
+                    { uid },
                     'noticesByCreator'
                 );
-                
+
                 // Check if payload is an array before mapping
                 if (Array.isArray(payload)) {
                     // Cast each notice to ExtNoticeType before modifying
-                    this.notices = payload.map(n => modifyExpiry(n as unknown as ExtNoticeType)).sort((a, b) => a.expiry > b.expiry ? 1 : -1);
+                    this.notices = payload
+                        .map(n => modifyExpiry(n as unknown as ExtNoticeType))
+                        .sort((a, b) => (a.expiry > b.expiry ? 1 : -1));
                 } else {
                     this.notices = [];
                     console.error('Expected array of notices but got:', payload);
@@ -56,16 +62,16 @@ export const useNoticeStore = defineStore('notice', {
                 this.fetchingNotices = false;
             }
         },
-        
+
         addNotice(notice: ExtNoticeType) {
             this.notices?.unshift(modifyExpiry(notice));
         },
-        
+
         updateNotice(notice: ExtNoticeType) {
             const index = this.notices?.findIndex(x => x.uid === notice.uid);
             if (index > -1) this.notices[index] = modifyExpiry(notice);
         },
-        
+
         deleteNotice(notice: ExtNoticeType) {
             const index = this.notices?.findIndex(x => x.uid === notice.uid);
             if (index > -1) this.notices?.splice(index, 1);

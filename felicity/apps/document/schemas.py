@@ -10,6 +10,7 @@ from felicity.apps.document.enum import DocumentState
 # DocumentCategory Schemas
 #
 
+
 # Shared properties
 class DocumentCategoryBase(BaseAuditModel):
     name: str | None = None
@@ -45,6 +46,7 @@ class DocumentCategoryInDB(DocumentCategoryBaseInDB):
 # DocumentTag Schemas
 #
 
+
 # Shared properties
 class DocumentTagBase(BaseAuditModel):
     name: str | None = None
@@ -79,6 +81,7 @@ class DocumentTagInDB(DocumentTagBaseInDB):
 #
 # Document Schemas
 #
+
 
 # Shared properties
 class DocumentBase(BaseAuditModel):
@@ -124,6 +127,7 @@ class DocumentInDB(DocumentBaseInDB):
 # DocumentStatus Schemas
 #
 
+
 # Shared properties
 class DocumentStatusBase(BaseAuditModel):
     document_uid: str | None = None
@@ -165,6 +169,7 @@ class DocumentStatusInDB(DocumentStatusBaseInDB):
 # DocumentFolder Schemas
 #
 
+
 # Shared properties
 class DocumentFolderBase(BaseAuditModel):
     name: str | None = None
@@ -201,6 +206,7 @@ class DocumentFolderInDB(DocumentFolderBaseInDB):
 #
 # DocumentVersion Schemas
 #
+
 
 # Shared properties
 class DocumentVersionBase(BaseAuditModel):
@@ -241,6 +247,7 @@ class DocumentVersionInDB(DocumentVersionBaseInDB):
 #
 # DocumentReviewCycle Schemas
 #
+
 
 # Shared properties
 class DocumentReviewCycleBase(BaseAuditModel):
@@ -283,6 +290,7 @@ class DocumentReviewCycleInDB(DocumentReviewCycleBaseInDB):
 #
 # DocumentReviewStep Schemas
 #
+
 
 # Shared properties
 class DocumentReviewStepBase(BaseAuditModel):
@@ -327,6 +335,7 @@ class DocumentReviewStepInDB(DocumentReviewStepBaseInDB):
 # DocumentTemplate Schemas
 #
 
+
 # Shared properties
 class DocumentTemplateBase(BaseAuditModel):
     name: str | None = None
@@ -366,6 +375,7 @@ class DocumentTemplateInDB(DocumentTemplateBaseInDB):
 # DocumentSubscription Schemas
 #
 
+
 # Shared properties
 class DocumentSubscriptionBase(BaseAuditModel):
     document_uid: str | None = None
@@ -404,6 +414,7 @@ class DocumentSubscriptionInDB(DocumentSubscriptionBaseInDB):
 #
 # DocumentAudit Schemas
 #
+
 
 # Shared properties
 class DocumentAuditBase(BaseAuditModel):

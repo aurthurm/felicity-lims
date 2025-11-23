@@ -74,12 +74,22 @@ class SampleWorkFlow:
         analysis_results = await self.sample_service.get_analysis_results(sample.uid)
         match = [result.assigned for result in analysis_results]
         if any(match):
-            raise SampleWorkFlowException(f"Cannot cancel sample {sample.sample_id} with assigned analyses")
+            raise SampleWorkFlowException(
+                f"Cannot cancel sample {sample.sample_id} with assigned analyses"
+            )
 
-        processed_states = [ResultState.RESULTED, ResultState.APPROVED, ResultState.REFERRED]
-        processed = list(filter(lambda x: x.status in processed_states, analysis_results))
+        processed_states = [
+            ResultState.RESULTED,
+            ResultState.APPROVED,
+            ResultState.REFERRED,
+        ]
+        processed = list(
+            filter(lambda x: x.status in processed_states, analysis_results)
+        )
         if len(processed) > 0:
-            raise SampleWorkFlowException(f"Cannot cancel sample {sample.sample_id} with processed analyses")
+            raise SampleWorkFlowException(
+                f"Cannot cancel sample {sample.sample_id} with processed analyses"
+            )
         return True
 
     async def re_instate(self, uid, re_instated_by):
@@ -141,12 +151,22 @@ class SampleWorkFlow:
         analysis_results = await self.sample_service.get_analysis_results(sample.uid)
         match = [result.assigned for result in analysis_results]
         if any(match):
-            raise SampleWorkFlowException(f"Cannot reject sample {sample.sample_id} with assigned analyses")
+            raise SampleWorkFlowException(
+                f"Cannot reject sample {sample.sample_id} with assigned analyses"
+            )
 
-        processed_states = [ResultState.RESULTED, ResultState.APPROVED, ResultState.REFERRED]
-        processed = list(filter(lambda x: x.status in processed_states, analysis_results))
+        processed_states = [
+            ResultState.RESULTED,
+            ResultState.APPROVED,
+            ResultState.REFERRED,
+        ]
+        processed = list(
+            filter(lambda x: x.status in processed_states, analysis_results)
+        )
         if len(processed) > 0:
-            raise SampleWorkFlowException(f"Cannot reject sample {sample.sample_id} with processed analyses")
+            raise SampleWorkFlowException(
+                f"Cannot reject sample {sample.sample_id} with processed analyses"
+            )
         return True
 
     async def store(self, uid, stored_by):
@@ -191,10 +211,18 @@ class SampleWorkFlow:
             raise SampleWorkFlowException("Cannot print this Sample")
         return True
 
-    async def invalidate(self, uid, invalidated_by, commit: bool = True, session: AsyncSession | None = None):
+    async def invalidate(
+        self,
+        uid,
+        invalidated_by,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ):
         sample = await self.sample_service.get(uid=uid, session=session)
         await self._guard_invalidate(sample)
-        return await self.sample_service.invalidate(sample.uid, invalidated_by, commit=commit, session=session)
+        return await self.sample_service.invalidate(
+            sample.uid, invalidated_by, commit=commit, session=session
+        )
 
     @staticmethod
     async def _guard_invalidate(sample: Sample):
@@ -270,7 +298,7 @@ class SampleWorkFlow:
         # Are there are results in referred state or some are in pending state
         analysis, referred = await self.sample_service.get_referred_analyses(sample.uid)
         if not referred and list(  # and has pending results then :)
-                filter(lambda an: an.status in [ResultState.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             allow = False
 

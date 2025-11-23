@@ -65,7 +65,7 @@ class ActivityStreamType:
 
     @strawberry.field
     async def action_object(
-            self, info
+        self, info
     ) -> Union[
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:

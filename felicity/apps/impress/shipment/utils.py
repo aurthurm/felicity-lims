@@ -31,11 +31,13 @@ async def gen_pdf_manifest(data, shipment):
             metadata={
                 "shipment_uid": shipment.uid,
             },
-            content_type="application/pdf"
+            content_type="application/pdf",
         )
 
         # Save the json to mongodb
     if settings.DOCUMENT_STORAGE:
         await MongoService().upsert(
-            collection_name=MongoCollection.SHIPMENT, uid=shipment.uid, data={"data": data}
+            collection_name=MongoCollection.SHIPMENT,
+            uid=shipment.uid,
+            data={"data": data},
         )

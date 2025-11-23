@@ -35,9 +35,14 @@ class NoticeInputType:
 @strawberry.type
 class NoticeMutations:
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.CREATE, FObject.NOTICE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.CREATE, FObject.NOTICE),
+                ]
+            )
+        ]
     )
     async def create_notice(self, info, payload: NoticeInputType) -> NoticeResponse:
         felicity_user = await auth_from_info(info)
@@ -81,12 +86,17 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.UPDATE, FObject.NOTICE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.UPDATE, FObject.NOTICE),
+                ]
+            )
+        ]
     )
     async def update_notice(
-            self, info, uid: str, payload: NoticeInputType
+        self, info, uid: str, payload: NoticeInputType
     ) -> NoticeResponse:
         felicity_user = await auth_from_info(info)
 
@@ -128,9 +138,14 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.READ, FObject.NOTICE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.NOTICE),
+                ]
+            )
+        ]
     )
     async def view_notice(self, info, uid: str, viewer: str) -> NoticeType:
         await auth_from_info(info)
@@ -147,9 +162,14 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.field(
-        extensions=[PermissionExtension(
-            permissions=[IsAuthenticated(), HasPermission(FAction.DELETE, FObject.NOTICE)]
-        )]
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.DELETE, FObject.NOTICE),
+                ]
+            )
+        ]
     )
     async def delete_notice(self, info, uid: str) -> DeleteResponse:
         await auth_from_info(info)

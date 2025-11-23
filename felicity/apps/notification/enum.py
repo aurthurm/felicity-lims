@@ -5,6 +5,7 @@ import strawberry
 
 class NotificationObject(enum.StrEnum):
     """Action Object"""
+
     SAMPLE = "sample"
     ANALYSIS_RESULT = "result"
     WORKSHEET = "worksheet"

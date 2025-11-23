@@ -16,7 +16,8 @@ class CanActionShipment(BasePermission):
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user()
-        if not user: return False
+        if not user:
+            return False
 
         action: str | None = kwargs.get("action", None)
         if action is None:

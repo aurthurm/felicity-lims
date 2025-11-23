@@ -2,11 +2,15 @@ import { defineStore } from 'pinia';
 import { DistrictType, ProvinceType, CountryType } from '@/types/gql';
 
 import {
-    GetAllCountriesQuery, GetAllCountriesQueryVariables, GetAllCountriesDocument, 
-    FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables, FilterProvincesByCountryDocument, 
+    GetAllCountriesQuery,
+    GetAllCountriesQueryVariables,
+    GetAllCountriesDocument,
+    FilterProvincesByCountryQuery,
+    FilterProvincesByCountryQueryVariables,
+    FilterProvincesByCountryDocument,
     FilterDistrictsByProvinceQuery,
     FilterDistrictsByProvinceQueryVariables,
-    FilterDistrictsByProvinceDocument
+    FilterDistrictsByProvinceDocument,
 } from '@/graphql/operations/admin.queries';
 
 import useApiUtil from '@/composables/api_util';
@@ -51,8 +55,8 @@ export const useLocationStore = defineStore('location', {
             try {
                 this.fetchingCountries = true;
                 const payload = await withClientQuery<GetAllCountriesQuery, GetAllCountriesQueryVariables>(
-                    GetAllCountriesDocument, 
-                    {}, 
+                    GetAllCountriesDocument,
+                    {},
                     'countryAll'
                 );
                 this.countries = payload as CountryType[];
@@ -80,13 +84,13 @@ export const useLocationStore = defineStore('location', {
         // PROVINCES
         async filterProvincesByCountry(countryUid: string) {
             if (!countryUid) return;
-            
+
             try {
                 this.fetchingProvinces = true;
                 const payload = await withClientQuery<FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables>(
-                    FilterProvincesByCountryDocument, 
-                    { uid: countryUid }, 
-                    'provincesByCountryUid', 
+                    FilterProvincesByCountryDocument,
+                    { uid: countryUid },
+                    'provincesByCountryUid',
                     'network-only'
                 );
                 this.provinces = payload as ProvinceType[];
@@ -114,13 +118,13 @@ export const useLocationStore = defineStore('location', {
         // DISTRICT
         async filterDistrictsByProvince(provinceUid: string) {
             if (!provinceUid) return;
-            
+
             try {
                 this.fetchingDstricts = true;
                 const payload = await withClientQuery<FilterDistrictsByProvinceQuery, FilterDistrictsByProvinceQueryVariables>(
-                    FilterDistrictsByProvinceDocument, 
-                    { uid: provinceUid }, 
-                    'districtsByProvinceUid', 
+                    FilterDistrictsByProvinceDocument,
+                    { uid: provinceUid },
+                    'districtsByProvinceUid',
                     'network-only'
                 );
                 this.districts = payload as DistrictType[];

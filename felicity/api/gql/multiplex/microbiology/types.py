@@ -544,8 +544,8 @@ class AbxASTPanelType:
     uid: str
     name: str
     description: str | None = None
-    organisms: Optional[List['AbxOrganismType']] = field(default_factory=list)
-    antibiotics: Optional[List['AbxAntibioticType']] = field(default_factory=list)
+    organisms: Optional[List["AbxOrganismType"]] = field(default_factory=list)
+    antibiotics: Optional[List["AbxAntibioticType"]] = field(default_factory=list)
     active: bool = True
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
@@ -576,15 +576,15 @@ class AbxASTResultType:
     uid: str
     organism_result_uid: str
     analysis_result_uid: str
-    analysis_result: Optional['AnalysisResultType'] = None
+    analysis_result: Optional["AnalysisResultType"] = None
     antibiotic_uid: str
-    antibiotic: Optional['AbxAntibioticType'] = None
+    antibiotic: Optional["AbxAntibioticType"] = None
     ast_method_uid: str | None = None
-    ast_method: Optional['AbxTestMethodType'] = None
+    ast_method: Optional["AbxTestMethodType"] = None
     guideline_year_uid: str | None = None
-    guideline_year: Optional['AbxGuidelineYearType'] = None
+    guideline_year: Optional["AbxGuidelineYearType"] = None
     breakpoint_uid: str | None = None
-    breakpoint: Optional['AbxBreakpointTyp'] = None
+    breakpoint: Optional["AbxBreakpointTyp"] = None
     ast_value: str | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
@@ -601,7 +601,7 @@ class AbxOrganismResultType:
     uid: str
     analysis_result_uid: str
     organism_uid: str | None = None
-    organism: Optional['AbxOrganismType'] = None
+    organism: Optional["AbxOrganismType"] = None
     isolate_number: int | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None

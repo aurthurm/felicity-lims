@@ -2,7 +2,12 @@ from typing import List
 
 import strawberry
 
-from felicity.api.gql.commune.types import SmsMessageCursorPage, SmsMessageEdge, SmsMessageType, SmsTemplateType
+from felicity.api.gql.commune.types import (
+    SmsMessageCursorPage,
+    SmsMessageEdge,
+    SmsMessageType,
+    SmsTemplateType,
+)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
 from felicity.apps.commune.sms.services import SmsMessageService, SmsTemplateService
@@ -12,19 +17,23 @@ from felicity.utils import has_value_or_is_truthy
 @strawberry.type
 class CommuneQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def sms_templates_by_target(self,info,target_type: str,target_uid: str) -> list[SmsTemplateType]:
-        return await SmsTemplateService().get_all(target_type=target_type, target_uid=target_uid)
+    async def sms_templates_by_target(
+        self, info, target_type: str, target_uid: str
+    ) -> list[SmsTemplateType]:
+        return await SmsTemplateService().get_all(
+            target_type=target_type, target_uid=target_uid
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sms_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            status: str | None = None,
-            audience: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        status: str | None = None,
+        audience: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> SmsMessageCursorPage:
         filters = {}
 

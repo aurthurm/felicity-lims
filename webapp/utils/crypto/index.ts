@@ -42,7 +42,7 @@ export const decrypter = async (encryptedBase64: string, key: string): Promise<a
         const decrypted = CryptoJS.AES.decrypt({ ciphertext }, keyUtf8, {
             iv,
             mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
+            padding: CryptoJS.pad.Pkcs7,
         });
 
         const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);

@@ -3,19 +3,52 @@ import logging
 import strawberry
 
 from felicity.api.gql.auth import auth_from_info
-from felicity.api.gql.multiplex.microbiology import AbxKingdomType, AbxPhylumType, AbxClassType, AbxOrderType, \
-    AbxFamilyType, AbxGenusType, AbxOrganismType, AbxOrganismSerotypeType, AbxOrganismResultType
+from felicity.api.gql.multiplex.microbiology import (
+    AbxKingdomType,
+    AbxPhylumType,
+    AbxClassType,
+    AbxOrderType,
+    AbxFamilyType,
+    AbxGenusType,
+    AbxOrganismType,
+    AbxOrganismSerotypeType
+)
+from felicity.api.gql.multiplex.microbiology.types import AbxOrganismResultType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError, DeletedItem, DeleteResponse
 from felicity.apps.analysis.enum import ResultState
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.multiplex.microbiology.schemas import AbxKingdomCreate, AbxKingdomUpdate, AbxPhylumCreate, \
-    AbxPhylumUpdate, AbxOrganismCreate, AbxOrganismUpdate, AbxOrganismSerotypeCreate, AbxOrganismSerotypeUpdate, \
-    AbxGenusCreate, AbxGenusUpdate, AbxClassUpdate, AbxClassCreate, AbxOrderUpdate, AbxOrderCreate, AbxFamilyCreate, \
-    AbxFamilyUpdate, AbxOrganismResultCreate, AbxOrganismResultUpdate
-from felicity.apps.multiplex.microbiology.services import AbxKingdomService, AbxPhylumService, AbxOrganismService, \
-    AbxOrganismSerotypeService, AbxGenusService, AbxClassService, AbxOrderService, AbxFamilyService, \
-    AbxOrganismResultService
+from felicity.apps.multiplex.microbiology.schemas import (
+    AbxKingdomCreate,
+    AbxKingdomUpdate,
+    AbxPhylumCreate,
+    AbxPhylumUpdate,
+    AbxOrganismCreate,
+    AbxOrganismUpdate,
+    AbxOrganismSerotypeCreate,
+    AbxOrganismSerotypeUpdate,
+    AbxGenusCreate,
+    AbxGenusUpdate,
+    AbxClassUpdate,
+    AbxClassCreate,
+    AbxOrderUpdate,
+    AbxOrderCreate,
+    AbxFamilyCreate,
+    AbxFamilyUpdate,
+    AbxOrganismResultCreate,
+    AbxOrganismResultUpdate,
+)
+from felicity.apps.multiplex.microbiology.services import (
+    AbxKingdomService,
+    AbxPhylumService,
+    AbxOrganismService,
+    AbxOrganismSerotypeService,
+    AbxGenusService,
+    AbxClassService,
+    AbxOrderService,
+    AbxFamilyService,
+    AbxOrganismResultService,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -362,7 +395,9 @@ async def update_abx_genus(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_abx_organism(info, payload: AbxOrganismInputType) -> AbxOrganismResponse:
+async def create_abx_organism(
+        info, payload: AbxOrganismInputType
+) -> AbxOrganismResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -400,8 +435,7 @@ async def update_abx_organism(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_abx_organism_serotype(
-        info,
-        payload: AbxOrganismSerotypeInputType
+        info, payload: AbxOrganismSerotypeInputType
 ) -> AbxOrganismSerotypeResponse:
     felicity_user = await auth_from_info(info)
     incoming = {
@@ -418,14 +452,10 @@ async def create_abx_organism_serotype(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_abx_organism_serotype(
-        info,
-        uid: str,
-        payload: AbxOrganismSerotypeInputType
+        info, uid: str, payload: AbxOrganismSerotypeInputType
 ) -> AbxOrganismSerotypeResponse:
     felicity_user = await auth_from_info(info)
-    abx_serotype = await AbxOrganismSerotypeService().get(
-        uid=uid
-    )
+    abx_serotype = await AbxOrganismSerotypeService().get(uid=uid)
 
     serotype_data = abx_serotype.to_dict()
     for field in serotype_data:
@@ -448,7 +478,9 @@ async def create_abx_organism_result(
         analysis_result_uid: str,
 ) -> AbxOrganismResultType:
     felicity_user = await auth_from_info(info)
-    existing = await AbxOrganismResultService().get_all(analysis_result_uid=analysis_result_uid)
+    existing = await AbxOrganismResultService().get_all(
+        analysis_result_uid=analysis_result_uid
+    )
 
     incoming = {
         "analysis_result_uid": analysis_result_uid,
@@ -464,13 +496,13 @@ async def create_abx_organism_result(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def save_abx_organism_result(
-        info,
-        uid: str,
-        organism_uid: str
+        info, uid: str, organism_uid: str
 ) -> AbxOrganismResultType:
     felicity_user = await auth_from_info(info)
     abx_organism_result = await AbxOrganismResultService().get(uid=uid)
-    analysis_result = await AnalysisResultService().get(uid=abx_organism_result.analysis_result_uid)
+    analysis_result = await AnalysisResultService().get(
+        uid=abx_organism_result.analysis_result_uid
+    )
 
     incoming = {
         "analysis_result_uid": abx_organism_result.analysis_result_uid,
@@ -479,20 +511,27 @@ async def save_abx_organism_result(
     }
 
     obj_in = AbxOrganismResultUpdate(**incoming)
-    abx_org_res = await AbxOrganismResultService().update(uid, obj_in, related=["organism"])
-
-    analysis_result_org_results = await AbxOrganismResultService().get_all(
-        related=["organism"],
-        analysis_result_uid=analysis_result.uid
+    abx_org_res = await AbxOrganismResultService().update(
+        uid, obj_in, related=["organism"]
     )
 
-    organism_names = list(filter(
-        None, map(lambda ro: ro.organism.name if ro.organism else None, analysis_result_org_results)
-    ))
-    await AnalysisResultService().update(analysis_result.uid, {
-        "result": ", ".join(organism_names),
-        "updated_by_uid": felicity_user.uid
-    })
+    analysis_result_org_results = await AbxOrganismResultService().get_all(
+        related=["organism"], analysis_result_uid=analysis_result.uid
+    )
+
+    organism_names = list(
+        filter(
+            None,
+            map(
+                lambda ro: ro.organism.name if ro.organism else None,
+                analysis_result_org_results,
+            ),
+        )
+    )
+    await AnalysisResultService().update(
+        analysis_result.uid,
+        {"result": ", ".join(organism_names), "updated_by_uid": felicity_user.uid},
+    )
     return AbxOrganismResultType(**abx_org_res.marshal_simple())
 
 
@@ -502,7 +541,9 @@ async def remove_abx_organism_result(
         uid: str,
 ) -> DeleteResponse:
     abx_organism_result = await AbxOrganismResultService().get(uid=uid)
-    analysis_result = await AnalysisResultService().get(uid=abx_organism_result.analysis_result_uid)
+    analysis_result = await AnalysisResultService().get(
+        uid=abx_organism_result.analysis_result_uid
+    )
     if analysis_result.status != ResultState.PENDING:
         return OperationError(
             message="Cannot delete result once analysis has been approved or submitted."
