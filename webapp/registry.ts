@@ -1,6 +1,6 @@
 import { registerLicense } from '@syncfusion/ej2-base';
 import { markRaw } from 'vue';
-import VueDatePicker from '@vuepic/vue-datepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import LayoutDashboard from '@/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/layouts/LayoutEmpty.vue';
 import LayoutMobile from '@/layouts/LayoutMobile.vue';

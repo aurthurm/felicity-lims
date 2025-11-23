@@ -80,13 +80,13 @@
           </thead>
           <tbody class="bg-background divide-y divide-border">
             <tr v-for="laboratory in referralLaboratories" :key="laboratory?.uid" class="hover:bg-muted/50 transition-colors">
-              <td class="px-3 py-2 text-sm text-foreground break-words">
+              <td class="px-3 py-2 text-sm text-foreground wrap-break-word">
                 {{ laboratory?.name }}
               </td>
-              <td class="px-3 py-2 text-sm text-foreground break-words">
+              <td class="px-3 py-2 text-sm text-foreground wrap-break-word">
                 {{ laboratory?.code }}
               </td>
-              <td class="px-3 py-2 text-sm text-foreground break-words">
+              <td class="px-3 py-2 text-sm text-foreground wrap-break-word">
                 {{ laboratory?.url }}
               </td>
               <td class="px-3 py-2 text-sm text-foreground">

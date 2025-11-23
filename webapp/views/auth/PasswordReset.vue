@@ -48,7 +48,7 @@ const changePassword = () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary to-accent p-6">
+  <div class="flex min-h-screen items-center justify-center bg-linear-to-br from-primary to-accent p-6">
     <div class="w-full max-w-md">
       <div class="space-y-6 rounded-xl bg-background/95 p-8 shadow-2xl backdrop-blur-sm">
         <!-- Logo Section -->

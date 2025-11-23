@@ -115,6 +115,7 @@
 </template>
 
 <style scoped>
+@reference "@/assets/css/style.css";
   /* CHECKBOX TOGGLE SWITCH */
   /* @apply rules for documentation, these do not work as inline style */
   .toggle-checkbox:checked {

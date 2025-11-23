@@ -464,6 +464,8 @@ function saveForm() {
 </template>
 
 <style scoped>
+@reference "@/assets/css/style.css";
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

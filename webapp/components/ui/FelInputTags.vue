@@ -1,20 +1,20 @@
 <template>
-    <div id="app" class="max-w-screen-sm mx-auto">
+    <div id="app" class="max-w-(--breakpoint-sm) mx-auto">
         <div class="mt-6 grid grid-cols-1 row-gap-6 col-gap-4 sm:grid-cols-6">
             <div class="sm:col-span-6">
                 <label for="tag" class="block text-sm font-medium leading-5 text-foreground">Add Tags</label>
                 <div class="flex mt-1 relative bg-background overflow-x-scroll rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-ring border border-input">
-                    <div v-for="(tag, index) in state.emailDomains" :key="index" class="flex-grow-0 text-foreground text-center my-1 ml-1">
+                    <div v-for="(tag, index) in state.emailDomains" :key="index" class="grow-0 text-foreground text-center my-1 ml-1">
                         <span class="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
                             {{ state.emailDomain }}
-                            <button type="button" class="flex-shrink-0 -mr-0.5 ml-1.5 inline-flex hover:bg-primary/80 p-1 rounded-full" @click="removeTag(index)">
+                            <button type="button" class="shrink-0 -mr-0.5 ml-1.5 inline-flex hover:bg-primary/80 p-1 rounded-full" @click="removeTag(index)">
                                 <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                     <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" />
                                 </svg>
                             </button>
                         </span>
                     </div>
-                    <div class="flex-grow text-foreground text-center">
+                    <div class="grow text-foreground text-center">
                         <input
                             id="tags"
                             class="w-full h-full rounded-lg py-2 pl-2 pr-4 block appearance-none leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none"

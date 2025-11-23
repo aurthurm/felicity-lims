@@ -224,7 +224,7 @@ function saveMappingForm(): void {
                         { 'bg-accent text-accent-foreground': service.uid === analysisService.uid },
                       ]"
                       >
-                        <div class="flex-grow p-2">
+                        <div class="grow p-2">
                           <div 
                             :class="[
                             'font-medium text-muted-foreground hover:text-foreground flex justify-between',

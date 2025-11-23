@@ -251,6 +251,7 @@ function getUsers() {
 </template>
 
 <style scoped>
+@reference "@/assets/css/style.css";
 .space-y-6 > :not([hidden]) ~ :not([hidden]) {
   margin-top: 1.5rem;
 }

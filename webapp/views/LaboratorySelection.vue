@@ -233,7 +233,7 @@ onMounted(() => {
               @click="selectedLaboratoryUid = laboratory.uid"
             >
               <div class="flex items-center space-x-4">
-                <div class="flex-shrink-0">
+                <div class="shrink-0">
                   <div :class="[
                     'w-4 h-4 rounded-full border-2 transition-colors',
                     selectedLaboratoryUid === laboratory.uid

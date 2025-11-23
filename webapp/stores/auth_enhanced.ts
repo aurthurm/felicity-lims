@@ -24,7 +24,7 @@ import {
     SwitchActiveLaboratoryMutationVariables,
 } from '@/graphql/operations/_mutations';
 import useApiUtil from '@/composables/api_util';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { authFromStorageSync, authToStorage } from '@/auth';
 
 const { withClientMutation } = useApiUtil();

@@ -131,7 +131,7 @@ const updateVoucher = (vocher: VoucherType) => {
                   ? 'border-primary bg-primary/10' 
                   : 'border-border bg-card'
               ]">
-              <div class="flex-grow">
+              <div class="grow">
                 <div class="flex justify-between items-center">
                   <span class="font-medium text-foreground">{{ voucher.name }}</span>
                   <span class="text-sm text-muted-foreground">{{ voucher.used }} of {{ voucher.usageLimit }}</span>

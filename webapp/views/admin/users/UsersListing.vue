@@ -230,7 +230,7 @@
                 role="switch"
                 :aria-checked="form.isBlocked"
                 @click="form.isBlocked = !form.isBlocked"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
                 :class="[form.isBlocked ? 'bg-red-500' : 'bg-green-500']"
               >
                 <span
@@ -250,7 +250,7 @@
                 role="switch"
                 :aria-checked="form.isActive"
                 @click="form.isActive = !form.isActive"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
                 :class="[form.isActive ? 'bg-green-500' : 'bg-red-500']"
               >
                 <span
@@ -398,33 +398,35 @@ const headers = [
 </script>
 
 <style scoped>
+@reference "@/assets/css/style.css";
+
 /* Alternative: CSS custom properties approach for better field visibility */
 .form-field-enhanced {
   @apply mt-1 block w-full rounded-md px-3 py-2 text-sm transition-all duration-200;
-  border: 2px solid theme('colors.gray.300');
-  background-color: theme('colors.white');
-  color: theme('colors.gray.900');
+  border: 2px solid hsl(var(--border));
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 .form-field-enhanced::placeholder {
-  color: theme('colors.gray.400');
+  color: hsl(var(--muted-foreground));
 }
 
 .form-field-enhanced:hover {
-  border-color: theme('colors.gray.400');
+  border-color: hsl(var(--muted-foreground));
 }
 
 .form-field-enhanced:focus {
   outline: none;
-  border-color: theme('colors.blue.500');
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
 }
 
 .form-field-enhanced:disabled {
-  background-color: theme('colors.gray.100');
-  border-color: theme('colors.gray.200');
+  background-color: hsl(var(--muted));
+  border-color: hsl(var(--border));
   cursor: not-allowed;
-  color: theme('colors.gray.500');
+  color: hsl(var(--muted-foreground));
 }
 
 /* Enhanced switch styling */

@@ -605,8 +605,9 @@ function saveForm(): void {
 </template>
 
 <style scoped>
+@reference "@/assets/css/style.css";
 .multiselect-blue {
-  @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
+  @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary/50;
 }
 
 .multiselect-blue :deep(.multiselect__tags) {

@@ -30,7 +30,7 @@ function formatDate(date: Date | string) {
     role="article"
     :aria-label="`Document: ${document.name}`"
   >
-    <div class="relative mb-4 rounded-lg overflow-hidden bg-muted aspect-[3/4] flex items-center justify-center">
+    <div class="relative mb-4 rounded-lg overflow-hidden bg-muted aspect-3/4 flex items-center justify-center">
       <div v-if="document?.latestVersion?.thumbnail" class="w-full h-full">
         <img 
           :src="`data:image/png;base64,${document?.latestVersion?.thumbnail}`" 
@@ -39,7 +39,7 @@ function formatDate(date: Date | string) {
           loading="lazy"
         />
         <div 
-          class="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
+          class="absolute inset-0 bg-linear-to-t from-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
           aria-hidden="true"
         />
       </div>

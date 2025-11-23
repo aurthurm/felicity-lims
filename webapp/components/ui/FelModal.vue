@@ -29,7 +29,7 @@
               ref="modalRef"
             >
               <!-- Header -->
-              <div class="flex-shrink-0 flex items-center justify-between border-b border-border p-6">
+              <div class="shrink-0 flex items-center justify-between border-b border-border p-6">
                 <div class="flex-1">
                   <slot name="header">
                     <h3 class="text-lg font-semibold text-card-foreground">
@@ -58,7 +58,7 @@
               </div>
 
               <!-- Footer -->
-              <div class="flex-shrink-0 border-t border-border p-6">
+              <div class="shrink-0 border-t border-border p-6">
                 <slot name="footer">
                   <div class="flex justify-end space-x-3">
                     <button

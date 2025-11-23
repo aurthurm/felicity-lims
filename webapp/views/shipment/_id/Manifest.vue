@@ -31,7 +31,7 @@ const manifestDownloader = async (report_uid) => await downloadManifest(report_u
       </div>
       <div v-else class="rounded-md bg-destructive/10 p-4">
         <div class="flex">
-          <div class="flex-shrink-0">
+          <div class="shrink-0">
             <FontAwesomeIcon class="h-5 w-5 text-destructive" icon="fa-circle-exclamation" />
           </div>
           <div class="ml-3">

@@ -80,7 +80,7 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
     </fel-heading>
 
     <!-- Notice Table View -->
-    <div class="overflow-hidden shadow ring-1 ring-border ring-opacity-5 rounded-lg">
+    <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
       <table class="min-w-full divide-y divide-border">
         <thead class="bg-muted">
           <tr>

@@ -312,6 +312,8 @@ const updateQuantityReceived = () => {
 </template>
 
 <style scoped>
+@reference "@/assets/css/style.css";
+
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
   margin-top: 1rem;
 }

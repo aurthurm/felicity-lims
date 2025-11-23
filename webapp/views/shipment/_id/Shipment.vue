@@ -74,7 +74,7 @@ const shipmentActor = (action: string) => {
 
             <!-- Dropdown Menu -->
             <div v-show="state.dropdownOpen" 
-              class="absolute right-0 mt-2 w-56 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+              class="absolute right-0 mt-2 w-56 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity/5 focus:outline-none z-50"
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="menu-button"

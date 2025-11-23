@@ -160,7 +160,7 @@ const toCapitalize = (str) => {
 
     <div :class="{ 'opacity-50 blur-sm': loading }">
       <section class="my-2 flex flex-wrap justify-between items-center w-full gap-4">
-        <div class="flex-grow-0">
+        <div class="grow-0">
           <div class="flex sm:flex-row flex-col items-center gap-2">
             <div class="flex flex-row mb-1 sm:mb-0" v-if="filterable">
               <div class="relative flex justify-between items-center">

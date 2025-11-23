@@ -73,12 +73,12 @@ function handleCommentAdded() {
 <template>
     <div class="mb-4 p-4 border border-input bg-background rounded-lg shadow-sm" role="article" :aria-label="`Comment by ${discussion.createdBy?.firstName || 'User'}`">
         <div class="flex items-start gap-3">
-            <div class="flex-shrink-0">
+            <div class="shrink-0">
                 <div class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
                     {{ discussion.createdBy?.firstName?.[0] || 'U' }}
                 </div>
             </div>
-            <div class="flex-grow">
+            <div class="grow">
                 <div class="flex items-center justify-between mb-1">
                     <div class="flex items-center gap-2">
                         <span class="font-medium text-foreground">

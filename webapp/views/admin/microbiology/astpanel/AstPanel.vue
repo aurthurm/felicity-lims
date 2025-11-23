@@ -255,7 +255,7 @@ function filterOrganisms() {
                       type="checkbox"
                       :value="org.uid"
                       v-model="form.selectedOrganisms"
-                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
                   />
                   <span class="ml-2 text-sm text-foreground">{{ org.name }}</span>
                 </div>
@@ -301,7 +301,7 @@ function filterOrganisms() {
                       type="checkbox"
                       :value="abx.uid"
                       v-model="form.selectedAntibiotics"
-                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
                   />
                   <span class="ml-2 text-sm text-foreground">{{ abx.name }}</span>
                 </div>

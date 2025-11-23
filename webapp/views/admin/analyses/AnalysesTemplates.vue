@@ -214,7 +214,7 @@ function saveForm(): void {
                                   { 'border-sky-800 bg-gray-200 underline pl-3': false },
                                 ]"
                               >
-                                <div class="flex-grow p-1">
+                                <div class="grow p-1">
                                   <div
                                     :class="[
                                       'font-medium text-gray-500 hover:text-gray-700',

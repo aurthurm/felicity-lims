@@ -274,21 +274,21 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
               <div>
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Instrument:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Instrument:</span>
                   <span class="text-foreground">{{ workSheetTemplate.instrument?.name || 'N/A' }}</span>
                 </div>
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Analysis Service:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Analysis Service:</span>
                   <span class="text-foreground">{{ workSheetTemplate.analysis?.name || 'N/A' }}</span>
                 </div>
               </div>
               <div>
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Samples:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Samples:</span>
                   <span class="text-foreground">{{ workSheetTemplate.numberOfSamples }}</span>
                 </div>
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Reserved:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Reserved:</span>
                   <span class="text-foreground">{{ workSheetTemplate.reserved?.length ?? 0 }}</span>
                 </div>
               </div>
@@ -299,21 +299,21 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
               <div>
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">WorkSheet type:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">WorkSheet type:</span>
                   <span class="text-foreground">{{ workSheetTemplate.worksheetType }}</span>
                 </div>
                 <div class="flex" v-if="workSheetTemplate.worksheetType == 'grid'">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Direction:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Direction:</span>
                   <span class="text-foreground">{{ workSheetTemplate.rowWise ? "row-wise" : "column-wise" }}</span>
                 </div>
               </div>
               <div v-if="workSheetTemplate.worksheetType == 'grid'">
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Rows:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Rows:</span>
                   <span class="text-foreground">{{ workSheetTemplate.rows }}</span>
                 </div>
                 <div class="flex">
-                  <span class="w-1/2 flex-shrink-0 font-medium text-muted-foreground">Columns:</span>
+                  <span class="w-1/2 shrink-0 font-medium text-muted-foreground">Columns:</span>
                   <span class="text-foreground">{{ workSheetTemplate.cols }}</span>
                 </div>
               </div>
@@ -529,7 +529,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
           <hr class="border-t border-border" />
           <div class="flex flex-wrap justify-between items-end gap-4">
             <h5 class="text-base font-semibold text-foreground w-full md:w-auto">Reserved Positions</h5>
-            <label class="block flex-grow">
+            <label class="block grow">
               <span class="text-sm font-medium text-foreground">QC Template</span>
               <div class="flex items-center gap-2 mt-1">
                 <select
@@ -547,7 +547,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
                 </select>
                 <button
                   @click.prevent="appyQCTemplate()"
-                  class="flex-shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  class="shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   Apply
                 </button>
@@ -555,7 +555,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
             </label>
             <button
               @click.prevent="addReserved()"
-              class="flex-shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              class="shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               Add Reserve Slot
             </button>
@@ -564,7 +564,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
 
           <div v-for="(reserved, index) in workSheetTemplate.reserved" :key="index" class="space-y-4 py-2">
             <div class="flex flex-wrap items-end justify-between gap-4"> 
-              <div class="flex-grow">
+              <div class="grow">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <label class="block">
                     <span class="text-sm font-medium text-foreground">Position</span>
@@ -592,7 +592,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
                   </label>
                 </div>
               </div>
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <button
                   @click.prevent="removeReserved(index)"
                   class="rounded-lg border border-destructive px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"

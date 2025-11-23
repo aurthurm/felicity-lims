@@ -391,6 +391,7 @@ function saveForm(): void {
 </template>
 
 <style lang="postcss" scoped>
+@reference "@/assets/css/style.css";
 .multiselect-blue {
   @apply rounded-md border border-input bg-background;
 }

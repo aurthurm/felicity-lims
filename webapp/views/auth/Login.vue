@@ -40,7 +40,7 @@ const login = handleSubmit((values) => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary to-accent p-6">
+  <div class="flex min-h-screen items-center justify-center bg-linear-to-br from-primary to-accent p-6">
     <div class="w-full max-w-md">
       <div class="relative -top-20 flex items-center justify-center">
         <Logo :styling="'h-36 w-36'" />

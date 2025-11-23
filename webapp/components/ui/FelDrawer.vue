@@ -48,7 +48,7 @@ onUnmounted(() => {
           'bg-card shadow-xl text-card-foreground h-screen overflow-hidden absolute right-0 flex flex-col',
           contentWidth ? contentWidth : 'w-1/3',
         ]">
-          <div class="flex-shrink-0 flex items-center justify-between border-b border-border p-8">
+          <div class="shrink-0 flex items-center justify-between border-b border-border p-8">
             <p tabindex="0" class="focus:outline-none text-2xl font-semibold leading-6 text-card-foreground">
               <slot name="header">Drawer Title</slot>
             </p>
@@ -66,7 +66,7 @@ onUnmounted(() => {
             <slot name="body">Drawer Body</slot>
           </div>
 
-          <div class="flex-shrink-0 border-t border-border p-8 flex items-center">
+          <div class="shrink-0 border-t border-border p-8 flex items-center">
             <slot name="footer"></slot>
           </div>
         </div>

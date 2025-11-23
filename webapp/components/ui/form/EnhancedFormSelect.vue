@@ -135,7 +135,7 @@ const isSelected = (value: string | number) => {
         <!-- Selected Values Display -->
         <div 
           :class="selectClasses"
-          class="min-h-[2.5rem] h-auto py-2 cursor-pointer"
+          class="min-h-10 h-auto py-2 cursor-pointer"
           @click="$refs.hiddenSelect?.focus()"
         >
           <div v-if="selectedLabels" class="flex flex-wrap gap-1">
