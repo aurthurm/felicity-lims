@@ -85,22 +85,26 @@ class StrawberryMapper(Generic[T]):
             exclude = []
         type_class = getattr(self, "__orig_class__").__args__[0]
         # Get the annotations from the Strawberry type
-        attrs = type_class.__dict__.get("__annotations__", {})
+        # For Strawberry types, we need to check both __annotations__ and inherited annotations
+        attrs = getattr(type_class, "__annotations__", {})
+        if not attrs:
+            # Fallback to checking all attributes if annotations are empty
+            attrs = type_class.__dict__.get("__annotations__", {})
 
         # Identify methods in the class for exclusion
         methods = {
             name: method
             for name, method in type_class.__dict__.items()
             if inspect.isfunction(method)
-            or inspect.ismethod(method)
-            and not name.startswith("_")
+               or inspect.ismethod(method)
+               and not name.startswith("_")
         }
         exclude.extend(list(methods.keys()))
 
         # Remove keys not in the Strawberry type from the payload
         keys = list(kwargs.keys())
         for key in keys:
-            if key in exclude or key not in attrs:
+            if key in exclude or (attrs and key not in attrs):
                 del kwargs[key]
 
         # Create an instance of the Strawberry type

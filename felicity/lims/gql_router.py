@@ -7,7 +7,16 @@ from typing import Dict, Optional
 
 from jose import jwt, JWTError
 from strawberry.fastapi import GraphQLRouter
-from strawberry.fastapi.handlers import GraphQLTransportWSHandler, GraphQLWSHandler
+from strawberry.subscriptions.protocols.graphql_transport_ws.handlers import (
+    BaseGraphQLTransportWSHandler,
+)
+from strawberry.subscriptions.protocols.graphql_transport_ws.types import (
+    ConnectionInitMessage,
+)
+from strawberry.subscriptions.protocols.graphql_ws.handlers import BaseGraphQLWSHandler
+from strawberry.subscriptions.protocols.graphql_ws.types import (
+    ConnectionInitMessage as LegacyConnectionInitMessage,
+)
 
 from felicity.core.config import get_settings
 from felicity.core.tenant_context import TenantContext, set_tenant_context
@@ -25,7 +34,7 @@ class ConnectionRejectionError(Exception):
         super().__init__("WebSocket connection rejected")
 
 
-class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
+class AuthenticatedGraphQLTransportWSHandler(BaseGraphQLTransportWSHandler):
     """
     Custom GraphQL Transport WS Handler with authentication
     """
@@ -34,14 +43,14 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
         super().__init__(*args, **kwargs)
         self._tenant_context = None
 
-    async def handle_connection_init(self, message) -> None:
+    async def handle_connection_init(self, message: ConnectionInitMessage) -> None:
         """
         Handle connection initialization with authentication.
         This is called when the client sends a connection_init message.
         """
 
         # Get the payload from the connection_init message
-        payload = message.payload or {}
+        payload = message.get("payload", {})
 
         if not isinstance(payload, dict):
             logger.warning("No valid payload in connection_init message")
@@ -49,7 +58,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
                 ## Accept connection anyway - let subscriptions handle auth
                 await super().handle_connection_init(message)
             else:
-                await self.close(4401, "Authentication required")
+                await self.websocket.close(code=4401, reason="Authentication required")
             return
 
         try:
@@ -63,7 +72,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
                     # Still accept the connection, auth will be enforced at subscription level
                     await super().handle_connection_init(message)
                 else:
-                    await self.close(4401, "Only accessible to authenticated users")
+                    await self.websocket.close(code=4401, reason="Only accessible to authenticated users")
                 return
 
             # Set the tenant context for this WebSocket connection
@@ -75,7 +84,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
             # this must survive all connections via current connection
             self._tenant_context = tenant_context
 
-            logger.info(f"WebSocket authenticated for user: {tenant_context.user_uid}")
+            logger.info(f"WebSocket authenticated :)")
 
             # Call the parent method to complete the connection initialization
             await super().handle_connection_init(message)
@@ -87,14 +96,14 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
                 # Still allow connection - auth enforced at subscription level
                 await super().handle_connection_init(message)
             else:
-                await self.close(4500, "Authentication failed")
+                await self.websocket.close(code=4500, reason="Authentication failed")
             return
 
-    async def handle_request(self):
-        # Set context before each operation
+    async def handle_message(self, message) -> None:
+        # Set context before each message
         if self._tenant_context:
             set_tenant_context(self._tenant_context)
-        return await super().handle_request()
+        await super().handle_message(message)
 
     async def _extract_websocket_context(
             self, payload: Dict
@@ -140,9 +149,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
 
             tenant_context.laboratory_uid = lab_from_payload or lab_from_token
 
-            logger.info(
-                f"Extracted WebSocket context for user {tenant_context.user_uid}"
-            )
+            logger.info(f"Extracted WebSocket context :)")
             return tenant_context
 
         except JWTError as e:
@@ -153,7 +160,7 @@ class AuthenticatedGraphQLTransportWSHandler(GraphQLTransportWSHandler):
             return None
 
 
-class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
+class AuthenticatedGraphQLWSHandler(BaseGraphQLWSHandler):
     """
     Custom GraphQL WS Handler (legacy protocol) with authentication
     """
@@ -162,16 +169,17 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
         super().__init__(*args, **kwargs)
         self._tenant_context = None
 
-    async def handle_connection_init(self, message) -> None:
+    async def handle_connection_init(self, message: LegacyConnectionInitMessage) -> None:
         """
         Handle connection initialization for the legacy GraphQL WS protocol
         """
         payload = message.get("payload") or {}
         logger.debug("Legacy WebSocket connection_init received")
 
-        if not isinstance(payload, dict):
+        if payload is not None and not isinstance(payload, dict):
             logger.warning("No valid payload in legacy connection_init message")
-            await self.close(4401, "Authentication required")
+            await self.send_message({"type": "connection_error"})
+            await self.websocket.close(code=1000, reason="Authentication required")
             return
 
         try:
@@ -180,7 +188,8 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
 
             if not tenant_context or not tenant_context.is_authenticated:
                 logger.warning("Unauthenticated legacy WebSocket connection attempt")
-                await self.close(4401, "Only accessible to authenticated users")
+                await self.send_message({"type": "connection_error"})
+                await self.websocket.close(code=1011, reason="Only accessible to authenticated users")
                 return
 
             set_tenant_context(tenant_context)
@@ -194,14 +203,15 @@ class AuthenticatedGraphQLWSHandler(GraphQLWSHandler):
 
         except Exception as e:
             logger.error(f"Error during legacy WebSocket authentication: {str(e)}")
-            await self.close(4500, "Authentication failed")
+            await self.send_message({"type": "connection_error"})
+            await self.websocket.close(code=1011, reason="Authentication failed")
             return
 
-    async def handle_request(self):
-        # Set context before each operation
+    async def handle_message(self, message) -> None:
+        # Set context before each message
         if self._tenant_context:
             set_tenant_context(self._tenant_context)
-        return await super().handle_request()
+        await super().handle_message(message)
 
     async def _extract_websocket_context(
             self, payload: Dict
