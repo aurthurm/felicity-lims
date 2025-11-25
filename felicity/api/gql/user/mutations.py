@@ -7,6 +7,7 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.setup.types import LaboratoryType
 from felicity.api.gql.types import MessageResponse, MessagesType, OperationError
 from felicity.api.gql.types.generic import StrawberryMapper
+from felicity.api.gql.user import UserPreferenceType
 from felicity.api.gql.user.types import (
     GroupType,
     PermissionType,
@@ -17,7 +18,7 @@ from felicity.api.gql.user.types import (
 from felicity.apps.guard import FGroup
 from felicity.apps.setup.services import LaboratoryService
 from felicity.apps.user import schemas as user_schemas
-from felicity.apps.user.entities import laboratory_user
+from felicity.apps.user.entities import laboratory_user, department_preference
 from felicity.apps.user.services import (
     GroupService,
     PermissionService,
@@ -81,6 +82,12 @@ UserLaboratoryAssignmentResponse = strawberry.union(
 PermissionResponse = strawberry.union(
     "PermissionResponse",
     (PermissionType, OperationError),
+    description="",  # noqa
+)
+
+UserPreferenceResponse = strawberry.union(
+    "UserPreferenceResponse",
+    (UserPreferenceType, OperationError),
     description="",  # noqa
 )
 
@@ -188,22 +195,30 @@ class ProfilePictureUploadInputType:
     content_type: str
 
 
+@strawberry.input
+class UserPreferenceInput:
+    expanded_menu: bool | None = False
+    theme: str | None = "light"
+    default_route: str | None = None
+    departments: list[str] | None = None
+
+
 @strawberry.type
 class UserMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
-        self,
-        info,
-        first_name: str,
-        last_name: str,
-        email: str,
-        user_name: str,
-        password: str,
-        passwordc: str,
-        active_laboratory_uid: str | None = None,
-        laboratory_uids: list[str] | None = None,
-        group_uid: str | None = None,
-        open_reg: bool | None = False,
+            self,
+            info,
+            first_name: str,
+            last_name: str,
+            email: str,
+            user_name: str,
+            password: str,
+            passwordc: str,
+            active_laboratory_uid: str | None = None,
+            laboratory_uids: list[str] | None = None,
+            group_uid: str | None = None,
+            open_reg: bool | None = False,
     ) -> UserResponse:
         user_service = UserService()
         group_service = GroupService()
@@ -260,21 +275,21 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
-        self,
-        info,
-        user_uid: str,
-        first_name: str | None,
-        last_name: str | None,
-        user_name: str | None,
-        mobile_phone: str | None,
-        email: str | None,
-        group_uid: str | None,
-        is_active: bool | None,
-        is_blocked: bool | None,
-        active_laboratory_uid: str | None = None,
-        laboratory_uids: list[str] | None = None,
-        password: str | None = None,
-        passwordc: str | None = None,
+            self,
+            info,
+            user_uid: str,
+            first_name: str | None,
+            last_name: str | None,
+            user_name: str | None,
+            mobile_phone: str | None,
+            email: str | None,
+            group_uid: str | None,
+            is_active: bool | None,
+            is_blocked: bool | None,
+            active_laboratory_uid: str | None = None,
+            laboratory_uids: list[str] | None = None,
+            password: str | None = None,
+            passwordc: str | None = None,
     ) -> UserResponse:
         user_service = UserService()
         group_service = GroupService()
@@ -329,9 +344,45 @@ class UserMutations:
 
         return StrawberryMapper[UserType]().map(**user.marshal_simple())
 
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_user_preferences(
+            self,
+            info,
+            preferences_in: UserPreferenceInput
+    ) -> UserPreferenceResponse:
+        felicity_user = await auth_from_info(info)
+        upref_service = UserPreferenceService()
+
+        prefs_in = preferences_in.__dict__
+        department_uids = prefs_in.pop("departments")
+
+        user_preference = await upref_service.get(
+            user_uid=felicity_user.uid,
+            related=["departments"]
+        )
+
+        async with upref_service.transaction() as t_session:
+            await upref_service.update(user_preference.uid, prefs_in, session=t_session)  # noqa
+            await upref_service.table_delete(
+                table=department_preference,
+                preference_uid=user_preference.uid,
+                session=t_session
+            )
+            if isinstance(department_uids, list):
+                await upref_service.table_insert(
+                    table=department_preference,
+                    mappings=[
+                        {"department_uid": d_uid, "preference_uid": user_preference.uid} \
+                        for d_uid in department_uids
+                    ],
+                    session=t_session
+                )
+            userpres = await upref_service.get(uid=user_preference.uid, related=["departments"])  # noqa
+        return UserPreferenceType(**userpres.marshal_simple(exclude=["laboratory_uid", "laboratory"]))
+
     @strawberry.mutation
     async def authenticate_user(
-        self, info, username: str, password: str
+            self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
         user_service = UserService()
 
@@ -350,9 +401,9 @@ class UserMutations:
             g.name.upper() for g in await user_service.get_user_groups(user.uid)
         ]
         is_global_user = (
-            user.user_name == settings.FIRST_SUPERUSER_USERNAME
-            or user.is_superuser
-            or FGroup.ADMINISTRATOR in user_groups
+                user.user_name == settings.FIRST_SUPERUSER_USERNAME
+                or user.is_superuser
+                or FGroup.ADMINISTRATOR in user_groups
         )
         if is_global_user:
             laboratories = await LaboratoryService().all()
@@ -413,7 +464,7 @@ class UserMutations:
 
     @strawberry.mutation()
     async def validate_password_reset_token(
-        self, info, token: str
+            self, info, token: str
     ) -> PasswordResetValidityResponse:
         user_service = UserService()
         email = verify_password_reset_token(token)
@@ -430,11 +481,11 @@ class UserMutations:
 
     @strawberry.mutation()
     async def reset_password(
-        self,
-        info,
-        user_uid: str,
-        password: str,
-        passwordc: str,
+            self,
+            info,
+            user_uid: str,
+            password: str,
+            passwordc: str,
     ) -> MessageResponse:
         user_service = UserService()
 
@@ -476,7 +527,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group(
-        self, info, uid: str, payload: GroupInputType
+            self, info, uid: str, payload: GroupInputType
     ) -> GroupResponse:
         group_service = GroupService()
 
@@ -501,7 +552,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
-        self, info, group_uid: str, permission_uid: str
+            self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
         group_service = GroupService()
         permission_service = PermissionService()
@@ -530,7 +581,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def assign_user_to_laboratory(
-        self, info, user_uid: str, laboratory_uid: str
+            self, info, user_uid: str, laboratory_uid: str
     ) -> UserLaboratoryAssignmentResponse:
         """Assign a user to a laboratory"""
         user_service = UserService()
@@ -557,7 +608,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def remove_user_from_laboratory(
-        self, info, user_uid: str, laboratory_uid: str
+            self, info, user_uid: str, laboratory_uid: str
     ) -> UserLaboratoryAssignmentResponse:
         """Remove a user from a laboratory"""
         user_service = UserService()
@@ -584,7 +635,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def set_user_active_laboratory(
-        self, info, user_uid: str, laboratory_uid: str
+            self, info, user_uid: str, laboratory_uid: str
     ) -> UserResponse:
         """Set a user's active laboratory"""
         user_service = UserService()
@@ -602,7 +653,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def upload_profile_picture(
-        self, info, payload: ProfilePictureUploadInputType
+            self, info, payload: ProfilePictureUploadInputType
     ) -> ProfilePictureUploadResponse:
         """Upload and set user profile picture"""
         user_service = UserService()

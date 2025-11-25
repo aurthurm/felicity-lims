@@ -15,6 +15,8 @@ import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables
 // Lazily load components for better performance
 const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
 
+const UserPreferences = defineAsyncComponent(() => import("@/components/user/UserPreferences.vue"));
+
 const {isFullscreen, toggle} = useFullscreen()
 
 // Router and navigation
@@ -47,6 +49,9 @@ const userFullName = computed(() => {
 // Error handling
 const {errors, clearErrors, withClientMutation} = useApiUtil();
 const showErrors = ref(false);
+
+//User Preferences
+const showPreferences = ref(false);
 
 // Notifications management
 const notificationStore = useNotificationStore();
@@ -327,6 +332,14 @@ const switchLabNow = () => {
               @click.away="dropdownOpen = false"
               role="menu">
             <button
+                class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded"
+                role="menuitem"
+                @click.away="showPreferences = true; dropdownOpen = false"
+            >
+              <font-awesome-icon icon="user-gear" class="mr-2" aria-hidden="true"/>
+              Preferences
+            </button>
+            <button
                 @click="authStore.logout()"
                 class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded"
                 role="menuitem"
@@ -383,6 +396,18 @@ const switchLabNow = () => {
           <code class="block whitespace-pre-wrap">{{ err }}</code>
         </li>
       </ul>
+    </template>
+  </fel-drawer>
+
+  <!-- User Preferences Drawer -->
+  <fel-drawer :show="showPreferences" @close="showPreferences = false">
+    <template v-slot:header>
+      <div class="flex items-center justify-between">
+        <h3 class="font-semibold text-lg">Your Preferences</h3>
+      </div>
+    </template>
+    <template v-slot:body>
+      <user-preferences />
     </template>
   </fel-drawer>
 

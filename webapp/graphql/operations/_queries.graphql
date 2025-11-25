@@ -191,3 +191,15 @@ query getAllDepartments {
     }
 }
 
+query getUserPreferences {
+    userPreferences {
+        uid
+        expandedMenu
+        departments {
+            uid
+            name
+        }
+        theme
+        defaultRoute
+    }
+}

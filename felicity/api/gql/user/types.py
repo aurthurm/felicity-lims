@@ -139,9 +139,11 @@ class UserCursorPage:
 @strawberry.type
 class UserPreferenceType:
     uid: str
+    user_uid: str | None = None
     expanded_menu: bool | None = None
     departments: list[DepartmentType] | None = None
     theme: str | None = None
+    default_route: str | None = None
     #
     created_by_uid: str | None = None
     created_by: Self | None = None

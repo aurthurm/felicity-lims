@@ -106,7 +106,9 @@ class UserPreferenceCreate(UserPreferenceBase):
 
 
 class UserPreferenceUpdate(UserPreferenceBase):
-    pass
+    expanded_menu: bool | None = False
+    theme: str | None = "light"
+    default_route: str | None = None
 
 
 #

@@ -487,3 +487,22 @@ mutation EditLaboratorySetting($uid: String!, $payload: LaboratorySettingInputTy
     }
 }
 
+mutation EditUserPreferences($preferencesIn: UserPreferenceInput!) {
+    updateUserPreferences(preferencesIn: $preferencesIn) {
+        ... on UserPreferenceType {
+            uid
+            expandedMenu
+            departments {
+                uid
+                name
+            }
+            theme
+            defaultRoute
+        }
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}

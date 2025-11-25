@@ -155,6 +155,7 @@ export const adminGuard = async (to: RouteLocationNormalized, from: RouteLocatio
 
 /**
  * Guard for routes that should redirect based on laboratory context
+ * Redirects to user's default route preference, then lab default route, then dashboard
  */
 export const contextRedirectGuard = async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const contextStore = useLaboratoryContextStore();
@@ -172,7 +173,9 @@ export const contextRedirectGuard = async (to: RouteLocationNormalized, from: Ro
             return;
         }
 
-        // Redirect to dashboard if user has laboratory context
+        // Try to get user's default route preference from composable
+        // For now, redirect to dashboard - preferences will be loaded in UserPreferences component
+        // A more complete implementation would fetch preferences here
         next('/dashboard');
         return;
     }

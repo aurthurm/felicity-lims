@@ -1,95 +1,197 @@
-import { reactive, toRefs } from 'vue';
+import { reactive, toRefs, computed } from 'vue';
 import useNotifyToast from './alert_toast';
-import { DepartmentType } from '@/types/gql';
+import useApiUtil from './api_util';
+import { DepartmentType, UserPreferenceType } from '@/types/gql';
+import { GetUserPreferencesDocument, GetUserPreferencesQuery, GetUserPreferencesQueryVariables } from '@/graphql/operations/_queries';
 
-interface Theme {
-    variant: 'light' | 'dark';
-    icon: 'sun' | 'moon';
-}
+export type ThemeVariant =
+  | 'light'
+  | 'dark'
+  | 'black-and-white'
+  | 'sterile'
+  | 'clinical-blue'
+  | 'emergency-red'
+  | 'sterile-green'
+  | 'warm-neutral'
+  | 'cool-slate'
+  | 'corporate-navy';
 
 interface UserPreference {
-    departments: DepartmentType[];
-    theme: 'light' | 'dark';
-    expandedMenu: boolean;
-}
-
-interface PreferenceState {
-    departments: DepartmentType[];
-    theme: Theme;
-    expandedMenu: boolean;
+    departments?: DepartmentType[];
+    theme?: ThemeVariant;
+    expandedMenu?: boolean;
+    defaultRoute?: string;
 }
 
 const { toastError } = useNotifyToast();
 
-const state = reactive<PreferenceState>({
-    departments: [],
-    theme: {
-        variant: 'light',
-        icon: 'sun',
-    },
-    expandedMenu: true,
+const state = reactive({
+    departments: [] as DepartmentType[],
+    theme: 'light' as ThemeVariant,
+    expandedMenu: false,
+    defaultRoute: '',
 });
 
 export default function userPreferenceComposable() {
-    function changeTheme(theme: 'light' | 'dark'): void {
+    /**
+     * Apply theme to DOM and localStorage
+     */
+    function applyTheme(themeValue: ThemeVariant): void {
         try {
-            if (theme === 'dark') {
-                localStorage.theme = 'dark';
+            // Determine if dark mode should be active for dark class
+            const isDark = themeValue === 'dark' || themeValue === 'emergency-red' || themeValue === 'cool-slate';
+
+            // Apply dark class to document
+            if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
-                localStorage.theme = 'light';
                 document.documentElement.classList.remove('dark');
             }
+
+            // Set data-theme attribute for CSS theme selection
+            document.documentElement.setAttribute('data-theme', themeValue);
+
+            // Save to localStorage
+            localStorage.setItem('theme', themeValue);
+
+            state.theme = themeValue;
         } catch (error) {
-            toastError(`Failed to change theme: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            toastError(`Failed to apply theme: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 
-    function initPreferences(preference: UserPreference): void {
-        try {
-            state.departments = preference.departments;
-            state.theme.variant = preference.theme;
-            state.theme.icon = preference.theme === 'light' ? 'sun' : 'moon';
-            state.expandedMenu = preference.expandedMenu;
-            changeTheme(preference.theme);
-        } catch (error) {
-            toastError(`Failed to initialize preferences: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        }
-    }
-
+    /**
+     * Toggle between light and dark themes
+     */
     function toggleTheme(): void {
         try {
-            if (state.theme.variant === 'dark') {
-                state.theme.variant = 'light';
-                state.theme.icon = 'sun';
-                changeTheme('light');
-            } else {
-                state.theme.variant = 'dark';
-                state.theme.icon = 'moon';
-                changeTheme('dark');
-            }
+            const nextTheme = state.theme === 'light' ? 'dark' : 'light';
+            applyTheme(nextTheme);
         } catch (error) {
             toastError(`Failed to toggle theme: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 
+    /**
+     * Load theme from localStorage, defaulting to light
+     */
     function loadPreferredTheme(): void {
         try {
-            if ('theme' in localStorage) {
-                const theme = (localStorage.getItem('theme') as 'light' | 'dark') ?? 'light';
-                state.theme.variant = theme;
-                state.theme.icon = theme === 'light' ? 'sun' : 'moon';
-            }
-            changeTheme(state.theme.variant);
+            const savedTheme = localStorage.getItem('theme');
+            const theme = (savedTheme as ThemeVariant) || 'light';
+            applyTheme(theme);
         } catch (error) {
             toastError(`Failed to load preferred theme: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 
+    /**
+     * Initialize preferences from UserPreferenceType
+     */
+    function initPreferences(preference: UserPreferenceType | UserPreference): void {
+        try {
+            if (preference.departments) {
+                state.departments = preference.departments;
+            }
+            if (preference.theme) {
+                applyTheme(preference.theme as ThemeVariant);
+            }
+            if (preference.expandedMenu !== undefined && preference.expandedMenu !== null) {
+                state.expandedMenu = preference.expandedMenu;
+            }
+            if (preference.defaultRoute) {
+                state.defaultRoute = preference.defaultRoute;
+            }
+        } catch (error) {
+            toastError(`Failed to initialize preferences: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    /**
+     * Update a single preference
+     */
+    function updatePreference<K extends keyof typeof state>(key: K, value: typeof state[K]): void {
+        try {
+            state[key] = value;
+
+            // Apply theme changes immediately
+            if (key === 'theme') {
+                applyTheme(value as ThemeVariant);
+            }
+        } catch (error) {
+            toastError(`Failed to update preference: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    /**
+     * Check if a department is selected
+     */
+    function isDepartmentSelected(departmentUid: string): boolean {
+        return state.departments.some(dept => dept.uid === departmentUid);
+    }
+
+    /**
+     * Toggle department selection
+     */
+    function toggleDepartment(departmentUid: string): void {
+        try {
+            const index = state.departments.findIndex(dept => dept.uid === departmentUid);
+            if (index > -1) {
+                state.departments.splice(index, 1);
+            }
+        } catch (error) {
+            toastError(`Failed to update department: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    /**
+     * Get current preferences as object
+     */
+    const getCurrentPreferences = computed(() => ({
+        theme: state.theme,
+        expandedMenu: state.expandedMenu,
+        defaultRoute: state.defaultRoute,
+        departments: state.departments.map(d => d.uid),
+    }));
+
+    /**
+     * Fetch user preferences from server
+     */
+    async function fetchUserPreferencesFromServer(): Promise<UserPreferenceType | null> {
+        try {
+            const { withClientQuery } = useApiUtil();
+            const data = await withClientQuery<GetUserPreferencesQuery, GetUserPreferencesQueryVariables>(
+                GetUserPreferencesDocument,
+                {},
+                'userPreferences'
+            );
+
+            if (data) {
+                initPreferences(data as UserPreferenceType);
+                return data as UserPreferenceType;
+            }
+            return null;
+        } catch (error) {
+            toastError(`Failed to fetch preferences: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            return null;
+        }
+    }
+
     return {
+        // State
         ...toRefs(state),
-        initPreferences,
-        loadPreferredTheme: loadPreferredTheme,
+
+        // Methods
+        applyTheme,
         toggleTheme,
+        loadPreferredTheme,
+        initPreferences,
+        updatePreference,
+        isDepartmentSelected,
+        toggleDepartment,
+        fetchUserPreferencesFromServer,
+
+        // Computed
+        getCurrentPreferences,
     };
 }

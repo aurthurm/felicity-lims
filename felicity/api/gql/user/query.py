@@ -4,8 +4,10 @@ import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api import deps
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user import UserPreferenceType
 from felicity.api.gql.user.types import (
     GroupType,
     PermissionType,
@@ -15,21 +17,21 @@ from felicity.api.gql.user.types import (
     UserEdge,
     UserType,
 )
-from felicity.apps.user.services import GroupService, PermissionService, UserService
+from felicity.apps.user.services import GroupService, PermissionService, UserService, UserPreferenceService
 
 
 @strawberry.type
 class UserQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        laboratory_uid: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            laboratory_uid: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> UserCursorPage:
         filters = {}
 
@@ -87,12 +89,20 @@ class UserQuery:
         return await deps.get_current_active_user(token=token)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def user_preferences(self, info) -> UserPreferenceType:
+        current_user = await auth_from_info(info)
+        return await UserPreferenceService().get(
+            user_uid=current_user.uid,
+            related=["departments"]
+        )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email(self, info, email: str) -> UserType | None:
         return await UserService().get_by_email(email=email)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_all(
-        self, info, laboratory_uid: str | None = None
+            self, info, laboratory_uid: str | None = None
     ) -> List[GroupType]:
         """Get all groups, optionally filtered by laboratory"""
         return await GroupService().get_groups_by_laboratory(laboratory_uid)
@@ -103,28 +113,28 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def groups_by_laboratory(
-        self, info, laboratory_uid: str | None = None
+            self, info, laboratory_uid: str | None = None
     ) -> List[GroupType]:
         """Get groups for a specific laboratory or global groups"""
         return await GroupService().get_groups_by_laboratory(laboratory_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_by_name(
-        self, info, name: str, laboratory_uid: str | None = None
+            self, info, name: str, laboratory_uid: str | None = None
     ) -> Optional[GroupType]:
         """Get group by name within laboratory scope"""
         return await GroupService().get_group_by_name(name, laboratory_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_search(
-        self, info, text: str, laboratory_uid: str | None = None, limit: int = 10
+            self, info, text: str, laboratory_uid: str | None = None, limit: int = 10
     ) -> List[GroupType]:
         """Search groups by text"""
         return await GroupService().search_groups(text, laboratory_uid, limit)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def groups_with_permission(
-        self, info, permission_uid: str, laboratory_uid: str | None = None
+            self, info, permission_uid: str, laboratory_uid: str | None = None
     ) -> List[GroupType]:
         """Get all groups that have a specific permission"""
         return await GroupService().get_groups_with_permission(
@@ -151,7 +161,7 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permissions_by_action_target(
-        self, info, action: str, target: str
+            self, info, action: str, target: str
     ) -> List[PermissionType]:
         """Get permissions by action and target"""
         return await PermissionService().get_permissions_by_action_target(
@@ -160,14 +170,14 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_search(
-        self, info, text: str, limit: int = 10
+            self, info, text: str, limit: int = 10
     ) -> List[PermissionType]:
         """Search permissions by text"""
         return await PermissionService().search_permissions(text, limit)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_usage_summary(
-        self, info, permission_uid: str
+            self, info, permission_uid: str
     ) -> PermissionUsageSummaryType:
         """Get summary of groups and users that have this permission"""
         summary = await PermissionService().get_permission_usage_summary(permission_uid)
@@ -191,14 +201,14 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_search(
-        self, info, text: str, laboratory_uid: str | None = None, limit: int = 10
+            self, info, text: str, laboratory_uid: str | None = None, limit: int = 10
     ) -> List[UserType]:
         """Search users by text"""
         return await UserService().search_users(text, laboratory_uid, limit)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email_or_username(
-        self, info, identifier: str
+            self, info, identifier: str
     ) -> Optional[UserType]:
         """Get user by email or username"""
         return await UserService().get_user_by_email_or_username(identifier)
