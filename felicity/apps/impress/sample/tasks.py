@@ -30,19 +30,19 @@ async def impress_results(job_uid: str):
     if job.status != JobState.PENDING:
         return
 
-    await JobService().change_status(job.uid, new_status=JobState.RUNNING)
+    await JobService().change_status(job.uid, new_status=JobState.RUNNING)  # noqa
 
     user = await UserService().get(uid=job.creator_uid)
 
     await utils.impress_samples(job.data, user)
     try:
-        await JobService().change_status(job.uid, new_status=JobState.FINISHED)
+        await JobService().change_status(job.uid, new_status=JobState.FINISHED)  # noqa
         await task_guard.release(uid=job.uid, object_type=TrackableObject.SAMPLE)
         await NotificationService().notify(
             "Your results were successfully published", user
         )
     except Exception as e:
-        await JobService().change_status(job.uid, new_status=JobState.FAILED)
+        await JobService().change_status(job.uid, new_status=JobState.FAILED)  # noqa
         logger.info(f"Failed impress job {job_uid} with errr: {str(e)}")
         await NotificationService().notify(
             f"Failed to publish results in job with uid: {job.uid} with error: {str(e)}",
@@ -62,7 +62,7 @@ async def prepare_for_impress():
         priority=JobPriority.NORMAL,
         job_id="0",
         status=JobState.PENDING,
-        creator_uid=system_daemon.uid,
+        creator_uid=system_daemon.uid,  # noqa
         data=data,
     )
 
@@ -75,4 +75,4 @@ async def cleanup_jobs():
     """Cleanup jobs that were successfully executed"""
     jobs = await JobService().get_all(status=JobState.FINISHED)
     for job in jobs:
-        await JobService().delete(job.uid)
+        await JobService().delete(job.uid)  # noqa

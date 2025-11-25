@@ -9,10 +9,10 @@ from barcode.writer import ImageWriter
 from fpdf import FPDF
 
 from felicity.apps.analysis.enum import ResultState
-from felicity.apps.impress.sample.helpers import get_report_user
+from felicity.apps.impress.sample.schemas import SampleImpressMetadata
 from felicity.core.config import get_settings
-from felicity.core.dtz import timenow_str, format_datetime
-from felicity.utils.helpers import get_from_nested, strtobool
+from felicity.core.dtz import timenow_str
+from felicity.utils.helpers import strtobool, to_text
 from felicity.utils.logo import get_logo_path
 
 settings = get_settings()
@@ -42,17 +42,7 @@ class FelicityImpress:
         self.margin_left = 20
         self.y_diff = 5  # space between rows
 
-    async def _make(self, sample: dict, report_state):
-        laboratory = get_from_nested(sample, "laboratory")
-
-        profiles = [
-            get_from_nested(p, "name") for p in get_from_nested(sample, "profiles")
-        ]
-        analyses = [
-            get_from_nested(p, "name") for p in get_from_nested(sample, "analyses")
-        ]
-        #
-        sampe_id = get_from_nested(sample, "sample_id")
+    async def _make(self, sample: SampleImpressMetadata, report_state):
         self.pdf.add_page()
         self.pdf.set_font("helvetica", "", 12)
 
@@ -70,12 +60,12 @@ class FelicityImpress:
             h=5.5,
             align="L",
             w=10.0,
-            text=get_from_nested(laboratory, "name"),
+            text=to_text(sample.laboratory.name),
             border=0,
         )
         self.pdf.set_font("helvetica", "I", 8)
         self.pdf.set_xy(40.0, 22)
-        self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
+        self.pdf.multi_cell(40.0, 3.5, to_text(sample.laboratory.address))
         # Contact Details
         self.pdf.set_font("helvetica", "B", 6)
         self.pdf.set_xy(140.0, 15)
@@ -87,7 +77,7 @@ class FelicityImpress:
             h=9.5,
             align="L",
             w=10.0,
-            text=get_from_nested(laboratory, "business_phone"),
+            text=to_text(sample.laboratory.business_phone),
             border=0,
         )
         # ---
@@ -101,7 +91,7 @@ class FelicityImpress:
             h=9.5,
             align="L",
             w=10.0,
-            text=get_from_nested(laboratory, "mobile_phone"),
+            text=to_text(sample.laboratory.mobile_phone),
             border=0,
         )
         # ---
@@ -115,12 +105,12 @@ class FelicityImpress:
             h=9.5,
             align="L",
             w=10.0,
-            text=get_from_nested(laboratory, "email"),
+            text=to_text(sample.laboratory.email),
             border=0,
         )
         # Report BarCode
         svg_img_bytes = BytesIO()
-        Code128(sampe_id, writer=ImageWriter()).write(
+        Code128(sample.sample_id, writer=ImageWriter()).write(
             svg_img_bytes, options={"write_text": False}
         )
         with NamedTemporaryFile(delete=False, suffix=".png") as temp:
@@ -131,7 +121,7 @@ class FelicityImpress:
 
         self.pdf.set_font("helvetica", "", 8)
         self.pdf.set_xy(143.5, 29.5)
-        self.pdf.cell(ln=0, h=5, align="L", w=10.0, text=sampe_id, border=0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, text=to_text(sample.sample_id), border=0)
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 35.0, 180.0, 35.0)
 
@@ -149,12 +139,11 @@ class FelicityImpress:
         self.pdf.line(20.0, 42.0, 180.0, 42.0)
 
         # Customer Column
-        patient = get_from_nested(sample, "analysis_request.patient")
         full_name = (
-            get_from_nested(patient, "first_name")
-            + " "
-            + get_from_nested(patient, "last_name")
-        )
+                to_text(sample.analysis_request.patient.first_name)
+                + " " +
+                to_text(sample.analysis_request.patient.last_name)
+        ).strip()
         self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(20, 42)
         self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, text="MRN: ", border=0)
@@ -165,7 +154,7 @@ class FelicityImpress:
             h=9.5,
             align="l",
             w=20.0,
-            text=get_from_nested(sample, "analysis_request.client_request_id"),
+            text=to_text(sample.analysis_request.client_request_id),
             border=0,
         )
         self.pdf.set_font("helvetica", "B", 10)
@@ -184,7 +173,7 @@ class FelicityImpress:
             h=5.5,
             align="L",
             w=10.0,
-            text=get_from_nested(patient, "age"),
+            text=to_text(sample.analysis_request.patient.age),
             border=0,
         )
         self.pdf.set_font("helvetica", "B", 10)
@@ -197,16 +186,13 @@ class FelicityImpress:
             h=5.5,
             align="L",
             w=10.0,
-            text=get_from_nested(patient, "gender"),
+            text=to_text(sample.analysis_request.patient.gender),
             border=0,
         )
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(73.0, 42.0, 73.0, 64.0)
         # Primary Referrer Details
-        client = get_from_nested(sample, "analysis_request.client")
-        name = get_from_nested(client, "name")
-        address = get_from_nested(client, "address")
         self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(80, 42)
         self.pdf.cell(
@@ -214,19 +200,22 @@ class FelicityImpress:
         )
         self.pdf.set_font("helvetica", "I", 10)
         self.pdf.set_xy(80, 50)
-        self.pdf.multi_cell(40.0, 3.5, f"{name}, \n{address}")
+        self.pdf.multi_cell(
+            40.0,
+            3.5,
+            f"{sample.analysis_request.client.name}, \n{sample.analysis_request.client.address}".strip()
+        )
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(120.0, 42.0, 120.0, 64.0)
 
         # Sample Details
-        sample_type = get_from_nested(sample, "sample_type.name")
         self.pdf.set_font("helvetica", "B", 8)
         self.pdf.set_xy(128.0, 43)
         self.pdf.cell(ln=0, h=5, align="L", w=10.0, text="Sample Type:", border=0)
         self.pdf.set_font("helvetica", "I", 8)
         self.pdf.set_xy(149.5, 43)
-        self.pdf.cell(ln=0, h=5, align="L", w=10.0, text=sample_type, border=0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, text=to_text(sample.sample_type.name), border=0)
         # ---
         self.pdf.set_font("helvetica", "B", 8)
         self.pdf.set_xy(128.0, 47)
@@ -238,7 +227,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            text=format_datetime(get_from_nested(sample, "date_collected")),
+            text=to_text(sample.date_collected),
             border=0,
         )
         # ---
@@ -252,7 +241,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            text=format_datetime(get_from_nested(sample, "date_received")),
+            text=to_text(sample.date_received),
             border=0,
         )
         # ---
@@ -266,7 +255,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            text=format_datetime(get_from_nested(sample, "created_at")),
+            text=to_text(sample.created_at),
             border=0,
         )  # ---
         self.pdf.set_font("helvetica", "B", 8)
@@ -279,7 +268,7 @@ class FelicityImpress:
             h=5,
             align="L",
             w=10.0,
-            text=format_datetime(get_from_nested(sample, "date_published")),
+            text=to_text(sample.date_published),
             border=0,
         )
 
@@ -287,11 +276,10 @@ class FelicityImpress:
         self.pdf.line(20.0, 64.0, 180.0, 64.0)
 
         # Diagnostics Results
-        _p = ", ".join(profiles)
-        _a = ", ".join(analyses)
-        investigations = _p
-        if _a:
-            investigations += ", " + _a
+        investigations = ", ".join(
+            list(map(lambda p: p.name, sample.profiles)) + \
+            list(map(lambda a: a.name, sample.analyses))
+        ).strip()
 
         self.pdf.dashed_line(20, 70.0, 50, 70.0, dash_length=1, space_length=1)
         self.pdf.set_font("helvetica", "B", 10)
@@ -312,13 +300,10 @@ class FelicityImpress:
         # Results
         y_pos = 80
 
-        analyses_results = get_from_nested(sample, "analysis_results")
         analyses_results = list(
             filter(
-                lambda r: strtobool(get_from_nested(r, "reportable"))
-                and get_from_nested(r, "status")
-                in [ResultState.RESULTED, ResultState.APPROVED],
-                analyses_results,
+                lambda r: strtobool(r.reportable) and (r.status in [ResultState.RESULTED, ResultState.APPROVED]),
+                sample.analysis_results
             )
         )
 
@@ -330,7 +315,7 @@ class FelicityImpress:
                 h=5.5,
                 align="L",
                 w=10.0,
-                text=get_from_nested(result, "analysis.name"),
+                text=to_text(result.analysis.name),
                 border=0,
             )
             self.pdf.set_xy(120, y_pos)
@@ -339,7 +324,7 @@ class FelicityImpress:
                 h=5.5,
                 align="R",
                 w=10.0,
-                text=get_from_nested(result, "result"),
+                text=to_text(result.result),
                 border=0,
             )
             self.pdf.set_xy(130, y_pos)
@@ -348,7 +333,7 @@ class FelicityImpress:
                 h=5.5,
                 align="L",
                 w=10.0,
-                text=get_from_nested(result, "analysis.unit.name"),
+                text=to_text(result.analysis.unit.name),
                 border=0,
             )
             self.pdf.set_xy(150, y_pos)
@@ -357,7 +342,7 @@ class FelicityImpress:
             )  # ref range
             # ---
             y_pos += 4
-            inst_meth = f"{get_from_nested(result, 'laboratory_instrument.lab_name')} | {get_from_nested(result, 'method.name')}"
+            inst_meth = f"{result.laboratory_instrument.lab_name} | {result.method.name}".strip()
             self.pdf.set_font("helvetica", "I", 6)
             self.pdf.set_xy(20, y_pos)
             self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text=inst_meth, border=0)
@@ -368,7 +353,7 @@ class FelicityImpress:
                 self.pdf.add_page()
                 y_pos = self.margin_top
 
-        # End of report
+        # End of Report
         y_pos += 5
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, y_pos, 180.0, y_pos)
@@ -380,8 +365,7 @@ class FelicityImpress:
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Reviewed By:", border=0)
         self.pdf.set_font("helvetica", "I", 8)
         self.pdf.set_xy(40, y_pos)
-        _user = await get_report_user(sample, "submitted_by", analyses_results)
-        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text=_user, border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text=to_text(sample.submitted_by.name), border=0)
 
         # -- -- Approved by:
         self.pdf.set_font("helvetica", "B", 8)
@@ -389,8 +373,7 @@ class FelicityImpress:
         self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text="Approved By:", border=0)
         self.pdf.set_font("helvetica", "I", 8)
         self.pdf.set_xy(110, y_pos)
-        _user = await get_report_user(sample, "verified_by", analyses_results)
-        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text=_user, border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, text=to_text(sample.verified_by.name), border=0)
 
         # -- -- end of report marker
         self.pdf.set_font("helvetica", "I", 8)
@@ -407,7 +390,7 @@ class FelicityImpress:
             h=5.5,
             align="L",
             w=150.0,
-            text=get_from_nested(laboratory, "quality_statement"),
+            text=to_text(sample.laboratory.quality_statement),
             border=0,
         )
         self.pdf.set_xy(162, 255)
@@ -422,6 +405,6 @@ class FelicityImpress:
 
         return self.pdf
 
-    async def generate(self, sample: dict, report_state="final"):
+    async def generate(self, sample: SampleImpressMetadata, report_state="final"):
         pdf = await self._make(sample, report_state)
         return pdf.output()

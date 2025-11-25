@@ -5,8 +5,8 @@ from io import BytesIO
 from typing import List
 
 import strawberry  # noqa
-from PyPDF2 import PdfWriter
 from pdf2image import convert_from_bytes
+from pypdf import PdfWriter
 
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.permissions import IsAuthenticated
@@ -29,13 +29,13 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-        self, info, uids: List[str]
+            self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpressService().get_all(sample_uid__in=uids)  # noqa
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-        self, info, sample_ids: List[str]
+            self, info, sample_ids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         if settings.OBJECT_STORAGE:
@@ -107,13 +107,18 @@ class ReportImpressQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def barcode_samples(
-        self, info, sample_uids: list[str]
+            self, info, sample_uids: list[str]
     ) -> list[BytesScalar] | None:
-        samples = await SampleService().get_all(uid__in=sample_uids)
+        samples = await SampleService().get_all(uid__in=sample_uids, related=["profiles", "analyses"])
 
         @lru_cache
         async def _client_name(uid: str) -> str:
             return (await ClientService().get(uid=uid)).name
+
+        def _test_names(sample: "Sample") -> str:
+            _profile_names = map(lambda p: p.name, sample.profiles)
+            _analysis_names = map(lambda a: a.name, sample.analyses)
+            return ', '.join(list(_profile_names) + list(_analysis_names))
 
         barcode_metas = []
         for _s in samples:
@@ -138,6 +143,8 @@ class ReportImpressQuery:
                     )
                 )
             barcode_metas.append(barcode)
+            # Add ordered test names to barcode metadata
+            barcode.metadata.append(BarCodeMeta(label="Tests", value=_test_names(_s)))
 
         pdf_bytes = await impress_barcodes(barcode_metas)
         image_bytes = convert_from_bytes(pdf_file=pdf_bytes)

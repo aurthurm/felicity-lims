@@ -16,20 +16,25 @@ ImageWriter.human = " "
 
 class FelicityBarCoder:
     def __init__(
-        self, page_width=40.0, page_height=30.0, barcode_width=30, barcode_height=7.5
+            self, page_width=40.0, page_height=30.0, barcode_width=30, barcode_height=7.5
     ):
         assert page_width > barcode_width and page_height > barcode_height
         self.logo_path = get_logo_path()
         self.pdf = FPDF(unit="mm", format=(page_width, page_height))
         self.pdf.set_auto_page_break(auto=False, margin=0.0)
         self.margin_left = (self.pdf.w - barcode_width) / 2
+        self.margin_right = self.margin_left + barcode_width
         self.margin_top = 3
-        self.txt_left = self.margin_left  # + 0.5
+        self.txt_left = self.margin_left
         self.barcode_bottom = self.margin_top + barcode_height
         self.metadata_spacer = 3
         self.metadata_shift = 2
         self.barcode_width = barcode_width
         self.barcode_height = barcode_height
+
+        # Column layout
+        self.label_column_width = 10  # Fixed width for labels
+        self.value_column_width = barcode_width - self.label_column_width  # 20mm for values
 
     async def _make(self, data: list[BarCode]):
         for _meta in data:
@@ -57,18 +62,33 @@ class FelicityBarCoder:
             self.pdf.cell(w=1, h=1, text=_meta.barcode, border=0)
 
             # Extra Metadata
-            x = 0
+            y_next_txt += self.metadata_spacer
+
             for _xtra in _meta.metadata:
-                y_next_txt += self.metadata_spacer if x == 0 else self.metadata_shift
-                x += 1
-                # Label Name
+                # Save starting y position for this row
+                row_start_y = y_next_txt
+
+                # Label Name (Column 1)
                 self.pdf.set_font("helvetica", "B", 4)
                 self.pdf.set_xy(self.txt_left, y_next_txt)
-                self.pdf.cell(w=1, h=1, align="L", text=f"{_xtra.label}: ", border=0)
-                # Label Value
+                self.pdf.cell(w=self.label_column_width, h=self.metadata_shift,
+                              align="L", text=f"{_xtra.label}:", border=0)
+
+                # Label Value (Column 2) - using multi_cell for automatic wrapping
                 self.pdf.set_font("helvetica", "", 4)
-                self.pdf.set_xy(self.pdf.w - self.margin_left, y_next_txt)
-                self.pdf.cell(w=1, h=1, align="R", text=str(_xtra.value), border=0)
+                self.pdf.set_xy(self.txt_left + self.label_column_width, row_start_y)
+
+                # multi_cell automatically wraps text and returns the height used
+                self.pdf.multi_cell(
+                    w=self.value_column_width,
+                    h=self.metadata_shift,
+                    text=str(_xtra.value),
+                    align="R",
+                    border=0
+                )
+
+                # Get current y position after multi_cell (it moves automatically)
+                y_next_txt = self.pdf.get_y()
 
         return self.pdf
 

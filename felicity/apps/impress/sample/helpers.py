@@ -1,35 +1,34 @@
 import logging
 
 from felicity.apps.analysis.utils import get_last_verificator
-from felicity.apps.common.utils.serializer import marshaller
-from felicity.utils.helpers import get_from_nested
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def _to_user(user: dict) -> str:
-    first_name = get_from_nested(user, "first_name")
-    last_name = get_from_nested(user, "last_name")
-    user_name = get_from_nested(user, "user_name")
-    if first_name:
-        return f"{first_name} {last_name}"
-    return user_name
+def _get_user_meta(user: "User") -> dict:
+    if not user:
+        return {}
+    return {
+        "username": user.user_name,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
 
 
 async def get_report_user(
-    sample: dict, field: str = "submitted_by", results: list | None = None
-) -> str:
-    user = get_from_nested(sample, field)
-    if user and isinstance(user, dict):
-        return _to_user(user)
+        sample: "Sample", user_field: str = "submitted_by", results: list["AnalysisResult"] | None = None
+) -> "User":
+    user = getattr(sample, user_field)
+    if user:
+        return user
     # last resort get from results
-    if results:
-        if field == "verified_by":
-            result_uid = get_from_nested(results[0], "uid")
-            user = await get_last_verificator(result_uid)
-            user = marshaller(user, depth=1)
+    if not user and results:
+        if user_field == "verified_by":
+            return await get_last_verificator(results[0].uid)
         else:
-            user = get_from_nested(results[0], field)
-        return _to_user(user)
+            return getattr(results[0], user_field)
     raise Exception("Failed to acquire report user")

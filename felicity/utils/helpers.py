@@ -47,6 +47,8 @@ def has_value_or_is_truthy(val: Any) -> bool:  # noqa
 
 
 def to_text(val: Any) -> str:  # noqa
+    if val is None:
+        return ""
     return str(val)
 
 
@@ -107,6 +109,9 @@ def strtobool(val: str) -> bool:
     are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
     'val' is anything else.
     """
+    if isinstance(val, bool):
+        return val
+    
     val = val.lower()
     if val in ("y", "yes", "t", "true", "on", "1"):
         return True

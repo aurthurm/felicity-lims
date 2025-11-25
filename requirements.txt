@@ -28,7 +28,7 @@ pandas==2.3.3
 jinja2==3.1.6
 celery==5.5.3
 fpdf2==2.8.5
-PyPDF2==3.0.1
+pypdf==6.4.0
 xhtml2pdf==0.2.17
 pdf2image==1.17.0
 fhir.resources==8.1.0
