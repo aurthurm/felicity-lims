@@ -23,6 +23,7 @@ from felicity.apps.analysis.entities.analysis import (
     ClinicalData,
     ClinicalDataCoding,
 )
+from felicity.apps.user.caches import get_current_user_preferences
 
 
 class CodingStandardRepository(BaseRepository[CodingStandard]):
@@ -125,10 +126,10 @@ class SampleRepository(BaseRepository[Sample]):
         super().__init__(Sample)
 
     async def search(
-        self,
-        status: str | None = None,
-        text: str | None = None,
-        client_uid: str | None = None,
+            self,
+            status: str | None = None,
+            text: str | None = None,
+            client_uid: str | None = None,
     ) -> list[Sample]:
         """No pagination"""
         filters = []
@@ -146,6 +147,23 @@ class SampleRepository(BaseRepository[Sample]):
 
             text_filters = {or_: _or_text_}
             filters.append(text_filters)
+
+        preferences = await get_current_user_preferences(None)
+        if preferences and preferences.departments:
+            department_uids = [
+                department.uid
+                for department in preferences.departments
+                if department and department.uid
+            ]
+            if department_uids:
+                filters.append(
+                    {
+                        or_: {
+                            "analyses__department_uid__in": department_uids,
+                            "profiles__department_uid__in": department_uids,
+                        }
+                    }
+                )
 
         if client_uid:
             filters.append({"analysis_request___client_uid__exact": client_uid})

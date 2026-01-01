@@ -7,7 +7,20 @@ from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.apps.guard import FAction, FObject
 from felicity.apps.noticeboard.services import NoticeService
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.core.dtz import timenow_dt
+
+
+async def _get_department_uids() -> list[str]:
+    preferences = await get_current_user_preferences(None)
+    if not preferences or not preferences.departments:
+        return []
+
+    return [
+        department.uid
+        for department in preferences.departments
+        if department and department.uid
+    ]
 
 
 @strawberry.type
@@ -23,6 +36,11 @@ class NoticeQuery:
         ]
     )
     async def notice_by_uid(self, info, uid: str) -> Optional[NoticeType]:
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await NoticeService().get(
+                uid=uid, departments__uid__in=department_uids
+            )
         return await NoticeService().get(uid=uid)
 
     @strawberry.field(
@@ -36,9 +54,14 @@ class NoticeQuery:
         ]
     )
     async def notices_by_creator(self, info, uid: str) -> Optional[List[NoticeType]]:
-        return await NoticeService().get_all(
-            created_by_uid=uid, expiry__gt=timenow_dt()
-        )
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await NoticeService().get_all(
+                created_by_uid=uid,
+                expiry__gt=timenow_dt(),
+                departments__uid__in=department_uids,
+            )
+        return await NoticeService().get_all(created_by_uid=uid, expiry__gt=timenow_dt())
 
     @strawberry.field(
         extensions=[
@@ -57,11 +80,16 @@ class NoticeQuery:
         department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if group_uid:
             filters["groups__uid__in"] = [group_uid]
 
+        if department_uids:
+            filters["departments__uid__in"] = department_uids
         if department_uid:
+            if department_uids and department_uid not in department_uids:
+                return []
             filters["departments__uid__in"] = [department_uid]
 
         return await NoticeService().repository.filter(

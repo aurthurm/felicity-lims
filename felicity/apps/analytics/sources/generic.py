@@ -3,11 +3,13 @@ from datetime import datetime
 from typing import Any, Generic, List, Optional, Tuple, Type, TypeVar
 
 from dateutil import parser
-from sqlalchemy import text
+from sqlalchemy import or_, text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
 from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.analysis.entities.analysis import Analysis, Profile
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.core.tenant_context import get_current_lab_uid
 from felicity.database.session import async_session
 
@@ -23,6 +25,17 @@ class EntityAnalyticsInit(Generic[ModelType]):
         self.table = model.__tablename__
         self.alias = model.__tablename__ + "_tbl"
 
+    async def _get_department_uids(self) -> list[str]:
+        preferences = await get_current_user_preferences(None)
+        if not preferences or not preferences.departments:
+            return []
+
+        return [
+            department.uid
+            for department in preferences.departments
+            if department and department.uid
+        ]
+
     async def get_line_listing(
         self,
         period_start: str | datetime,
@@ -31,6 +44,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         date_column: str,
         analysis_uids: List[str],
     ) -> tuple[list[str], list[Any]]:
+        department_uids = await self._get_department_uids()
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
 
@@ -46,6 +60,9 @@ class EntityAnalyticsInit(Generic[ModelType]):
         an_filter = "an.uid IN :an_uids" if an_uids else "1=0"
         status_filter = "sa.status IN :statuses" if statuses else "1=0"
         lab_filter = "sa.laboratory_uid IN :lab_uids" if lab_uids else "1=0"
+        department_filter = (
+            "AND an.department_uid IN :department_uids" if department_uids else ""
+        )
 
         stmt = text(
             f"""
@@ -90,6 +107,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
                 {an_filter} AND
                 {status_filter} AND
                 {lab_filter}
+                {department_filter}
             """
         )
 
@@ -102,6 +120,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
                     "an_uids": an_uids,
                     "statuses": statuses,
                     "lab_uids": lab_uids,
+                    "department_uids": tuple(department_uids),
                 },
             )
 
@@ -136,6 +155,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
             logger.warning(f"Model has no attr {group_by}")
             raise AttributeError(f"Model has no attr {group_by}")
         group_by_col = getattr(self.model, group_by)
+        department_uids = await self._get_department_uids()
 
         stmt = select(group_by_col, func.count(self.model.uid).label("total")).filter(
             group_by_col.isnot(None)
@@ -165,6 +185,25 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if group_in:
             stmt = stmt.filter(group_by_col.in_(group_in))
 
+        if department_uids:
+            if self.table == "sample":
+                stmt = stmt.filter(
+                    or_(
+                        self.model.analyses.any(
+                            Analysis.department_uid.in_(department_uids)
+                        ),
+                        self.model.profiles.any(
+                            Profile.department_uid.in_(department_uids)
+                        ),
+                    )
+                )
+            if self.table in {"analysis_result", "worksheet"}:
+                stmt = stmt.filter(
+                    self.model.analysis.has(
+                        Analysis.department_uid.in_(department_uids)
+                    )
+                )
+
         # ✅ Apply tenant/lab context
         current_lab_uid = get_current_lab_uid()
         if current_lab_uid and hasattr(self.model, "laboratory_uid"):
@@ -184,6 +223,11 @@ class EntityAnalyticsInit(Generic[ModelType]):
         stmt = select(func.count(self.model.uid).label("total")).filter(
             retest_col.is_(True)
         )
+        department_uids = await self._get_department_uids()
+        if department_uids:
+            stmt = stmt.filter(
+                self.model.analysis.has(Analysis.department_uid.in_(department_uids))
+            )
 
         # Start date filter
         if start and start[1]:
@@ -247,9 +291,29 @@ class EntityAnalyticsInit(Generic[ModelType]):
                 "analysis_process_performance must have sample as root table"
             )
 
+        department_uids = await self._get_department_uids()
+
         # Tenant/lab context
         current_lab_uid = get_current_lab_uid()
         lab_filter_sql = "AND laboratory_uid = :lab_uid" if current_lab_uid else ""
+        department_filter_sql = ""
+        if department_uids:
+            department_filter_sql = f"""
+                AND (
+                    EXISTS (
+                        SELECT 1 FROM sample_analysis sa_dept
+                        INNER JOIN analysis an_dept ON an_dept.uid = sa_dept.analysis_uid
+                        WHERE sa_dept.sample_uid = {self.table}.uid
+                        AND an_dept.department_uid IN :department_uids
+                    )
+                    OR EXISTS (
+                        SELECT 1 FROM sample_profile sp_dept
+                        INNER JOIN profile pr_dept ON pr_dept.uid = sp_dept.profile_uid
+                        WHERE sp_dept.sample_uid = {self.table}.uid
+                        AND pr_dept.department_uid IN :department_uids
+                    )
+                )
+            """
 
         raw_sql = f"""
             SELECT 
@@ -272,12 +336,15 @@ class EntityAnalyticsInit(Generic[ModelType]):
                     {start_column} >= :sd AND
                     {end_column} <= :ed
                     {lab_filter_sql}
+                    {department_filter_sql}
               ) AS diff
         """
 
         params = {"sd": start_date, "ed": end_date}
         if current_lab_uid:
             params["lab_uid"] = current_lab_uid
+        if department_uids:
+            params["department_uids"] = tuple(department_uids)
 
         stmt = text(raw_sql)
 
@@ -318,10 +385,15 @@ class EntityAnalyticsInit(Generic[ModelType]):
                 "analysis_process_performance must have sample as root table"
             )
 
+        department_uids = await self._get_department_uids()
+
         # Tenant / lab context
         current_lab_uid = get_current_lab_uid()
         lab_filter_sql = (
             f"AND {self.alias}.laboratory_uid = :lab_uid" if current_lab_uid else ""
+        )
+        department_filter_sql = (
+            "AND a.department_uid IN :department_uids" if department_uids else ""
         )
 
         raw_sql = f"""
@@ -349,6 +421,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
                     {self.alias}.{start_column} >= :sd AND
                     {self.alias}.{end_column} <= :ed
                     {lab_filter_sql}
+                    {department_filter_sql}
               ) AS diff
             GROUP BY diff.name
         """
@@ -356,6 +429,8 @@ class EntityAnalyticsInit(Generic[ModelType]):
         params = {"sd": start_date, "ed": end_date}
         if current_lab_uid:
             params["lab_uid"] = current_lab_uid
+        if department_uids:
+            params["department_uids"] = tuple(department_uids)
 
         stmt = text(raw_sql)
 
@@ -369,8 +444,28 @@ class EntityAnalyticsInit(Generic[ModelType]):
         Stats on delayed samples
         """
 
+        department_uids = await self._get_department_uids()
+
         current_lab_uid = get_current_lab_uid()
         lab_filter = "AND laboratory_uid = :lab_uid" if current_lab_uid else ""
+        department_filter = ""
+        if department_uids:
+            department_filter = f"""
+                AND (
+                    EXISTS (
+                        SELECT 1 FROM sample_analysis sa_dept
+                        INNER JOIN analysis an_dept ON an_dept.uid = sa_dept.analysis_uid
+                        WHERE sa_dept.sample_uid = {self.alias}.uid
+                        AND an_dept.department_uid IN :department_uids
+                    )
+                    OR EXISTS (
+                        SELECT 1 FROM sample_profile sp_dept
+                        INNER JOIN profile pr_dept ON pr_dept.uid = sp_dept.profile_uid
+                        WHERE sp_dept.sample_uid = {self.alias}.uid
+                        AND pr_dept.department_uid IN :department_uids
+                    )
+                )
+            """
 
         raw_sql_for_incomplete = f"""
             SELECT 
@@ -391,6 +486,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
                     status IN ('due','received','to_be_verified','verified') AND 
                     due_date IS NOT NULL
                     {lab_filter}
+                    {department_filter}
               ) AS incomplete
         """
 
@@ -404,6 +500,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
                     due_date IS NOT NULL AND 
                     due_date > date_published
                     {lab_filter}
+                    {department_filter}
             )
             SELECT
                 COUNT(*) AS total_delayed,  
@@ -418,6 +515,8 @@ class EntityAnalyticsInit(Generic[ModelType]):
         params = {}
         if current_lab_uid:
             params["lab_uid"] = current_lab_uid
+        if department_uids:
+            params["department_uids"] = tuple(department_uids)
 
         stmt_for_incomplete = text(raw_sql_for_incomplete)
         stmt_for_complete = text(raw_sql_for_complete)

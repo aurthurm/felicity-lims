@@ -18,6 +18,7 @@ from felicity.api.gql.user.types import (
 from felicity.apps.guard import FGroup
 from felicity.apps.setup.services import LaboratoryService
 from felicity.apps.user import schemas as user_schemas
+from felicity.apps.user.caches import invalidate_user_preferences_cache
 from felicity.apps.user.entities import laboratory_user, department_preference
 from felicity.apps.user.services import (
     GroupService,
@@ -378,6 +379,7 @@ class UserMutations:
                     session=t_session
                 )
             userpres = await upref_service.get(uid=user_preference.uid, related=["departments"])  # noqa
+        invalidate_user_preferences_cache(felicity_user.uid)
         return UserPreferenceType(**userpres.marshal_simple(exclude=["laboratory_uid", "laboratory"]))
 
     @strawberry.mutation

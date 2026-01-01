@@ -40,6 +40,7 @@ from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.shipment.services import ShippedSampleService
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.apps.worksheet.workflow import WorkSheetWorkFlow
 from felicity.core.dtz import timenow_dt
 from felicity.utils import has_value_or_is_truthy
@@ -80,6 +81,23 @@ async def sample_search(
     sample_service = SampleService()
 
     filters = []
+    preferences = await get_current_user_preferences(None)
+    if preferences and preferences.departments:
+        department_uids = [
+            department.uid
+            for department in preferences.departments
+            if department and department.uid
+        ]
+        if department_uids:
+            filters.append(
+                {
+                    or_: {
+                        "analyses__department_uid__in": department_uids,
+                        "profiles__department_uid__in": department_uids,
+                    }
+                }
+            )
+
     _or_text_ = {}
     if has_value_or_is_truthy(text):
         arg_list = [

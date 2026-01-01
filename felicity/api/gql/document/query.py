@@ -7,6 +7,7 @@ from strawberry.permission import PermissionExtension
 from felicity.api.gql.document import types
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import PageInfo
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.apps.document.services import (
     DocumentCategoryService,
     DocumentTagService,
@@ -22,6 +23,18 @@ from felicity.apps.document.services import (
 )
 from felicity.apps.guard import FAction, FObject
 from felicity.utils import has_value_or_is_truthy
+
+
+async def _get_department_uids() -> list[str]:
+    preferences = await get_current_user_preferences(None)
+    if not preferences or not preferences.departments:
+        return []
+
+    return [
+        department.uid
+        for department in preferences.departments
+        if department and department.uid
+    ]
 
 
 @strawberry.type
@@ -312,6 +325,7 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
@@ -326,6 +340,9 @@ class DocumentQuery:
 
         if category_uid:
             filters["category_uid"] = category_uid
+
+        if department_uids:
+            filters["department_uid__in"] = department_uids
 
         if department_uid:
             filters["department_uid"] = department_uid
@@ -408,9 +425,12 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentVersionCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if document_uid:
             filters["document_uid"] = document_uid
+        if department_uids:
+            filters["document___department_uid__in"] = department_uids
 
         page = await DocumentVersionService().paging_filter(
             page_size=page_size,
@@ -481,12 +501,15 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentStatusCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if document_uid:
             filters["document_uid"] = document_uid
 
         if status:
             filters["status"] = status
+        if department_uids:
+            filters["document___department_uid__in"] = department_uids
 
         page = await DocumentStatusService().paging_filter(
             page_size=page_size,
@@ -558,6 +581,7 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentReviewCycleCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if document_uid:
             filters["document_uid"] = document_uid
@@ -567,6 +591,8 @@ class DocumentQuery:
 
         if initiated_by_uid:
             filters["initiated_by_uid"] = initiated_by_uid
+        if department_uids:
+            filters["document___department_uid__in"] = department_uids
 
         page = await DocumentReviewCycleService().paging_filter(
             page_size=page_size,
@@ -640,6 +666,7 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentReviewStepCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if review_cycle_uid:
             filters["review_cycle_uid"] = review_cycle_uid
@@ -649,6 +676,8 @@ class DocumentQuery:
 
         if status:
             filters["status"] = status
+        if department_uids:
+            filters["review_cycle___document___department_uid__in"] = department_uids
 
         page = await DocumentReviewStepService().paging_filter(
             page_size=page_size,
@@ -739,6 +768,7 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentSubscriptionCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if document_uid:
             filters["document_uid"] = document_uid
@@ -748,6 +778,8 @@ class DocumentQuery:
 
         if subscription_type:
             filters["subscription_type"] = subscription_type
+        if department_uids:
+            filters["document___department_uid__in"] = department_uids
 
         page = await DocumentSubscriptionService().paging_filter(
             page_size=page_size,
@@ -836,6 +868,7 @@ class DocumentQuery:
         sort_by: list[str] | None = None,
     ) -> types.DocumentAuditCursorPage:
         filters = {}
+        department_uids = await _get_department_uids()
 
         if document_uid:
             filters["document_uid"] = document_uid
@@ -845,6 +878,8 @@ class DocumentQuery:
 
         if action:
             filters["action"] = action
+        if department_uids:
+            filters["document___department_uid__in"] = department_uids
 
         page = await DocumentAuditService().paging_filter(
             page_size=page_size,

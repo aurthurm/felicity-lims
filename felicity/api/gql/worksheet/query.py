@@ -14,11 +14,24 @@ from felicity.api.gql.worksheet.types import (
     WorkSheetType,
 )
 from felicity.apps.guard import FAction, FObject
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+async def _get_department_uids() -> list[str]:
+    preferences = await get_current_user_preferences(None)
+    if not preferences or not preferences.departments:
+        return []
+
+    return [
+        department.uid
+        for department in preferences.departments
+        if department and department.uid
+    ]
 
 
 @strawberry.type
@@ -44,6 +57,9 @@ class WorkSheetQuery:
         sort_by: list[str] | None = None,
     ) -> WorkSheetCursorPage:
         filters = []
+        department_uids = await _get_department_uids()
+        if department_uids:
+            filters.append({"analysis___department_uid__in": department_uids})
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
@@ -91,6 +107,12 @@ class WorkSheetQuery:
         ]
     )
     async def worksheet_by_analyst(self, info, analyst_uid: str) -> List[WorkSheetType]:
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await WorkSheetService().get_all(
+                analyst_uid=analyst_uid,
+                analysis___department_uid__in=department_uids,
+            )
         return await WorkSheetService().get_all(analyst_uid=analyst_uid)
 
     @strawberry.field(
@@ -132,6 +154,12 @@ class WorkSheetQuery:
     async def worksheet_by_status(
         self, info, worksheet_status: str
     ) -> List[WorkSheetType]:
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await WorkSheetService().get_all(
+                status__exact=worksheet_status,
+                analysis___department_uid__in=department_uids,
+            )
         return await WorkSheetService().get_all(status__exact=worksheet_status)
 
     @strawberry.field(
@@ -145,6 +173,11 @@ class WorkSheetQuery:
         ]
     )
     async def worksheet_template_all(self, info) -> List[WorkSheetTemplateType]:
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await WorkSheetTemplateService().get_all(
+                analysis___department_uid__in=department_uids
+            )
         return await WorkSheetTemplateService().all()
 
     @strawberry.field(

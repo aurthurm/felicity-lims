@@ -249,11 +249,11 @@ class AnalysisRequestService(
         super().__init__(AnalysisRequestRepository())
 
     async def create(
-        self,
-        obj_in: dict | AnalysisRequestCreate,
-        related: list[str] | None = None,
-        commit: bool = True,
-        session: AsyncSession | None = None,
+            self,
+            obj_in: dict | AnalysisRequestCreate,
+            related: list[str] | None = None,
+            commit: bool = True,
+            session: AsyncSession | None = None,
     ):
         data = self._import(obj_in)
         data["request_id"] = (
@@ -380,17 +380,16 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
     async def copy_sample_id_unique(self, sample: Sample) -> str:
         split = sample.sample_id.split("_R")
         prefix = split[0]
-        stub = None
         try:
             stub = split[1]
         except IndexError:
             stub = None
-        finally:
-            if not stub:
-                return prefix + "_R01"
-            else:
-                count = int(stub)
-                return f"{prefix}_R{sequencer(count + 1, 2)}"
+
+        if not stub:
+            return prefix + "_R01"
+        else:
+            count = int(stub)
+            return f"{prefix}_R{sequencer(count + 1, 2)}"
 
     async def get_analysis_results(self, uid: str):
         return await self.analysis_result_service.get_all(sample_uid=uid)
@@ -422,11 +421,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return len(analysis) != len(referred) and len(referred) > 0
 
     async def receive(
-        self,
-        uid: str,
-        received_by,
-        commit: bool = True,
-        session: AsyncSession | None = None,
+            self,
+            uid: str,
+            received_by,
+            commit: bool = True,
+            session: AsyncSession | None = None,
     ) -> Sample:
         sample = await self.get(uid=uid)
         sample.status = SampleState.RECEIVED
@@ -546,7 +545,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [ResultState.PENDING], analysis)
+                filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
@@ -602,11 +601,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return printed
 
     async def invalidate(
-        self,
-        uid: str,
-        invalidated_by,
-        commit: bool = True,
-        session: AsyncSession | None = None,
+            self,
+            uid: str,
+            invalidated_by,
+            commit: bool = True,
+            session: AsyncSession | None = None,
     ) -> tuple[Sample, Sample]:
         sample = await self.get(uid=uid, session=session)
         copy = await self.duplicate_unique(
@@ -653,11 +652,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return recovered
 
     async def create(
-        self,
-        obj_in: dict | SampleCreate,
-        related: list[str] | None = None,
-        commit: bool = True,
-        session: AsyncSession | None = None,
+            self,
+            obj_in: dict | SampleCreate,
+            related: list[str] | None = None,
+            commit: bool = True,
+            session: AsyncSession | None = None,
     ):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
@@ -672,11 +671,11 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         )
 
     async def duplicate_unique(
-        self,
-        uid: str,
-        duplicator,
-        commit: bool = True,
-        session: AsyncSession | None = None,
+            self,
+            uid: str,
+            duplicator,
+            commit: bool = True,
+            session: AsyncSession | None = None,
     ):
         sample = await self.get(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
@@ -692,7 +691,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().create(data, commit=commit, session=session)
 
     async def clone_afresh(
-        self, uid: str, cloner, commit: bool = True, session: AsyncSession | None = None
+            self, uid: str, cloner, commit: bool = True, session: AsyncSession | None = None
     ):
         sample = await self.get(
             related=["profiles", "analyses"], uid=uid, session=session

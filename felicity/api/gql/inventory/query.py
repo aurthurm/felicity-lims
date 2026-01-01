@@ -21,7 +21,20 @@ from felicity.apps.inventory.services import (
     StockReceiptService,
     StockUnitService,
 )
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.utils import has_value_or_is_truthy
+
+
+async def _get_department_uids() -> list[str]:
+    preferences = await get_current_user_preferences(None)
+    if not preferences or not preferences.departments:
+        return []
+
+    return [
+        department.uid
+        for department in preferences.departments
+        if department and department.uid
+    ]
 
 
 @strawberry.type
@@ -238,6 +251,9 @@ class InventoryQuery:
         sort_by: list[str] | None = None,
     ) -> types.StockOrderCursorPage:
         filters = []
+        department_uids = await _get_department_uids()
+        if department_uids:
+            filters.append({"department_uid__in": department_uids})
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
@@ -280,6 +296,11 @@ class InventoryQuery:
     async def stock_order_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockOrderType]:
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await StockOrderService().get(
+                uid=uid, department_uid__in=department_uids
+            )
         return await StockOrderService().get(uid=uid)
 
     @strawberry.field(
@@ -295,6 +316,12 @@ class InventoryQuery:
     async def stock_order_product_all(
         self, info, stock_order_uid: str
     ) -> List[types.StockOrderProductType]:
+        department_uids = await _get_department_uids()
+        if department_uids:
+            return await StockOrderProductService().get_all(
+                order_uid=stock_order_uid,
+                order___department_uid__in=department_uids,
+            )
         return await StockOrderProductService().get_all(order_uid=stock_order_uid)
 
     @strawberry.field(
