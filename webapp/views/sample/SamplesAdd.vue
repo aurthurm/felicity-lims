@@ -342,7 +342,35 @@ const contactLabel = (contact: ClientContactType) => {
 <template>
   <div class="space-y-6">
     <h5 class="text-xl font-semibold text-foreground mb-4">Add Analysis Request</h5>
-    <form action="post" class="p-6 bg-background rounded-lg shadow-sm space-y-6" @submit.prevent="submitARForm">
+    <form action="post" class="relative p-6 bg-background rounded-lg shadow-sm space-y-6" @submit.prevent="submitARForm">
+      <!-- Loading overlay -->
+      <div
+        v-if="arSaving"
+        class="absolute inset-0 bg-background/10 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg"
+        role="status"
+        aria-live="polite"
+      >
+        <div class="flex flex-col items-center gap-4">
+          <svg
+            class="w-12 h-12 text-primary animate-spin"
+            viewBox="0 0 100 101"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+              fill="currentColor"
+              fill-opacity="0.1"
+            />
+            <path
+              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+              fill="currentColor"
+            />
+          </svg>
+          <p class="text-sm font-medium text-foreground">Adding Samples...</p>
+        </div>
+      </div>
+
       <div class="space-y-4">
         <!-- Client, Contact, and Priority - Same Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -354,6 +382,7 @@ const contactLabel = (contact: ClientContactType) => {
                 v-model="client"
                 :options="clients"
                 :searchable="true"
+                :disabled="arSaving"
                 label="name"
                 track-by="uid"
                 @select="selectContact"
@@ -370,6 +399,7 @@ const contactLabel = (contact: ClientContactType) => {
                 v-model="clientContact"
                 :options="selectedClient?.contacts ?? []"
                 :custom-label="contactLabel"
+                :disabled="arSaving"
                 track-by="uid"
                 :close-on-select="true"
                 :searchable="true"
@@ -383,7 +413,8 @@ const contactLabel = (contact: ClientContactType) => {
                 name="priority"
                 id="priority"
                 v-model="priority"
-                class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                :disabled="arSaving"
+                class="w-full px-3 py-2 bg-background/10 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                 aria-label="Select priority level"
             >
               <option value=0>Low</option>
@@ -399,6 +430,7 @@ const contactLabel = (contact: ClientContactType) => {
           <input
               class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
               v-model="clientRequestId"
+              :disabled="arSaving"
               placeholder="CRID ..."
           />
           <div class="text-sm text-destructive">{{ errors.clientRequestId }}</div>
@@ -409,7 +441,8 @@ const contactLabel = (contact: ClientContactType) => {
           <button
               type="button"
               @click="clinicalDataExpanded = !clinicalDataExpanded"
-              class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-muted/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-lg"
+              :disabled="arSaving"
+              class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-muted/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span class="text-sm font-medium text-foreground whitespace-nowrap">Clinical Data (click to expand)</span>
             <svg
@@ -430,6 +463,7 @@ const contactLabel = (contact: ClientContactType) => {
               <input
                   class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                   v-model="clinicalData.clinicalIndication"
+                  :disabled="arSaving"
                   placeholder="Enter clinical indication..."
               />
             </label>
@@ -441,13 +475,15 @@ const contactLabel = (contact: ClientContactType) => {
                 <input
                     class="flex-1 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                     v-model="newSymptom"
+                    :disabled="arSaving"
                     placeholder="Add symptom..."
                     @keydown.enter.prevent.stop="addSymptom"
                 />
                 <button
                     type="button"
                     @click="addSymptom"
-                    class="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    :disabled="arSaving"
+                    class="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Add
                 </button>
@@ -462,7 +498,8 @@ const contactLabel = (contact: ClientContactType) => {
                   <button
                       type="button"
                       @click="removeSymptom(index)"
-                      class="text-destructive hover:text-destructive/80 ml-1"
+                      :disabled="arSaving"
+                      class="text-destructive hover:text-destructive/80 ml-1 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     ×
                   </button>
@@ -487,6 +524,7 @@ const contactLabel = (contact: ClientContactType) => {
               <textarea
                   class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                   v-model="clinicalData.treatmentNotes"
+                  :disabled="arSaving"
                   placeholder="Enter treatment notes..."
                   rows="2"
               />
@@ -498,6 +536,7 @@ const contactLabel = (contact: ClientContactType) => {
                 <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Pregnancy Status</span>
                 <select
                     v-model="clinicalData.pregnancyStatus"
+                    :disabled="arSaving"
                     class="w-full ml-4 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                 >
                   <option :value="null">Not specified</option>
@@ -510,6 +549,7 @@ const contactLabel = (contact: ClientContactType) => {
                 <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Breastfeeding Status</span>
                 <select
                     v-model="clinicalData.breastFeeding"
+                    :disabled="arSaving"
                     class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                 >
                   <option :value="null">Not specified</option>
@@ -586,7 +626,8 @@ const contactLabel = (contact: ClientContactType) => {
                 type="button"
                 v-if="samples?.length !== 20"
                 @click.prevent="addSample()"
-                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                :disabled="arSaving"
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Add Sample
             </button>
@@ -656,14 +697,14 @@ const contactLabel = (contact: ClientContactType) => {
                     <button
                         type="button"
                         @click.prevent="removeSample(index)"
-                        :disabled="!canRemoveSample"
+                        :disabled="!canRemoveSample || arSaving"
                         :class="[
                           'px-2 py-1 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 text-xs ml-2',
-                          canRemoveSample
+                          canRemoveSample && !arSaving
                             ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:ring-destructive/50'
                             : 'bg-muted text-muted-foreground cursor-not-allowed'
                         ]"
-                        :title="canRemoveSample ? 'Remove sample' : 'At least one sample is required'"
+                        :title="canRemoveSample && !arSaving ? 'Remove sample' : 'At least one sample is required'"
                     >
                       Remove
                     </button>
@@ -681,6 +722,7 @@ const contactLabel = (contact: ClientContactType) => {
                       v-model="sample.sampleType"
                       :options="sampleTypes"
                       :searchable="true"
+                      :disabled="arSaving"
                       label="name"
                       track-by="uid"
                       :openDirection="'below'"
@@ -695,6 +737,7 @@ const contactLabel = (contact: ClientContactType) => {
                       class="w-full"
                       v-model="sample.dateCollected"
                       :max-date="maxDate"
+                      :disabled="arSaving"
                       time-picker-inline
                       :teleport="true"
                   />
@@ -709,6 +752,7 @@ const contactLabel = (contact: ClientContactType) => {
                       v-model="sample.dateReceived"
                       :min-date="sample.dateCollected && typeof sample.dateCollected === 'object' && !(sample.dateCollected instanceof Date) && typeof sample.dateCollected.toDate === 'function' ? sample.dateCollected.toDate() : sample.dateCollected || null"
                       :max-date="maxDate"
+                      :disabled="arSaving"
                       time-picker-inline
                       :teleport="true"
                   />
@@ -724,6 +768,7 @@ const contactLabel = (contact: ClientContactType) => {
                       v-model="sample.profiles"
                       :options="analysesProfiles"
                       :searchable="true"
+                      :disabled="arSaving"
                       :multiple="true"
                       label="name"
                       track-by="uid"
@@ -741,6 +786,7 @@ const contactLabel = (contact: ClientContactType) => {
                       v-model="sample.analyses"
                       :options="analysesServices"
                       :searchable="true"
+                      :disabled="arSaving"
                       :multiple="true"
                       label="name"
                       track-by="uid"
@@ -797,15 +843,12 @@ const contactLabel = (contact: ClientContactType) => {
 
       <div class="flex justify-end pt-4">
         <button
-            v-if="!arSaving"
             type="submit"
-            class="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            :disabled="arSaving"
+            class="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Save Sample(s)
         </button>
-        <div v-else class="py-4 text-center">
-          <fel-loader message="Adding Samples ..."/>
-        </div>
       </div>
     </form>
   </div>

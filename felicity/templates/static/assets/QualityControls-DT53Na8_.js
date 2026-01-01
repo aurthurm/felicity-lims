@@ -1,1 +1,0 @@
-import{_ as o,r as t,c as r,o as c,a as s}from"./index-CNAOKjig.js";const n={},a={class:""};function i(l,_){const e=t("router-view");return c(),r("div",a,[s(e)])}const u=o(n,[["render",i],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/qcontrol/QualityControls.vue"]]);export{u as default};
