@@ -5,11 +5,10 @@ import { GetGrindSchemeDocument, GetGrindSchemeQuery, GetGrindSchemeQueryVariabl
 import { GrindBoardType, GrindSchemeType } from "@/types/gql";
 import { resetForm, mutateForm } from "@/utils";
 import { RequestPolicy } from "@urql/vue";
-import { defineAsyncComponent, onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
-
-const Board = defineAsyncComponent(() => import("./Board.vue"));
+import Board from "./Board.vue";
 
 const { withClientMutation, withClientQuery } = useApiUtil();
 

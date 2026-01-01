@@ -18,7 +18,7 @@ const posters = ref<GrindPosterType[]>([]);
 
 watch(() => props.board?.uid, (newBoardUid) => {
   if (!newBoardUid) return;
-  
+
   withClientQuery<GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables>(
     GetGrindPostersByBoardDocument,
     { boardUid: newBoardUid },
@@ -28,12 +28,16 @@ watch(() => props.board?.uid, (newBoardUid) => {
   });
 }, { immediate: true });
 
-// For your tabs, use a computed that depends on props.board.uid
+// Define async component ONCE outside computed
+const BoardViewComponent = defineAsyncComponent(() => import("./BoardView.vue"));
+
+// Only use computed for the reactive props
 const tabs = computed(() => [
   {
-    id: "board-view", label: "board-view",
-    component: defineAsyncComponent(() => import("./BoardView.vue")),
-    props: {posters: posters.value, boardUid: props.board?.uid}
+    id: "board-view",
+    label: "board-view",
+    component: BoardViewComponent,
+    props: { posters: posters.value, boardUid: props.board?.uid }
   },
 ])
 </script>
