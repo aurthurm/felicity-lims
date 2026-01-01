@@ -199,7 +199,7 @@ async function savePreferences() {
               :id="`dept-${department.uid}`"
               type="checkbox"
               :checked="isDepartmentSelected(department.uid)"
-              @change="toggleDepartment(department.uid)"
+              @change="toggleDepartment(department)"
               class="h-4 w-4 rounded border-input bg-background cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <label

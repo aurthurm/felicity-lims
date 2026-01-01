@@ -133,11 +133,13 @@ export default function userPreferenceComposable() {
     /**
      * Toggle department selection
      */
-    function toggleDepartment(departmentUid: string): void {
+    function toggleDepartment(department: DepartmentType): void {
         try {
-            const index = state.departments.findIndex(dept => dept.uid === departmentUid);
+            const index = state.departments.findIndex(dept => dept.uid === department.uid);
             if (index > -1) {
                 state.departments.splice(index, 1);
+            } else {
+                state.departments.push(department);
             }
         } catch (error) {
             toastError(`Failed to update department: ${error instanceof Error ? error.message : 'Unknown error'}`);
