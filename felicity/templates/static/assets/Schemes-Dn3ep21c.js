@@ -1,0 +1,1 @@
+import{_ as o,r as t,c,o as s,a as r}from"./index-CNAOKjig.js";const n={},_={class:""};function a(i,m){const e=t("router-view");return s(),c("div",_,[r(e)])}const f=o(n,[["render",a],["__file","/home/aurthurm/Documents/Development/felicity/felicity-lims/webapp/views/grind/Schemes.vue"]]);export{f as default};

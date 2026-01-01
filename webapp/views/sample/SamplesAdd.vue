@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import VueMultiselect from "vue-multiselect";
-import {computed, reactive, ref} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {usePatientStore} from "@/stores/patient";
 import {useSampleStore} from "@/stores/sample";
 import {useAnalysisStore} from "@/stores/analysis";
 import {useClientStore} from "@/stores/client";
+import {useBillingStore} from "@/stores/billing";
+import {useSetupStore} from "@/stores/setup";
 import {
   AnalysisRequestInputType,
   AnalysisRequestType,
@@ -27,11 +29,16 @@ import useNotifyToast from "@/composables/alert_toast";
 import useApiUtil from "@/composables/api_util";
 import {formatDate} from "@/utils";
 import dayjs from "dayjs";
+import {useDebounceFn} from "@vueuse/core";
+import SampleCostBreakdown from "@/components/billing/SampleCostBreakdown.vue";
+import CostSummary from "@/components/billing/CostSummary.vue";
 
 const sampleStore = useSampleStore();
 const patientStore = usePatientStore();
 const analysisStore = useAnalysisStore();
 const clientStore = useClientStore();
+const billingStore = useBillingStore();
+const setupStore = useSetupStore();
 const router = useRouter();
 
 const {withClientMutation} = useApiUtil();
@@ -247,6 +254,84 @@ function removeSample(index: number): void {
 
 // Computed property to check if remove button should be disabled
 const canRemoveSample = computed(() => samples.value.length > 1);
+
+// Billing functionality
+const billingEnabled = computed(() =>
+    setupStore.getLaboratory?.settings?.allowBilling ?? false
+);
+
+const priceMap = computed(() => {
+  const map = new Map<string, number>();
+  billingStore.profilePrices.forEach((price, uid) => {
+    map.set(`profile_${uid}`, price.amount);
+  });
+  billingStore.analysisPrices.forEach((price, uid) => {
+    map.set(`analysis_${uid}`, price.amount);
+  });
+  return map;
+});
+
+const sampleCosts = computed(() => {
+  return samples.value.map(sample => {
+    let subtotal = 0;
+    const breakdown = {profiles: [], analyses: [], subtotal: 0};
+
+    // Calculate profile costs
+    sample.profiles?.forEach(profile => {
+      const price = priceMap.value.get(`profile_${profile.uid}`);
+      if (price !== undefined) {
+        subtotal += price;
+        breakdown.profiles.push({name: profile.name, price});
+      }
+    });
+
+    // Calculate analysis costs
+    sample.analyses?.forEach(analysis => {
+      const price = priceMap.value.get(`analysis_${analysis.uid}`);
+      if (price !== undefined) {
+        subtotal += price;
+        breakdown.analyses.push({name: analysis.name, price});
+      }
+    });
+
+    breakdown.subtotal = subtotal;
+    return breakdown;
+  });
+});
+
+const grandTotal = computed(() => {
+  return sampleCosts.value.reduce((sum, cost) => sum + cost.subtotal, 0);
+});
+
+// Debounced price fetching
+const debouncedFetchPrices = useDebounceFn((profileUids: string[], analysisUids: string[]) => {
+  billingStore.fetchBatchPrices(profileUids, analysisUids);
+}, 300);
+
+watch(
+    () => samples.value.map(s => ({
+      profiles: s.profiles?.map(p => p.uid) ?? [],
+      analyses: s.analyses?.map(a => a.uid) ?? []
+    })),
+    (newSelections) => {
+      if (!billingEnabled.value) return;
+
+      // Collect all unique UIDs
+      const profileUids = new Set<string>();
+      const analysisUids = new Set<string>();
+
+      newSelections.forEach(selection => {
+        selection.profiles.forEach(uid => profileUids.add(uid));
+        selection.analyses.forEach(uid => analysisUids.add(uid));
+      });
+
+      // Debounced fetch
+      if (profileUids.size > 0 || analysisUids.size > 0) {
+        debouncedFetchPrices(Array.from(profileUids), Array.from(analysisUids));
+      }
+    },
+    {deep: true}
+);
 
 // multiselect custom labels
 const contactLabel = (contact: ClientContactType) => {
@@ -545,6 +630,11 @@ const contactLabel = (contact: ClientContactType) => {
                   Analysis Services
                 </td>
               </tr>
+              <tr v-if="billingEnabled" class="border-b border-border">
+                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                  Cost Breakdown
+                </td>
+              </tr>
               <tr class="h-24">
                 <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Selection Summary
@@ -659,6 +749,18 @@ const contactLabel = (contact: ClientContactType) => {
                 </td>
               </tr>
 
+              <!-- Cost Breakdown Row (Only if billing enabled) -->
+              <tr v-if="billingEnabled" class="border-b border-border hover:bg-muted/20">
+                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r align-top">
+                  <SampleCostBreakdown
+                      :profiles="sample.profiles"
+                      :analyses="sample.analyses"
+                      :price-map="priceMap"
+                      :loading="billingStore.fetchingPrices"
+                  />
+                </td>
+              </tr>
+
               <!-- Selection Summary Row -->
               <tr class="hover:bg-muted/20 h-24">
                 <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
@@ -683,6 +785,15 @@ const contactLabel = (contact: ClientContactType) => {
           </div>
         </div>
       </section>
+
+      <!-- Cost Summary (Only if billing enabled) -->
+      <CostSummary
+          v-if="billingEnabled"
+          :sample-costs="sampleCosts"
+          :grand-total="grandTotal"
+          :currency="setupStore.getLaboratory?.settings?.currency ?? 'USD'"
+          :loading="billingStore.fetchingPrices"
+      />
 
       <div class="flex justify-end pt-4">
         <button

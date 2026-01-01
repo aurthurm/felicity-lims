@@ -41,6 +41,49 @@ export type GetPriceForAnalysisQuery = (
   )> }
 );
 
+export type GetBatchPricesQueryVariables = Types.Exact<{
+  profileUids: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+  analysisUids: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+}>;
+
+
+export type GetBatchPricesQuery = (
+  { __typename?: 'Query' }
+  & { pricesForBatch: (
+    { __typename?: 'BatchPricesType' }
+    & {
+      profilePrices: Array<(
+        { __typename?: 'ProfilePriceType' }
+        & Pick<
+          Types.ProfilePriceType,
+          | 'uid'
+          | 'profileUid'
+          | 'isActive'
+          | 'amount'
+        >
+        & { profile: (
+          { __typename?: 'ProfileType' }
+          & Pick<Types.ProfileType, 'uid' | 'name'>
+        ) }
+      )>,
+      analysisPrices: Array<(
+        { __typename?: 'AnalysisPriceType' }
+        & Pick<
+          Types.AnalysisPriceType,
+          | 'uid'
+          | 'analysisUid'
+          | 'isActive'
+          | 'amount'
+        >
+        & { analysis: (
+          { __typename?: 'AnalysisType' }
+          & Pick<Types.AnalysisType, 'uid' | 'name'>
+        ) }
+      )>,
+    }
+  ) }
+);
+
 export type GetDiscountForProfileQueryVariables = Types.Exact<{
   profileUid: Types.Scalars['String']['input'];
 }>;
@@ -558,6 +601,36 @@ export const GetPriceForAnalysisDocument = gql`
 
 export function useGetPriceForAnalysisQuery(options?: Omit<Urql.UseQueryArgs<never, GetPriceForAnalysisQueryVariables | undefined>, 'query'>) {
   return Urql.useQuery<GetPriceForAnalysisQuery, GetPriceForAnalysisQueryVariables | undefined>({ query: GetPriceForAnalysisDocument, variables: undefined, ...options });
+};
+export const GetBatchPricesDocument = gql`
+    query GetBatchPrices($profileUids: [String!]!, $analysisUids: [String!]!) {
+  pricesForBatch(profileUids: $profileUids, analysisUids: $analysisUids) {
+    profilePrices {
+      uid
+      profileUid
+      profile {
+        uid
+        name
+      }
+      isActive
+      amount
+    }
+    analysisPrices {
+      uid
+      analysisUid
+      analysis {
+        uid
+        name
+      }
+      isActive
+      amount
+    }
+  }
+}
+    `;
+
+export function useGetBatchPricesQuery(options?: Omit<Urql.UseQueryArgs<never, GetBatchPricesQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetBatchPricesQuery, GetBatchPricesQueryVariables | undefined>({ query: GetBatchPricesDocument, variables: undefined, ...options });
 };
 export const GetDiscountForProfileDocument = gql`
     query GetDiscountForProfile($profileUid: String!) {

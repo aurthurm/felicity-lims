@@ -1545,6 +1545,12 @@ export type AuthenticatedData = {
 
 export type AuthenticatedDataResponse = AuthenticatedData | OperationError;
 
+export type BatchPricesType = {
+  __typename?: 'BatchPricesType';
+  analysisPrices: Array<AnalysisPriceType>;
+  profilePrices: Array<ProfilePriceType>;
+};
+
 export type BillTransactionInput = {
   amount: Scalars['Float']['input'];
   kind: Scalars['String']['input'];
@@ -6562,6 +6568,7 @@ export type Query = {
   permissionsByTarget: Array<PermissionType>;
   priceForAnalysis?: Maybe<AnalysisPriceType>;
   priceForProfile?: Maybe<ProfilePriceType>;
+  pricesForBatch: BatchPricesType;
   profileAll: Array<ProfileType>;
   profileByUid: ProfileType;
   profileMappingsByProfile: Array<ProfileMappingType>;
@@ -7791,6 +7798,12 @@ export type QueryPriceForAnalysisArgs = {
 
 export type QueryPriceForProfileArgs = {
   profileUid: Scalars['String']['input'];
+};
+
+
+export type QueryPricesForBatchArgs = {
+  analysisUids: Array<Scalars['String']['input']>;
+  profileUids: Array<Scalars['String']['input']>;
 };
 
 
@@ -9759,6 +9772,7 @@ export type UserPreferenceType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserPreferenceType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+  userUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserResponse = OperationError | UserType;
@@ -10062,6 +10076,7 @@ export type GraphCacheKeysConfig = {
   AnalyzerParsedMessageType?: (data: WithTypename<AnalyzerParsedMessageType>) => null | string,
   AuditLogType?: (data: WithTypename<AuditLogType>) => null | string,
   AuthenticatedData?: (data: WithTypename<AuthenticatedData>) => null | string,
+  BatchPricesType?: (data: WithTypename<BatchPricesType>) => null | string,
   BillingOverviewMetrics?: (data: WithTypename<BillingOverviewMetrics>) => null | string,
   CalibrationCertificateType?: (data: WithTypename<CalibrationCertificateType>) => null | string,
   ClientContactType?: (data: WithTypename<ClientContactType>) => null | string,
@@ -10527,6 +10542,7 @@ export type GraphCacheResolvers = {
     permissionsByTarget?: GraphCacheResolver<WithTypename<Query>, QueryPermissionsByTargetArgs, Array<WithTypename<PermissionType> | string>>,
     priceForAnalysis?: GraphCacheResolver<WithTypename<Query>, QueryPriceForAnalysisArgs, WithTypename<AnalysisPriceType> | string>,
     priceForProfile?: GraphCacheResolver<WithTypename<Query>, QueryPriceForProfileArgs, WithTypename<ProfilePriceType> | string>,
+    pricesForBatch?: GraphCacheResolver<WithTypename<Query>, QueryPricesForBatchArgs, WithTypename<BatchPricesType> | string>,
     profileAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<ProfileType> | string>>,
     profileByUid?: GraphCacheResolver<WithTypename<Query>, QueryProfileByUidArgs, WithTypename<ProfileType> | string>,
     profileMappingsByProfile?: GraphCacheResolver<WithTypename<Query>, QueryProfileMappingsByProfileArgs, Array<WithTypename<ProfileMappingType> | string>>,
@@ -11592,6 +11608,10 @@ export type GraphCacheResolvers = {
     token?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, Scalars['String'] | string>,
     tokenType?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, Scalars['String'] | string>,
     user?: GraphCacheResolver<WithTypename<AuthenticatedData>, Record<string, never>, WithTypename<UserType> | string>
+  },
+  BatchPricesType?: {
+    analysisPrices?: GraphCacheResolver<WithTypename<BatchPricesType>, Record<string, never>, Array<WithTypename<AnalysisPriceType> | string>>,
+    profilePrices?: GraphCacheResolver<WithTypename<BatchPricesType>, Record<string, never>, Array<WithTypename<ProfilePriceType> | string>>
   },
   BillingOverviewMetrics?: {
     discountMetrics?: GraphCacheResolver<WithTypename<BillingOverviewMetrics>, Record<string, never>, WithTypename<DiscountMetrics> | string>,
@@ -14136,7 +14156,8 @@ export type GraphCacheResolvers = {
     uid?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, WithTypename<UserPreferenceType> | string>,
-    updatedByUid?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>
+    updatedByUid?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
+    userUid?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>
   },
   UserType?: {
     activeLaboratoryUid?: GraphCacheResolver<WithTypename<UserType>, Record<string, never>, Scalars['String'] | string>,
@@ -14827,6 +14848,7 @@ export type GraphCacheUpdaters = {
     permissionsByTarget?: GraphCacheUpdateResolver<{ permissionsByTarget: Array<WithTypename<PermissionType>> }, QueryPermissionsByTargetArgs>,
     priceForAnalysis?: GraphCacheUpdateResolver<{ priceForAnalysis: Maybe<WithTypename<AnalysisPriceType>> }, QueryPriceForAnalysisArgs>,
     priceForProfile?: GraphCacheUpdateResolver<{ priceForProfile: Maybe<WithTypename<ProfilePriceType>> }, QueryPriceForProfileArgs>,
+    pricesForBatch?: GraphCacheUpdateResolver<{ pricesForBatch: WithTypename<BatchPricesType> }, QueryPricesForBatchArgs>,
     profileAll?: GraphCacheUpdateResolver<{ profileAll: Array<WithTypename<ProfileType>> }, Record<string, never>>,
     profileByUid?: GraphCacheUpdateResolver<{ profileByUid: WithTypename<ProfileType> }, QueryProfileByUidArgs>,
     profileMappingsByProfile?: GraphCacheUpdateResolver<{ profileMappingsByProfile: Array<WithTypename<ProfileMappingType>> }, QueryProfileMappingsByProfileArgs>,
@@ -16193,6 +16215,10 @@ export type GraphCacheUpdaters = {
     token?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
     tokenType?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>,
     user?: GraphCacheUpdateResolver<Maybe<WithTypename<AuthenticatedData>>, Record<string, never>>
+  },
+  BatchPricesType?: {
+    analysisPrices?: GraphCacheUpdateResolver<Maybe<WithTypename<BatchPricesType>>, Record<string, never>>,
+    profilePrices?: GraphCacheUpdateResolver<Maybe<WithTypename<BatchPricesType>>, Record<string, never>>
   },
   BillingOverviewMetrics?: {
     discountMetrics?: GraphCacheUpdateResolver<Maybe<WithTypename<BillingOverviewMetrics>>, Record<string, never>>,
@@ -18737,7 +18763,8 @@ export type GraphCacheUpdaters = {
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
-    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
+    userUid?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>
   },
   UserType?: {
     activeLaboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<UserType>>, Record<string, never>>,

@@ -8948,6 +8948,49 @@ export default {
       },
       {
         "kind": "OBJECT",
+        "name": "BatchPricesType",
+        "fields": [
+          {
+            "name": "analysisPrices",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AnalysisPriceType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "profilePrices",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ProfilePriceType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
         "name": "BillingOverviewMetrics",
         "fields": [
           {
@@ -38422,6 +38465,51 @@ export default {
             ]
           },
           {
+            "name": "pricesForBatch",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "BatchPricesType",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "analysisUids",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Any"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "name": "profileUids",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Any"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "profileAll",
             "type": {
               "kind": "NON_NULL",
@@ -50226,6 +50314,14 @@ export default {
           },
           {
             "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "userUid",
             "type": {
               "kind": "SCALAR",
               "name": "Any"

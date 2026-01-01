@@ -253,6 +253,43 @@ class BillingQuery:
             )
         ]
     )
+    async def prices_for_batch(
+        self,
+        info,
+        profile_uids: list[str],
+        analysis_uids: list[str],
+    ) -> types.BatchPricesType:
+        """Batch fetch prices for multiple profiles and analyses in one request"""
+        profile_prices = []
+        analysis_prices = []
+
+        # Fetch all profile prices if profile UIDs provided
+        if profile_uids:
+            profile_prices = await ProfilePriceService().get_all(
+                profile_uid__in=profile_uids, is_active=True
+            )
+
+        # Fetch all analysis prices if analysis UIDs provided
+        if analysis_uids:
+            analysis_prices = await AnalysisPriceService().get_all(
+                analysis_uid__in=analysis_uids, is_active=True
+            )
+
+        return types.BatchPricesType(
+            profile_prices=profile_prices or [],
+            analysis_prices=analysis_prices or [],
+        )
+
+    @strawberry.field(
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.BILLING),
+                ]
+            )
+        ]
+    )
     async def discount_for_profile(
         self, info, profile_uid: str
     ) -> Optional[types.ProfileDiscountType]:

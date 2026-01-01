@@ -1306,6 +1306,14 @@ export type GetPriceForAnalysisQueryVariables = Exact<{
 
 export type GetPriceForAnalysisQuery = { __typename?: 'Query', priceForAnalysis?: { __typename?: 'AnalysisPriceType', uid: string, analysisUid: string, isActive: boolean, amount: number } | null };
 
+export type GetBatchPricesQueryVariables = Exact<{
+  profileUids: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  analysisUids: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetBatchPricesQuery = { __typename?: 'Query', pricesForBatch: { __typename?: 'BatchPricesType', profilePrices: Array<{ __typename?: 'ProfilePriceType', uid: string, profileUid: string, isActive: boolean, amount: number, profile: { __typename?: 'ProfileType', uid: string, name: string } }>, analysisPrices: Array<{ __typename?: 'AnalysisPriceType', uid: string, analysisUid: string, isActive: boolean, amount: number, analysis: { __typename?: 'AnalysisType', uid: string, name: string } }> } };
+
 export type GetDiscountForProfileQueryVariables = Exact<{
   profileUid: Scalars['String']['input'];
 }>;

@@ -53,6 +53,14 @@ class ProfilePriceType:
 
 
 @strawberry.type
+class BatchPricesType:
+    """Batch response type for fetching multiple prices at once"""
+
+    profile_prices: list[ProfilePriceType]
+    analysis_prices: list[AnalysisPriceType]
+
+
+@strawberry.type
 class AnalysisDiscountType:
     uid: str
     analysis_uid: str

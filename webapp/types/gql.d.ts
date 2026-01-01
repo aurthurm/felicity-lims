@@ -1542,6 +1542,12 @@ export type AuthenticatedData = {
 
 export type AuthenticatedDataResponse = AuthenticatedData | OperationError;
 
+export type BatchPricesType = {
+  __typename?: 'BatchPricesType';
+  analysisPrices: Array<AnalysisPriceType>;
+  profilePrices: Array<ProfilePriceType>;
+};
+
 export type BillTransactionInput = {
   amount: Scalars['Float']['input'];
   kind: Scalars['String']['input'];
@@ -6559,6 +6565,7 @@ export type Query = {
   permissionsByTarget: Array<PermissionType>;
   priceForAnalysis?: Maybe<AnalysisPriceType>;
   priceForProfile?: Maybe<ProfilePriceType>;
+  pricesForBatch: BatchPricesType;
   profileAll: Array<ProfileType>;
   profileByUid: ProfileType;
   profileMappingsByProfile: Array<ProfileMappingType>;
@@ -7788,6 +7795,12 @@ export type QueryPriceForAnalysisArgs = {
 
 export type QueryPriceForProfileArgs = {
   profileUid: Scalars['String']['input'];
+};
+
+
+export type QueryPricesForBatchArgs = {
+  analysisUids: Array<Scalars['String']['input']>;
+  profileUids: Array<Scalars['String']['input']>;
 };
 
 
@@ -9756,6 +9769,7 @@ export type UserPreferenceType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserPreferenceType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+  userUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserResponse = OperationError | UserType;

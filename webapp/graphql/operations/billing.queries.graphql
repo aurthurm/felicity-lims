@@ -17,6 +17,31 @@ query GetPriceForAnalysis($analysisUid: String!) {
     }
 }
 
+query GetBatchPrices($profileUids: [String!]!, $analysisUids: [String!]!) {
+    pricesForBatch(profileUids: $profileUids, analysisUids: $analysisUids) {
+        profilePrices {
+            uid
+            profileUid
+            profile {
+                uid
+                name
+            }
+            isActive
+            amount
+        }
+        analysisPrices {
+            uid
+            analysisUid
+            analysis {
+                uid
+                name
+            }
+            isActive
+            amount
+        }
+    }
+}
+
 query GetDiscountForProfile($profileUid: String!) {
     discountForProfile(profileUid: $profileUid) {
         uid

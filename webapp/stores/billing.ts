@@ -33,6 +33,9 @@ import {
     SearchBillsDocument,
     SearchBillsQuery,
     SearchBillsQueryVariables,
+    GetBatchPricesDocument,
+    GetBatchPricesQuery,
+    GetBatchPricesQueryVariables,
 } from '@/graphql/operations/billing.queries';
 
 import useApiUtil from '@/composables/api_util';
@@ -72,6 +75,10 @@ type BillingStateType = {
     };
     transactions: TestBillTransactionType[];
     fetchingTransactions: boolean;
+    // Price caching for batch operations
+    profilePrices: Map<string, ProfilePriceType>;
+    analysisPrices: Map<string, AnalysisPriceType>;
+    fetchingPrices: boolean;
 };
 
 export const useBillingStore = defineStore('billing', {
@@ -92,6 +99,9 @@ export const useBillingStore = defineStore('billing', {
             billPageInfo: undefined,
             transactions: [],
             fetchingTransactions: false,
+            profilePrices: new Map(),
+            analysisPrices: new Map(),
+            fetchingPrices: false,
         };
     },
     getters: {
@@ -516,6 +526,71 @@ export const useBillingStore = defineStore('billing', {
             } finally {
                 this.fetchingBills = false;
             }
+        },
+
+        // Batch fetch prices for multiple profiles and analyses
+        async fetchBatchPrices(profileUids: string[], analysisUids: string[]): Promise<void> {
+            if (!profileUids.length && !analysisUids.length) {
+                return;
+            }
+
+            try {
+                this.fetchingPrices = true;
+                const result = await withClientQuery<GetBatchPricesQuery, GetBatchPricesQueryVariables>(
+                    GetBatchPricesDocument,
+                    {
+                        profileUids: profileUids || [],
+                        analysisUids: analysisUids || []
+                    },
+                    'pricesForBatch'
+                );
+
+                if (result && typeof result === 'object') {
+                    const batchResult = result as any;
+
+                    // Update profile prices cache
+                    if (batchResult.profilePrices && Array.isArray(batchResult.profilePrices)) {
+                        batchResult.profilePrices.forEach((price: ProfilePriceType) => {
+                            if (price.profileUid) {
+                                this.profilePrices.set(price.profileUid, price);
+                            }
+                        });
+                    }
+
+                    // Update analysis prices cache
+                    if (batchResult.analysisPrices && Array.isArray(batchResult.analysisPrices)) {
+                        batchResult.analysisPrices.forEach((price: AnalysisPriceType) => {
+                            if (price.analysisUid) {
+                                this.analysisPrices.set(price.analysisUid, price);
+                            }
+                        });
+                    }
+                } else {
+                    console.error('Invalid batch prices data received:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching batch prices:', error);
+            } finally {
+                this.fetchingPrices = false;
+            }
+        },
+
+        // Get price for a profile from cache
+        getPriceForProfile(profileUid: string): number | null {
+            const price = this.profilePrices.get(profileUid);
+            return price?.amount ?? null;
+        },
+
+        // Get price for an analysis from cache
+        getPriceForAnalysis(analysisUid: string): number | null {
+            const price = this.analysisPrices.get(analysisUid);
+            return price?.amount ?? null;
+        },
+
+        // Clear price cache
+        clearPriceCache(): void {
+            this.profilePrices.clear();
+            this.analysisPrices.clear();
         },
     },
 });
