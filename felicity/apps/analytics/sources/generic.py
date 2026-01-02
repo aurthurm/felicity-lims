@@ -61,7 +61,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         status_filter = "sa.status IN :statuses" if statuses else "1=0"
         lab_filter = "sa.laboratory_uid IN :lab_uids" if lab_uids else "1=0"
         department_filter = (
-            "AND an.department_uid IN :department_uids" if department_uids else ""
+            "AND an.department_uid = ANY(:department_uids)" if department_uids else ""
         )
 
         stmt = text(
@@ -120,7 +120,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
                     "an_uids": an_uids,
                     "statuses": statuses,
                     "lab_uids": lab_uids,
-                    "department_uids": tuple(department_uids),
+                    "department_uids": list(department_uids),
                 },
             )
 
@@ -304,13 +304,13 @@ class EntityAnalyticsInit(Generic[ModelType]):
                         SELECT 1 FROM sample_analysis sa_dept
                         INNER JOIN analysis an_dept ON an_dept.uid = sa_dept.analysis_uid
                         WHERE sa_dept.sample_uid = {self.table}.uid
-                        AND an_dept.department_uid IN :department_uids
+                        AND an_dept.department_uid = ANY(:department_uids)
                     )
                     OR EXISTS (
                         SELECT 1 FROM sample_profile sp_dept
                         INNER JOIN profile pr_dept ON pr_dept.uid = sp_dept.profile_uid
                         WHERE sp_dept.sample_uid = {self.table}.uid
-                        AND pr_dept.department_uid IN :department_uids
+                        AND pr_dept.department_uid = ANY(:department_uids)
                     )
                 )
             """
@@ -344,7 +344,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if current_lab_uid:
             params["lab_uid"] = current_lab_uid
         if department_uids:
-            params["department_uids"] = tuple(department_uids)
+            params["department_uids"] = list(department_uids)
 
         stmt = text(raw_sql)
 
@@ -393,7 +393,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
             f"AND {self.alias}.laboratory_uid = :lab_uid" if current_lab_uid else ""
         )
         department_filter_sql = (
-            "AND a.department_uid IN :department_uids" if department_uids else ""
+            "AND a.department_uid = ANY(:department_uids)" if department_uids else ""
         )
 
         raw_sql = f"""
@@ -430,7 +430,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if current_lab_uid:
             params["lab_uid"] = current_lab_uid
         if department_uids:
-            params["department_uids"] = tuple(department_uids)
+            params["department_uids"] = list(department_uids)
 
         stmt = text(raw_sql)
 
@@ -456,13 +456,13 @@ class EntityAnalyticsInit(Generic[ModelType]):
                         SELECT 1 FROM sample_analysis sa_dept
                         INNER JOIN analysis an_dept ON an_dept.uid = sa_dept.analysis_uid
                         WHERE sa_dept.sample_uid = {self.alias}.uid
-                        AND an_dept.department_uid IN :department_uids
+                        AND an_dept.department_uid = ANY(:department_uids)
                     )
                     OR EXISTS (
                         SELECT 1 FROM sample_profile sp_dept
                         INNER JOIN profile pr_dept ON pr_dept.uid = sp_dept.profile_uid
                         WHERE sp_dept.sample_uid = {self.alias}.uid
-                        AND pr_dept.department_uid IN :department_uids
+                        AND pr_dept.department_uid = ANY(:department_uids)
                     )
                 )
             """
@@ -516,7 +516,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if current_lab_uid:
             params["lab_uid"] = current_lab_uid
         if department_uids:
-            params["department_uids"] = tuple(department_uids)
+            params["department_uids"] = list(department_uids)
 
         stmt_for_incomplete = text(raw_sql_for_incomplete)
         stmt_for_complete = text(raw_sql_for_complete)
