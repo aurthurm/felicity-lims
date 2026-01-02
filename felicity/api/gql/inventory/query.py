@@ -10,6 +10,7 @@ from felicity.api.gql.types import PageInfo
 from felicity.apps.guard import FAction, FObject
 from felicity.apps.inventory.services import (
     HazardService,
+    InventoryKPIService,
     StockAdjustmentService,
     StockCategoryService,
     StockItemService,
@@ -39,6 +40,21 @@ async def _get_department_uids() -> list[str]:
 
 @strawberry.type
 class InventoryQuery:
+    @strawberry.field(
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    HasPermission(FAction.READ, FObject.PRODUCT),
+                ]
+            )
+        ]
+    )
+    async def inventory_kpis(
+        self, info, text: str | None = None, limit: int | None = None
+    ) -> List[types.InventoryKPIType]:
+        kpis = await InventoryKPIService().get_kpis(text=text, limit=limit)
+        return [types.InventoryKPIType(**kpi) for kpi in kpis]
     @strawberry.field(
         extensions=[
             PermissionExtension(

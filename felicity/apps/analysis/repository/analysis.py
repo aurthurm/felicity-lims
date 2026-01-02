@@ -18,6 +18,7 @@ from felicity.apps.analysis.entities.analysis import (
     RejectionReason,
     ResultOption,
     Sample,
+    SampleRelationship,
     SampleType,
     SampleTypeCoding,
     ClinicalData,
@@ -159,8 +160,8 @@ class SampleRepository(BaseRepository[Sample]):
                 filters.append(
                     {
                         or_: {
-                            "analyses__department_uid__in": department_uids,
-                            "profiles__department_uid__in": department_uids,
+                            "analyses___department_uid__in": department_uids,
+                            "profiles___department_uid__in": department_uids,
                         }
                     }
                 )
@@ -177,3 +178,8 @@ class SampleRepository(BaseRepository[Sample]):
             filters=filters, sort_attrs=["uid"]
         )
         return (await self.async_session().execute(stmt)).scalars().all()
+
+
+class SampleRelationshipRepository(BaseRepository[SampleRelationship]):
+    def __init__(self) -> None:
+        super().__init__(SampleRelationship)

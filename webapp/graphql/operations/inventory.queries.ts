@@ -311,6 +311,32 @@ export type GetAllStockAdjustmentsQuery = (
   ) }
 );
 
+export type GetInventoryKpisQueryVariables = Types.Exact<{
+  text?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  limit?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+}>;
+
+
+export type GetInventoryKpisQuery = (
+  { __typename?: 'Query' }
+  & { inventoryKpis: Array<(
+    { __typename?: 'InventoryKPIType' }
+    & Pick<
+      Types.InventoryKpiType,
+      | 'productUid'
+      | 'productName'
+      | 'stockItemUid'
+      | 'currentStock'
+      | 'minimumLevel'
+      | 'maximumLevel'
+      | 'reorderPoint'
+      | 'reorderQuantity'
+      | 'lowStock'
+      | 'reorderNow'
+    >
+  )> }
+);
+
 
 export const GetAllHazardsDocument = gql`
     query getAllHazards {
@@ -568,4 +594,24 @@ export const GetAllStockAdjustmentsDocument = gql`
 
 export function useGetAllStockAdjustmentsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllStockAdjustmentsQueryVariables | undefined>, 'query'>) {
   return Urql.useQuery<GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables | undefined>({ query: GetAllStockAdjustmentsDocument, variables: undefined, ...options });
+};
+export const GetInventoryKpisDocument = gql`
+    query getInventoryKpis($text: String, $limit: Int) {
+  inventoryKpis(text: $text, limit: $limit) {
+    productUid
+    productName
+    stockItemUid
+    currentStock
+    minimumLevel
+    maximumLevel
+    reorderPoint
+    reorderQuantity
+    lowStock
+    reorderNow
+  }
+}
+    `;
+
+export function useGetInventoryKpisQuery(options?: Omit<Urql.UseQueryArgs<never, GetInventoryKpisQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetInventoryKpisQuery, GetInventoryKpisQueryVariables | undefined>({ query: GetInventoryKpisDocument, variables: undefined, ...options });
 };

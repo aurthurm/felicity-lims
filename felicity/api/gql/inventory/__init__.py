@@ -14,6 +14,7 @@ from .types import (
     StockOrderEdge,
     StockOrderProductType,
     StockOrderType,
+    InventoryKPIType,
     StockPackagingType,
     StockTransactionCursorPage,
     StockTransactionEdge,
@@ -42,4 +43,5 @@ inventory_types = [
     StockAdjustmentType,
     StockAdjustmentEdge,
     StockAdjustmentCursorPage,
+    InventoryKPIType,
 ]

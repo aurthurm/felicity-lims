@@ -22,6 +22,7 @@ from felicity.apps.analysis.entities.analysis import (
     RejectionReason,
     ResultOption,
     Sample,
+    SampleRelationship,
     SampleType,
     SampleTypeCoding,
     sample_profile,
@@ -29,7 +30,7 @@ from felicity.apps.analysis.entities.analysis import (
     ClinicalData,
     ClinicalDataCoding,
 )
-from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.analysis.enum import ResultState, SampleState, SampleRelationshipType
 from felicity.apps.analysis.repository.analysis import (
     AnalysisCategoryRepository,
     AnalysisCodingRepository,
@@ -47,6 +48,7 @@ from felicity.apps.analysis.repository.analysis import (
     RejectionReasonRepository,
     ResultOptionRepository,
     SampleRepository,
+    SampleRelationshipRepository,
     SampleTypeCodingRepository,
     SampleTypeRepository,
     ClinicalDataRepository,
@@ -84,6 +86,8 @@ from felicity.apps.analysis.schemas import (
     ResultOptionCreate,
     ResultOptionUpdate,
     SampleCreate,
+    SampleRelationshipCreate,
+    SampleRelationshipUpdate,
     SampleTypeCodingCreate,
     SampleTypeCodingUpdate,
     SampleTypeCreate,
@@ -239,6 +243,35 @@ class ResultOptionService(
 ):
     def __init__(self):
         super().__init__(ResultOptionRepository())
+
+
+class SampleRelationshipService(
+    BaseService[
+        SampleRelationship, SampleRelationshipCreate, SampleRelationshipUpdate
+    ]
+):
+    def __init__(self) -> None:
+        super().__init__(SampleRelationshipRepository())
+
+    async def create_relationship(
+        self,
+        parent_sample_uid: str | None,
+        child_sample_uid: str,
+        relationship_type: str,
+        notes: str | None = None,
+        metadata_snapshot: dict | None = None,
+        commit: bool = True,
+        session: AsyncSession | None = None,
+    ) -> SampleRelationship:
+        await SampleService()._validate_no_cycle(parent_sample_uid, child_sample_uid)
+        payload = SampleRelationshipCreate(
+            parent_sample_uid=parent_sample_uid,
+            child_sample_uid=child_sample_uid,
+            relationship_type=relationship_type,
+            notes=notes,
+            metadata_snapshot=metadata_snapshot,
+        )
+        return await self.create(payload, commit=commit, session=session)
 
 
 class AnalysisRequestService(
@@ -687,6 +720,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["profiles"] = sample.profiles
         data["analyses"] = sample.analyses
         data["parent_id"] = sample.uid
+        data["relationship_type"] = SampleRelationshipType.DERIVED
         data["created_by_uid"] = duplicator.uid
         return await super().create(data, commit=commit, session=session)
 
@@ -704,8 +738,100 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["profiles"] = sample.profiles
         data["analyses"] = sample.analyses
         data["parent_id"] = sample.uid
+        data["relationship_type"] = SampleRelationshipType.DERIVED
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data, commit=commit, session=session)
+
+    async def _validate_no_cycle(self, parent_uid: str | None, child_uid: str) -> None:
+        if not parent_uid:
+            return
+        if parent_uid == child_uid:
+            raise ValueError("Sample cannot be its own parent")
+
+        current_uid = parent_uid
+        while current_uid:
+            if current_uid == child_uid:
+                raise ValueError("Sample ancestry cycle detected")
+            parent = await self.get(uid=current_uid)
+            current_uid = parent.parent_id if parent else None
+
+    async def build_genealogy_tree(
+        self,
+        sample_uid: str,
+        depth: int = 5,
+        include_tests: bool = False,
+        include_extra_relationships: bool = False,
+    ) -> dict | None:
+        sample = await self.get(uid=sample_uid)
+        if not sample:
+            return None
+        def _node_payload(_sample: Sample) -> dict:
+            return {
+                "sample_uid": _sample.uid,
+                "sample_id": _sample.sample_id,
+                "relationship_type": _sample.relationship_type,
+                "children": [],
+                "tests": [],
+                "extra_relationships": [],
+            }
+
+        visited: set[str] = set()
+
+        async def _expand(node: dict, remaining: int) -> None:
+            if remaining <= 0:
+                return
+            if node["sample_uid"] in visited:
+                return
+            visited.add(node["sample_uid"])
+
+            if include_tests:
+                results = await AnalysisResultService().get_all(
+                    sample_uid=node["sample_uid"]
+                )
+                node["tests"] = results
+
+            if include_extra_relationships:
+                rel_service = SampleRelationshipService()
+                node["extra_relationships"] = await rel_service.get_all(
+                    parent_sample_uid=node["sample_uid"]
+                )
+
+            parent_samples = []
+            parent_uids = set()
+
+            if include_extra_relationships:
+                rel_service = SampleRelationshipService()
+                rel_parents = await rel_service.get_all(
+                    child_sample_uid=node["sample_uid"]
+                )
+                rel_parent_uids = [
+                    rel.parent_sample_uid for rel in rel_parents if rel.parent_sample_uid
+                ]
+                if rel_parent_uids:
+                    rel_parent_samples = await self.get_by_uids(uids=rel_parent_uids)
+                    for rel_sample in rel_parent_samples:
+                        if rel_sample.uid not in parent_uids:
+                            parent_samples.append(rel_sample)
+                            parent_uids.add(rel_sample.uid)
+
+            if node.get("parent_id"):
+                if node["parent_id"] not in parent_uids:
+                    mptt_parent = await self.get(uid=node["parent_id"])
+                    if mptt_parent:
+                        parent_samples.append(mptt_parent)
+                        parent_uids.add(mptt_parent.uid)
+
+            for parent in parent_samples:
+                parent_node = _node_payload(parent)
+                parent_node["parent_id"] = parent.parent_id
+                node["children"].append(parent_node)
+                await _expand(parent_node, remaining - 1)
+
+        root = _node_payload(sample)
+        root["parent_id"] = sample.parent_id
+        await _expand(root, depth)
+
+        return root
 
     async def get_by_analyses(self, analyses: list[str]) -> list[Sample]:
         return await self.get_all(analysis_results___analysis_uid__in=analyses)

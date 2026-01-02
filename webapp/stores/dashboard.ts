@@ -61,7 +61,7 @@ dayjs.extend(quarterOfYear);
 export const useDashBoardStore = defineStore('dashboard', () => {
     const dashboard = ref({
         currentTab: 'overview',
-        tabs: ['overview', 'resource', 'laggard', 'peformance', 'notices', 'line-listing'], // 'tat'
+        tabs: ['overview', 'resource', 'laggard', 'peformance', 'notices', 'line-listing', 'inventory'], // 'tat'
         showFilters: false,
         filterRange: { from: '', fromIso: '', to: '', toIso: '' },
         currentFilter: 'TW',

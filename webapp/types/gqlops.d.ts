@@ -448,6 +448,16 @@ export type CloneSamplesMutation = { __typename?: 'Mutation', cloneSamples:
     | { __typename: 'SampleListingType', samples: Array<{ __typename?: 'SampleType', uid: string, parentId?: string | null, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> }
    };
 
+export type DeriveAnalysisRequestMutationVariables = Exact<{
+  payload: DeriveAnalysisRequestInputType;
+}>;
+
+
+export type DeriveAnalysisRequestMutation = { __typename?: 'Mutation', deriveAnalysisRequest:
+    | { __typename: 'AnalysisRequestWithSamples', uid: string, samples?: Array<{ __typename?: 'SampleType', uid: string, parentId?: string | null, sampleId: string, priority: number, status?: string | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }> }> | null }
+    | { __typename: 'OperationError', error: string, suggestion?: string | null }
+   };
+
 export type CancelSamplesMutationVariables = Exact<{
   samples: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
@@ -1023,7 +1033,7 @@ export type GetAllSamplesQueryVariables = Exact<{
 }>;
 
 
-export type GetAllSamplesQuery = { __typename?: 'Query', sampleAll: { __typename?: 'SampleCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null }, items?: Array<{ __typename?: 'SamplesWithResults', uid: string, createdByUid?: string | null, createdAt?: string | null, dateCollected?: never | null, dateReceived?: never | null, dateSubmitted?: never | null, dateVerified?: never | null, datePublished?: never | null, datePrinted?: never | null, dateStored?: never | null, printed?: boolean | null, dueDate?: string | null, sampleId: string, priority: number, status?: string | null, storageSlot?: string | null, storageContainerUid?: string | null, createdBy?: { __typename?: 'UserType', firstName?: string | null, lastName?: string | null, userName: string } | null, analysisRequest?: { __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, client?: { __typename?: 'ClientType', uid: string, name: string, code: string, district?: { __typename?: 'DistrictType', name?: string | null, province?: { __typename?: 'ProvinceType', name?: string | null } | null } | null } | null } | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, storageContainer?: { __typename?: 'StorageContainerType', uid: string, name: string, storageSection?: { __typename?: 'StorageSectionType', uid: string, name: string, storageLocation?: { __typename?: 'StorageLocationType', uid: string, name: string, storeRoom?: { __typename?: 'StoreRoomType', uid: string, name: string } | null } | null } | null } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }>, rejectionReasons?: Array<{ __typename?: 'RejectionReasonType', uid: string, reason: string }> | null }> | null } };
+export type GetAllSamplesQuery = { __typename?: 'Query', sampleAll: { __typename?: 'SampleCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null }, items?: Array<{ __typename?: 'SamplesWithResults', uid: string, createdByUid?: string | null, createdAt?: string | null, dateCollected?: never | null, dateReceived?: never | null, dateSubmitted?: never | null, dateVerified?: never | null, datePublished?: never | null, datePrinted?: never | null, dateStored?: never | null, printed?: boolean | null, dueDate?: string | null, sampleId: string, relationshipType?: string | null, priority: number, status?: string | null, storageSlot?: string | null, storageContainerUid?: string | null, createdBy?: { __typename?: 'UserType', firstName?: string | null, lastName?: string | null, userName: string } | null, analysisRequest?: { __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, client?: { __typename?: 'ClientType', uid: string, name: string, code: string, district?: { __typename?: 'DistrictType', name?: string | null, province?: { __typename?: 'ProvinceType', name?: string | null } | null } | null } | null } | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, storageContainer?: { __typename?: 'StorageContainerType', uid: string, name: string, storageSection?: { __typename?: 'StorageSectionType', uid: string, name: string, storageLocation?: { __typename?: 'StorageLocationType', uid: string, name: string, storeRoom?: { __typename?: 'StoreRoomType', uid: string, name: string } | null } | null } | null } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, sortKey?: number | null }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }>, rejectionReasons?: Array<{ __typename?: 'RejectionReasonType', uid: string, reason: string }> | null }> | null } };
 
 export type GetSamplesForShipmentAssignQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1082,7 +1092,7 @@ export type GetSampleByUidQueryVariables = Exact<{
 }>;
 
 
-export type GetSampleByUidQuery = { __typename?: 'Query', sampleByUid: { __typename?: 'SampleType', uid: string, createdByUid?: string | null, createdAt?: string | null, dateReceived?: never | null, receivedByUid?: string | null, dateCollected?: never | null, dateSubmitted?: never | null, submittedByUid?: string | null, dateVerified?: never | null, verifiedByUid?: string | null, datePublished?: never | null, datePrinted?: never | null, printedByUid?: string | null, dateInvalidated?: never | null, invalidatedByUid?: string | null, dateCancelled?: never | null, cancelledByUid?: string | null, dueDate?: string | null, sampleId: string, priority: number, status?: string | null, dateStored?: never | null, storageSlot?: string | null, storageContainerUid?: string | null, createdBy?: { __typename?: 'UserType', firstName?: string | null, lastName?: string | null, userName: string } | null, analysisRequest?: { __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, client?: { __typename?: 'ClientType', uid: string, name: string } | null } | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, storageContainer?: { __typename?: 'StorageContainerType', uid: string, name: string, storageSection?: { __typename?: 'StorageSectionType', uid: string, name: string, storageLocation?: { __typename?: 'StorageLocationType', uid: string, name: string, storeRoom?: { __typename?: 'StoreRoomType', uid: string, name: string } | null } | null } | null } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }>, rejectionReasons?: Array<{ __typename?: 'RejectionReasonType', uid: string, reason: string }> | null } };
+export type GetSampleByUidQuery = { __typename?: 'Query', sampleByUid: { __typename?: 'SampleType', uid: string, createdByUid?: string | null, createdAt?: string | null, dateReceived?: never | null, receivedByUid?: string | null, dateCollected?: never | null, dateSubmitted?: never | null, submittedByUid?: string | null, dateVerified?: never | null, verifiedByUid?: string | null, datePublished?: never | null, datePrinted?: never | null, printedByUid?: string | null, dateInvalidated?: never | null, invalidatedByUid?: string | null, dateCancelled?: never | null, cancelledByUid?: string | null, dueDate?: string | null, sampleId: string, priority: number, status?: string | null, relationshipType?: string | null, dateStored?: never | null, storageSlot?: string | null, storageContainerUid?: string | null, createdBy?: { __typename?: 'UserType', firstName?: string | null, lastName?: string | null, userName: string } | null, analysisRequest?: { __typename?: 'AnalysisRequestType', uid: string, clientRequestId: string, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, gender?: string | null, dateOfBirth?: never | null, age?: number | null, ageDobEstimated: boolean, consentSms: boolean }, client?: { __typename?: 'ClientType', uid: string, name: string } | null } | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, storageContainer?: { __typename?: 'StorageContainerType', uid: string, name: string, storageSection?: { __typename?: 'StorageSectionType', uid: string, name: string, storageLocation?: { __typename?: 'StorageLocationType', uid: string, name: string, storeRoom?: { __typename?: 'StoreRoomType', uid: string, name: string } | null } | null } | null } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null, profiles: Array<{ __typename?: 'ProfileType', uid: string, name: string }>, rejectionReasons?: Array<{ __typename?: 'RejectionReasonType', uid: string, reason: string }> | null } };
 
 export type GetSampleParentIdQueryVariables = Exact<{
   parentId: Scalars['String']['input'];
@@ -1174,6 +1184,18 @@ export type BarcodeSamplesQueryVariables = Exact<{
 
 
 export type BarcodeSamplesQuery = { __typename?: 'Query', barcodeSamples?: Array<never> | null };
+
+export type SampleGenealogyNodeFieldsFragment = { __typename?: 'SampleGenealogyNode', sampleUid: string, sampleId?: string | null, relationshipType?: string | null };
+
+export type GetSampleGenealogyQueryVariables = Exact<{
+  sampleUid: Scalars['String']['input'];
+  depth?: InputMaybe<Scalars['Int']['input']>;
+  includeTests?: InputMaybe<Scalars['Boolean']['input']>;
+  includeExtraRelationships?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type GetSampleGenealogyQuery = { __typename?: 'Query', sampleGenealogy?: { __typename?: 'SampleGenealogyNode', sampleUid: string, sampleId?: string | null, relationshipType?: string | null, children: Array<{ __typename?: 'SampleGenealogyNode', sampleUid: string, sampleId?: string | null, relationshipType?: string | null, children: Array<{ __typename?: 'SampleGenealogyNode', sampleUid: string, sampleId?: string | null, relationshipType?: string | null, children: Array<{ __typename?: 'SampleGenealogyNode', sampleUid: string, sampleId?: string | null, relationshipType?: string | null }> }> }> } | null };
 
 export type EditProfilePricingMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -2376,6 +2398,14 @@ export type GetAllStockAdjustmentsQueryVariables = Exact<{
 
 
 export type GetAllStockAdjustmentsQuery = { __typename?: 'Query', stockAdjustmentAll: { __typename?: 'StockAdjustmentCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'StockAdjustmentType', uid: string, productUid?: string | null, adjustmentType?: string | null, adjust?: number | null, adjustmentDate?: string | null, remarks?: string | null, adjustmentByUid?: string | null, createdAt?: string | null, createdByUid?: string | null, updatedAt?: string | null, updatedByUid?: string | null, product?: { __typename?: 'StockItemVariantType', name: string } | null, adjustmentBy?: { __typename?: 'UserType', firstName?: string | null, lastName?: string | null } | null }> | null } };
+
+export type GetInventoryKpisQueryVariables = Exact<{
+  text?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetInventoryKpisQuery = { __typename?: 'Query', inventoryKpis: Array<{ __typename?: 'InventoryKPIType', productUid: string, productName: string, stockItemUid?: string | null, currentStock: number, minimumLevel: number, maximumLevel: number, reorderPoint: number, reorderQuantity: number, lowStock: boolean, reorderNow: boolean }> };
 
 export type ParseAnalyserMessageMutationVariables = Exact<{
   message: Scalars['String']['input'];

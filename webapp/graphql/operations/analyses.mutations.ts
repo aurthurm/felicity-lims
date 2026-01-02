@@ -224,6 +224,50 @@ export type CloneSamplesMutation = (
    }
 );
 
+export type DeriveAnalysisRequestMutationVariables = Types.Exact<{
+  payload: Types.DeriveAnalysisRequestInputType;
+}>;
+
+
+export type DeriveAnalysisRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { deriveAnalysisRequest:
+    | (
+      { __typename: 'AnalysisRequestWithSamples' }
+      & Pick<Types.AnalysisRequestWithSamples, 'uid'>
+      & { samples?: Types.Maybe<Array<(
+        { __typename?: 'SampleType' }
+        & Pick<
+          Types.SampleType,
+          | 'uid'
+          | 'parentId'
+          | 'sampleId'
+          | 'priority'
+          | 'status'
+        >
+        & {
+          sampleType?: Types.Maybe<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>,
+          analyses?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+          )>>,
+          profiles: Array<(
+            { __typename?: 'ProfileType' }
+            & Pick<Types.ProfileType, 'uid' | 'name'>
+          )>,
+        }
+      )>> }
+    )
+    | (
+      { __typename: 'OperationError' }
+      & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )
+   }
+);
+
 export type CancelSamplesMutationVariables = Types.Exact<{
   samples: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
 }>;
@@ -2032,6 +2076,45 @@ export const CloneSamplesDocument = gql`
 
 export function useCloneSamplesMutation() {
   return Urql.useMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(CloneSamplesDocument);
+};
+export const DeriveAnalysisRequestDocument = gql`
+    mutation DeriveAnalysisRequest($payload: DeriveAnalysisRequestInputType!) {
+  deriveAnalysisRequest(payload: $payload) {
+    ... on AnalysisRequestWithSamples {
+      __typename
+      uid
+      samples {
+        uid
+        parentId
+        sampleType {
+          uid
+          name
+        }
+        sampleId
+        priority
+        status
+        analyses {
+          uid
+          name
+          sortKey
+        }
+        profiles {
+          uid
+          name
+        }
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useDeriveAnalysisRequestMutation() {
+  return Urql.useMutation<DeriveAnalysisRequestMutation, DeriveAnalysisRequestMutationVariables>(DeriveAnalysisRequestDocument);
 };
 export const CancelSamplesDocument = gql`
     mutation CancelSamples($samples: [String!]!) {

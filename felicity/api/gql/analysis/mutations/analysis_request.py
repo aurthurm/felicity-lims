@@ -22,7 +22,12 @@ from felicity.apps.analysis.entities.analysis import (
     sample_profile,
     sample_rejection_reason,
 )
-from felicity.apps.analysis.enum import ResultState, SamplePriority, SampleState
+from felicity.apps.analysis.enum import (
+    ResultState,
+    SamplePriority,
+    SampleRelationshipType,
+    SampleState,
+)
 from felicity.apps.analysis.schemas import ClinicalDataCreate
 from felicity.apps.analysis.services.analysis import (
     AnalysisRequestService,
@@ -30,6 +35,7 @@ from felicity.apps.analysis.services.analysis import (
     AnalysisTemplateService,
     ProfileService,
     RejectionReasonService,
+    SampleRelationshipService,
     SampleService,
     SampleTypeService,
     ClinicalDataService,
@@ -67,6 +73,27 @@ class ARSampleInputType:
     analyses: List[str]
     date_collected: str
     date_received: str
+
+
+@strawberry.input
+class ARDerivedSampleInputType:
+    parent_sample_uid: str | None = None
+    quantity: int | None = 1
+    sample_type_uid: str | None = None
+    profiles: List[str] | None = None
+    analyses: List[str] | None = None
+    notes: str | None = None
+    metadata_snapshot: JSON | None = None
+
+
+@strawberry.input
+class ARPoolSampleInputType:
+    parent_sample_uids: List[str] | None = None
+    sample_type_uid: str | None = None
+    profiles: List[str] | None = None
+    analyses: List[str] | None = None
+    notes: str | None = None
+    metadata_snapshot: JSON | None = None
 
 
 @strawberry.input
@@ -136,6 +163,13 @@ class AnalysisRequestInputType:
     client_request_id: str | None = None
     internal_use: bool | None = False
     priority: int = SamplePriority.NORMAL
+
+
+@strawberry.input
+class DeriveAnalysisRequestInputType:
+    aliquots: List[ARDerivedSampleInputType] | None = None
+    derivatives: List[ARDerivedSampleInputType] | None = None
+    pools: List[ARPoolSampleInputType] | None = None
 
 
 @strawberry.input
@@ -396,6 +430,485 @@ async def create_analysis_request(
     # auto_bill=True during sample registration
     await bill_order(analysis_request.uid, auto_bill=True)
     #
+    _ar = analysis_request.marshal_simple()
+    del _ar["client"]
+    return a_types.AnalysisRequestWithSamples(**_ar)
+
+
+@strawberry.mutation(
+    extensions=[
+        PermissionExtension(
+            permissions=[
+                IsAuthenticated(),
+                HasPermission(FAction.CREATE, FObject.SAMPLE),
+            ]
+        )
+    ]
+)
+async def derive_analysis_request(
+    info, payload: DeriveAnalysisRequestInputType
+) -> AnalysisRequestResponse:
+    logger.info("Received request to derive samples from an analysis request")
+
+    felicity_user = await auth_from_info(info)
+    aliquots_payload = payload.aliquots or []
+    derivatives_payload = payload.derivatives or []
+    pools_payload = payload.pools or []
+
+    if not (aliquots_payload or derivatives_payload or pools_payload):
+        return OperationError(error="No derived samples provided")
+
+    created_sample_uids: list[str] = []
+
+    async with SampleService().repository.async_session() as transaction_session:
+        sample_service = SampleService()
+        profile_service = ProfileService()
+        analysis_service = AnalysisService()
+        relationship_service = SampleRelationshipService()
+        sample_details: dict[str, dict] = {}
+
+        async def _resolve_profiles_analyses(
+            profiles_uids: list[str] | None,
+            analyses_uids: list[str] | None,
+            fallback_details: dict | None = None,
+        ):
+            profiles = []
+            analyses = []
+            profile_analyses = set()
+
+            if profiles_uids is None and analyses_uids is None and fallback_details:
+                profiles = fallback_details.get("profiles", [])
+                analyses = fallback_details.get("analyses", [])
+                for _prof in profiles:
+                    for _an in _prof.analyses:
+                        profile_analyses.add(_an)
+                for _anal in analyses:
+                    if _anal not in profile_analyses:
+                        profile_analyses.add(_anal)
+                return profiles, analyses, profile_analyses
+
+            profiles_uids = profiles_uids or []
+            analyses_uids = analyses_uids or []
+
+            for p_uid in profiles_uids:
+                profile = await profile_service.get(
+                    related=["analyses"], uid=p_uid, session=transaction_session
+                )
+                if not profile:
+                    raise ValueError(f"Failed to retrieve profile {p_uid}")
+                profiles.append(profile)
+                for _an in profile.analyses:
+                    profile_analyses.add(_an)
+
+            for a_uid in analyses_uids:
+                analysis = await analysis_service.get(
+                    uid=a_uid, session=transaction_session
+                )
+                if not analysis:
+                    raise ValueError(f"Failed to retrieve analysis {a_uid}")
+                if analysis not in profile_analyses:
+                    analyses.append(analysis)
+                    profile_analyses.add(analysis)
+
+            return profiles, analyses, profile_analyses
+
+        async def _create_sample_with_tests(
+            sample_in: dict,
+            profiles_uids: list[str] | None,
+            analyses_uids: list[str] | None,
+            fallback_details: dict | None = None,
+        ):
+            profiles, analyses, profile_analyses = await _resolve_profiles_analyses(
+                profiles_uids, analyses_uids, fallback_details
+            )
+
+            if not profile_analyses:
+                raise ValueError("Samples must have either analysis or profiles or both")
+
+            tat_lengths = [
+                anal.tat_length_minutes
+                for anal in profile_analyses
+                if anal.tat_length_minutes
+            ]
+            if tat_lengths:
+                minutes = max(tat_lengths)
+                sample_in["due_date"] = timenow_dt() + timedelta(minutes=minutes)
+
+            sample_schema = schemas.SampleCreate(**sample_in)
+            sample = await sample_service.create(
+                sample_schema, session=transaction_session
+            )
+
+            for _prof in profiles:
+                await sample_service.repository.table_insert(
+                    table=sample_profile,
+                    mappings=[{"sample_uid": sample.uid, "profile_uid": _prof.uid}],
+                    session=transaction_session,
+                )
+
+            for _anal in analyses:
+                if _anal.keyword == "felicity_ast_abx_antibiotic":
+                    continue
+                await sample_service.repository.table_insert(
+                    table=sample_analysis,
+                    mappings=[{"sample_uid": sample.uid, "analysis_uid": _anal.uid}],
+                    session=transaction_session,
+                )
+
+            logger.info(
+                f"Adding {len(profile_analyses)} service results to the sample {sample.sample_id}"
+            )
+            a_result_schema = schemas.AnalysisResultCreate(
+                sample_uid=sample.uid,
+                status=ResultState.PENDING,
+                analysis_uid=None,
+                due_date=None,
+                metadata_snapshot={},
+                created_by_uid=felicity_user.uid,
+                updated_by_uid=felicity_user.uid,
+            )
+            result_schemas = []
+            for _service in profile_analyses:
+                result_schemas.append(
+                    a_result_schema.model_copy(
+                        update={
+                            "analysis_uid": _service.uid,
+                            "due_date": (
+                                timenow_dt()
+                                + timedelta(minutes=_service.tat_length_minutes)
+                                if _service.tat_length_minutes
+                                else None
+                            ),
+                        }
+                    )
+                )
+            created = await AnalysisResultService().bulk_create(
+                result_schemas,
+                related=["sample", "analysis"],
+                session=transaction_session,
+            )
+            for _a in created:
+                if _a.keyword == "felicity_ast_abx_organism":
+                    await AbxOrganismResultService().create(
+                        AbxOrganismResultCreate(
+                            analysis_result_uid=_a.uid,
+                            organism_uid=None,
+                            isolate_number=1,
+                        ),
+                        commit=False,
+                        session=transaction_session,
+                    )
+
+            return sample, profiles, analyses, profile_analyses
+
+        async def _get_sample_details(sample):
+            details = sample_details.get(sample.uid)
+            if details:
+                return details
+
+            profile_uids = await sample_service.table_query(
+                table=sample_profile,
+                columns=["profile_uid"],
+                session=transaction_session,
+                sample_uid=sample.uid,
+            )
+            profiles = []
+            for p_uid in profile_uids:
+                profile = await profile_service.get(
+                    related=["analyses"], uid=p_uid, session=transaction_session
+                )
+                if profile:
+                    profiles.append(profile)
+
+            analysis_uids = await sample_service.table_query(
+                table=sample_analysis,
+                columns=["analysis_uid"],
+                session=transaction_session,
+                sample_uid=sample.uid,
+            )
+            analyses = []
+            if analysis_uids:
+                analyses = await analysis_service.get_by_uids(
+                    uids=analysis_uids, session=transaction_session
+                )
+
+            profile_analyses = set()
+            for _prof in profiles:
+                for _an in _prof.analyses:
+                    profile_analyses.add(_an)
+            for _anal in analyses:
+                if _anal not in profile_analyses:
+                    profile_analyses.add(_anal)
+
+            details = {
+                "profiles": profiles,
+                "analyses": analyses,
+                "profile_analyses": list(profile_analyses),
+            }
+            sample_details[sample.uid] = details
+            return details
+
+        async def _get_parent_sample(parent_uid: str | None, label: str):
+            if not parent_uid:
+                return None, OperationError(error=f"{label} parent sample not provided")
+            parent = await sample_service.get(
+                uid=parent_uid, session=transaction_session
+            )
+            if not parent:
+                return None, OperationError(error=f"{label} parent sample not found")
+            return parent, None
+
+        for aliquot in aliquots_payload:
+            quantity = aliquot.quantity or 1
+            if quantity < 1:
+                await transaction_session.rollback()
+                return OperationError(error="Aliquot quantity must be at least 1")
+            parent, err = await _get_parent_sample(
+                aliquot.parent_sample_uid, "Aliquot"
+            )
+            if err:
+                await transaction_session.rollback()
+                return err
+
+            parent_details = await _get_sample_details(parent)
+            sample_type_uid = aliquot.sample_type_uid or parent.sample_type_uid
+            stype = await SampleTypeService().get(
+                uid=sample_type_uid, session=transaction_session
+            )
+            if not stype:
+                await transaction_session.rollback()
+                return OperationError(
+                    error=f"Error, failed to retrieve sample type {sample_type_uid}"
+                )
+
+            for _ in range(quantity):
+                sample_in = {
+                    "created_by_uid": felicity_user.uid,
+                    "updated_by_uid": felicity_user.uid,
+                    "analysis_request_uid": parent.analysis_request_uid,
+                    "date_collected": parent.date_collected,
+                    "date_received": parent.date_received,
+                    "sample_type_uid": sample_type_uid,
+                    "sample_id": None,
+                    "priority": parent.priority,
+                    "status": SampleState.EXPECTED,
+                    "metadata_snapshot": {},
+                    "parent_id": parent.uid,
+                    "relationship_type": SampleRelationshipType.ALIQUOT,
+                }
+
+                try:
+                    sample, profiles, analyses, profile_analyses = (
+                        await _create_sample_with_tests(
+                            sample_in,
+                            aliquot.profiles,
+                            aliquot.analyses,
+                            parent_details,
+                        )
+                    )
+                except ValueError as exc:
+                    await transaction_session.rollback()
+                    return OperationError(error=str(exc))
+
+                await relationship_service.create_relationship(
+                    parent_sample_uid=parent.uid,
+                    child_sample_uid=sample.uid,
+                    relationship_type=SampleRelationshipType.ALIQUOT,
+                    notes=aliquot.notes,
+                    metadata_snapshot=aliquot.metadata_snapshot,
+                    session=transaction_session,
+                )
+
+                created_sample_uids.append(sample.uid)
+                sample_details[sample.uid] = {
+                    "profiles": profiles,
+                    "analyses": analyses,
+                    "profile_analyses": list(profile_analyses),
+                }
+
+        for derivative in derivatives_payload:
+            quantity = derivative.quantity or 1
+            if quantity < 1:
+                await transaction_session.rollback()
+                return OperationError(error="Derivative quantity must be at least 1")
+            parent, err = await _get_parent_sample(
+                derivative.parent_sample_uid, "Derivative"
+            )
+            if err:
+                await transaction_session.rollback()
+                return err
+
+            if not derivative.sample_type_uid:
+                await transaction_session.rollback()
+                return OperationError(error="Derivative sample type is required")
+
+            stype = await SampleTypeService().get(
+                uid=derivative.sample_type_uid, session=transaction_session
+            )
+            if not stype:
+                await transaction_session.rollback()
+                return OperationError(
+                    error=f"Error, failed to retrieve sample type {derivative.sample_type_uid}"
+                )
+
+            parent_details = await _get_sample_details(parent)
+            for _ in range(quantity):
+                sample_in = {
+                    "created_by_uid": felicity_user.uid,
+                    "updated_by_uid": felicity_user.uid,
+                    "analysis_request_uid": parent.analysis_request_uid,
+                    "date_collected": parent.date_collected,
+                    "date_received": parent.date_received,
+                    "sample_type_uid": derivative.sample_type_uid,
+                    "sample_id": None,
+                    "priority": parent.priority,
+                    "status": SampleState.EXPECTED,
+                    "metadata_snapshot": {},
+                    "parent_id": parent.uid,
+                    "relationship_type": SampleRelationshipType.DERIVED,
+                }
+
+                try:
+                    sample, profiles, analyses, profile_analyses = (
+                        await _create_sample_with_tests(
+                            sample_in,
+                            derivative.profiles,
+                            derivative.analyses,
+                            parent_details,
+                        )
+                    )
+                except ValueError as exc:
+                    await transaction_session.rollback()
+                    return OperationError(error=str(exc))
+
+                await relationship_service.create_relationship(
+                    parent_sample_uid=parent.uid,
+                    child_sample_uid=sample.uid,
+                    relationship_type=SampleRelationshipType.DERIVED,
+                    notes=derivative.notes,
+                    metadata_snapshot=derivative.metadata_snapshot,
+                    session=transaction_session,
+                )
+
+                created_sample_uids.append(sample.uid)
+                sample_details[sample.uid] = {
+                    "profiles": profiles,
+                    "analyses": analyses,
+                    "profile_analyses": list(profile_analyses),
+                }
+
+        for pool in pools_payload:
+            parent_samples = {}
+            for parent_uid in pool.parent_sample_uids or []:
+                parent = await sample_service.get(
+                    uid=parent_uid, session=transaction_session
+                )
+                if not parent:
+                    await transaction_session.rollback()
+                    return OperationError(
+                        error=f"Pool parent sample {parent_uid} not found"
+                    )
+                parent_samples[parent.uid] = parent
+
+            parents = list(parent_samples.values())
+            if len(parents) < 2:
+                await transaction_session.rollback()
+                return OperationError(
+                    error="Pool samples require at least two parent samples"
+                )
+
+            sample_type_uid = pool.sample_type_uid or parents[0].sample_type_uid
+            stype = await SampleTypeService().get(
+                uid=sample_type_uid, session=transaction_session
+            )
+            if not stype:
+                await transaction_session.rollback()
+                return OperationError(
+                    error=f"Error, failed to retrieve sample type {sample_type_uid}"
+                )
+
+            pool_profiles = pool.profiles
+            pool_analyses = pool.analyses
+            if pool_profiles is None and pool_analyses is None:
+                profile_uids = set()
+                analysis_uids = set()
+                for parent in parents:
+                    parent_details = await _get_sample_details(parent)
+                    for _prof in parent_details.get("profiles", []):
+                        profile_uids.add(_prof.uid)
+                    for _anal in parent_details.get("analyses", []):
+                        analysis_uids.add(_anal.uid)
+                pool_profiles = list(profile_uids)
+                pool_analyses = list(analysis_uids)
+
+            sample_in = {
+                "created_by_uid": felicity_user.uid,
+                "updated_by_uid": felicity_user.uid,
+                "analysis_request_uid": parents[0].analysis_request_uid,
+                "date_collected": parents[0].date_collected,
+                "date_received": parents[0].date_received,
+                "sample_type_uid": sample_type_uid,
+                "sample_id": None,
+                "priority": parents[0].priority,
+                "status": SampleState.EXPECTED,
+                "metadata_snapshot": {},
+                "relationship_type": SampleRelationshipType.POOL,
+            }
+
+            try:
+                sample, profiles, analyses, profile_analyses = (
+                    await _create_sample_with_tests(
+                        sample_in, pool_profiles, pool_analyses, None
+                    )
+                )
+            except ValueError as exc:
+                await transaction_session.rollback()
+                return OperationError(error=str(exc))
+
+            for parent in parents:
+                await relationship_service.create_relationship(
+                    parent_sample_uid=parent.uid,
+                    child_sample_uid=sample.uid,
+                    relationship_type=SampleRelationshipType.POOL,
+                    notes=pool.notes,
+                    metadata_snapshot=pool.metadata_snapshot,
+                    session=transaction_session,
+                )
+
+            created_sample_uids.append(sample.uid)
+            sample_details[sample.uid] = {
+                "profiles": profiles,
+                "analyses": analyses,
+                "profile_analyses": list(profile_analyses),
+            }
+
+        await PatientService().repository.save_transaction(transaction_session)
+
+    # ! paramount: No idea why but it makes it work!
+    await asyncio.sleep(1)
+
+    _, lab_setting = await get_laboratory_setting()
+    for sample_uid in created_sample_uids:
+        sample = await SampleService().get(uid=sample_uid)
+        if not sample:
+            continue
+        await SampleService().snapshot(sample)
+        if lab_setting.auto_receive_samples:
+            await SampleService().receive(sample.uid, received_by=felicity_user)
+        analyses = await AnalysisResultService().get_all(sample_uid=sample.uid)
+        await AnalysisResultService().snapshot(analyses)
+        await ReflexEngineService().set_reflex_actions(analyses)
+
+    if not created_sample_uids:
+        return OperationError(error="No derived samples were created")
+
+    first_sample = await SampleService().get(uid=created_sample_uids[0])
+    if not first_sample:
+        return OperationError(error="Derived samples not found")
+
+    analysis_request = await AnalysisRequestService().get(
+        related=["samples"], uid=first_sample.analysis_request_uid
+    )
     _ar = analysis_request.marshal_simple()
     del _ar["client"]
     return a_types.AnalysisRequestWithSamples(**_ar)

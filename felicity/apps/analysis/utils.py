@@ -38,9 +38,9 @@ from felicity.apps.job.schemas import JobCreate
 from felicity.apps.job.services import JobService
 from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.shipment.services import ShippedSampleService
+from felicity.apps.user.caches import get_current_user_preferences
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
-from felicity.apps.user.caches import get_current_user_preferences
 from felicity.apps.worksheet.workflow import WorkSheetWorkFlow
 from felicity.core.dtz import timenow_dt
 from felicity.utils import has_value_or_is_truthy
@@ -75,7 +75,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
 
 
 async def sample_search(
-    status: str | None = None, text: str | None = None, client_uid: str | None = None
+        status: str | None = None, text: str | None = None, client_uid: str | None = None
 ) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
@@ -92,8 +92,8 @@ async def sample_search(
             filters.append(
                 {
                     or_: {
-                        "analyses__department_uid__in": department_uids,
-                        "profiles__department_uid__in": department_uids,
+                        "analyses___department_uid__in": department_uids,
+                        "profiles___department_uid__in": department_uids,
                     }
                 }
             )
@@ -125,7 +125,7 @@ async def sample_search(
 
 
 async def retest_from_result_uids(
-    uids: list[str], user: User
+        uids: list[str], user: User
 ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
     analysis_result_wf = AnalysisResultWorkFlow()
@@ -148,7 +148,7 @@ async def retest_from_result_uids(
 
 
 async def results_submitter(
-    analysis_results: List[dict], submitter: User
+        analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
     sample_wf = SampleWorkFlow()
     worksheet_wf = WorkSheetWorkFlow()
@@ -290,8 +290,8 @@ async def result_mutator(result: AnalysisResult) -> None:
         # Correction factor
         for cf in correction_factors:
             if (
-                cf.get("instrument_uid") == result.laboratory_instrument_uid
-                and cf.get("method_uid") == result.method_uid
+                    cf.get("instrument_uid") == result.laboratory_instrument_uid
+                    and cf.get("method_uid") == result.method_uid
             ):
                 await result_mutation_service.create(
                     c={

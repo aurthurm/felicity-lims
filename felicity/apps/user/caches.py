@@ -18,7 +18,7 @@ def invalidate_user_preferences_cache(user_uid: Optional[str]) -> None:
 
 
 async def get_current_user_preferences(
-    user_uid: Optional[str],
+        user_uid: Optional[str] = None,
 ) -> Optional[UserPreference]:
     if not user_uid:
         user_uid = get_current_user_uid()

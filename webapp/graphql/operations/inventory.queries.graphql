@@ -183,3 +183,18 @@ query getAllStockAdjustments($first: Int!, $after: String, $text: String!, $sort
         }
     }
 }
+
+query getInventoryKpis($text: String, $limit: Int) {
+    inventoryKpis(text: $text, limit: $limit) {
+        productUid
+        productName
+        stockItemUid
+        currentStock
+        minimumLevel
+        maximumLevel
+        reorderPoint
+        reorderQuantity
+        lowStock
+        reorderNow
+    }
+}

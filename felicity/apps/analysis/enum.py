@@ -35,3 +35,13 @@ class ResultType(StrEnum):
     NUMERIC = auto()  # strict numeric
     SHORT_TEXT = auto()  # short text and numeric
     LONG_TEXT = auto()  # strictly long text
+
+
+class SampleRelationshipType(StrEnum):
+    ALIQUOT = auto()
+    DERIVED = auto()
+    CHILD = auto()
+    POOL = auto()
+    MERGE = auto()
+    SPLIT = auto()
+    OTHER = auto()

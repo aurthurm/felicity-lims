@@ -436,6 +436,7 @@ class SampleType:  # for Sample
     internal_use: bool
     parent_id: str | None = None
     parent: Optional["SampleType"] = None
+    relationship_type: str | None = None
     # QC Samples
     qc_set_uid: str | None = None
     qc_set: Optional[QCSetType] = None
@@ -488,6 +489,41 @@ class SampleType:  # for Sample
 @strawberry.type
 class AnalysisRequestWithSamples(AnalysisRequestType):
     samples: Optional[List[SampleType]]
+
+
+@strawberry.type
+class AnalysisResultSummaryType:
+    uid: str
+    analysis_uid: str | None = None
+    status: str | None = None
+    retest: bool | None = None
+    reportable: bool | None = None
+
+
+@strawberry.type
+class SampleRelationshipType:
+    uid: str
+    parent_sample_uid: str | None = None
+    child_sample_uid: str | None = None
+    relationship_type: str | None = None
+    notes: str | None = None
+    metadata_snapshot: JSONScalar | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+
+
+@strawberry.type
+class SampleGenealogyNode:
+    sample_uid: str
+    sample_id: str | None = None
+    relationship_type: str | None = None
+    children: List["SampleGenealogyNode"]
+    tests: Optional[List[AnalysisResultSummaryType]] = None
+    extra_relationships: Optional[List[SampleRelationshipType]] = None
 
 
 @strawberry.type

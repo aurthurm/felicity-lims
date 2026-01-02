@@ -167,6 +167,41 @@ mutation CloneSamples($samples: [String!]!) {
     }
 }
 
+mutation DeriveAnalysisRequest($payload: DeriveAnalysisRequestInputType!) {
+    deriveAnalysisRequest(payload: $payload) {
+        ... on AnalysisRequestWithSamples {
+            __typename
+            uid
+            samples {
+                uid
+                parentId
+                sampleType {
+                    uid
+                    name
+                }
+                sampleId
+                priority
+                status
+                analyses {
+                    uid
+                    name
+                    sortKey
+                }
+                profiles {
+                    uid
+                    name
+                }
+            }
+        }
+
+        ... on OperationError {
+            __typename
+            error
+            suggestion
+        }
+    }
+}
+
 mutation CancelSamples($samples: [String!]!) {
     cancelSamples(samples: $samples) {
         ... on ResultedSampleListingType {

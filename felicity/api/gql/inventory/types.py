@@ -430,3 +430,17 @@ class StockAdjustmentCursorPage:
     edges: Optional[List[StockAdjustmentEdge]] = None
     items: Optional[List[StockAdjustmentType]] = None
     total_count: int
+
+
+@strawberry.type
+class InventoryKPIType:
+    product_uid: str
+    product_name: str
+    stock_item_uid: str | None = None
+    current_stock: int
+    minimum_level: int
+    maximum_level: int
+    reorder_point: int
+    reorder_quantity: int
+    low_stock: bool
+    reorder_now: bool

@@ -455,6 +455,7 @@ query getAllSamples(
                 name
             }
             sampleId
+            relationshipType
             priority
             status
             storageSlot
@@ -894,6 +895,7 @@ query getSampleByUid($uid: String!) {
             uid
             name
         }
+        relationshipType
         dateStored
         storageSlot
         storageContainerUid
@@ -1226,5 +1228,36 @@ query impressSampleReport($impressUid: String!) {
 
 query barcodeSamples($sampleUids: [String!]!) {
     barcodeSamples(sampleUids: $sampleUids)
+}
+
+fragment SampleGenealogyNodeFields on SampleGenealogyNode {
+    sampleUid
+    sampleId
+    relationshipType
+}
+
+query getSampleGenealogy(
+    $sampleUid: String!
+    $depth: Int = 6
+    $includeTests: Boolean = false
+    $includeExtraRelationships: Boolean = false
+) {
+    sampleGenealogy(
+        sampleUid: $sampleUid
+        depth: $depth
+        includeTests: $includeTests
+        includeExtraRelationships: $includeExtraRelationships
+    ) {
+        ...SampleGenealogyNodeFields
+        children {
+            ...SampleGenealogyNodeFields
+            children {
+                ...SampleGenealogyNodeFields
+                children {
+                    ...SampleGenealogyNodeFields
+                }
+            }
+        }
+    }
 }
 

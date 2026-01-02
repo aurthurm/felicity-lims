@@ -19,6 +19,25 @@ export type Scalars = {
   Upload: { input: never; output: never; }
 };
 
+export type ArDerivedSampleInputType = {
+  analyses?: InputMaybe<Array<Scalars['String']['input']>>;
+  metadataSnapshot?: InputMaybe<Scalars['JSON']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  parentSampleUid?: InputMaybe<Scalars['String']['input']>;
+  profiles?: InputMaybe<Array<Scalars['String']['input']>>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ArPoolSampleInputType = {
+  analyses?: InputMaybe<Array<Scalars['String']['input']>>;
+  metadataSnapshot?: InputMaybe<Scalars['JSON']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  parentSampleUids?: InputMaybe<Array<Scalars['String']['input']>>;
+  profiles?: InputMaybe<Array<Scalars['String']['input']>>;
+  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ArResultInputType = {
   laboratoryInstrumentUid: Scalars['String']['input'];
   methodUid: Scalars['String']['input'];
@@ -1256,6 +1275,15 @@ export type AnalysisResultResponse = OperationError | ResultListingType;
 /** Union of possible outcomes when submitting/verifying results */
 export type AnalysisResultSubmitResponse = OperationError | ResultOperationType;
 
+export type AnalysisResultSummaryType = {
+  __typename?: 'AnalysisResultSummaryType';
+  analysisUid?: Maybe<Scalars['String']['output']>;
+  reportable?: Maybe<Scalars['Boolean']['output']>;
+  retest?: Maybe<Scalars['Boolean']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+};
+
 export type AnalysisResultType = {
   __typename?: 'AnalysisResultType';
   analysis?: Maybe<AnalysisType>;
@@ -1826,6 +1854,12 @@ export type DepartmentType = {
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DeriveAnalysisRequestInputType = {
+  aliquots?: InputMaybe<Array<ArDerivedSampleInputType>>;
+  derivatives?: InputMaybe<Array<ArDerivedSampleInputType>>;
+  pools?: InputMaybe<Array<ArPoolSampleInputType>>;
 };
 
 export type DiscountMetrics = {
@@ -3451,6 +3485,20 @@ export type InstrumentTypeType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type InventoryKpiType = {
+  __typename?: 'InventoryKPIType';
+  currentStock: Scalars['Int']['output'];
+  lowStock: Scalars['Boolean']['output'];
+  maximumLevel: Scalars['Int']['output'];
+  minimumLevel: Scalars['Int']['output'];
+  productName: Scalars['String']['output'];
+  productUid: Scalars['String']['output'];
+  reorderNow: Scalars['Boolean']['output'];
+  reorderPoint: Scalars['Int']['output'];
+  reorderQuantity: Scalars['Int']['output'];
+  stockItemUid?: Maybe<Scalars['String']['output']>;
+};
+
 export type KeyMetrics = {
   __typename?: 'KeyMetrics';
   collectionRate: Scalars['Float']['output'];
@@ -3885,6 +3933,7 @@ export type Mutation = {
   createReflexRule: ReflexRuleResponse;
   createRejectionReason: RejectionReasonResponse;
   createResultOption: ResultOptionResponse;
+  createSampleRelationship: SampleRelationshipResponse;
   createSampleType: SampleTypeResponse;
   createSampleTypeMapping: SampleTypeMappingResponse;
   createShipment: ShipmentsResponse;
@@ -3932,10 +3981,12 @@ export type Mutation = {
   deleteSmsTemplate: OperationErrorDeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
+  deriveAnalysisRequest: AnalysisRequestResponse;
   discardAbxAntibiotic: DeletedItem;
   extractAnalyserMessage: AnalyzerExtractedMessageResponse;
   invalidateSamples: SampleActionResponse;
   issueStockOrder: StockOrderResponse;
+  linkSampleParent: SampleParentLinkResponse;
   manageAnalyses: ResultedSampleActionResponse;
   parseAnalyserMessage: AnalyzerParsedMessageResponse;
   printSamples: SampleActionResponse;
@@ -4576,6 +4627,11 @@ export type MutationCreateResultOptionArgs = {
 };
 
 
+export type MutationCreateSampleRelationshipArgs = {
+  payload: SampleRelationshipInputType;
+};
+
+
 export type MutationCreateSampleTypeArgs = {
   payload: SampleTypeInputType;
 };
@@ -4823,6 +4879,11 @@ export type MutationDeleteThreadArgs = {
 };
 
 
+export type MutationDeriveAnalysisRequestArgs = {
+  payload: DeriveAnalysisRequestInputType;
+};
+
+
 export type MutationDiscardAbxAntibioticArgs = {
   uid: Scalars['String']['input'];
 };
@@ -4842,6 +4903,13 @@ export type MutationInvalidateSamplesArgs = {
 export type MutationIssueStockOrderArgs = {
   payload: Array<StockOrderProductLineInputType>;
   uid: Scalars['String']['input'];
+};
+
+
+export type MutationLinkSampleParentArgs = {
+  childSampleUid: Scalars['String']['input'];
+  parentSampleUid: Scalars['String']['input'];
+  relationshipType: Scalars['String']['input'];
 };
 
 
@@ -6531,6 +6599,7 @@ export type Query = {
   instrumentResultTranslations: Array<InstrumentResultTranslationType>;
   instrumentTypeAll: InstrumentTypeCursorPage;
   instrumentTypeByUid: InstrumentTypeType;
+  inventoryKpis: Array<InventoryKpiType>;
   laboratoriesByOrganization: Array<LaboratoryType>;
   laboratory: LaboratoryType;
   laboratoryAll: LaboratoryCursorPage;
@@ -6592,8 +6661,10 @@ export type Query = {
   sampleByParentId: Array<SampleType>;
   sampleByUid: SampleType;
   sampleCount: Scalars['Int']['output'];
+  sampleGenealogy?: Maybe<SampleGenealogyNode>;
   sampleLaggards: LaggardStatistics;
   sampleProcessPerformance: ProcessStatistics;
+  sampleRelationships: Array<SampleRelationshipType>;
   sampleSearch: Array<SampleType>;
   sampleTypeAll: Array<SampleTypeTyp>;
   sampleTypeByUid: SampleTypeTyp;
@@ -7625,6 +7696,12 @@ export type QueryInstrumentTypeByUidArgs = {
 };
 
 
+export type QueryInventoryKpisArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryLaboratoriesByOrganizationArgs = {
   organizationUid: Scalars['String']['input'];
 };
@@ -7932,9 +8009,23 @@ export type QuerySampleCountArgs = {
 };
 
 
+export type QuerySampleGenealogyArgs = {
+  depth?: Scalars['Int']['input'];
+  includeExtraRelationships?: Scalars['Boolean']['input'];
+  includeTests?: Scalars['Boolean']['input'];
+  sampleUid: Scalars['String']['input'];
+};
+
+
 export type QuerySampleProcessPerformanceArgs = {
   endDate: Scalars['String']['input'];
   startDate: Scalars['String']['input'];
+};
+
+
+export type QuerySampleRelationshipsArgs = {
+  direction?: InputMaybe<Scalars['String']['input']>;
+  sampleUid: Scalars['String']['input'];
 };
 
 
@@ -8655,11 +8746,23 @@ export type SampleEdge = {
   node: SamplesWithResults;
 };
 
+export type SampleGenealogyNode = {
+  __typename?: 'SampleGenealogyNode';
+  children: Array<SampleGenealogyNode>;
+  extraRelationships?: Maybe<Array<SampleRelationshipType>>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
+  sampleId?: Maybe<Scalars['String']['output']>;
+  sampleUid: Scalars['String']['output'];
+  tests?: Maybe<Array<AnalysisResultSummaryType>>;
+};
+
 export type SampleListingType = {
   __typename?: 'SampleListingType';
   message?: Maybe<Scalars['String']['output']>;
   samples: Array<SampleType>;
 };
+
+export type SampleParentLinkResponse = OperationError | SampleType;
 
 export type SamplePublishInputType = {
   action?: Scalars['String']['input'];
@@ -8670,6 +8773,31 @@ export type SampleRejectInputType = {
   other?: InputMaybe<Scalars['String']['input']>;
   reasons: Array<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
+};
+
+export type SampleRelationshipInputType = {
+  childSampleUid: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  parentSampleUid?: InputMaybe<Scalars['String']['input']>;
+  relationshipType: Scalars['String']['input'];
+};
+
+export type SampleRelationshipResponse = OperationError | SampleRelationshipType;
+
+export type SampleRelationshipType = {
+  __typename?: 'SampleRelationshipType';
+  childSampleUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
+  parentSampleUid?: Maybe<Scalars['String']['output']>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type SampleType = {
@@ -8716,6 +8844,7 @@ export type SampleType = {
   receivedBy?: Maybe<UserType>;
   receivedByUid?: Maybe<Scalars['String']['output']>;
   rejectionReasons?: Maybe<Array<RejectionReasonType>>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
   sampleId: Scalars['String']['output'];
   sampleType?: Maybe<SampleTypeTyp>;
   sampleTypeUid: Scalars['String']['output'];
@@ -8840,6 +8969,7 @@ export type SamplesWithResults = {
   receivedBy?: Maybe<UserType>;
   receivedByUid?: Maybe<Scalars['String']['output']>;
   rejectionReasons?: Maybe<Array<RejectionReasonType>>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
   sampleId: Scalars['String']['output'];
   sampleType?: Maybe<SampleTypeTyp>;
   sampleTypeUid: Scalars['String']['output'];

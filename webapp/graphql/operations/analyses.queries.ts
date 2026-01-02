@@ -592,6 +592,7 @@ export type GetAllSamplesQuery = (
           | 'printed'
           | 'dueDate'
           | 'sampleId'
+          | 'relationshipType'
           | 'priority'
           | 'status'
           | 'storageSlot'
@@ -1156,6 +1157,7 @@ export type GetSampleByUidQuery = (
       | 'sampleId'
       | 'priority'
       | 'status'
+      | 'relationshipType'
       | 'dateStored'
       | 'storageSlot'
       | 'storageContainerUid'
@@ -1663,7 +1665,46 @@ export type BarcodeSamplesQuery = (
   & Pick<Types.Query, 'barcodeSamples'>
 );
 
+export type SampleGenealogyNodeFieldsFragment = (
+  { __typename?: 'SampleGenealogyNode' }
+  & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+);
 
+export type GetSampleGenealogyQueryVariables = Types.Exact<{
+  sampleUid: Types.Scalars['String']['input'];
+  depth?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  includeTests?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+  includeExtraRelationships?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+}>;
+
+
+export type GetSampleGenealogyQuery = (
+  { __typename?: 'Query' }
+  & { sampleGenealogy?: Types.Maybe<(
+    { __typename?: 'SampleGenealogyNode' }
+    & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+    & { children: Array<(
+      { __typename?: 'SampleGenealogyNode' }
+      & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+      & { children: Array<(
+        { __typename?: 'SampleGenealogyNode' }
+        & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+        & { children: Array<(
+          { __typename?: 'SampleGenealogyNode' }
+          & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+        )> }
+      )> }
+    )> }
+  )> }
+);
+
+export const SampleGenealogyNodeFieldsFragmentDoc = gql`
+    fragment SampleGenealogyNodeFields on SampleGenealogyNode {
+  sampleUid
+  sampleId
+  relationshipType
+}
+    `;
 export const GetAllCodingStandardsDocument = gql`
     query getAllCodingStandards {
   codingStandardAll {
@@ -2168,6 +2209,7 @@ export const GetAllSamplesDocument = gql`
         name
       }
       sampleId
+      relationshipType
       priority
       status
       storageSlot
@@ -2628,6 +2670,7 @@ export const GetSampleByUidDocument = gql`
       uid
       name
     }
+    relationshipType
     dateStored
     storageSlot
     storageContainerUid
@@ -3034,4 +3077,29 @@ export const BarcodeSamplesDocument = gql`
 
 export function useBarcodeSamplesQuery(options?: Omit<Urql.UseQueryArgs<never, BarcodeSamplesQueryVariables | undefined>, 'query'>) {
   return Urql.useQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables | undefined>({ query: BarcodeSamplesDocument, variables: undefined, ...options });
+};
+export const GetSampleGenealogyDocument = gql`
+    query getSampleGenealogy($sampleUid: String!, $depth: Int = 6, $includeTests: Boolean = false, $includeExtraRelationships: Boolean = false) {
+  sampleGenealogy(
+    sampleUid: $sampleUid
+    depth: $depth
+    includeTests: $includeTests
+    includeExtraRelationships: $includeExtraRelationships
+  ) {
+    ...SampleGenealogyNodeFields
+    children {
+      ...SampleGenealogyNodeFields
+      children {
+        ...SampleGenealogyNodeFields
+        children {
+          ...SampleGenealogyNodeFields
+        }
+      }
+    }
+  }
+}
+    ${SampleGenealogyNodeFieldsFragmentDoc}`;
+
+export function useGetSampleGenealogyQuery(options?: Omit<Urql.UseQueryArgs<never, GetSampleGenealogyQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetSampleGenealogyQuery, GetSampleGenealogyQueryVariables | undefined>({ query: GetSampleGenealogyDocument, variables: undefined, ...options });
 };

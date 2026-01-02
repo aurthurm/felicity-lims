@@ -25,6 +25,7 @@ from .analysis_request import cancel_samples  # update_analysis_request, update_
 from .analysis_request import (
     clone_samples,
     create_analysis_request,
+    derive_analysis_request,
     invalidate_samples,
     manage_analyses,
     print_samples,
@@ -59,6 +60,7 @@ from .quality_control import (
 )
 from .rejection_reason import create_rejection_reason, update_rejection_reason
 from .result_option import create_result_option, update_result_option
+from .sample_relationship import create_sample_relationship, link_sample_parent
 from .sample_type import (
     create_sample_type,
     create_sample_type_mapping,
@@ -92,6 +94,7 @@ AnalysisMutations = create_type(
         create_analysis_mapping,
         update_analysis_mapping,
         create_analysis_request,
+        derive_analysis_request,
         create_analysis_interim,
         update_analysis_interim,
         create_analysis_uncertainty,
@@ -126,5 +129,7 @@ AnalysisMutations = create_type(
         update_QC_level,
         create_QC_template,
         update_QC_template,
+        create_sample_relationship,
+        link_sample_parent,
     ],
 )

@@ -22,6 +22,25 @@ export type Scalars = {
   Upload: { input: never; output: never; }
 };
 
+export type ArDerivedSampleInputType = {
+  analyses?: InputMaybe<Array<Scalars['String']['input']>>;
+  metadataSnapshot?: InputMaybe<Scalars['JSON']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  parentSampleUid?: InputMaybe<Scalars['String']['input']>;
+  profiles?: InputMaybe<Array<Scalars['String']['input']>>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ArPoolSampleInputType = {
+  analyses?: InputMaybe<Array<Scalars['String']['input']>>;
+  metadataSnapshot?: InputMaybe<Scalars['JSON']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  parentSampleUids?: InputMaybe<Array<Scalars['String']['input']>>;
+  profiles?: InputMaybe<Array<Scalars['String']['input']>>;
+  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ArResultInputType = {
   laboratoryInstrumentUid: Scalars['String']['input'];
   methodUid: Scalars['String']['input'];
@@ -1259,6 +1278,15 @@ export type AnalysisResultResponse = OperationError | ResultListingType;
 /** Union of possible outcomes when submitting/verifying results */
 export type AnalysisResultSubmitResponse = OperationError | ResultOperationType;
 
+export type AnalysisResultSummaryType = {
+  __typename?: 'AnalysisResultSummaryType';
+  analysisUid?: Maybe<Scalars['String']['output']>;
+  reportable?: Maybe<Scalars['Boolean']['output']>;
+  retest?: Maybe<Scalars['Boolean']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+};
+
 export type AnalysisResultType = {
   __typename?: 'AnalysisResultType';
   analysis?: Maybe<AnalysisType>;
@@ -1829,6 +1857,12 @@ export type DepartmentType = {
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type DeriveAnalysisRequestInputType = {
+  aliquots?: InputMaybe<Array<ArDerivedSampleInputType>>;
+  derivatives?: InputMaybe<Array<ArDerivedSampleInputType>>;
+  pools?: InputMaybe<Array<ArPoolSampleInputType>>;
 };
 
 export type DiscountMetrics = {
@@ -3454,6 +3488,20 @@ export type InstrumentTypeType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type InventoryKpiType = {
+  __typename?: 'InventoryKPIType';
+  currentStock: Scalars['Int']['output'];
+  lowStock: Scalars['Boolean']['output'];
+  maximumLevel: Scalars['Int']['output'];
+  minimumLevel: Scalars['Int']['output'];
+  productName: Scalars['String']['output'];
+  productUid: Scalars['String']['output'];
+  reorderNow: Scalars['Boolean']['output'];
+  reorderPoint: Scalars['Int']['output'];
+  reorderQuantity: Scalars['Int']['output'];
+  stockItemUid?: Maybe<Scalars['String']['output']>;
+};
+
 export type KeyMetrics = {
   __typename?: 'KeyMetrics';
   collectionRate: Scalars['Float']['output'];
@@ -3888,6 +3936,7 @@ export type Mutation = {
   createReflexRule: ReflexRuleResponse;
   createRejectionReason: RejectionReasonResponse;
   createResultOption: ResultOptionResponse;
+  createSampleRelationship: SampleRelationshipResponse;
   createSampleType: SampleTypeResponse;
   createSampleTypeMapping: SampleTypeMappingResponse;
   createShipment: ShipmentsResponse;
@@ -3935,10 +3984,12 @@ export type Mutation = {
   deleteSmsTemplate: OperationErrorDeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
+  deriveAnalysisRequest: AnalysisRequestResponse;
   discardAbxAntibiotic: DeletedItem;
   extractAnalyserMessage: AnalyzerExtractedMessageResponse;
   invalidateSamples: SampleActionResponse;
   issueStockOrder: StockOrderResponse;
+  linkSampleParent: SampleParentLinkResponse;
   manageAnalyses: ResultedSampleActionResponse;
   parseAnalyserMessage: AnalyzerParsedMessageResponse;
   printSamples: SampleActionResponse;
@@ -4579,6 +4630,11 @@ export type MutationCreateResultOptionArgs = {
 };
 
 
+export type MutationCreateSampleRelationshipArgs = {
+  payload: SampleRelationshipInputType;
+};
+
+
 export type MutationCreateSampleTypeArgs = {
   payload: SampleTypeInputType;
 };
@@ -4826,6 +4882,11 @@ export type MutationDeleteThreadArgs = {
 };
 
 
+export type MutationDeriveAnalysisRequestArgs = {
+  payload: DeriveAnalysisRequestInputType;
+};
+
+
 export type MutationDiscardAbxAntibioticArgs = {
   uid: Scalars['String']['input'];
 };
@@ -4845,6 +4906,13 @@ export type MutationInvalidateSamplesArgs = {
 export type MutationIssueStockOrderArgs = {
   payload: Array<StockOrderProductLineInputType>;
   uid: Scalars['String']['input'];
+};
+
+
+export type MutationLinkSampleParentArgs = {
+  childSampleUid: Scalars['String']['input'];
+  parentSampleUid: Scalars['String']['input'];
+  relationshipType: Scalars['String']['input'];
 };
 
 
@@ -6534,6 +6602,7 @@ export type Query = {
   instrumentResultTranslations: Array<InstrumentResultTranslationType>;
   instrumentTypeAll: InstrumentTypeCursorPage;
   instrumentTypeByUid: InstrumentTypeType;
+  inventoryKpis: Array<InventoryKpiType>;
   laboratoriesByOrganization: Array<LaboratoryType>;
   laboratory: LaboratoryType;
   laboratoryAll: LaboratoryCursorPage;
@@ -6595,8 +6664,10 @@ export type Query = {
   sampleByParentId: Array<SampleType>;
   sampleByUid: SampleType;
   sampleCount: Scalars['Int']['output'];
+  sampleGenealogy?: Maybe<SampleGenealogyNode>;
   sampleLaggards: LaggardStatistics;
   sampleProcessPerformance: ProcessStatistics;
+  sampleRelationships: Array<SampleRelationshipType>;
   sampleSearch: Array<SampleType>;
   sampleTypeAll: Array<SampleTypeTyp>;
   sampleTypeByUid: SampleTypeTyp;
@@ -7628,6 +7699,12 @@ export type QueryInstrumentTypeByUidArgs = {
 };
 
 
+export type QueryInventoryKpisArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryLaboratoriesByOrganizationArgs = {
   organizationUid: Scalars['String']['input'];
 };
@@ -7935,9 +8012,23 @@ export type QuerySampleCountArgs = {
 };
 
 
+export type QuerySampleGenealogyArgs = {
+  depth?: Scalars['Int']['input'];
+  includeExtraRelationships?: Scalars['Boolean']['input'];
+  includeTests?: Scalars['Boolean']['input'];
+  sampleUid: Scalars['String']['input'];
+};
+
+
 export type QuerySampleProcessPerformanceArgs = {
   endDate: Scalars['String']['input'];
   startDate: Scalars['String']['input'];
+};
+
+
+export type QuerySampleRelationshipsArgs = {
+  direction?: InputMaybe<Scalars['String']['input']>;
+  sampleUid: Scalars['String']['input'];
 };
 
 
@@ -8658,11 +8749,23 @@ export type SampleEdge = {
   node: SamplesWithResults;
 };
 
+export type SampleGenealogyNode = {
+  __typename?: 'SampleGenealogyNode';
+  children: Array<SampleGenealogyNode>;
+  extraRelationships?: Maybe<Array<SampleRelationshipType>>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
+  sampleId?: Maybe<Scalars['String']['output']>;
+  sampleUid: Scalars['String']['output'];
+  tests?: Maybe<Array<AnalysisResultSummaryType>>;
+};
+
 export type SampleListingType = {
   __typename?: 'SampleListingType';
   message?: Maybe<Scalars['String']['output']>;
   samples: Array<SampleType>;
 };
+
+export type SampleParentLinkResponse = OperationError | SampleType;
 
 export type SamplePublishInputType = {
   action?: Scalars['String']['input'];
@@ -8673,6 +8776,31 @@ export type SampleRejectInputType = {
   other?: InputMaybe<Scalars['String']['input']>;
   reasons: Array<Scalars['String']['input']>;
   uid: Scalars['String']['input'];
+};
+
+export type SampleRelationshipInputType = {
+  childSampleUid: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  parentSampleUid?: InputMaybe<Scalars['String']['input']>;
+  relationshipType: Scalars['String']['input'];
+};
+
+export type SampleRelationshipResponse = OperationError | SampleRelationshipType;
+
+export type SampleRelationshipType = {
+  __typename?: 'SampleRelationshipType';
+  childSampleUid?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  metadataSnapshot?: Maybe<Scalars['JSONScalar']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
+  parentSampleUid?: Maybe<Scalars['String']['output']>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
 export type SampleType = {
@@ -8719,6 +8847,7 @@ export type SampleType = {
   receivedBy?: Maybe<UserType>;
   receivedByUid?: Maybe<Scalars['String']['output']>;
   rejectionReasons?: Maybe<Array<RejectionReasonType>>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
   sampleId: Scalars['String']['output'];
   sampleType?: Maybe<SampleTypeTyp>;
   sampleTypeUid: Scalars['String']['output'];
@@ -8843,6 +8972,7 @@ export type SamplesWithResults = {
   receivedBy?: Maybe<UserType>;
   receivedByUid?: Maybe<Scalars['String']['output']>;
   rejectionReasons?: Maybe<Array<RejectionReasonType>>;
+  relationshipType?: Maybe<Scalars['String']['output']>;
   sampleId: Scalars['String']['output'];
   sampleType?: Maybe<SampleTypeTyp>;
   sampleTypeUid: Scalars['String']['output'];
@@ -10066,6 +10196,7 @@ export type GraphCacheKeysConfig = {
   AnalysisRequestWithSamples?: (data: WithTypename<AnalysisRequestWithSamples>) => null | string,
   AnalysisResultCursorPage?: (data: WithTypename<AnalysisResultCursorPage>) => null | string,
   AnalysisResultEdge?: (data: WithTypename<AnalysisResultEdge>) => null | string,
+  AnalysisResultSummaryType?: (data: WithTypename<AnalysisResultSummaryType>) => null | string,
   AnalysisResultType?: (data: WithTypename<AnalysisResultType>) => null | string,
   AnalysisSpecificationType?: (data: WithTypename<AnalysisSpecificationType>) => null | string,
   AnalysisTemplateType?: (data: WithTypename<AnalysisTemplateType>) => null | string,
@@ -10174,6 +10305,7 @@ export type GraphCacheKeysConfig = {
   InstrumentTypeCursorPage?: (data: WithTypename<InstrumentTypeCursorPage>) => null | string,
   InstrumentTypeEdge?: (data: WithTypename<InstrumentTypeEdge>) => null | string,
   InstrumentTypeType?: (data: WithTypename<InstrumentTypeType>) => null | string,
+  InventoryKPIType?: (data: WithTypename<InventoryKpiType>) => null | string,
   KeyMetrics?: (data: WithTypename<KeyMetrics>) => null | string,
   LaboratoryCursorPage?: (data: WithTypename<LaboratoryCursorPage>) => null | string,
   LaboratoryEdge?: (data: WithTypename<LaboratoryEdge>) => null | string,
@@ -10246,7 +10378,9 @@ export type GraphCacheKeysConfig = {
   ResultedSampleListingType?: (data: WithTypename<ResultedSampleListingType>) => null | string,
   SampleCursorPage?: (data: WithTypename<SampleCursorPage>) => null | string,
   SampleEdge?: (data: WithTypename<SampleEdge>) => null | string,
+  SampleGenealogyNode?: (data: WithTypename<SampleGenealogyNode>) => null | string,
   SampleListingType?: (data: WithTypename<SampleListingType>) => null | string,
+  SampleRelationshipType?: (data: WithTypename<SampleRelationshipType>) => null | string,
   SampleType?: (data: WithTypename<SampleType>) => null | string,
   SampleTypeMappingType?: (data: WithTypename<SampleTypeMappingType>) => null | string,
   SampleTypeTyp?: (data: WithTypename<SampleTypeTyp>) => null | string,
@@ -10508,6 +10642,7 @@ export type GraphCacheResolvers = {
     instrumentResultTranslations?: GraphCacheResolver<WithTypename<Query>, QueryInstrumentResultTranslationsArgs, Array<WithTypename<InstrumentResultTranslationType> | string>>,
     instrumentTypeAll?: GraphCacheResolver<WithTypename<Query>, QueryInstrumentTypeAllArgs, WithTypename<InstrumentTypeCursorPage> | string>,
     instrumentTypeByUid?: GraphCacheResolver<WithTypename<Query>, QueryInstrumentTypeByUidArgs, WithTypename<InstrumentTypeType> | string>,
+    inventoryKpis?: GraphCacheResolver<WithTypename<Query>, QueryInventoryKpisArgs, Array<WithTypename<InventoryKpiType> | string>>,
     laboratoriesByOrganization?: GraphCacheResolver<WithTypename<Query>, QueryLaboratoriesByOrganizationArgs, Array<WithTypename<LaboratoryType> | string>>,
     laboratory?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, WithTypename<LaboratoryType> | string>,
     laboratoryAll?: GraphCacheResolver<WithTypename<Query>, QueryLaboratoryAllArgs, WithTypename<LaboratoryCursorPage> | string>,
@@ -10569,8 +10704,10 @@ export type GraphCacheResolvers = {
     sampleByParentId?: GraphCacheResolver<WithTypename<Query>, QuerySampleByParentIdArgs, Array<WithTypename<SampleType> | string>>,
     sampleByUid?: GraphCacheResolver<WithTypename<Query>, QuerySampleByUidArgs, WithTypename<SampleType> | string>,
     sampleCount?: GraphCacheResolver<WithTypename<Query>, QuerySampleCountArgs, Scalars['Int'] | string>,
+    sampleGenealogy?: GraphCacheResolver<WithTypename<Query>, QuerySampleGenealogyArgs, WithTypename<SampleGenealogyNode> | string>,
     sampleLaggards?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, WithTypename<LaggardStatistics> | string>,
     sampleProcessPerformance?: GraphCacheResolver<WithTypename<Query>, QuerySampleProcessPerformanceArgs, WithTypename<ProcessStatistics> | string>,
+    sampleRelationships?: GraphCacheResolver<WithTypename<Query>, QuerySampleRelationshipsArgs, Array<WithTypename<SampleRelationshipType> | string>>,
     sampleSearch?: GraphCacheResolver<WithTypename<Query>, QuerySampleSearchArgs, Array<WithTypename<SampleType> | string>>,
     sampleTypeAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<SampleTypeTyp> | string>>,
     sampleTypeByUid?: GraphCacheResolver<WithTypename<Query>, QuerySampleTypeByUidArgs, WithTypename<SampleTypeTyp> | string>,
@@ -11394,6 +11531,13 @@ export type GraphCacheResolvers = {
   AnalysisResultEdge?: {
     cursor?: GraphCacheResolver<WithTypename<AnalysisResultEdge>, Record<string, never>, Scalars['String'] | string>,
     node?: GraphCacheResolver<WithTypename<AnalysisResultEdge>, Record<string, never>, WithTypename<AnalysisResultType> | string>
+  },
+  AnalysisResultSummaryType?: {
+    analysisUid?: GraphCacheResolver<WithTypename<AnalysisResultSummaryType>, Record<string, never>, Scalars['String'] | string>,
+    reportable?: GraphCacheResolver<WithTypename<AnalysisResultSummaryType>, Record<string, never>, Scalars['Boolean'] | string>,
+    retest?: GraphCacheResolver<WithTypename<AnalysisResultSummaryType>, Record<string, never>, Scalars['Boolean'] | string>,
+    status?: GraphCacheResolver<WithTypename<AnalysisResultSummaryType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<AnalysisResultSummaryType>, Record<string, never>, Scalars['String'] | string>
   },
   AnalysisResultType?: {
     analysis?: GraphCacheResolver<WithTypename<AnalysisResultType>, Record<string, never>, WithTypename<AnalysisType> | string>,
@@ -12608,6 +12752,18 @@ export type GraphCacheResolvers = {
     updatedBy?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<InstrumentTypeType>, Record<string, never>, Scalars['String'] | string>
   },
+  InventoryKPIType?: {
+    currentStock?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Int'] | string>,
+    lowStock?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Boolean'] | string>,
+    maximumLevel?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Int'] | string>,
+    minimumLevel?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Int'] | string>,
+    productName?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['String'] | string>,
+    productUid?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['String'] | string>,
+    reorderNow?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Boolean'] | string>,
+    reorderPoint?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Int'] | string>,
+    reorderQuantity?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['Int'] | string>,
+    stockItemUid?: GraphCacheResolver<WithTypename<InventoryKpiType>, Record<string, never>, Scalars['String'] | string>
+  },
   KeyMetrics?: {
     collectionRate?: GraphCacheResolver<WithTypename<KeyMetrics>, Record<string, never>, Scalars['Float'] | string>,
     outstandingBalance?: GraphCacheResolver<WithTypename<KeyMetrics>, Record<string, never>, Scalars['Float'] | string>,
@@ -13413,9 +13569,31 @@ export type GraphCacheResolvers = {
     cursor?: GraphCacheResolver<WithTypename<SampleEdge>, Record<string, never>, Scalars['String'] | string>,
     node?: GraphCacheResolver<WithTypename<SampleEdge>, Record<string, never>, WithTypename<SamplesWithResults> | string>
   },
+  SampleGenealogyNode?: {
+    children?: GraphCacheResolver<WithTypename<SampleGenealogyNode>, Record<string, never>, Array<WithTypename<SampleGenealogyNode> | string>>,
+    extraRelationships?: GraphCacheResolver<WithTypename<SampleGenealogyNode>, Record<string, never>, Array<WithTypename<SampleRelationshipType> | string>>,
+    relationshipType?: GraphCacheResolver<WithTypename<SampleGenealogyNode>, Record<string, never>, Scalars['String'] | string>,
+    sampleId?: GraphCacheResolver<WithTypename<SampleGenealogyNode>, Record<string, never>, Scalars['String'] | string>,
+    sampleUid?: GraphCacheResolver<WithTypename<SampleGenealogyNode>, Record<string, never>, Scalars['String'] | string>,
+    tests?: GraphCacheResolver<WithTypename<SampleGenealogyNode>, Record<string, never>, Array<WithTypename<AnalysisResultSummaryType> | string>>
+  },
   SampleListingType?: {
     message?: GraphCacheResolver<WithTypename<SampleListingType>, Record<string, never>, Scalars['String'] | string>,
     samples?: GraphCacheResolver<WithTypename<SampleListingType>, Record<string, never>, Array<WithTypename<SampleType> | string>>
+  },
+  SampleRelationshipType?: {
+    childSampleUid?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    metadataSnapshot?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['JSONScalar'] | string>,
+    notes?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    parentSampleUid?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    relationshipType?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<SampleRelationshipType>, Record<string, never>, Scalars['String'] | string>
   },
   SampleType?: {
     analyses?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Array<WithTypename<AnalysisType> | string>>,
@@ -13460,6 +13638,7 @@ export type GraphCacheResolvers = {
     receivedBy?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, WithTypename<UserType> | string>,
     receivedByUid?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
     rejectionReasons?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Array<WithTypename<RejectionReasonType> | string>>,
+    relationshipType?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
     sampleId?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
     sampleType?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, WithTypename<SampleTypeTyp> | string>,
     sampleTypeUid?: GraphCacheResolver<WithTypename<SampleType>, Record<string, never>, Scalars['String'] | string>,
@@ -13557,6 +13736,7 @@ export type GraphCacheResolvers = {
     receivedBy?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, WithTypename<UserType> | string>,
     receivedByUid?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
     rejectionReasons?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Array<WithTypename<RejectionReasonType> | string>>,
+    relationshipType?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
     sampleId?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
     sampleType?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, WithTypename<SampleTypeTyp> | string>,
     sampleTypeUid?: GraphCacheResolver<WithTypename<SamplesWithResults>, Record<string, never>, Scalars['String'] | string>,
@@ -14422,6 +14602,7 @@ export type GraphCacheOptimisticUpdaters = {
   createReflexRule?: GraphCacheOptimisticMutationResolver<MutationCreateReflexRuleArgs, WithTypename<ReflexRuleResponse>>,
   createRejectionReason?: GraphCacheOptimisticMutationResolver<MutationCreateRejectionReasonArgs, WithTypename<RejectionReasonResponse>>,
   createResultOption?: GraphCacheOptimisticMutationResolver<MutationCreateResultOptionArgs, WithTypename<ResultOptionResponse>>,
+  createSampleRelationship?: GraphCacheOptimisticMutationResolver<MutationCreateSampleRelationshipArgs, WithTypename<SampleRelationshipResponse>>,
   createSampleType?: GraphCacheOptimisticMutationResolver<MutationCreateSampleTypeArgs, WithTypename<SampleTypeResponse>>,
   createSampleTypeMapping?: GraphCacheOptimisticMutationResolver<MutationCreateSampleTypeMappingArgs, WithTypename<SampleTypeMappingResponse>>,
   createShipment?: GraphCacheOptimisticMutationResolver<MutationCreateShipmentArgs, WithTypename<ShipmentsResponse>>,
@@ -14469,10 +14650,12 @@ export type GraphCacheOptimisticUpdaters = {
   deleteSmsTemplate?: GraphCacheOptimisticMutationResolver<MutationDeleteSmsTemplateArgs, WithTypename<OperationErrorDeletedItem>>,
   deleteStockOrder?: GraphCacheOptimisticMutationResolver<MutationDeleteStockOrderArgs, WithTypename<StockOrderResponse>>,
   deleteThread?: GraphCacheOptimisticMutationResolver<MutationDeleteThreadArgs, WithTypename<DeleteResponse>>,
+  deriveAnalysisRequest?: GraphCacheOptimisticMutationResolver<MutationDeriveAnalysisRequestArgs, WithTypename<AnalysisRequestResponse>>,
   discardAbxAntibiotic?: GraphCacheOptimisticMutationResolver<MutationDiscardAbxAntibioticArgs, WithTypename<DeletedItem>>,
   extractAnalyserMessage?: GraphCacheOptimisticMutationResolver<MutationExtractAnalyserMessageArgs, WithTypename<AnalyzerExtractedMessageResponse>>,
   invalidateSamples?: GraphCacheOptimisticMutationResolver<MutationInvalidateSamplesArgs, WithTypename<SampleActionResponse>>,
   issueStockOrder?: GraphCacheOptimisticMutationResolver<MutationIssueStockOrderArgs, WithTypename<StockOrderResponse>>,
+  linkSampleParent?: GraphCacheOptimisticMutationResolver<MutationLinkSampleParentArgs, WithTypename<SampleParentLinkResponse>>,
   manageAnalyses?: GraphCacheOptimisticMutationResolver<MutationManageAnalysesArgs, WithTypename<ResultedSampleActionResponse>>,
   parseAnalyserMessage?: GraphCacheOptimisticMutationResolver<MutationParseAnalyserMessageArgs, WithTypename<AnalyzerParsedMessageResponse>>,
   printSamples?: GraphCacheOptimisticMutationResolver<MutationPrintSamplesArgs, WithTypename<SampleActionResponse>>,
@@ -14814,6 +14997,7 @@ export type GraphCacheUpdaters = {
     instrumentResultTranslations?: GraphCacheUpdateResolver<{ instrumentResultTranslations: Array<WithTypename<InstrumentResultTranslationType>> }, QueryInstrumentResultTranslationsArgs>,
     instrumentTypeAll?: GraphCacheUpdateResolver<{ instrumentTypeAll: WithTypename<InstrumentTypeCursorPage> }, QueryInstrumentTypeAllArgs>,
     instrumentTypeByUid?: GraphCacheUpdateResolver<{ instrumentTypeByUid: WithTypename<InstrumentTypeType> }, QueryInstrumentTypeByUidArgs>,
+    inventoryKpis?: GraphCacheUpdateResolver<{ inventoryKpis: Array<WithTypename<InventoryKpiType>> }, QueryInventoryKpisArgs>,
     laboratoriesByOrganization?: GraphCacheUpdateResolver<{ laboratoriesByOrganization: Array<WithTypename<LaboratoryType>> }, QueryLaboratoriesByOrganizationArgs>,
     laboratory?: GraphCacheUpdateResolver<{ laboratory: WithTypename<LaboratoryType> }, Record<string, never>>,
     laboratoryAll?: GraphCacheUpdateResolver<{ laboratoryAll: WithTypename<LaboratoryCursorPage> }, QueryLaboratoryAllArgs>,
@@ -14875,8 +15059,10 @@ export type GraphCacheUpdaters = {
     sampleByParentId?: GraphCacheUpdateResolver<{ sampleByParentId: Array<WithTypename<SampleType>> }, QuerySampleByParentIdArgs>,
     sampleByUid?: GraphCacheUpdateResolver<{ sampleByUid: WithTypename<SampleType> }, QuerySampleByUidArgs>,
     sampleCount?: GraphCacheUpdateResolver<{ sampleCount: Scalars['Int'] }, QuerySampleCountArgs>,
+    sampleGenealogy?: GraphCacheUpdateResolver<{ sampleGenealogy: Maybe<WithTypename<SampleGenealogyNode>> }, QuerySampleGenealogyArgs>,
     sampleLaggards?: GraphCacheUpdateResolver<{ sampleLaggards: WithTypename<LaggardStatistics> }, Record<string, never>>,
     sampleProcessPerformance?: GraphCacheUpdateResolver<{ sampleProcessPerformance: WithTypename<ProcessStatistics> }, QuerySampleProcessPerformanceArgs>,
+    sampleRelationships?: GraphCacheUpdateResolver<{ sampleRelationships: Array<WithTypename<SampleRelationshipType>> }, QuerySampleRelationshipsArgs>,
     sampleSearch?: GraphCacheUpdateResolver<{ sampleSearch: Array<WithTypename<SampleType>> }, QuerySampleSearchArgs>,
     sampleTypeAll?: GraphCacheUpdateResolver<{ sampleTypeAll: Array<WithTypename<SampleTypeTyp>> }, Record<string, never>>,
     sampleTypeByUid?: GraphCacheUpdateResolver<{ sampleTypeByUid: WithTypename<SampleTypeTyp> }, QuerySampleTypeByUidArgs>,
@@ -15042,6 +15228,7 @@ export type GraphCacheUpdaters = {
     createReflexRule?: GraphCacheUpdateResolver<{ createReflexRule: WithTypename<ReflexRuleResponse> }, MutationCreateReflexRuleArgs>,
     createRejectionReason?: GraphCacheUpdateResolver<{ createRejectionReason: WithTypename<RejectionReasonResponse> }, MutationCreateRejectionReasonArgs>,
     createResultOption?: GraphCacheUpdateResolver<{ createResultOption: WithTypename<ResultOptionResponse> }, MutationCreateResultOptionArgs>,
+    createSampleRelationship?: GraphCacheUpdateResolver<{ createSampleRelationship: WithTypename<SampleRelationshipResponse> }, MutationCreateSampleRelationshipArgs>,
     createSampleType?: GraphCacheUpdateResolver<{ createSampleType: WithTypename<SampleTypeResponse> }, MutationCreateSampleTypeArgs>,
     createSampleTypeMapping?: GraphCacheUpdateResolver<{ createSampleTypeMapping: WithTypename<SampleTypeMappingResponse> }, MutationCreateSampleTypeMappingArgs>,
     createShipment?: GraphCacheUpdateResolver<{ createShipment: WithTypename<ShipmentsResponse> }, MutationCreateShipmentArgs>,
@@ -15089,10 +15276,12 @@ export type GraphCacheUpdaters = {
     deleteSmsTemplate?: GraphCacheUpdateResolver<{ deleteSmsTemplate: WithTypename<OperationErrorDeletedItem> }, MutationDeleteSmsTemplateArgs>,
     deleteStockOrder?: GraphCacheUpdateResolver<{ deleteStockOrder: WithTypename<StockOrderResponse> }, MutationDeleteStockOrderArgs>,
     deleteThread?: GraphCacheUpdateResolver<{ deleteThread: WithTypename<DeleteResponse> }, MutationDeleteThreadArgs>,
+    deriveAnalysisRequest?: GraphCacheUpdateResolver<{ deriveAnalysisRequest: WithTypename<AnalysisRequestResponse> }, MutationDeriveAnalysisRequestArgs>,
     discardAbxAntibiotic?: GraphCacheUpdateResolver<{ discardAbxAntibiotic: WithTypename<DeletedItem> }, MutationDiscardAbxAntibioticArgs>,
     extractAnalyserMessage?: GraphCacheUpdateResolver<{ extractAnalyserMessage: WithTypename<AnalyzerExtractedMessageResponse> }, MutationExtractAnalyserMessageArgs>,
     invalidateSamples?: GraphCacheUpdateResolver<{ invalidateSamples: WithTypename<SampleActionResponse> }, MutationInvalidateSamplesArgs>,
     issueStockOrder?: GraphCacheUpdateResolver<{ issueStockOrder: WithTypename<StockOrderResponse> }, MutationIssueStockOrderArgs>,
+    linkSampleParent?: GraphCacheUpdateResolver<{ linkSampleParent: WithTypename<SampleParentLinkResponse> }, MutationLinkSampleParentArgs>,
     manageAnalyses?: GraphCacheUpdateResolver<{ manageAnalyses: WithTypename<ResultedSampleActionResponse> }, MutationManageAnalysesArgs>,
     parseAnalyserMessage?: GraphCacheUpdateResolver<{ parseAnalyserMessage: WithTypename<AnalyzerParsedMessageResponse> }, MutationParseAnalyserMessageArgs>,
     printSamples?: GraphCacheUpdateResolver<{ printSamples: WithTypename<SampleActionResponse> }, MutationPrintSamplesArgs>,
@@ -16001,6 +16190,13 @@ export type GraphCacheUpdaters = {
   AnalysisResultEdge?: {
     cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultEdge>>, Record<string, never>>,
     node?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultEdge>>, Record<string, never>>
+  },
+  AnalysisResultSummaryType?: {
+    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultSummaryType>>, Record<string, never>>,
+    reportable?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultSummaryType>>, Record<string, never>>,
+    retest?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultSummaryType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultSummaryType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultSummaryType>>, Record<string, never>>
   },
   AnalysisResultType?: {
     analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<AnalysisResultType>>, Record<string, never>>,
@@ -17215,6 +17411,18 @@ export type GraphCacheUpdaters = {
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>,
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InstrumentTypeType>>, Record<string, never>>
   },
+  InventoryKPIType?: {
+    currentStock?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    lowStock?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    maximumLevel?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    minimumLevel?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    productName?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    productUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    reorderNow?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    reorderPoint?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    reorderQuantity?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>,
+    stockItemUid?: GraphCacheUpdateResolver<Maybe<WithTypename<InventoryKpiType>>, Record<string, never>>
+  },
   KeyMetrics?: {
     collectionRate?: GraphCacheUpdateResolver<Maybe<WithTypename<KeyMetrics>>, Record<string, never>>,
     outstandingBalance?: GraphCacheUpdateResolver<Maybe<WithTypename<KeyMetrics>>, Record<string, never>>,
@@ -18020,9 +18228,31 @@ export type GraphCacheUpdaters = {
     cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleEdge>>, Record<string, never>>,
     node?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleEdge>>, Record<string, never>>
   },
+  SampleGenealogyNode?: {
+    children?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleGenealogyNode>>, Record<string, never>>,
+    extraRelationships?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleGenealogyNode>>, Record<string, never>>,
+    relationshipType?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleGenealogyNode>>, Record<string, never>>,
+    sampleId?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleGenealogyNode>>, Record<string, never>>,
+    sampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleGenealogyNode>>, Record<string, never>>,
+    tests?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleGenealogyNode>>, Record<string, never>>
+  },
   SampleListingType?: {
     message?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleListingType>>, Record<string, never>>,
     samples?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleListingType>>, Record<string, never>>
+  },
+  SampleRelationshipType?: {
+    childSampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    metadataSnapshot?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    notes?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    parentSampleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    relationshipType?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleRelationshipType>>, Record<string, never>>
   },
   SampleType?: {
     analyses?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
@@ -18067,6 +18297,7 @@ export type GraphCacheUpdaters = {
     receivedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     receivedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     rejectionReasons?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
+    relationshipType?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     sampleId?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     sampleType?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
     sampleTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SampleType>>, Record<string, never>>,
@@ -18164,6 +18395,7 @@ export type GraphCacheUpdaters = {
     receivedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     receivedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     rejectionReasons?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
+    relationshipType?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     sampleId?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     sampleType?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,
     sampleTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SamplesWithResults>>, Record<string, never>>,

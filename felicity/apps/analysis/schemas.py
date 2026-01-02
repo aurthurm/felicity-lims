@@ -780,6 +780,8 @@ class SampleBase(BaseAuditModel):
     due_date: datetime | None = None
     date_collected: datetime | None = None
     status: str | None = None
+    parent_id: str | None = None
+    relationship_type: str | None = None
 
 
 class SampleBaseInDB(SampleBase):
@@ -795,6 +797,36 @@ class SampleCreate(SampleBase):
 
 # Properties to receive via API on update
 class SampleUpdate(SampleBase):
+    pass
+
+
+class SampleRelationshipBase(BaseAuditModel):
+    parent_sample_uid: str | None = None
+    child_sample_uid: str | None = None
+    relationship_type: str | None = None
+    notes: str | None = None
+    metadata_snapshot: dict | None = None
+
+
+class SampleRelationshipBaseInDB(SampleRelationshipBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SampleRelationshipCreate(SampleRelationshipBase):
+    pass
+
+
+class SampleRelationshipUpdate(SampleRelationshipBase):
+    pass
+
+
+class SampleRelationship(SampleRelationshipBaseInDB):
+    pass
+
+
+class SampleRelationshipInDB(SampleRelationshipBaseInDB):
     pass
 
 

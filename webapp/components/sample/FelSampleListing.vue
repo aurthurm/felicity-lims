@@ -3,13 +3,16 @@ import { h, ref, reactive, computed, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
-import { ProfileType, AnalysisType, SampleType } from "@/types/gql";
+import { SampleType } from "@/types/gql";
 import { ifZeroEmpty, parseDate } from "@/utils";
 import { useSampleStore } from "@/stores/sample";
 import { useAnalysisStore } from "@/stores/analysis";
 import useSampleComposable from "@/composables/samples";
 const DataTable = defineAsyncComponent(
   () => import("@/components/ui/datatable/FelDataTable.vue")
+)
+const DeriveSamplesModal = defineAsyncComponent(
+  () => import("@/components/sample/DeriveSamplesModal.vue")
 )
 
 import * as shield from "@/guards";
@@ -35,6 +38,7 @@ const state = reactive({
   can_publish: false,
   can_store: false,
   can_recover: false,
+  can_derive: false,
 });
 
 // samples
@@ -92,17 +96,30 @@ const tableColumns = ref([
     sortBy: "asc",
     hidden: false,
     customRender: function (sample, _) {
-      return h(RouterLink, {
-        to: {
-          name: "sample-detail",
-          params: {
-            patientUid: sample?.analysisRequest?.patient?.uid,
-            sampleUid: sample?.uid,
+      const badge = relationshipBadge(sample?.relationshipType);
+      return h("div", { class: "flex items-center gap-2" }, [
+        h(RouterLink, {
+          to: {
+            name: "sample-detail",
+            params: {
+              patientUid: sample?.analysisRequest?.patient?.uid,
+              sampleUid: sample?.uid,
+            },
           },
-        },
-        class: "text-primary hover:underline",
-        innerHTML: sample?.sampleId,
-      });
+          class: "text-primary hover:underline",
+          innerHTML: sample?.sampleId,
+        }),
+        badge
+          ? h(
+              "span",
+              {
+                class:
+                  "inline-flex items-center justify-center w-4 h-4 rounded-full text-[9px] italic font-semibold bg-muted text-foreground",
+              },
+              badge
+            )
+          : null,
+      ]);
     },
   },
   {
@@ -385,6 +402,15 @@ function profileAnalysesText(
   return names.join(", ");
 }
 
+function relationshipBadge(rel?: string | null): string | null {
+  if (!rel) return null;
+  const value = rel.toLowerCase();
+  if (value.startsWith("der")) return "D";
+  if (value.startsWith("ali")) return "A";
+  if (value.startsWith("poo")) return "P";
+  return rel.charAt(0).toUpperCase();
+}
+
 let sampleParams = reactive({
   first: 50,
   before: "",
@@ -480,6 +506,7 @@ function checkUserActionPermissios(): void {
   state.can_store = false;
   state.can_recover = false;
   state.can_copy_to = false;
+  state.can_derive = false;
   state.barcodes = false;
 
   const checked: SampleType[] = getSamplesChecked();
@@ -487,6 +514,7 @@ function checkUserActionPermissios(): void {
     return;
   } else {
     state.barcodes = true;
+    state.can_derive = true;
   };
 
   // can_receive
@@ -605,6 +633,32 @@ const printBarCodes = async () => router.push({
   name: "print-barcodes",
   state: { sampleUids: JSON.stringify(getSampleUids()) }}
 )
+
+const showDeriveModal = ref(false);
+const deriveSelection = ref<SampleType[]>([]);
+
+const openDeriveModal = () => {
+  const selection = getSamplesChecked();
+  if (selection.length === 0) return;
+  deriveSelection.value = selection;
+  showDeriveModal.value = true;
+};
+
+const closeDeriveModal = () => {
+  showDeriveModal.value = false;
+  deriveSelection.value = [];
+};
+
+const handleDerived = async (derivedSamples: SampleType[]) => {
+  if (derivedSamples?.length) {
+    const existing = new Set(samples.value.map((s) => s.uid));
+    const additions = derivedSamples.filter((s) => !existing.has(s.uid));
+    if (additions.length) {
+      sampleStore.addSampleClones(additions as SampleType[]);
+    }
+  }
+  await unCheckAll();
+};
 </script>
 
 <template>
@@ -709,8 +763,21 @@ const printBarCodes = async () => router.push({
             >
             Print Barcodes
           </fel-button>
+          <fel-button 
+            v-show="state.can_derive"
+            @click.prevent="openDeriveModal"
+            >
+            Derive
+          </fel-button>
         </div>
       </template>
     </DataTable>
+
+    <derive-samples-modal
+      :show="showDeriveModal"
+      :samples="deriveSelection"
+      @close="closeDeriveModal"
+      @derived="handleDerived"
+    />
   </div>
 </template>

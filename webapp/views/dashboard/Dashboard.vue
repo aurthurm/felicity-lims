@@ -37,6 +37,11 @@ const tabs = [
     id: "line-listing",
     label: "Line Listing",
     component: defineAsyncComponent(() => import("./LineListing.vue")),
+  },
+  {
+    id: "inventory",
+    label: "Inventory",
+    component: defineAsyncComponent(() => import("./Inventory.vue")),
   }
 ]
 </script>

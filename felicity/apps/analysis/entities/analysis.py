@@ -2,6 +2,7 @@ import logging
 
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     Column,
     DateTime,
     Float,
@@ -597,6 +598,7 @@ class Sample(LabScopedEntity, BaseMPTT):
         RejectionReason, secondary=sample_rejection_reason, lazy="selectin"
     )
     internal_use = Column(Boolean(), default=False)
+    relationship_type = Column(String, nullable=True)
     due_date = Column(DateTime, nullable=True)
     # QC Samples
     qc_set_uid = Column(String, ForeignKey("qc_set.uid"), nullable=True)
@@ -632,3 +634,31 @@ class Sample(LabScopedEntity, BaseMPTT):
                 pass
 
         return result
+
+
+class SampleRelationship(LabScopedEntity):
+    __tablename__ = "sample_relationship"
+    __table_args__ = (
+        UniqueConstraint(
+            "parent_sample_uid",
+            "child_sample_uid",
+            "relationship_type",
+            name="uq_sample_relationship_edge",
+        ),
+        CheckConstraint(
+            "parent_sample_uid IS NULL OR parent_sample_uid <> child_sample_uid",
+            name="ck_sample_relationship_no_self",
+        ),
+    )
+
+    parent_sample_uid = Column(String, ForeignKey("sample.uid"), nullable=True, index=True)
+    parent_sample = relationship(
+        "Sample", foreign_keys=[parent_sample_uid], lazy="selectin"
+    )
+    child_sample_uid = Column(String, ForeignKey("sample.uid"), nullable=False, index=True)
+    child_sample = relationship(
+        "Sample", foreign_keys=[child_sample_uid], lazy="selectin"
+    )
+    relationship_type = Column(String, nullable=False)
+    notes = Column(Text, nullable=True)
+    metadata_snapshot = Column(JSONB, nullable=True)

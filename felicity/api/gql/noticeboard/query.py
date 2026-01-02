@@ -59,7 +59,7 @@ class NoticeQuery:
             return await NoticeService().get_all(
                 created_by_uid=uid,
                 expiry__gt=timenow_dt(),
-                departments__uid__in=department_uids,
+                departments___uid__in=department_uids,
             )
         return await NoticeService().get_all(created_by_uid=uid, expiry__gt=timenow_dt())
 
@@ -74,10 +74,10 @@ class NoticeQuery:
         ]
     )
     async def notice_filter(
-        self,
-        info,
-        group_uid: str | None,
-        department_uid: str | None,
+            self,
+            info,
+            group_uid: str | None,
+            department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
         department_uids = await _get_department_uids()

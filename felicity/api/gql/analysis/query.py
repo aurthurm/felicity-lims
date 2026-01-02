@@ -10,6 +10,7 @@ from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import PageInfo
+from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.services.analysis import (
     AnalysisCategoryService,
@@ -30,6 +31,7 @@ from felicity.apps.analysis.services.analysis import (
     SampleService,
     SampleTypeCodingService,
     SampleTypeService,
+    SampleRelationshipService,
 )
 from felicity.apps.analysis.services.quality_control import (
     QCLevelService,
@@ -61,6 +63,33 @@ async def _get_department_uids() -> list[str]:
         for department in preferences.departments
         if department and department.uid
     ]
+
+
+def _result_summary(result) -> a_types.AnalysisResultSummaryType:
+    return a_types.AnalysisResultSummaryType(
+        uid=result.uid,
+        analysis_uid=result.analysis_uid,
+        status=result.status,
+        retest=result.retest,
+        reportable=result.reportable,
+    )
+
+
+def _map_genealogy_node(node: dict) -> a_types.SampleGenealogyNode:
+    children = [_map_genealogy_node(child) for child in node.get("children", [])]
+    tests = node.get("tests") or []
+    relationships = node.get("extra_relationships") or []
+    return a_types.SampleGenealogyNode(
+        sample_uid=node.get("sample_uid"),
+        sample_id=node.get("sample_id"),
+        relationship_type=node.get("relationship_type"),
+        children=children,
+        tests=[_result_summary(result) for result in tests],
+        extra_relationships=[
+            StrawberryMapper[a_types.SampleRelationshipType]().map(**rel.marshal_simple())
+            for rel in relationships
+        ],
+    )
 
 
 @strawberry.type
@@ -117,8 +146,8 @@ class AnalysisQuery:
                 filters.append(
                     {
                         sa.or_: {
-                            "analyses__department_uid__in": department_uids,
-                            "profiles__department_uid__in": department_uids,
+                            "analyses___department_uid__in": department_uids,
+                            "profiles___department_uid__in": department_uids,
                         }
                     }
                 )
@@ -313,6 +342,65 @@ class AnalysisQuery:
     ) -> List[r_types.SamplesWithResults]:
         """Samples for publishing/ report printing"""
         return await SampleService().get_all(uid__in=sample_uids) if sample_uids else []
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def sample_genealogy(
+            self,
+            info,
+            sample_uid: str,
+            depth: int = 5,
+            include_tests: bool = False,
+            include_extra_relationships: bool = False,
+    ) -> a_types.SampleGenealogyNode | None:
+        genealogy = await SampleService().build_genealogy_tree(
+            sample_uid=sample_uid,
+            depth=depth,
+            include_tests=include_tests,
+            include_extra_relationships=include_extra_relationships,
+        )
+        if not genealogy:
+            return None
+        return _map_genealogy_node(genealogy)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def sample_relationships(
+            self,
+            info,
+            sample_uid: str,
+            direction: str | None = "child",
+    ) -> List[a_types.SampleRelationshipType]:
+        rel_service = SampleRelationshipService()
+        if direction == "parent":
+            filters = {"child_sample_uid": sample_uid}
+        elif direction == "child":
+            filters = {"parent_sample_uid": sample_uid}
+        else:
+            filters = {
+                sa.or_: {
+                    "parent_sample_uid": sample_uid,
+                    "child_sample_uid": sample_uid,
+                }
+            }
+        relationships = await rel_service.repository.filter(
+            filters=filters, sort_attrs=["-created_at"]
+        )
+        return [
+            a_types.SampleRelationshipType(
+                uid=rel.uid,
+                parent_sample_uid=rel.parent_sample_uid,
+                child_sample_uid=rel.child_sample_uid,
+                relationship_type=rel.relationship_type,
+                notes=rel.notes,
+                metadata_snapshot=rel.metadata_snapshot,
+                created_by_uid=rel.created_by_uid,
+                created_by=rel.created_by,
+                created_at=rel.created_at,
+                updated_by_uid=rel.updated_by_uid,
+                updated_by=rel.updated_by,
+                updated_at=rel.updated_at,
+            )
+            for rel in relationships
+        ]
 
     @strawberry.field(
         extensions=[
@@ -772,7 +860,7 @@ class AnalysisQuery:
         department_uids = await _get_department_uids()
         if department_uids:
             return await QCTemplateService().get_all(
-                departments__uid__in=department_uids
+                departments___uid__in=department_uids
             )
         return await QCTemplateService().all()
 
