@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from fhir.resources.bundle import Bundle, BundleEntry
 from fhir.resources.diagnosticreport import DiagnosticReport
@@ -82,6 +82,11 @@ async def search_resource(
     current_user: Annotated[User, Depends(get_current_user)],
     identifier: str | None = None,
     status: str | None = None,
+    issued: str | None = None,
+    subject: str | None = None,
+    based_on: str | None = Query(default=None, alias="based-on"),
+    _sort: str | None = None,
+    _include: str | None = None,
     date: str | None = None,
     page: int = 1,
     count: int = 20,
@@ -92,7 +97,8 @@ async def search_resource(
     Search FHIR resources with exact match filters.
 
     Supported resources: DiagnosticReport, Patient
-    Supported params: identifier, status, date, paging (page/count)
+    Supported params: identifier, status, issued, subject, based-on,
+    date, _sort, _include, paging (page/count)
     """
     if resource not in ["Patient", "DiagnosticReport"]:
         raise HTTPException(417, f"{resource} Resource not supported")
@@ -109,6 +115,36 @@ async def search_resource(
         if "T" in value or ":" in value:
             return parsed == target
         return parsed.date() == target.date()
+
+    def _normalize_subject(value: str | None) -> str | None:
+        if not value:
+            return None
+        return value.split("/", 1)[1] if "/" in value else value
+
+    def _apply_sort(items: list, key: str | None):
+        if not key:
+            return items
+        reverse = key.startswith("-")
+        sort_key = key[1:] if reverse else key
+        if sort_key == "issued":
+            return sorted(
+                items,
+                key=lambda item: item.updated_at or item.created_at,
+                reverse=reverse,
+            )
+        if sort_key == "identifier":
+            return sorted(
+                items,
+                key=lambda item: (item.client_request_id or item.request_id or ""),
+                reverse=reverse,
+            )
+        if sort_key == "status":
+            return sorted(
+                items,
+                key=lambda item: (item.samples[0].status if item.samples else ""),
+                reverse=reverse,
+            )
+        return items
 
     def _paginate(items: list):
         total = len(items)
@@ -143,6 +179,14 @@ async def search_resource(
                 if ar:
                     candidates.append(ar)
             analysis_requests = list({ar.uid: ar for ar in candidates}.values())
+        elif based_on:
+            based_value = _normalize_subject(based_on)
+            candidates = []
+            for field in ["client_request_id", "request_id", "uid"]:
+                ar = await analysis_request_service.get(**{field: based_value})
+                if ar:
+                    candidates.append(ar)
+            analysis_requests = list({ar.uid: ar for ar in candidates}.values())
         elif status_filters:
             if len(status_filters) == 1:
                 samples = await sample_service.repository.filter(
@@ -163,12 +207,33 @@ async def search_resource(
         else:
             analysis_requests = await analysis_request_service.all()
 
+        if issued:
+            analysis_requests = [
+                ar
+                for ar in analysis_requests
+                if ar.updated_at and _matches_date(issued, ar.updated_at)
+            ]
         if date:
             analysis_requests = [
                 ar
                 for ar in analysis_requests
                 if ar.updated_at and _matches_date(date, ar.updated_at)
             ]
+
+        if subject:
+            subject_value = _normalize_subject(subject)
+            if subject_value:
+                patients = []
+                for field in ["uid", "client_patient_id", "patient_id"]:
+                    patient = await PatientService().get(**{field: subject_value})
+                    if patient:
+                        patients.append(patient)
+                patient_uids = {pt.uid for pt in patients}
+                analysis_requests = [
+                    ar
+                    for ar in analysis_requests
+                    if ar.patient_uid in patient_uids
+                ]
 
         if status_filters and not identifier:
             analysis_requests = [
@@ -187,17 +252,30 @@ async def search_resource(
                     matched.append(ar)
             analysis_requests = matched
 
+        analysis_requests = _apply_sort(analysis_requests, _sort)
+
         paged_ars, total = _paginate(analysis_requests)
         reports = []
+        included = {}
         for ar in paged_ars:
             report = await fhir_read_service.get_diagnostic_report_resource(ar.uid)
             if report:
                 reports.append(report)
+                if _include == "DiagnosticReport:subject":
+                    patient_resource = await fhir_read_service.get_patient_resource(
+                        ar.patient_uid
+                    )
+                    if patient_resource:
+                        included[patient_resource.id] = patient_resource
+
+        entries = [BundleEntry(resource=r) for r in reports]
+        for resource_item in included.values():
+            entries.append(BundleEntry(resource=resource_item))
 
         return Bundle(
             type="searchset",
             total=total,
-            entry=[BundleEntry(resource=r) for r in reports],
+            entry=entries,
         )
 
     patient_service = PatientService()
@@ -225,6 +303,7 @@ async def search_resource(
             if pt.date_of_birth and _matches_date(date, pt.date_of_birth)
         ]
 
+    patients = _apply_sort(patients, _sort)
     paged_patients, total = _paginate(patients)
     resources = []
     for pt in paged_patients:
