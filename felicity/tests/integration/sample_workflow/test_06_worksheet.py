@@ -3,6 +3,7 @@ import logging
 import pytest
 
 from felicity.apps.worksheet.tasks import populate_worksheet_plate
+from felicity.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.asyncio
 @pytest.mark.order(70)
 async def test_add_worksheet_template(
-    app_gql, auth_data, sample_types, analyses, instruments
+        app_gql, auth_data, sample_types, analyses, instruments
 ):
     add_gql = """
         mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!){
@@ -86,7 +87,7 @@ async def test_add_worksheet_template(
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add analysis request response: {response} {response.json}")
+    logger.info(f"add analysis request response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createWorksheetTemplate"]
@@ -104,7 +105,7 @@ async def test_add_worksheet_template(
 
 @pytest.mark.asyncio
 @pytest.mark.order(71)
-async def test_add_worksheet_using_template(app_gql, auth_data, users_db, ws_templates):
+async def test_add_worksheet_using_template(app_gql, app_api, auth_data, users_db, ws_templates):
     add_gql = """
       mutation AddWorkSheet($analystUid:String!, $templateUid: String!, $count: Int){
         createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count:$count)
@@ -157,7 +158,7 @@ async def test_add_worksheet_using_template(app_gql, auth_data, users_db, ws_tem
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add worksheet using template response: {response} {response.json}")
+    logger.info(f"add worksheet using template response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createWorksheet"]
@@ -166,13 +167,17 @@ async def test_add_worksheet_using_template(app_gql, auth_data, users_db, ws_tem
     assert worksheet["uid"] is not None
     assert worksheet["instrumentUid"] is not None
     assert worksheet["analysisUid"] is not None
-    assert worksheet["state"] == "empty"
 
-    job_response = await app_gql.get("api/v1/jobs")
-    logger.info(f"job response: {job_response} {job_response.json}")
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        assert worksheet["state"] == "pending"
+        assert worksheet["assignedCount"] == 5
+    else:
+        assert worksheet["state"] == "empty"
+        job_response = await app_gql.get("api/v1/jobs", headers=auth_data["headers"])
+        logger.info(f"job response: {job_response} {job_response.json()}")
 
-    # process job for the next test
-    await populate_worksheet_plate(job_response.json()[0]["uid"])
+        # process job for the next test
+        await populate_worksheet_plate(job_response.json()[0]["uid"])
 
 
 @pytest.mark.asyncio
@@ -274,7 +279,7 @@ async def test_get_worksheet_by_uid(app_gql, auth_data, worksheets):
     )
 
     logger.info(
-        f"query worksheet using worksheet uid response: {response} {response.json}"
+        f"query worksheet using worksheet uid response: {response} {response.json()}"
     )
 
     assert response.status_code == 200

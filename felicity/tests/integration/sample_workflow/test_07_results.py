@@ -3,7 +3,8 @@ import logging
 import pytest
 
 from felicity.apps.analysis.tasks import submit_results, verify_results
-from felicity.tests.integration.utils.user import make_password, make_username
+from felicity.lims.middleware.tenant import settings
+from felicity.tests.integration.utils.user import make_password, make_username, auth_to_headers, auth_user_mutation
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,12 +13,19 @@ logger = logging.getLogger(__name__)
 @pytest.mark.asyncio
 @pytest.mark.order(80)
 async def test_submit_results(
-    app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
+        app_gql, app_api, auth_data, samples, worksheets, laboratory_instruments, methods
 ):
     add_gql = """
      mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: String!) {
         submitAnalysisResults(analysisResults: $analysisResults, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
-          ... on OperationSuccess {
+          ... on ResultOperationType {
+            isBackground
+            results {
+                uid
+                sampleUid
+                result
+                status
+            }
             message
           }
 
@@ -76,18 +84,23 @@ async def test_submit_results(
         headers=auth_data["headers"],
     )
 
-    logger.info(f"submitting worksheet results response: {response} {response.json}")
+    logger.info(f"submitting worksheet results response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["submitAnalysisResults"]
-    assert _data["message"] == "Your results are being submitted in the background."
 
-    # process job for the next test
-    job_response = await app_api.get("/jobs/pending")
-    logger.info(f"job response:  {job_response.json()}")
-    jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
-    for job in jobs:
-        await submit_results(job["uid"])
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        assert _data["isBackground"] is False
+        assert _data["message"] is None
+        assert all(r.get("status") == "resulted" for r in _data["results"])
+    else:
+        assert _data["message"] == "Your results are being submitted in the background."
+        # process job for the next test
+        job_response = await app_api.get("/jobs/pending")
+        logger.info(f"job response:  {job_response.json()}")
+        jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
+        for job in jobs:
+            await submit_results(job["uid"])
 
 
 @pytest.mark.asyncio
@@ -162,7 +175,7 @@ async def test_retract_result(app_gql, auth_data, samples):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"retract result response: {response} {response.json}")
+    logger.info(f"retract result response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["retractAnalysisResults"]
@@ -249,7 +262,7 @@ async def test_retest_result(app_gql, auth_data, samples):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"retest result response: {response} {response.json}")
+    logger.info(f"retest result response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["retestAnalysisResults"]
@@ -274,7 +287,14 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
     add_gql = """
       mutation VerifyAnalysisResults ($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: String!) {
         verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
-          ... on OperationSuccess {
+          ... on ResultOperationType {
+            isBackground
+            results {
+                uid
+                sampleUid
+                result
+                status
+            }
             message
           }
 
@@ -287,27 +307,10 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
       }
     """
 
-    authe = """
-        mutation Auth($username: String!, $password: String!){
-          authenticateUser(username: $username, password: $password) {
-            ... on AuthenticatedData {
-                user {
-                    uid
-                    firstName
-                    lastName
-                }
-                token  
-            }
-            ... on OperationError {
-                error
-            }
-          }
-        }
-    """
     auth_resp = await app_gql.post(
         "/felicity-gql",
         json={
-            "query": authe,
+            "query": auth_user_mutation,
             "variables": {
                 "username": make_username(users[1]["firstName"]),
                 "password": make_password(users[1]["firstName"]),
@@ -315,8 +318,6 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
         },
     )
     logger.info(f"auth_resp: {auth_resp} {auth_resp.json()}")
-
-    auth_data = auth_resp.json()["data"]["authenticateUser"]
 
     results = [r["analysisResults"][0] for r in samples]
     results = list(filter(lambda r: r["status"] == "resulted", results))
@@ -330,21 +331,26 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
                 "sourceObjectUid": worksheets[0]["uid"],
             },
         },
-        headers={"Authorization": f"bearer {auth_data['token']}"},
+        headers=auth_to_headers(auth_resp.json()["data"]["authenticateUser"]),
     )
 
-    logger.info(f"verifying worksheet results response: {response} {response.json}")
+    logger.info(f"verifying worksheet results response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["verifyAnalysisResults"]
-    assert _data["message"] == "Your results are being verified in the background."
 
-    # process job for the next test
-    job_response = await app_api.get("/jobs/pending")
-    logger.info(f"job response:  {job_response.json()}")
-    jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
-    for job in jobs:
-        await verify_results(job["uid"])
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        assert _data["isBackground"] is False
+        assert _data["message"] is None
+        assert all(r.get("status") == "approved" for r in _data["results"]) is True
+    else:
+        assert _data["message"] == "Your results are being verified in the background."
+        # process job for the next test
+        job_response = await app_api.get("/jobs/pending")
+        logger.info(f"job response:  {job_response.json()}")
+        jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
+        for job in jobs:
+            await verify_results(job["uid"])
 
 
 @pytest.mark.asyncio
@@ -354,7 +360,14 @@ async def test_verify_sample_results(app_gql, users, samples):
     add_gql = """
       mutation VerifyAnalysisResults ($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: String!) {
         verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
-          ... on OperationSuccess {
+          ... on ResultOperationType {
+            isBackground
+            results {
+                uid
+                sampleUid
+                result
+                status
+            }
             message
           }
 
@@ -367,29 +380,10 @@ async def test_verify_sample_results(app_gql, users, samples):
       }
     """
 
-    authe = """
-           mutation Auth($username: String!, $password: String!){
-             authenticateUser(username: $username, password: $password) {
-               ... on AuthenticatedData {
-                   user {
-                       uid
-                       firstName
-                       lastName
-                   }
-                   token
-                   tokenType
-               }
-               ... on OperationError {
-                   error
-               }
-             }
-           }
-       """
-
     u_resp = await app_gql.post(
         "felicity-gql",
         json={
-            "query": authe,
+            "query": auth_user_mutation,
             "variables": {
                 "username": make_username(users[0]["firstName"]),
                 "password": make_password(users[0]["firstName"]),
@@ -398,7 +392,6 @@ async def test_verify_sample_results(app_gql, users, samples):
     )
 
     logger.info(f"verifier response: {u_resp.json()}")
-    user_data = u_resp.json()["data"]["authenticateUser"]
 
     samples = list(filter(lambda s: s["status"] == "awaiting", samples))
     logger.info(f"samples::::::::::::::: {samples}")
@@ -424,20 +417,26 @@ async def test_verify_sample_results(app_gql, users, samples):
                 "sourceObjectUid": sample["uid"],
             },
         },
-        headers={"Authorization": f"bearer {user_data['token']}"},
+        headers=auth_to_headers(u_resp.json()["data"]["authenticateUser"]),
     )
 
     logger.info(f"verifying worksheet results response:  {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["verifyAnalysisResults"]
-    assert _data["message"] == "Your results are being verified in the background."
 
-    # process job for the next test
-    job_response = await app_gql.get("api/v1/jobs")
-    logger.info(f"jobs ::::::::::::::: {job_response.json()}")
-    jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
-    await verify_results(jobs[0]["uid"])
+    if not settings.ENABLE_BACKGROUND_PROCESSING:
+        assert _data["isBackground"] is False
+        assert len(_data["results"]) > 0
+        assert _data["message"] is None
+    else:
+        assert _data["message"] == "Your results are being verified in the background."
+
+        # process job for the next test
+        job_response = await app_gql.get("api/v1/jobs")
+        logger.info(f"jobs ::::::::::::::: {job_response.json()}")
+        jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
+        await verify_results(jobs[0]["uid"])
 
 
 @pytest.mark.asyncio

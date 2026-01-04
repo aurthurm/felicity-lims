@@ -11,6 +11,7 @@ from felicity.api.gql.analysis.permissions import CanVerifySample
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
+from felicity.api.gql.decorators import require_tenant_context
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import (
     OperationError,
@@ -131,7 +132,7 @@ ResultedSampleActionResponse = strawberry.union(
 @strawberry.type
 class SampleListingType:
     samples: List[r_types.SampleType]
-    message: str | None = None
+    message: str = ""
 
 
 SampleActionResponse = strawberry.union(
@@ -188,8 +189,9 @@ class ManageAnalysisInputType:
         )
     ]
 )
+@require_tenant_context
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -445,8 +447,9 @@ async def create_analysis_request(
         )
     ]
 )
+@require_tenant_context
 async def derive_analysis_request(
-    info, payload: DeriveAnalysisRequestInputType
+        info, payload: DeriveAnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to derive samples from an analysis request")
 
@@ -468,9 +471,9 @@ async def derive_analysis_request(
         sample_details: dict[str, dict] = {}
 
         async def _resolve_profiles_analyses(
-            profiles_uids: list[str] | None,
-            analyses_uids: list[str] | None,
-            fallback_details: dict | None = None,
+                profiles_uids: list[str] | None,
+                analyses_uids: list[str] | None,
+                fallback_details: dict | None = None,
         ):
             profiles = []
             analyses = []
@@ -513,10 +516,10 @@ async def derive_analysis_request(
             return profiles, analyses, profile_analyses
 
         async def _create_sample_with_tests(
-            sample_in: dict,
-            profiles_uids: list[str] | None,
-            analyses_uids: list[str] | None,
-            fallback_details: dict | None = None,
+                sample_in: dict,
+                profiles_uids: list[str] | None,
+                analyses_uids: list[str] | None,
+                fallback_details: dict | None = None,
         ):
             profiles, analyses, profile_analyses = await _resolve_profiles_analyses(
                 profiles_uids, analyses_uids, fallback_details
@@ -924,6 +927,7 @@ async def derive_analysis_request(
         )
     ]
 )
+@require_tenant_context
 async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -996,6 +1000,7 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
         )
     ]
 )
+@require_tenant_context
 async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
     cancelled = await SampleWorkFlow().cancel(samples, cancelled_by=felicity_user)
@@ -1012,6 +1017,7 @@ async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionRespon
         )
     ]
 )
+@require_tenant_context
 async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1044,6 +1050,7 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
         )
     ]
 )
+@require_tenant_context
 async def receive_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1065,6 +1072,7 @@ async def receive_samples(info, samples: List[str]) -> ResultedSampleActionRespo
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifySample])
+@require_tenant_context
 async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1097,8 +1105,9 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
         )
     ]
 )
+@require_tenant_context
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1150,8 +1159,9 @@ async def reject_samples(
         )
     ]
 )
+@require_tenant_context
 async def publish_samples(
-    info, samples: List[SamplePublishInputType]
+        info, samples: List[SamplePublishInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1211,6 +1221,7 @@ async def publish_samples(
         )
     ]
 )
+@require_tenant_context
 async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1241,6 +1252,7 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
         )
     ]
 )
+@require_tenant_context
 async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1309,8 +1321,9 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
         )
     ]
 )
+@require_tenant_context
 async def samples_apply_template(
-    info, uid: str, analysis_template_uid: str
+        info, uid: str, analysis_template_uid: str
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -1384,8 +1397,9 @@ async def samples_apply_template(
         )
     ]
 )
+@require_tenant_context
 async def manage_analyses(
-    info, sample_uid: str, payload: ManageAnalysisInputType
+        info, sample_uid: str, payload: ManageAnalysisInputType
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 

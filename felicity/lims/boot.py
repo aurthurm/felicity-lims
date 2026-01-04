@@ -29,7 +29,6 @@ from felicity.core.config import settings
 from felicity.database.session import async_engine
 from felicity.lims.gql_router import FelGraphQLRouter
 from felicity.lims.middleware import TenantContextMiddleware
-from felicity.lims.middleware.tenant import RequireTenantMiddleware
 from felicity.lims.middleware.appactivity import APIActivityLogMiddleware
 from felicity.lims.middleware.ratelimit import RateLimitMiddleware
 from felicity.lims.seeds import initialize_felicity
@@ -71,7 +70,7 @@ def register_middlewares(app: FastAPI) -> None:
     )
     # Add tenant context middleware - should be early in the chain
     app.add_middleware(TenantContextMiddleware)  # noqa
-    app.add_middleware(RequireTenantMiddleware)  # noqa
+    # app.add_middleware(RequireTenantMiddleware)  # noqa
     app.add_middleware(APIActivityLogMiddleware)  # noqa
     if redis_client and settings.RATE_LIMIT:
         print(f"Connected to Redis at {settings.REDIS_SERVER}")

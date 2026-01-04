@@ -68,7 +68,7 @@ class Patient(LabScopedEntity):
     country_uid = Column(String, ForeignKey("country.uid"), nullable=True)
     country = relationship("Country", backref="patients", lazy="selectin")
     # Metadata snapshot
-    metadata_snapshot = Column(JSONB, nullable=False)
+    metadata_snapshot = Column(JSONB, nullable=True)
 
     @property
     def full_name(self):

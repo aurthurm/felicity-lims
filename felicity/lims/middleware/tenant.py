@@ -115,7 +115,7 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             context.organization_uid = org_header
 
     async def _validate_lab_membership(
-        self, context: TenantContext, laboratory_uid: str
+            self, context: TenantContext, laboratory_uid: str
     ) -> None:
         if not context.user_uid:
             raise PermissionError("Laboratory context requires authentication")
@@ -134,13 +134,13 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             raise PermissionError("Requested laboratory does not exist")
 
         if (
-            context.organization_uid
-            and laboratory.organization_uid != context.organization_uid
+                context.organization_uid
+                and laboratory.organization_uid != context.organization_uid
         ):
             raise PermissionError("Laboratory does not belong to your organization")
 
     async def _validate_org_override(
-        self, context: TenantContext, organization_uid: str
+            self, context: TenantContext, organization_uid: str
     ) -> None:
         if not context.user_uid:
             raise PermissionError("Organization override requires authentication")
@@ -151,14 +151,15 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
                 raise PermissionError("Organization override not permitted")
 
 
+# example middleware  - not required
 class RequireTenantMiddleware(BaseHTTPMiddleware):
     """Middleware to ensure tenant context is required for protected routes"""
 
     def __init__(
-        self,
-        app,
-        protected_paths: list[str] = None,
-        public_paths: list[str] = None,
+            self,
+            app,
+            protected_paths: list[str] = None,
+            public_paths: list[str] = None,
     ):
         super().__init__(app)
         self.protected_paths = protected_paths or ["/gql", "/api/v1"]
@@ -194,6 +195,9 @@ class RequireTenantMiddleware(BaseHTTPMiddleware):
             )
 
             if not is_auth_endpoint and (not context or not context.is_authenticated):
+                logger.info(f"Unauthorized access to: {request.url.path}")
+                logger.info(f"Unauthorized no context: {context}")
+
                 return JSONResponse(
                     status_code=401, content={"detail": "Authentication required"}
                 )

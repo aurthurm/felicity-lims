@@ -196,23 +196,28 @@ class AnalysisRequestType:
 
     @strawberry.field
     async def client(self, info) -> ClientType | None:
-        _client = self.metadata_snapshot.get("client")
-        if not _client:
-            return None
-        _district = _client.get("district", None)
-        _province = _client.get("province", None)
-        _client["district"] = (
-            StrawberryMapper[DistrictType]().map(**_district) if _district else None
-        )
-        _client["province"] = (
-            StrawberryMapper[ProvinceType]().map(**_province) if _province else None
-        )
-        _contacts = _client.get("contacts", [])
-        mapping = StrawberryMapper[ClientType]().map(exclude=["contacts"], **_client)
-        mapping.contacts = [
-            StrawberryMapper[ClientContactType]().map(**c) for c in _contacts
-        ]
-        return mapping
+        # Try to get from metadata_snapshot first
+        if self.metadata_snapshot:
+            _client = self.metadata_snapshot.get("client")
+            if _client:
+                _district = _client.get("district", None)
+                _province = _client.get("province", None)
+                _client["district"] = (
+                    StrawberryMapper[DistrictType]().map(**_district) if _district else None
+                )
+                _client["province"] = (
+                    StrawberryMapper[ProvinceType]().map(**_province) if _province else None
+                )
+                _contacts = _client.get("contacts", [])
+                mapping = StrawberryMapper[ClientType]().map(exclude=["contacts"], **_client)
+                mapping.contacts = [
+                    StrawberryMapper[ClientContactType]().map(**c) for c in _contacts
+                ]
+                return mapping
+
+        # Fallback to actual relationship if metadata_snapshot is None or doesn't have client
+        # For now, just return None - metadata_snapshot should be populated during creation
+        return None
 
 
 @strawberry.type
@@ -464,6 +469,8 @@ class SampleType:  # for Sample
 
     @strawberry.field
     async def sample_type(self, info) -> Optional[SampleTypeTyp]:
+        if not self.metadata_snapshot:
+            return None
         _sample_type = self.metadata_snapshot.get("sample_type")
         if not _sample_type:
             return None
@@ -471,6 +478,8 @@ class SampleType:  # for Sample
 
     @strawberry.field
     async def profiles(self, info) -> List[ProfileType]:
+        if not self.metadata_snapshot:
+            return []
         _profiles = self.metadata_snapshot.get("profiles")
         if not _profiles or len(_profiles) < 1:
             return []
@@ -478,6 +487,8 @@ class SampleType:  # for Sample
 
     @strawberry.field
     async def analyses(self, info) -> Optional[List[AnalysisType]]:
+        if not self.metadata_snapshot:
+            return []
         _analyses = self.metadata_snapshot.get("analyses")
         if not _analyses or len(_analyses) < 1:
             return []

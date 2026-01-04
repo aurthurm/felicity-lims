@@ -413,7 +413,7 @@ class UserMutations:
             lab_uids = await UserService().table_query(
                 table=laboratory_user, columns=["laboratory_uid"], user_uid=user.uid
             )
-            laboratories = await LaboratoryService().get_by_uids(lab_uids or [])
+            laboratories = (await LaboratoryService().get_by_uids(lab_uids)) if lab_uids else []
 
         active_laboratory = (
             await LaboratoryService().get(uid=user.active_laboratory_uid)

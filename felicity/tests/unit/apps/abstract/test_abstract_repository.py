@@ -1,20 +1,56 @@
 import pytest
 import pytest_asyncio
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, select
+from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
+from sqlalchemy_mixins import ReprMixin, SerializeMixin, SessionMixin, SmartQueryMixin  # noqa
+from sqlalchemy_mixins.utils import classproperty
 
 from felicity.apps.abstract.repository import BaseRepository
+from felicity.core.uid_gen import get_flake_uid
 from felicity.database.session import async_engine
-from felicity.database.base import BaseEntity
-from sqlalchemy.orm import relationship
 
 
-class SomeTestModel(BaseEntity):
+def _new_query(cls):
+    return select(cls)
+
+
+class TestBase(
+    DeclarativeBase,
+    ReprMixin,
+    SerializeMixin,
+    SmartQueryMixin,
+    AsyncAttrs,
+):
+    __abstract__ = True
+    __repr__ = ReprMixin.__repr__
+
+    uid: Mapped[str] = Column(
+        String,
+        primary_key=True,
+        index=True,
+        nullable=False,
+        default=get_flake_uid,
+    )
+
+    SessionMixin.query = classproperty(_new_query)
+
+    def fill(self, **kwargs):
+        valid_keys = set(self.__table__.columns.keys())
+        for key, value in kwargs.items():
+            if key not in valid_keys:
+                raise KeyError(f"Attribute '{key}' doesn't exist")
+            setattr(self, key, value)
+        return self
+
+
+class SomeTestModel(TestBase):
     __tablename__ = "test_model"
     name = Column(String)
     age = Column(Integer, nullable=True)
 
 
-class TrialModel(BaseEntity):
+class TrialModel(TestBase):
     __tablename__ = "trial_model"
     content = Column(String)
     test_model_uid = Column(String, ForeignKey("test_model.uid"), nullable=True)
@@ -29,17 +65,23 @@ async def async_session():
     async with async_engine.begin() as conn:
         # drop
         await conn.run_sync(
-            BaseEntity.metadata.drop_all,
+            TestBase.metadata.drop_all,
             tables=[SomeTestModel.__table__, TrialModel.__table__],
         )
         # create
         await conn.run_sync(
-            BaseEntity.metadata.create_all,
+            TestBase.metadata.create_all,
             tables=[SomeTestModel.__table__, TrialModel.__table__],
         )
 
-    connection = async_engine.connect()
-    yield connection
+    yield
+
+    async with async_engine.begin() as conn:
+        await conn.run_sync(
+            TestBase.metadata.drop_all,
+            tables=[SomeTestModel.__table__, TrialModel.__table__],
+        )
+    await async_engine.dispose()
 
     # async with async_engine.begin() as conn:
     #     await conn.run_sync(SomeTestModel.metadata.drop_all)

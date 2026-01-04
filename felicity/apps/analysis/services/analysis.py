@@ -254,14 +254,14 @@ class SampleRelationshipService(
         super().__init__(SampleRelationshipRepository())
 
     async def create_relationship(
-        self,
-        parent_sample_uid: str | None,
-        child_sample_uid: str,
-        relationship_type: str,
-        notes: str | None = None,
-        metadata_snapshot: dict | None = None,
-        commit: bool = True,
-        session: AsyncSession | None = None,
+            self,
+            parent_sample_uid: str | None,
+            child_sample_uid: str,
+            relationship_type: str,
+            notes: str | None = None,
+            metadata_snapshot: dict | None = None,
+            commit: bool = True,
+            session: AsyncSession | None = None,
     ) -> SampleRelationship:
         await SampleService()._validate_no_cycle(parent_sample_uid, child_sample_uid)
         payload = SampleRelationshipCreate(
@@ -710,9 +710,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             commit: bool = True,
             session: AsyncSession | None = None,
     ):
-        sample = await self.get(related=["profiles", "analyses"], uid=uid)
+        sample = await self.get(related=["profiles", "analyses"], uid=uid, session=session)
         data = sample.to_dict(nested=False)
-        data["sample_id"] = self.copy_sample_id_unique(sample)
+        data["sample_id"] = await self.copy_sample_id_unique(sample)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
                 del data[key]
@@ -756,15 +756,16 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             current_uid = parent.parent_id if parent else None
 
     async def build_genealogy_tree(
-        self,
-        sample_uid: str,
-        depth: int = 5,
-        include_tests: bool = False,
-        include_extra_relationships: bool = False,
+            self,
+            sample_uid: str,
+            depth: int = 5,
+            include_tests: bool = False,
+            include_extra_relationships: bool = False,
     ) -> dict | None:
         sample = await self.get(uid=sample_uid)
         if not sample:
             return None
+
         def _node_payload(_sample: Sample) -> dict:
             return {
                 "sample_uid": _sample.uid,

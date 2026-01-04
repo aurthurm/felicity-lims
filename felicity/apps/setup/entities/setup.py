@@ -24,11 +24,11 @@ class Organization(BaseEntity):
     banking = Column(String, nullable=True)
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
-    country_uid = Column(String, ForeignKey("country.uid"))
+    country_uid = Column(String, ForeignKey("country.uid", name="fk_organization_country"))
     country = relationship("Country", lazy="selectin")
-    province_uid = Column(String, ForeignKey("province.uid"))
+    province_uid = Column(String, ForeignKey("province.uid", name="fk_organization_province"))
     province = relationship("Province", lazy="selectin")
-    district_uid = Column(String, ForeignKey("district.uid"))
+    district_uid = Column(String, ForeignKey("district.uid", name="fk_organization_district"))
     district = relationship("District", lazy="selectin")
     settings = relationship(
         "OrganizationSetting", back_populates="organization", lazy="selectin"
@@ -41,7 +41,9 @@ class Organization(BaseEntity):
 class OrganizationSetting(BaseEntity):
     __tablename__ = "organization_setting"
 
-    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
+    organization_uid = Column(
+        String, ForeignKey("organization.uid", name="fk_organization_setting_organization"), nullable=False
+    )
     organization = relationship(
         Organization, back_populates="settings", lazy="selectin"
     )
@@ -61,7 +63,9 @@ class OrganizationSetting(BaseEntity):
 class Laboratory(BaseEntity):
     __tablename__ = "laboratory"
 
-    organization_uid = Column(String, ForeignKey("organization.uid"), nullable=False)
+    organization_uid = Column(
+        String, ForeignKey("organization.uid", name="fk_laboratory_organization"), nullable=False
+    )
     organization = relationship(
         Organization, back_populates="laboratories", lazy="selectin"
     )
@@ -69,7 +73,9 @@ class Laboratory(BaseEntity):
     name = Column(String, nullable=False)
     tag_line = Column(String, nullable=True)
     code = Column(String, nullable=True)
-    lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    lab_manager_uid = Column(
+        String, ForeignKey("user.uid", name="fk_laboratory_lab_manager"), nullable=True
+    )
     lab_manager = relationship(User, foreign_keys=[lab_manager_uid], lazy="selectin")
     email = Column(String, nullable=True)
     email_cc = Column(String, nullable=True)
@@ -79,11 +85,11 @@ class Laboratory(BaseEntity):
     banking = Column(String, nullable=True)
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
-    country_uid = Column(String, ForeignKey("country.uid"))
+    country_uid = Column(String, ForeignKey("country.uid", name="fk_laboratory_country"))
     country = relationship("Country", lazy="selectin")
-    province_uid = Column(String, ForeignKey("province.uid"))
+    province_uid = Column(String, ForeignKey("province.uid", name="fk_laboratory_province"))
     province = relationship("Province", lazy="selectin")
-    district_uid = Column(String, ForeignKey("district.uid"))
+    district_uid = Column(String, ForeignKey("district.uid", name="fk_laboratory_district"))
     district = relationship("District", lazy="selectin")
 
     @property

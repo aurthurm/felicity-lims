@@ -16,8 +16,14 @@ Many to Many Link between Laboratory and User
 laboratory_user = Table(
     "laboratory_user",
     BaseEntity.metadata,
-    Column("laboratory_uid", ForeignKey("laboratory.uid"), primary_key=True),
-    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+    Column(
+        "laboratory_uid",
+        ForeignKey("laboratory.uid", name="fk_laboratory_user_laboratory"),
+        primary_key=True,
+    ),
+    Column(
+        "user_uid", ForeignKey("user.uid", name="fk_laboratory_user_user"), primary_key=True
+    ),
 )
 
 """
@@ -26,8 +32,8 @@ Many to Many Link between Group and User
 user_groups = Table(
     "user_groups",
     BaseEntity.metadata,
-    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
-    Column("group_uid", ForeignKey("group.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid", name="fk_user_groups_user"), primary_key=True),
+    Column("group_uid", ForeignKey("group.uid", name="fk_user_groups_group"), primary_key=True),
 )
 
 """
@@ -36,8 +42,14 @@ Many to Many Link between Group and Permission
 permission_groups = Table(
     "permission_groups",
     BaseEntity.metadata,
-    Column("permission_uid", ForeignKey("permission.uid"), primary_key=True),
-    Column("group_uid", ForeignKey("group.uid"), primary_key=True),
+    Column(
+        "permission_uid",
+        ForeignKey("permission.uid", name="fk_permission_groups_permission"),
+        primary_key=True,
+    ),
+    Column(
+        "group_uid", ForeignKey("group.uid", name="fk_permission_groups_group"), primary_key=True
+    ),
 )
 
 
@@ -58,7 +70,11 @@ class User(AbstractBaseUser):
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
 
-    active_laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
+    active_laboratory_uid = Column(
+        String,
+        ForeignKey("laboratory.uid", name="fk_user_active_laboratory", use_alter=True),
+        nullable=True,
+    )
     active_laboratory = relationship("Laboratory", foreign_keys=[active_laboratory_uid])
 
 
@@ -90,8 +106,16 @@ class Group(MaybeLabScopedEntity):
 department_preference = Table(
     "department_preference",
     BaseEntity.metadata,
-    Column("department_uid", ForeignKey("department.uid"), primary_key=True),
-    Column("preference_uid", ForeignKey("user_preference.uid"), primary_key=True),
+    Column(
+        "department_uid",
+        ForeignKey("department.uid", name="fk_department_preference_department"),
+        primary_key=True,
+    ),
+    Column(
+        "preference_uid",
+        ForeignKey("user_preference.uid", name="fk_department_preference_preference"),
+        primary_key=True,
+    ),
 )
 
 
@@ -100,7 +124,9 @@ class UserPreference(MaybeLabScopedEntity):
 
     __tablename__ = "user_preference"
 
-    user_uid = Column(String, ForeignKey("user.uid", ondelete="CASCADE"), unique=True)
+    user_uid = Column(
+        String, ForeignKey("user.uid", name="fk_user_preference_user", ondelete="CASCADE"), unique=True
+    )
     user: Mapped["User"] = relationship(
         "User", back_populates="preference", foreign_keys=[user_uid], single_parent=True
     )

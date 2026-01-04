@@ -524,12 +524,15 @@ class BaseRepository(Generic[M]):
                 stmt = apply_nested_loader_options(stmt, self.model, key)
 
         if session:
-            results = await session.execute(stmt.distinct())
-            return results.scalars().all()
+            results = await session.execute(stmt)  # stmt.distinct()
+            qs = results.scalars().all()
         else:
             async with self.async_session() as session:
-                results = await session.execute(stmt.distinct())
-                return results.scalars().all()
+                results = await session.execute(stmt)  # stmt.distinct()
+                qs = results.scalars().all()
+
+        # Remove duplicates (using set) instead of .distinct() to allow order by relations not in distinct selection
+        return list({item: item for item in qs}.values()) if qs else []
 
     async def all(self, session: Optional[AsyncSession] = None) -> list[M]:
         """
@@ -740,9 +743,11 @@ class BaseRepository(Generic[M]):
         stmt = self._apply_lab_filter(stmt)
 
         async with self.async_session() as session:
-            results = await session.execute(stmt.distinct())
-            found = results.scalars().all()
-        return found
+            results = await session.execute(stmt)  # stmt.distinct()
+
+        qs = results.scalars().all()
+        # Remove duplicates (using set) instead of .distinct() to allow order by relations not in distinct selection
+        return list({item: item for item in qs}.values()) if qs else []
 
     async def paginate(
             self,
@@ -808,7 +813,6 @@ class BaseRepository(Generic[M]):
             # Remove duplicates (using set) instead of .distinct() to allow order by relations not in distinct selection
             items = list({item: item for item in qs}.values())
         else:
-            qs = []
             items = []
 
         has_additional = (

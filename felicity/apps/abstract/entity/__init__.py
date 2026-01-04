@@ -17,13 +17,18 @@ class LabScopedEntity(BaseEntity):
     __abstract__ = True
 
     @declared_attr
-    def laboratory_uid(self):
-        return Column(String, ForeignKey("laboratory.uid"), nullable=False, index=True)
+    def laboratory_uid(cls):
+        return Column(
+            String,
+            ForeignKey("laboratory.uid", name=f"fk_{cls.__tablename__}_laboratory"),
+            nullable=False,
+            index=True,
+        )
 
     @declared_attr
-    def laboratory(self):
+    def laboratory(cls):
         return relationship(
-            "Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin"
+            "Laboratory", foreign_keys=[cls.laboratory_uid], lazy="selectin"
         )
 
 
@@ -34,11 +39,16 @@ class MaybeLabScopedEntity(BaseEntity):
     __abstract__ = True
 
     @declared_attr
-    def laboratory_uid(self):
-        return Column(String, ForeignKey("laboratory.uid"), nullable=True, index=True)
+    def laboratory_uid(cls):
+        return Column(
+            String,
+            ForeignKey("laboratory.uid", name=f"fk_{cls.__tablename__}_laboratory"),
+            nullable=True,
+            index=True,
+        )
 
     @declared_attr
-    def laboratory(self):
+    def laboratory(cls):
         return relationship(
-            "Laboratory", foreign_keys=[self.laboratory_uid], lazy="selectin"
+            "Laboratory", foreign_keys=[cls.laboratory_uid], lazy="selectin"
         )

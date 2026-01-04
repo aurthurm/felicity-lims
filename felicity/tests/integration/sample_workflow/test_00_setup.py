@@ -10,26 +10,87 @@ logger = logging.getLogger(__name__)
 @pytest.mark.order(1)
 async def test_check_installation(app_api):
     response = await app_api.get("/setup/installation")
-    logger.info(f"reset-password response: {response} {response.json()}")
+    logger.info(f"check installation response: {response} {response.json()}")
     assert response.status_code == 200
-    logger.info(f"reset-password response: {response} {response.json()}")
     _data = response.json()
-    assert _data["laboratory"] is None
+    assert _data["laboratories"] is None
     assert _data["installed"] is False
-    assert _data["message"] == "Laboratory installation required"
+    assert _data["message"] == "Instance installation required"
 
 
 @pytest.mark.asyncio
 @pytest.mark.order(2)
-async def test_install(app_api):
+async def test_install(app_api, app_gql):
     response = await app_api.post(
-        "/setup/installation", json={"name": "Test Laboratory"}
+        "/setup/installation", json={
+            "organisation_name": "Felicity Inc",
+            "laboratory_name": "Test Laboratory"
+        }
     )
-    logger.info(f"reset-password response: {response} {response.json()}")
+    logger.info(f"installation response: {response} {response.json()}")
     assert response.status_code == 200
-    logger.info(f"reset-password response: {response} {response.json()}")
     assert response.json()["installed"] is True
-    assert response.json()["installed"] is True
-    assert response.json()["laboratory"]["setup_name"] == "felicity"
-    assert response.json()["laboratory"]["lab_name"] == "Test Laboratory"
-    assert response.json()["message"] == "installation success"
+    lab = response.json()["laboratories"][0]
+    assert lab["name"] == "Test Laboratory"
+    assert lab["organization"]["setup_name"] == "felicity"
+    assert response.json()["message"] == "Installation success"
+
+    # Set active laboratory for the superuser
+    from felicity.core.config import settings
+
+    # First authenticate to get user uid
+    auth_response = await app_gql.post(
+        "felicity-gql",
+        json={
+            "query": """
+                mutation Auth($username: String!, $password: String!){
+                  authenticateUser(username: $username, password: $password) {
+                    ... on AuthenticatedData {
+                        user {
+                            uid
+                        }
+                        token
+                    }
+                    ... on OperationError {
+                        error
+                    }
+                  }
+                }
+            """,
+            "variables": {
+                "username": settings.FIRST_SUPERUSER_USERNAME,
+                "password": settings.FIRST_SUPERUSER_PASSWORD,
+            },
+        },
+    )
+    auth_data = auth_response.json()["data"]["authenticateUser"]
+    user_uid = auth_data["user"]["uid"]
+    token = auth_data["token"]
+
+    # Set active laboratory
+    set_lab_response = await app_gql.post(
+        "felicity-gql",
+        json={
+            "query": """
+                mutation SetActiveLab($userUid: String!, $laboratoryUid: String!){
+                  setUserActiveLaboratory(userUid: $userUid, laboratoryUid: $laboratoryUid) {
+                    ... on UserType {
+                        uid
+                        activeLaboratoryUid
+                    }
+                    ... on OperationError {
+                        error
+                    }
+                  }
+                }
+            """,
+            "variables": {
+                "userUid": user_uid,
+                "laboratoryUid": lab["uid"],
+            },
+        },
+        headers={"Authorization": f"bearer {token}"},
+    )
+    logger.info(f"set active laboratory response: {set_lab_response.json()}")
+    set_lab_data = set_lab_response.json()["data"]["setUserActiveLaboratory"]
+    assert set_lab_data["activeLaboratoryUid"] == lab["uid"]

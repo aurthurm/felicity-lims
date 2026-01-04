@@ -118,7 +118,34 @@ async def shipment_receive(job_uid: str):
     shipment = await shipment_service.get(uid=shipment_uid)
     felicity_user = await User.get(uid=job.creator_uid)
 
-    entries = shipment.data["entry"]
+    entries = (shipment.data or {}).get("entry", [])
+
+    def _resolve_contained(resource: dict, reference: str) -> dict | None:
+        if not resource or not reference:
+            return None
+        ref_id = reference[1:] if reference.startswith("#") else reference
+        for contained in resource.get("contained", []) or []:
+            if contained.get("id") == ref_id:
+                return contained
+        return None
+
+    def _resolve_entry_resource(ref_type: str, ref_id: str) -> dict | None:
+        for item in entries:
+            res = item.get("resource")
+            if res and res.get("resourceType") == ref_type and res.get("id") == ref_id:
+                return res
+        return None
+
+    def _resolve_reference(resource: dict, reference: str, resource_type: str) -> dict | None:
+        if not reference:
+            return None
+        if reference.startswith("#"):
+            return _resolve_contained(resource, reference)
+        if "/" in reference:
+            ref_type, ref_id = reference.split("/", 1)
+            if ref_type == resource_type:
+                return _resolve_entry_resource(ref_type, ref_id)
+        return None
 
     # skip aready rceived sampled if any
     shipped_samples = await shipped_sample_service.get(shipment_uid=shipment_uid)
@@ -134,32 +161,63 @@ async def shipment_receive(job_uid: str):
             for _ in range(4)
         )
 
-        entry = _entry["resource"]
-        #
-        sample_data = entry["specimen"][0]
+        entry = _entry.get("resource", {})
+        if entry.get("resourceType") != "ServiceRequest":
+            continue
+
+        sample_data = None
+        specimen_refs = entry.get("specimen") or []
+        if specimen_refs:
+            first_specimen = specimen_refs[0]
+            if first_specimen.get("resourceType") == "Specimen":
+                sample_data = first_specimen
+            elif first_specimen.get("reference"):
+                sample_data = _resolve_reference(
+                    entry, first_specimen.get("reference"), "Specimen"
+                )
+
+        if not sample_data:
+            continue
         if sample_data["subject"]["display"] in already_received:
             continue
 
         # get_patient
-        patient_data = entry["subject"]
+        patient_data = None
+        subject = entry.get("subject") or {}
+        if subject.get("resourceType") == "Patient":
+            patient_data = subject
+        elif subject.get("reference"):
+            patient_data = _resolve_reference(
+                entry, subject.get("reference"), "Patient"
+            )
+        if not patient_data:
+            continue
 
         # TODO: what if it doesnt exist ? create it
-        client = await client_service.get(
-            code=patient_data["managingOrganization"]["identifier"]["value"]
-        )
+        managing_org = patient_data.get("managingOrganization") or {}
+        managing_identifier = managing_org.get("identifier") or {}
+        client = await client_service.get(code=managing_identifier.get("value"))
+        if not client:
+            continue
+        patient_identifier = patient_data.get("identifier", [{}])[0].get("value")
+        if not patient_identifier:
+            continue
+
         patient_in: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
-            "client_patient_id": patient_data["identifier"][0]["value"] + _diff_,
+            "client_patient_id": patient_identifier + _diff_,
             "client_uid": client.uid,
-            "first_name": patient_data["name"][0]["given"][0],
-            "last_name": patient_data["name"][0]["family"],
-            "gender": patient_data["gender"],
+            "first_name": patient_data.get("name", [{}])[0].get("given", [None])[0],
+            "last_name": patient_data.get("name", [{}])[0].get("family"),
+            "gender": patient_data.get("gender"),
             # "age": 0,
-            "date_of_birth": patient_data["birthDate"],
+            "date_of_birth": patient_data.get("birthDate"),
             # "age_dob_estimated": False
             "phone_mobile": (
-                patient_data["telecom"][0]["value"] if patient_data["telecom"] else None
+                patient_data.get("telecom", [{}])[0].get("value")
+                if patient_data.get("telecom")
+                else None
             ),
             "consent_sms": False,
             # "district_uid": str| None = None
@@ -170,19 +228,32 @@ async def shipment_receive(job_uid: str):
         patient = await patient_service.create(pt_sch)
 
         # get sample data
-        sample_type_data = sample_data["type"]["coding"][0]
+        sample_type_data = (sample_data.get("type") or {}).get("coding", [{}])[0]
+        if not sample_type_data:
+            continue
 
+        requisition = entry.get("requisition") or {}
+        request_id = requisition.get("value") or sample_data.get("subject", {}).get(
+            "display"
+        )
+        if not request_id:
+            continue
         ar_in = {
             "patient_uid": patient.uid,
             "client_uid": patient.client_uid,
-            "client_request_id": sample_data["subject"]["display"] + _diff_,
+            "client_request_id": f"{request_id}{_diff_}",
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
         ar_sch = AnalysisRequestCreate(**ar_in)
         analysis_request = await analysis_request_service.create(ar_sch)
 
-        sample_type = await sample_type_service.get(name=sample_type_data["display"])
+        sample_type_name = sample_type_data.get("display") or sample_type_data.get(
+            "code"
+        )
+        if not sample_type_name:
+            continue
+        sample_type = await sample_type_service.get(name=sample_type_name)
         sam_in = {
             "analysis_request_uid": analysis_request.uid,
             "sample_type_uid": sample_type.uid,
@@ -194,7 +265,7 @@ async def shipment_receive(job_uid: str):
 
         # get analysis tests
         analyses = []
-        service_data = entry["code"]["coding"]
+        service_data = (entry.get("code") or {}).get("coding") or []
 
         for coding in service_data:
             analysis = await analysis_service.get(keyword=coding["code"])
@@ -263,8 +334,10 @@ async def shipment_receive(job_uid: str):
             {
                 "sample_uid": sample.uid,
                 "shipment_uid": shipment.uid,
-                "ext_sample_uid": sample_data["identifier"][0]["value"],
-                "ext_sample_id": sample_data["accessionIdentifier"]["value"],
+                "ext_sample_uid": sample_data.get("identifier", [{}])[0].get("value"),
+                "ext_sample_id": (sample_data.get("accessionIdentifier") or {}).get(
+                    "value"
+                ),
             }
         )
 

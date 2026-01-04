@@ -1,20 +1,19 @@
+from dataclasses import dataclass
 from unittest.mock import AsyncMock, create_autospec
 
 import pytest
 from pydantic import BaseModel
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
 
-from felicity.apps.abstract.entity import BaseEntity
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.abstract.service import BaseService
 
 
 # Define mock classes for entities and Pydantic models
-class MockEntity(BaseEntity):
-    __tablename__ = "mock_table"
-    name: Mapped[str] = mapped_column(String)
-    bio: Mapped[str] = mapped_column(String)
+@dataclass
+class MockEntity:
+    uid: str
+    name: str
+    bio: str
 
 
 class CreateModel(BaseModel):
@@ -76,7 +75,7 @@ async def test_all(test_service):
     test_service.repository.all = AsyncMock(return_value=["item1", "item2"])
     result = await test_service.all()
     assert result == ["item1", "item2"]
-    test_service.repository.all.assert_awaited_once_with()
+    test_service.repository.all.assert_awaited_once_with(session=None)
 
 
 @pytest.mark.asyncio
@@ -85,7 +84,9 @@ async def test_get(test_service):
     test_service.repository.get = AsyncMock(return_value=mock_entity)
     result = await test_service.get(uid="1")
     assert result == mock_entity
-    test_service.repository.get.assert_awaited_once_with(uid="1", related=None)
+    test_service.repository.get.assert_awaited_once_with(
+        uid="1", related=None, session=None
+    )
 
 
 @pytest.mark.asyncio
@@ -97,7 +98,9 @@ async def test_get_by_uids(test_service):
     test_service.repository.get_by_uids = AsyncMock(return_value=mock_entities)
     result = await test_service.get_by_uids(uids=["1", "2"])
     assert result == mock_entities
-    test_service.repository.get_by_uids.assert_awaited_once_with(["1", "2"])
+    test_service.repository.get_by_uids.assert_awaited_once_with(
+        ["1", "2"], session=None
+    )
 
 
 @pytest.mark.asyncio
@@ -106,7 +109,9 @@ async def test_get_related(test_service):
     test_service.repository.get = AsyncMock(return_value=mock_entity)
     result = await test_service.get(related=["related1"], uid="1")
     assert result == mock_entity
-    test_service.repository.get.assert_awaited_once_with(related=["related1"], uid="1")
+    test_service.repository.get.assert_awaited_once_with(
+        related=["related1"], uid="1", session=None
+    )
 
 
 @pytest.mark.asyncio
@@ -116,7 +121,9 @@ async def test_create(test_service):
     test_service.repository.create = AsyncMock(return_value=mock_entity)
     result = await test_service.create(create_model)
     assert result == mock_entity
-    test_service.repository.create.assert_awaited_once_with(name="test", bio="test bio")
+    test_service.repository.create.assert_awaited_once_with(
+        name="test", bio="test bio", commit=True, session=None
+    )
 
 
 @pytest.mark.asyncio
@@ -127,7 +134,7 @@ async def test_update(test_service):
     result = await test_service.update(uid="1", update=update_model)
     assert result == mock_entity
     test_service.repository.update.assert_awaited_once_with(
-        "1", name="updated_test", bio="updated bio"
+        uid="1", name="updated_test", bio="updated bio", commit=True, session=None
     )
 
 
@@ -137,7 +144,9 @@ async def test_save(test_service):
     test_service.repository.save = AsyncMock(return_value=mock_entity)
     result = await test_service.save(mock_entity)
     assert result == mock_entity
-    test_service.repository.save.assert_awaited_once_with(mock_entity)
+    test_service.repository.save.assert_awaited_once_with(
+        m=mock_entity, commit=True, session=None
+    )
 
 
 @pytest.mark.asyncio
@@ -145,4 +154,6 @@ async def test_delete(test_service):
     test_service.repository.delete = AsyncMock(return_value=None)
     result = await test_service.delete(uid="1")
     assert result is None
-    test_service.repository.delete.assert_awaited_once_with("1")
+    test_service.repository.delete.assert_awaited_once_with(
+        uid="1", commit=True, session=None
+    )

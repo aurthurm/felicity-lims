@@ -48,7 +48,7 @@ async def test_register_client(app_gql, auth_data):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"register client response: {response} {response.json}")
+    logger.info(f"register client response: {response} {response.json()}")
 
     assert response.status_code == 200
     _patient = response.json()["data"]["createClient"]

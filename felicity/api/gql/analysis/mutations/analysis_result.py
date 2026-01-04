@@ -7,6 +7,7 @@ from strawberry.permission import PermissionExtension
 from felicity.api.gql.analysis.permissions import CanVerifyAnalysisResult
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
+from felicity.api.gql.decorators import require_tenant_context
 from felicity.api.gql.permissions import IsAuthenticated, HasPermission
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis.services.analysis import SampleService
@@ -72,11 +73,12 @@ AnalysisResultOperationResponse = strawberry.union(
         )
     ]
 )
+@require_tenant_context
 async def submit_analysis_results(
-    info,
-    analysis_results: List[ARResultInputType],
-    source_object: str,
-    source_object_uid: str,
+        info,
+        analysis_results: List[ARResultInputType],
+        source_object: str,
+        source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -125,8 +127,9 @@ async def submit_analysis_results(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifyAnalysisResult])
+@require_tenant_context
 async def verify_analysis_results(
-    info, analyses: list[str], source_object: str, source_object_uid: str
+        info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -180,6 +183,7 @@ async def verify_analysis_results(
         )
     ]
 )
+@require_tenant_context
 async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -228,6 +232,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
         )
     ]
 )
+@require_tenant_context
 async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -259,6 +264,7 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
         )
     ]
 )
+@require_tenant_context
 async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -299,8 +305,9 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
         )
     ]
 )
+@require_tenant_context
 async def re_instate_analysis_results(
-    info, analyses: list[str]
+        info, analyses: list[str]
 ) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 

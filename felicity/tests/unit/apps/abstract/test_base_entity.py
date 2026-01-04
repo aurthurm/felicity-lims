@@ -1,16 +1,46 @@
 import pytest
 import pytest_asyncio
 from sqlalchemy import Column, String
+from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Mapped
+from sqlalchemy_mixins.utils import classproperty
 
-from felicity.apps.abstract.entity import BaseEntity
 from felicity.core.dtz import format_datetime, timenow_dt
-from felicity.database.session import (
-    async_engine,
-    async_session as async_session_factory,
-)
+from felicity.core.uid_gen import get_flake_uid
+from felicity.database.session import async_engine
 
 
-class TestEntity(BaseEntity):
+class TestBase(DeclarativeBase, AsyncAttrs):
+    __abstract__ = True
+
+    uid: Mapped[str] = Column(
+        String,
+        primary_key=True,
+        index=True,
+        nullable=False,
+        default=get_flake_uid,
+    )
+
+    @classproperty
+    def settable_attributes(cls):
+        return list(cls.__table__.columns.keys())
+
+    def fill(self, **kwargs):
+        valid_keys = set(self.__table__.columns.keys())
+        for key, value in kwargs.items():
+            if key not in valid_keys:
+                raise KeyError(f"Attribute '{key}' doesn't exist")
+            setattr(self, key, value)
+        return self
+
+    def marshal_simple(self, exclude=None):
+        if exclude is None:
+            exclude = []
+        exclude.append("_sa_instance_state")
+        return {key: value for key, value in self.__dict__.items() if key not in exclude}
+
+
+class TestEntity(TestBase):
     __tablename__ = "test_entity"
     name = Column(String)
     created_at = Column(
@@ -24,13 +54,24 @@ class TestEntity(BaseEntity):
 @pytest_asyncio.fixture(scope="function")
 async def async_session():
     async with async_engine.begin() as conn:
-        await conn.run_sync(BaseEntity.metadata.drop_all, tables=[TestEntity.__table__])
         await conn.run_sync(
-            BaseEntity.metadata.create_all, tables=[TestEntity.__table__]
+            TestBase.metadata.drop_all, tables=[TestEntity.__table__]
+        )
+        await conn.run_sync(
+            TestBase.metadata.create_all, tables=[TestEntity.__table__]
         )
 
-    async with async_session_factory() as session:
+    session_factory = async_sessionmaker(
+        bind=async_engine, expire_on_commit=False, class_=AsyncSession
+    )
+    async with session_factory() as session:
         yield session
+
+    async with async_engine.begin() as conn:
+        await conn.run_sync(
+            TestBase.metadata.drop_all, tables=[TestEntity.__table__]
+        )
+    await async_engine.dispose()
 
 
 @pytest.mark.asyncio

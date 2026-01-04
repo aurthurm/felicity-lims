@@ -133,8 +133,8 @@ class HazardType:
 class StockUnitType:
     uid: str
     name: str
-    description: str
-    synonyms: str
+    description: str | None = None
+    synonyms: str | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
     created_at: str | None = None

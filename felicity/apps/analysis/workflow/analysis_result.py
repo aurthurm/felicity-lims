@@ -31,7 +31,7 @@ class AnalysisResultWorkFlow:
         raise NotImplementedError()
 
     async def retest(
-        self, uid, retested_by, action="verify"
+            self, uid, retested_by, action="verify"
     ) -> tuple[AnalysisResult, AnalysisResult]:
         result = await self.analysis_result_service.get(uid=uid)
         await self._guard_retest(result)
@@ -60,8 +60,8 @@ class AnalysisResultWorkFlow:
     async def _guard_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
         if (
-            analysis_result.status == ResultState.PENDING
-            and analysis_result.assigned is False
+                analysis_result.status == ResultState.PENDING
+                and analysis_result.assigned is False
         ):
             allow = True
 
@@ -78,8 +78,8 @@ class AnalysisResultWorkFlow:
     async def _guard_un_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
         if (
-            analysis_result.status == ResultState.PENDING
-            and analysis_result.assigned is True
+                analysis_result.status == ResultState.PENDING
+                and analysis_result.assigned is True
         ):
             allow = True
 
@@ -127,7 +127,7 @@ class AnalysisResultWorkFlow:
         return True
 
     async def submit(
-        self, data: list[dict], submitter
+            self, data: list[dict], submitter
     ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
         _skipped = []
         _submitted = []
@@ -150,7 +150,7 @@ class AnalysisResultWorkFlow:
         return True
 
     async def approve(
-        self, result_uids: list[str], approved_by
+            self, result_uids: list[str], approved_by
     ) -> list[AnalysisResult]:
         results = await self.analysis_result_service.get_all(
             related=["analysis"], uid__in=result_uids
@@ -162,23 +162,23 @@ class AnalysisResultWorkFlow:
         ]
 
     async def _guard_approve(
-        self, analysis_results: list[AnalysisResult], approved_by_uid
+            self, analysis_results: list[AnalysisResult], approved_by_uid
     ) -> bool:
         lab_id = get_current_lab_uid()
         laboratory = await LaboratoryService().get(uid=lab_id)
-        settings = await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
+        settings = (await LaboratorySettingService().get(laboratory_uid=laboratory.uid)) if laboratory else None
         states = [ResultState.RESULTED]
 
         for result in analysis_results:
             # Self Verification check
             if (
-                settings.allow_self_verification is False
-                and result.analysis.self_verification is False
+                    settings.allow_self_verification is False
+                    and result.analysis.self_verification is False
             ):
                 # First time verifier must not be the submitter
                 if (
-                    len(result.verified_by) == 0
-                    and result.submitted_by_uid == approved_by_uid
+                        len(result.verified_by) == 0
+                        and result.submitted_by_uid == approved_by_uid
                 ):
                     raise AnalysisResultWorkFlowException(
                         "Cannot approve a result your own work"
@@ -194,9 +194,7 @@ class AnalysisResultWorkFlow:
                 )
 
             # Number of required verifications check
-            required, verifiers = await self.analysis_result_service.verifications(
-                result.uid
-            )
+            required, verifiers = await self.analysis_result_service.verifications(result.uid)  # noqa
             # if not (current < required and current + 1 == required):
             # TODO: Needs checking
             if required < len(verifiers):

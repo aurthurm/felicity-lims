@@ -43,8 +43,8 @@ class LogoUploadResponse(BaseModel):
 
 @setup.get("/installation")
 async def instance_lookup(
-    org_service: OrganizationService = Depends(OrganizationService),
-    lab_service: LaboratoryService = Depends(LaboratoryService),
+        org_service: OrganizationService = Depends(OrganizationService),
+        lab_service: LaboratoryService = Depends(LaboratoryService),
 ) -> Any:
     """
     Retrieve the installed instance
@@ -67,9 +67,9 @@ async def instance_lookup(
 
 @setup.post("/installation")
 async def register_instance(
-    details: InstallationDetails,
-    org_service: OrganizationService = Depends(OrganizationService),
-    lab_service: LaboratoryService = Depends(LaboratoryService),
+        details: InstallationDetails,
+        org_service: OrganizationService = Depends(OrganizationService),
+        lab_service: LaboratoryService = Depends(LaboratoryService),
 ) -> Any:
     """
     Install a laboratory and initialise departments example post: curl -X POST
@@ -96,13 +96,13 @@ async def register_instance(
         if laboratories
         else None,
         "installed": True if organisation else False,
-        "message": "" if organisation else "Instance installation required",
+        "message": "Installation success" if organisation else "Instance installation required",
     }
 
 
 @setup.post("/load-default-setup")
 async def load_setup_data(
-    current_user: Annotated[User, Depends(get_current_user)],
+        current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
     """
     Run initial setup to load setup data
@@ -117,8 +117,8 @@ async def load_setup_data(
 
 @setup.post("/logo")
 async def upload_logo(
-    file: UploadFile = File(...),
-    current_user: Annotated[User, Depends(get_current_user)] = None,
+        file: UploadFile = File(...),
+        current_user: Annotated[User, Depends(get_current_user)] = None,
 ) -> LogoUploadResponse:
     """
     Upload and update logo.png in assets.
@@ -141,7 +141,7 @@ async def upload_logo(
             return LogoUploadResponse(
                 success=False,
                 message="Only PNG files are allowed. Received: "
-                + (file.content_type or "unknown"),
+                        + (file.content_type or "unknown"),
             )
 
         # Validate filename ends with .png

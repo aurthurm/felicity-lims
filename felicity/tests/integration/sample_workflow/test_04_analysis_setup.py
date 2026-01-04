@@ -40,7 +40,7 @@ async def test_add_sample_type(app_gql, auth_data):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add sample type response: {response} {response.json}")
+    logger.info(f"add sample type response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createSampleType"]
@@ -79,7 +79,7 @@ async def test_add_instrument(app_gql, auth_data):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add instrument response: {response} {response.json}")
+    logger.info(f"add instrument response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createInstrument"]
@@ -120,7 +120,7 @@ async def test_add_lab_instrument_instrument(app_gql, auth_data, instruments):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add laboratory instrument response: {response} {response.json}")
+    logger.info(f"add laboratory instrument response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createLaboratoryInstrument"]
@@ -159,7 +159,7 @@ async def test_add_method(app_gql, auth_data, instruments):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add method response: {response} {response.json}")
+    logger.info(f"add method response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createMethod"]
@@ -240,7 +240,7 @@ async def test_add_analysis_service(app_gql, auth_data, methods, sample_types):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add analysis service response: {response} {response.json}")
+    logger.info(f"add analysis service response: {response} {response.json()}")
 
     assert response.status_code == 200
     print(f"response.json: {response.json()}")
@@ -303,7 +303,7 @@ async def test_add_analysis_profile(app_gql, auth_data, sample_types, analyses):
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add analysis profile response: {response} {response.json}")
+    logger.info(f"add analysis profile response: {response} {response.json()}")
 
     assert response.status_code == 200
     _data = response.json()["data"]["createProfile"]

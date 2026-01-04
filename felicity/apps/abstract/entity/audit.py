@@ -19,12 +19,16 @@ class Auditable:
         return Column(DateTime, default=datetime.now)
 
     @declared_attr
-    def created_by_uid(self):
-        return Column(String, ForeignKey("user.uid"), nullable=True)
+    def created_by_uid(cls):
+        return Column(
+            String,
+            ForeignKey("user.uid", name=f"fk_{cls.__tablename__}_created_by"),
+            nullable=True,
+        )
 
     @declared_attr
-    def created_by(self):
-        return relationship("User", foreign_keys=[self.created_by_uid], lazy="selectin")
+    def created_by(cls):
+        return relationship("User", foreign_keys=[cls.created_by_uid], lazy="selectin")
 
     # Track Updating Audits
     @declared_attr
@@ -32,9 +36,13 @@ class Auditable:
         return Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     @declared_attr
-    def updated_by_uid(self):
-        return Column(String, ForeignKey("user.uid"), nullable=True)
+    def updated_by_uid(cls):
+        return Column(
+            String,
+            ForeignKey("user.uid", name=f"fk_{cls.__tablename__}_updated_by"),
+            nullable=True,
+        )
 
     @declared_attr
-    def updated_by(self):
-        return relationship("User", foreign_keys=[self.updated_by_uid], lazy="selectin")
+    def updated_by(cls):
+        return relationship("User", foreign_keys=[cls.updated_by_uid], lazy="selectin")

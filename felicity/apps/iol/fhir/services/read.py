@@ -1,5 +1,16 @@
 import asyncio
+import json
 from datetime import datetime
+
+from fhir.resources.bundle import Bundle, BundleEntry, BundleEntryRequest
+from fhir.resources.diagnosticreport import DiagnosticReport
+from fhir.resources.extension import Extension
+from fhir.resources.identifier import Identifier
+from fhir.resources.observation import Observation
+from fhir.resources.patient import Patient
+from fhir.resources.reference import Reference
+from fhir.resources.servicerequest import ServiceRequest
+from fhir.resources.specimen import Specimen
 
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.services.analysis import (
@@ -7,15 +18,8 @@ from felicity.apps.analysis.services.analysis import (
     SampleService,
 )
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.iol.fhir.schema import (
-    BundleResource,
-    DiagnosticReportResource,
-    Identifier,
-    PatientResource,
-    Reference,
-    ServiceRequestResource,
-    SpecimenResource,
-)
+from felicity.apps.iol.fhir.utils.helpers import safe_fhir_datetime
+from felicity.core.dtz import format_datetime
 from felicity.apps.patient.services import PatientService
 from felicity.apps.setup.services import LaboratoryService
 from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
@@ -37,13 +41,45 @@ class FhirReadService:
 
     @staticmethod
     def dt_to_st(v: datetime):
-        if not v:
-            return ""
-        return v.strftime("%Y-%m-%d %H:%M:%S")
+        return safe_fhir_datetime(v)
+
+    @staticmethod
+    def _map_diagnostic_status(sample_status: str | None) -> str:
+        if not sample_status:
+            return "unknown"
+        mapping = {
+            "APPROVED": "final",
+            "PUBLISHED": "final",
+            "RECEIVED": "registered",
+            "EXPECTED": "registered",
+            "SCHEDULED": "registered",
+            "AWAITING": "preliminary",
+            "REFERRED": "preliminary",
+            "PAIRED": "preliminary",
+            "INVALIDATED": "entered-in-error",
+            "CANCELLED": "cancelled",
+            "REJECTED": "cancelled",
+            "STORED": "registered",
+        }
+        return mapping.get(str(sample_status), "unknown")
+
+    @staticmethod
+    def _map_observation_status(result_status: str | None) -> str:
+        if not result_status:
+            return "unknown"
+        mapping = {
+            "PENDING": "registered",
+            "RESULTED": "preliminary",
+            "APPROVED": "final",
+            "RETRACTED": "entered-in-error",
+            "CANCELLED": "cancelled",
+            "REFERRED": "registered",
+        }
+        return mapping.get(str(result_status), "unknown")
 
     async def get_diagnostic_report_resource(
         self, service_request_uid: str, obs_uids: list[str] = [], for_referral=False
-    ) -> DiagnosticReportResource | None:
+    ) -> DiagnosticReport | None:
         ar, sample = await asyncio.gather(
             self.analysis_request_service.get(uid=service_request_uid),
             self.sample_service.get(analysis_request_uid=service_request_uid),
@@ -57,22 +93,28 @@ class FhirReadService:
             analyses = list(filter(lambda res: res.uid in obs_uids, analyses))
 
         observations = []
+        result_refs = []
         for anal in analyses:
             last_verificator = await self.analysis_result_service.last_verificator(
                 anal.uid
             )
 
+            obs_id = f"obs-{anal.uid}"
             observations.append(
-                {
-                    "type": "Observation",
-                    "identifier": {
-                        "use": "official",
-                        "type": {"text": anal.analysis.keyword},
-                        "value": anal.result,
-                    },
-                    "status": anal.status,
-                    "issued": self.dt_to_st(anal.date_verified),
-                    "performer": [
+                Observation(
+                    id=obs_id,
+                    status=self._map_observation_status(anal.status),
+                    code={"text": anal.analysis.keyword},
+                    valueString=anal.result,
+                    issued=self.dt_to_st(anal.date_verified),
+                    identifier=[
+                        {
+                            "use": "official",
+                            "type": {"text": anal.analysis.keyword},
+                            "value": anal.result,
+                        }
+                    ],
+                    performer=[
                         {
                             "identifier": {
                                 "use": "official",
@@ -94,8 +136,9 @@ class FhirReadService:
                             "display": "Reviewer",
                         },
                     ],
-                }
+                )
             )
+            result_refs.append(Reference(reference=f"#{obs_id}"))
 
         async def _resolve_based_on():
             values = [
@@ -151,8 +194,8 @@ class FhirReadService:
                 )
             return values
 
-        sr_vars = {
-            "resourceType": "DiagnosticReport",
+        dr_vars = {
+            "id": ar.uid,
             "identifier": [
                 {
                     "use": "official",
@@ -167,9 +210,9 @@ class FhirReadService:
                 },
             ],
             "basedOn": await _resolve_based_on(),
-            "status": sample.status,
+            "status": self._map_diagnostic_status(sample.status),
             "code": {
-                "text": "",  # sample.profiles[0].name
+                "text": "",
             },
             "subject": {
                 "type": "Patient",
@@ -194,18 +237,19 @@ class FhirReadService:
                 }
             ],
             "specimen": [{"type": "Specimen", "display": sample.sample_id}],
-            "result": observations,
+            "result": result_refs,
+            "contained": observations,
         }
 
-        return DiagnosticReportResource(**sr_vars)
+        return DiagnosticReport(**dr_vars)
 
-    async def get_patient_resource(self, patient_id: int) -> PatientResource | None:
+    async def get_patient_resource(self, patient_id: int) -> Patient | None:
         patient = await self.patient_service.get(uid=patient_id)
         if not patient:
             return None
 
         pt_vars = {
-            "resourceType": "Patient",
+            "id": patient.uid,
             "identifier": [
                 Identifier(
                     **{
@@ -232,9 +276,9 @@ class FhirReadService:
             "gender": self.one_of_else(
                 ["male", "female", "other"], patient.gender, "unknown"
             ),
-            "birthDate": self.dt_to_st(patient.date_of_birth),
+            "birthDate": format_datetime(patient.date_of_birth, with_time=False),
             "managingOrganization": {
-                "type": "Organisation",
+                "type": "Organization",
                 "identifier": {
                     "use": "official",
                     "type": {"text": "National Health Record"},
@@ -244,12 +288,12 @@ class FhirReadService:
             },
         }
 
-        return PatientResource(**pt_vars)
+        return Patient(**pt_vars)
 
-    async def get_specimen_resource(self, specimen_id: str) -> SpecimenResource:
+    async def get_specimen_resource(self, specimen_id: str) -> Specimen:
         sample = await self.sample_service.get(uid=specimen_id)
         sp_values = {
-            "resourceType": "Specimen",
+            "id": sample.uid,
             "identifier": [
                 {
                     "use": "official",
@@ -263,8 +307,9 @@ class FhirReadService:
                 "value": sample.sample_id,
             },
             "subject": {
-                "type": "Analysis Request",
-                "display": sample.analysis_request.client_request_id,
+                "type": "Patient",
+                "identifier": {"use": "official", "value": sample.analysis_request.patient_uid},
+                "display": "Patient uid",
             },
             "status": "available",
             "type": {
@@ -282,11 +327,11 @@ class FhirReadService:
                 "collectedDateTime": self.dt_to_st(sample.date_collected),
             },
         }
-        return SpecimenResource(**sp_values)
+        return Specimen(**sp_values)
 
     async def get_shipment_bundle_resource(
         self, shipment_uid: int
-    ) -> BundleResource | None:
+    ) -> Bundle | None:
         shipment = await self.shipment_service.get(uid=shipment_uid)
         shipped_samples = await self.shipped_sample_service.get_all(
             shipment_uid=shipment.uid
@@ -308,35 +353,53 @@ class FhirReadService:
                 sample.analysis_request.patient_uid
             )
             specimen_resource = await self.get_specimen_resource(sample.uid)
+            if not patient_resource or not specimen_resource:
+                return None
 
-            return {
-                "resource": ServiceRequestResource(
-                    **{
-                        "resourceType": "ServiceRequest",
-                        "intent": "order",
-                        "requisition": Identifier(
-                            **{
-                                "use": "official",
-                                "system": "felicity/analysis-request/id",
-                                "value": sample.analysis_request.client_request_id,
-                            }
-                        ),
-                        "subject": patient_resource,
-                        "specimen": [specimen_resource],
-                        "code": {"coding": services_meta},
-                    }
+            patient_resource.id = f"patient-{sample.analysis_request.patient_uid}"
+            specimen_resource.id = f"specimen-{sample.uid}"
+
+            return BundleEntry(
+                resource=ServiceRequest(
+                    status="active",
+                    intent="order",
+                    requisition=Identifier(
+                        **{
+                            "use": "official",
+                            "system": "felicity/analysis-request/id",
+                            "value": sample.analysis_request.client_request_id,
+                        }
+                    ),
+                    subject=Reference(
+                        reference=f"#{patient_resource.id}",
+                        type="Patient",
+                        display=patient_resource.name[0].text if patient_resource.name else None,
+                    ),
+                    specimen=[
+                        Reference(
+                            reference=f"#{specimen_resource.id}",
+                            type="Specimen",
+                            display=(
+                                specimen_resource.accessionIdentifier.value
+                                if specimen_resource.accessionIdentifier
+                                else None
+                            ),
+                        )
+                    ],
+                    code={"coding": services_meta},
+                    contained=[patient_resource, specimen_resource],
                 ),
-                "request": {"method": "POST", "url": "ServiceRequest"},
-            }
+                request=BundleEntryRequest(method="POST", url="ServiceRequest"),
+            )
 
         service_entries = await asyncio.gather(
             *(get_service_entry(sample) for sample in samples)
         )
+        service_entries = [entry for entry in service_entries if entry]
 
         laboratory = await self.laboratory_service.get_by_setup_name()
 
         bundle_vars = {
-            "resourceType": "Bundle",
             "identifier": Identifier(
                 **{
                     "use": "official",
@@ -344,7 +407,7 @@ class FhirReadService:
                     "value": shipment.shipment_id,
                     "assigner": Reference(
                         **{
-                            "type": "Laboratory",
+                            "type": "Organization",
                             "identifier": Identifier(
                                 **{
                                     "use": "official",
@@ -359,13 +422,16 @@ class FhirReadService:
             ),
             "type": "batch",
             "timestamp": self.dt_to_st(shipment.created_at),
-            "total": len(samples),
+            "total": len(service_entries),
             "entry": service_entries,
             "extension": [
-                {"url": "felicity/object-type", "valueString": "shipment"},
-                {"url": "felicity/courier-name", "valueString": shipment.courier},
-                {"url": "felicity/shipment-comment", "valueString": shipment.comment},
-                {"url": "felicity/shipment-manifest", "data": shipment.json_content},
+                Extension(url="felicity/object-type", valueString="shipment"),
+                Extension(url="felicity/courier-name", valueString=shipment.courier),
+                Extension(url="felicity/shipment-comment", valueString=shipment.comment),
+                Extension(
+                    url="felicity/shipment-manifest",
+                    valueString=json.dumps(shipment.json_content or {}),
+                ),
             ],
         }
-        return BundleResource(**bundle_vars)
+        return Bundle(**bundle_vars)

@@ -1,4 +1,5 @@
 from typing import Annotated, List, Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from felicity.apps.abstract.service import BaseService
@@ -34,7 +35,7 @@ class AnalysisResultService(
         super().__init__(AnalysisResultRepository())
 
     async def verifications(
-        self, uid: str
+            self, uid: str
     ) -> tuple[
         Annotated[int, "Total number required verifications"],
         Annotated[list[User], "Current verifiers"],
@@ -50,11 +51,11 @@ class AnalysisResultService(
         return None
 
     async def hipaa_compliant_search_by_result(
-        self,
-        result_value: str,
-        analysis_uid: Optional[str] = None,
-        sample_uid: Optional[str] = None,
-        session: Optional[AsyncSession] = None,
+            self,
+            result_value: str,
+            analysis_uid: Optional[str] = None,
+            sample_uid: Optional[str] = None,
+            session: Optional[AsyncSession] = None,
     ) -> List[AnalysisResult]:
         """
         HIPAA-compliant search for analysis results by encrypted result values.
@@ -76,11 +77,11 @@ class AnalysisResultService(
         )
 
     async def find_by_exact_result_value(
-        self,
-        result_value: str,
-        analysis_uid: Optional[str] = None,
-        sample_uid: Optional[str] = None,
-        session: Optional[AsyncSession] = None,
+            self,
+            result_value: str,
+            analysis_uid: Optional[str] = None,
+            sample_uid: Optional[str] = None,
+            session: Optional[AsyncSession] = None,
     ) -> Optional[AnalysisResult]:
         """
         Find analysis result by exact match on encrypted result value.
@@ -102,7 +103,7 @@ class AnalysisResultService(
         )
 
     async def retest_result(
-        self, uid: str, retested_by, next_action="verify"
+            self, uid: str, retested_by, next_action="verify"
     ) -> tuple[
         Annotated[AnalysisResult, "Newly Created AnalysisResult"],
         Annotated[AnalysisResult, "Retested AnalysisResult"],
@@ -116,6 +117,7 @@ class AnalysisResultService(
             "method_uid": analysis_result.method_uid,
             "parent_id": analysis_result.uid,
             "retest": True,
+            "metadata_snapshot": analysis_result.metadata_snapshot,
         }
         a_result_schema = AnalysisResultCreate(**a_result_in)
         retest = await self.create(a_result_schema, related=["sample"])
@@ -234,11 +236,11 @@ class AnalysisResultService(
         return await super().update(uid, {"reportable": False})
 
     async def filter_for_worksheet(
-        self,
-        analyses_status: str,
-        analysis_uid: str,
-        sample_type_uid: list[str],
-        limit: int,
+            self,
+            analyses_status: str,
+            analysis_uid: str,
+            sample_type_uid: list[str],
+            limit: int,
     ) -> list[AnalysisResult]:
         filters = {
             "status__exact": analyses_status,
@@ -366,8 +368,8 @@ class AnalysisResultService(
 
             # Add laboratory instrument metadata using pre-loaded data
             if (
-                result.laboratory_instrument_uid
-                and result.laboratory_instrument_uid in lab_instruments_map
+                    result.laboratory_instrument_uid
+                    and result.laboratory_instrument_uid in lab_instruments_map
             ):
                 metadata["laboratory_instrument"] = lab_instruments_map[
                     result.laboratory_instrument_uid

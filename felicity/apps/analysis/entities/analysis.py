@@ -427,7 +427,7 @@ class AnalysisRequest(LabScopedEntity):
         Boolean(), default=False
     )  # allow processing based on billing rules
     # Metadata snapshot
-    metadata_snapshot = Column(JSONB, nullable=False)
+    metadata_snapshot = Column(JSONB, nullable=True)
 
     clinical_data = relationship(
         "ClinicalData",
@@ -619,7 +619,7 @@ class Sample(LabScopedEntity, BaseMPTT):
     storage_slot = Column(String, nullable=True)
     storage_slot_index = Column(Integer, nullable=True)
     # Metadata snapshot
-    metadata_snapshot = Column(JSONB, nullable=False)
+    metadata_snapshot = Column(JSONB, nullable=True)
 
     @property
     def sms_metadata(self) -> dict:

@@ -1,3 +1,5 @@
+from unittest import mock
+
 import pytest
 
 from felicity.apps.exceptions import AlreadyExistsError, ValidationError
@@ -7,8 +9,8 @@ from felicity.apps.user.services import UserService
 
 
 @pytest.fixture
-def user_service(mocker):
-    repository = mocker.create_autospec(UserRepository())
+def user_service():
+    repository = mock.create_autospec(UserRepository, instance=True)
     # group_service = mocker.AsyncMock()
     # permission_service = mocker.AsyncMock()
     # user_preference_service = mocker.AsyncMock()
@@ -32,19 +34,17 @@ def user_data():
 
 
 @pytest.mark.asyncio
-async def test_add_user(user_service, mocker, user_data):
+async def test_add_user(user_service, user_data):
     uid = "111"
-    mocker.patch.object(user_service.repository, "get", return_value=None)
-    mocker.patch.object(
-        user_service.repository,
-        "create",
-        return_value=mocker.AsyncMock(return_value=User(**{"uid": uid, **user_data})),
+    user_service.repository.get = mock.AsyncMock(return_value=None)
+    user_service.repository.create = mock.AsyncMock(
+        return_value=mock.AsyncMock(return_value=User(**{"uid": uid, **user_data}))
     )
 
     result = await user_service.create(UserCreate(**user_data))
 
     user_service.repository.get.assert_called_once_with(
-        user_name=user_data["user_name"], related=None
+        user_name=user_data["user_name"], related=None, session=None
     )
     user_service.repository.create.assert_called_once()
 
@@ -62,16 +62,16 @@ async def test_add_user(user_service, mocker, user_data):
 
 
 @pytest.mark.asyncio
-async def test_add_user_email_already_exists(user_service, mocker, user_data):
-    mocker.patch.object(user_service.repository, "get", return_value=User(**user_data))
+async def test_add_user_email_already_exists(user_service, user_data):
+    user_service.repository.get = mock.AsyncMock(return_value=User(**user_data))
 
     with pytest.raises(AlreadyExistsError):
         await user_service.create(UserCreate(**user_data))
 
 
 @pytest.mark.asyncio
-async def test_add_user_password_policy_weak(user_service, mocker, user_data):
-    mocker.patch.object(user_service.repository, "get", return_value=None)
+async def test_add_user_password_policy_weak(user_service, user_data):
+    user_service.repository.get = mock.AsyncMock(return_value=None)
 
     with pytest.raises(ValidationError):
         await user_service.create(
