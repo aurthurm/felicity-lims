@@ -59,7 +59,7 @@ class EventListenable:
 
     @staticmethod
     def get_changes(target: "EventListenable") -> Tuple[bool, Dict[str, Any]]:
-        logger.info(f'Getting changes for {getattr(target, "__class__").__name__}')
+        logger.debug(f'Getting changes for {getattr(target, "__class__").__name__}')
         state_before: Dict[str, Any] = {}
         state_after: Dict[str, Any] = {}
         inspector = inspect(target)
@@ -93,7 +93,7 @@ class EventListenable:
                 del state_before[_key]
 
         if len(state_after) == 1 and "updated_at" in state_after:
-            logger.info("Only updated_at changed, returning empty dict")
+            logger.debug("Only updated_at changed, returning empty dict")
             return False, {}
 
         extras = {}
