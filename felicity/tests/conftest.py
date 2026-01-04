@@ -1,5 +1,5 @@
-import logging
 import asyncio
+import logging
 
 import pytest_asyncio
 from faker import Faker
@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 def event_loop():
     """Overrides pytest default function scoped event loop"""
     # return asyncio.get_event_loop()
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
+    loop = asyncio.new_event_loop()
     yield loop
     loop.close()
 
