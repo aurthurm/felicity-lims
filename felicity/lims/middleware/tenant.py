@@ -13,6 +13,8 @@ from fastapi.responses import JSONResponse
 from jose import jwt, JWTError
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from felicity.apps.setup.services import LaboratoryService
+from felicity.apps.user.services import UserService
 from felicity.core.config import get_settings
 from felicity.core.tenant_context import TenantContext, set_tenant_context
 
@@ -41,9 +43,13 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         try:
             # Extract tenant info from JWT token
             await self._extract_from_jwt(request, context)
+            if context.laboratory_uid:
+                await self._validate_lab_membership(
+                    context, context.laboratory_uid
+                )
 
             # Extract laboratory context from headers (for lab switching)
-            self._extract_from_headers(request, context)
+            await self._extract_from_headers(request, context)
 
             # Set the context for this request
             set_tenant_context(context)
@@ -54,6 +60,14 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
 
             return response
 
+        except JWTError as e:
+            logger.warning(f"Invalid JWT token: {str(e)}")
+            return JSONResponse(
+                status_code=401, content={"detail": "Invalid authentication token"}
+            )
+        except PermissionError as e:
+            logger.warning(f"Tenant context rejected: {str(e)}")
+            return JSONResponse(status_code=403, content={"detail": str(e)})
         except Exception as e:
             logger.error(f"Error in tenant middleware: {str(e)}")
             # Don't fail the request, just log the error
@@ -72,47 +86,96 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
 
         token = authorization.split(" ")[1]
 
-        try:
-            # Decode JWT token
-            payload = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-            )
+        # Decode JWT token
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
 
-            # Extract user info
-            context.user_uid = payload.get("sub")
-            context.organization_uid = payload.get("organization_uid")
+        # Extract user info
+        context.user_uid = payload.get("sub")
+        context.organization_uid = payload.get("organization_uid")
 
-            # If lab context is in token (for single-lab users)
-            if "laboratory_uid" in payload:
-                context.laboratory_uid = payload.get("laboratory_uid")
+        # If lab context is in token (for single-lab users)
+        if "laboratory_uid" in payload:
+            context.laboratory_uid = payload.get("laboratory_uid")
 
-        except JWTError as e:
-            logger.warning(f"Invalid JWT token: {str(e)}")
-            # Don't fail, just continue without context
-
-    def _extract_from_headers(self, request: Request, context: TenantContext):
+    async def _extract_from_headers(self, request: Request, context: TenantContext):
         """Extract laboratory context from custom headers"""
 
         # Allow frontend to specify current lab via header
         lab_header = request.headers.get("X-Laboratory-ID")
         if lab_header:
+            await self._validate_lab_membership(context, lab_header)
             context.laboratory_uid = lab_header
 
         # Allow organization override (for super admins)
         org_header = request.headers.get("X-Organization-ID")
         if org_header:
+            await self._validate_org_override(context, org_header)
             context.organization_uid = org_header
+
+    async def _validate_lab_membership(
+        self, context: TenantContext, laboratory_uid: str
+    ) -> None:
+        if not context.user_uid:
+            raise PermissionError("Laboratory context requires authentication")
+
+        user = await UserService().get(uid=context.user_uid)
+        if not user:
+            raise PermissionError("User not found for laboratory context")
+
+        if not user.is_superuser:
+            lab_uids = await UserService().get_laboratories_by_user(context.user_uid)
+            if laboratory_uid not in (lab_uids or []):
+                raise PermissionError("User not assigned to the requested laboratory")
+
+        laboratory = await LaboratoryService().get(uid=laboratory_uid)
+        if not laboratory:
+            raise PermissionError("Requested laboratory does not exist")
+
+        if (
+            context.organization_uid
+            and laboratory.organization_uid != context.organization_uid
+        ):
+            raise PermissionError("Laboratory does not belong to your organization")
+
+    async def _validate_org_override(
+        self, context: TenantContext, organization_uid: str
+    ) -> None:
+        if not context.user_uid:
+            raise PermissionError("Organization override requires authentication")
+
+        if context.organization_uid and context.organization_uid != organization_uid:
+            user = await UserService().get(uid=context.user_uid)
+            if not user or not user.is_superuser:
+                raise PermissionError("Organization override not permitted")
 
 
 class RequireTenantMiddleware(BaseHTTPMiddleware):
     """Middleware to ensure tenant context is required for protected routes"""
 
-    def __init__(self, app, protected_paths: list[str] = None):
+    def __init__(
+        self,
+        app,
+        protected_paths: list[str] = None,
+        public_paths: list[str] = None,
+    ):
         super().__init__(app)
         self.protected_paths = protected_paths or ["/gql", "/api/v1"]
+        self.public_paths = public_paths or [
+            "/api/v1/setup/installation",
+            "/api/v1/version",
+            "/api/v1/version/updates",
+        ]
 
     async def dispatch(self, request: Request, call_next):
         """Check if tenant context is required for this path"""
+
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        if any(request.url.path.startswith(path) for path in self.public_paths):
+            return await call_next(request)
 
         # Check if this is a protected path
         is_protected = any(

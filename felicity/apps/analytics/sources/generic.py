@@ -37,12 +37,12 @@ class EntityAnalyticsInit(Generic[ModelType]):
         ]
 
     async def get_line_listing(
-        self,
-        period_start: str | datetime,
-        period_end: str | datetime,
-        sample_states: list[str],
-        date_column: str,
-        analysis_uids: List[str],
+            self,
+            period_start: str | datetime,
+            period_end: str | datetime,
+            sample_states: list[str],
+            date_column: str,
+            analysis_uids: List[str],
     ) -> tuple[list[str], list[Any]]:
         department_uids = await self._get_department_uids()
         start_date = parser.parse(str(period_start))
@@ -145,11 +145,11 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return None, None
 
     async def get_counts_group_by(
-        self,
-        group_by: str,
-        start: Optional[Tuple[str, str]] = None,
-        end: Optional[Tuple[str, str]] = None,
-        group_in: list[str] | None = None,
+            self,
+            group_by: str,
+            start: Optional[Tuple[str, str]] = None,
+            end: Optional[Tuple[str, str]] = None,
+            group_in: list[str] | None = None,
     ):
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
@@ -205,8 +205,10 @@ class EntityAnalyticsInit(Generic[ModelType]):
                 )
 
         # ✅ Apply tenant/lab context
-        current_lab_uid = get_current_lab_uid()
-        if current_lab_uid and hasattr(self.model, "laboratory_uid"):
+        if hasattr(self.model, "laboratory_uid"):
+            current_lab_uid = get_current_lab_uid()
+            if not current_lab_uid:
+                raise ValueError(f"Current user does not belong to laboratory")
             stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
 
         stmt = stmt.group_by(group_by_col)
@@ -217,7 +219,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return result.all()
 
     async def count_analyses_retests(
-        self, start: Tuple[str, str], end: Tuple[str, str]
+            self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         retest_col = getattr(self.model, "retest")
         stmt = select(func.count(self.model.uid).label("total")).filter(
@@ -250,8 +252,10 @@ class EntityAnalyticsInit(Generic[ModelType]):
             stmt = stmt.filter(end_col <= end_date)
 
         # ✅ Apply tenant/lab context
-        current_lab_uid = get_current_lab_uid()
-        if current_lab_uid and hasattr(self.model, "laboratory_uid"):
+        if hasattr(self.model, "laboratory_uid"):
+            current_lab_uid = get_current_lab_uid()
+            if not current_lab_uid:
+                raise ValueError(f"Current user does not belong to laboratory")
             stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
 
         async with async_session() as session:
@@ -260,7 +264,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return result.all()
 
     async def get_sample_process_performance(
-        self, start: Tuple[str, str], end: Tuple[str, str]
+            self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -354,7 +358,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
         return result.all()
 
     async def get_analysis_process_performance(
-        self, start: Tuple[str, str], end: Tuple[str, str]
+            self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -426,9 +430,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
             GROUP BY diff.name
         """
 
-        params = {"sd": start_date, "ed": end_date}
-        if current_lab_uid:
-            params["lab_uid"] = current_lab_uid
+        params = {"sd": start_date, "ed": end_date, "lab_uid": current_lab_uid}
         if department_uids:
             params["department_uids"] = list(department_uids)
 
@@ -512,9 +514,7 @@ class EntityAnalyticsInit(Generic[ModelType]):
               completed_delayed
         """
 
-        params = {}
-        if current_lab_uid:
-            params["lab_uid"] = current_lab_uid
+        params = {"lab_uid": current_lab_uid}
         if department_uids:
             params["department_uids"] = list(department_uids)
 

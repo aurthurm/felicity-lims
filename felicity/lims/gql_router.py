@@ -18,6 +18,8 @@ from strawberry.subscriptions.protocols.graphql_ws.types import (
     ConnectionInitMessage as LegacyConnectionInitMessage,
 )
 
+from felicity.apps.setup.services import LaboratoryService
+from felicity.apps.user.services import UserService
 from felicity.core.config import get_settings
 from felicity.core.tenant_context import TenantContext, set_tenant_context
 
@@ -32,6 +34,31 @@ class ConnectionRejectionError(Exception):
     def __init__(self, payload=None):
         self.payload = payload
         super().__init__("WebSocket connection rejected")
+
+
+async def _validate_ws_lab_membership(
+    user_uid: str | None, organization_uid: str | None, laboratory_uid: str | None
+) -> bool:
+    if not user_uid or not laboratory_uid:
+        return False
+
+    user = await UserService().get(uid=user_uid)
+    if not user:
+        return False
+
+    if not user.is_superuser:
+        lab_uids = await UserService().get_laboratories_by_user(user_uid)
+        if laboratory_uid not in (lab_uids or []):
+            return False
+
+    laboratory = await LaboratoryService().get(uid=laboratory_uid)
+    if not laboratory:
+        return False
+
+    if organization_uid and laboratory.organization_uid != organization_uid:
+        return False
+
+    return True
 
 
 class AuthenticatedGraphQLTransportWSHandler(BaseGraphQLTransportWSHandler):
@@ -148,6 +175,15 @@ class AuthenticatedGraphQLTransportWSHandler(BaseGraphQLTransportWSHandler):
             lab_from_payload = payload.get("X-Laboratory-ID")
 
             tenant_context.laboratory_uid = lab_from_payload or lab_from_token
+            if tenant_context.laboratory_uid:
+                is_allowed = await _validate_ws_lab_membership(
+                    tenant_context.user_uid,
+                    tenant_context.organization_uid,
+                    tenant_context.laboratory_uid,
+                )
+                if not is_allowed:
+                    logger.warning("WebSocket lab access denied for user")
+                    return None
 
             logger.info(f"Extracted WebSocket context :)")
             return tenant_context
@@ -243,6 +279,15 @@ class AuthenticatedGraphQLWSHandler(BaseGraphQLWSHandler):
             lab_from_token = jwt_payload.get("laboratory_uid")
             lab_from_payload = payload.get("X-Laboratory-ID")
             tenant_context.laboratory_uid = lab_from_payload or lab_from_token
+            if tenant_context.laboratory_uid:
+                is_allowed = await _validate_ws_lab_membership(
+                    tenant_context.user_uid,
+                    tenant_context.organization_uid,
+                    tenant_context.laboratory_uid,
+                )
+                if not is_allowed:
+                    logger.warning("WebSocket lab access denied for user")
+                    return None
 
             return tenant_context
 

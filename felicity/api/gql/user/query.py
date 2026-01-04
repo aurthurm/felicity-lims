@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 
 import sqlalchemy as sa
@@ -17,7 +18,14 @@ from felicity.api.gql.user.types import (
     UserEdge,
     UserType,
 )
-from felicity.apps.user.services import GroupService, PermissionService, UserService, UserPreferenceService
+from felicity.apps.user.services import (
+    GroupService,
+    PermissionService,
+    UserService,
+    UserPreferenceService,
+)
+
+logger = logging.getLogger(__name__)
 
 
 @strawberry.type
