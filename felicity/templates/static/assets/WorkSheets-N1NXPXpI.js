@@ -1,0 +1,1 @@
+import{_ as o,r as t,c as s,o as r,a as c}from"./index-v7Q387fb.js";const n={},i={class:""};function a(_,l){const e=t("router-view");return r(),s("div",i,[c(e)])}const f=o(n,[["render",a],["__file","/home/administrator/Documents/Development/beak-insights/felicity/felicity-lims/webapp/views/worksheet/WorkSheets.vue"]]);export{f as default};

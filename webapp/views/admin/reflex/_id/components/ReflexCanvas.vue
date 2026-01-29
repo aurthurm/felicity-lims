@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { VueFlow, useVueFlow, Controls, MiniMap, Background } from '@vue-flow/core';
-import { BackgroundVariant } from '@vue-flow/core';
-import type { Node, Edge, Connection, NodeDragEvent } from '@vue-flow/core';
+import { ref, shallowRef, computed, watch, markRaw } from 'vue';
+import { VueFlow, useVueFlow } from '@vue-flow/core';
+import type { Node, Edge, Connection } from '@vue-flow/core';
+import { Controls } from '@vue-flow/controls';
+import { MiniMap } from '@vue-flow/minimap';
+import { Background, BackgroundVariant } from '@vue-flow/background';
 
 // Import custom nodes
 import TriggerNode from '../nodes/TriggerNode.vue';
@@ -38,6 +40,7 @@ interface Emits {
   (e: 'paneClick'): void;
   (e: 'nodesChange', nodes: Node[]): void;
   (e: 'edgesChange', edges: Edge[]): void;
+  (e: 'addNodeAtPosition', nodeType: string, position: { x: number; y: number }): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -46,9 +49,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-// Local state
-const nodes = ref<Node[]>(props.modelValue.nodes);
-const edges = ref<Edge[]>(props.modelValue.edges);
+// Local state - using shallowRef to prevent Vue's deep reactivity from
+// interfering with VueFlow's internal node state management
+const nodes = shallowRef<Node[]>([...props.modelValue.nodes]);
+const edges = shallowRef<Edge[]>([...props.modelValue.edges]);
+
+// Flag to prevent circular updates: when we emit changes, skip the next watcher trigger
+let skipNextWatch = false;
 
 // Vue Flow instance
 const {
@@ -66,26 +73,31 @@ const {
   zoomIn,
   zoomOut,
   setViewport,
+  project, // For converting screen coords to canvas coords
+  getNodes, // Get current nodes with actual positions from VueFlow's internal state
+  updateNodeData, // Update node data in VueFlow's internal state
 } = useVueFlow();
 
 /**
  * Custom node types mapping
+ * Using markRaw to prevent Vue from making these reactive (performance optimization)
  */
 const nodeTypes = {
-  trigger: TriggerNode,
-  decision: DecisionNode,
-  rule: RuleNode,
-  action: ActionNode,
+  trigger: markRaw(TriggerNode),
+  decision: markRaw(DecisionNode),
+  rule: markRaw(RuleNode),
+  action: markRaw(ActionNode),
 };
 
 /**
  * Connection validation rules
+ * Note: Decision node uses handle-based routing (validated separately below)
  */
 const connectionRules: Record<string, string[]> = {
-  trigger: ['decision'],
-  decision: ['rule', 'action'],
-  rule: ['rule', 'action'], // Rules can chain (AND logic)
-  action: [], // Actions have no outgoing connections
+  trigger: ['decision'], // Entry point must connect to Decision
+  decision: ['rule', 'action'], // Uses handles: 'rules' → Rule, 'actions' → Action
+  rule: ['rule'], // Rules can chain (AND logic)
+  action: [], // Actions are terminal nodes
 };
 
 /**
@@ -104,6 +116,16 @@ const isValidConnection = (connection: Connection): boolean => {
 
   const sourceType = sourceNode.type || 'default';
   const targetType = targetNode.type || 'default';
+
+  if (sourceType === 'decision') {
+    if (connection.sourceHandle === 'rules') {
+      return targetType === 'rule';
+    }
+    if (connection.sourceHandle === 'actions') {
+      return targetType === 'action';
+    }
+    return false;
+  }
 
   // Check connection rules
   const validTargets = connectionRules[sourceType];
@@ -164,34 +186,148 @@ onPaneClick(() => {
 });
 
 /**
- * Handle node drag stop (update position)
+ * Handle node drag stop
+ * emitUpdate() uses getNodes to capture current positions from VueFlow
  */
-onNodeDragStop((event: NodeDragEvent) => {
+onNodeDragStop(() => {
   emitUpdate();
 });
 
 /**
  * Emit update to parent
+ * Uses getNodes() to get current positions from VueFlow's internal state
+ * IMPORTANT: We don't modify nodes.value here to preserve VueFlow's internal references
  */
 const emitUpdate = () => {
+  // Get current nodes from VueFlow's internal state (has actual positions)
+  const currentNodes = getNodes.value;
+
+  // Create a snapshot with VueFlow's current positions for emitting to parent
+  // We DON'T update nodes.value here - VueFlow manages it via v-model
+  const nodesSnapshot = nodes.value.map((node) => {
+    const vueFlowNode = currentNodes.find((n) => n.id === node.id);
+    if (vueFlowNode) {
+      return {
+        ...node,
+        position: { x: vueFlowNode.position.x, y: vueFlowNode.position.y },
+      };
+    }
+    return node;
+  });
+
+  // Set flag to prevent the watcher from resetting our state
+  skipNextWatch = true;
   emit('update:modelValue', {
-    nodes: nodes.value,
+    nodes: nodesSnapshot,
     edges: edges.value,
   });
-  emit('nodesChange', nodes.value);
+  emit('nodesChange', nodesSnapshot);
   emit('edgesChange', edges.value);
 };
 
 /**
- * Watch for external changes
+ * Handle drag over canvas (required for drop to work)
+ */
+const handleDragOver = (event: DragEvent) => {
+  console.log('Drag over canvas');
+  event.preventDefault();
+  event.stopPropagation(); // Prevent VueFlow from consuming
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'copy';
+  }
+};
+
+/**
+ * Handle drop on canvas
+ */
+const handleDrop = (event: DragEvent) => {
+  console.log('Drop event fired');
+  event.preventDefault();
+  event.stopPropagation(); // Prevent VueFlow from consuming
+
+  if (!event.dataTransfer) {
+    console.log('No dataTransfer');
+    return;
+  }
+
+  // Get node type from drag data
+  const nodeType = event.dataTransfer.getData('application/vueflow');
+  console.log('Node type from dataTransfer:', nodeType);
+
+  if (!nodeType) {
+    console.log('No node type found in dataTransfer');
+    return;
+  }
+
+  // Get canvas bounds - use VueFlow element for accurate positioning
+  const vueFlowEl = (event.currentTarget as HTMLElement).querySelector('.vue-flow');
+  const bounds = vueFlowEl?.getBoundingClientRect() || (event.currentTarget as HTMLElement).getBoundingClientRect();
+
+  // Convert screen coordinates to canvas coordinates
+  const position = project({
+    x: event.clientX - bounds.left,
+    y: event.clientY - bounds.top,
+  });
+
+  console.log('Drop position:', position);
+
+  // Emit to parent to create the node
+  emit('addNodeAtPosition', nodeType, position);
+};
+
+/**
+ * Sync nodes from parent (called explicitly, not via watcher)
+ * This preserves VueFlow's internal state by only syncing when explicitly requested
+ * Uses VueFlow's updateNodeData for reliable node data updates
+ */
+const syncFromParent = (newNodes: Node[], newEdges: Edge[]) => {
+  // Update node data using VueFlow's internal method for each existing node
+  // This ensures VueFlow's internal state is properly updated
+  newNodes.forEach((newNode) => {
+    const existingNode = nodes.value.find((n) => n.id === newNode.id);
+    if (existingNode) {
+      // Update the node data using VueFlow's internal method
+      updateNodeData(newNode.id, newNode.data);
+    }
+  });
+
+  // Then sync the arrays (for structural changes like add/remove)
+  nodes.value = [...newNodes];
+  edges.value = [...newEdges];
+};
+
+/**
+ * Watch for external changes - ONLY structural changes (add/remove nodes)
+ * We avoid deep watching to prevent interfering with VueFlow's internal state
  */
 watch(
-  () => props.modelValue,
-  (newValue) => {
-    nodes.value = newValue.nodes;
-    edges.value = newValue.edges;
-  },
-  { deep: true }
+  () => [props.modelValue.nodes.length, props.modelValue.edges.length],
+  ([newNodesLen, newEdgesLen], [oldNodesLen, oldEdgesLen]) => {
+    if (skipNextWatch) {
+      skipNextWatch = false;
+      return;
+    }
+
+    // Only sync if nodes or edges were added/removed
+    if (newNodesLen !== nodes.value.length || newEdgesLen !== edges.value.length) {
+      // Check which nodes are new or removed
+      const currentNodeIds = new Set(nodes.value.map((n) => n.id));
+      const newNodeIds = new Set(props.modelValue.nodes.map((n) => n.id));
+
+      const nodesAdded = props.modelValue.nodes.filter((n) => !currentNodeIds.has(n.id));
+      const nodesRemoved = nodes.value.filter((n) => !newNodeIds.has(n.id));
+
+      if (nodesAdded.length > 0 || nodesRemoved.length > 0) {
+        // Structural change - sync from parent
+        nodes.value = [...props.modelValue.nodes];
+      }
+
+      // Sync edges
+      if (newEdgesLen !== edges.value.length) {
+        edges.value = [...props.modelValue.edges];
+      }
+    }
+  }
 );
 
 /**
@@ -243,11 +379,16 @@ defineExpose({
   zoomIn,
   zoomOut,
   setViewport,
+  syncFromParent,
 });
 </script>
 
 <template>
-  <div class="reflex-canvas-container">
+  <div
+    class="reflex-canvas-container"
+    @dragover="handleDragOver"
+    @drop="handleDrop"
+  >
     <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
@@ -332,6 +473,7 @@ defineExpose({
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .reflex-canvas-container {
   @apply relative w-full h-full;
   @apply bg-gray-50;
@@ -371,6 +513,8 @@ kbd {
 </style>
 
 <style>
+@import "tailwindcss";
+
 /* Global Vue Flow styling */
 .vue-flow__node {
   @apply cursor-pointer;
