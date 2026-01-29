@@ -102,10 +102,7 @@ async function savePreferences() {
   <div class="w-full space-y-6">
     <!-- Loading state -->
     <div v-if="loading" class="flex justify-center items-center h-32">
-      <svg class="w-6 h-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 11-8 8z"></path>
-      </svg>
+      <fel-loader message="Loading preferences..." variant="muted" />
     </div>
 
     <!-- Main content -->
@@ -222,26 +219,15 @@ async function savePreferences() {
         >
           Cancel
         </button>
-        <button
+        <fel-button
           type="button"
           @click="savePreferences"
           :disabled="saving || loading"
-          :class="[
-            'px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
-            saving
-              ? 'bg-primary/50 text-primary-foreground cursor-not-allowed'
-              : 'bg-primary text-primary-foreground hover:bg-primary/90'
-          ]"
+          :loading="saving"
+          class="px-4 py-2"
         >
-          <span v-if="saving" class="flex items-center gap-2">
-            <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 11-8 8z"></path>
-            </svg>
-            Saving...
-          </span>
-          <span v-else>Save Preferences</span>
-        </button>
+          Save Preferences
+        </fel-button>
       </div>
     </div>
   </div>

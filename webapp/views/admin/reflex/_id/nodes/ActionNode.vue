@@ -6,7 +6,7 @@ import { Handle, Position } from '@vue-flow/core';
  * Action Node Component
  *
  * Represents an action to take when rules match - add test or finalize result
- * Color: Green (#10B981) for Add, Pink (#EC4899) for Finalize
+ * Color: var(--color-reflex-action-add) for Add, var(--color-reflex-action-finalize) for Finalize
  * Icon: ➕ for Add, ✓ for Finalize
  */
 
@@ -30,25 +30,25 @@ const props = defineProps<Props>();
 const nodeColors = computed(() => {
   if (props.data.actionType === 'add') {
     return {
-      border: 'border-green-400',
-      bg: 'bg-white',
-      text: 'text-green-600',
-      badge: 'bg-green-100 text-green-800',
-      handle: '!bg-green-500',
-      ring: 'ring-green-500',
-      hover: 'hover:ring-green-300',
+      border: 'border-success/50',
+      bg: 'bg-card',
+      text: 'text-success',
+      badge: 'bg-success/15 text-success',
+      handle: '!bg-success/100',
+      ring: 'ring-ring',
+      hover: 'hover:ring-ring',
       icon: '➕',
       label: 'Add Test',
     };
   }
   return {
-    border: 'border-pink-400',
-    bg: 'bg-white',
-    text: 'text-pink-600',
-    badge: 'bg-pink-100 text-pink-800',
-    handle: '!bg-pink-500',
-    ring: 'ring-pink-500',
-    hover: 'hover:ring-pink-300',
+    border: 'border-accent/50',
+    bg: 'bg-card',
+    text: 'text-accent',
+    badge: 'bg-accent/15 text-accent',
+    handle: '!bg-accent',
+    ring: 'ring-ring',
+    hover: 'hover:ring-ring',
     icon: '✓',
     label: 'Finalize',
   };
@@ -121,31 +121,31 @@ const actionDetail = computed(() => {
 
     <!-- Action Summary -->
     <div class="action-summary mb-2">
-      <p class="text-sm font-medium text-gray-800">
+      <p class="text-sm font-medium text-foreground">
         {{ actionSummary }}
       </p>
     </div>
 
     <!-- Quick Detail -->
-    <div class="text-xs text-gray-600">
+    <div class="text-xs text-muted-foreground">
       {{ actionDetail }}
     </div>
 
     <!-- Detailed View (when selected) -->
-    <div v-if="selected" class="mt-3 pt-3 border-t space-y-2" :class="data.actionType === 'add' ? 'border-green-100' : 'border-pink-100'">
+    <div v-if="selected" class="mt-3 pt-3 border-t space-y-2" :class="data.actionType === 'add' ? 'border-border' : 'border-border'">
       <!-- Analysis Details -->
       <div>
-        <div class="text-xs font-semibold text-gray-700">Test:</div>
-        <div class="text-xs text-gray-600 mt-1 px-2 py-1 bg-gray-50 rounded">
+        <div class="text-xs font-semibold text-foreground">Test:</div>
+        <div class="text-xs text-muted-foreground mt-1 px-2 py-1 bg-muted rounded">
           {{ analysisName }}
         </div>
       </div>
 
       <!-- Add Action Details -->
       <div v-if="data.actionType === 'add'">
-        <div class="text-xs font-semibold text-gray-700">Number of Tests to Add:</div>
-        <div class="text-xs text-gray-600 mt-1">
-          <span class="px-2 py-1 bg-green-50 text-green-700 rounded font-medium">
+        <div class="text-xs font-semibold text-foreground">Number of Tests to Add:</div>
+        <div class="text-xs text-muted-foreground mt-1">
+          <span class="px-2 py-1 bg-success/10 text-success rounded font-medium">
             {{ data.count || 1 }}
           </span>
         </div>
@@ -153,16 +153,16 @@ const actionDetail = computed(() => {
 
       <!-- Finalize Action Details -->
       <div v-if="data.actionType === 'finalize'">
-        <div class="text-xs font-semibold text-gray-700">Result Value:</div>
-        <div class="text-xs text-gray-600 mt-1">
-          <span class="px-2 py-1 bg-pink-50 text-pink-700 rounded font-medium">
+        <div class="text-xs font-semibold text-foreground">Result Value:</div>
+        <div class="text-xs text-muted-foreground mt-1">
+          <span class="px-2 py-1 bg-accent/10 text-accent rounded font-medium">
             {{ data.value || 'Not set' }}
           </span>
         </div>
       </div>
 
       <!-- Action Description -->
-      <div class="text-xs text-gray-500 italic mt-2 p-2 bg-gray-50 rounded">
+      <div class="text-xs text-muted-foreground italic mt-2 p-2 bg-muted rounded">
         <template v-if="data.actionType === 'add'">
           This action will automatically add {{ data.count || 1 }} new {{ analysisName }} {{ data.count === 1 ? 'test' : 'tests' }} to the sample.
         </template>
@@ -188,21 +188,21 @@ const actionDetail = computed(() => {
 
 /* Validation states */
 .action-node.node-error {
-  @apply border-red-500 bg-red-50;
+  @apply border-destructive/60 bg-destructive/10;
 }
 
 .action-node.node-warning {
-  @apply border-yellow-500 bg-yellow-50;
+  @apply border-warning/50 bg-warning/10;
 }
 
 /* Add action specific valid state */
-.action-node.node-valid.border-green-400 {
-  @apply border-green-400 bg-white;
+.action-node.node-valid.border-success/50 {
+  @apply border-success/50 bg-card;
 }
 
 /* Finalize action specific valid state */
-.action-node.node-valid.border-pink-400 {
-  @apply border-pink-400 bg-white;
+.action-node.node-valid.border-accent/50 {
+  @apply border-accent/50 bg-card;
 }
 
 /* Selected state */

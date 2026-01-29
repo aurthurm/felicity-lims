@@ -403,7 +403,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
                 </div>
 
                 <div class="overflow-hidden rounded-lg border border-border">
-                  <table class="w-full">
+                  <table class="w-full fel-table">
                     <thead>
                       <tr class="border-b border-border bg-muted/50">
                         <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>

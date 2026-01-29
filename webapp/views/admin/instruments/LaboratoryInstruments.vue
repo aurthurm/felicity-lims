@@ -118,7 +118,7 @@
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
       <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm">
+        <table class="w-full caption-bottom text-sm fel-table">
           <thead class="[&_tr]:border-b">
             <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Instrument</th>

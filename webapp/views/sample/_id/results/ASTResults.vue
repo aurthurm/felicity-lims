@@ -115,8 +115,8 @@ function applyPanel(panel){
       text: 'You want to apply panel: ' + panel.name + ' to organism: ' + choiceOrganism.value?.organism?.name,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: 'hsl(var(--primary))',
+      cancelButtonColor: 'hsl(var(--destructive))',
       confirmButtonText: 'Yes, apply now!',
       cancelButtonText: 'No, do not apply!',
   }).then(async result => {
@@ -339,7 +339,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
         <div class="rounded-lg border border-border bg-background">
           <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full fel-table">
               <thead>
                 <tr class="border-b border-border bg-muted/50">
                   <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Parameter</th>
@@ -529,7 +529,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
           <div class="rounded-lg border border-border">
             <div class="overflow-y-auto max-h-64">
-              <table class="w-full">
+              <table class="w-full fel-table">
                 <tbody>
                   <tr 
                     v-for="panel in panels" 

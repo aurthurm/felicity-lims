@@ -126,7 +126,7 @@
 
     <div class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <table class="min-w-full">
+        <table class="min-w-full fel-table">
             <thead>
             <tr>
                 <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Interim Key</th>

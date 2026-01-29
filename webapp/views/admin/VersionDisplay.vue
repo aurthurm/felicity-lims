@@ -132,7 +132,7 @@
     if (!updateInfo.value?.release_notes) return '';
     // Convert markdown-like headers to bold
     let notes = updateInfo.value.release_notes
-      .replace(/^(\s*[-*] .*)$/gm, '<span style="color:#2563eb;">$1</span>')
+      .replace(/^(\s*[-*] .*)$/gm, '<span style="color:hsl(var(--primary));">$1</span>')
       .replace(/^(\s*[A-Z][^:]+:)/gm, '<b>$1</b>')
       .replace(/\r?\n/g, '<br>');
     return notes;

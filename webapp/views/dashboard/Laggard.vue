@@ -144,7 +144,7 @@ const plotLateSince = (data: any, elem: string, xAlias: string, yAlias: string) 
     .size(26)
     .label("value", {
       style: {
-        fill: "#8d8d8d",
+        fill: "hsl(var(--muted-foreground))",
       },
       offset: 10,
     });

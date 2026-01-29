@@ -79,7 +79,7 @@ const identifications = computed(() => patientStore.getIdentifications)
 
     <div class="rounded-md border border-border p-6 bg-card">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
+        <table class="min-w-full divide-y divide-border fel-table">
           <thead>
             <tr>
               <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>

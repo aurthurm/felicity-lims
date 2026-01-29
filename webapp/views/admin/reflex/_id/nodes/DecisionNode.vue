@@ -6,7 +6,7 @@ import { Handle, Position } from '@vue-flow/core';
  * Decision Node Component
  *
  * Represents a decision logic container - contains rules (conditions) and actions
- * Color: Purple (#8B5CF6)
+ * Color: var(--color-reflex-decision)
  * Icon: ◆ Diamond
  */
 
@@ -60,12 +60,12 @@ const shortDescription = computed(() => {
  */
 const priorityBadgeColor = computed(() => {
   if (props.data.priority === 0 || props.data.priority === 1) {
-    return 'bg-purple-100 text-purple-800';
+    return 'bg-accent/15 text-accent';
   }
   if (props.data.priority <= 3) {
-    return 'bg-purple-200 text-purple-900';
+    return 'bg-accent/20 text-accent';
   }
-  return 'bg-purple-300 text-purple-950';
+  return 'bg-accent/30 text-accent';
 });
 
 /**
@@ -80,8 +80,8 @@ const logicSummary = computed(() => {
   <div
     class="decision-node"
     :class="{
-      'ring-2 ring-purple-500 ring-offset-2': selected,
-      'hover:ring-1 hover:ring-purple-300': !selected,
+      'ring-2 ring-ring ring-offset-2': selected,
+      'hover:ring-1 hover:ring-ring': !selected,
       'decision-node-compact': !selected,
     }"
   >
@@ -89,7 +89,7 @@ const logicSummary = computed(() => {
     <Handle
       type="target"
       :position="Position.Left"
-      class="!bg-purple-500 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-accent/100 !w-3 !h-3 !border-2 !border-white"
     />
 
     <!-- Output Handles -->
@@ -104,7 +104,7 @@ const logicSummary = computed(() => {
       id="actions"
       type="source"
       :position="Position.Right"
-      class="!bg-green-500 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-success/100 !w-3 !h-3 !border-2 !border-white"
       style="top: 65%;"
     />
 
@@ -112,12 +112,12 @@ const logicSummary = computed(() => {
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center space-x-2">
         <!-- Diamond Icon (rotated square) -->
-        <div class="text-purple-600">
+        <div class="text-accent">
           <svg class="w-5 h-5 transform rotate-45" fill="currentColor" viewBox="0 0 24 24">
             <rect x="6" y="6" width="12" height="12" rx="1" />
           </svg>
         </div>
-        <span class="text-xs font-semibold text-purple-600 uppercase">Decision</span>
+        <span class="text-xs font-semibold text-accent uppercase">Decision</span>
       </div>
       <!-- Priority Badge -->
       <span
@@ -130,28 +130,28 @@ const logicSummary = computed(() => {
 
     <!-- Description -->
     <div class="mb-2">
-      <p class="text-sm font-medium text-gray-800">
+      <p class="text-sm font-medium text-foreground">
         {{ shortDescription }}
       </p>
     </div>
 
     <!-- Logic Summary -->
     <div class="decision-logic-summary">
-      <div class="text-xs font-mono text-purple-700 bg-purple-50 px-2 py-1 rounded">
+      <div class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded">
         {{ logicSummary }}
       </div>
     </div>
 
     <!-- Detailed View (when selected) -->
-    <div v-if="selected" class="mt-3 pt-3 border-t border-purple-100 space-y-2">
+    <div v-if="selected" class="mt-3 pt-3 border-t border-border space-y-2">
       <!-- Rule Groups -->
       <div v-if="data.rule_groups && data.rule_groups.length > 0">
-        <div class="text-xs font-semibold text-gray-700 mb-1">Conditions:</div>
+        <div class="text-xs font-semibold text-foreground mb-1">Conditions:</div>
         <div class="space-y-1">
           <div
             v-for="(group, index) in data.rule_groups"
             :key="group.uid"
-            class="text-xs text-gray-600 px-2 py-1 bg-purple-50 rounded"
+            class="text-xs text-muted-foreground px-2 py-1 bg-accent/10 rounded"
           >
             Group {{ index + 1 }}: {{ group.rules?.length || 0 }} {{ group.rules?.length === 1 ? 'rule' : 'rules' }}
           </div>
@@ -160,12 +160,12 @@ const logicSummary = computed(() => {
 
       <!-- Actions Summary -->
       <div v-if="actionCount > 0">
-        <div class="text-xs font-semibold text-gray-700 mb-1">Actions:</div>
-        <div class="flex items-center space-x-2 text-xs text-gray-600">
-          <span v-if="data.add_analyses && data.add_analyses.length > 0" class="px-2 py-1 bg-green-50 text-green-700 rounded">
+        <div class="text-xs font-semibold text-foreground mb-1">Actions:</div>
+        <div class="flex items-center space-x-2 text-xs text-muted-foreground">
+          <span v-if="data.add_analyses && data.add_analyses.length > 0" class="px-2 py-1 bg-success/10 text-success rounded">
             +{{ data.add_analyses.length }} Add
           </span>
-          <span v-if="data.finalize_analyses && data.finalize_analyses.length > 0" class="px-2 py-1 bg-pink-50 text-pink-700 rounded">
+          <span v-if="data.finalize_analyses && data.finalize_analyses.length > 0" class="px-2 py-1 bg-accent/10 text-accent rounded">
             ✓{{ data.finalize_analyses.length }} Finalize
           </span>
         </div>
@@ -177,7 +177,7 @@ const logicSummary = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .decision-node {
-  @apply bg-white border-2 border-purple-400 rounded-lg shadow-md;
+  @apply bg-card border-2 border-accent/50 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[240px] max-w-[300px];
   @apply transition-all duration-200;
 }
@@ -193,15 +193,15 @@ const logicSummary = computed(() => {
 
 /* Validation states */
 .decision-node.node-error {
-  @apply border-red-500 bg-red-50;
+  @apply border-destructive/60 bg-destructive/10;
 }
 
 .decision-node.node-warning {
-  @apply border-yellow-500 bg-yellow-50;
+  @apply border-warning/50 bg-warning/10;
 }
 
 .decision-node.node-valid {
-  @apply border-purple-400 bg-white;
+  @apply border-accent/50 bg-card;
 }
 
 /* Selected state */

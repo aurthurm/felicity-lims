@@ -30,10 +30,10 @@ const nodeDefinitions = [
     label: 'Trigger',
     description: 'Entry point - monitors test results',
     example: 'When HIV test is verified',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-300',
-    textColor: 'text-blue-700',
-    hoverBg: 'hover:bg-blue-100',
+    bgColor: 'bg-primary/10',
+    borderColor: 'border-primary/40',
+    textColor: 'text-primary',
+    hoverBg: 'hover:bg-primary/15',
   },
   {
     type: 'decision',
@@ -42,10 +42,10 @@ const nodeDefinitions = [
     label: 'Decision',
     description: 'Decision logic container',
     example: 'IF conditions THEN actions',
-    bgColor: 'bg-purple-50',
-    borderColor: 'border-purple-300',
-    textColor: 'text-purple-700',
-    hoverBg: 'hover:bg-purple-100',
+    bgColor: 'bg-accent/10',
+    borderColor: 'border-accent/40',
+    textColor: 'text-accent',
+    hoverBg: 'hover:bg-accent/15',
   },
   {
     type: 'rule',
@@ -66,10 +66,10 @@ const nodeDefinitions = [
     label: 'Action',
     description: 'Add test or finalize result',
     example: 'Add Viral Load test',
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-300',
-    textColor: 'text-green-700',
-    hoverBg: 'hover:bg-green-100',
+    bgColor: 'bg-success/10',
+    borderColor: 'border-success/40',
+    textColor: 'text-success',
+    hoverBg: 'hover:bg-success/15',
   },
 ];
 
@@ -111,16 +111,16 @@ const toggleCollapse = () => {
     <div class="palette-header">
       <div v-if="!collapsed" class="flex items-center space-x-2">
         <div class="text-lg">🎨</div>
-        <h3 class="text-sm font-semibold text-gray-700">Node Palette</h3>
+        <h3 class="text-sm font-semibold text-foreground">Node Palette</h3>
       </div>
       <button
         @click="toggleCollapse"
-        class="p-1 hover:bg-gray-200 rounded transition-colors"
+        class="p-1 hover:bg-muted rounded transition-colors"
         :class="{ 'mx-auto': collapsed }"
         :title="collapsed ? 'Expand palette' : 'Collapse palette'"
       >
         <svg
-          class="w-4 h-4 text-gray-600 transition-transform"
+          class="w-4 h-4 text-muted-foreground transition-transform"
           :class="{ 'rotate-180': collapsed }"
           fill="none"
           stroke="currentColor"
@@ -140,7 +140,7 @@ const toggleCollapse = () => {
     <div v-if="!collapsed" class="palette-content">
       <!-- Instructions -->
       <div class="palette-instructions">
-        <p class="text-xs text-gray-600">
+        <p class="text-xs text-muted-foreground">
           <strong>Drag</strong> nodes to canvas or <strong>click</strong> to add
         </p>
       </div>
@@ -165,7 +165,7 @@ const toggleCollapse = () => {
               </span>
             </div>
             <svg
-              class="w-4 h-4 text-gray-400"
+              class="w-4 h-4 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -180,10 +180,10 @@ const toggleCollapse = () => {
           </div>
 
           <!-- Description -->
-          <p class="text-xs text-gray-600 mb-1">{{ node.description }}</p>
+          <p class="text-xs text-muted-foreground mb-1">{{ node.description }}</p>
 
           <!-- Example -->
-          <div class="flex items-start space-x-1 text-xs text-gray-500">
+          <div class="flex items-start space-x-1 text-xs text-muted-foreground">
             <span class="font-semibold">e.g.</span>
             <span class="italic">{{ node.example }}</span>
           </div>
@@ -192,39 +192,39 @@ const toggleCollapse = () => {
 
       <!-- Connection Rules -->
       <div class="palette-help">
-        <div class="text-xs font-semibold text-gray-700 mb-2">Connection Rules:</div>
-        <div class="space-y-1 text-xs text-gray-600">
+        <div class="text-xs font-semibold text-foreground mb-2">Connection Rules:</div>
+        <div class="space-y-1 text-xs text-muted-foreground">
           <div class="flex items-center space-x-1">
-            <span class="text-blue-600">⚡</span>
+            <span class="text-primary">⚡</span>
             <span>→</span>
-            <span class="text-purple-600">◆</span>
-            <span class="text-xs text-gray-500">(entry point)</span>
+            <span class="text-accent">◆</span>
+            <span class="text-xs text-muted-foreground">(entry point)</span>
           </div>
           <div class="flex items-center space-x-1">
-            <span class="text-purple-600">◆</span>
+            <span class="text-accent">◆</span>
             <span class="text-amber-600">[rules]</span>
             <span>→</span>
             <span class="text-amber-600">⚖️</span>
           </div>
           <div class="flex items-center space-x-1">
-            <span class="text-purple-600">◆</span>
-            <span class="text-green-600">[actions]</span>
+            <span class="text-accent">◆</span>
+            <span class="text-success">[actions]</span>
             <span>→</span>
-            <span class="text-green-600">➕</span>
+            <span class="text-success">➕</span>
           </div>
           <div class="flex items-center space-x-1">
             <span class="text-amber-600">⚖️</span>
             <span>→</span>
             <span class="text-amber-600">⚖️</span>
-            <span class="text-xs text-gray-500">(AND chain)</span>
+            <span class="text-xs text-muted-foreground">(AND chain)</span>
           </div>
         </div>
       </div>
 
       <!-- Keyboard Shortcuts -->
       <div class="palette-shortcuts">
-        <div class="text-xs font-semibold text-gray-700 mb-2">Shortcuts:</div>
-        <div class="space-y-1 text-xs text-gray-600">
+        <div class="text-xs font-semibold text-foreground mb-2">Shortcuts:</div>
+        <div class="space-y-1 text-xs text-muted-foreground">
           <div class="flex justify-between">
             <span>Undo</span>
             <div class="flex space-x-1">
@@ -272,7 +272,7 @@ const toggleCollapse = () => {
 <style scoped>
 @import "tailwindcss";
 .node-palette {
-  @apply w-64 bg-white border-r border-gray-200 shadow-sm;
+  @apply w-64 bg-card border-r border-border shadow-sm;
   @apply flex flex-col h-full overflow-hidden;
   @apply transition-all duration-300;
 }
@@ -283,8 +283,8 @@ const toggleCollapse = () => {
 
 /* Header */
 .palette-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-gray-200;
-  @apply bg-gray-50;
+  @apply flex items-center justify-between px-4 py-3 border-b border-border;
+  @apply bg-muted;
 }
 
 .palette-collapsed .palette-header {
@@ -298,7 +298,7 @@ const toggleCollapse = () => {
 
 /* Instructions */
 .palette-instructions {
-  @apply px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg;
+  @apply px-3 py-2 bg-primary/10 border border-primary/30 rounded-lg;
 }
 
 /* Node Card */
@@ -314,16 +314,16 @@ const toggleCollapse = () => {
 
 /* Help Section */
 .palette-help {
-  @apply px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg;
+  @apply px-3 py-2 bg-muted border border-border rounded-lg;
 }
 
 /* Shortcuts Section */
 .palette-shortcuts {
-  @apply px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg;
+  @apply px-3 py-2 bg-muted border border-border rounded-lg;
 }
 
 kbd {
-  @apply px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono;
+  @apply px-1.5 py-0.5 bg-card border border-input rounded text-xs font-mono;
 }
 
 /* Collapsed State */

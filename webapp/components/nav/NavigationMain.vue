@@ -434,26 +434,15 @@ const switchLabNow = () => {
           </div>
         </div>
 
-        <button
+        <fel-button
           type="button"
           @click.prevent="switchLabNow()"
-          :class="[
-            'w-full rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring',
-            switching
-              ? 'bg-primary/50 text-primary-foreground cursor-not-allowed'
-              : 'bg-primary text-primary-foreground hover:bg-primary/90'
-          ]"
+          :loading="switching"
           :disabled="switching"
+          class="w-full"
         >
-          <span v-if="switching" class="flex items-center justify-center gap-2">
-            <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 11-8 8z"></path>
-            </svg>
-            Switching…
-          </span>
-          <span v-else>Switch Laboratory</span>
-        </button>
+          Switch Laboratory
+        </fel-button>
       </form>
     </template>
   </fel-modal>

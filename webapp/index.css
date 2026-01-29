@@ -3,15 +3,15 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
+    color: hsl(var(--foreground));
 }
 
 /* Active tab styles */
 .tab-active {
-    border-bottom: 2px solid black !important;
+    border-bottom: 2px solid hsl(var(--primary)) !important;
     font-weight: bold !important;
     --tw-bg-opacity: 1;
-    background-color: rgb(7 89 133 / var(--tw-bg-opacity));
+    background-color: hsl(var(--primary) / var(--tw-bg-opacity));
     height: 100%;
-    color: #fff !important;
+    color: hsl(var(--primary-foreground)) !important;
 }

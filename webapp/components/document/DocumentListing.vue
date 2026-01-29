@@ -49,7 +49,7 @@ function toggleView() {
     </div>
 
     <div v-else class="overflow-x-auto rounded-lg border border-border bg-card">
-      <table class="min-w-full divide-y divide-border">
+      <table class="min-w-full divide-y divide-border fel-table">
         <thead class="bg-muted/50">
           <tr>
             <th scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Name</th>

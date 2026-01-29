@@ -112,7 +112,7 @@ const saveForm = handleSubmit((formValues) => {
 
     <div class="overflow-x-auto">
       <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card shadow-dashboard rounded-lg p-6">
-        <table class="min-w-full divide-y divide-border">
+        <table class="min-w-full divide-y divide-border fel-table">
           <thead>
           <tr>
             <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>

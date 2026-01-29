@@ -137,7 +137,7 @@
     </fel-heading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
-      <table class="min-w-full divide-y divide-border">
+      <table class="min-w-full divide-y divide-border fel-table">
         <thead>
           <tr>
             <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>

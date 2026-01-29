@@ -148,20 +148,20 @@ const countNone = computed(
 // Helper functions for consistent styling
 function getGuidelineColor(guideline: string): string {
   const colors = {
-    'CLSI': '#E3F2FD',    // Light Blue
-    'EUCAST': '#F1F8E9',  // Light Green
-    'WHO': '#FFF3E0',     // Light Orange
-    'default': '#F5F5F5'  // Light Gray
+    'CLSI': 'var(--color-guideline-clsi-bg)',
+    'EUCAST': 'var(--color-guideline-eucast-bg)',
+    'WHO': 'var(--color-guideline-who-bg)',
+    'default': 'var(--color-guideline-default-bg)'
   };
   return colors[guideline] || colors.default;
 }
 
 function getTextColor(guideline: string): string {
   const colors = {
-    'CLSI': '#1565C0',    // Dark Blue
-    'EUCAST': '#2E7D32',  // Dark Green
-    'WHO': '#E65100',     // Dark Orange
-    'default': '#616161'  // Dark Gray
+    'CLSI': 'var(--color-guideline-clsi-text)',
+    'EUCAST': 'var(--color-guideline-eucast-text)',
+    'WHO': 'var(--color-guideline-who-text)',
+    'default': 'var(--color-guideline-default-text)'
   };
   return colors[guideline] || colors.default;
 }

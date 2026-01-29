@@ -73,7 +73,7 @@
 
         <div class="rounded-md border bg-card p-6 shadow-sm">
             <div class="w-full">
-                <table class="w-full caption-bottom text-sm">
+                <table class="w-full caption-bottom text-sm fel-table">
                     <thead>
                         <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                             <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Level</th>
@@ -141,10 +141,10 @@
   .toggle-checkbox:checked {
     @apply: right-0 border-sky-800;
     right: 0;
-    border-color: #68D391;
+    border-color: hsl(var(--success));
   }
   .toggle-checkbox:checked + .toggle-label {
     @apply: bg-sky-800;
-    background-color: #68D391;
+    background-color: hsl(var(--success));
   }
 </style>

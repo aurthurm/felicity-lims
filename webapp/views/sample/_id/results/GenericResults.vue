@@ -277,7 +277,7 @@ const retestResults = () =>
         <fel-loader message="Fetching analytes ..." />
       </div>
       <div v-else class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full fel-table">
           <thead>
             <tr class="border-b border-border bg-muted/50">
               <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">

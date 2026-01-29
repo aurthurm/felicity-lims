@@ -41,8 +41,8 @@ async function deleteNotice(uid: string) {
     text: "You want to delete these notice",
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
+    confirmButtonColor: 'hsl(var(--primary))',
+    cancelButtonColor: 'hsl(var(--destructive))',
     confirmButtonText: 'Yes, delete now!',
     cancelButtonText: 'No, do not delete!',
   }).then(async (result) => {
@@ -81,7 +81,7 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
 
     <!-- Notice Table View -->
     <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
-      <table class="min-w-full divide-y divide-border">
+      <table class="min-w-full divide-y divide-border fel-table">
         <thead class="bg-muted">
           <tr>
             <th class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Notice Title</th>

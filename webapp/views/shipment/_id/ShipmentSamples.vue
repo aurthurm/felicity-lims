@@ -175,7 +175,7 @@ const sampleManager = (action: string) => {
     <!-- Sample Table View -->
     <div class="rounded-md border border-border">
       <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full fel-table">
           <thead>
             <tr class="border-b border-border bg-muted/50">
               <th

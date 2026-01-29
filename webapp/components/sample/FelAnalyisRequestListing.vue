@@ -41,7 +41,7 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
 <template>
   <div class="overflow-x-auto mt-4">
     <div class="rounded-lg border border-border bg-card shadow-sm">
-      <table class="w-full">
+      <table class="w-full fel-table">
         <thead>
           <tr>
             <th class="h-9 px-4 text-left align-middle font-medium text-muted-foreground"></th>

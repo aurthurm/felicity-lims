@@ -181,10 +181,7 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
   <div class="laboratory-context-guard">
     <!-- Loading State -->
     <div v-if="isValidating" class="flex items-center justify-center py-12">
-      <div class="text-center space-y-4">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-        <p class="text-muted-foreground">Validating laboratory context...</p>
-      </div>
+      <fel-loader message="Validating laboratory context..." variant="muted" />
     </div>
 
     <!-- Content (when context is valid) -->
@@ -196,8 +193,8 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
     <div v-else class="py-12">
       <!-- Authentication Required -->
       <div v-if="!userIsAuthenticated" class="text-center space-y-6 max-w-md mx-auto">
-        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto">
-          <i class="fas fa-lock text-2xl text-yellow-600"></i>
+        <div class="w-16 h-16 bg-warning/15 rounded-full flex items-center justify-center mx-auto">
+          <i class="fas fa-lock text-2xl text-warning"></i>
         </div>
         <div>
           <h3 class="text-lg font-medium text-foreground mb-2">Authentication Required</h3>
@@ -218,8 +215,8 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
 
       <!-- Laboratory Context Required -->
       <div v-else-if="props.requireLaboratory && !hasValidContext" class="text-center space-y-6 max-w-md mx-auto">
-        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-          <i class="fas fa-building text-2xl text-blue-600"></i>
+        <div class="w-16 h-16 bg-info/15 rounded-full flex items-center justify-center mx-auto">
+          <i class="fas fa-building text-2xl text-info"></i>
         </div>
         <div>
           <h3 class="text-lg font-medium text-foreground mb-2">Laboratory Context Required</h3>
@@ -245,8 +242,8 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
 
       <!-- Laboratory Access Denied -->
       <div v-else-if="!isContextAllowed" class="text-center space-y-6 max-w-md mx-auto">
-        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-          <i class="fas fa-ban text-2xl text-red-600"></i>
+        <div class="w-16 h-16 bg-destructive/15 rounded-full flex items-center justify-center mx-auto">
+          <i class="fas fa-ban text-2xl text-destructive"></i>
         </div>
         <div>
           <h3 class="text-lg font-medium text-foreground mb-2">Access Denied</h3>
@@ -280,8 +277,8 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
 
       <!-- Generic Error -->
       <div v-else class="text-center space-y-6 max-w-md mx-auto">
-        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-          <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+        <div class="w-16 h-16 bg-destructive/15 rounded-full flex items-center justify-center mx-auto">
+          <i class="fas fa-exclamation-triangle text-2xl text-destructive"></i>
         </div>
         <div>
           <h3 class="text-lg font-medium text-foreground mb-2">Context Validation Error</h3>
@@ -307,7 +304,7 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
     </div>
 
     <!-- Development Debug Info (only in development) -->
-    <div v-if="import.meta.env.DEV" class="fixed bottom-4 right-4 p-3 bg-gray-900 text-white text-xs rounded-md max-w-xs">
+    <div v-if="import.meta.env.DEV" class="fixed bottom-4 right-4 p-3 bg-foreground text-background text-xs rounded-md max-w-xs">
       <div><strong>Context Guard Debug:</strong></div>
       <div>Authenticated: {{ userIsAuthenticated ? 'Yes' : 'No' }}</div>
       <div>Has Context: {{ hasValidContext ? 'Yes' : 'No' }}</div>
@@ -324,13 +321,4 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
   min-height: 200px;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
 </style>

@@ -103,7 +103,7 @@ const deleteClientContact = (contact: ClientContactType) => {
 
     <div
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <table class="min-w-full">
+      <table class="min-w-full fel-table">
         <thead>
           <tr>
             <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">

@@ -193,7 +193,7 @@ const approveResults = () =>
         <div class="border-t border-border" />
 
         <div class="overflow-x-auto">
-          <table class="w-full">
+          <table class="w-full fel-table">
             <thead>
               <tr class="border-b border-border bg-muted/50">
                 <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Isolate Number</th>

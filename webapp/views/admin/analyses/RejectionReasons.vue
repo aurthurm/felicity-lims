@@ -73,7 +73,7 @@
 
         <div class="rounded-md bg-card p-6 shadow-sm">
           <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg">
-            <table class="min-w-full">
+            <table class="min-w-full fel-table">
                 <thead>
                 <tr>
                     <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Reason</th>

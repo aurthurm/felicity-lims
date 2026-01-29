@@ -48,7 +48,7 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
     <div class="bg-background rounded-lg shadow-sm overflow-hidden">
       <div class="relative">
         <!-- Fixed Header -->
-        <table class="w-full">
+        <table class="w-full fel-table">
           <thead>
             <tr>
               <th
@@ -70,7 +70,7 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
         
         <!-- Scrollable Body -->
         <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
-          <table class="w-full">
+          <table class="w-full fel-table">
             <tbody class="divide-y divide-border">
               <template v-for="category in permissions" :key="category[0]">
                 <tr class="bg-muted/50">

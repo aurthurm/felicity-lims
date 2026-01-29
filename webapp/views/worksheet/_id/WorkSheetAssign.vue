@@ -33,8 +33,8 @@ const applyTemplate = async () => {
       text: "You want to apply this template to add samples?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "hsl(var(--primary))",
+      cancelButtonColor: "hsl(var(--destructive))",
       confirmButtonText: "Yes, apply now!",
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
@@ -96,8 +96,8 @@ const assignToWorkSheet = () => {
       text: "You want to assign selected to worksheet?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "hsl(var(--primary))",
+      cancelButtonColor: "hsl(var(--destructive))",
       confirmButtonText: "Yes, assign now!",
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
@@ -255,7 +255,7 @@ function areAllChecked(): boolean {
       <div v-if="worksheetStore.fetchingAnalysisResults" class="py-4 text-center">
         <fel-loader message="Fetching analytes ..." />
       </div>
-      <table class="min-w-full" v-else>
+      <table class="min-w-full fel-table" v-else>
         <thead>
           <tr>
             <th

@@ -75,7 +75,7 @@ const downloadReport = (report: any) => {
     </div>
 
     <div v-else class="overflow-x-auto">
-      <table class="min-w-full bg-background shadow rounded-sm border border-foreground">
+      <table class="min-w-full bg-background shadow rounded-sm border border-foreground fel-table">
         <thead>
           <tr>
             <th class="px-4 py-2 border-b border-foreground text-left text-foreground">

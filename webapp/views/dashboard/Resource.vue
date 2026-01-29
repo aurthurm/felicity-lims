@@ -120,7 +120,7 @@ const plotUserMatrix = (data: any[], elem: string, grpName: string) => {
     position: ["50%", "50%"],
     content: grpName,
     style: {
-      fill: "#262626",
+      fill: "hsl(var(--foreground))",
       textAlign: "center",
     },
   });

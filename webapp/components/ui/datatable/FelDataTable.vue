@@ -266,7 +266,7 @@ const toCapitalize = (str) => {
       <hr class="mb-4 border-t border-border" />
 
       <div class="overflow-x-auto">
-          <table class="min-w-full border-collapse">
+          <table class="min-w-full border-collapse fel-table">
             <thead class="bg-muted">
               <tr>
                 <th

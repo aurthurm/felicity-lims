@@ -1083,12 +1083,12 @@ onMounted(() => {
 }
 
 .file-upload-area {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed hsl(var(--border));
   transition: border-color 0.3s ease;
 }
 
 .file-upload-area:hover {
-  border-color: #3b82f6;
+  border-color: hsl(var(--primary));
 }
 
 .profile-preview {

@@ -104,7 +104,7 @@ const ProductDetail = defineComponent({
                         {this.currentTab === 'stock-lots' && (
                             <>
                                 <div class="overflow-hidden bg-background shadow-md rounded-lg">
-                                    <table class="min-w-full divide-y divide-border">
+                                    <table class="min-w-full divide-y divide-border fel-table">
                                         <thead class="bg-muted">
                                             <tr>
                                                 <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
@@ -134,7 +134,7 @@ const ProductDetail = defineComponent({
                         {this.currentTab === 'ledger' && (
                             <>
                                 <div class="overflow-hidden bg-background shadow-md rounded-lg">
-                                    <table class="min-w-full divide-y divide-border">
+                                    <table class="min-w-full divide-y divide-border fel-table">
                                         <thead class="bg-muted">
                                             <tr>
                                                 <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">

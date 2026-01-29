@@ -6,7 +6,7 @@ import { Handle, Position } from '@vue-flow/core';
  * Trigger Node Component
  *
  * Represents the entry point for reflex rules - monitors specified analyses
- * Color: Blue (#3B82F6)
+ * Color: var(--color-reflex-trigger)
  * Icon: ⚡ Lightning
  */
 
@@ -40,9 +40,9 @@ const shortDescription = computed(() => {
  * Get level badge color
  */
 const levelBadgeColor = computed(() => {
-  if (props.data.level === 1) return 'bg-blue-100 text-blue-800';
-  if (props.data.level === 2) return 'bg-blue-200 text-blue-900';
-  return 'bg-blue-300 text-blue-950';
+  if (props.data.level === 1) return 'bg-primary/15 text-primary';
+  if (props.data.level === 2) return 'bg-primary/20 text-primary';
+  return 'bg-primary/30 text-primary';
 });
 </script>
 
@@ -50,15 +50,15 @@ const levelBadgeColor = computed(() => {
   <div
     class="trigger-node"
     :class="{
-      'ring-2 ring-blue-500 ring-offset-2': selected,
-      'hover:ring-1 hover:ring-blue-300': !selected,
+      'ring-2 ring-ring ring-offset-2': selected,
+      'hover:ring-1 hover:ring-ring': !selected,
     }"
   >
     <!-- Output Handle -->
     <Handle
       type="source"
       :position="Position.Right"
-      class="!bg-blue-500 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-primary/100 !w-3 !h-3 !border-2 !border-white"
     />
 
     <!-- Node Header -->
@@ -66,7 +66,7 @@ const levelBadgeColor = computed(() => {
       <div class="flex items-center space-x-2">
         <!-- Lightning Icon -->
         <div class="text-xl">⚡</div>
-        <span class="text-xs font-semibold text-blue-600 uppercase">Trigger</span>
+        <span class="text-xs font-semibold text-primary uppercase">Trigger</span>
       </div>
       <!-- Level Badge -->
       <span
@@ -79,13 +79,13 @@ const levelBadgeColor = computed(() => {
 
     <!-- Description -->
     <div class="mb-2">
-      <p class="text-sm font-medium text-gray-800">
+      <p class="text-sm font-medium text-foreground">
         {{ shortDescription }}
       </p>
     </div>
 
     <!-- Metadata -->
-    <div class="flex items-center justify-between text-xs text-gray-600">
+    <div class="flex items-center justify-between text-xs text-muted-foreground">
       <div class="flex items-center space-x-1">
         <svg
           class="w-3 h-3"
@@ -102,19 +102,19 @@ const levelBadgeColor = computed(() => {
         </svg>
         <span>{{ analysisCount }} {{ analysisCount === 1 ? 'test' : 'tests' }}</span>
       </div>
-      <div v-if="data.sample_type" class="text-xs text-gray-500">
+      <div v-if="data.sample_type" class="text-xs text-muted-foreground">
         {{ data.sample_type.name }}
       </div>
     </div>
 
     <!-- Full Analysis List (when selected) -->
-    <div v-if="selected && data.analyses && data.analyses.length > 0" class="mt-2 pt-2 border-t border-blue-100">
-      <div class="text-xs font-semibold text-gray-700 mb-1">Monitored Tests:</div>
+    <div v-if="selected && data.analyses && data.analyses.length > 0" class="mt-2 pt-2 border-t border-border">
+      <div class="text-xs font-semibold text-foreground mb-1">Monitored Tests:</div>
       <div class="space-y-1">
         <div
           v-for="analysis in data.analyses"
           :key="analysis.uid"
-          class="text-xs text-gray-600 px-2 py-1 bg-blue-50 rounded"
+          class="text-xs text-muted-foreground px-2 py-1 bg-primary/10 rounded"
         >
           {{ analysis.name }}
         </div>
@@ -126,7 +126,7 @@ const levelBadgeColor = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .trigger-node {
-  @apply bg-white border-2 border-blue-400 rounded-lg shadow-md;
+  @apply bg-card border-2 border-primary/50 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[280px];
   @apply transition-all duration-200;
 }
@@ -137,15 +137,15 @@ const levelBadgeColor = computed(() => {
 
 /* Validation states */
 .trigger-node.node-error {
-  @apply border-red-500 bg-red-50;
+  @apply border-destructive/60 bg-destructive/10;
 }
 
 .trigger-node.node-warning {
-  @apply border-yellow-500 bg-yellow-50;
+  @apply border-warning/50 bg-warning/10;
 }
 
 .trigger-node.node-valid {
-  @apply border-blue-400 bg-white;
+  @apply border-primary/50 bg-card;
 }
 
 /* Selected state */

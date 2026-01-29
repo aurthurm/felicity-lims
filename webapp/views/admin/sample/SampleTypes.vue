@@ -104,7 +104,7 @@
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow-md rounded-lg bg-background p-6">
-          <table class="min-w-full divide-y divide-border">
+          <table class="min-w-full divide-y divide-border fel-table">
             <thead class="bg-muted">
               <tr>
                 <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Sample Type</th>
@@ -208,9 +208,9 @@
 <style scoped>
   .toggle-checkbox:checked {
     right: 0;
-    border-color: #68D391;
+    border-color: hsl(var(--success));
   }
   .toggle-checkbox:checked + .toggle-label {
-    background-color: #68D391;
+    background-color: hsl(var(--success));
   }
 </style>

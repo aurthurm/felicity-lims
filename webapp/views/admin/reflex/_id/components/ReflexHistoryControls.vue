@@ -100,7 +100,7 @@ const historyStatus = computed(() => {
 
     <!-- History Status -->
     <div class="history-status">
-      <span class="text-xs text-gray-600">{{ historyStatus }}</span>
+      <span class="text-xs text-muted-foreground">{{ historyStatus }}</span>
     </div>
   </div>
 </template>
@@ -113,10 +113,10 @@ const historyStatus = computed(() => {
 
 .history-btn {
   @apply flex items-center space-x-2 px-3 py-2;
-  @apply bg-white border border-gray-300 rounded-lg;
-  @apply hover:bg-gray-50 hover:border-gray-400;
+  @apply bg-card border border-input rounded-lg;
+  @apply hover:bg-muted hover:border-input;
   @apply transition-all duration-200;
-  @apply text-gray-700 text-sm font-medium;
+  @apply text-foreground text-sm font-medium;
 }
 
 .history-btn:active:not(:disabled) {
@@ -125,7 +125,7 @@ const historyStatus = computed(() => {
 
 .btn-disabled {
   @apply opacity-40 cursor-not-allowed;
-  @apply hover:bg-white hover:border-gray-300;
+  @apply hover:bg-card hover:border-input;
 }
 
 .btn-label {
@@ -134,11 +134,11 @@ const historyStatus = computed(() => {
 
 .btn-kbd {
   @apply hidden lg:inline;
-  @apply px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono;
+  @apply px-1.5 py-0.5 bg-muted border border-input rounded text-xs font-mono;
 }
 
 .history-status {
-  @apply px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg;
+  @apply px-3 py-2 bg-muted border border-border rounded-lg;
   @apply hidden xl:flex items-center;
 }
 </style>

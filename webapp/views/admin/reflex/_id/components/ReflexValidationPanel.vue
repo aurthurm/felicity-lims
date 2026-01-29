@@ -99,7 +99,7 @@ const toggleCollapse = () => {
         <div v-else class="text-lg">✅</div>
 
         <!-- Title -->
-        <span class="text-sm font-semibold text-gray-700">
+        <span class="text-sm font-semibold text-foreground">
           Validation
         </span>
 
@@ -143,14 +143,14 @@ const toggleCollapse = () => {
       <!-- No Issues State -->
       <div v-if="totalIssues === 0" class="no-issues">
         <div class="text-4xl mb-2">✨</div>
-        <p class="text-sm text-gray-600 font-medium">All good!</p>
-        <p class="text-xs text-gray-500">No validation issues</p>
+        <p class="text-sm text-muted-foreground font-medium">All good!</p>
+        <p class="text-xs text-muted-foreground">No validation issues</p>
       </div>
 
       <!-- Errors List -->
       <div v-if="errors.length > 0" class="issues-section">
         <div class="section-header">
-          <span class="text-xs font-semibold text-red-700 uppercase">
+          <span class="text-xs font-semibold text-destructive uppercase">
             Errors ({{ errors.length }})
           </span>
         </div>
@@ -164,9 +164,9 @@ const toggleCollapse = () => {
             <div class="flex items-start space-x-2">
               <span class="text-base">{{ getSeverityIcon(error.severity) }}</span>
               <div class="flex-1">
-                <p class="text-xs text-gray-800 font-medium">{{ error.message }}</p>
-                <p v-if="error.field" class="text-xs text-gray-500 mt-0.5">
-                  Field: <code class="bg-red-50 px-1 rounded">{{ error.field }}</code>
+                <p class="text-xs text-foreground font-medium">{{ error.message }}</p>
+                <p v-if="error.field" class="text-xs text-muted-foreground mt-0.5">
+                  Field: <code class="bg-destructive/10 px-1 rounded">{{ error.field }}</code>
                 </p>
               </div>
             </div>
@@ -177,7 +177,7 @@ const toggleCollapse = () => {
       <!-- Warnings List -->
       <div v-if="warnings.length > 0" class="issues-section">
         <div class="section-header">
-          <span class="text-xs font-semibold text-yellow-700 uppercase">
+          <span class="text-xs font-semibold text-warning uppercase">
             Warnings ({{ warnings.length }})
           </span>
         </div>
@@ -191,9 +191,9 @@ const toggleCollapse = () => {
             <div class="flex items-start space-x-2">
               <span class="text-base">{{ getSeverityIcon(warning.severity) }}</span>
               <div class="flex-1">
-                <p class="text-xs text-gray-800 font-medium">{{ warning.message }}</p>
-                <p v-if="warning.field" class="text-xs text-gray-500 mt-0.5">
-                  Field: <code class="bg-yellow-50 px-1 rounded">{{ warning.field }}</code>
+                <p class="text-xs text-foreground font-medium">{{ warning.message }}</p>
+                <p v-if="warning.field" class="text-xs text-muted-foreground mt-0.5">
+                  Field: <code class="bg-warning/10 px-1 rounded">{{ warning.field }}</code>
                 </p>
               </div>
             </div>
@@ -207,7 +207,7 @@ const toggleCollapse = () => {
 <style scoped>
 @import "tailwindcss";
 .validation-panel {
-  @apply fixed bottom-4 right-4 w-80 bg-white border-2 rounded-lg shadow-xl;
+  @apply fixed bottom-4 right-4 w-80 bg-card border-2 rounded-lg shadow-xl;
   @apply transition-all duration-300;
   @apply z-50;
 }
@@ -217,21 +217,21 @@ const toggleCollapse = () => {
 }
 
 .panel-has-errors {
-  @apply border-red-400;
+  @apply border-destructive/50;
 }
 
 .panel-has-warnings {
-  @apply border-yellow-400;
+  @apply border-warning/40;
 }
 
 /* Header */
 .panel-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-gray-200;
-  @apply bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors;
+  @apply flex items-center justify-between px-4 py-3 border-b border-border;
+  @apply bg-muted cursor-pointer hover:bg-muted transition-colors;
 }
 
 .collapse-btn {
-  @apply p-1 hover:bg-gray-200 rounded transition-colors;
+  @apply p-1 hover:bg-muted rounded transition-colors;
 }
 
 /* Badge */
@@ -240,11 +240,11 @@ const toggleCollapse = () => {
 }
 
 .badge-error {
-  @apply bg-red-100 text-red-800;
+  @apply bg-destructive/15 text-destructive;
 }
 
 .badge-warning {
-  @apply bg-yellow-100 text-yellow-800;
+  @apply bg-warning/15 text-warning;
 }
 
 /* Content */
@@ -263,7 +263,7 @@ const toggleCollapse = () => {
 }
 
 .section-header {
-  @apply pb-2 border-b border-gray-200;
+  @apply pb-2 border-b border-border;
 }
 
 /* Issues List */
@@ -278,10 +278,10 @@ const toggleCollapse = () => {
 }
 
 .issue-error {
-  @apply bg-red-50 border border-red-200 hover:bg-red-100;
+  @apply bg-destructive/10 border border-destructive/40 hover:bg-destructive/15;
 }
 
 .issue-warning {
-  @apply bg-yellow-50 border border-yellow-200 hover:bg-yellow-100;
+  @apply bg-warning/10 border border-warning/40 hover:bg-warning/15;
 }
 </style>

@@ -103,7 +103,7 @@ const InventoryHome = defineComponent({
                         </div>
 
                         <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
-                            <table class="min-w-full divide-y divide-border">
+                            <table class="min-w-full divide-y divide-border fel-table">
                                 <thead class="bg-muted">
                                     <tr>
                                         <th class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Product</th>

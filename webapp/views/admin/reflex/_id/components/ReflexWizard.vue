@@ -339,8 +339,8 @@ const previewGraph = computed(() => generateGraph());
       <!-- Header -->
       <div class="wizard-header">
         <div>
-          <h2 class="text-xl font-bold text-gray-800">Reflex Rule Wizard</h2>
-          <p class="text-sm text-gray-600">Create a rule from a template</p>
+          <h2 class="text-xl font-bold text-foreground">Reflex Rule Wizard</h2>
+          <p class="text-sm text-muted-foreground">Create a rule from a template</p>
         </div>
         <button @click="handleClose" class="close-btn">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,8 +352,8 @@ const previewGraph = computed(() => generateGraph());
       <!-- Step 1: Template Selection -->
       <div v-if="currentStep === 'template'" class="wizard-content">
         <div class="text-center mb-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">Choose a Template</h3>
-          <p class="text-sm text-gray-600">Select a template that matches your needs</p>
+          <h3 class="text-lg font-semibold text-foreground mb-2">Choose a Template</h3>
+          <p class="text-sm text-muted-foreground">Select a template that matches your needs</p>
         </div>
 
         <div class="template-grid">
@@ -374,7 +374,7 @@ const previewGraph = computed(() => generateGraph());
               }">
                 {{ template.difficulty }}
               </span>
-              <span class="text-xs text-gray-500">{{ template.steps.length }} steps</span>
+              <span class="text-xs text-muted-foreground">{{ template.steps.length }} steps</span>
             </div>
           </div>
         </div>
@@ -383,8 +383,8 @@ const previewGraph = computed(() => generateGraph());
       <!-- Step 2: Configuration -->
       <div v-if="currentStep === 'config' && selectedTemplate" class="wizard-content">
         <div class="text-center mb-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ selectedTemplate.name }}</h3>
-          <p class="text-sm text-gray-600">Configure your rule</p>
+          <h3 class="text-lg font-semibold text-foreground mb-2">{{ selectedTemplate.name }}</h3>
+          <p class="text-sm text-muted-foreground">Configure your rule</p>
         </div>
 
         <div class="config-form">
@@ -438,8 +438,8 @@ const previewGraph = computed(() => generateGraph());
 
           <!-- Multiple Conditions Template Config -->
           <div v-if="selectedTemplate.id === 'multiple-conditions'" class="space-y-4">
-            <p class="text-sm text-gray-600 italic">Configure multiple AND conditions</p>
-            <div class="text-center py-8 text-gray-500">
+            <p class="text-sm text-muted-foreground italic">Configure multiple AND conditions</p>
+            <div class="text-center py-8 text-muted-foreground">
               <p>Multi-criteria configuration coming soon...</p>
               <p class="text-xs mt-2">For now, use the canvas to create complex rules</p>
             </div>
@@ -455,18 +455,18 @@ const previewGraph = computed(() => generateGraph());
       <!-- Step 3: Preview -->
       <div v-if="currentStep === 'preview'" class="wizard-content">
         <div class="text-center mb-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">Preview</h3>
-          <p class="text-sm text-gray-600">Review your rule before creating</p>
+          <h3 class="text-lg font-semibold text-foreground mb-2">Preview</h3>
+          <p class="text-sm text-muted-foreground">Review your rule before creating</p>
         </div>
 
         <div class="preview-box">
-          <div class="text-sm text-gray-600 mb-2">
+          <div class="text-sm text-muted-foreground mb-2">
             <strong>Nodes:</strong> {{ previewGraph.nodes.length }} |
             <strong>Connections:</strong> {{ previewGraph.edges.length }}
           </div>
           <div class="preview-placeholder">
             <div class="text-4xl mb-2">📊</div>
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-muted-foreground">
               Your rule will be created with {{ previewGraph.nodes.length }} nodes
             </p>
           </div>
@@ -489,17 +489,17 @@ const previewGraph = computed(() => generateGraph());
 }
 
 .wizard-modal {
-  @apply bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden;
+  @apply bg-card rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden;
   @apply flex flex-col;
 }
 
 /* Header */
 .wizard-header {
-  @apply flex items-start justify-between px-6 py-4 border-b border-gray-200;
+  @apply flex items-start justify-between px-6 py-4 border-b border-border;
 }
 
 .close-btn {
-  @apply p-1 hover:bg-gray-100 rounded-lg transition-colors;
+  @apply p-1 hover:bg-muted rounded-lg transition-colors;
 }
 
 /* Content */
@@ -513,8 +513,8 @@ const previewGraph = computed(() => generateGraph());
 }
 
 .template-card {
-  @apply p-6 border-2 border-gray-200 rounded-lg cursor-pointer;
-  @apply hover:border-blue-400 hover:shadow-lg transition-all;
+  @apply p-6 border-2 border-border rounded-lg cursor-pointer;
+  @apply hover:border-primary/50 hover:shadow-lg transition-all;
 }
 
 .template-icon {
@@ -522,15 +522,15 @@ const previewGraph = computed(() => generateGraph());
 }
 
 .template-name {
-  @apply text-sm font-semibold text-gray-800 mb-2;
+  @apply text-sm font-semibold text-foreground mb-2;
 }
 
 .template-description {
-  @apply text-xs text-gray-600 mb-4;
+  @apply text-xs text-muted-foreground mb-4;
 }
 
 .template-footer {
-  @apply flex items-center justify-between pt-3 border-t border-gray-100;
+  @apply flex items-center justify-between pt-3 border-t border-border;
 }
 
 .template-difficulty {
@@ -538,15 +538,15 @@ const previewGraph = computed(() => generateGraph());
 }
 
 .badge-easy {
-  @apply bg-green-100 text-green-800;
+  @apply bg-success/15 text-success;
 }
 
 .badge-medium {
-  @apply bg-yellow-100 text-yellow-800;
+  @apply bg-warning/15 text-warning;
 }
 
 .badge-hard {
-  @apply bg-red-100 text-red-800;
+  @apply bg-destructive/15 text-destructive;
 }
 
 /* Config Form */
@@ -559,17 +559,17 @@ const previewGraph = computed(() => generateGraph());
 }
 
 .form-label {
-  @apply block text-sm font-medium text-gray-700;
+  @apply block text-sm font-medium text-foreground;
 }
 
 .form-input {
-  @apply w-full px-3 py-2 border border-gray-300 rounded-lg;
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500;
+  @apply w-full px-3 py-2 border border-input rounded-lg;
+  @apply focus:outline-none focus:ring-2 focus:ring-ring;
 }
 
 /* Preview */
 .preview-box {
-  @apply p-6 bg-gray-50 border border-gray-200 rounded-lg;
+  @apply p-6 bg-muted border border-border rounded-lg;
 }
 
 .preview-placeholder {
@@ -578,21 +578,21 @@ const previewGraph = computed(() => generateGraph());
 
 /* Actions */
 .wizard-actions {
-  @apply flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200;
+  @apply flex justify-end space-x-3 mt-6 pt-4 border-t border-border;
 }
 
 .btn-primary {
-  @apply px-6 py-2 bg-blue-600 text-white rounded-lg font-medium;
-  @apply hover:bg-blue-700 transition-colors;
+  @apply px-6 py-2 bg-primary text-white rounded-lg font-medium;
+  @apply hover:bg-primary/90 transition-colors;
 }
 
 .btn-secondary {
-  @apply px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium;
-  @apply hover:bg-gray-50 transition-colors;
+  @apply px-6 py-2 bg-card border border-input text-foreground rounded-lg font-medium;
+  @apply hover:bg-muted transition-colors;
 }
 
 .btn-success {
-  @apply px-6 py-2 bg-green-600 text-white rounded-lg font-medium;
-  @apply hover:bg-green-700 transition-colors;
+  @apply px-6 py-2 bg-success text-white rounded-lg font-medium;
+  @apply hover:bg-success/90 transition-colors;
 }
 </style>

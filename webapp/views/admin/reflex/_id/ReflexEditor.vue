@@ -633,7 +633,7 @@ const handleManualSave = async () => {
     showCancelButton: true,
     confirmButtonText: 'Save',
     cancelButtonText: 'Cancel',
-    confirmButtonColor: '#10B981',
+    confirmButtonColor: 'hsl(var(--success))',
   });
 
   if (!result.isConfirmed) return;
@@ -692,7 +692,7 @@ const handleTogglePublish = async () => {
     showCancelButton: true,
     confirmButtonText: action.charAt(0).toUpperCase() + action.slice(1),
     cancelButtonText: 'Cancel',
-    confirmButtonColor: newState ? '#3B82F6' : '#6B7280',
+    confirmButtonColor: newState ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
   });
 
   if (!result.isConfirmed) return;
@@ -1103,17 +1103,7 @@ onBeforeUnmount(() => {
   <div class="reflex-editor">
     <!-- Loading State -->
     <div v-if="isLoading" class="loading-overlay">
-      <div class="loading-spinner">
-        <svg class="animate-spin h-12 w-12 text-blue-600" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
-        <p class="mt-4 text-gray-600">Loading rule...</p>
-      </div>
+      <fel-loader message="Loading rule..." variant="muted" size="lg" />
     </div>
 
     <!-- Main Editor -->
@@ -1122,8 +1112,8 @@ onBeforeUnmount(() => {
       <div class="editor-toolbar">
         <!-- Left Side -->
         <div class="toolbar-left">
-          <h1 class="text-lg font-semibold text-gray-800">Reflex Rule Editor</h1>
-          <span class="text-sm text-gray-500">Rule: {{ ruleUid }}</span>
+          <h1 class="text-lg font-semibold text-foreground">Reflex Rule Editor</h1>
+          <span class="text-sm text-muted-foreground">Rule: {{ ruleUid }}</span>
         </div>
 
         <!-- Center -->
@@ -1140,38 +1130,38 @@ onBeforeUnmount(() => {
         <!-- Right Side -->
         <div class="toolbar-right">
           <!-- Auto-save Status -->
-          <div class="flex items-center space-x-3 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
+          <div class="flex items-center space-x-3 px-3 py-2 bg-muted border border-border rounded-lg">
             <div class="flex items-center space-x-2">
               <div class="relative">
                 <div
                   class="w-2 h-2 rounded-full"
                   :class="{
-                    'bg-green-600': lastSaved && !isDraftSaving && !isDirty,
-                    'bg-yellow-500': lastSaved && isDirty,
-                    'bg-blue-600': isDraftSaving,
-                    'bg-gray-400': !lastSaved
+                    'bg-success': lastSaved && !isDraftSaving && !isDirty,
+                    'bg-warning': lastSaved && isDirty,
+                    'bg-primary': isDraftSaving,
+                    'bg-muted-foreground/60': !lastSaved
                   }"
                 />
                 <div
                   v-if="isDraftSaving"
-                  class="absolute inset-0 w-2 h-2 rounded-full bg-blue-600 animate-ping opacity-75"
+                  class="absolute inset-0 w-2 h-2 rounded-full bg-primary animate-ping opacity-75"
                 />
               </div>
-              <span class="text-xs text-gray-600">
+              <span class="text-xs text-muted-foreground">
                 <span v-if="isDraftSaving">Saving...</span>
                 <span v-else-if="isDirty && lastSaved">Unsaved changes</span>
                 <span v-else-if="lastSaved">{{ getTimeSinceLastSave() }}</span>
                 <span v-else>Not saved</span>
               </span>
             </div>
-            <div class="h-4 w-px bg-gray-300" />
+            <div class="h-4 w-px bg-border" />
             <div class="flex items-center space-x-1 text-xs">
-              <span class="text-gray-500">Valid:</span>
+              <span class="text-muted-foreground">Valid:</span>
               <span
                 class="font-medium"
                 :class="{
-                  'text-green-600': saveableNodeCount > 0,
-                  'text-gray-400': saveableNodeCount === 0
+                  'text-success': saveableNodeCount > 0,
+                  'text-muted-foreground': saveableNodeCount === 0
                 }"
               >
                 {{ saveableNodeCount }}/{{ nodes.length }}
@@ -1181,7 +1171,7 @@ onBeforeUnmount(() => {
 
           <!-- Publish Toggle Switch -->
           <div class="flex items-center space-x-2">
-            <span class="text-sm text-gray-600">Draft</span>
+            <span class="text-sm text-muted-foreground">Draft</span>
             <button
               @click="handleTogglePublish"
               :disabled="isPublishing"
@@ -1195,7 +1185,7 @@ onBeforeUnmount(() => {
                 :class="{ 'publish-toggle-slider-active': isPublished }"
               />
             </button>
-            <span class="text-sm text-gray-600">Published</span>
+            <span class="text-sm text-muted-foreground">Published</span>
           </div>
 
           <!-- Save Button -->
@@ -1275,12 +1265,12 @@ onBeforeUnmount(() => {
 <style scoped>
 @import "tailwindcss";
 .reflex-editor {
-  @apply w-full h-screen overflow-hidden bg-gray-50;
+  @apply w-full h-screen overflow-hidden bg-muted;
 }
 
 /* Loading Overlay */
 .loading-overlay {
-  @apply fixed inset-0 flex items-center justify-center bg-gray-50 z-50;
+  @apply fixed inset-0 flex items-center justify-center bg-muted z-50;
 }
 
 .loading-spinner {
@@ -1294,7 +1284,7 @@ onBeforeUnmount(() => {
 
 /* Toolbar */
 .editor-toolbar {
-  @apply flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200;
+  @apply flex items-center justify-between px-6 py-3 bg-card border-b border-border;
   @apply shadow-sm z-10;
 }
 
@@ -1314,8 +1304,8 @@ onBeforeUnmount(() => {
 .publish-toggle {
   @apply relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full;
   @apply border-2 border-transparent transition-colors duration-200 ease-in-out;
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-  @apply bg-gray-300;
+  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  @apply bg-muted;
 }
 
 .publish-toggle:disabled {
@@ -1323,12 +1313,12 @@ onBeforeUnmount(() => {
 }
 
 .publish-toggle-active {
-  @apply bg-blue-600;
+  @apply bg-primary;
 }
 
 .publish-toggle-slider {
   @apply pointer-events-none inline-block h-5 w-5 transform rounded-full;
-  @apply bg-white shadow ring-0 transition duration-200 ease-in-out;
+  @apply bg-background shadow ring-0 transition duration-200 ease-in-out;
   @apply translate-x-0;
 }
 
@@ -1338,13 +1328,13 @@ onBeforeUnmount(() => {
 
 .btn-save {
   @apply flex items-center space-x-2 px-4 py-2;
-  @apply bg-green-600 text-white rounded-lg font-medium;
-  @apply hover:bg-green-700 transition-colors;
+  @apply bg-success text-success-foreground rounded-lg font-medium;
+  @apply hover:bg-success/90 transition-colors;
   @apply text-sm;
 }
 
 .btn-save-disabled {
-  @apply opacity-50 cursor-not-allowed hover:bg-green-600;
+  @apply opacity-50 cursor-not-allowed hover:bg-success/80;
 }
 
 /* Main Editor Area */

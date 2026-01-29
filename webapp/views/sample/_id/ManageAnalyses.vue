@@ -36,8 +36,8 @@ const applyTemplate = async () => {
       text: "You want to apply this template to add analyses?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "hsl(var(--primary))",
+      cancelButtonColor: "hsl(var(--destructive))",
       confirmButtonText: "Yes, apply now!",
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
@@ -92,8 +92,8 @@ const applyChanges = async () => {
       text: "You want to apply these changes to the analyses?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "hsl(var(--primary))",
+      cancelButtonColor: "hsl(var(--destructive))",
       confirmButtonText: "Yes, apply now!",
       cancelButtonText: "No, cancel apply!",
     }).then((result) => {
@@ -155,7 +155,7 @@ const applyChanges = async () => {
               <template v-slot:title>{{ category[0] }}</template>
               <template v-slot:body>
                 <div class="overflow-x-auto">
-                  <table class="w-full">
+                  <table class="w-full fel-table">
                     <thead>
                       <tr class="border-b border-border bg-muted/50">
                         <th class="px-4 py-2 text-left">

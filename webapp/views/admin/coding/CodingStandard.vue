@@ -88,7 +88,7 @@
 
     <div class="rounded-lg border border-border bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full fel-table">
           <thead>
             <tr class="border-b border-border">
               <th class="px-4 py-3 text-left text-sm font-medium text-foreground">Standard</th>

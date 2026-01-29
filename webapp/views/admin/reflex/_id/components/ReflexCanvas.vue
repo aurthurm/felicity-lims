@@ -392,7 +392,7 @@ defineExpose({
       :snap-to-grid="true"
       :snap-grid="[15, 15]"
       :fit-view-on-init="true"
-      :connection-line-style="{ stroke: '#94a3b8', strokeWidth: 2 }"
+      :connection-line-style="{ stroke: 'var(--color-reflex-connection)', strokeWidth: 2 }"
       class="reflex-canvas"
     >
       <!-- Background Grid -->
@@ -400,7 +400,7 @@ defineExpose({
         :variant="BackgroundVariant.Dots"
         :gap="16"
         :size="1"
-        pattern-color="#e2e8f0"
+        pattern-color="var(--color-reflex-grid)"
       />
 
       <!-- Controls (Zoom, Fit View, etc.) -->
@@ -414,15 +414,15 @@ defineExpose({
       <!-- MiniMap -->
       <MiniMap
         :node-color="(node) => {
-          if (node.type === 'trigger') return '#3B82F6';
-          if (node.type === 'decision') return '#8B5CF6';
-          if (node.type === 'rule') return '#F59E0B';
+          if (node.type === 'trigger') return 'var(--color-reflex-trigger)';
+          if (node.type === 'decision') return 'var(--color-reflex-decision)';
+          if (node.type === 'rule') return 'var(--color-reflex-rule)';
           if (node.type === 'action') {
-            return node.data.actionType === 'add' ? '#10B981' : '#EC4899';
+            return node.data.actionType === 'add' ? 'var(--color-reflex-action-add)' : 'var(--color-reflex-action-finalize)';
           }
-          return '#94a3b8';
+          return 'var(--color-reflex-connection)';
         }"
-        :node-stroke-color="() => '#fff'"
+        :node-stroke-color="() => 'var(--color-reflex-node-stroke)'"
         :node-stroke-width="2"
         position="bottom-right"
         pannable
@@ -434,15 +434,15 @@ defineExpose({
     <div v-if="nodes.length === 0" class="canvas-empty-state">
       <div class="empty-state-content">
         <div class="text-6xl mb-4">🎯</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">Start Building Your Reflex Rule</h3>
-        <p class="text-gray-600 mb-4">
-          Drag a <strong class="text-blue-600">Trigger</strong> node from the palette to begin
+        <h3 class="text-xl font-semibold text-foreground mb-2">Start Building Your Reflex Rule</h3>
+        <p class="text-muted-foreground mb-4">
+          Drag a <strong class="text-primary">Trigger</strong> node from the palette to begin
         </p>
-        <div class="flex items-center space-x-2 text-sm text-gray-500">
+        <div class="flex items-center space-x-2 text-sm text-muted-foreground">
           <span>💡 Tip: Use</span>
-          <kbd class="px-2 py-1 bg-gray-100 rounded border">Ctrl</kbd>
+          <kbd class="px-2 py-1 bg-muted rounded border">Ctrl</kbd>
           <span>+</span>
-          <kbd class="px-2 py-1 bg-gray-100 rounded border">Z</kbd>
+          <kbd class="px-2 py-1 bg-muted rounded border">Z</kbd>
           <span>to undo</span>
         </div>
       </div>
@@ -469,7 +469,7 @@ defineExpose({
 @import "tailwindcss";
 .reflex-canvas-container {
   @apply relative w-full h-full;
-  @apply bg-gray-50;
+  @apply bg-muted;
 }
 
 .reflex-canvas {
@@ -483,7 +483,7 @@ defineExpose({
 }
 
 .empty-state-content {
-  @apply text-center p-8 bg-white/80 rounded-lg shadow-sm;
+  @apply text-center p-8 bg-card/80 rounded-lg shadow-sm;
   @apply backdrop-blur-sm;
 }
 
@@ -494,8 +494,8 @@ defineExpose({
 }
 
 .readonly-badge {
-  @apply flex items-center space-x-2 px-3 py-2 bg-yellow-100 text-yellow-800;
-  @apply rounded-lg shadow-sm border border-yellow-300;
+  @apply flex items-center space-x-2 px-3 py-2 bg-warning/15 text-warning-foreground;
+  @apply rounded-lg shadow-sm border border-warning/30;
   @apply text-sm font-medium;
 }
 
@@ -522,12 +522,12 @@ kbd {
 }
 
 .vue-flow__edge.selected .vue-flow__edge-path {
-  @apply stroke-blue-500;
+  @apply stroke-primary;
   stroke-width: 3;
 }
 
 .vue-flow__connection-path {
-  @apply stroke-blue-400;
+  @apply stroke-primary/70;
   stroke-width: 2;
   stroke-dasharray: 5, 5;
   animation: dash 1s linear infinite;
@@ -541,16 +541,16 @@ kbd {
 
 /* Controls styling */
 .vue-flow__controls {
-  @apply bg-white shadow-lg rounded-lg border border-gray-200;
+  @apply bg-card shadow-lg rounded-lg border border-border;
 }
 
 .vue-flow__controls-button {
-  @apply border-gray-200;
-  @apply hover:bg-gray-50;
+  @apply border-border;
+  @apply hover:bg-muted;
 }
 
 /* MiniMap styling */
 .vue-flow__minimap {
-  @apply bg-white shadow-lg rounded-lg border border-gray-200;
+  @apply bg-card shadow-lg rounded-lg border border-border;
 }
 </style>

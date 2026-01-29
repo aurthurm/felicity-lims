@@ -79,11 +79,11 @@ const passwordStrength = computed(() => {
 
 const strengthColor = computed(() => {
   const colors = {
-    gray: "#6b7280",
-    red: "#ef4444",
-    orange: "#f97316", 
-    yellow: "#eab308",
-    green: "#22c55e",
+    gray: "hsl(var(--muted-foreground))",
+    red: "hsl(var(--destructive))",
+    orange: "hsl(var(--warning))",
+    yellow: "hsl(var(--warning))",
+    green: "hsl(var(--success))",
   };
   return colors[passwordStrength.value.color as keyof typeof colors];
 });
@@ -105,7 +105,7 @@ const strengthBars = computed(() => {
         :key="index"
         class="flex-1 h-2 rounded-full transition-all duration-300"
         :style="{
-          backgroundColor: bar.filled ? bar.color : '#e5e7eb'
+          backgroundColor: bar.filled ? bar.color : 'hsl(var(--muted))'
         }"
       />
     </div>
@@ -131,10 +131,10 @@ const strengthBars = computed(() => {
         <div class="flex items-center space-x-2">
           <i
             :class="[
-              passwordStrength.checks.length ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'
+              passwordStrength.checks.length ? 'fas fa-check text-success' : 'fas fa-times text-destructive'
             ]"
           />
-          <span :class="passwordStrength.checks.length ? 'text-green-600' : 'text-red-600'">
+          <span :class="passwordStrength.checks.length ? 'text-success' : 'text-destructive'">
             At least 8 characters
           </span>
         </div>
@@ -142,10 +142,10 @@ const strengthBars = computed(() => {
         <div class="flex items-center space-x-2">
           <i
             :class="[
-              passwordStrength.checks.lowercase ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'
+              passwordStrength.checks.lowercase ? 'fas fa-check text-success' : 'fas fa-times text-destructive'
             ]"
           />
-          <span :class="passwordStrength.checks.lowercase ? 'text-green-600' : 'text-red-600'">
+          <span :class="passwordStrength.checks.lowercase ? 'text-success' : 'text-destructive'">
             Lowercase letter
           </span>
         </div>
@@ -153,10 +153,10 @@ const strengthBars = computed(() => {
         <div class="flex items-center space-x-2">
           <i
             :class="[
-              passwordStrength.checks.uppercase ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'
+              passwordStrength.checks.uppercase ? 'fas fa-check text-success' : 'fas fa-times text-destructive'
             ]"
           />
-          <span :class="passwordStrength.checks.uppercase ? 'text-green-600' : 'text-red-600'">
+          <span :class="passwordStrength.checks.uppercase ? 'text-success' : 'text-destructive'">
             Uppercase letter
           </span>
         </div>
@@ -164,10 +164,10 @@ const strengthBars = computed(() => {
         <div class="flex items-center space-x-2">
           <i
             :class="[
-              passwordStrength.checks.numbers ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'
+              passwordStrength.checks.numbers ? 'fas fa-check text-success' : 'fas fa-times text-destructive'
             ]"
           />
-          <span :class="passwordStrength.checks.numbers ? 'text-green-600' : 'text-red-600'">
+          <span :class="passwordStrength.checks.numbers ? 'text-success' : 'text-destructive'">
             Number
           </span>
         </div>
@@ -175,10 +175,10 @@ const strengthBars = computed(() => {
         <div class="flex items-center space-x-2">
           <i
             :class="[
-              passwordStrength.checks.symbols ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'
+              passwordStrength.checks.symbols ? 'fas fa-check text-success' : 'fas fa-times text-destructive'
             ]"
           />
-          <span :class="passwordStrength.checks.symbols ? 'text-green-600' : 'text-red-600'">
+          <span :class="passwordStrength.checks.symbols ? 'text-success' : 'text-destructive'">
             Special character
           </span>
         </div>
@@ -186,10 +186,10 @@ const strengthBars = computed(() => {
         <div class="flex items-center space-x-2">
           <i
             :class="[
-              passwordStrength.checks.noRepeats ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'
+              passwordStrength.checks.noRepeats ? 'fas fa-check text-success' : 'fas fa-times text-destructive'
             ]"
           />
-          <span :class="passwordStrength.checks.noRepeats ? 'text-green-600' : 'text-red-600'">
+          <span :class="passwordStrength.checks.noRepeats ? 'text-success' : 'text-destructive'">
             No repeated chars
           </span>
         </div>

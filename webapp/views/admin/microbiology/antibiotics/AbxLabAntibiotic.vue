@@ -37,7 +37,7 @@ function discardAntibiotic(antibiotic) {
 
     <div class="border shadow-sm rounded-lg bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border">
+        <table class="min-w-full divide-y divide-border fel-table">
           <thead>
             <tr>
               <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>

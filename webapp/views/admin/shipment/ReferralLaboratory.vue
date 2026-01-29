@@ -118,7 +118,7 @@
 
     <div class="overflow-x-auto mt-4">
       <div class="align-middle inline-block min-w-full rounded-lg shadow-md bg-card p-6">
-        <table class="min-w-full">
+        <table class="min-w-full fel-table">
           <thead class="bg-muted">
             <tr>
               <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>

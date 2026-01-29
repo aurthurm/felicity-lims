@@ -6,7 +6,7 @@ import { Handle, Position } from '@vue-flow/core';
  * Rule Node Component
  *
  * Represents a condition criterion - compares analysis result to a value
- * Color: Amber (#F59E0B)
+ * Color: var(--color-reflex-rule)
  * Icon: ⚖️ Scale
  */
 
@@ -119,12 +119,12 @@ const isNumericValue = computed(() => {
 
     <!-- Rule Expression -->
     <div class="rule-expression">
-      <div class="font-mono text-sm text-gray-800 bg-amber-50 px-3 py-2 rounded border border-amber-200">
+      <div class="font-mono text-sm text-foreground bg-amber-50 px-3 py-2 rounded border border-amber-200">
         <span class="font-semibold text-amber-900">{{ analysisName }}</span>
         <span class="text-amber-600 mx-2">{{ operatorSymbol }}</span>
         <span
           class="font-semibold"
-          :class="isNumericValue ? 'text-blue-700' : 'text-green-700'"
+          :class="isNumericValue ? 'text-primary' : 'text-success'"
         >
           {{ data.value || '?' }}
         </span>
@@ -135,32 +135,32 @@ const isNumericValue = computed(() => {
     <div v-if="selected" class="mt-3 pt-3 border-t border-amber-100 space-y-2">
       <!-- Analysis Details -->
       <div>
-        <div class="text-xs font-semibold text-gray-700">Test:</div>
-        <div class="text-xs text-gray-600 mt-1">{{ analysisName }}</div>
+        <div class="text-xs font-semibold text-foreground">Test:</div>
+        <div class="text-xs text-muted-foreground mt-1">{{ analysisName }}</div>
       </div>
 
       <!-- Operator Details -->
       <div>
-        <div class="text-xs font-semibold text-gray-700">Operator:</div>
-        <div class="text-xs text-gray-600 mt-1">
+        <div class="text-xs font-semibold text-foreground">Operator:</div>
+        <div class="text-xs text-muted-foreground mt-1">
           {{ data.operator }} ({{ operatorSymbol }})
         </div>
       </div>
 
       <!-- Value Details -->
       <div>
-        <div class="text-xs font-semibold text-gray-700">Expected Value:</div>
-        <div class="text-xs text-gray-600 mt-1">
+        <div class="text-xs font-semibold text-foreground">Expected Value:</div>
+        <div class="text-xs text-muted-foreground mt-1">
           {{ data.value }}
-          <span v-if="isNumericValue" class="text-blue-600">(numeric)</span>
-          <span v-else class="text-green-600">(text)</span>
+          <span v-if="isNumericValue" class="text-primary">(numeric)</span>
+          <span v-else class="text-success">(text)</span>
         </div>
       </div>
 
       <!-- Priority -->
       <div v-if="data.priority !== undefined">
-        <div class="text-xs font-semibold text-gray-700">Priority:</div>
-        <div class="text-xs text-gray-600 mt-1">{{ data.priority }}</div>
+        <div class="text-xs font-semibold text-foreground">Priority:</div>
+        <div class="text-xs text-muted-foreground mt-1">{{ data.priority }}</div>
       </div>
     </div>
   </div>
@@ -169,7 +169,7 @@ const isNumericValue = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .rule-node {
-  @apply bg-white border-2 border-amber-400 rounded-lg shadow-md;
+  @apply bg-card border-2 border-amber-400 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[320px];
   @apply transition-all duration-200;
 }
@@ -180,15 +180,15 @@ const isNumericValue = computed(() => {
 
 /* Validation states */
 .rule-node.node-error {
-  @apply border-red-500 bg-red-50;
+  @apply border-destructive/60 bg-destructive/10;
 }
 
 .rule-node.node-warning {
-  @apply border-yellow-500 bg-yellow-50;
+  @apply border-warning/50 bg-warning/10;
 }
 
 .rule-node.node-valid {
-  @apply border-amber-400 bg-white;
+  @apply border-amber-400 bg-card;
 }
 
 /* Selected state */

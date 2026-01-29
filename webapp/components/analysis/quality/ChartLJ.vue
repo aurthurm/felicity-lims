@@ -57,13 +57,21 @@ const cannotPlot = computed(() => {
   return !series || series.length < SERIES_LIMIT;
 });
 
-// Enhanced color scheme with better accessibility
-const COLORS = {
-  ERROR: "#dc2626",    // Red with better contrast
-  WARNING: "#f59e0b",  // Amber for warnings
-  GOOD: "#22c55e",     // Green that's easier to see
-  MEAN_LINE: "#3b82f6" // Blue for mean line
+const getCssVarColor = (name: string): string => {
+  if (typeof window === 'undefined') return 'currentColor';
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || 'currentColor';
 };
+
+const resolveChartColors = () => ({
+  ERROR: getCssVarColor('--color-chart-error'),
+  WARNING: getCssVarColor('--color-chart-warning'),
+  GOOD: getCssVarColor('--color-chart-good'),
+  MEAN_LINE: getCssVarColor('--color-chart-mean'),
+  AXIS: getCssVarColor('--color-chart-axis'),
+  GRID: getCssVarColor('--color-chart-grid'),
+  MUTED: getCssVarColor('--color-chart-muted'),
+  POINT_STROKE: getCssVarColor('--color-chart-point-stroke'),
+});
 
 // Improved rule descriptions for tooltips
 const RULE_DESCRIPTIONS = {
@@ -75,7 +83,11 @@ const RULE_DESCRIPTIONS = {
   "10_x": "10-x: Ten consecutive controls on same side of mean"
 };
 
-function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value'): WestGardResult {
+function westGardRule(
+  dataset: Array<{date: Date; value: number}>,
+  key: 'value',
+  colors: ReturnType<typeof resolveChartColors>
+): WestGardResult {
   let values: number[] = [];
   dataset?.forEach(item => {
     if(typeof(item[key]) === "number") values.push(item[key]);
@@ -100,7 +112,7 @@ function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value')
     const current = jStat.abs([obs[key]])[0];
     const point: DataPoint = {
       ...obs,
-      color: COLORS.GOOD,
+      color: colors.GOOD,
       rule: null,
       description: "",
       deviation: Math.round(((current - mu) / sd) * 100) / 100
@@ -108,7 +120,7 @@ function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value')
 
     // 1_3s Rule
     if(Math.abs(obs[key] - mu) > 3 * sd) {
-      point.color = COLORS.ERROR;
+      point.color = colors.ERROR;
       point.rule = "1_3s";
       point.description = RULE_DESCRIPTIONS["1_3s"];
       return point;
@@ -116,7 +128,7 @@ function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value')
 
     // Enhanced 1_2s Rule with more context
     if(Math.abs(obs[key] - mu) > 2 * sd) {
-      point.color = COLORS.WARNING;
+      point.color = colors.WARNING;
       point.rule = "1_2s";
       point.description = RULE_DESCRIPTIONS["1_2s"];
       return point;
@@ -127,7 +139,7 @@ function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value')
       const prev_1 = dataset[dataset.indexOf(obs) - 1][key];
       const diff = Math.abs(obs[key] - prev_1);
       if(diff >= 4 * sd) {
-        point.color = COLORS.ERROR;
+      point.color = colors.ERROR;
         point.rule = "R_4s";
         point.description = RULE_DESCRIPTIONS["R_4s"];
         return point;
@@ -146,7 +158,7 @@ function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value')
       );
 
       if((allAboveMean || allBelowMean) && allOutside1SD) {
-        point.color = COLORS.ERROR;
+      point.color = colors.ERROR;
         point.rule = "4_1s";
         point.description = RULE_DESCRIPTIONS["4_1s"];
         return point;
@@ -160,7 +172,7 @@ function westGardRule(dataset: Array<{date: Date; value: number}>, key: 'value')
       const allBelowMean = tenPoints.every(v => v < mu);
 
       if(allAboveMean || allBelowMean) {
-        point.color = COLORS.ERROR;
+      point.color = colors.ERROR;
         point.rule = "10_x";
         point.description = RULE_DESCRIPTIONS["10_x"];
       }
@@ -186,6 +198,7 @@ const plotLevyJennings = () => {
   if (!chartContainer) return;
   
   chartContainer.innerHTML = '';
+  const colors = resolveChartColors();
   const chart = new Chart({
     container: chartId.value,
     autoFit: true,
@@ -193,7 +206,7 @@ const plotLevyJennings = () => {
     padding: [30, 40, 120, 60]
   });
 
-  const west_gard = westGardRule(series, 'value');
+  const west_gard = westGardRule(series, 'value', colors);
   chart.data(west_gard.rules);
 
   chart.scale({
@@ -254,7 +267,7 @@ const plotLevyJennings = () => {
     start: ['min', west_gard.stats.mu],
     end: ['max', west_gard.stats.mu],
     style: {
-      stroke: COLORS.MEAN_LINE,
+      stroke: colors.MEAN_LINE,
       lineDash: [4, 4],
     },
   });
@@ -266,8 +279,8 @@ const plotLevyJennings = () => {
       start: ['min', value],
       end: ['max', value],
       style: {
-        stroke: multiple === 3 || multiple === -3 ? COLORS.ERROR : 
-               multiple === 2 || multiple === -2 ? COLORS.WARNING : '#ddd',
+        stroke: multiple === 3 || multiple === -3 ? colors.ERROR : 
+               multiple === 2 || multiple === -2 ? colors.WARNING : colors.MUTED,
         lineDash: [2, 2],
         opacity: 0.5
       },
@@ -276,8 +289,8 @@ const plotLevyJennings = () => {
         position: 'end',
         autoRotate: true,
         style: {
-          fill: multiple === 3 || multiple === -3 ? COLORS.ERROR : 
-                multiple === 2 || multiple === -2 ? COLORS.WARNING : '#666',
+          fill: multiple === 3 || multiple === -3 ? colors.ERROR : 
+                multiple === 2 || multiple === -2 ? colors.WARNING : colors.AXIS,
         }
       }
     });
@@ -288,7 +301,7 @@ const plotLevyJennings = () => {
     .position('date*value')
     .tooltip('date*value*deviation*description')
     .style({
-      stroke: '#666',
+      stroke: colors.AXIS,
       lineWidth: 1
     });
 
@@ -297,7 +310,7 @@ const plotLevyJennings = () => {
     .color('color')
     .shape('circle')
     .style({
-      stroke: '#fff',
+      stroke: colors.POINT_STROKE,
       lineWidth: 1
     })
     .size(6);

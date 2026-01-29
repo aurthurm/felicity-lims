@@ -69,6 +69,65 @@ html[theme-mode='dark']{
     --umo-scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.45);
 }
 
+@layer components {
+    .fel-table {
+        @apply min-w-full border-collapse;
+    }
+
+    .fel-table thead {
+        @apply bg-muted;
+    }
+
+    .fel-table th {
+        @apply px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider;
+    }
+
+    .fel-table tbody {
+        @apply bg-background divide-y divide-border;
+    }
+
+    .fel-table td {
+        @apply px-3 py-2 text-sm text-foreground;
+    }
+
+    .fel-table tbody tr {
+        @apply hover:bg-muted transition-colors duration-150;
+    }
+
+    /* vue-multiselect overrides to align with theme tokens */
+    .multiselect,
+    .multiselect__input,
+    .multiselect__single,
+    .multiselect__tags {
+        @apply bg-background text-foreground;
+    }
+
+    .multiselect__tags {
+        @apply border border-input;
+    }
+
+    .multiselect__option--highlight {
+        @apply bg-primary text-primary-foreground;
+    }
+
+    .multiselect__option--selected {
+        @apply bg-muted text-foreground;
+    }
+
+    .multiselect__option--disabled {
+        @apply bg-muted text-muted-foreground;
+    }
+
+    .multiselect__content-wrapper {
+        @apply border border-border bg-background;
+    }
+
+    .multiselect__spinner::before,
+    .multiselect__spinner::after {
+        border-top-color: hsl(var(--primary));
+    }
+}
+
 @theme {
     --color-background: hsl(var(--background) / <alpha-value>);
     --color-foreground: hsl(var(--foreground) / <alpha-value>);
@@ -155,6 +214,36 @@ html[theme-mode='dark']{
         --color-border: hsl(var(--border));
         --color-input: hsl(var(--input));
         --color-ring: hsl(var(--ring));
+
+        /* Custom UI tokens */
+        --color-chart-error: hsl(var(--destructive));
+        --color-chart-warning: hsl(var(--warning));
+        --color-chart-good: hsl(var(--success));
+        --color-chart-mean: hsl(var(--primary));
+        --color-chart-axis: hsl(var(--muted-foreground));
+        --color-chart-grid: hsl(var(--border));
+        --color-chart-point-stroke: hsl(var(--background));
+        --color-chart-muted: hsl(var(--muted));
+
+        --color-guideline-clsi-bg: hsl(var(--info) / 0.12);
+        --color-guideline-eucast-bg: hsl(var(--success) / 0.12);
+        --color-guideline-who-bg: hsl(var(--warning) / 0.12);
+        --color-guideline-default-bg: hsl(var(--muted));
+        --color-guideline-clsi-text: hsl(var(--info));
+        --color-guideline-eucast-text: hsl(var(--success));
+        --color-guideline-who-text: hsl(var(--warning));
+        --color-guideline-default-text: hsl(var(--muted-foreground));
+
+        --color-reflex-connection: hsl(var(--muted-foreground));
+        --color-reflex-grid: hsl(var(--border));
+        --color-reflex-trigger: hsl(var(--primary));
+        --color-reflex-decision: hsl(262 83% 58%);
+        --color-reflex-rule: hsl(38 92% 50%);
+        --color-reflex-action-add: hsl(var(--success));
+        --color-reflex-action-finalize: hsl(330 81% 60%);
+        --color-reflex-node-stroke: hsl(var(--background));
+
+        --color-loader-primary: hsl(var(--primary));
     }
 
     /* --- Original Dark Theme --- */
@@ -498,4 +587,3 @@ html[theme-mode='dark']{
         padding-bottom: 4px;
     }
 }
-

@@ -278,6 +278,6 @@ const saveErrandForm = () => {
 
 .ghost {
   opacity: 0.5;
-  background: #c8ebfb;
+  background: hsl(var(--info) / 0.15);
 }
 </style>

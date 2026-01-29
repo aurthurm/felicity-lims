@@ -75,8 +75,7 @@ const items = computed<AnalysisItem[]>(() => {
 <template>
   <div class="w-full" role="region" aria-label="Analysis details">
     <div v-if="isLoading" class="flex justify-center items-center py-4">
-      <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" aria-hidden="true"></div>
-      <span class="sr-only">Loading analysis data...</span>
+      <fel-loader message="Loading analysis data..." variant="muted" size="sm" />
     </div>
     
     <div v-else-if="error" class="text-destructive text-sm py-2" role="alert">

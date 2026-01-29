@@ -38,12 +38,12 @@ const notyf = new Notyf({
     types: [
         {
             type: 'info',
-            className: 'bg-primary',
+            className: 'bg-primary text-primary-foreground',
             icon: false,
         },
         {
             type: 'warning',
-            background: 'orange',
+            background: 'hsl(var(--warning))',
             icon: {
                 className: 'material-icons',
                 tagName: 'i',
@@ -52,7 +52,7 @@ const notyf = new Notyf({
         },
         {
             type: 'error',
-            background: 'indianred',
+            background: 'hsl(var(--destructive))',
             duration: 10000,
             dismissible: true,
         },
@@ -73,8 +73,8 @@ const fireAlert = async (options: SwalOptions): Promise<any> => {
             confirmButtonText: options.confirmButtonText || 'OK',
             showCancelButton: options.showCancelButton || false,
             cancelButtonText: options.cancelButtonText || 'Cancel',
-            confirmButtonColor: options.confirmButtonColor || '#3085d6',
-            cancelButtonColor: options.cancelButtonColor || '#d33',
+            confirmButtonColor: options.confirmButtonColor || 'hsl(var(--primary))',
+            cancelButtonColor: options.cancelButtonColor || 'hsl(var(--destructive))',
         });
     } catch (error) {
         return null;

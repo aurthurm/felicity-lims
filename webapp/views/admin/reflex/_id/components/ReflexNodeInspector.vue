@@ -166,7 +166,7 @@ const handleDelete = () => {
     <div class="inspector-header">
       <div class="flex items-center space-x-2">
         <div class="text-lg">🔍</div>
-        <h3 class="text-sm font-semibold text-gray-700">Node Inspector</h3>
+        <h3 class="text-sm font-semibold text-foreground">Node Inspector</h3>
       </div>
     </div>
 
@@ -174,7 +174,7 @@ const handleDelete = () => {
     <div v-if="!selectedNode" class="inspector-empty">
       <div class="empty-content">
         <div class="text-4xl mb-3">👆</div>
-        <p class="text-sm text-gray-600 text-center">
+        <p class="text-sm text-muted-foreground text-center">
           Select a node on the canvas to edit its properties
         </p>
       </div>
@@ -187,11 +187,11 @@ const handleDelete = () => {
         <span
           class="px-3 py-1 rounded-full text-xs font-semibold"
           :class="{
-            'bg-blue-100 text-blue-800': nodeType === 'trigger',
-            'bg-purple-100 text-purple-800': nodeType === 'decision',
+            'bg-primary/15 text-primary': nodeType === 'trigger',
+            'bg-accent/15 text-accent': nodeType === 'decision',
             'bg-amber-100 text-amber-800': nodeType === 'rule',
-            'bg-green-100 text-green-800': nodeType === 'action' && localData.actionType === 'add',
-            'bg-pink-100 text-pink-800': nodeType === 'action' && localData.actionType === 'finalize',
+            'bg-success/15 text-success': nodeType === 'action' && localData.actionType === 'add',
+            'bg-accent/15 text-accent': nodeType === 'action' && localData.actionType === 'finalize',
           }"
         >
           {{ nodeType?.toUpperCase() }} NODE
@@ -298,10 +298,10 @@ const handleDelete = () => {
 
         <!-- Info -->
         <div class="info-box">
-          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <div class="text-xs text-gray-700">
+          <div class="text-xs text-foreground">
             <strong>Connect Rules and Actions:</strong> Rules define conditions (IF), Actions define outcomes (THEN)
           </div>
         </div>
@@ -450,14 +450,14 @@ const handleDelete = () => {
 <style scoped>
 @import "tailwindcss";
 .node-inspector {
-  @apply w-80 bg-white border-l border-gray-200 shadow-sm;
+  @apply w-80 bg-card border-l border-border shadow-sm;
   @apply flex flex-col h-full overflow-hidden;
 }
 
 /* Header */
 .inspector-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-gray-200;
-  @apply bg-gray-50;
+  @apply flex items-center justify-between px-4 py-3 border-b border-border;
+  @apply bg-muted;
 }
 
 /* Empty State */
@@ -484,22 +484,22 @@ const handleDelete = () => {
 }
 
 .form-label {
-  @apply block text-sm font-medium text-gray-700;
+  @apply block text-sm font-medium text-foreground;
 }
 
 .form-input {
-  @apply w-full px-3 py-2 border border-gray-300 rounded-lg;
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  @apply w-full px-3 py-2 border border-input rounded-lg;
+  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary;
   @apply text-sm;
 }
 
 .form-hint {
-  @apply text-xs text-gray-500 italic;
+  @apply text-xs text-muted-foreground italic;
 }
 
 /* Analyses List */
 .analyses-list {
-  @apply max-h-48 overflow-y-auto space-y-2 p-2 border border-gray-200 rounded-lg;
+  @apply max-h-48 overflow-y-auto space-y-2 p-2 border border-border rounded-lg;
 }
 
 .analysis-checkbox {
@@ -508,18 +508,18 @@ const handleDelete = () => {
 
 /* Info Box */
 .info-box {
-  @apply flex items-start space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg;
+  @apply flex items-start space-x-2 p-3 bg-primary/10 border border-primary/30 rounded-lg;
 }
 
 /* Footer */
 .inspector-footer {
-  @apply mt-6 pt-4 border-t border-gray-200;
+  @apply mt-6 pt-4 border-t border-border;
 }
 
 .btn-delete {
   @apply w-full flex items-center justify-center space-x-2;
-  @apply px-4 py-2 bg-red-50 text-red-700 border border-red-300 rounded-lg;
-  @apply hover:bg-red-100 hover:border-red-400;
+  @apply px-4 py-2 bg-destructive/10 text-destructive border border-destructive/40 rounded-lg;
+  @apply hover:bg-destructive/15 hover:border-destructive/50;
   @apply transition-colors duration-200;
   @apply text-sm font-medium;
 }

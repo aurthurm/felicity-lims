@@ -129,7 +129,7 @@ function areAllChecked(): boolean {
         <div v-if="shipmentStore.fetchingSamples" class="p-4 text-center">
           <fel-loader message="Fetching samples ..." />
         </div>
-        <table class="w-full" v-else>
+        <table class="w-full fel-table" v-else>
           <thead>
             <tr class="border-b border-border bg-muted/50">
               <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">

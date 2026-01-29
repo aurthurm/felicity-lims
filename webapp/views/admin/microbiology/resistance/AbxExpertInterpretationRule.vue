@@ -374,10 +374,10 @@ const saveForm = handleSubmit((formValues) => {
 <style scoped>
 .toggle-checkbox:checked {
   right: 0;
-  border-color: #68D391;
+  border-color: hsl(var(--success));
 }
 
 .toggle-checkbox:checked + .toggle-label {
-  background-color: #68D391;
+  background-color: hsl(var(--success));
 }
 </style>

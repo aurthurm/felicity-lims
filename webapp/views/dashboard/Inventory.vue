@@ -168,7 +168,7 @@ onMounted(() => {
     </div>
 
     <div v-else class="overflow-x-auto border border-border rounded-lg">
-      <table class="min-w-full divide-y divide-border">
+      <table class="min-w-full divide-y divide-border fel-table">
         <thead class="bg-muted">
           <tr>
             <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Product</th>

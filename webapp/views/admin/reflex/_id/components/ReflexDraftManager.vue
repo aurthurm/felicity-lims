@@ -50,13 +50,13 @@ const lastSavedText = computed(() => {
  * Status indicator color
  */
 const statusColor = computed(() => {
-  if (props.isSaving) return 'text-blue-600';
-  if (!props.lastSaved) return 'text-gray-400';
+  if (props.isSaving) return 'text-primary';
+  if (!props.lastSaved) return 'text-muted-foreground';
 
   const seconds = Math.floor((Date.now() - props.lastSaved) / 1000);
-  if (seconds < 30) return 'text-green-600';
-  if (seconds < 120) return 'text-yellow-600';
-  return 'text-gray-500';
+  if (seconds < 30) return 'text-success';
+  if (seconds < 120) return 'text-warning';
+  return 'text-muted-foreground';
 });
 
 /**
@@ -88,7 +88,7 @@ const handleClearDraft = () => {
     <!-- Draft Notification (if draft exists and not loaded) -->
     <div v-if="hasDraft" class="draft-notification">
       <div class="flex items-center space-x-2">
-        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -97,8 +97,8 @@ const handleClearDraft = () => {
           />
         </svg>
         <div class="flex-1">
-          <p class="text-sm font-medium text-gray-800">Draft Available</p>
-          <p class="text-xs text-gray-600">A saved draft was found for this rule</p>
+          <p class="text-sm font-medium text-foreground">Draft Available</p>
+          <p class="text-xs text-muted-foreground">A saved draft was found for this rule</p>
         </div>
       </div>
       <div class="flex space-x-2 mt-2">
@@ -123,7 +123,7 @@ const handleClearDraft = () => {
           />
           <div
             v-if="isSaving"
-            class="absolute inset-0 w-2 h-2 rounded-full bg-blue-600 animate-ping opacity-75"
+            class="absolute inset-0 w-2 h-2 rounded-full bg-primary animate-ping opacity-75"
           />
         </div>
 
@@ -136,7 +136,7 @@ const handleClearDraft = () => {
       </div>
 
       <!-- Auto-save Indicator -->
-      <div v-if="autoSaveEnabled" class="flex items-center space-x-1 text-xs text-gray-500">
+      <div v-if="autoSaveEnabled" class="flex items-center space-x-1 text-xs text-muted-foreground">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -191,34 +191,34 @@ const handleClearDraft = () => {
 
 /* Draft Notification */
 .draft-notification {
-  @apply p-4 bg-blue-50 border border-blue-200 rounded-lg;
+  @apply p-4 bg-info/10 border border-info/30 rounded-lg;
 }
 
 .btn-load {
-  @apply px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium;
-  @apply hover:bg-blue-700 transition-colors;
+  @apply px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium;
+  @apply hover:bg-primary/90 transition-colors;
 }
 
 .btn-discard {
-  @apply px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium;
-  @apply hover:bg-gray-50 transition-colors;
+  @apply px-3 py-1.5 bg-card border border-border text-foreground rounded-lg text-sm font-medium;
+  @apply hover:bg-muted transition-colors;
 }
 
 /* Draft Status Bar */
 .draft-status-bar {
   @apply flex items-center justify-between space-x-3;
-  @apply px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg;
+  @apply px-3 py-2 bg-muted border border-border rounded-lg;
 }
 
 /* Save Button */
 .btn-save {
   @apply flex items-center space-x-1.5 px-3 py-1.5;
-  @apply bg-blue-600 text-white rounded-lg text-sm font-medium;
-  @apply hover:bg-blue-700 transition-colors;
+  @apply bg-primary text-primary-foreground rounded-lg text-sm font-medium;
+  @apply hover:bg-primary/90 transition-colors;
 }
 
 .btn-save-disabled {
-  @apply opacity-60 cursor-not-allowed hover:bg-blue-600;
+  @apply opacity-60 cursor-not-allowed hover:bg-primary;
 }
 
 /* Animations */

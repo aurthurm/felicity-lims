@@ -77,7 +77,7 @@ function setEditingComment(discussion: GrindErrandDiscussionType | null) {
     <div role="region" aria-label="Comments section">
         <!-- Loading state -->
         <div v-if="isLoading" class="flex items-center justify-center py-4">
-            <div class="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" role="status" aria-label="Loading comments"></div>
+            <fel-loader message="Loading comments..." variant="muted" size="sm" />
         </div>
 
         <!-- Error state -->

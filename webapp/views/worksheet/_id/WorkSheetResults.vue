@@ -356,7 +356,7 @@ const printBarCodes = async () => {
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full fel-table">
           <thead class="bg-muted">
             <tr>
               <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">

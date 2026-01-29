@@ -190,7 +190,7 @@ function filterOrganisms() {
 
   <div class="overflow-x-auto">
     <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
-      <table class="min-w-full divide-y divide-border">
+      <table class="min-w-full divide-y divide-border fel-table">
         <thead>
           <tr>
             <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
